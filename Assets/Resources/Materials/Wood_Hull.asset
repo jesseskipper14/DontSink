@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6a572e0a4a95324a9c391cd737e0381, type: 3}
+  m_Name: Wood_Hull
+  m_EditorClassIdentifier: 
+  materialName: Wood
+  sprite: {fileID: 0}
+  color: {r: 0.6226415, g: 0.44688192, b: 0.3495016, a: 1}
+  sortingLayer: Default
+  sortingOrder: 0
+  density: 100
+  durability: 100
+  thickness: 0.4
+  blocksWater: 1
+  blocksAir: 1
+  leakRate: 0
+  buoyancyMultiplier: 1

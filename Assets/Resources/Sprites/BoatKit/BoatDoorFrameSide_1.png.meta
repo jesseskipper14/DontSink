@@ -1,0 +1,655 @@
+fileFormatVersion: 2
+guid: f8932fd7c90b9f94aac9afe1f52fa3cf
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3666385329381878963
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_0
+  - first:
+      213: -6367693088202749031
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_1
+  - first:
+      213: -3220027945511224442
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_2
+  - first:
+      213: -5328689469017031940
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_3
+  - first:
+      213: 812164835578460476
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_4
+  - first:
+      213: 7884653704964050144
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_5
+  - first:
+      213: -3881048575374611803
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_6
+  - first:
+      213: 8322688933421721070
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_7
+  - first:
+      213: 4464454085666872480
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_8
+  - first:
+      213: -3727034820941955281
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_9
+  - first:
+      213: 3721222935548820220
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_10
+  - first:
+      213: 1016052190334969435
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_11
+  - first:
+      213: 1576939565099572275
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_12
+  - first:
+      213: -5874469481538496321
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_13
+  - first:
+      213: 2231798217267276328
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_14
+  - first:
+      213: -6503937019432278328
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_15
+  - first:
+      213: -7657944996176946218
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_16
+  - first:
+      213: -3476471259983346323
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_17
+  - first:
+      213: -1744612808473180659
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_18
+  - first:
+      213: -6805609297720846247
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_19
+  - first:
+      213: 8441455631682946614
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_20
+  - first:
+      213: 4247326245809121326
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_21
+  - first:
+      213: -879579924831545698
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_22
+  - first:
+      213: -4820376139985028808
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_23
+  - first:
+      213: -5657772661405613611
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_24
+  - first:
+      213: -1010190481336480649
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_25
+  - first:
+      213: -3099329127750029054
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_26
+  - first:
+      213: -7491899070991338182
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_27
+  - first:
+      213: 7999339615016833238
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_28
+  - first:
+      213: -3946168575143558826
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_29
+  - first:
+      213: -8829967553757326436
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_30
+  - first:
+      213: 5020673767842867714
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_31
+  - first:
+      213: 4540854615925520785
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_32
+  - first:
+      213: -7884338233114313952
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_33
+  - first:
+      213: 2723890552387912978
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_34
+  - first:
+      213: 1328530136517471275
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_35
+  - first:
+      213: -6725547681965351394
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_36
+  - first:
+      213: 1032007380731187578
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_37
+  - first:
+      213: 2157326967993750459
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_38
+  - first:
+      213: -927630988814268145
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_39
+  - first:
+      213: -5988846412296355590
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_40
+  - first:
+      213: 7824826424723497041
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_41
+  - first:
+      213: -3546141037412870549
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_42
+  - first:
+      213: -2238140515281520761
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_43
+  - first:
+      213: -3649574340693112352
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_44
+  - first:
+      213: -2027845090054510608
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_45
+  - first:
+      213: -3226497080583557466
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_46
+  - first:
+      213: 5012277089716262206
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_47
+  - first:
+      213: 4971841572481231950
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_48
+  - first:
+      213: 2476947878395510885
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_49
+  - first:
+      213: -930678664720790087
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_50
+  - first:
+      213: -6329047402688313496
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_51
+  - first:
+      213: -8046535912318876593
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_52
+  - first:
+      213: -7396649665408183130
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_53
+  - first:
+      213: 9085157288342837635
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_54
+  - first:
+      213: 7062079040073945728
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_55
+  - first:
+      213: 635967013246636853
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_56
+  - first:
+      213: -3159413885366832582
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_57
+  - first:
+      213: -6023194355994737700
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_58
+  - first:
+      213: -6993386194478140444
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_59
+  - first:
+      213: 7115066580238647925
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_60
+  - first:
+      213: -2408079004518383304
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_61
+  - first:
+      213: -6283439743695234206
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_62
+  - first:
+      213: 3209157926895812803
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_63
+  - first:
+      213: 4149468964382855334
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_64
+  - first:
+      213: -4099439439088293496
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_65
+  - first:
+      213: -3663753277691122266
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_66
+  - first:
+      213: -8910739593747643011
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_67
+  - first:
+      213: 1609262938367296962
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_68
+  - first:
+      213: 8175300657672572184
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_69
+  - first:
+      213: 7602002289506019031
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_70
+  - first:
+      213: 4144586687873868809
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_71
+  - first:
+      213: 2211240325341765182
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_72
+  - first:
+      213: 4485408569758986324
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_73
+  - first:
+      213: -7800413220398006175
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_74
+  - first:
+      213: -1990516726921487914
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_75
+  - first:
+      213: 3420543982400083780
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_76
+  - first:
+      213: -4158219374996380324
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_77
+  - first:
+      213: 5474928930276119488
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_78
+  - first:
+      213: -2496562387218445596
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_79
+  - first:
+      213: -1587162024902531250
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_80
+  - first:
+      213: 4894884928160526545
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_81
+  - first:
+      213: -7826619971210629706
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_82
+  - first:
+      213: 5065801727289472891
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_83
+  - first:
+      213: -4391222920312038098
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_84
+  - first:
+      213: 3014608932125776596
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_85
+  - first:
+      213: -3238720622943724373
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_86
+  - first:
+      213: 775865763310305012
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_87
+  - first:
+      213: -8484283258005543544
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_88
+  - first:
+      213: -7572653304362525407
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_89
+  - first:
+      213: -4463783882668719672
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_90
+  - first:
+      213: 2555329765713988570
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_91
+  - first:
+      213: 3829839515206139732
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_92
+  - first:
+      213: -8619793311726899004
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_93
+  - first:
+      213: 1129475841624775237
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_94
+  - first:
+      213: 6084921831764050729
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_95
+  - first:
+      213: 8481536143966479779
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_96
+  - first:
+      213: -1968139000435620500
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_97
+  - first:
+      213: 2059261468035050877
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_98
+  - first:
+      213: 2854247168115832108
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_99
+  - first:
+      213: 758724757900364351
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_100
+  - first:
+      213: 426008765621347710
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_101
+  - first:
+      213: 1684052285702873210
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_102
+  - first:
+      213: 1108118248134648518
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_103
+  - first:
+      213: 7464803677625119977
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_104
+  - first:
+      213: 8125819749299004749
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_105
+  - first:
+      213: -2166169972076593125
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_106
+  - first:
+      213: 2272280830640744461
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_107
+  - first:
+      213: 6281814858609776857
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_108
+  - first:
+      213: -1633339229502238099
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_109
+  - first:
+      213: 4210493124210402193
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_110
+  - first:
+      213: 7055888937236627975
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_111
+  - first:
+      213: -8884035165293379022
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_112
+  - first:
+      213: -2996666804915815079
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_113
+  - first:
+      213: 5550872441787380574
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_114
+  - first:
+      213: -6473720685695722754
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_115
+  - first:
+      213: 3523935896414996457
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_116
+  - first:
+      213: -2355264982360607734
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_117
+  - first:
+      213: 3127660976389096560
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_118
+  - first:
+      213: 6388615394654581889
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_119
+  - first:
+      213: 2055719230869740828
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_120
+  - first:
+      213: -6081706410026184942
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_121
+  - first:
+      213: -7972299994240270664
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_122
+  - first:
+      213: -8875492376973771576
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_123
+  - first:
+      213: -7873296779993904883
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_124
+  - first:
+      213: 2680504880471791380
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_125
+  - first:
+      213: -4285453159314280844
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_126
+  - first:
+      213: -7062269043032178940
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_127
+  - first:
+      213: -2483767901257367688
+    second: ChatGPT Image Feb 2, 2026, 09_36_57 PM_128
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BoatDoorFrameSide_1
+      rect:
+        serializedVersion: 2
+        x: 1147
+        y: 83
+        width: 203
+        height: 879
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e998f243a32cd3945955cc8a6f166799
+      internalID: -34554701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: d1a019d47ddcb4947ae63736eb96763d
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BoatDoorFrameSide_1: -34554701
+      BoatDoorFrameSide_1_0: 1132957103
+      BoatDoorFrameSide_1_1: -594530587
+      BoatDoorFrameSide_1_10: -2001218605
+      BoatDoorFrameSide_1_100: -10211018
+      BoatDoorFrameSide_1_101: -405447935
+      BoatDoorFrameSide_1_102: 2057072334
+      BoatDoorFrameSide_1_103: -790663376
+      BoatDoorFrameSide_1_104: 1254344050
+      BoatDoorFrameSide_1_105: -1737796570
+      BoatDoorFrameSide_1_106: -1328997966
+      BoatDoorFrameSide_1_107: 511538990
+      BoatDoorFrameSide_1_108: 394143174
+      BoatDoorFrameSide_1_109: 2127780794
+      BoatDoorFrameSide_1_11: 1568828843
+      BoatDoorFrameSide_1_110: 410505381
+      BoatDoorFrameSide_1_111: 1263784878
+      BoatDoorFrameSide_1_112: -238370458
+      BoatDoorFrameSide_1_113: 86067605
+      BoatDoorFrameSide_1_114: -1109989242
+      BoatDoorFrameSide_1_115: -1156807950
+      BoatDoorFrameSide_1_116: 392815954
+      BoatDoorFrameSide_1_117: -5612491
+      BoatDoorFrameSide_1_118: 604315335
+      BoatDoorFrameSide_1_119: -1932693585
+      BoatDoorFrameSide_1_12: -1691375150
+      BoatDoorFrameSide_1_120: 1549366001
+      BoatDoorFrameSide_1_121: 1599468465
+      BoatDoorFrameSide_1_122: 1140331793
+      BoatDoorFrameSide_1_123: 1167073174
+      BoatDoorFrameSide_1_124: 1748864350
+      BoatDoorFrameSide_1_125: -1884896858
+      BoatDoorFrameSide_1_126: 1832321986
+      BoatDoorFrameSide_1_127: -895975905
+      BoatDoorFrameSide_1_128: 1315320479
+      BoatDoorFrameSide_1_13: -496075711
+      BoatDoorFrameSide_1_14: -109294483
+      BoatDoorFrameSide_1_15: 2133143190
+      BoatDoorFrameSide_1_16: -18142016
+      BoatDoorFrameSide_1_17: -196035384
+      BoatDoorFrameSide_1_18: -2069758033
+      BoatDoorFrameSide_1_19: 1336689303
+      BoatDoorFrameSide_1_2: -1768665022
+      BoatDoorFrameSide_1_20: -1902374271
+      BoatDoorFrameSide_1_21: 38162164
+      BoatDoorFrameSide_1_22: -1899493142
+      BoatDoorFrameSide_1_23: -572247423
+      BoatDoorFrameSide_1_24: -461138760
+      BoatDoorFrameSide_1_25: -1753907777
+      BoatDoorFrameSide_1_26: 2037274136
+      BoatDoorFrameSide_1_27: -685688936
+      BoatDoorFrameSide_1_28: -1101503472
+      BoatDoorFrameSide_1_29: 730370366
+      BoatDoorFrameSide_1_3: -1835689217
+      BoatDoorFrameSide_1_30: -724273583
+      BoatDoorFrameSide_1_31: 1671669701
+      BoatDoorFrameSide_1_32: -1949846142
+      BoatDoorFrameSide_1_33: 607895322
+      BoatDoorFrameSide_1_34: 1017102971
+      BoatDoorFrameSide_1_35: 1764719011
+      BoatDoorFrameSide_1_36: -504792112
+      BoatDoorFrameSide_1_37: 1236884518
+      BoatDoorFrameSide_1_38: 1136049644
+      BoatDoorFrameSide_1_39: 328202183
+      BoatDoorFrameSide_1_4: -426987693
+      BoatDoorFrameSide_1_40: -1327349516
+      BoatDoorFrameSide_1_41: 1688276814
+      BoatDoorFrameSide_1_42: -1776712896
+      BoatDoorFrameSide_1_43: 1756446431
+      BoatDoorFrameSide_1_44: -534184657
+      BoatDoorFrameSide_1_45: -475428225
+      BoatDoorFrameSide_1_46: -625060428
+      BoatDoorFrameSide_1_47: -422645623
+      BoatDoorFrameSide_1_48: -1455572973
+      BoatDoorFrameSide_1_49: -1764836068
+      BoatDoorFrameSide_1_50: 1847438206
+      BoatDoorFrameSide_1_51: 579286817
+      BoatDoorFrameSide_1_52: -512189787
+      BoatDoorFrameSide_1_53: -1329504979
+      BoatDoorFrameSide_1_54: 55728368
+      BoatDoorFrameSide_1_55: 1564354322
+      BoatDoorFrameSide_1_56: -934506728
+      BoatDoorFrameSide_1_57: -1822942213
+      BoatDoorFrameSide_1_58: -123009458
+      BoatDoorFrameSide_1_59: 1005340985
+      BoatDoorFrameSide_1_6: 2058322764
+      BoatDoorFrameSide_1_60: -1988678835
+      BoatDoorFrameSide_1_61: -1793094298
+      BoatDoorFrameSide_1_62: 511385170
+      BoatDoorFrameSide_1_63: -550979458
+      BoatDoorFrameSide_1_64: 1444179482
+      BoatDoorFrameSide_1_65: -1293265645
+      BoatDoorFrameSide_1_66: -1066142116
+      BoatDoorFrameSide_1_67: -1783835714
+      BoatDoorFrameSide_1_68: -852479869
+      BoatDoorFrameSide_1_69: -469317685
+      BoatDoorFrameSide_1_7: -79629886
+      BoatDoorFrameSide_1_70: 199792290
+      BoatDoorFrameSide_1_71: -730767946
+      BoatDoorFrameSide_1_72: -368372133
+      BoatDoorFrameSide_1_73: 1277794244
+      BoatDoorFrameSide_1_74: 107434778
+      BoatDoorFrameSide_1_75: 1251903359
+      BoatDoorFrameSide_1_76: 948083616
+      BoatDoorFrameSide_1_77: 714011433
+      BoatDoorFrameSide_1_78: 1141849342
+      BoatDoorFrameSide_1_79: -853409532
+      BoatDoorFrameSide_1_8: 1694283515
+      BoatDoorFrameSide_1_80: -1418018649
+      BoatDoorFrameSide_1_81: -1366920602
+      BoatDoorFrameSide_1_82: -379660411
+      BoatDoorFrameSide_1_83: 207068147
+      BoatDoorFrameSide_1_84: -571767428
+      BoatDoorFrameSide_1_85: -1799472567
+      BoatDoorFrameSide_1_86: -1901070050
+      BoatDoorFrameSide_1_87: 692969745
+      BoatDoorFrameSide_1_88: 387017850
+      BoatDoorFrameSide_1_89: 1779532659
+      BoatDoorFrameSide_1_9: 1576176436
+      BoatDoorFrameSide_1_90: -1246797104
+      BoatDoorFrameSide_1_91: -1967390930
+      BoatDoorFrameSide_1_92: -736928222
+      BoatDoorFrameSide_1_93: 286850145
+      BoatDoorFrameSide_1_94: -518582166
+      BoatDoorFrameSide_1_95: 280350983
+      BoatDoorFrameSide_1_96: -1319403833
+      BoatDoorFrameSide_1_97: 1186221815
+      BoatDoorFrameSide_1_98: -438778788
+      BoatDoorFrameSide_1_99: 1499918739
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

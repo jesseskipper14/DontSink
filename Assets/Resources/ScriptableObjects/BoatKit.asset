@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d95c49ec6bd154249a5a5e2b304cc1e0, type: 3}
+  m_Name: BoatKit
+  m_EditorClassIdentifier: 
+  HullSegment: {fileID: 3310013560795536328, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+  Wall: {fileID: 796141958746456975, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
+  Hatch: {fileID: 3384917859122636573, guid: 9170d7c4cd3cb23489c3fa7c95b892c1, type: 3}
+  PilotChair: {fileID: 8706727347045637987, guid: d37e93d618ca8ba4f97a9f12ca263b48, type: 3}
+  CompartmentRect: {fileID: 5391915971216815558, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
+  Deck: {fileID: 8043139812053460957, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}

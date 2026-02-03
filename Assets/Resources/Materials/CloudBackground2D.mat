@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: CloudBackground2D
+  m_Shader: {fileID: 4800000, guid: 9523149ba1cd65b4c8f22ec1181758ac, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Brightness: 0.9984641
+    - _CloudAspect: 3
+    - _CloudDensity: 0.536
+    - _CloudRadius: 0.05
+    - _CloudScale: 1
+    - _Coverage: 0.6
+    - _Density: 0.179
+    - _DetailNoiseScale: 6
+    - _DetailNoiseStrength: 1
+    - _EdgeNoiseStrength: 0.624
+    - _EdgeSoftness: 0.0658
+    - _EnableExternalAlpha: 0
+    - _HighScale: 0.5
+    - _HighSpeed: 0.01
+    - _LowMidScale: 1.5
+    - _LowMidSpeed: 0.003
+    - _LowScale: 2
+    - _LowSpeed: 0.001
+    - _MidHighScale: 0.7
+    - _MidHighSpeed: 0.007
+    - _MidScale: 1
+    - _MidSpeed: 0.005
+    - _NoiseScale: 2
+    - _Scale: 10
+    - _ShapeNoiseScale: 1.5
+    - _ShapeNoiseStrength: 0
+    - _Softness: 0.1314
+    - _Speed: 0.02
+    - _TintStrength: 0
+    - _UndersideDarkness: 0.239
+    - _VeryLowScale: 2.91
+    - _VeryLowSpeed: 0.0001
+    - _WarpScale: 1.5
+    - _WarpStrength: 0
+    - _ZWrite: 0
+    m_Colors:
+    - _CloudCenter: {r: 0.5, g: 0.1, b: 0, a: 0}
+    - _CloudColor: {r: 0.754717, g: 0.754717, b: 0.754717, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SkyColor: {r: 0.52, g: 0.75, b: 0.95, a: 1}
+    - _SkyTint: {r: 0.5, g: 0.7, b: 1, a: 1}
+    - _Tint: {r: 1, g: 0.7826214, b: 0.6739321, a: 1}
+    - _TintColor: {r: 1, g: 0, b: 0.38759565, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

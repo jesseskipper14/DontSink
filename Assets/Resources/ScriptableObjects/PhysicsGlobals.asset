@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed5970ca7cf390646965ae7e38899ea7, type: 3}
+  m_Name: PhysicsGlobals
+  m_EditorClassIdentifier: 
+  Gravity: 9.8
+  WaterDensity: 1
+  SloshStiffness: 8
+  SloshDamping: 2
+  DefaultFlowRate: 0.5
+  WaterVerticalDrag: 2
+  WaterHorizontalDrag: 1
+  WaterAngularDrag: 1
+  MinRelativeVelocityFactor: 0.5
+  MinRelativeVelocityAbsolute: 1
+  RightingStiffness: 0
+  AngularDamping: 4
+  MaxBuoyantAcceleration: 40
+  MinBuoyantAcceleration: 10
+  SurfaceInteractionDepth: 1.2

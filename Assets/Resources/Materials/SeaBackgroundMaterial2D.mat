@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SeaBackgroundMaterial2D
+  m_Shader: {fileID: 4800000, guid: 150f680397f1bd347bc32a35356a0e22, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BGWaveDensity: 20
+    - _BGWaveIntensity: 0.0075
+    - _BGWaveNoiseScale: 100
+    - _BGWaveNoiseSpeed: 0.2
+    - _BGWaveNoiseStrength: 0.15
+    - _BGWaveScale: 2
+    - _BGWaveSize: 0.1
+    - _BGWaveSpeed: 0.2
+    - _BGWaveStrength: 0.053
+    - _Brightness: 0.9984641
+    - _EnableExternalAlpha: 0
+    - _FogStrength: 0.4
+    - _GradientPower: 0.3
+    - _HorizonY: 1
+    - _SparkleDensity: 200
+    - _SparkleFalloffSharpness: 0.891
+    - _SparkleIntensity: 1.198157
+    - _SparkleSpeed: 5
+    - _WaveScale: 3
+    - _WaveSpeed: 0.15
+    - _WaveStrength: 0.05
+    - _ZWrite: 0
+    m_Colors:
+    - _BGWaveTint: {r: 0, g: 0.34999996, b: 0.6, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _DeepColor: {r: 0, g: 0.24999997, b: 0.45, a: 1}
+    - _HorizonColor: {r: 0.39999998, g: 0.7, b: 0.9, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Tint: {r: 1, g: 1, b: 1, a: 0.22745098}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
