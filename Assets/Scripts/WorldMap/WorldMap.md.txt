@@ -1,0 +1,183 @@
+Last Updated 02/05/2026
+
+## 📁 **Data**
+
+### **EventOutcome**
+
+Defines a reusable bundle of buffs and parameters that represent the mechanical result of an event resolving.
+Outcomes are pure data and can be applied by events, debug tools, or future systems without knowing where they came from.
+
+### **MapNodeDefinition**
+
+Static authoring-time data describing what a node *is* at creation (baseline stats, buildings, defaults).
+Used to seed runtime node state but never mutated after the world is generated.
+
+### **NodeBuff**
+
+Defines a single modifier that applies pressure to a node value over time (positive or negative).
+Buffs are reusable, stackable, and intentionally dumb so they can be combined freely by outcomes.
+
+### **WorldMapGraphGenerator**
+
+Procedurally generates the world map graph including clusters, nodes, and routes.
+Produces the immutable spatial/topological structure that all simulation systems operate on.
+
+---
+
+## 📁 **Events**
+
+### **IWorldMapEventResolver**
+
+Interface that encapsulates the logic for resolving an event into an outcome.
+Allows different event types to define their own resolution rules without bloating the EventManager.
+
+### **WorldMapEventDefinition**
+
+ScriptableObject archetype defining what an event *is* and how to create a runtime instance.
+Contains identity, presentation data, and delegates logic to a resolver implementation.
+
+### **WorldMapEventInstance**
+
+Runtime, stateful representation of a single event occurring at a specific node.
+Tracks time, resolution state, and event-specific data without polluting the definition asset.
+
+### **WorldMapEventManager**
+
+Central orchestrator that ticks active events, evaluates resolution, and applies outcomes.
+Knows *when* things happen but deliberately not *why* they happen.
+
+### **WorldMapEventResolved**
+
+Lightweight payload describing the result of an event resolution.
+Decouples event logic from outcome application and logging.
+
+### **StormEventDefinition**
+
+Concrete event implementation representing a timed storm with multiple possible outcomes.
+Demonstrates weighted resolution, stat biasing, and deterministic seeding.
+
+---
+
+## 📁 **Input**
+
+### **WorldMapClickController**
+
+Handles player clicks on map nodes using physics raycasts.
+Responsible only for selection intent, not what selection means.
+
+### **WorldMapHoverController**
+
+Handles hover detection over nodes and runtime visuals.
+Drives tooltips and inspection without mutating game state.
+
+---
+
+## 📁 **Messaging**
+
+### **WorldMapMessageBus**
+
+Lightweight pub/sub system for broadcasting node and simulation changes.
+Decouples simulation logic from UI, logging, and debug tools.
+
+---
+
+## 📁 **Model**
+
+### **MapNodeState**
+
+Authoritative container for all mutable simulation values of a node.
+Holds stats, buildings, buffs, and exposes mutation points for simulation systems.
+
+### **NodeValueTarget**
+
+Typed reference describing *what* a buff or outcome modifies.
+Allows generic systems to target stats, docks, trade hubs, or optional buildings safely.
+
+### **TimedBuffInstance**
+
+Runtime instance of a buff applied to a node with elapsed time tracking.
+Bridges static buff definitions with time-based simulation.
+
+---
+
+## 📁 **Runtime**
+
+### **BuffIconView**
+
+Visual representation of a single active buff under a node.
+Exists purely for inspection and debugging, not simulation.
+
+### **MapNodeRuntime**
+
+Glue layer that binds graph data, runtime state, and view logic together.
+Acts as the “live” node entity during play.
+
+### **MapNodeView**
+
+Scene-level GameObject that represents a node visually and interactively.
+Knows its node ID but not the simulation rules behind it.
+
+### **NodeBuffVisualizer**
+
+Renders active buffs as small icons beneath a node.
+Continuously reflects simulation state without owning it.
+
+### **NodeEventVisualizer**
+
+Renders active events as blue icons above a node.
+Provides at-a-glance awareness of ongoing processes.
+
+### **TimeOfDayDriver**
+
+Advances the TimeOfDayManager using Unity time.
+Decouples simulation time from scene-specific Update loops.
+
+### **WorldMapNodeSelection**
+
+Tracks which node is currently selected by the player.
+Acts as shared state between input, UI, and debug tooling.
+
+### **WorldMapNodeSpawner**
+
+Instantiates node GameObjects from the generated graph.
+Responsible for wiring runtime visuals and helpers to nodes.
+
+---
+
+## 📁 **Simulation**
+
+### **WorldMapDriftSimulator**
+
+Applies passive drift and active buffs to node values over time.
+This is the “heartbeat” that makes the world feel alive even without events.
+
+---
+
+## 📁 **UI**
+
+### **TimeDateHUD**
+
+Displays current day, month, and year derived from the time system.
+Pure presentation with no simulation authority.
+
+### **WorldMapChangeLogger**
+
+Listens to the message bus and logs significant node changes.
+Intended for debugging, tuning, and sanity checks.
+
+### **WorldMapHeatmapController**
+
+Visualizes node values as color gradients across the map.
+Used for debugging balance and later for player-facing map modes.
+
+### **WorldMapTooltipUI**
+
+Displays contextual information when hovering nodes or visuals.
+Acts as a thin UI shell over simulation data.
+
+---
+
+This setup is **modular, layered, and sane**:
+* Data → Simulation → Events → Runtime → UI is a clean flow
+
+
