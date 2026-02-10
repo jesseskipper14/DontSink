@@ -7,6 +7,7 @@ public class WorldMapEventManager : MonoBehaviour
     [Header("Refs")]
     [SerializeField] private WorldMapGraphGenerator generator;
     [SerializeField] private TimeOfDayManager timeOfDay;
+    [SerializeField] private WorldMapRuntimeBinder runtimeBinder;
 
     [Header("Ticking")]
     [Min(0.05f)] public float tickSeconds = 0.25f;
@@ -23,6 +24,7 @@ public class WorldMapEventManager : MonoBehaviour
     {
         generator = FindAnyObjectByType<WorldMapGraphGenerator>();
         timeOfDay = FindAnyObjectByType<TimeOfDayManager>();
+        runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
     }
 
     private void Update()
@@ -94,13 +96,21 @@ public class WorldMapEventManager : MonoBehaviour
     private void ApplyResolved(WorldMapEventResolved resolved)
     {
         if (resolved.outcome == null) return;
+        if (runtimeBinder == null)
+        {
+            Debug.LogError("EventManager: Missing WorldMapRuntimeBinder.");
+            return;
+        }
 
-        // For now: apply to source node only.
-        // Next step (Step 8): radius propagation + falloff here.
         int id = resolved.sourceNodeId;
-        if (id < 0 || id >= generator.graph.nodes.Count) return;
 
-        generator.graph.nodes[id].ApplyOutcome(resolved.outcome);
+        if (!runtimeBinder.Registry.TryGetByIndex(id, out var rt))
+        {
+            Debug.LogError($"EventManager: No runtime node for index {id}.");
+            return;
+        }
+
+        rt.ApplyOutcome(resolved.outcome);
 
         if (logResolutions)
             Debug.Log($"[EventResolved] {resolved.eventName} -> {resolved.outcome.displayName} on node #{id}");

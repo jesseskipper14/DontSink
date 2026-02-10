@@ -15,22 +15,23 @@ public class NodeBuffVisualizer : MonoBehaviour
     public float refreshIntervalSeconds = 1f;
 
     private float _t;
-    private WorldMapGraphGenerator _generator;
+    private WorldMapRuntimeBinder _runtimeBinder;
     private MapNodeView _nodeView;
 
     private readonly List<GameObject> _icons = new();
     private Sprite _dotSprite;
 
-    public void Initialize(WorldMapGraphGenerator generator, MapNodeView nodeView)
+    public void Initialize(WorldMapRuntimeBinder runtimeBinder, MapNodeView nodeView)
     {
-        _generator = generator;
+        _runtimeBinder = runtimeBinder;
         _nodeView = nodeView;
         _dotSprite = MakeDotSprite();
     }
 
     private void Update()
     {
-        if (_generator?.graph == null || _nodeView == null) return;
+        if (_nodeView == null) return;
+        if (_runtimeBinder == null || !_runtimeBinder.IsBuilt) return;
 
         _t += Time.deltaTime;
         if (_t >= refreshIntervalSeconds)
@@ -43,17 +44,22 @@ public class NodeBuffVisualizer : MonoBehaviour
     public void Refresh()
     {
         int id = _nodeView.NodeId;
-        if (id < 0 || id >= _generator.graph.nodes.Count) return;
+        if (id < 0) return;
+        if (_runtimeBinder == null || !_runtimeBinder.IsBuilt) return;
+        if (!_runtimeBinder.Registry.TryGetByIndex(id, out var rt)) return;
 
-        var node = _generator.graph.nodes[id];
-        int count = node.activeBuffs == null ? 0 : node.activeBuffs.Count;
+        var state = rt.State;
+        if (state == null) return;
+
+        var buffs = state.ActiveBuffs;
+        int count = buffs == null ? 0 : buffs.Count;
         int show = Mathf.Min(count, maxShown);
 
         EnsureIconCount(show);
 
         for (int i = 0; i < show; i++)
         {
-            var inst = node.activeBuffs[i];
+            var inst = buffs[i];
             var go = _icons[i];
             go.SetActive(true);
 
@@ -81,7 +87,6 @@ public class NodeBuffVisualizer : MonoBehaviour
             view.SetData(name, rem, tint);
         }
 
-        // hide extras
         for (int i = show; i < _icons.Count; i++)
             _icons[i].SetActive(false);
     }
@@ -99,7 +104,7 @@ public class NodeBuffVisualizer : MonoBehaviour
 
             var col = go.AddComponent<CircleCollider2D>();
             col.isTrigger = true;
-            col.radius = 0.5f; // scaled by transform
+            col.radius = 0.5f;
 
             var biv = go.AddComponent<BuffIconView>();
             biv.Initialize(_dotSprite);
@@ -125,8 +130,8 @@ public class NodeBuffVisualizer : MonoBehaviour
                 float dy = (y - 7.5f) / 7.5f;
                 tex.SetPixel(x, y, (dx * dx + dy * dy) <= 1f ? c : clear);
             }
-        tex.Apply();
 
+        tex.Apply();
         _cachedDot = Sprite.Create(tex, new Rect(0, 0, 16, 16), new Vector2(0.5f, 0.5f), 16);
         return _cachedDot;
     }

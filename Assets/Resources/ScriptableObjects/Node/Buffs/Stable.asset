@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fde425a0499f6cc478aab528c890604a, type: 3}
   m_Name: Stable
   m_EditorClassIdentifier: 
-  buffId: 
-  displayName: 
+  buffId: 10
+  displayName: Stable
   target:
     kind: 0
-    statId: 0
+    statId: 1
     buildingId: 0
   accelPerHour: 0.05
-  stacks: 0
+  stacks: 1
   maxStacks: 3
   rampInOut: 1
   rampFraction: 0.2

@@ -9,12 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ffd50cab283e63745bad7fed00e56c44, type: 3}
-  m_Name: Successful Trade
+  m_Script: {fileID: 11500000, guid: c9e4aeeb3741fb34698e88868afe3145, type: 3}
+  m_Name: WorldMapTravelRulesConfig
   m_EditorClassIdentifier: 
-  outcomeId: 1
-  displayName: Big Trade!
-  buffs:
-  - buff: {fileID: 11400000, guid: 92376164f23eae646ada5401734aea28, type: 2}
-    durationHours: 172
-    stacks: 1
+  maxRouteLength: 40

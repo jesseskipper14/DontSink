@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffd50cab283e63745bad7fed00e56c44, type: 3}
   m_Name: Famine!
   m_EditorClassIdentifier: 
-  outcomeId: 
-  displayName: 
-  buffs: []
+  outcomeId: outcome_famine
+  displayName: Famine!
+  buffs:
+  - buff: {fileID: 11400000, guid: dfc66ea70797e784e8d9f1fe60651a51, type: 2}
+    durationHours: 168
+    stacks: 1

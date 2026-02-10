@@ -1,4 +1,7 @@
-Last Updated 02/05/2026
+Last Updated 02/07/2026
+
+The world map is built in phases: generation produces immutable structure, runtime binding creates live simulation entities, and gameplay systems operate only on runtime state.
+This separation ensures determinism, debuggability, and future multiplayer support without sacrificing iteration speed.
 
 ## 📁 **Data**
 
@@ -174,6 +177,21 @@ Used for debugging balance and later for player-facing map modes.
 
 Displays contextual information when hovering nodes or visuals.
 Acts as a thin UI shell over simulation data.
+
+WorldMapRuntimeBinder
+
+Responsible for converting generated graph data into live runtime node instances.
+Acts as the explicit boundary between deterministic world generation and mutable simulation.
+
+WorldMapRuntimeRegistry
+
+Central lookup table mapping generated nodes to their runtime counterparts.
+Provides a single authoritative way to resolve node identity during simulation and player actions.
+
+WorldMapPlayer
+
+Runtime representation of the player on the world map.
+Owns player state and positions itself using runtime nodes rather than generation data.
 
 ---
 

@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class WorldMapDriftSimulator : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private WorldMapGraphGenerator generator;
     [SerializeField] private TimeOfDayManager timeOfDay;
+    [SerializeField] private WorldMapRuntimeBinder runtimeBinder;
 
     [Header("Ticking")]
     [Tooltip("How often to simulate drift (seconds).")]
@@ -23,22 +24,22 @@ public class WorldMapDriftSimulator : MonoBehaviour
     [Tooltip("Where dock/trade drift toward if left alone.")]
     [Range(0f, 4f)] public float buildingEquilibrium = 1.2f;
 
-    // 2a-ready messaging (optional)
-    public event Action<MapNode, NodeStatId, float, float> OnNodeStatChanged;
-    public event Action<MapNode, string, float, float> OnNodeBuildingChanged; // "Dock"/"Trade"
+    [Header("Population Response")]
+    public float populationLossRate = 0.02f;
+    public float populationGrowthRate = 0.01f;
 
     private float _accum;
 
     private void Reset()
     {
-        generator = FindAnyObjectByType<WorldMapGraphGenerator>();
         timeOfDay = FindAnyObjectByType<TimeOfDayManager>();
+        runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
     }
 
     private void Update()
     {
-        if (generator == null || generator.graph == null) return;
         if (timeOfDay == null) return;
+        if (runtimeBinder == null || !runtimeBinder.IsBuilt) return;
 
         _accum += Time.deltaTime * simSpeed;
         while (_accum >= simTickSeconds)
@@ -55,73 +56,92 @@ public class WorldMapDriftSimulator : MonoBehaviour
 
     private void TickAllNodes(float dtHours)
     {
-        var g = generator.graph;
+        if (runtimeBinder == null || !runtimeBinder.IsBuilt) return;
 
-        for (int i = 0; i < g.nodes.Count; i++)
+        // Iterate runtime nodes (authoritative)
+        foreach (var rt in runtimeBinder.Registry.AllRuntimes)
         {
-            var node = g.nodes[i];
+            var state = rt.State;
+            if (state == null) continue;
 
-            // Drift core stats (with buff influence)
-            for (int s = 0; s < node.stats.Count; s++)
+            // Configure dock/trade drift parameters (NOT a tick)
+            if (driftDockAndTrade)
             {
-                var ns = node.stats[s];
-                float old = ns.stat.value;
-
-                float accel = GetInfluenceAccelForStat(node, ns.id);
-
-                if (ns.stat.Tick(dtHours, influenceAccel: accel))
+                if (state.TryGetStat(NodeStatId.DockRating, out var dock))
                 {
-                    node.stats[s] = ns;
-                    OnNodeStatChanged?.Invoke(node, ns.id, old, ns.stat.value);
+                    dock.equilibrium = buildingEquilibrium;
+                    dock.restoreStrength = buildingRestoreStrength;
+                    state.SetStatPreserveVelocity(NodeStatId.DockRating, dock);
+                }
+
+                if (state.TryGetStat(NodeStatId.TradeRating, out var trade))
+                {
+                    trade.equilibrium = buildingEquilibrium;
+                    trade.restoreStrength = buildingRestoreStrength;
+                    state.SetStatPreserveVelocity(NodeStatId.TradeRating, trade);
+                }
+            }
+
+            // Drift stats with buff accel
+            var keys = new List<NodeStatId>(state.Stats.Keys);
+            for (int i = 0; i < keys.Count; i++)
+            {
+                var statId = keys[i];
+                var stat = state.GetStat(statId);
+
+                float old = stat.value;
+                float accel = GetInfluenceAccelForStat(state, statId);
+
+                if (stat.Tick(dtHours, accel))
+                {
+                    state.SetStatPreserveVelocity(statId, stat);
 
                     WorldMapMessageBus.Publish(
-                        new WorldMapChange(WorldMapChangeKind.StatChanged, node, ns.id.ToString(), old, ns.stat.value)
+                        new WorldMapChange(
+                            WorldMapChangeKind.StatChanged,
+                            rt.NodeIndex,
+                            rt.DisplayName,
+                            statId.ToString(),
+                            old,
+                            stat.value
+                        )
                     );
                 }
             }
 
-            if (driftDockAndTrade)
+            // Population response based on runtime FoodBalance
+            if (state.TryGetStat(NodeStatId.FoodBalance, out var foodStat))
             {
-                float dockAccel = GetInfluenceAccelForBuilding(node, NodeValueTargetKind.DockRating);
-                float tradeAccel = GetInfluenceAccelForBuilding(node, NodeValueTargetKind.TradeRating);
+                float food = foodStat.value;
+                float oldPop = state.population;
 
-                DriftBuilding(ref node.dock, "Dock", node, dtHours, dockAccel);
-                DriftBuilding(ref node.tradeHub, "Trade", node, dtHours, tradeAccel);
+                if (food < -0.6f) state.population -= populationLossRate * dtHours;
+                else if (food > 0.4f) state.population += populationGrowthRate * dtHours;
+
+                state.population = Mathf.Clamp(state.population, state.minPopulation, state.maxPopulation);
+
+                if (!Mathf.Approximately(oldPop, state.population))
+                {
+                    WorldMapMessageBus.Publish(
+                        new WorldMapChange(WorldMapChangeKind.StatChanged, rt.NodeIndex, rt.DisplayName, "Population", oldPop, state.population)
+                    );
+                }
             }
-            TickAndCleanupBuffs(node, dtHours);
+
+            // Tick and cleanup buffs (runtime-owned)
+            TickAndCleanupBuffs(state, dtHours);
         }
     }
 
-    private void DriftBuilding(ref BuildingRating building, string label, MapNode node, float dtHours, float influenceAccel)
+    private float GetInfluenceAccelForStat(MapNodeState state, NodeStatId statId)
     {
-        float old = building.rating;
-
-        float toEq = (buildingEquilibrium - building.rating);
-        float eqAccel = toEq * buildingRestoreStrength;
-
-        // influenceAccel is also "per hour" acceleration
-        building.rating += (eqAccel + influenceAccel) * dtHours;
-        building.rating = Mathf.Clamp(building.rating, 0f, 4f);
-
-        if (!Mathf.Approximately(old, building.rating))
-        {
-            OnNodeBuildingChanged?.Invoke(node, label, old, building.rating);
-
-            WorldMapMessageBus.Publish(
-                new WorldMapChange(WorldMapChangeKind.BuildingChanged, node, label, old, building.rating)
-            );
-        }
-    }
-
-    private float GetInfluenceAccelForStat(MapNode node, NodeStatId statId)
-    {
-        if (node.activeBuffs == null || node.activeBuffs.Count == 0) return 0f;
+        var buffs = state.ActiveBuffsMutable;
+        if (buffs == null || buffs.Count == 0) return 0f;
 
         float accel = 0f;
-
-        for (int i = 0; i < node.activeBuffs.Count; i++)
+        for (int i = 0; i < buffs.Count; i++)
         {
-            var inst = node.activeBuffs[i];
+            var inst = buffs[i];
             if (inst.buff == null) continue;
 
             var target = inst.buff.target;
@@ -134,44 +154,18 @@ public class WorldMapDriftSimulator : MonoBehaviour
         return accel;
     }
 
-    private float GetInfluenceAccelForBuilding(MapNode node, NodeValueTargetKind buildingKind)
+    private void TickAndCleanupBuffs(MapNodeState state, float dtHours)
     {
-        if (node.activeBuffs == null || node.activeBuffs.Count == 0) return 0f;
+        var buffs = state.ActiveBuffsMutable;
+        if (buffs == null || buffs.Count == 0) return;
 
-        float accel = 0f;
-
-        for (int i = 0; i < node.activeBuffs.Count; i++)
+        for (int i = buffs.Count - 1; i >= 0; i--)
         {
-            var inst = node.activeBuffs[i];
-            if (inst.buff == null) continue;
-
-            var target = inst.buff.target;
-            if (target.kind != buildingKind) continue;
-
-            accel += inst.GetAccelThisTick();
-        }
-
-        return accel;
-    }
-
-    private void TickAndCleanupBuffs(MapNode node, float dtHours)
-    {
-        if (node.activeBuffs == null || node.activeBuffs.Count == 0) return;
-
-        for (int i = node.activeBuffs.Count - 1; i >= 0; i--)
-        {
-            var inst = node.activeBuffs[i];
+            var inst = buffs[i];
             inst.Tick(dtHours);
-            if (inst.IsExpired)
-            {
-                node.activeBuffs.RemoveAt(i);
-            }
-            else
-            {
-                // TimedBuffInstance is a struct, so write back
-                node.activeBuffs[i] = inst;
-            }
+
+            if (inst.IsExpired) buffs.RemoveAt(i);
+            else buffs[i] = inst; // struct writeback
         }
     }
-
 }

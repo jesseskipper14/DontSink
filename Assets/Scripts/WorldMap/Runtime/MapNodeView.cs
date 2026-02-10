@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
 public class MapNodeView : MonoBehaviour
@@ -8,8 +8,15 @@ public class MapNodeView : MonoBehaviour
     private WorldMapGraphGenerator _generator;
     private WorldMapNodeSelection _selection;
 
+    [Header("Primary Node Visuals")]
+    [SerializeField] private float primaryScaleMultiplier = 1.25f;
+    [SerializeField] private Color primaryTint = new Color(1f, 0.85f, 0.55f);
+
+
     private SpriteRenderer _sr;
     private Color _baseColor = Color.white;
+
+    public string StableId { get; private set; }
 
     public int NodeId => nodeId;
 
@@ -22,6 +29,19 @@ public class MapNodeView : MonoBehaviour
 
         _sr = GetComponent<SpriteRenderer>();
         if (_sr != null) _baseColor = _sr.color;
+
+        // 👇 NEW: primary node emphasis
+        if (_generator != null && _generator.graph != null)
+        {
+            var node = _generator.graph.nodes[nodeId];
+            if (node.isPrimary)
+            {
+                transform.localScale *= primaryScaleMultiplier;
+
+                if (_sr != null)
+                    _sr.color = primaryTint;
+            }
+        }
     }
 
     public void SetTint(Color c)

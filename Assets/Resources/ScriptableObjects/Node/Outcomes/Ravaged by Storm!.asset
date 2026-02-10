@@ -14,4 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outcomeId: 
   displayName: 
-  buffs: []
+  buffs:
+  - buff: {fileID: 11400000, guid: 597de3f7546487a41b56700146f57bd5, type: 2}
+    durationHours: 1
+    stacks: 1
+  - buff: {fileID: 11400000, guid: 2039773c56aec7e44b82c8f1b48638e4, type: 2}
+    durationHours: 168
+    stacks: 1
+  - buff: {fileID: 11400000, guid: 197e58fed1db0914987db0f76bc554d8, type: 2}
+    durationHours: 168
+    stacks: 1

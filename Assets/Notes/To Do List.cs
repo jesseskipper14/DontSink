@@ -52,6 +52,8 @@ public class ToDoList : MonoBehaviour
  * Rain only spawns if clouds are .8 or higher (or something)
  * Fix Compartments reference to rain
  * Visual flow between containers
+ * Decide between straight side water view and slightly angled perspective
+ * 
  */
 
 
@@ -72,6 +74,7 @@ public class ToDoList : MonoBehaviour
  * Optimize rain shader to use noise instead of for loop
  * Add background rain to add depth
  * Firehoses for flooding other boats!
+ * Menu configuration for which buffs/outcomes/events are possible - aka to turn off pirates or other disruptive content
  * 
  * */
 

@@ -8,16 +8,25 @@ public class MapNodeRuntime : MonoBehaviour
 
     [Header("Runtime State (read-only-ish)")]
     [SerializeField] private MapNodeState _state;
+    [SerializeField] private int _clusterId;
+    [SerializeField] private string _stableId;
+    [SerializeField] private int _nodeIndex = -1;
+    [SerializeField] private string _displayName;
 
     public MapNodeDefinition Definition => _definition;
     public MapNodeState State => _state;
+    public int ClusterId => _clusterId;
+    public string StableId => _stableId;
+    public int NodeIndex => _nodeIndex;
+    public string DisplayName => _displayName;
 
     // 2a: Basic messaging
     public event Action<MapNodeRuntime, NodeStatId, float, float> OnStatChanged;
 
-    public void Initialize(MapNodeDefinition def)
+    public void Initialize(MapNodeDefinition def, int clusterId)
     {
         _definition = def;
+        _clusterId = clusterId;
         _state = new MapNodeState(def.NodeId);
     }
 
@@ -41,6 +50,43 @@ public class MapNodeRuntime : MonoBehaviour
 
                 OnStatChanged?.Invoke(this, key, old, stat.value);
             }
+        }
+    }
+
+    public void InitializeFromGraph(int nodeIndex, string stableId, MapNode data)
+    {
+        _nodeIndex = nodeIndex;
+        _displayName = data.displayName;
+
+        _stableId = stableId;
+        _clusterId = data.clusterId;
+
+        _state = new MapNodeState(stableId);
+
+        _state.population = data.population;
+        _state.minPopulation = data.minPopulation;
+        _state.maxPopulation = data.maxPopulation;
+
+        for (int i = 0; i < data.stats.Count; i++)
+        {
+            var s = data.stats[i];
+            _state.ForceSetStat(s.id, s.stat.value);
+        }
+
+        _state.ForceSetStat(NodeStatId.DockRating, data.dock.rating);
+        _state.ForceSetStat(NodeStatId.TradeRating, data.tradeHub.rating);
+    }
+
+    public void ApplyOutcome(EventOutcome outcome)
+    {
+        if (outcome == null) return;
+
+        var list = _state.ActiveBuffsMutable;
+        for (int i = 0; i < outcome.buffs.Count; i++)
+        {
+            var e = outcome.buffs[i];
+            if (e.buff == null) continue;
+            list.Add(new TimedBuffInstance(e.buff, e.durationHours, e.stacks));
         }
     }
 }

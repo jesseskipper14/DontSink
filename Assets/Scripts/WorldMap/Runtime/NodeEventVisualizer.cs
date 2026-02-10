@@ -16,24 +16,21 @@ public class NodeEventVisualizer : MonoBehaviour
 
     private float _t;
     private WorldMapEventManager _eventManager;
-    private WorldMapGraphGenerator _generator;
     private MapNodeView _nodeView;
 
     private readonly List<GameObject> _icons = new();
     private Sprite _dotSprite;
 
-    public void Initialize(WorldMapEventManager eventManager, WorldMapGraphGenerator generator, MapNodeView nodeView)
+    public void Initialize(WorldMapEventManager eventManager, MapNodeView nodeView)
     {
         _eventManager = eventManager;
-        _generator = generator;
         _nodeView = nodeView;
-
         _dotSprite = MakeDotSprite();
     }
 
     private void Update()
     {
-        if (_eventManager == null || _generator?.graph == null || _nodeView == null) return;
+        if (_eventManager == null || _nodeView == null) return;
 
         _t += Time.deltaTime;
         if (_t >= refreshIntervalSeconds)
@@ -46,7 +43,7 @@ public class NodeEventVisualizer : MonoBehaviour
     public void Refresh()
     {
         int id = _nodeView.NodeId;
-        if (id < 0 || _generator.graph == null || id >= _generator.graph.nodes.Count) return;
+        if (id < 0) return;
 
         int count = _eventManager.CountEventsAtNode(id);
         int show = Mathf.Min(count, maxShown);

@@ -75,8 +75,17 @@ public class WorldMapNodeSpawner : MonoBehaviour
             view.Initialize(generator, selection, i);
 
             var viz = go.AddComponent<NodeBuffVisualizer>();
-            viz.Initialize(generator, view);
+            var binder = FindAnyObjectByType<WorldMapRuntimeBinder>();
+            viz.Initialize(binder, view);
             viz.Refresh(); // immediate
+
+            var eventManager = FindAnyObjectByType<WorldMapEventManager>();
+            if (eventManager != null)
+            {
+                var evViz = go.AddComponent<NodeEventVisualizer>();
+                evViz.Initialize(eventManager, view);
+                evViz.Refresh();
+            }
 
             _spawned.Add(go);
         }

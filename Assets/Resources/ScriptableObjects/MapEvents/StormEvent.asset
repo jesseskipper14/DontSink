@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f2332f3c77852c419766426e7c5a662, type: 3}
   m_Name: StormEvent
   m_EditorClassIdentifier: 
-  eventId: 
-  displayName: 
+  eventId: storm_ongoing
+  displayName: Ongoing Storm
   isVisibleToPlayer: 1
-  durationHours: 24
-  outcomeWeathersStorm: {fileID: 0}
-  outcomeDamaged: {fileID: 0}
-  outcomeCatastrophic: {fileID: 0}
+  durationHours: 12
+  outcomeWeathersStorm: {fileID: 11400000, guid: 5993ca2a0ac85e74385ce3a39934b427, type: 2}
+  outcomeDamaged: {fileID: 11400000, guid: 33d3998b9e4af7d4e99a8a1df10caa70, type: 2}
+  outcomeCatastrophic: {fileID: 11400000, guid: 0cd55c17d9981564bbc01adde238a88c, type: 2}
   weightWeathersStorm: 0.6
   weightDamaged: 0.3
   weightCatastrophic: 0.1

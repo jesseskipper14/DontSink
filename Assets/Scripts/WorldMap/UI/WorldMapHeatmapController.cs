@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class WorldMapHeatmapController : MonoBehaviour
@@ -10,7 +10,9 @@ public class WorldMapHeatmapController : MonoBehaviour
         Stability,
         Security,
         DockRating,
-        TradeRating
+        TradeRating,
+        Population,
+        FoodBalance
     }
 
     [Header("Auto Refresh")]
@@ -20,8 +22,8 @@ public class WorldMapHeatmapController : MonoBehaviour
     private float _refreshTimer;
 
     [Header("Refs")]
-    [SerializeField] private WorldMapGraphGenerator generator;
     [SerializeField] private WorldMapNodeSpawner spawner;
+    [SerializeField] private WorldMapRuntimeBinder runtimeBinder;
 
     [Header("UI (optional)")]
     [SerializeField] private Text modeLabel;
@@ -35,17 +37,31 @@ public class WorldMapHeatmapController : MonoBehaviour
     [Range(0f, 4f)] public float minValue = 0f;
     [Range(0f, 4f)] public float maxValue = 4f;
 
+    [Header("Population Heatmap")]
+    public float populationMin = 0f;
+    public float populationMax = 5000f;
+    public Color populationLow = new Color(0.15f, 0.15f, 0.35f, 1f);   // dark blue
+    public Color populationHigh = new Color(0.55f, 0.75f, 1f, 1f);     // bright blue
+
+    [Header("FoodBalance Heatmap")]
+    public float foodMin = -4f;
+    public float foodMax = 4f;
+    public Color foodNegative = new Color(1f, 0.25f, 0.25f, 1f);       // red-ish
+    public Color foodNeutral = new Color(0.75f, 0.75f, 0.75f, 1f);     // gray
+    public Color foodPositive = new Color(0.25f, 1f, 0.35f, 1f);       // green-ish
+
     [SerializeField] private HeatmapMode mode = HeatmapMode.None;
 
     private void Reset()
     {
-        generator = FindAnyObjectByType<WorldMapGraphGenerator>();
         spawner = FindAnyObjectByType<WorldMapNodeSpawner>();
+        runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
     }
 
     private void Start()
     {
-        Apply();
+        if (mode != HeatmapMode.None)
+            Apply();
     }
 
     // Hook these to buttons, or call from code.
@@ -55,6 +71,9 @@ public class WorldMapHeatmapController : MonoBehaviour
     public void SetModeSecurity() => SetMode(HeatmapMode.Security);
     public void SetModeDock() => SetMode(HeatmapMode.DockRating);
     public void SetModeTrade() => SetMode(HeatmapMode.TradeRating);
+    public void SetModePopulation() => SetMode(HeatmapMode.Population);
+    public void SetModeFoodBalance() => SetMode(HeatmapMode.FoodBalance);
+
 
     private void Update()
     {
@@ -81,9 +100,9 @@ public class WorldMapHeatmapController : MonoBehaviour
         if (modeLabel != null)
             modeLabel.text = $"Heatmap: {mode}";
 
-        if (generator == null || generator.graph == null) return;
+        if (runtimeBinder == null || !runtimeBinder.IsBuilt) return;
 
-        // Best: use spawner�s node view container to find views.
+        // Best: use spawner’s node view container to find views.
         // Works even if you later respawn.
         MapNodeView[] views;
         if (spawner != null && spawner.gameObject.activeInHierarchy)
@@ -95,11 +114,16 @@ public class WorldMapHeatmapController : MonoBehaviour
         {
             var v = views[i];
             int id = v.NodeId;
-            if (id < 0 || id >= generator.graph.nodes.Count) continue;
+            if (id < 0) continue;
 
-            var node = generator.graph.nodes[id];
+            if (runtimeBinder == null || !runtimeBinder.IsBuilt || !runtimeBinder.Registry.TryGetByIndex(id, out var rt))
+            {
+                v.SetTint(unknownColor);
+                continue;
+            }
+
             float value;
-            bool hasValue = TryGetValue(node, out value);
+            bool hasValue = TryGetValue(rt, out value);
 
             if (!hasValue)
             {
@@ -107,14 +131,15 @@ public class WorldMapHeatmapController : MonoBehaviour
                 continue;
             }
 
-            float t = Mathf.InverseLerp(minValue, maxValue, value);
-            v.SetTint(Color.Lerp(lowColor, highColor, t));
+            v.SetTint(EvaluateColor(mode, value));
         }
     }
 
-    private bool TryGetValue(MapNode node, out float value)
+    private bool TryGetValue(MapNodeRuntime rt, out float value)
     {
         value = 0f;
+        var s = rt.State;
+        if (s == null) return false;
 
         switch (mode)
         {
@@ -122,39 +147,85 @@ public class WorldMapHeatmapController : MonoBehaviour
                 return false;
 
             case HeatmapMode.DockRating:
-                value = node.dock.rating;
+                value = s.GetStat(NodeStatId.DockRating).value;
                 return true;
 
             case HeatmapMode.TradeRating:
-                value = node.tradeHub.rating;
+                value = s.GetStat(NodeStatId.TradeRating).value;
                 return true;
 
             case HeatmapMode.Prosperity:
-                return TryGetStat(node, NodeStatId.Prosperity, out value);
+                value = s.GetStat(NodeStatId.Prosperity).value;
+                return true;
 
             case HeatmapMode.Stability:
-                return TryGetStat(node, NodeStatId.Stability, out value);
+                value = s.GetStat(NodeStatId.Stability).value;
+                return true;
 
             case HeatmapMode.Security:
-                return TryGetStat(node, NodeStatId.Security, out value);
+                value = s.GetStat(NodeStatId.Security).value;
+                return true;
+
+            case HeatmapMode.Population:
+                value = s.population;
+                return true;
+
+            case HeatmapMode.FoodBalance:
+                value = s.GetStat(NodeStatId.FoodBalance).value;
+                return true;
 
             default:
                 return false;
         }
     }
 
-    private static bool TryGetStat(MapNode node, NodeStatId id, out float value)
-    {
-        for (int i = 0; i < node.stats.Count; i++)
-        {
-            if (node.stats[i].id == id)
-            {
-                value = node.stats[i].stat.value;
-                return true;
-            }
-        }
 
-        value = 0f;
-        return false;
+    private Color EvaluateColor(HeatmapMode m, float value)
+    {
+        switch (m)
+        {
+            case HeatmapMode.Population:
+                return EvaluatePopulation(value);
+
+            case HeatmapMode.FoodBalance:
+                return EvaluateFoodBalance(value);
+
+            // Everything else stays on the old 0..4 scale.
+            case HeatmapMode.DockRating:
+            case HeatmapMode.TradeRating:
+            case HeatmapMode.Prosperity:
+            case HeatmapMode.Stability:
+            case HeatmapMode.Security:
+                {
+                    float t = Mathf.InverseLerp(minValue, maxValue, value);
+                    return Color.Lerp(lowColor, highColor, t);
+                }
+
+            default:
+                return unknownColor;
+        }
     }
+
+    private Color EvaluatePopulation(float pop)
+    {
+        float t = Mathf.InverseLerp(populationMin, populationMax, pop);
+        // Quantity ramp: dark→bright (single-hue)
+        return Color.Lerp(populationLow, populationHigh, t);
+    }
+
+    private Color EvaluateFoodBalance(float food)
+    {
+        // Centered at 0 (neutral). Negative ramps red→neutral, positive ramps neutral→green.
+        if (food < 0f)
+        {
+            float t = Mathf.InverseLerp(foodMin, 0f, food); // foodMin..0
+            return Color.Lerp(foodNegative, foodNeutral, t);
+        }
+        else
+        {
+            float t = Mathf.InverseLerp(0f, foodMax, food); // 0..foodMax
+            return Color.Lerp(foodNeutral, foodPositive, t);
+        }
+    }
+
 }

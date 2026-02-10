@@ -119,6 +119,254 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &258347901
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 258347902}
+  - component: {fileID: 258347905}
+  - component: {fileID: 258347904}
+  - component: {fileID: 258347903}
+  m_Layer: 5
+  m_Name: Food Balance
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &258347902
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258347901}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1053414501}
+  m_Father: {fileID: 786050530}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -60}
+  m_SizeDelta: {x: 160, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &258347903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258347901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 258347904}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1543242048}
+        m_TargetAssemblyTypeName: WorldMapHeatmapController, Assembly-CSharp
+        m_MethodName: SetModeFoodBalance
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &258347904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258347901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &258347905
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258347901}
+  m_CullTransparentMesh: 1
+--- !u!1 &297186288
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 297186290}
+  - component: {fileID: 297186289}
+  - component: {fileID: 297186291}
+  m_Layer: 0
+  m_Name: MiniGameHost
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &297186289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 297186288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dfe86bef2882104aaa849183442550e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  exitKey: 27
+  isOpen: 0
+  activeTargetId: 
+--- !u!4 &297186290
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 297186288}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -14.397172, y: -3.7433076, z: -0.39122838}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &297186291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 297186288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03a3346ec2e891d4a923d75942cc9216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  host: {fileID: 0}
+  dimAlpha: 0.55
+  panelHalfSize: 0.38
+  dotSize: 10
+--- !u!1 &299019575
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 299019577}
+  - component: {fileID: 299019576}
+  m_Layer: 0
+  m_Name: WorldMapEventManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &299019576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 299019575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d01ae4a9ecd25f74e80c33e20f4ae93c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  generator: {fileID: 795679325}
+  timeOfDay: {fileID: 1796781386}
+  runtimeBinder: {fileID: 1068224605}
+  tickSeconds: 0.25
+  simSpeed: 1
+  logResolutions: 1
+  debugStormDef: {fileID: 11400000, guid: 11628f1374ba4bf4699908ec34438153, type: 2}
+--- !u!4 &299019577
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 299019575}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -27.193224, y: -0.7033655, z: -0.18915845}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &307329313
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,7 +482,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 50}
+  m_AnchoredPosition: {x: 0, y: 90}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &360594901
@@ -281,7 +529,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068224603}
+      - m_Target: {fileID: 1543242048}
         m_TargetAssemblyTypeName: WorldMapHeatmapController, Assembly-CSharp
         m_MethodName: SetModeStability
         m_Mode: 1
@@ -342,6 +590,8 @@ GameObject:
   - component: {fileID: 464559646}
   - component: {fileID: 464559645}
   - component: {fileID: 464559648}
+  - component: {fileID: 464559649}
+  - component: {fileID: 464559650}
   m_Layer: 0
   m_Name: Input
   m_TagString: Untagged
@@ -362,7 +612,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 639652871}
-  selection: {fileID: 1068224601}
+  selection: {fileID: 795679328}
   clickableLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -394,11 +644,58 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 639652871}
-  generator: {fileID: 795679325}
   tooltip: {fileID: 1543242045}
+  runtimeBinder: {fileID: 1068224605}
+  routeOverlay: {fileID: 1543242049}
+  generator: {fileID: 795679325}
+  player: {fileID: 1131750783}
+  travelDebug: {fileID: 464559649}
+  travelRules: {fileID: 11400000, guid: f2203f4f2d874584d86af2d9da433bd4, type: 2}
+  freezeKey: 304
   hoverLayers:
     serializedVersion: 2
     m_Bits: 512
+  eventManager: {fileID: 299019576}
+--- !u!114 &464559649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464559644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee47bb84ed809364f99cbb034e9fc495, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  runtimeBinder: {fileID: 1068224605}
+  player: {fileID: 1131750783}
+  travelRules: {fileID: 11400000, guid: f2203f4f2d874584d86af2d9da433bd4, type: 2}
+  maxRouteLengthOverride: 999
+  useOverrideMaxRouteLength: 0
+  allowIntraClusterFreeTravel: 1
+  overrideMode: 1
+  toNodeId: 2:7
+  routeLength: 1
+  seed: 12345
+--- !u!114 &464559650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464559644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fcd105aeb882084fa96591a20e69cc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1131750783}
+  runtimeBinder: {fileID: 1068224605}
+  targetNodeIndex: 0
+  rumorAmount: 1
+  progressDelta01: 0.1
+  forceState: 1
 --- !u!1 &481264461
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,7 +732,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -70}
+  m_AnchoredPosition: {x: 0, y: -90}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &481264463
@@ -482,7 +779,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068224603}
+      - m_Target: {fileID: 1543242048}
         m_TargetAssemblyTypeName: WorldMapHeatmapController, Assembly-CSharp
         m_MethodName: SetModeNone
         m_Mode: 1
@@ -675,7 +972,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 15
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -700,7 +997,7 @@ Transform:
   m_GameObject: {fileID: 639652869}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: -20, y: -3, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -784,6 +1081,71 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_MaxRayIntersections: 0
+--- !u!1 &643752051
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 643752053}
+  - component: {fileID: 643752052}
+  - component: {fileID: 643752054}
+  m_Layer: 0
+  m_Name: Runners
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &643752052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 643752051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f64f8ccc5f4ddd54b852edd6ca54ee24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  overlay: {fileID: 297186289}
+  player: {fileID: 1131750783}
+  runtimeBinder: {fileID: 1068224605}
+  targetNodeIndex: 3
+  difficulty: 1
+--- !u!4 &643752053
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 643752051}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -14.397172, y: -3.7433076, z: -0.39122838}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &643752054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 643752051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c53019b67bbc0a48b8bbc58a97bfca7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  overlay: {fileID: 297186289}
+  player: {fileID: 1131750783}
+  timeOfDay: {fileID: 1796781386}
 --- !u!1 &786050529
 GameObject:
   m_ObjectHideFlags: 0
@@ -819,6 +1181,8 @@ RectTransform:
   - {fileID: 1602658340}
   - {fileID: 1912874446}
   - {fileID: 2064466129}
+  - {fileID: 830735749}
+  - {fileID: 258347902}
   - {fileID: 481264462}
   - {fileID: 1910126463}
   m_Father: {fileID: 1253171147}
@@ -826,7 +1190,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 10, y: -10}
-  m_SizeDelta: {x: 200, y: 220}
+  m_SizeDelta: {x: 200, y: 280}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &786050531
 MonoBehaviour:
@@ -876,8 +1240,10 @@ GameObject:
   m_Component:
   - component: {fileID: 795679326}
   - component: {fileID: 795679325}
+  - component: {fileID: 795679327}
+  - component: {fileID: 795679328}
   m_Layer: 0
-  m_Name: WorldRoot
+  m_Name: WorldGenerationRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -895,7 +1261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca0fd915d5c84a247907a1d1ecaabfb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 9991
+  seed: 2
   clusterCount: 5
   nodesPerClusterMin: 3
   nodesPerClusterMax: 5
@@ -912,12 +1278,12 @@ MonoBehaviour:
   drawNodeLabels: 1
   nodeGizmoRadius: 0.25
   graph:
-    seed: 9991
+    seed: 2
     nodes:
     - isPrimary: 0
       id: 0
       clusterId: 0
-      position: {x: 22.581226, y: 2.441103}
+      position: {x: 16.350954, y: 4.856427}
       kind: 0
       displayName: Island #0
       biome: 0
@@ -926,36 +1292,52 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 1.0135484
+        rating: 1.06253
       tradeHub:
-        rating: 1.0691544
+        rating: 1.0307097
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 0.8453728
+          value: 1.2134181
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 0.84542924
+          value: 0.79962075
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 0.96439034
+          value: 1.0959146
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: 0.21274003
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 197.02113
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
     - isPrimary: 1
       id: 1
       clusterId: 0
-      position: {x: 18.09842, y: 0.52747965}
+      position: {x: 18.426586, y: 2.9766836}
       kind: 0
       displayName: Island #1
       biome: 0
@@ -964,36 +1346,52 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 0.95726514
+        rating: 1.0374186
       tradeHub:
-        rating: 1.0506176
+        rating: 1.0488005
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 0.7841561
+          value: 1.0928228
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 0.8678473
+          value: 0.79653066
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 0.9104821
+          value: 0.7702606
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: -0.11418991
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 89.48767
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
     - isPrimary: 0
       id: 2
       clusterId: 0
-      position: {x: 21.723898, y: -0.56486785}
+      position: {x: 12.862182, y: 1.8991365}
       kind: 0
       displayName: Island #2
       biome: 0
@@ -1002,36 +1400,52 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 1.0789965
+        rating: 0.99770814
       tradeHub:
-        rating: 1.0043501
+        rating: 0.9684425
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 0.88418436
+          value: 0.99282676
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 0.9942562
+          value: 1.071216
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 1.2375821
+          value: 1.0600638
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: -0.21332733
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 184.31328
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
-    - isPrimary: 0
+    - isPrimary: 1
       id: 3
       clusterId: 1
-      position: {x: -0.33326995, y: 16.50903}
+      position: {x: -5.1319237, y: 24.250124}
       kind: 0
       displayName: Island #3
       biome: 0
@@ -1040,36 +1454,52 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 1.0847092
+        rating: 0.9592709
       tradeHub:
-        rating: 1.0378953
+        rating: 1.0306264
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 0.88528013
+          value: 1.1876521
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 1.1708865
+          value: 0.9231526
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 0.754865
+          value: 1.016577
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: -0.2071367
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 167.78398
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
     - isPrimary: 0
       id: 4
       clusterId: 1
-      position: {x: 1.2492813, y: 21.298658}
+      position: {x: 0.36723468, y: 21.784369}
       kind: 0
       displayName: Island #4
       biome: 0
@@ -1078,36 +1508,52 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 1.0160376
+        rating: 1.0184631
       tradeHub:
-        rating: 1.0204645
+        rating: 1.0918173
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 1.1619899
+          value: 1.02485
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 1.157862
+          value: 1.0691303
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 1.083808
+          value: 0.77424026
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: 0.15551439
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 61.32111
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
-    - isPrimary: 1
+    - isPrimary: 0
       id: 5
       clusterId: 1
-      position: {x: -1.1933694, y: 18.505495}
+      position: {x: -1.8309684, y: 20.269623}
       kind: 0
       displayName: Island #5
       biome: 0
@@ -1116,36 +1562,52 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 0.98682904
+        rating: 0.9330016
       tradeHub:
-        rating: 0.9175319
+        rating: 1.0169247
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 0.8796989
+          value: 1.0567939
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 0.9116252
+          value: 0.77469856
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 1.1862607
+          value: 0.90267617
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: 0.20339775
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 80.89969
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
     - isPrimary: 0
       id: 6
-      clusterId: 2
-      position: {x: -29.982647, y: -2.8918679}
+      clusterId: 1
+      position: {x: -8.153325, y: 25.448399}
       kind: 0
       displayName: Island #6
       biome: 0
@@ -1154,37 +1616,53 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 1.0741215
+        rating: 1.0309817
       tradeHub:
-        rating: 1.0972143
+        rating: 0.97785825
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 0.9826787
+          value: 0.96996474
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 0.88532764
+          value: 0.83260846
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 1.2374885
+          value: 1.2126575
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: 0.11504856
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 112.10793
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
-    - isPrimary: 0
+    - isPrimary: 1
       id: 7
       clusterId: 2
-      position: {x: -31.67052, y: 0.40897673}
-      kind: 1
+      position: {x: -25.975307, y: -2.6513371}
+      kind: 0
       displayName: Island #7
       biome: 0
       primaryResource: 0
@@ -1192,36 +1670,52 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 1.082263
+        rating: 1.0786675
       tradeHub:
-        rating: 0.91171646
+        rating: 1.0366691
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 0.77211964
+          value: 0.7852138
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 1.1943234
+          value: 0.96754235
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 0.775957
+          value: 1.1734707
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: 0.14217198
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 103.534195
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
     - isPrimary: 0
       id: 8
       clusterId: 2
-      position: {x: -28.252497, y: 4.726932}
+      position: {x: -24.804907, y: 2.0364585}
       kind: 0
       displayName: Island #8
       biome: 0
@@ -1230,37 +1724,53 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 1.0412052
+        rating: 0.99762475
       tradeHub:
-        rating: 1.0201505
+        rating: 0.9581361
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 0.7507338
+          value: 1.1163586
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 1.2107913
+          value: 0.99187845
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 1.02835
+          value: 1.1401871
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: 0.18921551
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 158.19888
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
-    - isPrimary: 1
+    - isPrimary: 0
       id: 9
       clusterId: 2
-      position: {x: -24.879116, y: 4.322334}
-      kind: 0
+      position: {x: -27.46889, y: -2.5427458}
+      kind: 1
       displayName: Island #9
       biome: 0
       primaryResource: 0
@@ -1268,36 +1778,52 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 1.0200591
+        rating: 0.9608355
       tradeHub:
-        rating: 1.0633911
+        rating: 0.93208176
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 1.1000936
+          value: 0.84916556
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 0.85789764
+          value: 1.1916318
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 0.84208727
+          value: 1.1928569
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: -0.07731153
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 112.41197
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
     - isPrimary: 0
       id: 10
       clusterId: 3
-      position: {x: 2.4966526, y: -27.279684}
+      position: {x: 8.277999, y: -33.43344}
       kind: 0
       displayName: Island #10
       biome: 0
@@ -1306,36 +1832,52 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 0.9663335
+        rating: 1.0440501
       tradeHub:
-        rating: 1.0698006
+        rating: 0.9732103
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 0.90956783
+          value: 0.86746234
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 1.0867207
+          value: 0.98585534
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 1.1036892
+          value: 0.92952824
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: 0.079484135
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 132.7687
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
     - isPrimary: 0
       id: 11
       clusterId: 3
-      position: {x: 9.753323, y: -30.00209}
+      position: {x: 5.5985584, y: -29.922056}
       kind: 0
       displayName: Island #11
       biome: 0
@@ -1344,36 +1886,52 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 0.9398025
+        rating: 1.0903611
       tradeHub:
-        rating: 0.9414968
+        rating: 1.0749073
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 0.75883794
+          value: 0.8462988
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 1.2493876
+          value: 0.87317014
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 1.1180362
+          value: 1.0668393
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: -0.10104382
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 186.10936
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
-    - isPrimary: 1
+    - isPrimary: 0
       id: 12
       clusterId: 3
-      position: {x: 3.6643987, y: -31.784786}
+      position: {x: 7.6407337, y: -29.551188}
       kind: 0
       displayName: Island #12
       biome: 0
@@ -1382,36 +1940,52 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 1.089805
+        rating: 0.97583365
       tradeHub:
-        rating: 0.9858743
+        rating: 1.0820037
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 0.89509296
+          value: 0.86837685
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 1.0233375
+          value: 1.231839
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 0.94783604
+          value: 1.1993151
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: -0.24424113
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 174.20569
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
-    - isPrimary: 0
+    - isPrimary: 1
       id: 13
       clusterId: 3
-      position: {x: 8.384016, y: -29.185514}
+      position: {x: 10.144607, y: -28.89761}
       kind: 0
       displayName: Island #13
       biome: 0
@@ -1420,36 +1994,52 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 1.0391039
+        rating: 1.0031627
       tradeHub:
-        rating: 1.0748816
+        rating: 0.9024934
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 0.9797203
+          value: 0.8088528
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 1.0177794
+          value: 1.0227249
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 0.79821104
+          value: 0.95336014
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: -0.068865314
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 179.98933
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
     - isPrimary: 0
       id: 14
       clusterId: 4
-      position: {x: 31.546356, y: -1.3514463}
+      position: {x: 32.712563, y: 4.5384836}
       kind: 0
       displayName: Island #14
       biome: 0
@@ -1458,37 +2048,53 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 1.0854623
+        rating: 0.94930506
       tradeHub:
-        rating: 0.95881784
+        rating: 0.90174544
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 1.1918832
+          value: 1.0965581
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 1.1600204
+          value: 0.79951835
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 1.091712
+          value: 1.1412005
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: -0.10225436
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 170.56856
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
     - isPrimary: 0
       id: 15
       clusterId: 4
-      position: {x: 29.773026, y: 4.9683523}
-      kind: 0
+      position: {x: 32.99387, y: 4.5583863}
+      kind: 2
       displayName: Island #15
       biome: 0
       primaryResource: 0
@@ -1496,37 +2102,53 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 1.0636361
+        rating: 1.0973766
       tradeHub:
-        rating: 1.0928229
+        rating: 0.9649812
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 1.0804102
+          value: 0.86747855
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 0.78232265
+          value: 0.94768935
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 1.0394474
+          value: 1.1301692
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: 0.020136803
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 155.48505
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
-    - isPrimary: 1
+    - isPrimary: 0
       id: 16
       clusterId: 4
-      position: {x: 31.651552, y: 2.8474817}
-      kind: 2
+      position: {x: 27.26198, y: -0.19242728}
+      kind: 0
       displayName: Island #16
       biome: 0
       primaryResource: 0
@@ -1534,32 +2156,156 @@ MonoBehaviour:
       primaryFaction: 0
       secondaryFaction: 0
       dock:
-        rating: 1.0569985
+        rating: 0.9717445
       tradeHub:
-        rating: 0.99066615
+        rating: 0.93602616
       optionalBuildings: []
       stats:
       - id: 0
         stat:
-          value: 0.858724
+          value: 0.8143173
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
       - id: 1
         stat:
-          value: 0.8897811
+          value: 0.7941145
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
       - id: 2
         stat:
-          value: 1.1223338
+          value: 1.195596
           velocity: 0
           equilibrium: 1
           restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: 0.02256322
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 148.4851
+      minPopulation: 10
+      maxPopulation: 500
       flags: []
       notes: 
-      activeBuffs: []
+    - isPrimary: 0
+      id: 17
+      clusterId: 4
+      position: {x: 29.60606, y: 4.341246}
+      kind: 0
+      displayName: Island #17
+      biome: 0
+      primaryResource: 0
+      secondaryResource: 0
+      primaryFaction: 0
+      secondaryFaction: 0
+      dock:
+        rating: 1.0275187
+      tradeHub:
+        rating: 1.0980456
+      optionalBuildings: []
+      stats:
+      - id: 0
+        stat:
+          value: 1.2274753
+          velocity: 0
+          equilibrium: 1
+          restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
+      - id: 1
+        stat:
+          value: 0.8527569
+          velocity: 0
+          equilibrium: 1
+          restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
+      - id: 2
+        stat:
+          value: 1.2062404
+          velocity: 0
+          equilibrium: 1
+          restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: -0.22718167
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 166.40596
+      minPopulation: 10
+      maxPopulation: 500
+      flags: []
+      notes: 
+    - isPrimary: 1
+      id: 18
+      clusterId: 4
+      position: {x: 32.691525, y: 4.192544}
+      kind: 0
+      displayName: Island #18
+      biome: 0
+      primaryResource: 0
+      secondaryResource: 0
+      primaryFaction: 0
+      secondaryFaction: 0
+      dock:
+        rating: 1.06913
+      tradeHub:
+        rating: 0.9261645
+      optionalBuildings: []
+      stats:
+      - id: 0
+        stat:
+          value: 0.8602719
+          velocity: 0
+          equilibrium: 1
+          restoreStrength: 0.08
+          minValue: 0
+          maxValue: 4
+      - id: 1
+        stat:
+          value: 0.8358816
+          velocity: 0
+          equilibrium: 1
+          restoreStrength: 0.1
+          minValue: 0
+          maxValue: 4
+      - id: 2
+        stat:
+          value: 1.2334454
+          velocity: 0
+          equilibrium: 1
+          restoreStrength: 0.06
+          minValue: 0
+          maxValue: 4
+      - id: 5
+        stat:
+          value: -0.1968713
+          velocity: 0
+          equilibrium: 0
+          restoreStrength: 0.06
+          minValue: -4
+          maxValue: 4
+      population: 75.23251
+      minPopulation: 10
+      maxPopulation: 500
+      flags: []
+      notes: 
     edges:
     - a: 1
       b: 0
@@ -1567,8 +2313,8 @@ MonoBehaviour:
     - a: 2
       b: 0
       kind: 0
-    - a: 1
-      b: 2
+    - a: 2
+      b: 1
       kind: 0
     - a: 4
       b: 3
@@ -1576,23 +2322,23 @@ MonoBehaviour:
     - a: 5
       b: 3
       kind: 0
-    - a: 4
+    - a: 6
       b: 5
       kind: 0
-    - a: 7
-      b: 6
-      kind: 0
-    - a: 8
-      b: 6
-      kind: 0
-    - a: 9
-      b: 8
-      kind: 0
     - a: 6
-      b: 9
+      b: 4
+      kind: 0
+    - a: 5
+      b: 4
       kind: 0
     - a: 8
       b: 7
+      kind: 0
+    - a: 9
+      b: 7
+      kind: 0
+    - a: 8
+      b: 9
       kind: 0
     - a: 11
       b: 10
@@ -1603,50 +2349,59 @@ MonoBehaviour:
     - a: 13
       b: 11
       kind: 0
-    - a: 10
+    - a: 13
       b: 12
       kind: 0
-    - a: 13
+    - a: 10
       b: 12
       kind: 0
     - a: 15
       b: 14
       kind: 0
     - a: 16
-      b: 14
-      kind: 0
-    - a: 16
       b: 15
       kind: 0
-    - a: 5
+    - a: 17
+      b: 14
+      kind: 0
+    - a: 18
+      b: 14
+      kind: 0
+    - a: 17
+      b: 18
+      kind: 0
+    - a: 15
+      b: 17
+      kind: 0
+    - a: 3
       b: 1
       kind: 0
-    - a: 9
-      b: 5
+    - a: 7
+      b: 3
       kind: 0
-    - a: 12
+    - a: 13
       b: 1
       kind: 0
-    - a: 16
+    - a: 18
       b: 1
       kind: 0
-    - a: 9
+    - a: 3
+      b: 13
+      kind: 0
+    - a: 18
+      b: 3
+      kind: 0
+    - a: 13
+      b: 18
+      kind: 0
+    - a: 18
+      b: 7
+      kind: 0
+    - a: 7
       b: 1
       kind: 0
-    - a: 5
-      b: 12
-      kind: 0
-    - a: 9
-      b: 16
-      kind: 0
-    - a: 9
-      b: 12
-      kind: 0
-    - a: 16
-      b: 12
-      kind: 0
-    - a: 16
-      b: 5
+    - a: 13
+      b: 7
       kind: 0
 --- !u!4 &795679326
 Transform:
@@ -1663,6 +2418,172 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &795679327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 795679324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1215e7f0c490be4d95164b25be769e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  generator: {fileID: 795679325}
+  selection: {fileID: 795679328}
+  container: {fileID: 795679326}
+  nodeRadiusWorld: 0.25
+  spawnOnStart: 1
+--- !u!114 &795679328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 795679324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5af27027a6253ad4abf461559b89ad16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  generator: {fileID: 795679325}
+  runtimeBinder: {fileID: 1068224605}
+  selectedNodeId: -1
+  debugOutcome: {fileID: 0}
+--- !u!1 &830735748
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 830735749}
+  - component: {fileID: 830735752}
+  - component: {fileID: 830735751}
+  - component: {fileID: 830735750}
+  m_Layer: 5
+  m_Name: Population
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &830735749
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 830735748}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1546770264}
+  m_Father: {fileID: 786050530}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -30}
+  m_SizeDelta: {x: 160, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &830735750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 830735748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 830735751}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1543242048}
+        m_TargetAssemblyTypeName: WorldMapHeatmapController, Assembly-CSharp
+        m_MethodName: SetModePopulation
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &830735751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 830735748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &830735752
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 830735748}
+  m_CullTransparentMesh: 1
 --- !u!1 &945346302
 GameObject:
   m_ObjectHideFlags: 0
@@ -1742,6 +2663,85 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 945346302}
   m_CullTransparentMesh: 1
+--- !u!1 &1053414500
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1053414501}
+  - component: {fileID: 1053414503}
+  - component: {fileID: 1053414502}
+  m_Layer: 5
+  m_Name: Food Balance
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1053414501
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053414500}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 258347902}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1053414502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053414500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: Food Balance
+--- !u!222 &1053414503
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053414500}
+  m_CullTransparentMesh: 1
 --- !u!1 &1068224599
 GameObject:
   m_ObjectHideFlags: 0
@@ -1751,9 +2751,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1068224602}
-  - component: {fileID: 1068224601}
-  - component: {fileID: 1068224600}
-  - component: {fileID: 1068224603}
+  - component: {fileID: 1068224605}
   m_Layer: 0
   m_Name: WorldMapRuntime
   m_TagString: Untagged
@@ -1761,38 +2759,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1068224600
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1068224599}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1215e7f0c490be4d95164b25be769e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  generator: {fileID: 795679325}
-  selection: {fileID: 1068224601}
-  container: {fileID: 1068224602}
-  nodeRadiusWorld: 0.25
-  spawnOnStart: 1
---- !u!114 &1068224601
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1068224599}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5af27027a6253ad4abf461559b89ad16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  generator: {fileID: 795679325}
-  selectedNodeId: -1
-  debugOutcome: {fileID: 11400000, guid: dd0a7d0d8cbefa1459b68c51b36a15cc, type: 2}
 --- !u!4 &1068224602
 Transform:
   m_ObjectHideFlags: 0
@@ -1808,7 +2774,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1068224603
+--- !u!114 &1068224605
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1817,20 +2783,135 @@ MonoBehaviour:
   m_GameObject: {fileID: 1068224599}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de8a71d4d065c0f49814b2de3cd4ddc1, type: 3}
+  m_Script: {fileID: 11500000, guid: 05f68957807a79b479c0720315705c49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoRefresh: 1
-  refreshIntervalSeconds: 1
   generator: {fileID: 795679325}
-  spawner: {fileID: 1068224600}
-  modeLabel: {fileID: 1910126464}
-  lowColor: {r: 1, g: 0.25, b: 0.25, a: 1}
-  highColor: {r: 0.25, g: 1, b: 0.35, a: 1}
-  unknownColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
-  minValue: 0
-  maxValue: 4
-  mode: 0
+  container: {fileID: 1068224602}
+  runtimePrefab: {fileID: 0}
+--- !u!1 &1131750782
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1131750784}
+  - component: {fileID: 1131750783}
+  - component: {fileID: 1131750785}
+  - component: {fileID: 1131750786}
+  m_Layer: 0
+  m_Name: PlayerParty
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1131750783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131750782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d701992747e7a0645ae68cdcb39493e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  generator: {fileID: 795679325}
+  runtimeBinder: {fileID: 1068224605}
+--- !u!4 &1131750784
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131750782}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 505.8614, y: 762.59045, z: -6.0222325}
+  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &1131750785
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131750782}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 7482667652216324306, guid: 3327537318ffc794cb305f7510fb7eba, type: 3}
+  m_Color: {r: 1, g: 0.3929118, b: 0, a: 0.5882353}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!114 &1131750786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131750782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5642ca3ab0515284b9ca1351fabcf860, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1131750783}
+  seedOnStart: 1
+  seedOnlyIfUninitialized: 1
+  startingCredits: 200
+  itemIds:
+  - fish
+  - scrap
+  amounts: 0a00000005000000
 --- !u!1 &1183269507
 GameObject:
   m_ObjectHideFlags: 0
@@ -2025,7 +3106,6 @@ GameObject:
   - component: {fileID: 1253730203}
   - component: {fileID: 1253730202}
   - component: {fileID: 1253730201}
-  - component: {fileID: 1253730204}
   m_Layer: 5
   m_Name: Time
   m_TagString: Untagged
@@ -2110,20 +3190,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1253730199}
   m_CullTransparentMesh: 1
---- !u!114 &1253730204
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253730199}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9370facd1b6b3ad4689d42ec9655b380, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timeOfDay: {fileID: 1796781386}
-  timeScale: 1
 --- !u!1 &1318871776
 GameObject:
   m_ObjectHideFlags: 0
@@ -2213,7 +3279,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1352098152}
   - component: {fileID: 1352098151}
-  - component: {fileID: 1352098153}
   m_Layer: 0
   m_Name: WorldMapSIm
   m_TagString: Untagged
@@ -2233,13 +3298,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 861b0da47b5a53a4380c9f969b56ef6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generator: {fileID: 795679325}
   timeOfDay: {fileID: 1796781386}
+  runtimeBinder: {fileID: 1068224605}
   simTickSeconds: 0.25
   simSpeed: 1
   driftDockAndTrade: 1
   buildingRestoreStrength: 0.08
   buildingEquilibrium: 2
+  populationLossRate: 0.02
+  populationGrowthRate: 0.01
 --- !u!4 &1352098152
 Transform:
   m_ObjectHideFlags: 0
@@ -2255,22 +3322,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1352098153
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1352098150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13c9a050e61995340bcb1ecd00102105, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  milestoneStep: 0.1
-  upwardOnly: 0
-  logStats: 1
-  logBuildings: 1
 --- !u!1 &1387658862
 GameObject:
   m_ObjectHideFlags: 0
@@ -2307,7 +3358,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 80}
+  m_AnchoredPosition: {x: 0, y: 120}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1387658864
@@ -2354,7 +3405,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068224603}
+      - m_Target: {fileID: 1543242048}
         m_TargetAssemblyTypeName: WorldMapHeatmapController, Assembly-CSharp
         m_MethodName: SetModeProsperity
         m_Mode: 1
@@ -2493,6 +3544,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1543242046}
   - component: {fileID: 1543242045}
+  - component: {fileID: 1543242048}
+  - component: {fileID: 1543242047}
+  - component: {fileID: 1543242049}
   m_Layer: 0
   m_Name: WorldMapUI
   m_TagString: Untagged
@@ -2533,6 +3587,155 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1543242047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1543242044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13c9a050e61995340bcb1ecd00102105, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  milestoneStep: 0.2
+  upwardOnly: 0
+  logStats: 1
+  logBuildings: 1
+--- !u!114 &1543242048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1543242044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8a71d4d065c0f49814b2de3cd4ddc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoRefresh: 1
+  refreshIntervalSeconds: 1
+  spawner: {fileID: 795679327}
+  runtimeBinder: {fileID: 1068224605}
+  modeLabel: {fileID: 1910126464}
+  lowColor: {r: 1, g: 0.25, b: 0.25, a: 1}
+  highColor: {r: 0.25, g: 1, b: 0.35, a: 1}
+  unknownColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
+  minValue: 0
+  maxValue: 4
+  populationMin: 0
+  populationMax: 5000
+  populationLow: {r: 0.15, g: 0.15, b: 0.35, a: 1}
+  populationHigh: {r: 0.55, g: 0.75, b: 1, a: 1}
+  foodMin: -4
+  foodMax: 4
+  foodNegative: {r: 1, g: 0.25, b: 0.25, a: 1}
+  foodNeutral: {r: 0.75, g: 0.75, b: 0.75, a: 1}
+  foodPositive: {r: 0.25, g: 1, b: 0.35, a: 1}
+  mode: 0
+--- !u!114 &1543242049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1543242044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5781375b388b4f34d96609a313ce36cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  generator: {fileID: 795679325}
+  runtimeBinder: {fileID: 1068224605}
+  player: {fileID: 1131750783}
+  selection: {fileID: 795679328}
+  lineMaterial: {fileID: 0}
+  baseWidth: 0.06
+  selectedWidth: 0.1
+  zOffset: -0.5
+  showLockedRoutes: 1
+  rebuildOnGraphGenerated: 1
+--- !u!1 &1546770263
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1546770264}
+  - component: {fileID: 1546770266}
+  - component: {fileID: 1546770265}
+  m_Layer: 5
+  m_Name: Population
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1546770264
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1546770263}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 830735749}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1546770265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1546770263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: Population
+--- !u!222 &1546770266
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1546770263}
+  m_CullTransparentMesh: 1
 --- !u!1 &1602658339
 GameObject:
   m_ObjectHideFlags: 0
@@ -2569,7 +3772,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 20}
+  m_AnchoredPosition: {x: 0, y: 60}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1602658341
@@ -2616,7 +3819,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068224603}
+      - m_Target: {fileID: 1543242048}
         m_TargetAssemblyTypeName: WorldMapHeatmapController, Assembly-CSharp
         m_MethodName: SetModeSecurity
         m_Mode: 1
@@ -2755,6 +3958,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1796781387}
   - component: {fileID: 1796781386}
+  - component: {fileID: 1796781388}
   m_Layer: 0
   m_Name: TimeManager
   m_TagString: Untagged
@@ -2797,6 +4001,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1796781388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1796781385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9370facd1b6b3ad4689d42ec9655b380, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeOfDay: {fileID: 1796781386}
+  timeScale: 1
 --- !u!1 &1910126462
 GameObject:
   m_ObjectHideFlags: 0
@@ -2831,7 +4049,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -105}
+  m_AnchoredPosition: {x: 0, y: -120}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1910126464
@@ -2861,7 +4079,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 0
+    m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -2912,7 +4130,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -10}
+  m_AnchoredPosition: {x: 0, y: 30}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1912874447
@@ -2959,7 +4177,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068224603}
+      - m_Target: {fileID: 1543242048}
         m_TargetAssemblyTypeName: WorldMapHeatmapController, Assembly-CSharp
         m_MethodName: SetModeDock
         m_Mode: 1
@@ -3045,7 +4263,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -40}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2064466130
@@ -3092,7 +4310,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068224603}
+      - m_Target: {fileID: 1543242048}
         m_TargetAssemblyTypeName: WorldMapHeatmapController, Assembly-CSharp
         m_MethodName: SetModeTrade
         m_Mode: 1
@@ -3146,12 +4364,16 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1708356193}
   - {fileID: 639652872}
   - {fileID: 795679326}
-  - {fileID: 1796781387}
   - {fileID: 1352098152}
   - {fileID: 1068224602}
-  - {fileID: 464559646}
-  - {fileID: 1253171147}
-  - {fileID: 1708356193}
   - {fileID: 1543242046}
+  - {fileID: 299019577}
+  - {fileID: 1796781387}
+  - {fileID: 464559646}
+  - {fileID: 1131750784}
+  - {fileID: 1253171147}
+  - {fileID: 297186290}
+  - {fileID: 643752053}

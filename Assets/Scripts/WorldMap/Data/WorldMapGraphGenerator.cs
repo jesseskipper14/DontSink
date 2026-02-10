@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class WorldMapGraphGenerator : MonoBehaviour
@@ -94,6 +95,11 @@ public class WorldMapGraphGenerator : MonoBehaviour
                 float prosperity0 = Mathf.Clamp(1f + Jitter(rng, statJitter), 0f, 4f);
                 float stability0 = Mathf.Clamp(1f + Jitter(rng, statJitter), 0f, 4f);
                 float security0 = Mathf.Clamp(1f + Jitter(rng, statJitter), 0f, 4f);
+                float foodBalance0 = Mathf.Clamp(0f + Jitter(rng, statJitter), -4f, 4f);
+
+                float basePop = 100f;
+                float population0 = Mathf.Lerp(0.5f, 2.0f, (float)rng.NextDouble()) * basePop;
+
 
                 int nodeId = graph.AddNode(new MapNode
                 {
@@ -101,6 +107,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
                     clusterId = c,
                     position = pos,
                     kind = NodeKind.Island,
+                    population = population0,
 
                     displayName = $"Island #{graph.nodes.Count}",
                     biome = BiomeId.None,
@@ -119,6 +126,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
                         new NodeStat { id = NodeStatId.Prosperity, stat = new SimStat(prosperity0, 1.0f, 0.08f) },
                         new NodeStat { id = NodeStatId.Stability,   stat = new SimStat(stability0,  1.0f, 0.10f) },
                         new NodeStat { id = NodeStatId.Security,    stat = new SimStat(security0,   1.0f, 0.06f) },
+                        new NodeStat { id = NodeStatId.FoodBalance,   stat = new SimStat(foodBalance0,   0f, 0.06f, -4f, 4f) },
                     }
                 });
 
@@ -413,12 +421,23 @@ public class MapGraph
 
     public void RebuildEdgeSet()
     {
+        _edgeSet ??= new HashSet<ulong>();
         _edgeSet.Clear();
+
         foreach (var e in edges)
             _edgeSet.Add(Key(e.a, e.b));
     }
 
-    public bool HasEdge(int a, int b) => _edgeSet.Contains(Key(a, b));
+    public bool HasEdge(int a, int b)
+    {
+        _edgeSet ??= new HashSet<ulong>();
+
+        // If we have edges but no cached set (common after play mode reload), rebuild.
+        if (_edgeSet.Count == 0 && edges != null && edges.Count > 0)
+            RebuildEdgeSet();
+
+        return _edgeSet.Contains(Key(a, b));
+    }
 
     private static ulong Key(int a, int b)
     {
@@ -472,6 +491,11 @@ public class MapNode
     [Header("Simulation Stats (drift-capable)")]
     public List<NodeStat> stats = new();
 
+    [Header("Population")]
+    public float population = 100f;
+    public float minPopulation = 10f;
+    public float maxPopulation = 500f;
+
     [Header("Flags / Notes")]
     public List<string> flags = new();
     [TextArea] public string notes;
@@ -481,7 +505,7 @@ public class MapNode
     [NonSerialized] public float dockInfluenceAccel;
     [NonSerialized] public float tradeInfluenceAccel;
 
-    public List<TimedBuffInstance> activeBuffs = new();
+    //public List<TimedBuffInstance> activeBuffs = new();
 
     public void EnsureInitializedForSim()
     {
@@ -495,17 +519,17 @@ public class MapNode
         return 0f;
     }
 
-    public void ApplyOutcome(EventOutcome outcome)
-    {
-        if (outcome == null) return;
+    //public void ApplyOutcome(EventOutcome outcome)
+    //{
+    //    if (outcome == null) return;
 
-        for (int i = 0; i < outcome.buffs.Count; i++)
-        {
-            var e = outcome.buffs[i];
-            if (e.buff == null) continue;
-            activeBuffs.Add(new TimedBuffInstance(e.buff, e.durationHours, e.stacks));
-        }
-    }
+    //    for (int i = 0; i < outcome.buffs.Count; i++)
+    //    {
+    //        var e = outcome.buffs[i];
+    //        if (e.buff == null) continue;
+    //        activeBuffs.Add(new TimedBuffInstance(e.buff, e.durationHours, e.stacks));
+    //    }
+    //}
 }
 
 [Serializable]
@@ -587,7 +611,8 @@ public enum NodeStatId
     Stability,
     Security,
     DockRating,
-    TradeRating
+    TradeRating,
+    FoodBalance   // pressure stat: negative = deficit, positive = surplus
     // Optional future placeholders:
     // Pollution, CultInfluence, PiratePressure, etc
 }
@@ -600,11 +625,17 @@ public struct SimStat
     [Range(0f, 4f)] public float equilibrium;// where it drifts back toward
     [Min(0f)] public float restoreStrength;  // pull toward equilibrium
 
-    public SimStat(float initial, float eq, float restore)
+    public float minValue;
+    public float maxValue;
+
+    public SimStat(float initial, float eq, float restore, float minValue = 0f, float maxValue = 4f)
     {
-        value = Mathf.Clamp(initial, 0f, 4f);
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+
+        value = Mathf.Clamp(initial, minValue, maxValue);
         velocity = 0f;
-        equilibrium = Mathf.Clamp(eq, 0f, 4f);
+        equilibrium = Mathf.Clamp(eq, minValue, maxValue);
         restoreStrength = Mathf.Max(0f, restore);
     }
 
@@ -621,11 +652,11 @@ public struct SimStat
         velocity *= Mathf.Clamp01(1f - 0.8f * dt);
 
         value += velocity * dt;
-        value = Mathf.Clamp(value, 0f, 4f);
+        value = Mathf.Clamp(value, minValue, maxValue);
 
         // clamp kills outward velocity
-        if (value <= 0f && velocity < 0f) velocity = 0f;
-        if (value >= 4f && velocity > 0f) velocity = 0f;
+        if (value <= minValue && velocity < 0f) velocity = 0f;
+        if (value >= maxValue && velocity > 0f) velocity = 0f;
 
         return !Mathf.Approximately(old, value);
     }
