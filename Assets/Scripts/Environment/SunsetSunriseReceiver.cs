@@ -12,14 +12,14 @@ public class SunriseSunsetReceiver : MonoBehaviour
         // Use serialized reference first
         if (sunriseSunsetManager == null)
         {
-            if (EnvironmentManager.Instance == null)
+            if (ServiceRoot.Instance == null)
             {
                 Debug.LogWarning("SunriseSunsetReceiver: EnvironmentManager instance not found!");
                 return;
             }
 
             sunriseSunsetManager =
-                EnvironmentManager.Instance
+                ServiceRoot.Instance
                     .GetComponent<SunriseSunsetOverlayManager>();
         }
 

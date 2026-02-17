@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,23 +11,24 @@ public class WorldMapHoverController : MonoBehaviour
     [SerializeField] private Camera cam;
     [SerializeField] private WorldMapTooltipUI tooltip;
     [SerializeField] private WorldMapRuntimeBinder runtimeBinder;
-    [SerializeField] private WorldMapRouteOverlay routeOverlay;
     [SerializeField] private WorldMapGraphGenerator generator;
     [SerializeField] private WorldMapPlayer player;
     [SerializeField] private WorldMapTravelDebugController travelDebug;
     [SerializeField] private WorldMapTravelRulesConfig travelRules;
     [SerializeField] private KeyCode freezeKey = KeyCode.LeftShift;
-    private bool _freezeRoutes;
-    private int _frozenNodeId = -1;
+    [SerializeField] private ResourceCatalog resourceCatalog;
+    private readonly List<RaycastResult> _uiHits = new List<RaycastResult>(32);
     private int _lastHoveredNodeId = -1;
     private bool _wasShiftHeld;
 
-    private bool IsFreezeHeld()
-    => Input.GetKey(freezeKey) || Input.GetKey(KeyCode.RightShift);
+    public event Action HoverChanged;
+
+    //private bool IsFreezeHeld()
+    //=> Input.GetKey(freezeKey) || Input.GetKey(KeyCode.RightShift);
 
     private static bool ShiftHeld()
     => Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-
+    public WorldMapHoverState State { get; } = new WorldMapHoverState();
 
     [Header("Raycast")]
     [SerializeField] private LayerMask hoverLayers = ~0;
@@ -42,10 +44,10 @@ public class WorldMapHoverController : MonoBehaviour
         tooltip = FindAnyObjectByType<WorldMapTooltipUI>();
         if (eventManager == null) eventManager = FindAnyObjectByType<WorldMapEventManager>();
         runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
-        routeOverlay = FindAnyObjectByType<WorldMapRouteOverlay>();
         generator = FindAnyObjectByType<WorldMapGraphGenerator>();
         player = FindAnyObjectByType<WorldMapPlayer>();
         travelDebug = FindAnyObjectByType<WorldMapTravelDebugController>();
+        resourceCatalog = FindAnyObjectByType<ResourceCatalog>(); // NOTE: likely null if it's not in-scene
         // travelRules is a ScriptableObject; assign via inspector (no reliable scene lookup)
     }
 
@@ -55,11 +57,12 @@ public class WorldMapHoverController : MonoBehaviour
         if (tooltip == null) tooltip = FindAnyObjectByType<WorldMapTooltipUI>();
         if (eventManager == null) eventManager = FindAnyObjectByType<WorldMapEventManager>();
         if (runtimeBinder == null) runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
-        if (routeOverlay == null) routeOverlay = FindAnyObjectByType<WorldMapRouteOverlay>();
         if (generator == null) generator = FindAnyObjectByType<WorldMapGraphGenerator>();
         if (player == null) player = FindAnyObjectByType<WorldMapPlayer>();
         if (travelDebug == null)
             travelDebug = FindAnyObjectByType<WorldMapTravelDebugController>();
+        if (resourceCatalog == null) resourceCatalog = FindAnyObjectByType<ResourceCatalog>(); // NOTE: likely null if it's not in-scene
+
         // travelRules is a ScriptableObject; assign via inspector
     }
 
@@ -72,8 +75,22 @@ public class WorldMapHoverController : MonoBehaviour
 
         // If shift was held and now released: clear pinned overlays
         if (_wasShiftHeld && !shift)
-            routeOverlay?.ClearPinnedAnchors();
+            ClearPins();
         _wasShiftHeld = shift;
+
+        // NEW: allow hovering map overlay nodes even though they are UI / Selectables
+        if (TryGetHoveredNodeIdFromUI(out int uiNodeId))
+        {
+            if (shift && _lastHoveredNodeId >= 0 && _lastHoveredNodeId != uiNodeId)
+                PinNode(_lastHoveredNodeId);
+
+            _lastHoveredNodeId = uiNodeId;
+            _current = null;
+
+            SetHoveredNode(uiNodeId);
+            UpdateTooltipByNodeId(uiNodeId);
+            return;
+        }
 
         // If UI is blocking pointer, don't hover nodes through it
         if (PointerOverInteractiveUI())
@@ -84,7 +101,7 @@ public class WorldMapHoverController : MonoBehaviour
                 _current = null;
                 _lastHoveredNodeId = -1;
                 tooltip.Hide();
-                routeOverlay?.ClearHover();
+                ClearHoveredNode();
             }
             return;
         }
@@ -104,7 +121,7 @@ public class WorldMapHoverController : MonoBehaviour
             if (!shift)
             {
                 _lastHoveredNodeId = -1;
-                routeOverlay?.ClearHover();
+                ClearHoveredNode();
             }
 
             return;
@@ -121,7 +138,7 @@ public class WorldMapHoverController : MonoBehaviour
             if (!shift)
             {
                 _lastHoveredNodeId = -1;
-                routeOverlay?.ClearHover();
+                ClearHoveredNode();
             }
 
             return;
@@ -138,19 +155,24 @@ public class WorldMapHoverController : MonoBehaviour
         if (shift && _lastHoveredNodeId >= 0 && _lastHoveredNodeId != view.NodeId)
         {
             // Pin the previous node so its overlays remain visible
-            routeOverlay?.PinAnchor(_lastHoveredNodeId);
+            PinNode(_lastHoveredNodeId);
         }
 
         _lastHoveredNodeId = view.NodeId;
 
         _current = view;
-        routeOverlay?.SetHoverNode(view.NodeId);
+        SetHoveredNode(view.NodeId);
         UpdateTooltip(_current);
     }
 
     private void UpdateTooltip(MapNodeView view)
     {
-        int id = view.NodeId;
+        if (view == null) return;
+        UpdateTooltipByNodeId(view.NodeId);
+    }
+
+    private void UpdateTooltipByNodeId(int id)
+    {
         if (id < 0) return;
         if (runtimeBinder == null || !runtimeBinder.IsBuilt) return;
         if (!runtimeBinder.Registry.TryGetByIndex(id, out var rt)) return;
@@ -158,13 +180,18 @@ public class WorldMapHoverController : MonoBehaviour
         var state = rt.State;
         if (state == null) return;
 
+        string pressures = FormatPressuresAudit(state, resourceCatalog, maxLines: 18);
+
         var routeInfo = TryBuildRouteInfoFromPlayer(id);
         string routeSection = FormatRouteSection(routeInfo);
 
         string text =
-            $"** {rt.DisplayName} **\n" +
+            $"Cluster: {rt.ClusterId} - " +
+            $"{rt.DisplayName} \nAffinity: {rt.ClusterAffinityId}\n" +
+            $"Node Archetype: {rt.NodeArchetypeId}\n" +
             $"Dock: {state.GetStat(NodeStatId.DockRating).value:0.00}   Trade: {state.GetStat(NodeStatId.TradeRating).value:0.00}\n" +
-            $"Population: {state.population:0}\n" +
+            $"Population: {state.population:0}\n\n" +
+            $"{pressures}\n\n" +
             $"{FormatStats(state)}" +
             $"{routeSection}\n" +
             $"\n{FormatEvents(id)}" +
@@ -201,18 +228,117 @@ public class WorldMapHoverController : MonoBehaviour
         return s.TrimEnd();
     }
 
-    private void ClearHover()
+    private string FormatPressuresAudit(MapNodeState state, ResourceCatalog catalog, int maxLines = 16)
     {
-        _current = null;
-        tooltip.Hide();
+        if (state == null) return "Pressures: (no state)";
+        if (catalog == null || catalog.Resources == null || catalog.Resources.Count == 0)
+            return FormatPressuresFromStateOnly(state, maxLines);
 
-        bool freezeHeld = IsFreezeHeld();
-        if (!freezeHeld)
+        _tmpPressureAudit ??= new List<PressureAuditLine>(128);
+        _tmpPressureAudit.Clear();
+
+        var dict = state.ResourcePressures;
+
+        // Full audit: every resource in catalog gets a line.
+        for (int i = 0; i < catalog.Resources.Count; i++)
         {
-            _frozenNodeId = -1;
-            routeOverlay?.ClearHover();
+            var def = catalog.Resources[i];
+            if (def == null || string.IsNullOrWhiteSpace(def.itemId)) continue;
+
+            float v = 0f;
+            float b = 0f;
+            bool has = false;
+
+            if (dict != null && dict.TryGetValue(def.itemId, out var p))
+            {
+                v = p.value;
+                b = p.baseline;
+                has = true;
+            }
+
+            _tmpPressureAudit.Add(new PressureAuditLine(def.itemId, def.displayName, v, b, has));
+        }
+
+        // Sort: biggest |value| first, then missing at the bottom.
+        _tmpPressureAudit.Sort((a, b2) =>
+        {
+            // present lines first
+            int pa = a.has ? 0 : 1;
+            int pb = b2.has ? 0 : 1;
+            if (pa != pb) return pa.CompareTo(pb);
+
+            // then by magnitude
+            int mag = Mathf.Abs(b2.value).CompareTo(Mathf.Abs(a.value));
+            if (mag != 0) return mag;
+
+            // then by id for stability
+            return string.CompareOrdinal(a.itemId, b2.itemId);
+        });
+
+        int shown = Mathf.Min(maxLines, _tmpPressureAudit.Count);
+
+        string s = "Pressures (audit):\n";
+        for (int i = 0; i < shown; i++)
+        {
+            var e = _tmpPressureAudit[i];
+
+            // Mark missing pressures so you know archetype didn't define them yet.
+            string mark = e.has ? "" : " [missing]";
+            string name = string.IsNullOrWhiteSpace(e.displayName) ? e.itemId : e.displayName;
+
+            s += $"  - {name} ({e.itemId}): {e.value:0.00} (base {e.baseline:0.00}){mark}\n";
+        }
+
+        if (_tmpPressureAudit.Count > shown) s += "  - ...\n";
+        return s.TrimEnd();
+    }
+
+    private string FormatPressuresFromStateOnly(MapNodeState state, int maxLines = 16)
+    {
+        if (state.ResourcePressures == null || state.ResourcePressures.Count == 0)
+            return "Pressures: (none)";
+
+        _tmpPressurePairs ??= new List<(string id, float v, float b)>(64);
+        _tmpPressurePairs.Clear();
+
+        foreach (var kvp in state.ResourcePressures)
+            _tmpPressurePairs.Add((kvp.Key, kvp.Value.value, kvp.Value.baseline));
+
+        _tmpPressurePairs.Sort((a, b) => Mathf.Abs(b.v).CompareTo(Mathf.Abs(a.v)));
+
+        int n = Mathf.Min(maxLines, _tmpPressurePairs.Count);
+        string s = "Pressures:\n";
+        for (int i = 0; i < n; i++)
+        {
+            var e = _tmpPressurePairs[i];
+            s += $"  - {e.id}: {e.v:0.00} (base {e.b:0.00})\n";
+        }
+
+        if (_tmpPressurePairs.Count > n) s += "  - ...\n";
+        return s.TrimEnd();
+    }
+
+    [Serializable]
+    private struct PressureAuditLine
+    {
+        public string itemId;
+        public string displayName;
+        public float value;
+        public float baseline;
+        public bool has;
+
+        public PressureAuditLine(string itemId, string displayName, float value, float baseline, bool has)
+        {
+            this.itemId = itemId;
+            this.displayName = displayName;
+            this.value = value;
+            this.baseline = baseline;
+            this.has = has;
         }
     }
+
+    private List<PressureAuditLine> _tmpPressureAudit;
+    private List<(string id, float v, float b)> _tmpPressurePairs;
 
     private static bool PointerOverInteractiveUI()
     {
@@ -344,5 +470,74 @@ public class WorldMapHoverController : MonoBehaviour
         }
 
         return s.TrimEnd();
+    }
+
+    private bool TryGetHoveredNodeIdFromUI(out int nodeId)
+    {
+        nodeId = -1;
+        if (EventSystem.current == null) return false;
+
+        _uiHits.Clear();
+        var data = new PointerEventData(EventSystem.current)
+        {
+            position = Input.mousePosition
+        };
+
+        EventSystem.current.RaycastAll(data, _uiHits);
+
+        for (int i = 0; i < _uiHits.Count; i++)
+        {
+            var go = _uiHits[i].gameObject;
+            if (go == null) continue;
+
+            var target = go.GetComponentInParent<MapNodeHoverTarget>();
+            if (target != null)
+            {
+                nodeId = target.NodeId;
+                return nodeId >= 0;
+            }
+        }
+
+        return false;
+    }
+
+    private void NotifyHoverChanged() => HoverChanged?.Invoke();
+
+    private void SetHoveredNode(int nodeIndex)
+    {
+        if (State.SetHovered(nodeIndex))
+            NotifyHoverChanged();
+    }
+
+    private void ClearHoveredNode()
+    {
+        if (State.ClearHovered())
+            NotifyHoverChanged();
+    }
+
+    private void PinNode(int nodeIndex)
+    {
+        if (nodeIndex < 0) return;
+        if (State.Pin(nodeIndex))
+            NotifyHoverChanged();
+    }
+
+    private void ClearPins()
+    {
+        if (State.ClearPins())
+            NotifyHoverChanged();
+    }
+
+    public void SetHoverFromUI(int nodeIndex)
+    {
+        // UI hover should behave the same as world hover
+        SetHoveredNode(nodeIndex);
+    }
+
+    public void ClearHoverFromUI(int nodeIndex)
+    {
+        // Only clear if we’re still hovering that node (prevents flicker)
+        if (State.HoveredNodeIndex == nodeIndex)
+            ClearHoveredNode();
     }
 }

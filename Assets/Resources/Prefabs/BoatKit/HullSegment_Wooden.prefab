@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8971482814268499861}
   - component: {fileID: 4351759932450517555}
   - component: {fileID: -5455943145966643297}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: HullSegment_Wooden
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using WorldMap.Player.Trade; // draft + line types live here
+using UnityEngine;
+using WorldMap.Player.Trade;
 
 public sealed class TradeService
 {
@@ -10,7 +11,8 @@ public sealed class TradeService
         InvalidDraft,
         InvalidLine,
         InsufficientCredits,
-        InsufficientItems
+        InsufficientItems,
+        OfferUnavailable
     }
 
     [Serializable]
@@ -20,17 +22,23 @@ public sealed class TradeService
         public string nodeId;
         public string vendorId;
 
-        public int creditsDelta; // + means player gained credits, - means player paid credits
+        public int creditsDelta;
+        public int totalFeesPaid; // NEW: for UI later
         public List<TradeLine> appliedLines = new List<TradeLine>();
     }
 
-    /// <summary>
-    /// Validates and applies a transaction draft atomically to a player's state.
-    /// Node inventory is NOT mutated. This is purely player-facing trade execution.
-    /// </summary>
     public bool TryExecute(
         TradeTransactionDraft draft,
         WorldMapPlayerState player,
+        IReadOnlyList<NodeMarketOffer> offers,
+        MapNodeState nodeState,
+        ITradeFeePolicy feePolicy,
+        int timeBucket,
+
+        // 2B item memory tunables (bucket units)
+        int cooldownSellToPlayerBuckets,
+        int cooldownBuyFromPlayerBuckets,
+
         out TradeReceipt receipt,
         out FailReason failReason,
         out string failNote)
@@ -60,38 +68,57 @@ public sealed class TradeService
             return false;
         }
 
-        // 1) Validate lines and compute totals + required item deltas WITHOUT mutating.
+        int totalFeesPaid = 0;
+
         int creditsDelta = 0;
-        var needRemove = new Dictionary<string, int>(); // items player must give (sell)
-        var needAdd = new Dictionary<string, int>();    // items player must receive (buy)
+        var needRemove = new Dictionary<string, int>();
+        var needAdd = new Dictionary<string, int>();
 
         foreach (var line in draft.lines)
         {
-            if (line == null)
+            if (string.IsNullOrWhiteSpace(line.offerId))
             {
                 failReason = FailReason.InvalidLine;
-                failNote = "Null line.";
+                failNote = $"Line missing offerId for {line.itemId}.";
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(line.itemId))
+            var offer = FindOffer(offers, line.offerId);
+            if (offer == null)
             {
-                failReason = FailReason.InvalidLine;
-                failNote = "Line missing itemId.";
+                failReason = FailReason.OfferUnavailable;
+                failNote = $"Offer '{line.offerId}' no longer exists.";
                 return false;
             }
 
-            if (line.quantity <= 0)
+            if (!string.Equals(offer.itemId, line.itemId, StringComparison.Ordinal))
             {
-                failReason = FailReason.InvalidLine;
-                failNote = $"Invalid quantity for {line.itemId}.";
+                failReason = FailReason.OfferUnavailable;
+                failNote = $"Offer '{line.offerId}' item mismatch.";
                 return false;
             }
 
-            if (line.unitPrice < 0)
+            bool wantBuyFromNode = line.direction == TradeDirection.BuyFromNode;
+            bool offerIsSellToPlayer = offer.kind == MarketOfferKind.SellToPlayer;
+
+            if (wantBuyFromNode != offerIsSellToPlayer)
             {
-                failReason = FailReason.InvalidLine;
-                failNote = $"Invalid unitPrice for {line.itemId}.";
+                failReason = FailReason.OfferUnavailable;
+                failNote = $"Offer '{line.offerId}' direction mismatch.";
+                return false;
+            }
+
+            if (offer.unitPrice != line.unitPrice)
+            {
+                failReason = FailReason.OfferUnavailable;
+                failNote = $"Offer '{line.offerId}' price changed.";
+                return false;
+            }
+
+            if (line.quantity > offer.quantityRemaining)
+            {
+                failReason = FailReason.OfferUnavailable;
+                failNote = $"Offer '{offer.itemId}' has only {offer.quantityRemaining} remaining.";
                 return false;
             }
 
@@ -99,16 +126,21 @@ public sealed class TradeService
             {
                 int lineTotal = line.unitPrice * line.quantity;
 
+                int fee = (feePolicy != null && nodeState != null)
+                    ? Mathf.Max(0, feePolicy.ComputeFeeCredits(nodeState, line, lineTotal, timeBucket))
+                    : 0;
+
+                creditsDelta -= fee;
+                totalFeesPaid += fee;
+
                 switch (line.direction)
                 {
                     case TradeDirection.BuyFromNode:
-                        // Player pays credits, receives items
                         creditsDelta -= lineTotal;
                         Accumulate(needAdd, line.itemId, line.quantity);
                         break;
 
                     case TradeDirection.SellToNode:
-                        // Player gives items, receives credits
                         creditsDelta += lineTotal;
                         Accumulate(needRemove, line.itemId, line.quantity);
                         break;
@@ -121,7 +153,6 @@ public sealed class TradeService
             }
         }
 
-        // 2) Validate player can afford credits and items.
         int creditsAfter = player.credits + creditsDelta;
         if (creditsAfter < 0)
         {
@@ -141,35 +172,108 @@ public sealed class TradeService
             }
         }
 
-        // 3) Apply atomically (safe now because validated).
+        // APPLY
         player.credits = creditsAfter;
 
-        foreach (var kvp in needRemove)
+        ApplyFeeMarketUpgrade(nodeState, totalFeesPaid);
+
+        // Deplete offers
+        foreach (var line in draft.lines)
         {
-            // Remove cannot fail after validation
-            player.inventory.Remove(kvp.Key, kvp.Value);
+            var offer = FindOffer(offers, line.offerId);
+            if (offer != null)
+                offer.quantityRemaining = Mathf.Max(0, offer.quantityRemaining - line.quantity);
         }
+
+        foreach (var kvp in needRemove)
+            player.inventory.Remove(kvp.Key, kvp.Value);
 
         foreach (var kvp in needAdd)
-        {
             player.inventory.Add(kvp.Key, kvp.Value);
-        }
 
-        // 4) Receipt
+        // 2B item memory: mark embargoes based on what happened
+        ApplyItemEmbargoes(nodeState, draft.lines, timeBucket, cooldownSellToPlayerBuckets, cooldownBuyFromPlayerBuckets);
+
         receipt = new TradeReceipt
         {
             nodeId = draft.nodeId,
             vendorId = draft.vendorId,
             creditsDelta = creditsDelta,
+            totalFeesPaid = totalFeesPaid,
             appliedLines = new List<TradeLine>(draft.lines)
         };
 
         return true;
     }
 
+    private static void ApplyItemEmbargoes(
+        MapNodeState nodeState,
+        List<TradeLine> lines,
+        int timeBucket,
+        int cooldownSellToPlayerBuckets,
+        int cooldownBuyFromPlayerBuckets)
+    {
+        if (nodeState == null) return;
+        var market = nodeState.MarketMutable;
+        if (market == null) return;
+        if (lines == null || lines.Count == 0) return;
+
+        // Clamp sanity
+        cooldownSellToPlayerBuckets = Mathf.Max(0, cooldownSellToPlayerBuckets);
+        cooldownBuyFromPlayerBuckets = Mathf.Max(0, cooldownBuyFromPlayerBuckets);
+
+        for (int i = 0; i < lines.Count; i++)
+        {
+            var line = lines[i];
+            if (line.quantity <= 0) continue;
+            if (string.IsNullOrWhiteSpace(line.itemId)) continue;
+
+            if (line.direction == TradeDirection.SellToNode)
+            {
+                // Player sold to node => node should NOT immediately sell it back
+                int until = timeBucket + cooldownSellToPlayerBuckets;
+                if (cooldownSellToPlayerBuckets > 0)
+                    market.SetEmbargo(MarketOfferKind.SellToPlayer, line.itemId, until);
+            }
+            else if (line.direction == TradeDirection.BuyFromNode)
+            {
+                // Player bought from node => node should NOT immediately buy it back
+                int until = timeBucket + cooldownBuyFromPlayerBuckets;
+                if (cooldownBuyFromPlayerBuckets > 0)
+                    market.SetEmbargo(MarketOfferKind.BuyFromPlayer, line.itemId, until);
+            }
+        }
+    }
+
     private static void Accumulate(Dictionary<string, int> dict, string itemId, int amount)
     {
         if (dict.TryGetValue(itemId, out var cur)) dict[itemId] = cur + amount;
         else dict[itemId] = amount;
+    }
+
+    private static NodeMarketOffer FindOffer(IReadOnlyList<NodeMarketOffer> offers, string offerId)
+    {
+        if (offers == null) return null;
+        for (int i = 0; i < offers.Count; i++)
+        {
+            var o = offers[i];
+            if (o != null && o.offerId == offerId) return o;
+        }
+        return null;
+    }
+
+    private static void ApplyFeeMarketUpgrade(MapNodeState node, int totalFeesPaid)
+    {
+        if (node == null) return;
+        if (totalFeesPaid <= 0) return;
+
+        float impulse = Mathf.Sqrt(totalFeesPaid) * 0.01f;
+        impulse = Mathf.Clamp(impulse, 0f, 0.15f);
+
+        if (node.TryGetStat(NodeStatId.TradeRating, out var trade))
+        {
+            trade.value = Mathf.Clamp(trade.value + impulse, trade.minValue, trade.maxValue);
+            node.SetStatPreserveVelocity(NodeStatId.TradeRating, trade);
+        }
     }
 }

@@ -61,7 +61,7 @@ public class WorldMapChangeLogger : MonoBehaviour
 
         // Build a nicer message that shows the milestone crossed
         float milestoneValue = newBucket * step;
-        Debug.Log($"[Milestone] #{change.nodeId} {change.nodeName} | {change.key} crossed {milestoneValue:0.0} (now {change.newValue:0.00})");
+        //Debug.Log($"[Milestone] #{change.nodeId} {change.nodeName} | {change.key} crossed {milestoneValue:0.0} (now {change.newValue:0.00})");
     }
 
     private static int Bucket(float value, float step)

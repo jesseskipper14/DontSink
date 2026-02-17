@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f108d4ede259ca64187526c28e33efc9, type: 3}
+  m_Name: PressureMarketPolicyTuning_Default
+  m_EditorClassIdentifier: 
+  pressureMin: -4
+  pressureMax: 4
+  baseNodeSlots: 3
+  maxNodeSlots: 18
+  slotJitterMaxInclusive: 2
+  tradeSlotsScale: 8
+  prosperitySlotsScale: 2
+  uniqueBase: 1
+  uniqueMax: 8
+  uniqueTradeScale: 3
+  uniqueProsperityScale: 1.2
+  buySideUniquePenalty: 0
+  neutralDeadzoneSigned: 0.05
+  neutralBaselineWeight: 0.12
+  signalExponent: 1.35
+  signalBoost: 1.35
+  repeatPenalty: 0.7
+  crossSideOverlapWeightMult: 0.02
+  emptyBaseWeightSellToPlayer: 0.01
+  emptyBaseWeightBuyFromPlayer: 0.1
+  emptyWeightFromWeakPool: 0.2
+  emptyCapSellToPlayer: 0.15
+  emptyCapBuyFromPlayer: 0.45
+  cooldownMinPenalty: 0.05
+  noiseMin: 0.9
+  noiseMax: 1.1
+  priceSwing: 0.65
+  prosperityPriceInfluence: 0.1
+  exoticPriceMult: 1.2
+  tradeQuantityInfluence: 0.5
+  prosperityQuantityInfluence: 0.25
+  baseQtySell: 2
+  magQtySell: 20
+  baseQtyBuy: 1
+  magQtyBuy: 16
+  qtyJitterMaxInclusive: 2
+  qtyClampMin: 1
+  qtyClampMax: 50
+  exoticQtyPenalty: 0.55

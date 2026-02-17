@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8010483122479472770}
   - component: {fileID: 7302250932336619923}
   - component: {fileID: 773925805197138446}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: DeckSegment_Wooden
   m_TagString: Untagged
   m_Icon: {fileID: 0}

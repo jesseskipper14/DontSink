@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2774696704284986295}
   - component: {fileID: 6512632259146392225}
   - component: {fileID: 649692223756647261}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: CompartmentInterior_Wooden
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -204,7 +204,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5052840443238613969}
   - component: {fileID: 895882396756966778}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -268,7 +268,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1314277171
-  m_SortingLayer: -1
+  m_SortingLayer: -2
   m_SortingOrder: 0
   m_Sprite: {fileID: -2845250426110033187, guid: 5dfdf82b332b2ce489161e91fca36a83, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

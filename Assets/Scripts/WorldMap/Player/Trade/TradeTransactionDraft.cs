@@ -12,6 +12,7 @@ namespace WorldMap.Player.Trade
     [Serializable]
     public sealed class TradeLine
     {
+        public string offerId; // NEW: binds to a specific offer
         public string itemId;
         public int quantity;
         public int unitPrice; // credits per item

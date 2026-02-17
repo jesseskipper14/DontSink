@@ -1418,6 +1418,7 @@ MonoBehaviour:
   windManager: {fileID: 1404372458}
   waveManager: {fileID: 136256620}
   waveField: {fileID: 948650515}
+  tickTimeInRoot: 0
 --- !u!1 &289075591
 GameObject:
   m_ObjectHideFlags: 0
@@ -6072,10 +6073,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1166432440}
   - component: {fileID: 1166432439}
-  - component: {fileID: 1166432444}
   - component: {fileID: 1166432438}
   - component: {fileID: 1166432441}
   - component: {fileID: 1166432448}
+  - component: {fileID: 1166432444}
   - component: {fileID: 1166432437}
   - component: {fileID: 1166432436}
   - component: {fileID: 1166432449}

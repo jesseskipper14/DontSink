@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// DEPRECATED CLASS
+
 public class WorldMapPlayer : MonoBehaviour
 {
     public WorldMapPlayerState State { get; private set; }

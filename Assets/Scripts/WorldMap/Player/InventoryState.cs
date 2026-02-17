@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 [System.Serializable]
 public sealed class InventoryState
 {
@@ -21,5 +23,12 @@ public sealed class InventoryState
         if (left == 0) stacks.Remove(itemId);
         else stacks[itemId] = left;
         return true;
+    }
+
+    public IEnumerable<KeyValuePair<string, int>> Enumerate()
+    {
+        // Safe read-only iteration. Caller must not mutate the dictionary during enumeration.
+        foreach (var kvp in stacks)
+            yield return kvp;
     }
 }

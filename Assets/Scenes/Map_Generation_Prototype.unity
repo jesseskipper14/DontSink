@@ -346,7 +346,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   generator: {fileID: 795679325}
-  timeOfDay: {fileID: 1796781386}
+  timeOfDay: {fileID: 0}
   runtimeBinder: {fileID: 1068224605}
   tickSeconds: 0.25
   simSpeed: 1
@@ -652,6 +652,7 @@ MonoBehaviour:
   travelDebug: {fileID: 464559649}
   travelRules: {fileID: 11400000, guid: f2203f4f2d874584d86af2d9da433bd4, type: 2}
   freezeKey: 304
+  resourceCatalog: {fileID: 11400000, guid: 2077c5a54ff1b2440a8f306ea0defd5c, type: 2}
   hoverLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -677,7 +678,7 @@ MonoBehaviour:
   overrideMode: 1
   toNodeId: 2:7
   routeLength: 1
-  seed: 12345
+  seed: 2
 --- !u!114 &464559650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1145,7 +1146,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   overlay: {fileID: 297186289}
   player: {fileID: 1131750783}
-  timeOfDay: {fileID: 1796781386}
+  timeOfDay: {fileID: 1796781389}
+  binder: {fileID: 1068224605}
+  resourceCatalog: {fileID: 11400000, guid: 2077c5a54ff1b2440a8f306ea0defd5c, type: 2}
+  marketTuning: {fileID: 11400000, guid: ee6a95ed0ef95b747b681a1972fba72b, type: 2}
+  cooldownSellToPlayerBuckets: 2
+  cooldownBuyFromPlayerBuckets: 1
+  pressureImpulsePerUnitSold: 0.08
+  pressureImpulsePerOrder: 0.15
+  minImpulsePerLine: 0.05
+  pressureFeedbackClampPerTrade: 2
+  baseFeeRate: 0.03
+  tradeRatingFeeBoost: 0.02
+  minFeePerLine: 1
+  worldUnhealth01: 0
+  worldUnhealthFeeBoost: 0.03
 --- !u!1 &786050529
 GameObject:
   m_ObjectHideFlags: 0
@@ -2789,6 +2804,7 @@ MonoBehaviour:
   generator: {fileID: 795679325}
   container: {fileID: 1068224602}
   runtimePrefab: {fileID: 0}
+  archetypes: {fileID: 11400000, guid: 371091a6da247f647952b3af19aeb293, type: 2}
 --- !u!1 &1131750782
 GameObject:
   m_ObjectHideFlags: 0
@@ -2907,11 +2923,18 @@ MonoBehaviour:
   player: {fileID: 1131750783}
   seedOnStart: 1
   seedOnlyIfUninitialized: 1
-  startingCredits: 200
+  startingCredits: 10000
   itemIds:
   - fish
   - scrap
-  amounts: 0a00000005000000
+  - wood
+  - grain
+  - luxuries
+  - fuel
+  - cloth
+  - rope
+  - medkit
+  amounts: 640000006400000064000000640000006400000064000000640000006400000064000000
 --- !u!1 &1183269507
 GameObject:
   m_ObjectHideFlags: 0
@@ -3144,7 +3167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3ff7fca7befb7541ad7ed9755819c63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeOfDay: {fileID: 1796781386}
+  timeOfDay: {fileID: 0}
   label: {fileID: 1253730202}
   showTimeOfDay: 1
   prefix: 
@@ -3298,7 +3321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 861b0da47b5a53a4380c9f969b56ef6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeOfDay: {fileID: 1796781386}
+  timeOfDay: {fileID: 1796781389}
   runtimeBinder: {fileID: 1068224605}
   simTickSeconds: 0.25
   simSpeed: 1
@@ -3307,6 +3330,15 @@ MonoBehaviour:
   buildingEquilibrium: 2
   populationLossRate: 0.02
   populationGrowthRate: 0.01
+  graphGenerator: {fileID: 795679325}
+  resourceCatalog: {fileID: 11400000, guid: 2077c5a54ff1b2440a8f306ea0defd5c, type: 2}
+  pressureConductance: 0.01
+  intraClusterPressureMult: 0.5
+  interClusterPressureMult: 0.2
+  logisticsInfluence: 0.6
+  edgeLoss01: 0.05
+  maxPressurePerEdge: 0.2
+  targetEdgeDegree: 4
 --- !u!4 &1352098152
 Transform:
   m_ObjectHideFlags: 0
@@ -3957,8 +3989,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1796781387}
-  - component: {fileID: 1796781386}
   - component: {fileID: 1796781388}
+  - component: {fileID: 1796781389}
   m_Layer: 0
   m_Name: TimeManager
   m_TagString: Untagged
@@ -3966,26 +3998,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1796781386
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1796781385}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b4a74e1b5de5684e886249cd4433593, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dayLength: 120
-  currentTime: 3.78
-  phaseConfig: {fileID: 0}
-  daysPerMonth: 30
-  monthsPerYear: 8
-  year: 251
-  month: 1
-  day: 1
 --- !u!4 &1796781387
 Transform:
   m_ObjectHideFlags: 0
@@ -4013,8 +4025,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9370facd1b6b3ad4689d42ec9655b380, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeOfDay: {fileID: 1796781386}
+  timeOfDay: {fileID: 0}
   timeScale: 1
+--- !u!114 &1796781389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1796781385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 284fe9c485c04e944b118bea2fc6deeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dayLength: 120
+  currentTime: 12
+  phaseConfig: {fileID: 0}
+  daysPerMonth: 30
+  monthsPerYear: 8
+  year: 1
+  month: 1
+  day: 1
 --- !u!1 &1910126462
 GameObject:
   m_ObjectHideFlags: 0

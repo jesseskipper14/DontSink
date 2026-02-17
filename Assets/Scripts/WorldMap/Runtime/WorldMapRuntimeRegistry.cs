@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public sealed class WorldMapRuntimeRegistry
+public sealed class WorldMapRuntimeRegistry : INodeStateLookup
 {
     private readonly Dictionary<int, MapNodeRuntime> _byIndex = new();
     private readonly Dictionary<string, MapNodeRuntime> _byStableId = new();
@@ -23,4 +23,12 @@ public sealed class WorldMapRuntimeRegistry
 
     public bool TryGetByIndex(int nodeIndex, out MapNodeRuntime rt) => _byIndex.TryGetValue(nodeIndex, out rt);
     public bool TryGetByStableId(string stableId, out MapNodeRuntime rt) => _byStableId.TryGetValue(stableId, out rt);
+
+    public MapNodeState GetNodeState(string nodeId)
+    {
+        if (_byStableId.TryGetValue(nodeId, out var rt))
+            return rt.State;
+
+        return null;
+    }
 }

@@ -9,13 +9,13 @@ public class BackgroundFollower : MonoBehaviour
     [Range(0f, 1f)]
     public float celestialScale = 0.1f;
 
-    private EnvironmentManager env;
+    private ServiceRoot env;
 
     void Start()
     {
         env = GameObject
             .Find("EnvironmentManager")
-            ?.GetComponent<EnvironmentManager>();
+            ?.GetComponent<ServiceRoot>();
     }
 
     void LateUpdate()
@@ -24,7 +24,7 @@ public class BackgroundFollower : MonoBehaviour
         if (lockY) pos.y = offset.y;
         transform.position = pos;
 
-        CelestialBodyManager celestial = EnvironmentManager.Instance?.CelestialBodyManager;
+        CelestialBodyManager celestial = ServiceRoot.Instance?.CelestialBodyManager;
         if (celestial != null)
         {
             celestial.SetHorizontalOffset(transform.position.x * celestialScale);

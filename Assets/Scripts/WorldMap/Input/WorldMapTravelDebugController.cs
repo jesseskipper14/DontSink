@@ -64,6 +64,7 @@ public sealed class WorldMapTravelDebugController : MonoBehaviour
         }
 
         _ctx = new WorldMapSimContext(_nodesById);
+        RebuildTravelSystem();
     }
 
     private void RebuildTravelSystem()
@@ -124,10 +125,10 @@ public sealed class WorldMapTravelDebugController : MonoBehaviour
             return;
         }
 
-        // snap player transform to destination runtime node position
-        var dest = _ctx.GetNode(toNodeId);
-        player.transform.position = dest.transform.position;
+        // Update authoritative state. Presentation (UI marker) will follow state.
+        player.State.currentNodeId = toNodeId;
 
+        // Optional: if you have travel progress, set it here too (later).
         Debug.Log($"Travel OK: {from} -> {toNodeId} (roll={result.roll})");
     }
 

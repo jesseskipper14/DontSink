@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8297719758377153881}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Seat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 2860622250663761365}
   - component: {fileID: 4536818575339096957}
   - component: {fileID: 7121616924174319418}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Chair_Metal
   m_TagString: Untagged
   m_Icon: {fileID: 0}

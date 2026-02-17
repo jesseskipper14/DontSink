@@ -13,12 +13,12 @@ public class BrightnessReceiver : MonoBehaviour
         // Use the serialized manager if assigned, otherwise fallback to singleton
         if (brightnessManager == null)
         {
-            if (EnvironmentManager.Instance == null)
+            if (ServiceRoot.Instance == null)
             {
                 Debug.LogWarning("BrightnessReceiver: EnvironmentManager instance not found!");
                 return;
             }
-            brightnessManager = EnvironmentManager.Instance.Brightness as GlobalBrightnessManager;
+            brightnessManager = ServiceRoot.Instance.Brightness as GlobalBrightnessManager;
         }
 
         if (brightnessManager != null)

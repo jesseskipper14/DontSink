@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2204226564169754437}
   - component: {fileID: -4097894079738318531}
   - component: {fileID: 2823129831596435963}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BoatDoor_Metal
   m_TagString: Untagged
   m_Icon: {fileID: 0}

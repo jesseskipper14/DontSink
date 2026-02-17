@@ -30,10 +30,40 @@ public class WorldMapDriftSimulator : MonoBehaviour
 
     private float _accum;
 
+    [Header("Pressure Diffusion")]
+    [SerializeField] private WorldMapGraphGenerator graphGenerator;
+    [SerializeField] private ResourceCatalog resourceCatalog;
+
+    [Tooltip("Base pressure transfer rate per in-game hour.")]
+    public float pressureConductance = 0.04f;
+
+    [Tooltip("Multiplier for intra-cluster edges.")]
+    public float intraClusterPressureMult = 1.5f;
+
+    [Tooltip("Multiplier for inter-cluster edges.")]
+    public float interClusterPressureMult = 0.3f;
+
+    [Tooltip("How much dock/trade improve transfer (0–1).")]
+    [Range(0f, 1f)] public float logisticsInfluence = 0.6f;
+
+    [Tooltip("Pressure lost per edge hop.")]
+    [Range(0f, 0.25f)] public float edgeLoss01 = 0.05f;
+
+    [Tooltip("Max absolute pressure transferred per edge per tick.")]
+    public float maxPressurePerEdge = 0.2f;
+
+    [Tooltip("Soft cap throughput when node has many connections.")]
+    public int targetEdgeDegree = 4;
+
+    private PressureDiffusionSystem _diffusion;
+
+
     private void Reset()
     {
         timeOfDay = FindAnyObjectByType<TimeOfDayManager>();
         runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
+        graphGenerator = FindAnyObjectByType<WorldMapGraphGenerator>();
+        resourceCatalog = FindAnyObjectByType<ResourceCatalog>();
     }
 
     private void Update()
@@ -56,7 +86,23 @@ public class WorldMapDriftSimulator : MonoBehaviour
 
     private void TickAllNodes(float dtHours)
     {
+
         if (runtimeBinder == null || !runtimeBinder.IsBuilt) return;
+
+        if (resourceCatalog == null)
+            Debug.LogError("[WorldMapDriftSimulator] resourceCatalog is NULL (ScriptableObject must be assigned in inspector).");
+
+        EnsureDiffusion();
+
+        if (graphGenerator != null && graphGenerator.graph != null)
+        {
+            _diffusion.Tick(
+                graphGenerator.graph,
+                runtimeBinder.Registry,
+                resourceCatalog,
+                dtHours
+            );
+        }
 
         // Iterate runtime nodes (authoritative)
         foreach (var rt in runtimeBinder.Registry.AllRuntimes)
@@ -168,4 +214,23 @@ public class WorldMapDriftSimulator : MonoBehaviour
             else buffs[i] = inst; // struct writeback
         }
     }
+
+    private void EnsureDiffusion()
+    {
+        if (_diffusion != null) return;
+
+        _diffusion = new PressureDiffusionSystem(
+            new PressureDiffusionSystem.Settings
+            {
+                baseConductancePerHour = pressureConductance,
+                intraClusterMultiplier = intraClusterPressureMult,
+                interClusterMultiplier = interClusterPressureMult,
+                dockTradeInfluence01 = logisticsInfluence,
+                edgeLoss01 = edgeLoss01,
+                maxAbsFlowPerEdge = maxPressurePerEdge,
+                targetDegree = targetEdgeDegree
+            }
+        );
+    }
+
 }

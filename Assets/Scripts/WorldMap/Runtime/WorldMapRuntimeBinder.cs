@@ -15,6 +15,9 @@ public class WorldMapRuntimeBinder : MonoBehaviour
 
     private readonly List<GameObject> _spawned = new();
 
+    [SerializeField] private ArchetypeCatalog archetypes;
+    private int worldSeed => generator != null ? generator.seed : 0;
+
     private void OnEnable()
     {
         if (generator != null)
@@ -46,6 +49,16 @@ public class WorldMapRuntimeBinder : MonoBehaviour
 
         Registry.Clear();
 
+        if (archetypes != null)
+        {
+            // Precompute deterministic picks for this graph+seed so:
+            // - affinity repeats can be penalized globally
+            // - archetype coverage can be guaranteed globally
+            archetypes.BuildPlan(generator.graph, generator.seed);
+        }
+
+        archetypes.BuildPlan(generator.graph, generator.seed);
+
         for (int i = 0; i < generator.graph.nodes.Count; i++)
         {
             var n = generator.graph.nodes[i];
@@ -66,6 +79,28 @@ public class WorldMapRuntimeBinder : MonoBehaviour
 
             rt.transform.position = generator.transform.TransformPoint(new Vector3(n.position.x, n.position.y, 0f));
             rt.InitializeFromGraph(i, stableId, n);
+
+            if (archetypes != null)
+            {
+                var affinity = archetypes.PickClusterAffinity(rt.ClusterId, worldSeed);
+                var nodeArch = archetypes.PickNodeArchetype(rt.StableId, rt.ClusterId, worldSeed, affinity);
+
+                rt.SetArchetypeIdentity(
+                    affinity != null ? affinity.affinityId : "(null)",
+                    nodeArch != null ? nodeArch.archetypeId : "(null)"
+                );
+
+                if (nodeArch == null)
+                    Debug.LogWarning($"[Binder] Node {rt.DisplayName} stableId={rt.StableId} got NULL archetype (cluster={rt.ClusterId}).");
+                else if (nodeArch.pressureBiases == null || nodeArch.pressureBiases.Count == 0)
+                    Debug.LogWarning($"[Binder] Node {rt.DisplayName} archetype={nodeArch.archetypeId} has ZERO pressureBiases.");
+
+                rt.State.ApplyArchetype(nodeArch);
+            }
+            else
+            {
+                Debug.LogWarning("[Binder] ArchetypeCatalog not assigned on WorldMapRuntimeBinder.");
+            }
 
             Registry.Add(i, stableId, rt);
             _spawned.Add(rt.gameObject);
