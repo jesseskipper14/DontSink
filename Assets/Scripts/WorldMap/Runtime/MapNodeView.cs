@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 
+// LIKELY DEPRECATED
+
 [RequireComponent(typeof(Collider2D))]
 public class MapNodeView : MonoBehaviour
 {

@@ -50,14 +50,14 @@ Material:
     - _BGWaveSize: 0.1
     - _BGWaveSpeed: 0.2
     - _BGWaveStrength: 0.053
-    - _Brightness: 0.9731738
+    - _Brightness: 0.18893117
     - _EnableExternalAlpha: 0
     - _FogStrength: 0.4
     - _GradientPower: 0.3
     - _HorizonY: 1
     - _SparkleDensity: 200
     - _SparkleFalloffSharpness: 0.891
-    - _SparkleIntensity: 1.1678087
+    - _SparkleIntensity: 0.22671741
     - _SparkleSpeed: 5
     - _WaveScale: 3
     - _WaveSpeed: 0.15

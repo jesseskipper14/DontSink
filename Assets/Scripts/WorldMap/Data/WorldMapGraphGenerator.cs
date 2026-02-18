@@ -344,50 +344,50 @@ public class WorldMapGraphGenerator : MonoBehaviour
         g.nodes[right].kind = NodeKind.Destination;
     }
 
-    private void OnDrawGizmos()
-    {
-        if (!drawGizmos || graph == null) return;
+//    private void OnDrawGizmos()
+//    {
+//        if (!drawGizmos || graph == null) return;
 
-        // Edges
-        Gizmos.color = Color.white;
-        foreach (var e in graph.edges)
-        {
-            var a = graph.nodes[e.a].position;
-            var b = graph.nodes[e.b].position;
-            Gizmos.DrawLine(ToWorld(a), ToWorld(b));
-        }
+//        // Edges
+//        Gizmos.color = Color.white;
+//        foreach (var e in graph.edges)
+//        {
+//            var a = graph.nodes[e.a].position;
+//            var b = graph.nodes[e.b].position;
+//            Gizmos.DrawLine(ToWorld(a), ToWorld(b));
+//        }
 
-        // Nodes
-        for (int i = 0; i < graph.nodes.Count; i++)
-        {
-            var n = graph.nodes[i];
+//        // Nodes
+//        for (int i = 0; i < graph.nodes.Count; i++)
+//        {
+//            var n = graph.nodes[i];
 
-            if (n.isPrimary)
-                Gizmos.color = new Color(1f, 0.6f, 0.1f, 1f); // orange-ish
-            else
-                Gizmos.color = n.kind switch
-                {
-                    NodeKind.StartDock => new Color(0.2f, 1f, 0.3f, 1f),
-                    NodeKind.Destination => new Color(1f, 0.4f, 0.2f, 1f),
-                    _ => new Color(0.9f, 0.9f, 0.9f, 1f)
-                };
+//            if (n.isPrimary)
+//                Gizmos.color = new Color(1f, 0.6f, 0.1f, 1f); // orange-ish
+//            else
+//                Gizmos.color = n.kind switch
+//                {
+//                    NodeKind.StartDock => new Color(0.2f, 1f, 0.3f, 1f),
+//                    NodeKind.Destination => new Color(1f, 0.4f, 0.2f, 1f),
+//                    _ => new Color(0.9f, 0.9f, 0.9f, 1f)
+//                };
 
-            Gizmos.DrawSphere(ToWorld(n.position), nodeGizmoRadius);
-        }
+//            Gizmos.DrawSphere(ToWorld(n.position), nodeGizmoRadius);
+//        }
 
 
-#if UNITY_EDITOR
-        if (drawNodeLabels)
-        {
-            for (int i = 0; i < graph.nodes.Count; i++)
-            {
-                var n = graph.nodes[i];
-                UnityEditor.Handles.Label(ToWorld(n.position) + Vector3.up * 0.35f,
-                    $"#{n.id} C{n.clusterId}\n{n.kind}");
-            }
-        }
-#endif
-    }
+//#if UNITY_EDITOR
+//        if (drawNodeLabels)
+//        {
+//            for (int i = 0; i < graph.nodes.Count; i++)
+//            {
+//                var n = graph.nodes[i];
+//                UnityEditor.Handles.Label(ToWorld(n.position) + Vector3.up * 0.35f,
+//                    $"#{n.id} C{n.clusterId}\n{n.kind}");
+//            }
+//        }
+//#endif
+//    }
 
     private Vector3 ToWorld(Vector2 p) => transform.TransformPoint(new Vector3(p.x, p.y, 0f));
 }

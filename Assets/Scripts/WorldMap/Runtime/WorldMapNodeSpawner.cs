@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// DEPRECATED
+
 public class WorldMapNodeSpawner : MonoBehaviour
 {
     [Header("References")]
@@ -23,20 +25,20 @@ public class WorldMapNodeSpawner : MonoBehaviour
 
     private void OnEnable()
     {
-        if (generator != null)
-            generator.OnGraphGenerated += Respawn;
+        //if (generator != null)
+        //    generator.OnGraphGenerated += Respawn;
     }
 
     private void OnDisable()
     {
-        if (generator != null)
-            generator.OnGraphGenerated -= Respawn;
+        //if (generator != null)
+        //    generator.OnGraphGenerated -= Respawn;
     }
 
     private void Start()
     {
         if (!spawnOnStart) return;
-        Respawn();
+        //Respawn();
     }
 
     [ContextMenu("Respawn Node Views")]

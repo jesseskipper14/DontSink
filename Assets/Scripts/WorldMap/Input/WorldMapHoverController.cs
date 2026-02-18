@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using WorldMap.Player.StarMap;
 
+// DEPRECATED
+
 public class WorldMapHoverController : MonoBehaviour
 {
     [Header("Refs")]

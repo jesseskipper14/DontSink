@@ -37,7 +37,7 @@ public sealed class UIEdgeGraphic : Graphic
         for (int i = 0; i < _segments.Count; i++)
         {
             var s = _segments[i];
-            AddLine(vh, s.a, s.b, t, color);
+            AddLine(vh, s.a, s.b, t, s.color);
         }
     }
 

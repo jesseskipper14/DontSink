@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// DEPRECATED
+
 public class NodeBuffVisualizer : MonoBehaviour
 {
     [Header("Layout")]

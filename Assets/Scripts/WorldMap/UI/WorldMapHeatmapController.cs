@@ -52,6 +52,14 @@ public class WorldMapHeatmapController : MonoBehaviour
 
     [SerializeField] private HeatmapMode mode = HeatmapMode.None;
 
+    [SerializeField] private CanvasGroup overlayRoot; // MapOverlayRoot
+
+    private bool OverlayVisible()
+    {
+        if (overlayRoot == null) return true; // fail-open if not assigned
+        return overlayRoot.alpha > 0.001f && overlayRoot.blocksRaycasts;
+    }
+
     private void Reset()
     {
         spawner = FindAnyObjectByType<WorldMapNodeSpawner>();
@@ -77,6 +85,7 @@ public class WorldMapHeatmapController : MonoBehaviour
 
     private void Update()
     {
+        if (!OverlayVisible()) return;
         if (!autoRefresh) return;
         if (mode == HeatmapMode.None) return;
 
@@ -97,6 +106,7 @@ public class WorldMapHeatmapController : MonoBehaviour
     [ContextMenu("Apply Heatmap")]
     public void Apply()
     {
+        if (!OverlayVisible()) return;
         if (modeLabel != null)
             modeLabel.text = $"Heatmap: {mode}";
 
@@ -227,5 +237,4 @@ public class WorldMapHeatmapController : MonoBehaviour
             return Color.Lerp(foodNeutral, foodPositive, t);
         }
     }
-
 }

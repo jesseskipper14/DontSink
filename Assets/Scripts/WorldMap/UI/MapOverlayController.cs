@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,7 @@ public sealed class MapOverlayController : MonoBehaviour
     [SerializeField] private RectTransform mapPanel;      // MapPanel (RectTransform)
     [SerializeField] private RectTransform nodeContainer; // NodeContainer (RectTransform)
     [SerializeField] private UIEdgeGraphic edgeGraphic;   // UIEdgeGraphic on a child of MapPanel
+    [SerializeField] private WorldMapHeatmapController heatmap;   // UIEdgeGraphic on a child of MapPanel
 
     [Header("Node Prefab")]
     [SerializeField] private Button nodeButtonPrefab;     // Simple UI Button (Image + Button)
@@ -34,6 +36,8 @@ public sealed class MapOverlayController : MonoBehaviour
 
     private bool _visible;
     [SerializeField] private bool drawAllEdges = false;
+
+    public bool IsVisible => _visible;
 
     private void Awake()
     {
@@ -64,8 +68,8 @@ public sealed class MapOverlayController : MonoBehaviour
     private void Update()
     {
         // M toggles map overlay
-        if (Input.GetKeyDown(KeyCode.M))
-            Toggle();
+        //if (Input.GetKeyDown(KeyCode.M)) - controlled by MapTableInteractable now
+        //    Toggle();
     }
 
     public void Toggle() => SetVisible(!_visible);
