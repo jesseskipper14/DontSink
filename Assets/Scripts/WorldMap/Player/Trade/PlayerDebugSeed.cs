@@ -1,9 +1,8 @@
+using System.Collections;
 using UnityEngine;
 
 public sealed class PlayerDebugSeed : MonoBehaviour
 {
-    public WorldMapPlayer player;
-
     [Header("Seed Once")]
     public bool seedOnStart = true;
     public bool seedOnlyIfUninitialized = true;
@@ -15,27 +14,44 @@ public sealed class PlayerDebugSeed : MonoBehaviour
     public string[] itemIds = { "fish", "scrap" };
     public int[] amounts = { 10, 5 };
 
-    private void Reset()
-    {
-        player = FindAnyObjectByType<WorldMapPlayer>();
-    }
+    [Header("Init Wait")]
+    [Min(0f)] public float maxWaitSeconds = 1.0f;
 
     private void Start()
     {
         if (!seedOnStart) return;
+        StartCoroutine(SeedWhenReady());
+    }
 
-        if (player == null || player.State == null)
+    private IEnumerator SeedWhenReady()
+    {
+        // Wait for GameState to exist (scene transitions can race Awake/Start order)
+        float t = 0f;
+        while (GameState.I == null && t < maxWaitSeconds)
         {
-            Debug.LogError("[PlayerDebugSeed] Missing WorldMapPlayer/State.");
-            return;
+            t += Time.unscaledDeltaTime;
+            yield return null;
         }
 
-        if (seedOnlyIfUninitialized && (player.State.credits != 0 || player.State.inventory == null))
-            return;
+        if (GameState.I == null)
+        {
+            Debug.LogWarning("[PlayerDebugSeed] GameState not ready; skipping seed this scene.");
+            yield break;
+        }
 
-        player.State.credits = startingCredits;
+        var state = GameState.I.player;
+        if (state == null)
+        {
+            Debug.LogWarning("[PlayerDebugSeed] GameState.player is null; skipping seed this scene.");
+            yield break;
+        }
 
-        player.State.inventory ??= new InventoryState();
+        if (seedOnlyIfUninitialized && (state.credits != 0 || state.inventory != null))
+            yield break;
+
+        state.credits = startingCredits;
+
+        state.inventory ??= new InventoryState();
 
         int n = Mathf.Min(itemIds?.Length ?? 0, amounts?.Length ?? 0);
         for (int i = 0; i < n; i++)
@@ -43,7 +59,7 @@ public sealed class PlayerDebugSeed : MonoBehaviour
             var id = itemIds[i];
             var amt = amounts[i];
             if (string.IsNullOrWhiteSpace(id) || amt <= 0) continue;
-            player.State.inventory.Add(id, amt);
+            state.inventory.Add(id, amt);
         }
 
         Debug.Log("[PlayerDebugSeed] Seeded player credits + inventory.");

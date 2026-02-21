@@ -14,6 +14,9 @@ public class ExternalWaterSourceSystem : MonoBehaviour
 
     [Header("Boats to affect")]
     [SerializeField] private List<Boat> boats = new List<Boat>();
+    [SerializeField] private bool useBoatRegistry = true;
+
+    private IBoatRegistry _boatRegistry;
 
     private void Awake()
     {
@@ -27,6 +30,70 @@ public class ExternalWaterSourceSystem : MonoBehaviour
 
         // Subscribe to rain events
         rainService.OnRainDropDensityChanged += OnRainDensityChanged;
+    }
+
+    private void OnEnable()
+    {
+        var ctx = SceneContext.Current;
+        if (rainSourceMono == null && ctx != null)
+            rainSourceMono = ctx.rainSourceMono;
+
+        rainService = rainSourceMono as IRainService;
+        if (rainService == null)
+        {
+            Debug.LogWarning("[ExternalWaterSourceSystem] No IRainService available in this scene. Rain disabled.");
+            return;
+        }
+
+        rainService.OnRainDropDensityChanged += OnRainDensityChanged;
+
+        if (useBoatRegistry)
+            HookBoatRegistry();
+    }
+
+    private void OnDisable()
+    {
+        if (rainService != null)
+            rainService.OnRainDropDensityChanged -= OnRainDensityChanged;
+
+        if (_boatRegistry != null)
+        {
+            _boatRegistry.BoatAdded -= OnBoatAdded;
+            _boatRegistry.BoatRemoved -= OnBoatRemoved;
+            _boatRegistry = null;
+        }
+    }
+
+    private void HookBoatRegistry()
+    {
+        var gs = GameState.I;
+        _boatRegistry = gs != null ? gs.boatRegistry : null;
+
+        if (_boatRegistry == null)
+        {
+            Debug.LogWarning("[ExternalWaterSourceSystem] No BoatRegistry available yet.");
+            return;
+        }
+
+        _boatRegistry.BoatAdded += OnBoatAdded;
+        _boatRegistry.BoatRemoved += OnBoatRemoved;
+
+        // Seed current boats
+        boats.Clear();
+        boats.AddRange(_boatRegistry.Boats);
+    }
+
+    private void OnBoatAdded(Boat boat)
+    {
+        if (boat == null) return;
+        if (!boats.Contains(boat))
+            boats.Add(boat);
+    }
+
+    private void OnBoatRemoved(Boat boat)
+    {
+        if (boat == null) return;
+        boats.Remove(boat);
     }
 
     private void OnDestroy()

@@ -57,13 +57,44 @@ public class CelestialBodyManager : MonoBehaviour, ICelestialBodyService
 
     private ITimeOfDayService time;
 
+    /// <summary>
+    /// Called on scene load to reconnect scene-owned transforms/lights.
+    /// Safe to call repeatedly.
+    /// </summary>
+    public void RebindSceneAnchors(
+        Transform sun,
+        Light2D sunLight2D,
+        Transform moon,
+        Light2D moonLight2D,
+        SpriteRenderer corona = null,
+        Material coronaMat = null)
+    {
+        sunTransform = sun;
+        sunLight = sunLight2D;
+        moonTransform = moon;
+        moonLight = moonLight2D;
+
+        if (corona != null) sunCorona = corona;
+        if (coronaMat != null) coronaMaterial = coronaMat;
+
+        // If time already initialized, refresh visuals immediately.
+        if (time != null)
+            OnTimeChanged(time.CurrentTime);
+    }
+
     public void Initialize(ITimeOfDayService timeService)
     {
+        if (time != null)
+            time.OnTimeChanged -= OnTimeChanged;
+
         time = timeService;
-        time.OnTimeChanged += OnTimeChanged;
+
+        if (time != null)
+            time.OnTimeChanged += OnTimeChanged;
 
         // Force initial update
-        OnTimeChanged(time.CurrentTime);
+        if (time != null)
+            OnTimeChanged(time.CurrentTime);
     }
 
     private void OnDestroy()
@@ -125,7 +156,6 @@ public class CelestialBodyManager : MonoBehaviour, ICelestialBodyService
         float x = Mathf.Lerp(moonStartX, moonEndX, moonT) + celestialOffsetX;
 
         moonTransform.localPosition = new Vector3(x, y, moonTransform.localPosition.z);
-
         moonLight.intensity = Mathf.Lerp(moonMinIntensity, moonMaxIntensity, parabola);
     }
 
@@ -164,9 +194,10 @@ public class CelestialBodyManager : MonoBehaviour, ICelestialBodyService
 
     public void SetHorizontalOffset(float x)
     {
-        offsetX = x;
+        celestialOffsetX = x; // <-- FIX: you were writing offsetX and never using it
+        if (time != null)
+            OnTimeChanged(time.CurrentTime);
     }
-
 }
 
 

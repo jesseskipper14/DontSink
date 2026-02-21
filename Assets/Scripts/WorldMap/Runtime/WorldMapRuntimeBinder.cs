@@ -32,7 +32,6 @@ public class WorldMapRuntimeBinder : MonoBehaviour
 
     private void Start()
     {
-        // If graph already exists (eg generated in editor), still build runtime.
         if (generator != null && generator.graph != null)
             Rebuild();
     }
@@ -41,7 +40,6 @@ public class WorldMapRuntimeBinder : MonoBehaviour
     public void Rebuild()
     {
         IsBuilt = false;
-
         Clear();
 
         if (generator == null || generator.graph == null) return;
@@ -50,14 +48,21 @@ public class WorldMapRuntimeBinder : MonoBehaviour
         Registry.Clear();
 
         if (archetypes != null)
-        {
-            // Precompute deterministic picks for this graph+seed so:
-            // - affinity repeats can be penalized globally
-            // - archetype coverage can be guaranteed globally
             archetypes.BuildPlan(generator.graph, generator.seed);
+        else
+            Debug.LogWarning("[Binder] ArchetypeCatalog not assigned.");
+
+        var gs = GameState.I;
+        if (gs == null)
+        {
+            Debug.LogError("[Binder] GameState missing. Cannot persist node state.");
+            return;
         }
 
-        archetypes.BuildPlan(generator.graph, generator.seed);
+        if (gs.worldMap == null)
+            gs.worldMap = new WorldMapSimState();
+
+        var stateStore = gs.worldMap.byNodeStableId;
 
         for (int i = 0; i < generator.graph.nodes.Count; i++)
         {
@@ -65,6 +70,7 @@ public class WorldMapRuntimeBinder : MonoBehaviour
             string stableId = $"{generator.seed}:{n.id}";
 
             MapNodeRuntime rt;
+
             if (runtimePrefab != null)
             {
                 rt = Instantiate(runtimePrefab, container);
@@ -73,33 +79,47 @@ public class WorldMapRuntimeBinder : MonoBehaviour
             else
             {
                 var go = new GameObject($"NodeRuntime_{i}");
-                go.transform.SetParent(container, worldPositionStays: true);
+                go.transform.SetParent(container, true);
                 rt = go.AddComponent<MapNodeRuntime>();
             }
 
-            rt.transform.position = generator.transform.TransformPoint(new Vector3(n.position.x, n.position.y, 0f));
+            rt.transform.position =
+                generator.transform.TransformPoint(new Vector3(n.position.x, n.position.y, 0f));
+
             rt.InitializeFromGraph(i, stableId, n);
 
-            if (archetypes != null)
+            // -------------------------------
+            // PERSISTENT STATE REUSE
+            // -------------------------------
+
+            if (!stateStore.TryGetValue(stableId, out var state))
             {
-                var affinity = archetypes.PickClusterAffinity(rt.ClusterId, worldSeed);
-                var nodeArch = archetypes.PickNodeArchetype(rt.StableId, rt.ClusterId, worldSeed, affinity);
+                state = rt.State; // use freshly created state
+                stateStore[stableId] = state;
 
-                rt.SetArchetypeIdentity(
-                    affinity != null ? affinity.affinityId : "(null)",
-                    nodeArch != null ? nodeArch.archetypeId : "(null)"
-                );
+                if (archetypes != null)
+                {
+                    var affinity = archetypes.PickClusterAffinity(rt.ClusterId, worldSeed);
+                    var nodeArch = archetypes.PickNodeArchetype(
+                        rt.StableId,
+                        rt.ClusterId,
+                        worldSeed,
+                        affinity
+                    );
 
-                if (nodeArch == null)
-                    Debug.LogWarning($"[Binder] Node {rt.DisplayName} stableId={rt.StableId} got NULL archetype (cluster={rt.ClusterId}).");
-                else if (nodeArch.pressureBiases == null || nodeArch.pressureBiases.Count == 0)
-                    Debug.LogWarning($"[Binder] Node {rt.DisplayName} archetype={nodeArch.archetypeId} has ZERO pressureBiases.");
+                    rt.SetArchetypeIdentity(
+                        affinity != null ? affinity.affinityId : "(null)",
+                        nodeArch != null ? nodeArch.archetypeId : "(null)"
+                    );
 
-                rt.State.ApplyArchetype(nodeArch);
+                    if (nodeArch != null)
+                        state.ApplyArchetype(nodeArch);
+                }
             }
             else
             {
-                Debug.LogWarning("[Binder] ArchetypeCatalog not assigned on WorldMapRuntimeBinder.");
+                // Reattach persistent state
+                rt.AttachExistingState(state);
             }
 
             Registry.Add(i, stableId, rt);
@@ -107,7 +127,43 @@ public class WorldMapRuntimeBinder : MonoBehaviour
         }
 
         IsBuilt = true;
+        EnsurePlayerHasCurrentNode();
         OnRuntimeBuilt?.Invoke();
+    }
+
+    private void EnsurePlayerHasCurrentNode()
+    {
+        var gs = GameState.I;
+        if (gs == null) return;
+
+        var p = gs.player;
+        if (p == null) return;
+
+        if (!string.IsNullOrEmpty(p.currentNodeId))
+            return;
+
+        var g = generator?.graph;
+        if (g != null && g.nodes != null)
+        {
+            for (int i = 0; i < g.nodes.Count; i++)
+            {
+                if (g.nodes[i].kind == NodeKind.StartDock)
+                {
+                    if (Registry.TryGetByIndex(i, out var rt) && rt != null)
+                    {
+                        p.currentNodeId = rt.StableId;
+                        return;
+                    }
+                }
+            }
+        }
+
+        foreach (var rt in Registry.AllRuntimes)
+        {
+            if (rt == null) continue;
+            p.currentNodeId = rt.StableId;
+            return;
+        }
     }
 
     private void Clear()

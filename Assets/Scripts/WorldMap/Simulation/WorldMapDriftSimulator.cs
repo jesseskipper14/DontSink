@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class WorldMapDriftSimulator : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private TimeOfDayManager timeOfDay;
     [SerializeField] private WorldMapRuntimeBinder runtimeBinder;
+    private TimeOfDayManager _timeOfDay;
 
     [Header("Ticking")]
     [Tooltip("How often to simulate drift (seconds).")]
@@ -56,11 +57,43 @@ public class WorldMapDriftSimulator : MonoBehaviour
     public int targetEdgeDegree = 4;
 
     private PressureDiffusionSystem _diffusion;
+    private bool _warnedTime;
+    private static readonly List<NodeStatId> _tmpStatKeys = new List<NodeStatId>(32);
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        ResolveServices();
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Persistent object survives; scene-local sim is reconstructed.
+        // Still, the reference can be null due to execution order.
+        ResolveServices();
+    }
+
+    private void ResolveServices()
+    {
+        // Prefer a direct singleton if you have it.
+        // If you don’t, FindAnyObjectByType is acceptable here (it’s not per-frame).
+        _timeOfDay = FindAnyObjectByType<TimeOfDayManager>();
+
+        if (_timeOfDay == null && !_warnedTime)
+        {
+            _warnedTime = true;
+            Debug.LogWarning("[WorldMapDriftSimulator] TimeOfDayManager not found yet; drift paused.");
+        }
+    }
 
     private void Reset()
     {
-        timeOfDay = FindAnyObjectByType<TimeOfDayManager>();
+        _timeOfDay = FindAnyObjectByType<TimeOfDayManager>();
         runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
         graphGenerator = FindAnyObjectByType<WorldMapGraphGenerator>();
         resourceCatalog = FindAnyObjectByType<ResourceCatalog>();
@@ -68,7 +101,7 @@ public class WorldMapDriftSimulator : MonoBehaviour
 
     private void Update()
     {
-        if (timeOfDay == null) return;
+        if (_timeOfDay == null) return;
         if (runtimeBinder == null || !runtimeBinder.IsBuilt) return;
 
         _accum += Time.deltaTime * simSpeed;
@@ -78,7 +111,7 @@ public class WorldMapDriftSimulator : MonoBehaviour
 
             // Convert real seconds to game-hours using your TimeOfDayManager’s dayLength.
             // dayLength = real seconds per in-game day (24h).
-            float gameHours = (24f / Mathf.Max(0.0001f, timeOfDay.DayLength)) * simTickSeconds;
+            float gameHours = (24f / Mathf.Max(0.0001f, _timeOfDay.DayLength)) * simTickSeconds;
 
             TickAllNodes(gameHours);
         }
@@ -129,10 +162,13 @@ public class WorldMapDriftSimulator : MonoBehaviour
             }
 
             // Drift stats with buff accel
-            var keys = new List<NodeStatId>(state.Stats.Keys);
-            for (int i = 0; i < keys.Count; i++)
+            _tmpStatKeys.Clear();
+            foreach (var kvp in state.Stats)
+                _tmpStatKeys.Add(kvp.Key);
+
+            for (int i = 0; i < _tmpStatKeys.Count; i++)
             {
-                var statId = keys[i];
+                var statId = _tmpStatKeys[i];
                 var stat = state.GetStat(statId);
 
                 float old = stat.value;

@@ -114,4 +114,10 @@ public class CameraManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C))
             ToggleNextCamera();
     }
+
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
+
 }

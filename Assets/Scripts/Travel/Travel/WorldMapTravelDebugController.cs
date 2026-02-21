@@ -5,7 +5,7 @@ public sealed class WorldMapTravelDebugController : MonoBehaviour
 {
     [Header("Scene References")]
     [SerializeField] private WorldMapRuntimeBinder runtimeBinder;
-    [SerializeField] private WorldMapPlayer player;
+    [SerializeField] private WorldMapPlayerRef player;
 
     [Header("Travel Rules")]
     [SerializeField] private WorldMapTravelRulesConfig travelRules;
@@ -29,7 +29,7 @@ public sealed class WorldMapTravelDebugController : MonoBehaviour
     private void Reset()
     {
         runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
-        player = FindAnyObjectByType<WorldMapPlayer>();
+        player = FindAnyObjectByType<WorldMapPlayerRef>();
     }
 
     private void OnEnable()
@@ -102,33 +102,18 @@ public sealed class WorldMapTravelDebugController : MonoBehaviour
     [ContextMenu("Debug Try Travel")]
     public void DebugTryTravel()
     {
-        if (_ctx == null || player == null || player.State == null)
-        {
-            Debug.LogError("TravelDebug: missing ctx/player/state (is runtime built?)");
-            return;
-        }
-
-        if (string.IsNullOrEmpty(toNodeId))
-        {
-            Debug.LogError("TravelDebug: toNodeId is empty.");
-            return;
-        }
+        //if (_ctx == null || player == null || player.State == null) { ... }
 
         var from = player.State.currentNodeId;
         var req = new TravelRequest(from, toNodeId, routeLength, seed);
 
         var result = _travelSystem.TryTravel(req, _ctx, player.State);
 
-        if (!result.success)
-        {
-            Debug.LogWarning($"Travel FAIL: {result.failureReason} (roll={result.roll})");
-            return;
-        }
+        //if (!result.success) { ... }
 
-        // Update authoritative state. Presentation (UI marker) will follow state.
-        player.State.currentNodeId = toNodeId;
+        // Remove this line (TravelSystem already does it on success):
+        // player.State.currentNodeId = toNodeId;
 
-        // Optional: if you have travel progress, set it here too (later).
         Debug.Log($"Travel OK: {from} -> {toNodeId} (roll={result.roll})");
     }
 

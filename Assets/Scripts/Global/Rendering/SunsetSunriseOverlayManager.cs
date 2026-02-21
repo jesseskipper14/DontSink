@@ -6,6 +6,11 @@ public class SunriseSunsetOverlayManager : MonoBehaviour, ISunriseSunsetService
     [SerializeField] private SpriteRenderer overlayRenderer;
     [SerializeField] private Material overlayMaterial;
 
+
+
+    // Warn-once flags
+    private bool warnedMissingRenderer;
+    private bool warnedMissingMaterial;
     // =====================================================
     // Sunrise Times
     // =====================================================
@@ -52,6 +57,47 @@ public class SunriseSunsetOverlayManager : MonoBehaviour, ISunriseSunsetService
     private ITimeOfDayService time;
     private ICloudService cloud;
 
+
+    private void CacheMaterial()
+    {
+        if (overlayMaterial != null) return; // explicit override already set
+        if (!overlayRenderer)
+        {
+            if (!warnedMissingRenderer)
+            {
+                warnedMissingRenderer = true;
+                Debug.LogWarning("SunriseSunsetOverlayManager: overlayRenderer missing (sunrise/sunset overlay disabled for this scene).");
+            }
+            return;
+        }
+
+        overlayMaterial = overlayRenderer.sharedMaterial;
+        if (overlayMaterial == null && !warnedMissingMaterial)
+        {
+            warnedMissingMaterial = true;
+            Debug.LogWarning("SunriseSunsetOverlayManager: overlayRenderer has no material (overlay disabled for this scene).");
+        }
+    }
+
+    /// <summary>
+    /// Rebind scene-only visual anchors. Safe to call multiple times (e.g., every scene load).
+    /// Does NOT resubscribe events; Initialize owns subscriptions.
+    /// </summary>
+    public void RebindSceneAnchors(SpriteRenderer renderer, Material materialOverride = null)
+    {
+        overlayRenderer = renderer;
+        overlayMaterial = materialOverride;
+
+        warnedMissingRenderer = false;
+        warnedMissingMaterial = false;
+
+        CacheMaterial();
+
+        // Refresh visuals
+        if (time != null) OnTimeChanged(time.CurrentTime);
+        if (cloud != null) onCloudCoverageChanged(cloud.CloudCoverage);
+    }
+
     public void Initialize(ITimeOfDayService timeService, ICloudService cloudService)
     {
         time = timeService;
@@ -63,6 +109,8 @@ public class SunriseSunsetOverlayManager : MonoBehaviour, ISunriseSunsetService
         originalSunriseAlphaMax = sunriseAlphaMax;
         originalSunsetAlphaMax = sunsetAlphaMax;
 
+
+        CacheMaterial();
         OnTimeChanged(time.CurrentTime);
         onCloudCoverageChanged(cloud.CloudCoverage);
     }

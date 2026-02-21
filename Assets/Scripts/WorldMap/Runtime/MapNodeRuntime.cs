@@ -55,6 +55,26 @@ public sealed class MapNodeRuntime : MonoBehaviour
         _state = new MapNodeState(def != null ? def.NodeId : "");
     }
 
+    public void AttachExistingState(MapNodeState existing)
+    {
+        if (existing == null)
+        {
+            Debug.LogWarning($"[MapNodeRuntime] AttachExistingState got null for {_stableId}.");
+            return;
+        }
+
+        // IMPORTANT: stableId should match. If it doesn't, something is very wrong.
+        if (!string.IsNullOrEmpty(_stableId) && !string.Equals(existing.NodeId, _stableId, StringComparison.Ordinal))
+        {
+            Debug.LogWarning(
+                $"[MapNodeRuntime] Attaching state with mismatched nodeId. " +
+                $"runtime={_stableId} state={existing.NodeId}. Using state anyway."
+            );
+        }
+
+        _state = existing;
+    }
+
     public void InitializeFromGraph(int nodeIndex, string stableId, MapNode data)
     {
         _nodeIndex = nodeIndex;

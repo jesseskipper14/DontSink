@@ -70,6 +70,15 @@ public class Boat : MonoBehaviour, IForceBody
     public float MomentOfInertia =>
         Mass * (Width * Width + Height * Height) / 12f;
 
+    [Header("Identity")]
+    [SerializeField] private string boatInstanceId; // stable across scenes
+    public string BoatInstanceId => boatInstanceId;
+
+    public void SetBoatInstanceId(string id)
+    {
+        boatInstanceId = id ?? "";
+    }
+
     // ========================
     // Unity Lifecycle
     // ========================

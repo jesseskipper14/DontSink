@@ -41,10 +41,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Alpha: 0.40009138
-    - _Brightness: 0.8334094
+    - _Alpha: 0
+    - _Brightness: 0.5
     - _EnableExternalAlpha: 0
-    - _GradientPower: 3.3340945
+    - _GradientPower: 0
     - _Intensity: 2
     - _Radius: 0.5
     - _Softness: 0.3

@@ -6,6 +6,9 @@ using WorldMap.Player.Trade;
 public sealed class WorldMapPlayerState
 {
     public string currentNodeId;
+    public string lockedDestinationNodeId; // stableId
+    public string lockedSourceNodeId;      // stableId (optional, but handy)
+
     public int credits;
     public InventoryState inventory = new InventoryState();
 

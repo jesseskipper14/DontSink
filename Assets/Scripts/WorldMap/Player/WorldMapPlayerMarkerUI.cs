@@ -7,7 +7,7 @@ public sealed class WorldMapPlayerMarkerUI : MonoBehaviour
     [SerializeField] private RectTransform mapPanel;            // same mapPanel used for nodes
     [SerializeField] private WorldMapGraphGenerator generator;
     [SerializeField] private WorldMapRuntimeBinder runtimeBinder;
-    [SerializeField] private WorldMapPlayer player;
+    [SerializeField] private WorldMapPlayerRef playerRef;
 
     [Header("Placement")]
     [SerializeField] private Vector2 pixelOffset = Vector2.zero;
@@ -18,7 +18,7 @@ public sealed class WorldMapPlayerMarkerUI : MonoBehaviour
         mapPanel = GetComponentInParent<RectTransform>(); // override in inspector if wrong
         generator = FindAnyObjectByType<WorldMapGraphGenerator>();
         runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
-        player = FindAnyObjectByType<WorldMapPlayer>();
+        playerRef = FindAnyObjectByType<WorldMapPlayerRef>();
     }
 
     private void OnEnable()
@@ -43,9 +43,9 @@ public sealed class WorldMapPlayerMarkerUI : MonoBehaviour
         if (marker == null || mapPanel == null) return;
         if (generator?.graph == null) return;
         if (runtimeBinder == null || !runtimeBinder.IsBuilt) return;
-        if (player?.State == null) return;
+        if (playerRef?.State == null) return;
 
-        if (!runtimeBinder.Registry.TryGetByStableId(player.State.currentNodeId, out var rt) || rt == null)
+        if (!runtimeBinder.Registry.TryGetByStableId(playerRef.State.currentNodeId, out var rt) || rt == null)
             return;
 
         int nodeIndex = rt.NodeIndex;

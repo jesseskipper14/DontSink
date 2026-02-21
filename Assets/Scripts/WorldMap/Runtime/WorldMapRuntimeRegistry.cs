@@ -17,8 +17,18 @@ public sealed class WorldMapRuntimeRegistry : INodeStateLookup
         _byStableId[stableId] = runtime;
     }
 
-    public MapNodeRuntime GetByIndex(int nodeIndex) => _byIndex[nodeIndex];
-    public MapNodeRuntime GetByStableId(string stableId) => _byStableId[stableId];
+    public MapNodeRuntime GetByIndex(int nodeIndex)
+    {
+        _byIndex.TryGetValue(nodeIndex, out var rt);
+        return rt;
+    }
+
+    public MapNodeRuntime GetByStableId(string stableId)
+    {
+        _byStableId.TryGetValue(stableId, out var rt);
+        return rt;
+    }
+
     public IEnumerable<MapNodeRuntime> AllRuntimes => _byIndex.Values;
 
     public bool TryGetByIndex(int nodeIndex, out MapNodeRuntime rt) => _byIndex.TryGetValue(nodeIndex, out rt);

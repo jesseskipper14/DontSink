@@ -2,9 +2,6 @@ using UnityEngine;
 
 public class WaterVisualManager : MonoBehaviour, IWaterVisualService
 {
-    // =====================================================
-    // Sea
-    // =====================================================
     [Header("Sea")]
     [SerializeField] private SpriteRenderer seaRenderer;
     [SerializeField] private Material seaMaterial;
@@ -17,9 +14,6 @@ public class WaterVisualManager : MonoBehaviour, IWaterVisualService
     [SerializeField] private float sparkleMin = 0f;
     [SerializeField] private float sparkleMax = 1.2f;
 
-    // =====================================================
-    // Side Water
-    // =====================================================
     [Header("Side Water")]
     [SerializeField] private MeshRenderer sideWaterRenderer;
     [SerializeField] private Material sideWaterMaterial;
@@ -27,24 +21,50 @@ public class WaterVisualManager : MonoBehaviour, IWaterVisualService
     [Header("Foam")]
     [SerializeField, Range(0f, 1f)] private float foamIntensity = 1f;
 
-    // =====================================================
-
-    private ITimeOfDayService time;
     private IBrightnessService brightness;
 
     public void Initialize(IBrightnessService brightnessService)
     {
+        // Unsubscribe if re-initialized
+        if (brightness != null)
+            brightness.OnBrightnessChanged -= OnBrightnessChanged;
+
         brightness = brightnessService;
-        brightness.OnBrightnessChanged += OnBrightnessChanged;
+
+        if (brightness != null)
+            brightness.OnBrightnessChanged += OnBrightnessChanged;
 
         CacheMaterials();
-        RefreshAll();
+        RefreshAllSafe();
+    }
+
+    /// <summary>
+    /// Called on scene load to reconnect renderers/materials that live in the scene.
+    /// Safe to call repeatedly.
+    /// </summary>
+    public void RebindSceneAnchors(SpriteRenderer sea, MeshRenderer sideWater)
+    {
+        seaRenderer = sea;
+        sideWaterRenderer = sideWater;
+
+        // Materials belong to renderers; recache them.
+        seaMaterial = null;
+        sideWaterMaterial = null;
+
+        CacheMaterials();
+        RefreshAllSafe();
     }
 
     private void OnDestroy()
     {
         if (brightness != null)
             brightness.OnBrightnessChanged -= OnBrightnessChanged;
+    }
+
+    public void OnBrightnessChanged(float brightness01)
+    {
+        UpdateBrightness(brightness01);
+        UpdateSparkles(brightness01);
     }
 
     private void CacheMaterials()
@@ -56,16 +76,13 @@ public class WaterVisualManager : MonoBehaviour, IWaterVisualService
             sideWaterMaterial = sideWaterRenderer.sharedMaterial;
     }
 
-    public void OnBrightnessChanged(float brightness01)
+    private void RefreshAllSafe()
     {
-        UpdateBrightness(brightness01);
-        UpdateSparkles(brightness01);
-    }
+        if (brightness == null) return;
 
-    private void RefreshAll()
-    {
-        UpdateSparkles(brightness.Brightness01);
-        UpdateBrightness(brightness.Brightness01);
+        float b = brightness.Brightness01;
+        UpdateSparkles(b);
+        UpdateBrightness(b);
         UpdateFoam();
     }
 
@@ -87,6 +104,7 @@ public class WaterVisualManager : MonoBehaviour, IWaterVisualService
     private void UpdateSparkles(float brightness01)
     {
         float sparkleBrightness = Mathf.Lerp(sparkleMin, sparkleMax, brightness01);
+
         if (seaMaterial)
             seaMaterial.SetFloat("_SparkleIntensity", sparkleBrightness);
 
@@ -100,4 +118,3 @@ public class WaterVisualManager : MonoBehaviour, IWaterVisualService
             sideWaterMaterial.SetFloat("_FoamIntensity", foamIntensity);
     }
 }
-

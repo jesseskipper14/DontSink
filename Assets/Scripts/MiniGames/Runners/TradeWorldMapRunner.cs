@@ -7,7 +7,7 @@ public sealed class TradeWorldMapRunner : MonoBehaviour
 {
     [Header("Refs")]
     public MiniGameOverlayHost overlay;
-    public WorldMapPlayer player;
+    public WorldMapPlayerRef playerRef;
     public TimeOfDayManager timeOfDay;
 
     [Tooltip("Runtime binder (node authoritative runtime registry).")]
@@ -49,7 +49,7 @@ public sealed class TradeWorldMapRunner : MonoBehaviour
     private void Reset()
     {
         overlay = FindAnyObjectByType<MiniGameOverlayHost>();
-        player = FindAnyObjectByType<WorldMapPlayer>();
+        playerRef = FindAnyObjectByType<WorldMapPlayerRef>();
         timeOfDay = FindAnyObjectByType<TimeOfDayManager>();
         binder = FindAnyObjectByType<WorldMapRuntimeBinder>();
 
@@ -61,7 +61,7 @@ public sealed class TradeWorldMapRunner : MonoBehaviour
     private void Awake()
     {
         if (overlay == null) overlay = FindAnyObjectByType<MiniGameOverlayHost>();
-        if (player == null) player = FindAnyObjectByType<WorldMapPlayer>();
+        if (playerRef == null) playerRef = FindAnyObjectByType<WorldMapPlayerRef>();
         if (timeOfDay == null) timeOfDay = FindAnyObjectByType<TimeOfDayManager>();
         if (binder == null) binder = FindAnyObjectByType<WorldMapRuntimeBinder>();
 
@@ -107,9 +107,9 @@ public sealed class TradeWorldMapRunner : MonoBehaviour
 
     private void BuildMarketIfPossible()
     {
-        if (player != null && player.State != null && binder != null && binder.Registry != null && _policy != null)
+        if (playerRef != null && playerRef.State != null && binder != null && binder.Registry != null && _policy != null)
         {
-            _market = new MarketService(player.State, _policy, binder.Registry);
+            _market = new MarketService(playerRef.State, _policy, binder.Registry);
         }
     }
 
@@ -129,7 +129,7 @@ public sealed class TradeWorldMapRunner : MonoBehaviour
 
     private void OnMiniGameEffect(MiniGameEffect e)
     {
-        if (player?.State == null) return;
+        if (playerRef?.State == null) return;
         if (e.kind != MiniGameEffectKind.Transaction) return;
         if (e.system != "Trade") return;
 
@@ -139,7 +139,7 @@ public sealed class TradeWorldMapRunner : MonoBehaviour
             return;
         }
 
-        string nodeId = player.State.currentNodeId;
+        string nodeId = playerRef.State.currentNodeId;
         var nodeState = binder.Registry.GetNodeState(nodeId);
         int bucket = timeOfDay != null ? timeOfDay.DayIndex : 0;
 
@@ -149,7 +149,7 @@ public sealed class TradeWorldMapRunner : MonoBehaviour
 
         if (TradeEffectApplier.TryApply(
             e,
-            player.State,
+            playerRef.State,
             _activeOffers,
             nodeState,
             _feePolicy,
@@ -173,12 +173,12 @@ public sealed class TradeWorldMapRunner : MonoBehaviour
     public void OpenTrade()
     {
         if (overlay == null) overlay = FindAnyObjectByType<MiniGameOverlayHost>();
-        if (player == null) player = FindAnyObjectByType<WorldMapPlayer>();
+        if (playerRef == null) playerRef = FindAnyObjectByType<WorldMapPlayerRef>();
         if (timeOfDay == null) timeOfDay = FindAnyObjectByType<TimeOfDayManager>();
         if (binder == null) binder = FindAnyObjectByType<WorldMapRuntimeBinder>();
 
         if (overlay == null) { Debug.LogError("[TradeWorldMapRunner] Missing MiniGameOverlayHost."); return; }
-        if (player == null || player.State == null) { Debug.LogError("[TradeWorldMapRunner] Missing WorldMapPlayer/State."); return; }
+        if (playerRef == null || playerRef.State == null) { Debug.LogError("[TradeWorldMapRunner] Missing WorldMapPlayerRef/State."); return; }
         if (timeOfDay == null) { Debug.LogError("[TradeWorldMapRunner] Missing TimeOfDayManager."); return; }
         if (binder == null || binder.Registry == null || !binder.IsBuilt) { Debug.LogError("[TradeWorldMapRunner] Missing/broken WorldMapRuntimeBinder or runtime not built yet."); return; }
         if (resourceCatalog == null) { Debug.LogError("[TradeWorldMapRunner] Missing ResourceCatalog reference (assign in inspector)."); return; }
@@ -193,7 +193,7 @@ public sealed class TradeWorldMapRunner : MonoBehaviour
             return;
         }
 
-        string nodeId = player.State.currentNodeId;
+        string nodeId = playerRef.State.currentNodeId;
         int bucket = timeOfDay.DayIndex;
 
         var offers = _market.GetOffers(nodeId, bucket);
@@ -219,7 +219,7 @@ public sealed class TradeWorldMapRunner : MonoBehaviour
             worldUnhealthFeeBoost
         );
 
-        var cart = new TradeCartridge(nodeId, bucket, offers, player.State, nodeState, feePreview, resourceCatalog);
+        var cart = new TradeCartridge(nodeId, bucket, offers, playerRef.State, nodeState, feePreview, resourceCatalog);
         overlay.Open(cart, ctx);
 
 

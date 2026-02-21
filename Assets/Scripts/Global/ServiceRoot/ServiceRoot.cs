@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ServiceRoot : MonoBehaviour
 {
     public static ServiceRoot Instance { get; private set; }
+
 
     [Header("Managers (scene or prefab wired)")]
     [SerializeField] private CelestialBodyManager celestialManager;
@@ -168,5 +170,72 @@ public class ServiceRoot : MonoBehaviour
         if (msg.Contains("WeatherManager")) _warnedWeather = true;
         if (msg.Contains("Cloud")) _warnedCloud = true;
         if (msg.Contains("WaveField")) _warnedWaves = true;
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Re-find scene context
+        var ctx = SceneContext.Current != null ? SceneContext.Current : FindAnyObjectByType<SceneContext>();
+
+        if (ctx != null)
+        {
+            // WaveField
+            waveField = ctx.waveField != null ? ctx.waveField : FindAnyObjectByType<WaveField>();
+            if (waveManager != null)
+            {
+                if (waveField != null) waveManager.Initialize(Weather, waveField);
+                else WarnOnce("WaveField missing (waves will be disabled in this scene).");
+            }
+
+            // Sun/Moon anchors
+            if (celestialManager != null)
+            {
+                celestialManager.RebindSceneAnchors(
+                    ctx.sunTransform, ctx.sunLight,
+                    ctx.moonTransform, ctx.moonLight,
+                    ctx.sunCorona, ctx.coronaMaterial);
+            }
+
+            if (waterVisualManager != null)
+            {
+                waterVisualManager.RebindSceneAnchors(
+                    ctx.seaRenderer,
+                    ctx.sideWaterRenderer
+                );
+            }
+
+
+            // Clouds
+            if (cloudManager != null)
+            {
+                cloudManager.RebindSceneAnchors(ctx.cloudRenderer, ctx.cloudMaterialOverride);
+            }
+
+            // Sky + stars
+            if (skyVisualManager != null)
+            {
+                skyVisualManager.RebindSceneAnchors(ctx.starsRenderer, ctx.skyMaterialOverride, ctx.starsMaterialOverride);
+            }
+
+            // Sunrise/Sunset overlay
+            if (sunriseSunsetManager != null)
+            {
+                sunriseSunsetManager.RebindSceneAnchors(ctx.sunriseOverlayRenderer, ctx.sunriseOverlayMaterialOverride);
+            }
+        }
+        else
+        {
+            WarnOnce("SceneContext missing (scene bindings not applied).");
+        }
     }
 }

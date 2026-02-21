@@ -49,12 +49,12 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Brightness: 0.899
+    - _Brightness: 0.08159466
     - _CloudDensity: 0.5
     - _CloudScale: 1.5
     - _CloudSpeed: 0.02
     - _CloudType: 1
-    - _Coverage: 0.343
+    - _Coverage: 0.4
     - _Darkness: 0
     - _Density: 0.473
     - _Depth: 5
@@ -84,9 +84,12 @@ Material:
     - _Speed: 0.02
     - _SunriseFactor: 0
     - _SunriseTintStrength: 0.875
+    - _TintStrength: 0
     - _UndersideDarkness: 0.4
     - _VariationStrength: 0.05
     - _VerticalShadow: 0
+    - _VeryLowScale: 0.9
+    - _VeryLowSpeed: 0.0001
     - _VolumeTilt: 0.5
     - _WaterFalloff: 2.5
     - _ZWrite: 0
@@ -107,6 +110,7 @@ Material:
     - _SunriseTint: {r: 1, g: 0.42064387, b: 0.2980392, a: 1}
     - _SurfaceColor: {r: 0.19999996, g: 0.6, b: 0.9, a: 0.7}
     - _Tint: {r: 1, g: 0.5, b: 0.29999998, a: 1}
+    - _TintColor: {r: 1, g: 0.5, b: 0.29999998, a: 1}
     - _TopSky: {r: 0.28999996, g: 0.43499997, b: 0.647, a: 1}
     - _WaterlineBottom: {r: 0.34999996, g: 0.65, b: 0.85, a: 1}
     - _WaterlineTop: {r: 0.45, g: 0.7, b: 0.9, a: 1}

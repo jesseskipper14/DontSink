@@ -6,7 +6,7 @@ public sealed class StarObservationWorldMapRunner : MonoBehaviour
 {
     [Header("Refs")]
     public MiniGameOverlayHost overlay;
-    public WorldMapPlayer player;
+    public WorldMapPlayerRef playerRef;
     public WorldMapRuntimeBinder runtimeBinder;
 
     [Header("Target")]
@@ -23,7 +23,7 @@ public sealed class StarObservationWorldMapRunner : MonoBehaviour
     private void Reset()
     {
         overlay = FindAnyObjectByType<MiniGameOverlayHost>();
-        player = FindAnyObjectByType<WorldMapPlayer>();
+        playerRef = FindAnyObjectByType<WorldMapPlayerRef>();
         runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
     }
 
@@ -49,7 +49,7 @@ public sealed class StarObservationWorldMapRunner : MonoBehaviour
     private void OnMiniGameEffect(MiniGameEffect e)
     {
         // Only listen while we have an active route context.
-        if (string.IsNullOrEmpty(_activeRouteKey) || _svc == null || player?.State == null) return;
+        if (string.IsNullOrEmpty(_activeRouteKey) || _svc == null || playerRef?.State == null) return;
 
         // Only handle StarMap progress effects for THIS session's route.
         if (e.kind != MiniGameEffectKind.Progress) return;
@@ -61,7 +61,7 @@ public sealed class StarObservationWorldMapRunner : MonoBehaviour
 
         // Bridge for travel compatibility: once Known, mirror into unlockedRoutes.
         if (newState == RouteKnowledgeState.Known)
-            player.State.unlockedRoutes.Add(_activeRouteKey);
+            playerRef.State.unlockedRoutes.Add(_activeRouteKey);
     }
 
     [ContextMenu("StarObs/Open (Current -> Target)")]
@@ -72,9 +72,9 @@ public sealed class StarObservationWorldMapRunner : MonoBehaviour
             Debug.LogError("[StarObservationWorldMapRunner] Missing MiniGameOverlayHost.");
             return;
         }
-        if (player == null || player.State == null)
+        if (playerRef == null || playerRef.State == null)
         {
-            Debug.LogError("[StarObservationWorldMapRunner] Missing WorldMapPlayer/State.");
+            Debug.LogError("[StarObservationWorldMapRunner] Missing WorldMapPlayerRef/State.");
             return;
         }
         if (runtimeBinder == null || !runtimeBinder.IsBuilt)
@@ -82,7 +82,7 @@ public sealed class StarObservationWorldMapRunner : MonoBehaviour
             Debug.LogError("[StarObservationWorldMapRunner] Runtime not built yet.");
             return;
         }
-        if (!runtimeBinder.Registry.TryGetByStableId(player.State.currentNodeId, out var fromRt) || fromRt == null)
+        if (!runtimeBinder.Registry.TryGetByStableId(playerRef.State.currentNodeId, out var fromRt) || fromRt == null)
         {
             Debug.LogError("[StarObservationWorldMapRunner] Could not resolve current node runtime.");
             return;
@@ -98,8 +98,8 @@ public sealed class StarObservationWorldMapRunner : MonoBehaviour
             return;
         }
 
-        player.State.starMap ??= new PlayerStarMapState();
-        _svc = new StarMapService(player.State.starMap);
+        playerRef.State.starMap ??= new PlayerStarMapState();
+        _svc = new StarMapService(playerRef.State.starMap);
 
         _activeRouteKey = RouteKey.Make(fromRt.StableId, toRt.StableId);
 

@@ -20,4 +20,10 @@ public class PhysicsManager : MonoBehaviour
         if (globals == null)
             Debug.LogError("PhysicsGlobals not assigned in PhysicsGlobalsHolder!");
     }
+
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
+
 }

@@ -4,7 +4,7 @@ using WorldMap.Player.StarMap;
 public sealed class StarMapDebugController : MonoBehaviour
 {
     [Header("Refs")]
-    public WorldMapPlayer player; // optional; auto-find if null
+    public WorldMapPlayerRef playerRef; // optional; auto-find if null
     public WorldMapRuntimeBinder runtimeBinder; // optional; auto-find if null
 
     [Header("Target")]
@@ -21,8 +21,8 @@ public sealed class StarMapDebugController : MonoBehaviour
 
     private void Awake()
     {
-        // Don't bind here. WorldMapPlayer.State may not exist yet.
-        if (player == null) player = FindFirstObjectByType<WorldMapPlayer>();
+        // Don't bind here. WorldMapPlayerRefRef.State may not exist yet.
+        if (playerRef == null) playerRef = FindFirstObjectByType<WorldMapPlayerRef>();
         if (runtimeBinder == null) runtimeBinder = FindFirstObjectByType<WorldMapRuntimeBinder>();
     }
 
@@ -44,9 +44,9 @@ public sealed class StarMapDebugController : MonoBehaviour
         if (_bound)
             return true;
 
-        if (player == null)
+        if (playerRef == null)
         {
-            if (logIfNotReady) Debug.LogError("[StarMapDebugController] No WorldMapPlayer found/assigned.");
+            if (logIfNotReady) Debug.LogError("[StarMapDebugController] No WorldMapPlayerRef found/assigned.");
             return false;
         }
 
@@ -56,17 +56,17 @@ public sealed class StarMapDebugController : MonoBehaviour
             return false;
         }
 
-        // State may be initialized later by your WorldMapPlayer flow.
-        if (player.State == null)
+        // State may be initialized later by your WorldMapPlayerRef flow.
+        if (playerRef.State == null)
         {
-            if (logIfNotReady) Debug.LogWarning("[StarMapDebugController] WorldMapPlayer.State not ready yet.");
+            if (logIfNotReady) Debug.LogWarning("[StarMapDebugController] WorldMapPlayerRefRef.State not ready yet.");
             return false;
         }
 
-        if (player.State.starMap == null)
-            player.State.starMap = new PlayerStarMapState();
+        if (playerRef.State.starMap == null)
+            playerRef.State.starMap = new PlayerStarMapState();
 
-        _svc = new StarMapService(player.State.starMap);
+        _svc = new StarMapService(playerRef.State.starMap);
         _bound = true;
 
         Debug.Log("[StarMapDebugController] Bound to player starMap state.");
@@ -139,7 +139,7 @@ public sealed class StarMapDebugController : MonoBehaviour
 
         // 2) Compatibility layer for current travel gate (unlockedRoutes)
         // Safe even for intra-cluster (harmless).
-        player.State.unlockedRoutes.Add(key);
+        playerRef.State.unlockedRoutes.Add(key);
 
         Debug.Log($"[StarMap] Known+UnlockTravel {fromId}->{toId} key={key}");
     }
@@ -151,7 +151,7 @@ public sealed class StarMapDebugController : MonoBehaviour
         toStableId = null;
 
         // currentNodeId is the player's runtime stableId string
-        fromStableId = player.State.currentNodeId;
+        fromStableId = playerRef.State.currentNodeId;
         if (string.IsNullOrWhiteSpace(fromStableId))
         {
             Debug.LogError("[StarMapDebugController] Player currentNodeId is null/empty.");

@@ -24,6 +24,10 @@ public class CloudManager : MonoBehaviour, ICloudService
 
     private float lastSentCoverage = -1f;
 
+    // Warn-once flags (avoid log spam when scenes don't have cloud visuals)
+    private bool warnedMissingRenderer;
+    private bool warnedMissingMaterial;
+
     private IBrightnessService brightnessService;
     private ISunriseSunsetService sunriseSunsetService;
     private IWeatherService weatherService;
@@ -59,6 +63,32 @@ public class CloudManager : MonoBehaviour, ICloudService
         SetCoverage(weatherService.CloudCoverage, 0f);
     }
 
+    /// <summary>
+    /// Rebind scene-only visual anchors. Safe to call multiple times (e.g., every scene load).
+    /// Does NOT resubscribe events; Initialize owns subscriptions.
+    /// </summary>
+    public void RebindSceneAnchors(Renderer renderer, Material materialOverride = null)
+    {
+        cloudRenderer = renderer;
+        cloudMaterial = materialOverride;
+
+        // reset warn flags per scene so you get one useful warning in new scenes
+        warnedMissingRenderer = false;
+        warnedMissingMaterial = false;
+
+        CacheMaterial();
+
+        // Re-apply current state to the new material (if any)
+        if (cloudMaterial != null)
+        {
+            if (brightnessService != null) UpdateBrightness(brightnessService.Brightness01);
+            if (sunriseSunsetService != null) UpdateSunTint(sunriseSunsetService.Tint01);
+
+            ApplyCoverage(cloudCoverage);
+        }
+    }
+
+
     private void OnDestroy()
     {
         if (brightnessService != null)
@@ -73,8 +103,23 @@ public class CloudManager : MonoBehaviour, ICloudService
 
     private void CacheMaterial()
     {
-        if (cloudRenderer && cloudMaterial == null)
-            cloudMaterial = cloudRenderer.sharedMaterial;
+        if (cloudMaterial != null) return; // explicit override already set
+        if (!cloudRenderer)
+        {
+            if (!warnedMissingRenderer)
+            {
+                warnedMissingRenderer = true;
+                Debug.LogWarning("CloudManager: cloudRenderer missing (cloud visuals disabled for this scene).");
+            }
+            return;
+        }
+
+        cloudMaterial = cloudRenderer.sharedMaterial;
+        if (cloudMaterial == null && !warnedMissingMaterial)
+        {
+            warnedMissingMaterial = true;
+            Debug.LogWarning("CloudManager: cloudRenderer has no material (cloud visuals disabled for this scene).");
+        }
     }
 
     private void Update()

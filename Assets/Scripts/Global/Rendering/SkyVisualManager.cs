@@ -22,6 +22,10 @@ public class SkyVisualManager : MonoBehaviour, ISkyVisualService
     private ITimeOfDayService timeService;
     private IBrightnessService brightnessService;
 
+
+    // Warn-once flags
+    private bool warnedMissingSkyMaterial;
+    private bool warnedMissingStarsMaterial;
     /// <summary>
     /// Called by EnvironmentManager on initialization
     /// </summary>
@@ -33,8 +37,45 @@ public class SkyVisualManager : MonoBehaviour, ISkyVisualService
         brightnessService = brightness;
         brightnessService.OnBrightnessChanged += UpdateSky;
 
-        // Force initial stars update
-        UpdateStars(timeService.CurrentTime);
+        // Cache materials (scene refs may be injected later via RebindSceneAnchors)
+        CacheMaterials();
+
+        // Initial sync
+        if (brightnessService != null) UpdateSky(brightnessService.Brightness01);
+        if (timeService != null) UpdateStars(timeService.CurrentTime);
+    }
+
+
+    private void CacheMaterials()
+    {
+        if (starsMaterial == null && starsRenderer != null)
+            starsMaterial = starsRenderer.sharedMaterial;
+
+        // skyMaterial is expected to be an asset reference in many setups, but allow overrides.
+    }
+
+    /// <summary>
+    /// Rebind scene-only visual anchors. Safe to call multiple times (e.g., every scene load).
+    /// Does NOT resubscribe events; Initialize owns subscriptions.
+    /// </summary>
+    public void RebindSceneAnchors(SpriteRenderer stars, Material skyOverride = null, Material starsOverride = null)
+    {
+        starsRenderer = stars;
+
+        if (skyOverride != null)
+            skyMaterial = skyOverride;
+
+        starsMaterial = starsOverride; // can be null; CacheMaterials will pick up from renderer
+
+        // reset warn flags per scene
+        warnedMissingSkyMaterial = false;
+        warnedMissingStarsMaterial = false;
+
+        CacheMaterials();
+
+        // Refresh using current service state
+        if (brightnessService != null) UpdateSky(brightnessService.Brightness01);
+        if (timeService != null) UpdateStars(timeService.CurrentTime);
     }
 
     private void OnDestroy()
@@ -53,7 +94,11 @@ public class SkyVisualManager : MonoBehaviour, ISkyVisualService
     {
         if (!skyMaterial)
         {
-            Debug.Log("No material found");
+            if (!warnedMissingSkyMaterial)
+            {
+                warnedMissingSkyMaterial = true;
+                Debug.LogWarning("SkyVisualManager: skyMaterial missing (sky visuals disabled for this scene).");
+            }
             return;
         }
 
@@ -67,8 +112,19 @@ public class SkyVisualManager : MonoBehaviour, ISkyVisualService
     /// </summary>
     private void UpdateStars(float hour)
     {
-        if (!starsMaterial) return;
-
+        if (!starsMaterial)
+        {
+            CacheMaterials();
+            if (!starsMaterial)
+            {
+                if (!warnedMissingStarsMaterial)
+                {
+                    warnedMissingStarsMaterial = true;
+                    Debug.LogWarning("SkyVisualManager: stars material missing (stars disabled for this scene).");
+                }
+                return;
+            }
+        }
         float alpha;
 
         if (hour >= starsFadeInStart && hour <= starsFadeInEnd)

@@ -14,7 +14,7 @@ public class WorldMapHoverController : MonoBehaviour
     [SerializeField] private WorldMapTooltipUI tooltip;
     [SerializeField] private WorldMapRuntimeBinder runtimeBinder;
     [SerializeField] private WorldMapGraphGenerator generator;
-    [SerializeField] private WorldMapPlayer player;
+    [SerializeField] private WorldMapPlayerRef playerRef;
     [SerializeField] private WorldMapTravelDebugController travelDebug;
     [SerializeField] private WorldMapTravelRulesConfig travelRules;
     [SerializeField] private KeyCode freezeKey = KeyCode.LeftShift;
@@ -47,7 +47,7 @@ public class WorldMapHoverController : MonoBehaviour
         if (eventManager == null) eventManager = FindAnyObjectByType<WorldMapEventManager>();
         runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
         generator = FindAnyObjectByType<WorldMapGraphGenerator>();
-        player = FindAnyObjectByType<WorldMapPlayer>();
+        playerRef = FindAnyObjectByType<WorldMapPlayerRef>();
         travelDebug = FindAnyObjectByType<WorldMapTravelDebugController>();
         resourceCatalog = FindAnyObjectByType<ResourceCatalog>(); // NOTE: likely null if it's not in-scene
         // travelRules is a ScriptableObject; assign via inspector (no reliable scene lookup)
@@ -60,7 +60,7 @@ public class WorldMapHoverController : MonoBehaviour
         if (eventManager == null) eventManager = FindAnyObjectByType<WorldMapEventManager>();
         if (runtimeBinder == null) runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
         if (generator == null) generator = FindAnyObjectByType<WorldMapGraphGenerator>();
-        if (player == null) player = FindAnyObjectByType<WorldMapPlayer>();
+        if (playerRef == null) playerRef = FindAnyObjectByType<WorldMapPlayerRef>();
         if (travelDebug == null)
             travelDebug = FindAnyObjectByType<WorldMapTravelDebugController>();
         if (resourceCatalog == null) resourceCatalog = FindAnyObjectByType<ResourceCatalog>(); // NOTE: likely null if it's not in-scene
@@ -70,6 +70,7 @@ public class WorldMapHoverController : MonoBehaviour
 
     private void Update()
     {
+
         if (cam == null || tooltip == null) return;
         if (runtimeBinder == null || !runtimeBinder.IsBuilt) return;
 
@@ -385,10 +386,10 @@ public class WorldMapHoverController : MonoBehaviour
     private RouteHoverInfo TryBuildRouteInfoFromPlayer(int hoveredNodeIndex)
     {
         if (generator?.graph == null) return null;
-        if (player?.State == null) return null;
+        if (playerRef?.State == null) return null;
         if (runtimeBinder == null || !runtimeBinder.IsBuilt) return null;
 
-        if (!runtimeBinder.Registry.TryGetByStableId(player.State.currentNodeId, out var currentRt) || currentRt == null)
+        if (!runtimeBinder.Registry.TryGetByStableId(playerRef.State.currentNodeId, out var currentRt) || currentRt == null)
             return null;
 
         int fromIndex = currentRt.NodeIndex;
@@ -416,7 +417,7 @@ public class WorldMapHoverController : MonoBehaviour
 
         // Star Map visual state (intra-cluster treated as Known).
         var kState = StarMapVisualQuery.GetVisualState(
-            player.State,
+            playerRef.State,
             fromRt.StableId, fromRt.ClusterId,
             toRt.StableId, toRt.ClusterId);
 

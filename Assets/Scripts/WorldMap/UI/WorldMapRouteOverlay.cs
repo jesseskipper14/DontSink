@@ -7,7 +7,8 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
     [Header("References")]
     [SerializeField] private WorldMapGraphGenerator generator;
     [SerializeField] private WorldMapRuntimeBinder runtimeBinder;
-    [SerializeField] private WorldMapPlayer player;
+    [SerializeField] private WorldMapPlayerRef player;
+    [SerializeField] private MapOverlayController mapOverlay; // or your selection system
     [SerializeField] private WorldMapNodeSelection selection;
 
     [Header("Behavior")]
@@ -43,7 +44,7 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
     {
         generator = FindAnyObjectByType<WorldMapGraphGenerator>();
         runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
-        player = FindAnyObjectByType<WorldMapPlayer>();
+        player = FindAnyObjectByType<WorldMapPlayerRef>();
         selection = FindAnyObjectByType<WorldMapNodeSelection>();
     }
 
@@ -95,20 +96,44 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
         }
 
         // Build the set of anchors we should render routes from.
-        var state = HoverState;
-        if (state == null) { ClearUI(); return; }
-
         var anchors = new HashSet<int>();
-        foreach (var a in state.Pinned) anchors.Add(a);
-        if (state.HoveredNodeIndex >= 0) anchors.Add(state.HoveredNodeIndex);
+
+        // Hover anchors (optional)
+        var hover = HoverState;
+        if (hover != null)
+        {
+            foreach (var a in hover.Pinned) anchors.Add(a);
+            if (hover.HoveredNodeIndex >= 0) anchors.Add(hover.HoveredNodeIndex);
+        }
+
+        // Selection anchor (UI selection)
+        if (mapOverlay != null)
+        {
+            int sel = mapOverlay.SelectedNodeIndex; // add getter in MapOverlayController
+            if (sel >= 0) anchors.Add(sel);
+        }
+        else if (selection != null && selection.SelectedNodeId >= 0)
+        {
+            anchors.Add(selection.SelectedNodeId);
+        }
+
+        // Locked destination anchor (authoritative state)
+        var lockedStable = player.State.lockedDestinationNodeId;
+        if (!string.IsNullOrEmpty(lockedStable) &&
+            runtimeBinder.Registry.TryGetByStableId(lockedStable, out var lockedRt) &&
+            lockedRt != null)
+        {
+            anchors.Add(lockedRt.NodeIndex);
+        }
 
         if (anchors.Count == 0) { ClearUI(); return; }
+
 
 
         // UI mode
         if (uiEdges != null)
         {
-            RebuildUI(anchors);
+            RebuildUI(anchors, currentRt);
             return;
         }
 
@@ -120,7 +145,7 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
     // UI MODE
     // =========================
 
-    private void RebuildUI(HashSet<int> anchors)
+    private void RebuildUI(HashSet<int> anchors, MapNodeRuntime currentRt)
     {
         if (uiEdges == null || uiMapPanel == null || uiNodeContainer == null)
         {
@@ -147,6 +172,15 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
         Vector2 pad = size * 0.08f;
         min -= pad;
         max += pad;
+
+        int lockedIndex = -1;
+        var lockedStable = player.State.lockedDestinationNodeId;
+        if (!string.IsNullOrEmpty(lockedStable) &&
+            runtimeBinder.Registry.TryGetByStableId(lockedStable, out var lockedRt) &&
+            lockedRt != null)
+        {
+            lockedIndex = lockedRt.NodeIndex;
+        }
 
         // Build segments in the SAME anchoredPosition space as node buttons
         var A = new List<Vector2>(256);
@@ -181,6 +215,16 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
                 RouteKnowledgeState.Rumored => (Color32)new Color(0.35f, 0.95f, 1f, 0.75f),
                 _ => (Color32)new Color(1f, 0.25f, 0.25f, 0.85f)
             };
+
+            bool isLockedEdge =
+                lockedIndex >= 0 &&
+                currentRt != null &&
+                ((e.a == currentRt.NodeIndex && e.b == lockedIndex) ||
+                 (e.b == currentRt.NodeIndex && e.a == lockedIndex));
+
+            if (isLockedEdge)
+                c = (Color32)Color.green;
+
 
             if (!showLockedRoutes && kState != RouteKnowledgeState.Known)
                 continue;
