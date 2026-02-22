@@ -17,7 +17,7 @@ public class WorldMapHoverController : MonoBehaviour
     [SerializeField] private WorldMapPlayerRef playerRef;
     [SerializeField] private WorldMapTravelDebugController travelDebug;
     [SerializeField] private WorldMapTravelRulesConfig travelRules;
-    [SerializeField] private KeyCode freezeKey = KeyCode.LeftShift;
+    //[SerializeField] private KeyCode freezeKey = KeyCode.LeftShift;
     [SerializeField] private ResourceCatalog resourceCatalog;
     private readonly List<RaycastResult> _uiHits = new List<RaycastResult>(32);
     private int _lastHoveredNodeId = -1;

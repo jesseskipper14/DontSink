@@ -48,7 +48,7 @@ namespace MiniGames
 
         // Overlay visual motion (does not affect target)
         private Vector2 _overlayShift01;
-        private float _overlayShiftVel;
+        //private float _overlayShiftVel;
         private float _overlayTiltDeg;
         private float _overlayTiltVel;
 
@@ -110,7 +110,7 @@ namespace MiniGames
             _moveVel01 = Vector2.zero;
 
             _overlayShift01 = Vector2.zero;
-            _overlayShiftVel = 0f;
+            //_overlayShiftVel = 0f;
             _overlayTiltDeg = 0f;
             _overlayTiltVel = 0f;
 

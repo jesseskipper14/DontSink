@@ -11,7 +11,7 @@ public sealed class WorldMapTravelDebugController : MonoBehaviour
     [SerializeField] private WorldMapTravelRulesConfig travelRules;
     [SerializeField] private float maxRouteLengthOverride = 999f; // debug huge by default
     [SerializeField] private bool useOverrideMaxRouteLength = false;
-    [SerializeField] private bool allowIntraClusterFreeTravel = true; // already in RouteUnlockRestriction
+    //[SerializeField] private bool allowIntraClusterFreeTravel = true; // already in RouteUnlockRestriction
 
     [Header("Debug Override")]
     [SerializeField] private TravelOverrideMode overrideMode = TravelOverrideMode.None;

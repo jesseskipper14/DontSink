@@ -38,9 +38,16 @@ public sealed class MapOverlayController : MonoBehaviour
     [SerializeField] private int lockedNodeIndex = -1;
     [SerializeField] private string lockedStableId;
 
+    public event Action OverlayDirty;
+    private void MarkOverlayDirty() => OverlayDirty?.Invoke();
 
     [Range(0.005f, 0.1f)]
     public float nodeSizePercent = 0.025f; // 2.5%
+
+    [SerializeField] private float selectedScale = 1.35f;
+    [SerializeField] private float normalScale = 1f;
+
+    private readonly List<RectTransform> _nodeRects = new List<RectTransform>(128);
 
     private readonly List<Button> _spawned = new List<Button>(128);
     private readonly List<Vector2> _edgeA = new List<Vector2>(256);
@@ -189,6 +196,7 @@ public sealed class MapOverlayController : MonoBehaviour
             hover.NodeId = nodeIndex;
 
             var rt = (RectTransform)btn.transform;
+            _nodeRects.Add(rt);
             rt.anchoredPosition = panelPos;
 
             float minDim = Mathf.Min(mapPanel.rect.width, mapPanel.rect.height);
@@ -208,6 +216,8 @@ public sealed class MapOverlayController : MonoBehaviour
             SyncLockFromPlayerState();
             RefreshHUD();
         }
+        RefreshSelectionVisuals();
+        OverlayDirty?.Invoke();
     }
 
     private void BuildEdges(Vector2 min, Vector2 max)
@@ -262,6 +272,8 @@ public sealed class MapOverlayController : MonoBehaviour
     {
         selectedNodeIndex = nodeIndex;
         RefreshHUD();
+        RefreshSelectionVisuals();
+        MarkOverlayDirty();
     }
 
     //private void Select(int nodeId)
@@ -391,6 +403,24 @@ public sealed class MapOverlayController : MonoBehaviour
 
     private void OnLockClicked()
     {
+        if (player == null || player.State == null)
+            return;
+
+        // If currently locked to the selected node, unlock.
+        if (lockedNodeIndex == selectedNodeIndex && !string.IsNullOrEmpty(lockedStableId))
+        {
+            lockedNodeIndex = -1;
+            lockedStableId = null;
+
+            player.State.lockedDestinationNodeId = null;
+            player.State.lockedSourceNodeId = null;
+
+            RefreshHUD();
+            MarkOverlayDirty();
+            return;
+        }
+
+        // Otherwise, lock to selected (but validate)
         if (!CanLockSelected())
             return;
 
@@ -401,20 +431,35 @@ public sealed class MapOverlayController : MonoBehaviour
         {
             lockedStableId = rt.StableId;
 
-            // ✅ Authoritative commit
             player.State.lockedSourceNodeId = player.State.currentNodeId;
             player.State.lockedDestinationNodeId = lockedStableId;
         }
         else
         {
+            lockedNodeIndex = -1;
             lockedStableId = null;
 
-            // ✅ Clear authoritative lock if we failed
             player.State.lockedDestinationNodeId = null;
             player.State.lockedSourceNodeId = null;
         }
 
         RefreshHUD();
+        MarkOverlayDirty();
+    }
+
+    public void ClearLock()
+    {
+        lockedNodeIndex = -1;
+        lockedStableId = null;
+
+        if (player != null && player.State != null)
+        {
+            player.State.lockedDestinationNodeId = null;
+            player.State.lockedSourceNodeId = null;
+        }
+
+        RefreshHUD();
+        MarkOverlayDirty();
     }
 
     private void ClearNodes()
@@ -428,6 +473,7 @@ public sealed class MapOverlayController : MonoBehaviour
         _edgeA.Clear();
         _edgeB.Clear();
         if (edgeGraphic != null) edgeGraphic.SetSegments(_edgeA, _edgeB);
+        _nodeRects.Clear();
     }
 
     private void ClearEdges()
@@ -440,19 +486,18 @@ public sealed class MapOverlayController : MonoBehaviour
 
     private void SyncLockFromPlayerState()
     {
-        if (player == null || player.State == null)
-            return;
+        if (player == null || player.State == null) return;
+
+        string old = lockedStableId;
 
         lockedStableId = player.State.lockedDestinationNodeId;
 
         if (string.IsNullOrEmpty(lockedStableId))
         {
             lockedNodeIndex = -1;
-            return;
         }
-
-        if (runtimeBinder != null && runtimeBinder.IsBuilt &&
-            runtimeBinder.Registry.TryGetByStableId(lockedStableId, out var rt) && rt != null)
+        else if (runtimeBinder != null && runtimeBinder.IsBuilt &&
+                 runtimeBinder.Registry.TryGetByStableId(lockedStableId, out var rt) && rt != null)
         {
             lockedNodeIndex = rt.NodeIndex;
         }
@@ -460,6 +505,9 @@ public sealed class MapOverlayController : MonoBehaviour
         {
             lockedNodeIndex = -1;
         }
+
+        if (old != lockedStableId)
+            MarkOverlayDirty();
     }
 
     //private float GetRouteLengthGraphSpace(int fromIndex, int toIndex)
@@ -651,5 +699,17 @@ public sealed class MapOverlayController : MonoBehaviour
         if (runtimeBinder == null) runtimeBinder = ctx.runtimeBinder;
         if (travelDebug == null) travelDebug = ctx.travelDebug;
         // travelLauncher too
+    }
+
+    private void RefreshSelectionVisuals()
+    {
+        for (int i = 0; i < _nodeRects.Count; i++)
+        {
+            var rt = _nodeRects[i];
+            if (rt == null) continue;
+
+            float s = (i == selectedNodeIndex) ? selectedScale : normalScale;
+            rt.localScale = new Vector3(s, s, 1f);
+        }
     }
 }

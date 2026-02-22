@@ -190,7 +190,7 @@ public class CelestialBodyManager : MonoBehaviour, ICelestialBodyService
         }
     }
 
-    private float offsetX = 0f;
+    //private float offsetX = 0f;
 
     public void SetHorizontalOffset(float x)
     {

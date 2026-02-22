@@ -205,11 +205,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nodeSceneName: NodeScene
-  ctx: {fileID: 0}
+  ctx: {fileID: 579210103}
   sourceDockX: -20
   baseTravelDistance: 60
   distanceScale: 1
-  boatPrefab: {fileID: 2683575577854610556, guid: a4801e98a0f699748a7b4b5340a55bf8, type: 3}
 --- !u!4 &6692259
 Transform:
   m_ObjectHideFlags: 0
@@ -458,136 +457,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: {fileID: 11400000, guid: 93d79923dcd9a4046b1b471f2dd967dc, type: 2}
   thicknessOverride: -1
---- !u!1 &57327493
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 57327497}
-  - component: {fileID: 57327494}
-  - component: {fileID: 57327496}
-  - component: {fileID: 57327495}
-  m_Layer: 0
-  m_Name: PlayerParty
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &57327494
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 57327493}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d701992747e7a0645ae68cdcb39493e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  generator: {fileID: 0}
-  runtimeBinder: {fileID: 0}
---- !u!114 &57327495
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 57327493}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5642ca3ab0515284b9ca1351fabcf860, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  seedOnStart: 1
-  seedOnlyIfUninitialized: 1
-  startingCredits: 10000
-  itemIds:
-  - fish
-  - scrap
-  - wood
-  - grain
-  - luxuries
-  - fuel
-  - cloth
-  - rope
-  - medkit
-  amounts: 640000006400000064000000640000006400000064000000640000006400000064000000
-  maxWaitSeconds: 1
---- !u!212 &57327496
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 57327493}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 3327537318ffc794cb305f7510fb7eba, type: 3}
-  m_Color: {r: 1, g: 0.3929118, b: 0, a: 0.5882353}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
---- !u!4 &57327497
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 57327493}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -450.1386, y: 300.09045, z: -6.0222325}
-  m_LocalScale: {x: 2, y: 2, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1009179702}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &66339440
 GameObject:
   m_ObjectHideFlags: 0
@@ -1975,7 +1844,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   kind: 0
-  requiredTag: PlayerBoat
+  requiredTag: BoardingArea
 --- !u!61 &278965649
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2010,7 +1879,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -7, y: 19}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -2020,7 +1889,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 14.35, y: 3.83}
+  m_Size: {x: 30, y: 40}
   m_EdgeRadius: 0
 --- !u!212 &278965650
 SpriteRenderer:
@@ -2140,7 +2009,7 @@ MonoBehaviour:
   rainManager: {fileID: 962807202}
   skyVisualManager: {fileID: 708396882}
   sunriseSunsetManager: {fileID: 1532585058}
-  timeOfDayManager: {fileID: 1070312852}
+  timeOfDayManager: {fileID: 0}
   waterVisualManager: {fileID: 289075593}
   weatherManager: {fileID: 1430445374}
   windManager: {fileID: 1404372458}
@@ -2878,7 +2747,6 @@ MonoBehaviour:
   travelRules: {fileID: 11400000, guid: f2203f4f2d874584d86af2d9da433bd4, type: 2}
   maxRouteLengthOverride: 999
   useOverrideMaxRouteLength: 0
-  allowIntraClusterFreeTravel: 1
   overrideMode: 1
   toNodeId: 2:7
   routeLength: 1
@@ -2902,7 +2770,6 @@ MonoBehaviour:
   playerRef: {fileID: 1003246069}
   travelDebug: {fileID: 405521342}
   travelRules: {fileID: 11400000, guid: f2203f4f2d874584d86af2d9da433bd4, type: 2}
-  freezeKey: 304
   resourceCatalog: {fileID: 11400000, guid: 2077c5a54ff1b2440a8f306ea0defd5c, type: 2}
   hoverLayers:
     serializedVersion: 2
@@ -2987,7 +2854,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   kind: 1
-  requiredTag: PlayerBoat
+  requiredTag: BoardingArea
 --- !u!61 &407928606
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3022,7 +2889,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 7, y: 19}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -3032,7 +2899,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 14.35, y: 3.83}
+  m_Size: {x: 30, y: 40}
   m_EdgeRadius: 0
 --- !u!212 &407928607
 SpriteRenderer:
@@ -4332,6 +4199,7 @@ GameObject:
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
   - component: {fileID: 519420033}
+  - component: {fileID: 519420034}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -4464,7 +4332,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c567f1d7f7748ef4885905d28e9fc546, type: 3}
   m_Name: 
@@ -4475,6 +4343,28 @@ MonoBehaviour:
   enableRotation: 0
   rotationSmooth: 2
   tiltFactor: 0.3
+--- !u!114 &519420034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ecad4925baa80f4697adfced35bb55a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 519420031}
+  internalCamera: {fileID: 0}
+  otherCameras: []
+  waveSystem: {fileID: 948650516}
+  mainCameraWaveZ: 0
+  internalCameraWaveZ: 10
+  followTarget: {fileID: 1166432440}
+  followOffset: {x: 0, y: 0, z: -10}
+  followSmooth: 12
+  followActiveCameraOnly: 1
 --- !u!1 &522460808
 GameObject:
   m_ObjectHideFlags: 0
@@ -4665,14 +4555,16 @@ MonoBehaviour:
   overlayRoot: {fileID: 343354235}
   mapViewport: {fileID: 527841522}
   content: {fileID: 1652246947}
+  panMouseButton: 1
+  dragPanSpeed: 1
+  requirePointerOverViewport: 1
+  enableKeyboardPan: 0
   panSpeed: 1200
   fastMultiplier: 2.5
-  requireMiddleMouseToPan: 0
   enableZoom: 1
   zoomSpeed: 0.2
   minScale: 0.3
   maxScale: 10
-  onlyWhenPointerOverViewport: 1
   clampToViewport: 1
 --- !u!222 &527841525
 CanvasRenderer:
@@ -8183,7 +8075,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   overlay: {fileID: 1009179701}
-  player: {fileID: 57327497}
+  player: {fileID: 0}
   allowHotkeyM: 1
   autoCloseWhenFar: 0
   autoCloseDistance: 3.5
@@ -8281,6 +8173,8 @@ MonoBehaviour:
   lockedNodeIndex: -1
   lockedStableId: 
   nodeSizePercent: 0.025
+  selectedScale: 1.35
+  normalScale: 1
   drawAllEdges: 0
 --- !u!4 &1009179702
 Transform:
@@ -8296,7 +8190,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 522460809}
-  - {fileID: 57327497}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1023016266
@@ -8669,7 +8562,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1070312851}
-  - component: {fileID: 1070312852}
   m_Layer: 0
   m_Name: TimeOfDayManager
   m_TagString: Untagged
@@ -8692,18 +8584,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 286549564}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1070312852
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1070312850}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b4a74e1b5de5684e886249cd4433593, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1083064088
 GameObject:
   m_ObjectHideFlags: 0
@@ -9335,6 +9215,8 @@ GameObject:
   - component: {fileID: 1166432452}
   - component: {fileID: 1166432451}
   - component: {fileID: 1166432450}
+  - component: {fileID: 1166432456}
+  - component: {fileID: 1166432457}
   m_Layer: 0
   m_Name: CharacterPlayer
   m_TagString: Untagged
@@ -9684,6 +9566,46 @@ MonoBehaviour:
   exitKey: 27
   throttleRampPerSecond: 3
   throttleReturnPerSecond: 4
+--- !u!114 &1166432456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1166432433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dbf3556700e8614cbc0de5390bd738e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hullLayerName: Hull
+--- !u!114 &1166432457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1166432433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5642ca3ab0515284b9ca1351fabcf860, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  seedOnStart: 1
+  seedOnlyIfUninitialized: 1
+  startingCredits: 10000
+  itemIds:
+  - fish
+  - scrap
+  - wood
+  - grain
+  - luxuries
+  - fuel
+  - cloth
+  - rope
+  - medkit
+  amounts: 640000006400000064000000640000006400000064000000640000006400000064000000
+  maxWaitSeconds: 1
 --- !u!1 &1183042289
 GameObject:
   m_ObjectHideFlags: 0
@@ -11592,7 +11514,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1288380115
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12195,7 +12117,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1378561643
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12886,7 +12808,7 @@ RectTransform:
   m_GameObject: {fileID: 1445187141}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1652246947}
@@ -12927,7 +12849,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.670145, b: 0.3537736, a: 0.5882353}
+  m_Color: {r: 1, g: 0.39853412, b: 0.3160377, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -14103,8 +14025,6 @@ MonoBehaviour:
   binder: {fileID: 787634783}
   resourceCatalog: {fileID: 11400000, guid: 2077c5a54ff1b2440a8f306ea0defd5c, type: 2}
   marketTuning: {fileID: 11400000, guid: ee6a95ed0ef95b747b681a1972fba72b, type: 2}
-  cooldownSellToPlayerBuckets: 2
-  cooldownBuyFromPlayerBuckets: 1
   pressureImpulsePerUnitSold: 0.08
   pressureImpulsePerOrder: 0.15
   minImpulsePerLine: 0.05

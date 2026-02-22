@@ -33,6 +33,8 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
     [SerializeField] private float baseWidth = 0.06f;
     [SerializeField] private float zOffset = -0.5f;
 
+    private string _lastCurrentNodeId;
+
     private readonly List<LineRenderer> _lines = new();
 
     // In WorldMapRouteOverlay
@@ -50,6 +52,8 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
 
     private void OnEnable()
     {
+        EnsureRefs();
+
         if (rebuildOnGraphGenerated && generator != null)
             generator.OnGraphGenerated += Rebuild;
 
@@ -57,8 +61,16 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
             runtimeBinder.OnRuntimeBuilt += Rebuild;
 
         if (hoverController != null)
+        {
+            hoverController.HoverChanged -= Rebuild; // idempotent
             hoverController.HoverChanged += Rebuild;
+        }
 
+        if (mapOverlay != null)
+        {
+            mapOverlay.OverlayDirty -= Rebuild; // idempotent
+            mapOverlay.OverlayDirty += Rebuild;
+        }
     }
 
     private void OnDisable()
@@ -71,11 +83,26 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
 
         if (hoverController != null)
             hoverController.HoverChanged -= Rebuild;
+
+        if (mapOverlay != null)
+            mapOverlay.OverlayDirty -= Rebuild;
     }
 
     private void Start()
     {
         Rebuild();
+    }
+
+    private void Update()
+    {
+        if (player == null || player.State == null) return;
+
+        var cur = player.State.currentNodeId;
+        if (cur != _lastCurrentNodeId)
+        {
+            _lastCurrentNodeId = cur;
+            Rebuild();
+        }
     }
 
     [ContextMenu("Rebuild Route Overlay")]
@@ -95,10 +122,9 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
             return;
         }
 
-        // Build the set of anchors we should render routes from.
+        // Build hover anchors (these expand to all incident edges)
         var anchors = new HashSet<int>();
 
-        // Hover anchors (optional)
         var hover = HoverState;
         if (hover != null)
         {
@@ -106,47 +132,57 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
             if (hover.HoveredNodeIndex >= 0) anchors.Add(hover.HoveredNodeIndex);
         }
 
-        // Selection anchor (UI selection)
-        if (mapOverlay != null)
-        {
-            int sel = mapOverlay.SelectedNodeIndex; // add getter in MapOverlayController
-            if (sel >= 0) anchors.Add(sel);
-        }
-        else if (selection != null && selection.SelectedNodeId >= 0)
-        {
-            anchors.Add(selection.SelectedNodeId);
-        }
+        // Determine route target (selection/lock) for single-edge drawing
+        int routeTargetIndex = -1;
 
-        // Locked destination anchor (authoritative state)
+        // Prefer locked destination if present (authoritative)
         var lockedStable = player.State.lockedDestinationNodeId;
         if (!string.IsNullOrEmpty(lockedStable) &&
             runtimeBinder.Registry.TryGetByStableId(lockedStable, out var lockedRt) &&
             lockedRt != null)
         {
-            anchors.Add(lockedRt.NodeIndex);
+            routeTargetIndex = lockedRt.NodeIndex;
+        }
+        else
+        {
+            // Otherwise use UI selection as the route target
+            if (mapOverlay != null)
+                routeTargetIndex = mapOverlay.SelectedNodeIndex;
+            else if (selection != null)
+                routeTargetIndex = selection.SelectedNodeId;
         }
 
-        if (anchors.Count == 0) { ClearUI(); return; }
+        // Validate that the single-edge route actually exists (adjacent)
+        bool hasRouteTargetEdge =
+            routeTargetIndex >= 0 &&
+            currentRt != null &&
+            routeTargetIndex != currentRt.NodeIndex &&
+            generator.graph.HasEdge(currentRt.NodeIndex, routeTargetIndex);
 
-
+        // If we have neither hover anchors nor a valid route edge, draw nothing
+        if (anchors.Count == 0 && !hasRouteTargetEdge)
+        {
+            ClearUI();
+            return;
+        }
 
         // UI mode
         if (uiEdges != null)
         {
-            RebuildUI(anchors, currentRt);
+            // pass hover anchors + route target
+            RebuildUI(anchors, currentRt, hasRouteTargetEdge ? routeTargetIndex : -1);
             return;
         }
 
-        // Fallback: world-space mode (debug)
-        RebuildWorld(anchors);
+        // World fallback
+        RebuildWorld(anchors, currentRt, hasRouteTargetEdge ? routeTargetIndex : -1);
     }
 
     // =========================
     // UI MODE
     // =========================
 
-    private void RebuildUI(HashSet<int> anchors, MapNodeRuntime currentRt)
-    {
+private void RebuildUI(HashSet<int> hoverAnchors, MapNodeRuntime currentRt, int routeTargetIndex)    {
         if (uiEdges == null || uiMapPanel == null || uiNodeContainer == null)
         {
             ClearUI();
@@ -182,6 +218,23 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
             lockedIndex = lockedRt.NodeIndex;
         }
 
+        int travelFromIndex = -1;
+        int travelToIndex = -1;
+
+        var gs = GameState.I;
+        if (gs != null && gs.activeTravel != null)
+        {
+            var tp = gs.activeTravel;
+            if (!string.IsNullOrEmpty(tp.fromNodeStableId) &&
+                !string.IsNullOrEmpty(tp.toNodeStableId) &&
+                runtimeBinder.Registry.TryGetByStableId(tp.fromNodeStableId, out var fromRt) && fromRt != null &&
+                runtimeBinder.Registry.TryGetByStableId(tp.toNodeStableId, out var toRt) && toRt != null)
+            {
+                travelFromIndex = fromRt.NodeIndex;
+                travelToIndex = toRt.NodeIndex;
+            }
+        }
+
         // Build segments in the SAME anchoredPosition space as node buttons
         var A = new List<Vector2>(256);
         var B = new List<Vector2>(256);
@@ -197,8 +250,29 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
             ulong k = EdgeKey(e.a, e.b);
             if (!drawn.Add(k)) continue;
 
-            bool touchesAnchor = anchors.Contains(e.a) || anchors.Contains(e.b);
-            if (!touchesAnchor) continue;
+            bool isHoverEdge =
+                hoverAnchors.Contains(e.a) || hoverAnchors.Contains(e.b);
+
+            // If hovering/pinned, keep existing behavior: show all routes from those anchors.
+            if (isHoverEdge)
+            {
+                // ok
+            }
+            else
+            {
+                // Not a hover-driven edge.
+                // Only show the single current<->target edge (if any).
+                if (routeTargetIndex < 0 || currentRt == null) continue;
+
+                int cur = currentRt.NodeIndex;
+                int tgt = routeTargetIndex;
+
+                bool isRouteEdge =
+                    (e.a == cur && e.b == tgt) ||
+                    (e.b == cur && e.a == tgt);
+
+                if (!isRouteEdge) continue;
+            }
 
             if (!runtimeBinder.Registry.TryGetByIndex(e.a, out var aRt)) continue;
             if (!runtimeBinder.Registry.TryGetByIndex(e.b, out var bRt)) continue;
@@ -225,6 +299,13 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
             if (isLockedEdge)
                 c = (Color32)Color.green;
 
+            bool isTravelEdge =
+                travelFromIndex >= 0 && travelToIndex >= 0 &&
+                ((e.a == travelFromIndex && e.b == travelToIndex) ||
+                 (e.b == travelFromIndex && e.a == travelToIndex));
+
+            if (isTravelEdge)
+                c = (Color32)Color.green;
 
             if (!showLockedRoutes && kState != RouteKnowledgeState.Known)
                 continue;
@@ -265,7 +346,7 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
     // WORLD MODE (fallback)
     // =========================
 
-    private void RebuildWorld(HashSet<int> anchors)
+    private void RebuildWorld(HashSet<int> hoverAnchors, MapNodeRuntime currentRt, int routeTargetIndex)
     {
         var g = generator.graph;
         var edges = g.edges;
@@ -279,9 +360,29 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
             if (!drawn.Add(k))
                 continue;
 
-            bool touchesAnchor = anchors.Contains(e.a) || anchors.Contains(e.b);
-            if (!touchesAnchor)
-                continue;
+            bool isHoverEdge =
+                hoverAnchors.Contains(e.a) || hoverAnchors.Contains(e.b);
+
+            // If hovering/pinned, keep existing behavior: show all routes from those anchors.
+            if (isHoverEdge)
+            {
+                // ok
+            }
+            else
+            {
+                // Not a hover-driven edge.
+                // Only show the single current<->target edge (if any).
+                if (routeTargetIndex < 0 || currentRt == null) continue;
+
+                int cur = currentRt.NodeIndex;
+                int tgt = routeTargetIndex;
+
+                bool isRouteEdge =
+                    (e.a == cur && e.b == tgt) ||
+                    (e.b == cur && e.a == tgt);
+
+                if (!isRouteEdge) continue;
+            }
 
             if (!runtimeBinder.Registry.TryGetByIndex(e.a, out var aRt)) continue;
             if (!runtimeBinder.Registry.TryGetByIndex(e.b, out var bRt)) continue;
@@ -347,5 +448,14 @@ public sealed class WorldMapRouteOverlay : MonoBehaviour
         uint x = (uint)Mathf.Min(a, b);
         uint y = (uint)Mathf.Max(a, b);
         return ((ulong)x << 32) | y;
+    }
+
+    private void EnsureRefs()
+    {
+        if (generator == null) generator = FindAnyObjectByType<WorldMapGraphGenerator>();
+        if (runtimeBinder == null) runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
+        if (player == null) player = FindAnyObjectByType<WorldMapPlayerRef>(FindObjectsInactive.Include);
+        if (mapOverlay == null) mapOverlay = FindAnyObjectByType<MapOverlayController>(FindObjectsInactive.Include);
+        if (hoverController == null) hoverController = FindAnyObjectByType<WorldMapHoverController>(FindObjectsInactive.Include);
     }
 }

@@ -12,20 +12,15 @@ public sealed class BoatSpawner : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log($"[BoatSpawner] Awake | enabled={enabled} | activeInHierarchy={gameObject.activeInHierarchy}");
     }
 
     private void OnEnable()
     {
-        Debug.Log($"[BoatSpawner] OnEnable");
     }
 
     private void Start()
     {
-        Debug.Log("[BoatSpawner] Start");
-
         var gs = GameState.I;
-        Debug.Log($"[BoatSpawner] GameState.I is {(gs != null ? "present" : "NULL")}");
 
         if (defaultBoatPrefab == null)
         {

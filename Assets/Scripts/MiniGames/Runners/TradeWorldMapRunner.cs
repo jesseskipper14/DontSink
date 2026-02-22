@@ -24,8 +24,8 @@ public sealed class TradeWorldMapRunner : MonoBehaviour
     private bool _subscribed;
 
     [Header("Item Memory (bucket units)")]
-    [SerializeField] private int cooldownSellToPlayerBuckets = 2; // after player sells to node
-    [SerializeField] private int cooldownBuyFromPlayerBuckets = 1; // after player buys from node
+    //[SerializeField] private int cooldownSellToPlayerBuckets = 2; // after player sells to node
+    //[SerializeField] private int cooldownBuyFromPlayerBuckets = 1; // after player buys from node
 
 
     // Offers snapshot for the currently-open trade session

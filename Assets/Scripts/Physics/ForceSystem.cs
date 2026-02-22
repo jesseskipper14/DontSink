@@ -15,9 +15,6 @@ public class ForceSystem : MonoBehaviour
 
         allProviders.AddRange(GetComponents<IForceProvider>());
 
-        Debug.Log($"[ForceSystem] {name} providers: " +
-          string.Join(", ", allProviders.Select(p => p.GetType().Name)));
-
         // Cache ordered providers once
         orderedProviders = allProviders
             .OfType<IOrderedForceProvider>()

@@ -20,20 +20,32 @@ public sealed class BoatSceneController : MonoBehaviour
     [Min(0.05f)]
     [SerializeField] private float distanceScale = 1f;
 
-    [Header("Boat Spawn")]
-    [SerializeField] private GameObject boatPrefab; // TEMP: swap to your real boat spawn system later
-
     public TravelPayload Payload { get; private set; }
 
     private bool _completed;
+    private bool _initialized;
 
     private void Reset()
     {
-        if (ctx == null) ctx = FindAnyObjectByType<BoatSceneContext>();
+        ctx = FindAnyObjectByType<BoatSceneContext>();
+    }
+
+    private void OnEnable()
+    {
+        EnsureContext();
+        HookDockEvents();
+    }
+
+    private void OnDisable()
+    {
+        UnhookDockEvents();
     }
 
     private void Start()
     {
+        if (_initialized) return;
+        _initialized = true;
+
         var gs = GameState.I;
         if (gs == null)
         {
@@ -49,6 +61,7 @@ public sealed class BoatSceneController : MonoBehaviour
             return;
         }
 
+        EnsureContext();
         if (ctx == null)
         {
             Debug.LogError("[BoatSceneController] Missing BoatSceneContext in BoatScene.");
@@ -56,24 +69,42 @@ public sealed class BoatSceneController : MonoBehaviour
         }
 
         LayoutDocks();
-        SpawnBoatIfNeeded();
-
-        // Subscribe to docking events
-        if (ctx.targetDockTrigger != null)
-            ctx.targetDockTrigger.OnDocked += OnDocked;
-        else
-            Debug.LogWarning("[BoatSceneController] targetDockTrigger not set; cannot complete travel.");
     }
 
-    private void OnDestroy()
+    private void EnsureContext()
     {
-        if (ctx != null && ctx.targetDockTrigger != null)
+        if (ctx != null) return;
+        ctx = FindAnyObjectByType<BoatSceneContext>();
+    }
+
+    private void HookDockEvents()
+    {
+        if (ctx == null) return;
+
+        // Idempotent: avoid double subscriptions.
+        if (ctx.sourceDockTrigger != null)
+            ctx.sourceDockTrigger.OnDocked -= OnDocked;
+        if (ctx.targetDockTrigger != null)
+            ctx.targetDockTrigger.OnDocked -= OnDocked;
+
+        if (ctx.sourceDockTrigger != null)
+            ctx.sourceDockTrigger.OnDocked += OnDocked;
+        if (ctx.targetDockTrigger != null)
+            ctx.targetDockTrigger.OnDocked += OnDocked;
+    }
+
+    private void UnhookDockEvents()
+    {
+        if (ctx == null) return;
+
+        if (ctx.sourceDockTrigger != null)
+            ctx.sourceDockTrigger.OnDocked -= OnDocked;
+        if (ctx.targetDockTrigger != null)
             ctx.targetDockTrigger.OnDocked -= OnDocked;
     }
 
     private void LayoutDocks()
     {
-        // Source dock near start (behind)
         if (ctx.sourceDockAnchor != null)
         {
             var p = ctx.sourceDockAnchor.position;
@@ -81,7 +112,6 @@ public sealed class BoatSceneController : MonoBehaviour
             ctx.sourceDockAnchor.position = p;
         }
 
-        // Target dock at scaled distance
         float dist = baseTravelDistance * distanceScale;
 
         if (ctx.targetDockAnchor != null)
@@ -92,49 +122,37 @@ public sealed class BoatSceneController : MonoBehaviour
         }
     }
 
-    private void SpawnBoatIfNeeded()
-    {
-        // TEMP: keep it simple. Later your BoatRegistry + boat instance id drives this.
-        if (boatPrefab == null) return;
-        if (ctx.playerSpawn == null) return;
-
-        // If you already spawn boat elsewhere, delete this and wire in your real spawner.
-        var boat = Instantiate(boatPrefab, ctx.playerSpawn.position, Quaternion.identity);
-        boat.tag = "Boat"; // ensure matches DockTrigger.requiredTag (or set in prefab)
-    }
-
     private void OnDocked(DockTrigger trigger, Collider2D other)
     {
         if (_completed) return;
-        if (trigger.kind != DockTrigger.DockKind.Destination) return;
 
-        CompleteTravelToDestination();
+        // Payload might not be set yet if a trigger fires extremely early.
+        // Resolve lazily to be safe.
+        if (Payload == null)
+            Payload = GameState.I != null ? GameState.I.activeTravel : null;
+
+        if (Payload == null) return;
+
+        switch (trigger.kind)
+        {
+            case DockTrigger.DockKind.Source:
+                AbortTravelToSource();
+                break;
+
+            case DockTrigger.DockKind.Destination:
+                CompleteTravelToDestination();
+                break;
+        }
     }
 
-    private void CompleteTravelToDestination()
+    private void AbortTravelToSource()
     {
         _completed = true;
 
         var gs = GameState.I;
-        if (gs == null || Payload == null)
+        if (gs == null)
         {
-            Debug.LogError("[BoatSceneController] Missing GameState/Payload on completion.");
-            return;
-        }
-
-        gs.player.currentNodeId = Payload.toNodeStableId;
-        gs.ClearTravel();
-
-        SceneManager.LoadScene(nodeSceneName);
-    }
-
-    [ContextMenu("DEBUG: Dock to Source (Abort Travel)")]
-    public void DebugDockToSource()
-    {
-        var gs = GameState.I;
-        if (gs == null || Payload == null)
-        {
-            Debug.LogError("[BoatSceneController] Missing GameState/Payload.");
+            Debug.LogError("[BoatSceneController] GameState missing on abort.");
             return;
         }
 
@@ -143,13 +161,14 @@ public sealed class BoatSceneController : MonoBehaviour
         SceneManager.LoadScene(nodeSceneName);
     }
 
-    [ContextMenu("DEBUG: Dock to Destination (Complete Travel)")]
-    public void DebugDockToDestination()
+    private void CompleteTravelToDestination()
     {
+        _completed = true;
+
         var gs = GameState.I;
-        if (gs == null || Payload == null)
+        if (gs == null)
         {
-            Debug.LogError("[BoatSceneController] Missing GameState/Payload.");
+            Debug.LogError("[BoatSceneController] GameState missing on completion.");
             return;
         }
 
@@ -157,6 +176,30 @@ public sealed class BoatSceneController : MonoBehaviour
         gs.ClearTravel();
         SceneManager.LoadScene(nodeSceneName);
     }
+
+    [ContextMenu("DEBUG: Dock to Source (Abort Travel)")]
+    public void DebugDockToSource()
+    {
+        Payload = GameState.I != null ? GameState.I.activeTravel : Payload;
+        if (GameState.I == null || Payload == null)
+        {
+            Debug.LogError("[BoatSceneController] Missing GameState/Payload.");
+            return;
+        }
+
+        AbortTravelToSource();
+    }
+
+    [ContextMenu("DEBUG: Dock to Destination (Complete Travel)")]
+    public void DebugDockToDestination()
+    {
+        Payload = GameState.I != null ? GameState.I.activeTravel : Payload;
+        if (GameState.I == null || Payload == null)
+        {
+            Debug.LogError("[BoatSceneController] Missing GameState/Payload.");
+            return;
+        }
+
+        CompleteTravelToDestination();
+    }
 }
-
-

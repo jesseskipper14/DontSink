@@ -3,28 +3,35 @@ using UnityEngine;
 public sealed class MapOverlayPanZoom : MonoBehaviour
 {
     [Header("Refs")]
-    [SerializeField] private CanvasGroup overlayRoot;     // optional: disable controls when hidden
+    [SerializeField] private CanvasGroup overlayRoot;
     [SerializeField] private RectTransform mapViewport;   // visible rect (MapPanel)
     [SerializeField] private RectTransform content;       // movable/scalable container (MapContent)
 
     [Header("Pan")]
-    public float panSpeed = 900f;        // UI units per second at zoom=1
-    public float fastMultiplier = 2.5f;  // shift boost
-    public bool requireMiddleMouseToPan = false;
+    [Tooltip("Hold RMB and drag to pan.")]
+    public int panMouseButton = 1; // 1 = right mouse
+    public float dragPanSpeed = 1f; // multiplier on drag delta
+    public bool requirePointerOverViewport = true;
+
+    [Header("Optional Keyboard Pan")]
+    public bool enableKeyboardPan = false;
+    public float panSpeed = 900f;
+    public float fastMultiplier = 2.5f;
 
     [Header("Zoom")]
     public bool enableZoom = true;
-    public float zoomSpeed = 0.20f;      // scale change per scroll tick (tweak)
+    public float zoomSpeed = 0.20f;
     public float minScale = 0.6f;
     public float maxScale = 3.0f;
 
     [Header("Behavior")]
-    public bool onlyWhenPointerOverViewport = true;
     public bool clampToViewport = true;
+
+    private bool _dragging;
+    private Vector2 _lastMousePos;
 
     private void Reset()
     {
-        // best-effort auto wiring
         overlayRoot = GetComponentInParent<CanvasGroup>();
     }
 
@@ -35,7 +42,10 @@ public sealed class MapOverlayPanZoom : MonoBehaviour
         if (enableZoom)
             HandleZoom();
 
-        HandlePan();
+        HandleDragPan();
+
+        if (enableKeyboardPan)
+            HandleKeyboardPan();
 
         if (clampToViewport)
             ClampContentToViewport();
@@ -48,22 +58,58 @@ public sealed class MapOverlayPanZoom : MonoBehaviour
 
         if (mapViewport == null || content == null) return false;
 
-        if (!onlyWhenPointerOverViewport) return true;
+        if (!requirePointerOverViewport) return true;
 
         return RectTransformUtility.RectangleContainsScreenPoint(
             mapViewport,
             Input.mousePosition,
-            null // overlay canvas is screen space overlay
+            null
         );
     }
 
-    private void HandlePan()
+    private void HandleDragPan()
     {
-        if (requireMiddleMouseToPan && !Input.GetMouseButton(2))
-            return;
+        // Begin drag
+        if (!_dragging && Input.GetMouseButtonDown(panMouseButton))
+        {
+            if (!PointerOverViewport()) return;
+            _dragging = true;
+            _lastMousePos = Input.mousePosition;
+        }
 
-        float h = -Input.GetAxisRaw("Horizontal"); // A/D negative to feel correct
-        float v = -Input.GetAxisRaw("Vertical");   // W/S negative to feel correct
+        // End drag
+        if (_dragging && Input.GetMouseButtonUp(panMouseButton))
+        {
+            _dragging = false;
+            return;
+        }
+
+        if (!_dragging) return;
+
+        // While dragging
+        Vector2 cur = Input.mousePosition;
+        Vector2 deltaScreen = cur - _lastMousePos;
+        _lastMousePos = cur;
+
+        // Convert screen delta to UI anchored delta.
+        // Screen Space Overlay: 1 screen pixel ~= 1 UI unit (usually).
+        // If you use CanvasScaler, this still "feels" right for a debug pan.
+        Vector2 delta = deltaScreen * dragPanSpeed;
+
+        // Drag direction: moving mouse right should move map left (grab & drag)
+        content.anchoredPosition += delta;
+    }
+
+    private bool PointerOverViewport()
+    {
+        if (!requirePointerOverViewport) return true;
+        return RectTransformUtility.RectangleContainsScreenPoint(mapViewport, Input.mousePosition, null);
+    }
+
+    private void HandleKeyboardPan()
+    {
+        float h = -Input.GetAxisRaw("Horizontal");
+        float v = -Input.GetAxisRaw("Vertical");
         if (h == 0f && v == 0f) return;
 
         float speed = panSpeed;
@@ -80,40 +126,34 @@ public sealed class MapOverlayPanZoom : MonoBehaviour
         if (Mathf.Approximately(scroll, 0f)) return;
 
         // Zoom around mouse position
-        Vector2 mouse;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(mapViewport, Input.mousePosition, null, out mouse);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            mapViewport, Input.mousePosition, null, out var mouseLocal);
 
-        Vector2 before = ContentLocalPoint(mouse);
+        Vector2 before = ContentLocalPoint(mouseLocal);
 
         float s = content.localScale.x;
         s *= (1f + scroll * zoomSpeed);
         s = Mathf.Clamp(s, minScale, maxScale);
         content.localScale = new Vector3(s, s, 1f);
 
-        Vector2 after = ContentLocalPoint(mouse);
+        Vector2 after = ContentLocalPoint(mouseLocal);
         Vector2 diff = after - before;
 
-        // Adjust position so the point under the cursor stays under cursor
         content.anchoredPosition += diff * s;
     }
 
-    // Convert viewport-local point into content-local point in a stable way
     private Vector2 ContentLocalPoint(Vector2 viewportLocalPoint)
     {
-        // viewport local -> world
         Vector3 world = mapViewport.TransformPoint(viewportLocalPoint);
-        // world -> content local
         Vector2 local = content.InverseTransformPoint(world);
         return local;
     }
 
     private void ClampContentToViewport()
     {
-        // If content is smaller than viewport, center it.
         Rect v = mapViewport.rect;
         Rect c = content.rect;
 
-        // Effective content size after scale
         float s = content.localScale.x;
         float cW = c.width * s;
         float cH = c.height * s;
@@ -125,10 +165,7 @@ public sealed class MapOverlayPanZoom : MonoBehaviour
 
         float minX, maxX, minY, maxY;
 
-        if (cW <= vW)
-        {
-            minX = maxX = 0f;
-        }
+        if (cW <= vW) minX = maxX = 0f;
         else
         {
             float excessX = (cW - vW) * 0.5f;
@@ -136,10 +173,7 @@ public sealed class MapOverlayPanZoom : MonoBehaviour
             maxX = +excessX;
         }
 
-        if (cH <= vH)
-        {
-            minY = maxY = 0f;
-        }
+        if (cH <= vH) minY = maxY = 0f;
         else
         {
             float excessY = (cH - vH) * 0.5f;
