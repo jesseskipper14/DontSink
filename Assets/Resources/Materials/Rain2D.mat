@@ -56,7 +56,7 @@ Material:
     - _RaindropCount: 0
     - _RaindropDensity: 0.2
     - _SplashHeight: 0
-    - _TimeOffset: 42.812546
+    - _TimeOffset: 0
     - _Wind: 0
     - _ZWrite: 0
     m_Colors:

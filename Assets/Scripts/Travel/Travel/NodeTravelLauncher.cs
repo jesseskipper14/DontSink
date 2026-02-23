@@ -162,8 +162,36 @@ public sealed class NodeTravelLauncher : MonoBehaviour
         }
 
         // Create payload and switch scene
-        gs.activeTravel = new TravelPayload(fromId, toId, seed, routeLength, gs.boat.boatInstanceId);
-        Debug.Log($"NodeTravelLauncher: Loading boat scene '{boatSceneName}' | {fromId} -> {toId}");
+        // Resolve current boat root via registry so we capture the boat the player is actually using.
+        if (!gs.boatRegistry.TryGetById(gs.boat.boatInstanceId, out var boatObj) || boatObj == null)
+        {
+            Debug.LogError("NodeTravelLauncher: Could not resolve player boat from registry.");
+            return;
+        }
+
+        var boatRoot = boatObj.transform;
+
+        // Boat GUID (which prefab to spawn next scene)
+        var boatId = boatRoot.GetComponent<BoatIdentity>();
+        if (boatId == null)
+        {
+            Debug.LogError("NodeTravelLauncher: Boat missing BoatIdentity component (add it to boat root prefab).");
+            return;
+        }
+
+        // Cargo manifest capture
+        var boarded = boatRoot.GetComponentInChildren<BoatBoardedVolume>(true);
+        var volumeCol = boarded != null ? boarded.GetComponent<Collider2D>() : null;
+
+        var cargoManifest = CargoManifest.Capture(boatRoot, volumeCol);
+
+        // Persist current selections too (so NodeScene can spawn correctly even without travel)
+        gs.boat.boatPrefabGuid = boatId.BoatGuid;
+        gs.boat.cargo = cargoManifest;
+
+        // Create payload and switch scene
+        gs.activeTravel = new TravelPayload(fromId, toId, seed, routeLength, gs.boat.boatInstanceId, boatId.BoatGuid, cargoManifest);
+        Debug.Log($"NodeTravelLauncher: Loading boat scene '{boatSceneName}' | {fromId} -> {toId} | boatGuid={boatId.BoatGuid} | cargo={cargoManifest.Count}");
 
         SceneManager.LoadScene(boatSceneName);
     }

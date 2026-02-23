@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f066cef0abb71c4d8371dfcc71e9b48, type: 3}
+  m_Name: BoatCatalog
+  m_EditorClassIdentifier: 
+  entries:
+  - prefab: {fileID: 2683575577854610556, guid: a4801e98a0f699748a7b4b5340a55bf8, type: 3}
+    guid: 895d3597dcd4418385064ee3e5b49040
+  - prefab: {fileID: 7660699891318422646, guid: 4931fcc5a1ef97c428e5670e639c77b9, type: 3}
+    guid: 69d8b1ab910349a3a1ba99b0cb04fd32

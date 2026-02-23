@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class MarketStallInteractable : MonoBehaviour, IInteractable
+public sealed class MarketStallInteractable : MonoBehaviour, IInteractable, IInteractPromptProvider
 {
     [Header("Interaction")]
     [SerializeField] private int priority = 50;          // below chairs (100), above random junk
@@ -11,6 +11,8 @@ public sealed class MarketStallInteractable : MonoBehaviour, IInteractable
     [SerializeField] private TradeWorldMapRunner tradeRunner;
 
     public int InteractionPriority => priority;
+    public string GetPromptVerb(in InteractContext context) => "Trade";
+    public Transform GetPromptAnchor() => transform;
 
     private void Awake()
     {

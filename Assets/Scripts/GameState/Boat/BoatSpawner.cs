@@ -7,53 +7,70 @@ public sealed class BoatSpawner : MonoBehaviour
     [SerializeField] private string spawnTag = "Respawn";
     [SerializeField] private Vector3 fallbackSpawn = Vector3.zero;
 
-    [Header("Boat Prefabs")]
+    [Header("Catalogs")]
+    [SerializeField] private BoatCatalog boatCatalog;
+    [SerializeField] private CargoCatalog cargoCatalog;
+
+    [Header("Fallback")]
     [SerializeField] private GameObject defaultBoatPrefab;
-
-    private void Awake()
-    {
-    }
-
-    private void OnEnable()
-    {
-    }
 
     private void Start()
     {
         var gs = GameState.I;
 
-        if (defaultBoatPrefab == null)
-        {
-            Debug.LogError("[BoatSpawner] defaultBoatPrefab is NULL. Assign it in inspector.");
-            return;
-        }
-
         Transform sp = ResolveSpawnPointSafe();
         Vector3 pos = sp != null ? sp.position : fallbackSpawn;
 
-        Debug.Log($"[BoatSpawner] Spawning at {pos} | spawnPoint={(sp != null ? sp.name : "NULL (fallback)")}");
+        // Decide which boat GUID we should spawn:
+        // - if traveling: use payload boatPrefabGuid
+        // - else: use saved boatPrefabGuid
+        string boatGuid =
+            gs != null && gs.activeTravel != null ? gs.activeTravel.boatPrefabGuid :
+            gs != null ? gs.boat.boatPrefabGuid : null;
 
-        var go = Instantiate(defaultBoatPrefab, pos, Quaternion.identity);
-        go.name = "PlayerBoat(Clone)";
-        Debug.Log($"[BoatSpawner] Instantiated '{go.name}' active={go.activeInHierarchy}");
+        GameObject prefab = null;
 
-        // Assign ID if available
-        if (gs != null && gs.boat != null)
+        if (boatCatalog != null && !string.IsNullOrEmpty(boatGuid))
+            prefab = boatCatalog.Resolve(boatGuid);
+
+        if (prefab == null)
+            prefab = defaultBoatPrefab;
+
+        if (prefab == null)
         {
-            var boat = go.GetComponent<Boat>();
+            Debug.LogError("[BoatSpawner] No boat prefab resolved (catalog + fallback are null).");
+            return;
+        }
+
+        var boatGO = Instantiate(prefab, pos, Quaternion.identity);
+        boatGO.name = "PlayerBoat(Clone)";
+
+        // Assign instance id if available
+        if (gs != null)
+        {
+            var boat = boatGO.GetComponent<Boat>();
             if (boat != null && !string.IsNullOrEmpty(gs.boat.boatInstanceId))
-            {
                 boat.SetBoatInstanceId(gs.boat.boatInstanceId);
-                Debug.Log($"[BoatSpawner] Assigned BoatInstanceId='{boat.BoatInstanceId}'");
-            }
-            else
-            {
-                Debug.LogWarning("[BoatSpawner] Boat missing OR boatInstanceId missing.");
-            }
+
+            // Ensure we remember the boat prefab GUID we actually spawned
+            var id = boatGO.GetComponent<BoatIdentity>();
+            if (id != null)
+                gs.boat.boatPrefabGuid = id.BoatGuid;
+        }
+
+        // Restore cargo
+        if (cargoCatalog != null && gs != null)
+        {
+            var manifest =
+                gs.activeTravel != null && gs.activeTravel.cargoManifest != null ? gs.activeTravel.cargoManifest :
+                gs.boat.cargo;
+
+            if (manifest != null && manifest.Count > 0)
+                CargoManifest.Restore(boatGO.transform, manifest, cargoCatalog);
         }
 
         // If using auto-register, refresh after id assignment (optional)
-        var auto = go.GetComponent<BoatAutoRegister>();
+        var auto = boatGO.GetComponent<BoatAutoRegister>();
         if (auto != null) auto.RefreshRegistration();
     }
 
@@ -78,7 +95,6 @@ public sealed class BoatSpawner : MonoBehaviour
         }
         catch (UnityException e)
         {
-            // This happens if the tag doesn't exist in Tag Manager.
             Debug.LogError($"[BoatSpawner] Tag lookup failed for '{spawnTag}'. Add it in Tags & Layers. Exception: {e.Message}");
             return null;
         }

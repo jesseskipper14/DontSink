@@ -1,0 +1,208 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4971407836783578528
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9137842763216339877}
+  - component: {fileID: 134015770593356340}
+  - component: {fileID: 6897017861151174155}
+  - component: {fileID: -1492508034575852510}
+  - component: {fileID: 484301100798610016}
+  - component: {fileID: 7185085591629101004}
+  - component: {fileID: 4829187434485389288}
+  - component: {fileID: 7296790530309691680}
+  - component: {fileID: 2425872415087118993}
+  - component: {fileID: 3301175116528709572}
+  - component: {fileID: 4658135062933648623}
+  m_Layer: 0
+  m_Name: BoatRoot
+  m_TagString: PlayerBoat
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9137842763216339877
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 17.4, y: 0.7, z: -0.08050111}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &134015770593356340
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 1024
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!114 &6897017861151174155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa05db7ef7a561a4389bc74ee9c87ae7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buoyancyForce: {fileID: 0}
+  baseMass: 30
+  mass: 1
+  baseLocalCenterOfMass: {x: 0, y: 0}
+  width: 20
+  height: 5
+  volume: 1
+  throttleInput: 0
+  throttleForce: 1
+  CargoItems: []
+  Compartments:
+  - {fileID: 0}
+  Connections: []
+  boatInstanceId: 
+--- !u!114 &-1492508034575852510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20330a0e4de38e749bf28a399308184f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &484301100798610016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 537c942282e004c46a93d05de411b9bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7185085591629101004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5cc12ff57ca8414b9993d63ebb70291, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  width: 1
+  height: 1
+--- !u!114 &4829187434485389288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d25d72d0396500e4c803080c99afb5b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7296790530309691680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06d0a205c2a3920439c097f31fd0b2d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bodySource: {fileID: 6897017861151174155}
+  wave: {fileID: 0}
+  sliceCount: 10
+  lastTotalSubmersion: 0
+  enabledFlag: 1
+  priority: 50
+--- !u!114 &2425872415087118993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d08b885d5b351b4a9a43d1842fd31cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enabledFlag: 1
+  priority: 60
+--- !u!114 &3301175116528709572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5e906a068d9b1d43b275115706b31d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  submersionSource: {fileID: 7296790530309691680}
+  enabledFlag: 1
+  priority: 100
+--- !u!114 &4658135062933648623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf976801ed56dd642b7b20ef77ca0264, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enabledFlag: 1
+  priority: 250
+  maxForce: 500

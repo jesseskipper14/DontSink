@@ -18,7 +18,12 @@ public class Interactor2D : MonoBehaviour
 
     private IInteractionIntentSource intentSource;
 
-    void Awake()
+    /// <summary>
+    /// Fired only when an interaction actually occurs (E pressed, target found, Interact called).
+    /// </summary>
+    public event System.Action<IInteractable> OnInteracted;
+
+    private void Awake()
     {
         intentSource = GetComponent<IInteractionIntentSource>();
         if (intentSource == null)
@@ -28,7 +33,51 @@ public class Interactor2D : MonoBehaviour
         }
     }
 
-    void Update()
+    public bool TryGetBestTarget(out IInteractable best, out InteractContext ctx)
+    {
+        best = null;
+
+        if (intentSource == null)
+        {
+            ctx = default;
+            return false;
+        }
+
+        var intent = intentSource.Current;
+        Vector2 origin = transform.position;
+        Vector2 aimDir = GetAimDir(origin, intent.AimWorld);
+
+        ctx = new InteractContext(gameObject, transform, origin, aimDir);
+        return TryResolveBest(ctx, out best);
+    }
+
+    /// <summary>
+    /// Returns true if this target is currently in range per our overlap query.
+    /// Used by prompt logic to know when the player has "left and re-entered".
+    /// </summary>
+    public bool IsCandidatePresent(IInteractable target)
+    {
+        if (target == null) return false;
+
+        // Fast path: if target is a MonoBehaviour, check distance first.
+        if (target is MonoBehaviour mb)
+        {
+            float d = Vector2.Distance((Vector2)mb.transform.position, (Vector2)transform.position);
+            if (d > overlapRadius * 1.25f) // small slack
+                return false;
+        }
+
+        var hits = Physics2D.OverlapCircleAll(transform.position, overlapRadius, interactableMask);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            if (TryGetInteractable(hits[i], out var it) && ReferenceEquals(it, target))
+                return true;
+        }
+
+        return false;
+    }
+
+    private void Update()
     {
         var intent = intentSource.Current;
         if (!intent.InteractPressed) return;
@@ -45,6 +94,9 @@ public class Interactor2D : MonoBehaviour
         if (TryResolveBest(ctx, out var target))
         {
             target.Interact(ctx);
+
+            // NEW: tell UI (and other listeners) that we interacted
+            OnInteracted?.Invoke(target);
         }
     }
 
@@ -61,7 +113,7 @@ public class Interactor2D : MonoBehaviour
         return new Vector2(facing, 0f);
     }
 
-    private bool TryResolveBest(in InteractContext ctx, out IInteractable best)
+    public bool TryResolveBest(in InteractContext ctx, out IInteractable best)
     {
         best = null;
 
@@ -125,7 +177,7 @@ public class Interactor2D : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, overlapRadius);

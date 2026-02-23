@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 2258425770315111365}
   - component: {fileID: 802291014255952347}
   - component: {fileID: 2022223823256680430}
+  - component: {fileID: 1656717236630273122}
   m_Layer: 0
   m_Name: TestBoat_BoatBuilder_1
   m_TagString: PlayerBoat
@@ -212,6 +213,19 @@ MonoBehaviour:
   enabledFlag: 1
   priority: 250
   maxForce: 500
+--- !u!114 &1656717236630273122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2683575577854610556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e49df955b1f8df441989c381c35d95c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boatGuid: 895d3597dcd4418385064ee3e5b49040
 --- !u!1 &4522925990222075385
 GameObject:
   m_ObjectHideFlags: 0

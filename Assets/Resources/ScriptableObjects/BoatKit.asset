@@ -18,3 +18,7 @@ MonoBehaviour:
   PilotChair: {fileID: 8706727347045637987, guid: d37e93d618ca8ba4f97a9f12ca263b48, type: 3}
   CompartmentRect: {fileID: 5391915971216815558, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
   Deck: {fileID: 8043139812053460957, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
+  BoatBoardObject: {fileID: 5720850196063633090, guid: 08302fb73e6642849bc0f4ca5bbe8167, type: 3}
+  MapTable: {fileID: 6138649040144273514, guid: 5b7b85a844cc11c4eb46be1e5183f040, type: 3}
+  PlayerSpawnPoint: {fileID: 8692631207410310795, guid: 05b658ca6a731104fa011b3e44cc26fe, type: 3}
+  BoardedVolume: {fileID: 8631960592563685139, guid: 90c38b1b858a3a14490a9c242c60bfba, type: 3}

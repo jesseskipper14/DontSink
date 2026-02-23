@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class MapTableInteractable : MonoBehaviour, IInteractable
+public sealed class MapTableInteractable : MonoBehaviour, IInteractable, IInteractPromptProvider
 {
     [Header("Interaction")]
     [SerializeField] private int priority = 40;
@@ -12,6 +12,9 @@ public sealed class MapTableInteractable : MonoBehaviour, IInteractable
     [SerializeField] private bool toggle = true; // if false, always Open()
 
     public int InteractionPriority => priority;
+    public string GetPromptVerb(in InteractContext context) => "Chart";
+    public Transform GetPromptAnchor() => transform;
+
 
     private void Awake()
     {

@@ -27,9 +27,6 @@ public class ExternalWaterSourceSystem : MonoBehaviour
             Debug.LogError($"{name}: rainSourceMono does not implement IRainService");
             return;
         }
-
-        // Subscribe to rain events
-        rainService.OnRainDropDensityChanged += OnRainDensityChanged;
     }
 
     private void OnEnable()

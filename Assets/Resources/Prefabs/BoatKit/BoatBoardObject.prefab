@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -3439110668371042689}
   m_Layer: 3
   m_Name: BoatBoardObject
-  m_TagString: Untagged
+  m_TagString: BoardingArea
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -148,7 +148,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   priority: 60
-  maxUseDistance: 1.8
-  boardPoint: {fileID: 6794253249594855704}
+  maxUseDistance: 3
   boatRoot: {fileID: 0}
+  boardPoint: {fileID: 6794253249594855704}
+  unboardPoint: {fileID: 0}
+  parentPlayerToBoat: 1
   postSnapNudge: {x: 0, y: 5}

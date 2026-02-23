@@ -2,7 +2,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
-public sealed class BoatBoardingInteractable : MonoBehaviour, IInteractable
+public sealed class BoatBoardingInteractable : MonoBehaviour, IInteractable, IInteractPromptProvider
 {
     [Header("Interaction")]
     [SerializeField] private int priority = 60;
@@ -17,6 +17,8 @@ public sealed class BoatBoardingInteractable : MonoBehaviour, IInteractable
     [SerializeField] private Vector2 postSnapNudge = Vector2.zero;
 
     public int InteractionPriority => priority;
+    public string GetPromptVerb(in InteractContext context) => "Board";
+    public Transform GetPromptAnchor() => boardPoint != null ? boardPoint : transform;
 
     private void Awake()
     {
