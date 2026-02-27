@@ -14,21 +14,20 @@ public static class CargoManifest
         public Vector2 localPos;   // relative to boat root
         public float localRotZ;    // degrees (2D)
 
-        public Snapshot(string instanceGuid, string typeGuid, bool secured, Vector2 localPos, float localRotZ)
+        // NEW: optional per-item payload (crate itemId, quantity, etc.)
+        public string payloadJson;
+
+        public Snapshot(string instanceGuid, string typeGuid, bool secured, Vector2 localPos, float localRotZ, string payloadJson)
         {
             this.instanceGuid = instanceGuid;
             this.typeGuid = typeGuid;
             this.secured = secured;
             this.localPos = localPos;
             this.localRotZ = localRotZ;
+            this.payloadJson = payloadJson;
         }
     }
 
-    /// <summary>
-    /// Capture:
-    /// - secured: any CargoItemIdentity that is parented under boatRoot
-    /// - unsecured: any CargoItemIdentity not parented under boatRoot, but overlapping boardedVolume collider
-    /// </summary>
     public static List<Snapshot> Capture(Transform boatRoot, Collider2D boardedVolumeCollider)
     {
         var result = new List<Snapshot>(64);
@@ -48,15 +47,15 @@ public static class CargoManifest
             {
                 Vector2 lp = boatRoot.InverseTransformPoint(id.transform.position);
                 float lz = GetLocalRotZ(boatRoot, id.transform);
+                string payload = CapturePayload(id);
 
-                result.Add(new Snapshot(id.InstanceGuid, id.TypeGuid, secured: true, localPos: lp, localRotZ: lz));
+                result.Add(new Snapshot(id.InstanceGuid, id.TypeGuid, secured: true, localPos: lp, localRotZ: lz, payloadJson: payload));
             }
         }
 
         // 2) Unsecured = overlapping boarded volume
         if (boardedVolumeCollider != null)
         {
-            // Broad overlap: find colliders in volume using bounds, then filter by actual overlap.
             var hits = new Collider2D[256];
             var filter = new ContactFilter2D();
             filter.useTriggers = true;
@@ -72,15 +71,15 @@ public static class CargoManifest
                 if (id == null) continue;
                 if (string.IsNullOrEmpty(id.InstanceGuid) || string.IsNullOrEmpty(id.TypeGuid)) continue;
 
-                // If it's parented under boat root, it’s already “secured” capture above.
                 if (id.transform.IsChildOf(boatRoot)) continue;
 
                 if (byInstance.Add(id.InstanceGuid))
                 {
                     Vector2 lp = boatRoot.InverseTransformPoint(id.transform.position);
                     float lz = GetLocalRotZ(boatRoot, id.transform);
+                    string payload = CapturePayload(id);
 
-                    result.Add(new Snapshot(id.InstanceGuid, id.TypeGuid, secured: false, localPos: lp, localRotZ: lz));
+                    result.Add(new Snapshot(id.InstanceGuid, id.TypeGuid, secured: false, localPos: lp, localRotZ: lz, payloadJson: payload));
                 }
             }
         }
@@ -91,16 +90,16 @@ public static class CargoManifest
     public static void Restore(
         Transform boatRoot,
         IReadOnlyList<Snapshot> manifest,
-        CargoCatalog cargoCatalog)
+        TradeCargoPrefabCatalog tradeCargoPrefabCatalog)
     {
-        if (boatRoot == null || manifest == null || cargoCatalog == null) return;
+        if (boatRoot == null || manifest == null || tradeCargoPrefabCatalog == null) return;
 
         for (int i = 0; i < manifest.Count; i++)
         {
             var s = manifest[i];
             if (string.IsNullOrEmpty(s.instanceGuid) || string.IsNullOrEmpty(s.typeGuid)) continue;
 
-            var prefab = cargoCatalog.Resolve(s.typeGuid);
+            var prefab = tradeCargoPrefabCatalog.Resolve(s.typeGuid);
             if (prefab == null)
             {
                 Debug.LogWarning($"[CargoManifest] Missing cargo prefab for typeGuid='{s.typeGuid}'.");
@@ -113,17 +112,16 @@ public static class CargoManifest
             var go = Object.Instantiate(prefab, worldPos, worldRot);
             go.name = $"{prefab.name}(Cargo)";
 
-            // Ensure identity is set to match snapshot (stable per-item)
             var id = go.GetComponent<CargoItemIdentity>();
             if (id == null) id = go.AddComponent<CargoItemIdentity>();
             id.ForceAssign(s.instanceGuid, s.typeGuid);
 
+            RestorePayload(go, s.payloadJson);
+
             if (s.secured)
             {
-                // Secured: parent to boat root so it always travels.
                 go.transform.SetParent(boatRoot, true);
 
-                // Optional: disable physics to prevent jitter while parented.
                 var rb = go.GetComponent<Rigidbody2D>();
                 if (rb != null)
                 {
@@ -134,21 +132,33 @@ public static class CargoManifest
             }
             else
             {
-                // Unsecured: MUST NOT be parented (otherwise physics + parent motion gets weird).
                 go.transform.SetParent(null, true);
 
                 var rb = go.GetComponent<Rigidbody2D>();
                 if (rb != null)
-                {
                     rb.bodyType = RigidbodyType2D.Dynamic;
-                }
             }
         }
     }
 
+    private static string CapturePayload(CargoItemIdentity id)
+    {
+        if (id == null) return null;
+        var payload = id.GetComponent<ICargoManifestPayload>();
+        return payload != null ? payload.CapturePayloadJson() : null;
+    }
+
+    private static void RestorePayload(GameObject go, string payloadJson)
+    {
+        if (go == null) return;
+        if (string.IsNullOrEmpty(payloadJson)) return;
+        var payload = go.GetComponent<ICargoManifestPayload>();
+        if (payload != null)
+            payload.RestorePayloadJson(payloadJson);
+    }
+
     private static float GetLocalRotZ(Transform boatRoot, Transform item)
     {
-        // 2D local rotation relative to boat root.
         float worldZ = item.rotation.eulerAngles.z;
         float boatZ = boatRoot.rotation.eulerAngles.z;
         return Mathf.DeltaAngle(boatZ, worldZ);

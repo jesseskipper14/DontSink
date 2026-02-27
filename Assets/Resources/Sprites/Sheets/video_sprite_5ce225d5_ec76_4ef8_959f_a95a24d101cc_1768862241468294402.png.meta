@@ -103,12 +103,12 @@ TextureImporter:
       name: video_sprite_5ce225d5_ec76_4ef8_959f_a95a24d101cc_1768862241468294402_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 67
-        width: 889
-        height: 445
+        x: 449
+        y: 81
+        width: 135
+        height: 124
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: b123791c1c7bf084ba6a019adf6c739d
     internalID: 0
     vertices: []
     indices: 

@@ -9,7 +9,7 @@ public sealed class BoatSpawner : MonoBehaviour
 
     [Header("Catalogs")]
     [SerializeField] private BoatCatalog boatCatalog;
-    [SerializeField] private CargoCatalog cargoCatalog;
+    [SerializeField] private TradeCargoPrefabCatalog tradeCargoPrefabCatalog;
 
     [Header("Fallback")]
     [SerializeField] private GameObject defaultBoatPrefab;
@@ -59,14 +59,14 @@ public sealed class BoatSpawner : MonoBehaviour
         }
 
         // Restore cargo
-        if (cargoCatalog != null && gs != null)
+        if (tradeCargoPrefabCatalog != null && gs != null)
         {
             var manifest =
                 gs.activeTravel != null && gs.activeTravel.cargoManifest != null ? gs.activeTravel.cargoManifest :
                 gs.boat.cargo;
 
             if (manifest != null && manifest.Count > 0)
-                CargoManifest.Restore(boatGO.transform, manifest, cargoCatalog);
+                CargoManifest.Restore(boatGO.transform, manifest, tradeCargoPrefabCatalog);
         }
 
         // If using auto-register, refresh after id assignment (optional)

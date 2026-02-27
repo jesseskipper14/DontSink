@@ -46,7 +46,7 @@ Material:
     - _BGWaveNoiseStrength: 0.7
     - _BGWaveScale: 2
     - _BGWaveStrength: 0
-    - _Brightness: 0.9957667
+    - _Brightness: 0.036981598
     - _EnableExternalAlpha: 0
     - _FoamIntensity: 1
     - _ForegroundWaveNoiseScale: 0
@@ -61,7 +61,7 @@ Material:
     - _RainSize: 1
     - _SparkleDensity: 80
     - _SparkleFalloffSharpness: 1.509
-    - _SparkleIntensity: 1.1949201
+    - _SparkleIntensity: 0.04437792
     - _SparkleSpeed: 0
     - _WaveScale: 0
     - _WaveSpeed: 0

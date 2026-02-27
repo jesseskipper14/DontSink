@@ -21,6 +21,8 @@ public sealed class TradeWorldMapRunner : MonoBehaviour
     private ITradeFeePolicy _feePolicy;
     public PressureMarketPolicyTuning marketTuning;
 
+    [SerializeField] private MonoBehaviour itemStoreOverride; // assign PhysicalCrateItemStore in TradeScene if you want
+
     private bool _subscribed;
 
     [Header("Item Memory (bucket units)")]
@@ -147,17 +149,20 @@ public sealed class TradeWorldMapRunner : MonoBehaviour
         int cooldownSellToPlayerBuckets = 2;
         int cooldownBuyFromPlayerBuckets = 1;
 
+        var store = ResolveItemStore(playerRef.State);
+
         if (TradeEffectApplier.TryApply(
-            e,
-            playerRef.State,
-            _activeOffers,
-            nodeState,
-            _feePolicy,
-            bucket,
-            cooldownSellToPlayerBuckets,
-            cooldownBuyFromPlayerBuckets,
-            out var receipt,
-            out var failNote))
+                e,
+                playerRef.State,
+                _activeOffers,
+                nodeState,
+                _feePolicy,
+                bucket,
+                cooldownSellToPlayerBuckets,
+                cooldownBuyFromPlayerBuckets,
+                store,
+                out var receipt,
+                out var failNote))
         {
             Debug.Log($"[Trade] OK node={receipt.nodeId} Δcredits={receipt.creditsDelta} fees={receipt.totalFeesPaid}");
             ApplySellToNodePressureFeedback(receipt);
@@ -219,11 +224,9 @@ public sealed class TradeWorldMapRunner : MonoBehaviour
             worldUnhealthFeeBoost
         );
 
-        var cart = new TradeCartridge(nodeId, bucket, offers, playerRef.State, nodeState, feePreview, resourceCatalog);
+        var store = ResolveItemStore(playerRef.State);
+        var cart = new TradeCartridge(nodeId, bucket, offers, playerRef.State, store, nodeState, feePreview, resourceCatalog);
         overlay.Open(cart, ctx);
-
-
-        Debug.Log($"[Trade] Opened at node={nodeId} day={bucket} offers={offers.Count}");
     }
 
     private void ApplySellToNodePressureFeedback(TradeService.TradeReceipt receipt)
@@ -256,5 +259,22 @@ public sealed class TradeWorldMapRunner : MonoBehaviour
             if (totalAppliedThisTrade >= pressureFeedbackClampPerTrade)
                 break;
         }
+    }
+
+    private WorldMap.Player.Trade.IItemStore ResolveItemStore(WorldMapPlayerState player)
+    {
+        // Explicit override wins
+        if (itemStoreOverride is WorldMap.Player.Trade.IItemStore s0) return s0;
+
+        // Prefer any scene item store (physical crates)
+        var monos = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
+        foreach (var m in monos)
+        {
+            // InventoryState is NOT a MonoBehaviour, so this will naturally prefer scene stores.
+            if (m is WorldMap.Player.Trade.IItemStore s) return s;
+        }
+
+        // Fallback to inventory-backed store (old behavior)
+        return player.inventory ??= new InventoryState();
     }
 }

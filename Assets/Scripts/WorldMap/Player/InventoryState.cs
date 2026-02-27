@@ -1,10 +1,10 @@
 using System.Collections.Generic;
+using WorldMap.Player.Trade;
 
 [System.Serializable]
-public sealed class InventoryState
+public sealed class InventoryState : IItemStore
 {
-    public System.Collections.Generic.Dictionary<string, int> stacks =
-        new System.Collections.Generic.Dictionary<string, int>();
+    public Dictionary<string, int> stacks = new Dictionary<string, int>();
 
     public int GetCount(string itemId) => stacks.TryGetValue(itemId, out var c) ? c : 0;
 
@@ -27,7 +27,6 @@ public sealed class InventoryState
 
     public IEnumerable<KeyValuePair<string, int>> Enumerate()
     {
-        // Safe read-only iteration. Caller must not mutate the dictionary during enumeration.
         foreach (var kvp in stacks)
             yield return kvp;
     }

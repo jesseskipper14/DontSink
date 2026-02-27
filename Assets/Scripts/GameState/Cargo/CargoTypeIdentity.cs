@@ -3,15 +3,22 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class CargoTypeIdentity : MonoBehaviour
 {
-    [SerializeField, HideInInspector] private string typeGuid;
-    public string TypeGuid => typeGuid;
+    [SerializeField] private string prefabTypeGuid;
+    public string TypeGuid => prefabTypeGuid;
 
 #if UNITY_EDITOR
+    [ContextMenu("Regenerate Type Guid")]
+    private void RegenerateTypeGuid()
+    {
+        prefabTypeGuid = System.Guid.NewGuid().ToString("N");
+        UnityEditor.EditorUtility.SetDirty(this);
+    }
+
     private void OnValidate()
     {
-        if (string.IsNullOrEmpty(typeGuid))
+        if (string.IsNullOrEmpty(prefabTypeGuid))
         {
-            typeGuid = System.Guid.NewGuid().ToString("N");
+            prefabTypeGuid = System.Guid.NewGuid().ToString("N");
             UnityEditor.EditorUtility.SetDirty(this);
         }
     }

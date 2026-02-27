@@ -23,10 +23,11 @@ public sealed class TradeService
         public string vendorId;
 
         public int creditsDelta;
-        public int totalFeesPaid; // NEW: for UI later
+        public int totalFeesPaid;
         public List<TradeLine> appliedLines = new List<TradeLine>();
     }
 
+    // Back-compat path (WorldMap inventory).
     public bool TryExecute(
         TradeTransactionDraft draft,
         WorldMapPlayerState player,
@@ -34,11 +35,40 @@ public sealed class TradeService
         MapNodeState nodeState,
         ITradeFeePolicy feePolicy,
         int timeBucket,
-
-        // 2B item memory tunables (bucket units)
         int cooldownSellToPlayerBuckets,
         int cooldownBuyFromPlayerBuckets,
+        out TradeReceipt receipt,
+        out FailReason failReason,
+        out string failNote)
+    {
+        return TryExecute(
+            draft,
+            player,
+            offers,
+            nodeState,
+            feePolicy,
+            timeBucket,
+            cooldownSellToPlayerBuckets,
+            cooldownBuyFromPlayerBuckets,
+            itemStore: player != null ? (IItemStore)player.inventory : null,
+            out receipt,
+            out failReason,
+            out failNote);
+    }
 
+    /// <summary>
+    /// NEW: Executes trade using an injected IItemStore (inventory OR physical crates).
+    /// </summary>
+    public bool TryExecute(
+        TradeTransactionDraft draft,
+        WorldMapPlayerState player,
+        IReadOnlyList<NodeMarketOffer> offers,
+        MapNodeState nodeState,
+        ITradeFeePolicy feePolicy,
+        int timeBucket,
+        int cooldownSellToPlayerBuckets,
+        int cooldownBuyFromPlayerBuckets,
+        IItemStore itemStore,
         out TradeReceipt receipt,
         out FailReason failReason,
         out string failNote)
@@ -47,10 +77,10 @@ public sealed class TradeService
         failReason = FailReason.None;
         failNote = null;
 
-        if (draft == null || player == null || player.inventory == null)
+        if (draft == null || player == null || itemStore == null)
         {
             failReason = FailReason.InvalidDraft;
-            failNote = "Missing draft/player/inventory.";
+            failNote = "Missing draft/player/itemStore.";
             return false;
         }
 
@@ -69,13 +99,20 @@ public sealed class TradeService
         }
 
         int totalFeesPaid = 0;
-
         int creditsDelta = 0;
+
         var needRemove = new Dictionary<string, int>();
         var needAdd = new Dictionary<string, int>();
 
         foreach (var line in draft.lines)
         {
+            if (line == null)
+            {
+                failReason = FailReason.InvalidLine;
+                failNote = "Null line.";
+                return false;
+            }
+
             if (string.IsNullOrWhiteSpace(line.offerId))
             {
                 failReason = FailReason.InvalidLine;
@@ -163,7 +200,7 @@ public sealed class TradeService
 
         foreach (var kvp in needRemove)
         {
-            int have = player.inventory.GetCount(kvp.Key);
+            int have = itemStore.GetCount(kvp.Key);
             if (have < kvp.Value)
             {
                 failReason = FailReason.InsufficientItems;
@@ -173,25 +210,36 @@ public sealed class TradeService
         }
 
         // APPLY
+        Debug.Log($"[TradeExec] APPLY store={(itemStore == null ? "<null>" : itemStore.GetType().Name)} creditsAfter={creditsAfter} needAdd={needAdd.Count} needRemove={needRemove.Count}");
         player.credits = creditsAfter;
 
         ApplyFeeMarketUpgrade(nodeState, totalFeesPaid);
 
         // Deplete offers
-        foreach (var line in draft.lines)
+        if (offers != null)
         {
-            var offer = FindOffer(offers, line.offerId);
-            if (offer != null)
-                offer.quantityRemaining = Mathf.Max(0, offer.quantityRemaining - line.quantity);
+            foreach (var line in draft.lines)
+            {
+                var offer = FindOffer(offers, line.offerId);
+                if (offer != null)
+                    offer.quantityRemaining = Mathf.Max(0, offer.quantityRemaining - line.quantity);
+            }
         }
 
+
         foreach (var kvp in needRemove)
-            player.inventory.Remove(kvp.Key, kvp.Value);
+        {
+            Debug.Log($"[TradeExec] REMOVE {kvp.Key} x{kvp.Value}");
+            itemStore.Remove(kvp.Key, kvp.Value);
+
+        }
 
         foreach (var kvp in needAdd)
-            player.inventory.Add(kvp.Key, kvp.Value);
+        {
+            Debug.Log($"[TradeApply] store={(itemStore == null ? "<null>" : itemStore.GetType().Name)} node={(player != null ? player.currentNodeId : "<no-player>")}");
+            itemStore.Add(kvp.Key, kvp.Value);
+        }
 
-        // 2B item memory: mark embargoes based on what happened
         ApplyItemEmbargoes(nodeState, draft.lines, timeBucket, cooldownSellToPlayerBuckets, cooldownBuyFromPlayerBuckets);
 
         receipt = new TradeReceipt
@@ -218,26 +266,24 @@ public sealed class TradeService
         if (market == null) return;
         if (lines == null || lines.Count == 0) return;
 
-        // Clamp sanity
         cooldownSellToPlayerBuckets = Mathf.Max(0, cooldownSellToPlayerBuckets);
         cooldownBuyFromPlayerBuckets = Mathf.Max(0, cooldownBuyFromPlayerBuckets);
 
         for (int i = 0; i < lines.Count; i++)
         {
             var line = lines[i];
+            if (line == null) continue;
             if (line.quantity <= 0) continue;
             if (string.IsNullOrWhiteSpace(line.itemId)) continue;
 
             if (line.direction == TradeDirection.SellToNode)
             {
-                // Player sold to node => node should NOT immediately sell it back
                 int until = timeBucket + cooldownSellToPlayerBuckets;
                 if (cooldownSellToPlayerBuckets > 0)
                     market.SetEmbargo(MarketOfferKind.SellToPlayer, line.itemId, until);
             }
             else if (line.direction == TradeDirection.BuyFromNode)
             {
-                // Player bought from node => node should NOT immediately buy it back
                 int until = timeBucket + cooldownBuyFromPlayerBuckets;
                 if (cooldownBuyFromPlayerBuckets > 0)
                     market.SetEmbargo(MarketOfferKind.BuyFromPlayer, line.itemId, until);

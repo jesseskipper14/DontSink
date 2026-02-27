@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using WorldMap.Player.Trade; // for IItemStore
 
 public sealed class PlayerDebugSeed : MonoBehaviour
 {
@@ -25,43 +26,103 @@ public sealed class PlayerDebugSeed : MonoBehaviour
 
     private IEnumerator SeedWhenReady()
     {
-        // Wait for GameState to exist (scene transitions can race Awake/Start order)
         float t = 0f;
+
+        // Wait for GameState to exist
         while (GameState.I == null && t < maxWaitSeconds)
         {
             t += Time.unscaledDeltaTime;
             yield return null;
         }
 
-        if (GameState.I == null)
+        if (GameState.I == null || GameState.I.player == null)
         {
-            Debug.LogWarning("[PlayerDebugSeed] GameState not ready; skipping seed this scene.");
+            Debug.LogWarning("[PlayerDebugSeed] GameState not ready; skipping seed.");
             yield break;
         }
 
         var state = GameState.I.player;
-        if (state == null)
+
+        // Try to find an IItemStore in scene (physical crate store in boat scene)
+        IItemStore store = null;
+        while (store == null && t < maxWaitSeconds)
         {
-            Debug.LogWarning("[PlayerDebugSeed] GameState.player is null; skipping seed this scene.");
-            yield break;
+            var behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
+            foreach (var b in behaviours)
+            {
+                if (b is IItemStore s)
+                {
+                    store = s;
+                    break;
+                }
+            }
+
+            if (store != null) break;
+
+            t += Time.unscaledDeltaTime;
+            yield return null;
         }
 
-        if (seedOnlyIfUninitialized && (state.credits != 0 || state.inventory != null))
-            yield break;
+        if (seedOnlyIfUninitialized)
+        {
+            bool hasCredits = state.credits != 0;
 
+            bool hasItems = false;
+            if (store != null)
+            {
+                int nCheck = Mathf.Min(itemIds?.Length ?? 0, amounts?.Length ?? 0);
+                for (int i = 0; i < nCheck; i++)
+                {
+                    var id = itemIds[i];
+                    if (string.IsNullOrWhiteSpace(id)) continue;
+                    if (store.GetCount(id) > 0)
+                    {
+                        hasItems = true;
+                        break;
+                    }
+                }
+            }
+            else if (state.inventory != null)
+            {
+                hasItems = true;
+            }
+
+            if (hasCredits || hasItems)
+                yield break;
+        }
+
+        // Seed credits
         state.credits = startingCredits;
 
-        state.inventory ??= new InventoryState();
-
         int n = Mathf.Min(itemIds?.Length ?? 0, amounts?.Length ?? 0);
-        for (int i = 0; i < n; i++)
-        {
-            var id = itemIds[i];
-            var amt = amounts[i];
-            if (string.IsNullOrWhiteSpace(id) || amt <= 0) continue;
-            state.inventory.Add(id, amt);
-        }
 
-        Debug.Log("[PlayerDebugSeed] Seeded player credits + inventory.");
+        if (store != null)
+        {
+            // Seed through physical or inventory-backed store
+            for (int i = 0; i < n; i++)
+            {
+                var id = itemIds[i];
+                var amt = amounts[i];
+                if (string.IsNullOrWhiteSpace(id) || amt <= 0) continue;
+                store.Add(id, amt);
+            }
+
+            Debug.Log("[PlayerDebugSeed] Seeded credits + items via IItemStore.");
+        }
+        else
+        {
+            // Fallback to legacy inventory
+            state.inventory ??= new InventoryState();
+
+            for (int i = 0; i < n; i++)
+            {
+                var id = itemIds[i];
+                var amt = amounts[i];
+                if (string.IsNullOrWhiteSpace(id) || amt <= 0) continue;
+                state.inventory.Add(id, amt);
+            }
+
+            Debug.Log("[PlayerDebugSeed] Seeded credits + inventory fallback.");
+        }
     }
 }

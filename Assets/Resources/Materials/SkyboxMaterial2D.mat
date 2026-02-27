@@ -47,7 +47,7 @@ Material:
     - _BGWaveNoiseStrength: 0.7
     - _BGWaveScale: 2
     - _BGWaveStrength: 0
-    - _Brightness: 0.9957667
+    - _Brightness: 0.036981598
     - _EnableExternalAlpha: 0
     - _FoamIntensity: 1
     - _ForegroundWaveNoiseScale: 8
@@ -61,7 +61,7 @@ Material:
     - _SparkleFalloffSharpness: 0.5
     - _SparkleIntensity: 1.5
     - _SparkleSpeed: 2
-    - _StarAlpha: 0
+    - _StarAlpha: 1
     - _StarDensity: 300
     - _StarSeed: 195
     - _StarSize: 0.0258

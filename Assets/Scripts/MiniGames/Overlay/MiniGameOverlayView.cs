@@ -26,6 +26,8 @@ namespace MiniGames
         {
             if (host == null || !host.IsOpen)
                 return;
+            GUI.Label(new Rect(10, 10, 800, 22),
+                $"[OverlayView] host={host.name} id={host.GetInstanceID()} cart={host.ActiveCartridge?.GetType().Name}");
 
             // Fullscreen dim
             var prev = GUI.color;

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cac75391102887f4f8404b1d59b77504, type: 3}
+  m_Name: TradeCargoPrefabCatalog
+  m_EditorClassIdentifier: 
+  entries:
+  - itemId: cloth
+    cratePrefab: {fileID: 4124277612827551974, guid: b4b1676e8b3732344a74ad1bb12a4e06, type: 3}
+  - itemId: fish
+    cratePrefab: {fileID: 4124277612827551974, guid: bd677404edd0bd5429ecb6110f9c8267, type: 3}
+  - itemId: fuel
+    cratePrefab: {fileID: 4124277612827551974, guid: d9d5a63b30d64b3418d0e6ae918653e1, type: 3}
+  - itemId: grain
+    cratePrefab: {fileID: 4124277612827551974, guid: ab3163923f2bcdb4d9f8e60572ca5281, type: 3}
+  - itemId: luxuries
+    cratePrefab: {fileID: 4124277612827551974, guid: a23a544a626a580479e1f03490311cf9, type: 3}
+  - itemId: medkit
+    cratePrefab: {fileID: 4124277612827551974, guid: ece92be04cffd5148b77e90f3ee7aa77, type: 3}
+  - itemId: rope
+    cratePrefab: {fileID: 4124277612827551974, guid: b11f9c31bb4f3af41b7e5a1e812ed87d, type: 3}
+  - itemId: scrap
+    cratePrefab: {fileID: 4124277612827551974, guid: 5aba99345a28d30499c5df5666535051, type: 3}
+  - itemId: wood
+    cratePrefab: {fileID: 4124277612827551974, guid: 5dc39b10550396d49ac0b3321238e3aa, type: 3}

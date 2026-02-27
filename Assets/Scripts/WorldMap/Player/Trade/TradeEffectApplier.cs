@@ -6,22 +6,46 @@ using WorldMap.Player.Trade;
 
 public static class TradeEffectApplier
 {
-    /// <summary>
-    /// Applies a Transaction MiniGameEffect to player state using TradeService.
-    /// Returns true if applied successfully.
-    /// </summary>
+    // Back-compat (WorldMap inventory).
     public static bool TryApply(
         MiniGameEffect effect,
         WorldMapPlayerState player,
         IReadOnlyList<NodeMarketOffer> offers,
-
-        // NEW inputs for fees + item-memory (2B)
         MapNodeState nodeState,
         ITradeFeePolicy feePolicy,
         int timeBucket,
         int cooldownSellToPlayerBuckets,
         int cooldownBuyFromPlayerBuckets,
+        out TradeService.TradeReceipt receipt,
+        out string failNote)
+    {
+        return TryApply(
+            effect,
+            player,
+            offers,
+            nodeState,
+            feePolicy,
+            timeBucket,
+            cooldownSellToPlayerBuckets,
+            cooldownBuyFromPlayerBuckets,
+            itemStore: player != null ? (IItemStore)player.inventory : null,
+            out receipt,
+            out failNote);
+    }
 
+    /// <summary>
+    /// NEW: Apply trade using an injected IItemStore.
+    /// </summary>
+    public static bool TryApply(
+        MiniGameEffect effect,
+        WorldMapPlayerState player,
+        IReadOnlyList<NodeMarketOffer> offers,
+        MapNodeState nodeState,
+        ITradeFeePolicy feePolicy,
+        int timeBucket,
+        int cooldownSellToPlayerBuckets,
+        int cooldownBuyFromPlayerBuckets,
+        IItemStore itemStore,
         out TradeService.TradeReceipt receipt,
         out string failNote)
     {
@@ -62,7 +86,7 @@ public static class TradeEffectApplier
             failNote = "Parsed trade draft is null.";
             return false;
         }
-
+        Debug.Log($"[TradeApply] store={(itemStore == null ? "<null>" : itemStore.GetType().Name)} node={(player != null ? player.currentNodeId : "<no-player>")}");
         var svc = new TradeService();
 
         if (!svc.TryExecute(
@@ -74,8 +98,9 @@ public static class TradeEffectApplier
             timeBucket,
             cooldownSellToPlayerBuckets,
             cooldownBuyFromPlayerBuckets,
+            itemStore,
             out receipt,
-            out var reason,         // <-- YOU WERE MISSING THIS
+            out var reason,
             out var note))
         {
             failNote = note ?? reason.ToString();

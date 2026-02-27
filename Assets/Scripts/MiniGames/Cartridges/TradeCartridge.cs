@@ -5,44 +5,38 @@ using WorldMap.Player.Trade;
 
 namespace MiniGames
 {
-    /// <summary>
-    /// Trade UI cartridge:
-    /// - Renders offers + player inventory (read-only)
-    /// - Builds a TradeTransactionDraft
-    /// - Emits MiniGameEffect(Transaction, system="Trade", payloadJson=draft)
-    /// - Stays open after confirm (supports multiple transactions per visit)
-    /// </summary>
     public sealed class TradeCartridge : IMiniGameCartridge, IOverlayRenderable
     {
-        private MiniGameContext _ctx;
+        private enum TradeTab { Buy, Sell, All }
 
         private readonly string _nodeId;
         private readonly int _timeBucket;
         private readonly IReadOnlyList<NodeMarketOffer> _offers;
 
-        private enum TradeTab { Buy, Sell, All }
-        private TradeTab _tab = TradeTab.Buy;
-
-        // Read-only display source. Mutation happens via TradeEffectApplier/TradeService.
         private readonly WorldMapPlayerState _player;
+        private readonly IItemStore _itemStore;
 
-        // Fee preview (keep)
         private readonly MapNodeState _nodeState;
         private readonly ITradeFeePreview _feePreview;
 
-        // NEW: base price lookup for "(base)" and deal coloring
         private readonly ResourceCatalog _resourceCatalog;
-        private readonly Dictionary<string, int> _basePriceByItemId = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
-        // UI state
-        private readonly Dictionary<string, int> _qtyByOfferId = new Dictionary<string, int>();
-        private Vector2 _offerScroll;
-        private Vector2 _invScroll;
-        private string _invFilter = "";
-        private bool _invOnlyRelevant = false;
+        private MiniGameContext _ctx;
         private bool _requestedClose;
         private string _lastUiNote;
 
+        private TradeTab _tab = TradeTab.Buy;
+
+        private Vector2 _offerScroll;
+        private Vector2 _invScroll;
+
+        private readonly Dictionary<string, int> _qtyByOfferId = new Dictionary<string, int>();
+        private string _invFilter;
+        private bool _invOnlyRelevant;
+
+        private readonly Dictionary<string, int> _basePriceByItemId = new Dictionary<string, int>(StringComparer.Ordinal);
+
+        // Back-compat signature (WorldMap inventory).
         public TradeCartridge(
             string nodeId,
             int timeBucket,
@@ -51,23 +45,38 @@ namespace MiniGames
             MapNodeState nodeState,
             ITradeFeePreview feePreview,
             ResourceCatalog resourceCatalog)
+            : this(nodeId, timeBucket, offers, player, (player != null ? (IItemStore)player.inventory : null), nodeState, feePreview, resourceCatalog)
+        {
+        }
+
+        // NEW: injected store (inventory OR physical crate store).
+        public TradeCartridge(
+            string nodeId,
+            int timeBucket,
+            IReadOnlyList<NodeMarketOffer> offers,
+            WorldMapPlayerState player,
+            IItemStore itemStore,
+            MapNodeState nodeState,
+            ITradeFeePreview feePreview,
+            ResourceCatalog resourceCatalog)
         {
             _nodeId = nodeId;
             _timeBucket = timeBucket;
             _offers = offers ?? Array.Empty<NodeMarketOffer>();
+
             _player = player;
+            _itemStore = itemStore;
 
             _nodeState = nodeState;
             _feePreview = feePreview;
-
             _resourceCatalog = resourceCatalog;
-            BuildBasePriceLookup();
+
+            BuildBasePriceCache();
         }
 
-        private void BuildBasePriceLookup()
+        private void BuildBasePriceCache()
         {
             _basePriceByItemId.Clear();
-
             if (_resourceCatalog == null || _resourceCatalog.Resources == null) return;
 
             for (int i = 0; i < _resourceCatalog.Resources.Count; i++)
@@ -151,27 +160,23 @@ namespace MiniGames
             _ctx = null;
         }
 
-        // ===== Rendering =====
-
         public void DrawOverlayGUI(Rect panel)
         {
-            if (_player == null || _player.inventory == null)
+            if (_player == null || _itemStore == null)
             {
                 GUI.Label(new Rect(panel.x + 14, panel.y + 14, panel.width - 28, 22),
-                    "TRADE (missing player/inventory)");
+                    "TRADE (missing player/item store)");
                 return;
             }
 
             float pad = 14f;
 
-            // Header
             GUI.Label(new Rect(panel.x + pad, panel.y + 10, panel.width - pad * 2f, 22),
                 $"TRADE @ {_nodeId} (day {_timeBucket})");
 
             GUI.Label(new Rect(panel.x + pad, panel.y + 32, panel.width - pad * 2f, 22),
                 $"Credits: {_player.credits}");
 
-            // Close button (top-right)
             float bx = panel.xMax - 34;
             float by = panel.y + 8;
             if (GUI.Button(new Rect(bx, by, 26, 22), "X"))
@@ -180,15 +185,12 @@ namespace MiniGames
                 _lastUiNote = "Closed";
             }
 
-            // Inventory on FAR RIGHT
             float invW = Mathf.Clamp(panel.width * 0.28f, 260f, 420f);
             var invRect = new Rect(panel.xMax - pad - invW, panel.y + 60f, invW, panel.height - 110f);
             DrawInventoryPanel(invRect);
 
-            // Divider line
             GUI.Box(new Rect(invRect.x - 6, panel.y + 50, 2, panel.height - 70), GUIContent.none);
 
-            // Tabs directly above offers list (left side)
             float tabY = panel.y + 60f;
             float tabX = panel.x + pad;
             float tabW = 80f;
@@ -203,15 +205,13 @@ namespace MiniGames
             if (GUI.Button(new Rect(tabX + 2 * (tabW + 6), tabY, tabW, tabH), "ALL"))
                 _tab = TradeTab.All;
 
-            // Offers list: left block up to inventory
             float listX = panel.x + pad;
             float listY = panel.y + 90f;
             float listW = invRect.xMin - pad - listX;
-            float listH = panel.height - 170f; // a bit more room for preview lines
+            float listH = panel.height - 170f;
 
             var viewRect = new Rect(listX, listY, listW, listH);
 
-            // Extra height for header row
             var contentRect = new Rect(
                 0, 0,
                 Mathf.Max(1f, viewRect.width - 16f),
@@ -247,7 +247,6 @@ namespace MiniGames
 
             GUI.EndScrollView();
 
-            // Preview line (fee-aware)
             var preview = ComputePreview();
             string signFinal = preview.finalDelta >= 0 ? "+" : "-";
 
@@ -269,7 +268,6 @@ namespace MiniGames
                     "Not enough credits.");
             }
 
-            // Footer buttons
             var btnRow = new Rect(panel.x + pad, panel.yMax - 48, panel.width - pad * 2f, 34);
             float bw = 110f;
 
@@ -289,7 +287,6 @@ namespace MiniGames
 
         private void DrawHeaderRow(float y, float w)
         {
-            // Keep aligned with DrawOfferRow columns.
             GUI.Label(new Rect(6, y, 60, 22), "OFFER");
             GUI.Label(new Rect(66, y, 120, 22), "RESOURCE");
             GUI.Label(new Rect(186, y, 140, 22), "PRICE");
@@ -300,27 +297,24 @@ namespace MiniGames
         {
             string label = o.kind == MarketOfferKind.SellToPlayer ? "BUY" : "SELL";
             int qty = _qtyByOfferId.TryGetValue(o.offerId, out var q) ? q : 0;
-            int have = _player.inventory.GetCount(o.itemId);
+            int have = _itemStore.GetCount(o.itemId);
 
             int basePrice = GetBasePrice(o.itemId);
 
             GUI.Label(new Rect(6, y, 60, 22), label);
             GUI.Label(new Rect(66, y, 120, 22), o.itemId);
 
-            // PRICE: "curc (basec)" with color on the current price only
             var prevColor = GUI.color;
             GUI.color = GetDealColor(o.kind, o.unitPrice, basePrice);
             GUI.Label(new Rect(186, y, 50, 22), $"{o.unitPrice}c");
             GUI.color = prevColor;
             GUI.Label(new Rect(236, y, 90, 22), $"({basePrice}c)");
 
-            // Availability column
             if (o.kind == MarketOfferKind.SellToPlayer)
                 GUI.Label(new Rect(326, y, 240, 22), $"Trader has {o.quantityRemaining}");
             else
                 GUI.Label(new Rect(326, y, 240, 22), $"Trader wants {o.quantityRemaining} / You have {have}");
 
-            // Qty controls INSIDE the row (near the right edge of the offers list)
             float bx = w - 84f;
 
             if (GUI.Button(new Rect(bx, y, 24, 22), "-"))
@@ -360,17 +354,10 @@ namespace MiniGames
             currentPrice = Mathf.Max(1, currentPrice);
 
             float ratio = currentPrice / (float)basePrice;
-
-            // BUYING: cheaper better. SELLING: higher better.
             float signed = (kind == MarketOfferKind.SellToPlayer) ? (1f - ratio) : (ratio - 1f);
-
-            // Clamp so wild prices don't go nuclear.
             signed = Mathf.Clamp(signed, -0.75f, 0.75f);
-
-            // Map to 0..1: 0=red, 0.5=yellow, 1=green
             float t = (signed + 0.75f) / 1.5f;
 
-            // red -> yellow -> green
             if (t < 0.5f)
                 return Color.Lerp(new Color(1f, 0.35f, 0.35f, 1f), new Color(1f, 0.92f, 0.35f, 1f), t / 0.5f);
 
@@ -399,7 +386,6 @@ namespace MiniGames
 
         private string BuildPreviewString()
         {
-            // This is still the old raw preview string (no fee). It's just a debug button anyway.
             int creditsDelta = 0;
 
             foreach (var o in _offers)
@@ -464,7 +450,7 @@ namespace MiniGames
             });
 
             _lastUiNote = "Trade submitted";
-            ClearAll(); // stay open, allow repeat transactions
+            ClearAll();
         }
 
         private int GetMaxQtyForOffer(NodeMarketOffer o)
@@ -473,10 +459,9 @@ namespace MiniGames
 
             int max = Mathf.Max(0, o.quantityRemaining);
 
-            // BUY_FROM_PLAYER offer means player is selling to node; clamp to have
             if (o.kind == MarketOfferKind.BuyFromPlayer)
             {
-                int have = _player.inventory.GetCount(o.itemId);
+                int have = _itemStore.GetCount(o.itemId);
                 max = Mathf.Min(max, have);
             }
 
@@ -497,9 +482,9 @@ namespace MiniGames
 
         private struct TradePreview
         {
-            public int tradeBalance;     // before fee
-            public int fee;              // always >= 0
-            public int finalDelta;       // tradeBalance - fee
+            public int tradeBalance;
+            public int fee;
+            public int finalDelta;
             public int creditsAfter;
             public bool insufficientCredits;
         }
@@ -623,7 +608,7 @@ namespace MiniGames
         private void CollectInventoryEntries(List<(string id, int count)> outList)
         {
             outList.Clear();
-            foreach (var kvp in _player.inventory.Enumerate())
+            foreach (var kvp in _itemStore.Enumerate())
             {
                 if (kvp.Value <= 0) continue;
                 outList.Add((kvp.Key, kvp.Value));
