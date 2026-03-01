@@ -37,7 +37,9 @@ public class CharacterMotor2D : MonoBehaviour
     public void UpdateGrounded()
     {
         Vector2 pos = (Vector2)transform.position + groundCheckLocalOffset;
-        IsGrounded = Physics2D.OverlapCircle(pos, groundCheckRadius, groundMask) != null;
+
+        var col = Physics2D.OverlapCircle(pos, groundCheckRadius, groundMask);
+        IsGrounded = col != null && !col.isTrigger;
 
         if (IsGrounded)
             TimeSinceGrounded = 0f;

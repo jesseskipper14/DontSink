@@ -30,6 +30,11 @@ public sealed class PhysicalCrateItemStore : MonoBehaviour, IItemStore
             ApplyPolicy(crates[i]);
     }
 
+    public void ApplyPolicyTo(CargoCrate crate)
+    {
+        ApplyPolicy(crate);
+    }
+
     public int GetCount(string itemId)
     {
         if (sellZone == null || string.IsNullOrWhiteSpace(itemId)) return 0;

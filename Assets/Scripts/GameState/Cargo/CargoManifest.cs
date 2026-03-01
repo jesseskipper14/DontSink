@@ -138,6 +138,15 @@ public static class CargoManifest
                 if (rb != null)
                     rb.bodyType = RigidbodyType2D.Dynamic;
             }
+
+            var crate = go.GetComponent<CargoCrate>();
+            if (crate != null)
+            {
+                // Find scene authority and apply its policy to this crate immediately.
+                var store = Object.FindFirstObjectByType<PhysicalCrateItemStore>(FindObjectsInactive.Exclude);
+                if (store != null)
+                    store.ApplyPolicyTo(crate); // we’ll add this method
+            }
         }
     }
 
