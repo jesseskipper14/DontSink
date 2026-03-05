@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6fa469a61cf0094cbbcbf9fde09944b, type: 3}
+  m_Name: AfflictionCatalog
+  m_EditorClassIdentifier: 
+  definitions:
+  - {fileID: 11400000, guid: 264b80c2f1582ee45bd49f8b171eddf7, type: 2}
+  - {fileID: 11400000, guid: c035020bcb808bc48ad2b711b8e777df, type: 2}
+  - {fileID: 11400000, guid: ddba926c4fedea24c93ce8d819058a35, type: 2}

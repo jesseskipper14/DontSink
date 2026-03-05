@@ -50,4 +50,16 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
     {
         _jumpPressedLatched = false;
     }
+
+    private void OnDisable()
+    {
+        _jumpPressedLatched = false;
+        Current = default; // zero MoveX, false buttons
+    }
+
+    private void OnEnable()
+    {
+        _jumpPressedLatched = false;
+        Current = default;
+    }
 }

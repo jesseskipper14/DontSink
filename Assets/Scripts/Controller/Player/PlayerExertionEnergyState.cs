@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using Survival.Vitals;
+using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class PlayerExertionEnergyState : MonoBehaviour
+public sealed class PlayerExertionEnergyState : MonoBehaviour, IExertionRead
 {
     public enum ExertionState
     {
@@ -65,6 +66,7 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour
 
     [Tooltip("Factor of exertion of regular treading needed to tread underwater")]
     [Min(0f)] public float underwaterTreadFactor = 0.2f;
+    public float Exertion01 => exertion01;
 
     // -----------------------------
     // Energy model (0..1)
@@ -260,12 +262,19 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour
             bool resting = !hasMoveInput && !intent.SwimUpHeld && !intent.DiveHeld;
             if (resting) regenUnits += restingRegenBonus;
 
-            // ✅ Key rule: if you're floating in water (not grounded), no regen.
-            bool floatingInWater = inWater && !grounded;
-            if (floatingInWater)
+            // Rule: prevent energy regen while floating at the surface (treading),
+            // but allow regen when fully submerged (underwater neutral float).
+            bool floatingAtSurface = inWater && !grounded && !fullySubmerged;
+
+            if (floatingAtSurface)
+            {
                 regenUnits = 0f;
+            }
             else
-                regenUnits += landRegenBonus; // grounded on land OR grounded in shallow water
+            {
+                // "Land bonus" applies when grounded OR when fully submerged (your "recover underwater" rule).
+                regenUnits += landRegenBonus;
+            }
         }
 
         energyCurrent += (regenUnits - drainUnits) * dt;
@@ -326,5 +335,19 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour
     {
         if (amount01 <= 0f) return;
         exertion01 = Mathf.Clamp01(exertion01 + amount01);
+    }
+
+    public void ResetState()
+    {
+        // TODO: replace field names to match your class
+        // Examples based on the design we discussed previously.
+
+        // Energy back to full
+        energyCurrent = energyMax;          // or Energy01 = 1f
+        CurrentEnergyState = EnergyState.Full;
+
+        // Exertion back to resting
+        exertion01 = 0f;
+        CurrentState = ExertionState.Resting;
     }
 }

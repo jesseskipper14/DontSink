@@ -1,17 +1,18 @@
-using NUnit.Framework.Constraints;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class WaterMeshRenderer : MonoBehaviour
 {
     [SerializeField] private WaveManager waveManager; // exposed in editor
+    private IWaveService wave => waveManager;
 
-    private IWaveService wave => waveManager; // interface forwarding
+    [Header("Centering")]
+    [Tooltip("What to center the water mesh around. If null, will fall back to Camera.main.")]
+    [SerializeField] private Transform centerTarget;
 
     public int points = 1000;
     public float bottomY = -20f;
     public float textureWorldScale = 10f;
-    //public float meshExtraWidth = 100f; // world units to extend beyond camera
 
     [Header("Mesh Settings")]
     public float meshWidth = 300f;
@@ -30,13 +31,31 @@ public class WaterMeshRenderer : MonoBehaviour
     void LateUpdate()
     {
         if (wave == null) return;
-        BuildMesh();
+        if (!TryGetCenterX(out float centerX)) return;
+        BuildMesh(centerX);
     }
 
-    void BuildMesh()
+    bool TryGetCenterX(out float centerX)
     {
-        if (wave == null) return;
+        if (centerTarget != null)
+        {
+            centerX = centerTarget.position.x;
+            return true;
+        }
 
+        var cam = Camera.main;
+        if (cam != null)
+        {
+            centerX = cam.transform.position.x;
+            return true;
+        }
+
+        centerX = 0f;
+        return false;
+    }
+
+    void BuildMesh(float centerX)
+    {
         int vertCount = points * 2;
 
         if (vertices == null || vertices.Length != vertCount)
@@ -47,8 +66,6 @@ public class WaterMeshRenderer : MonoBehaviour
             BuildTriangles(points);
         }
 
-        // Center mesh around camera/player
-        float centerX = Camera.main.transform.position.x;
         float startX = centerX - meshWidth * 0.5f;
         float dx = meshWidth / (points - 1);
 
@@ -57,9 +74,7 @@ public class WaterMeshRenderer : MonoBehaviour
             float x = startX + i * dx;
             float y = wave.SampleHeight(x);
 
-            // Top surface
             vertices[i] = new Vector3(x, y, 0f);
-            // Bottom surface
             vertices[i + points] = new Vector3(x, bottomY, 0f);
 
             float u = x / textureWorldScale;

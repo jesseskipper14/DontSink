@@ -29,12 +29,12 @@ public sealed class
     [Tooltip("Clamp vertical speed while swimming.")]
     [Min(0f)] public float swimMaxSpeedY = 3.0f;
 
-    [Header("Drag While Swimming")]
-    [Tooltip("When swimming, we override Rigidbody2D.drag to this value.")]
-    [Min(0f)] public float swimDrag = 4.0f;
+    //[Header("Drag While Swimming")]
+    //[Tooltip("When swimming, we override Rigidbody2D.drag to this value.")]
+    //[Min(0f)] public float swimDrag = 4.0f;
 
-    [Tooltip("When swimming, we override Rigidbody2D.angularDrag to this value.")]
-    [Min(0f)] public float swimAngularDrag = 4.0f;
+    //[Tooltip("When swimming, we override Rigidbody2D.angularDrag to this value.")]
+    //[Min(0f)] public float swimAngularDrag = 4.0f;
 
     [Header("Exit Behavior")]
     [Tooltip("If true, when you stop swimming we restore original drag values.")]
@@ -46,8 +46,8 @@ public sealed class
     private ICharacterIntentSource _intent;
     private PlayerSubmersionState _submersion;
 
-    private float _origDrag;
-    private float _origAngularDrag;
+    //private float _origDrag;
+    //private float _origAngularDrag;
     private bool _wasSwimming;
 
     public void SetEnabled(bool value) => enabledFlag = value;
@@ -78,8 +78,8 @@ public sealed class
             return;
         }
 
-        _origDrag = _body.rb.linearDamping;
-        _origAngularDrag = _body.rb.angularDamping;
+        //_origDrag = _body.rb.linearDamping;
+        //_origAngularDrag = _body.rb.angularDamping;
     }
 
     public void ApplyForces(IForceBody body)
@@ -91,18 +91,18 @@ public sealed class
         // Handle drag transitions
         if (swimming && !_wasSwimming)
         {
-            _origDrag = body.rb.linearDamping;
-            _origAngularDrag = body.rb.angularDamping;
-            body.rb.linearDamping = swimDrag;
-            body.rb.angularDamping = swimAngularDrag;
+            //_origDrag = body.rb.linearDamping;
+            //_origAngularDrag = body.rb.angularDamping;
+            //body.rb.linearDamping = swimDrag;
+            //body.rb.angularDamping = swimAngularDrag;
             _wasSwimming = true;
         }
         else if (!swimming && _wasSwimming)
         {
             if (restoreDragOnExit)
             {
-                body.rb.linearDamping = _origDrag;
-                body.rb.angularDamping = _origAngularDrag;
+                //body.rb.linearDamping = _origDrag;
+                //body.rb.angularDamping = _origAngularDrag;
             }
             _wasSwimming = false;
         }

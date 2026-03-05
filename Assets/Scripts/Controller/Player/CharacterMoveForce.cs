@@ -105,7 +105,7 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
 
         motor.TickTimers(dt, _jumpPressedLatched);
 
-        var ee = GetComponent<PlayerExertionEnergyState>();
+        var ee = GetComponentInChildren<PlayerExertionEnergyState>();
 
         // --- Jump (grounded-only + angle-gated + energy-gated) ---
         if (_jumpPressedLatched && motor.IsGrounded && jumpAngleOk)

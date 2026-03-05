@@ -15,6 +15,10 @@ public class CameraManager : MonoBehaviour
     public float mainCameraWaveZ = 0f;
     public float internalCameraWaveZ = 10f;
 
+    [Header("Defaults")]
+    [Tooltip("Zoom level to reset to when this controller activates.")]
+    public float defaultOrthoSize = 10f;
+
     [Header("Follow")]
     [SerializeField] private Transform followTarget;
     [SerializeField] private Vector3 followOffset = new Vector3(0f, 0f, -10f);
@@ -29,6 +33,20 @@ public class CameraManager : MonoBehaviour
         Instance = this;
 
         ActivateCamera(mainCamera);
+
+        mainCamera.orthographic = true;
+
+        // Capture default if not set
+        if (defaultOrthoSize <= 0f)
+            defaultOrthoSize = mainCamera.orthographicSize;
+
+        ResetZoom();
+    }
+
+    private void OnEnable()
+    {
+        // Whenever spectator cam activates, reset zoom
+        ResetZoom();
     }
 
     public void SetFollowTarget(Transform t) => followTarget = t;
@@ -120,4 +138,9 @@ public class CameraManager : MonoBehaviour
         if (Instance == this) Instance = null;
     }
 
+    private void ResetZoom()
+    {
+        if (mainCamera)
+            mainCamera.orthographicSize = defaultOrthoSize;
+    }
 }
