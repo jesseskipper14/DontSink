@@ -29,6 +29,7 @@ public class ServiceRoot : MonoBehaviour
 
     public CelestialBodyManager CelestialBodyManager => celestialManager;
     public WeatherManager WeatherManager => weatherManager;
+    public WaveManager WaveManager => waveManager;
 
     public ITimeOfDayService Time { get; private set; }
     public IBrightnessService Brightness { get; private set; }

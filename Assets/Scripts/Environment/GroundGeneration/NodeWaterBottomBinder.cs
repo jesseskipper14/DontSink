@@ -4,26 +4,44 @@ using UnityEngine;
 public sealed class NodeWaterBottomBinder : MonoBehaviour
 {
     [SerializeField] private NodeGroundSpriteShapeBinder ground;
-    [SerializeField] private WaterMeshRenderer water; // your script in screenshot
-    [SerializeField] private float extraDepth = 0f;   // if you want water slightly deeper than land fill
+    [SerializeField] private WaterMeshRenderer water;
+    [SerializeField] private float extraDepth = 0f;
 
     private void Awake()
     {
-        if (!ground) ground = FindAnyObjectByType<NodeGroundSpriteShapeBinder>();
-        if (!water) water = FindAnyObjectByType<WaterMeshRenderer>();
+        if (ground == null) ground = FindAnyObjectByType<NodeGroundSpriteShapeBinder>();
+        if (water == null) water = FindAnyObjectByType<WaterMeshRenderer>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
+        if (ground != null)
+            ground.OnBottomYChanged += HandleBottomChanged;
+
         Apply();
+    }
+
+    private void OnDisable()
+    {
+        if (ground != null)
+            ground.OnBottomYChanged -= HandleBottomChanged;
+    }
+
+    private void HandleBottomChanged(float bottomY)
+    {
+        ApplyFromBottom(bottomY);
     }
 
     [ContextMenu("Apply")]
     public void Apply()
     {
-        if (!ground || !water) return;
+        if (ground == null || water == null) return;
+        ApplyFromBottom(ground.LastUsedBottomY);
+    }
 
-        // This should match exactly, so no seams.
-        water.bottomY = ground.LastUsedBottomY - extraDepth;
+    private void ApplyFromBottom(float groundBottomY)
+    {
+        if (water == null) return;
+        water.bottomY = groundBottomY - extraDepth;
     }
 }

@@ -42,6 +42,9 @@ public class CharacterPlayer : MonoBehaviour, IForceBody
             return;
         }
 
+        if (buoyancyForce.waveManager == null)
+            buoyancyForce.waveManager = FindFirstObjectByType<WaveManager>();
+
         // Setup generic buoyancy
         buoyancyForce = GetComponent<BuoyancyPolygonForce>();
         if (buoyancyForce != null)

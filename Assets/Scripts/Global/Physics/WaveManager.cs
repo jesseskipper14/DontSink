@@ -285,4 +285,12 @@ public class WaveManager : MonoBehaviour, IWaveService
         if (waveField != null)
             waveField.AddImpulse(worldX, totalForce, radius);
     }
+
+    public float SampleSurfaceY(float worldX)
+    {
+        if (waveField == null)
+            return 0f;
+
+        return waveField.SampleHeightAtWorldXWrapped(worldX);
+    }
 }

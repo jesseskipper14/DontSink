@@ -145,8 +145,8 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour
         float xEnd = worldWidth;
         float dx = (xEnd - xStart) / (pointCount - 1);
 
-        slopeLength += Random.Range(-slopeRandomizationRange, slopeRandomizationRange);
-        slopeDrop += Random.Range(-slopeRandomizationRange, slopeRandomizationRange);
+        float actualSlopeLength = slopeLength + Random.Range(-slopeRandomizationRange, slopeRandomizationRange);
+        float actualSlopeDrop = slopeDrop + Random.Range(-slopeRandomizationRange, slopeRandomizationRange);
 
         float slopeStartX = Mathf.Clamp(islandLength, xStart, xEnd);
         float slopeEndX = Mathf.Clamp(islandLength + slopeLength, xStart, xEnd);

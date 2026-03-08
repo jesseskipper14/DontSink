@@ -34,7 +34,7 @@ public class WaveRenderer_Line : MonoBehaviour
         for (int i = 0; i < points; i++)
         {
             float x = startX + i * dx;
-            float y = wave.SampleHeightAtWorldXWrapped(x);
+            float y = waveManager.SampleSurfaceY(x);
             lr.SetPosition(i, new Vector3(x, y, 0f));
         }
     }

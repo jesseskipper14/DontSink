@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.U2D;
 
@@ -23,6 +24,8 @@ public sealed class NodeGroundSpriteShapeBinder : MonoBehaviour
 
     public float LastUsedBottomY { get; private set; }
 
+    public event Action<float> OnBottomYChanged;
+
     private void Awake()
     {
         _ssc = GetComponent<SpriteShapeController>();
@@ -37,8 +40,6 @@ public sealed class NodeGroundSpriteShapeBinder : MonoBehaviour
         if (generator != null)
             generator.OnGenerated += HandleGenerated;
 
-        // Safety: if we're entering play mode and generator already ran,
-        // schedule a rebuild anyway.
         ScheduleRebuild();
     }
 
@@ -67,7 +68,6 @@ public sealed class NodeGroundSpriteShapeBinder : MonoBehaviour
 
     private IEnumerator RebuildNextFrame()
     {
-        // Wait for generator + SpriteShape internals to settle
         yield return null;
         Rebuild();
         _pending = null;
@@ -82,17 +82,19 @@ public sealed class NodeGroundSpriteShapeBinder : MonoBehaviour
         var pts = edge.points;
         if (pts == null || pts.Length < 2) return;
 
-        // Make sure fillBottomY is actually below all points (prevents inverted/zero-area polygons)
         float minY = pts[0].y;
-        for (int i = 1; i < pts.Length; i++) minY = Mathf.Min(minY, pts[i].y);
+        for (int i = 1; i < pts.Length; i++)
+            minY = Mathf.Min(minY, pts[i].y);
+
         float safeBottomY = Mathf.Min(fillBottomY, minY - 0.5f);
+
         LastUsedBottomY = safeBottomY;
+        OnBottomYChanged?.Invoke(LastUsedBottomY);
 
         var spline = _ssc.spline;
         spline.Clear();
-        spline.isOpenEnded = false; // REQUIRED for fill
+        spline.isOpenEnded = false;
 
-        // Top contour
         for (int i = 0; i < pts.Length; i++)
         {
             if (decimate && i % decimateStep != 0 && i != pts.Length - 1)
@@ -105,7 +107,6 @@ public sealed class NodeGroundSpriteShapeBinder : MonoBehaviour
             spline.SetRightTangent(idx, Vector3.right * tangentStrength);
         }
 
-        // Close downward
         Vector3 last = spline.GetPosition(spline.GetPointCount() - 1);
         Vector3 first = spline.GetPosition(0);
 
@@ -117,7 +118,6 @@ public sealed class NodeGroundSpriteShapeBinder : MonoBehaviour
         spline.InsertPointAt(bl, new Vector3(first.x, safeBottomY, 0f));
         spline.SetTangentMode(bl, ShapeTangentMode.Linear);
 
-        // Force SpriteShape to rebuild its mesh NOW
         _ssc.RefreshSpriteShape();
     }
 }

@@ -1,41 +1,94 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-public class WaterMeshRenderer : MonoBehaviour
+public sealed class WaterMeshRenderer : MonoBehaviour
 {
-    [SerializeField] private WaveManager waveManager; // exposed in editor
+    [SerializeField] private WaveManager waveManager;
     private IWaveService wave => waveManager;
 
     [Header("Centering")]
-    [Tooltip("What to center the water mesh around. If null, will fall back to Camera.main.")]
+    [Tooltip("What to center the water mesh around. If null, falls back to Camera.main.")]
     [SerializeField] private Transform centerTarget;
 
-    public int points = 1000;
+    [Header("Mesh Settings")]
+    [Min(2)] public int points = 1000;
     public float bottomY = -20f;
     public float textureWorldScale = 10f;
-
-    [Header("Mesh Settings")]
     public float meshWidth = 300f;
 
-    Mesh mesh;
-    Vector3[] vertices;
-    Vector2[] uvs;
-    int[] triangles;
+    private Mesh _mesh;
+    private MeshFilter _meshFilter;
 
-    void Awake()
+    private Vector3[] _vertices;
+    private Vector2[] _uvs;
+    private Vector2[] _uv2s;
+    private int[] _triangles;
+
+    private int _lastPoints = -1;
+
+    private void Awake()
     {
-        mesh = new Mesh { name = "Water Mesh" };
-        GetComponent<MeshFilter>().mesh = mesh;
+        _meshFilter = GetComponent<MeshFilter>();
+
+        _mesh = new Mesh
+        {
+            name = "Water Mesh"
+        };
+        _mesh.MarkDynamic();
+
+        _meshFilter.sharedMesh = _mesh;
+
+        ResolveRefs();
+        EnsureMeshData();
     }
 
-    void LateUpdate()
+    private void OnEnable()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        ResolveRefs();
+    }
+
+    private void Start()
+    {
+        ResolveRefs();
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ResolveRefs();
+    }
+
+    private void ResolveRefs()
+    {
+        if (ServiceRoot.Instance != null && ServiceRoot.Instance.WaveManager != null)
+        {
+            waveManager = ServiceRoot.Instance.WaveManager;
+            return;
+        }
+
+        if (waveManager == null)
+            waveManager = FindFirstObjectByType<WaveManager>();
+    }
+
+    private void LateUpdate()
+    {
+        if (waveManager == null)
+            ResolveRefs();
+
         if (wave == null) return;
         if (!TryGetCenterX(out float centerX)) return;
-        BuildMesh(centerX);
+
+        EnsureMeshData();
+        UpdateMesh(centerX);
     }
 
-    bool TryGetCenterX(out float centerX)
+    private bool TryGetCenterX(out float centerX)
     {
         if (centerTarget != null)
         {
@@ -43,7 +96,7 @@ public class WaterMeshRenderer : MonoBehaviour
             return true;
         }
 
-        var cam = Camera.main;
+        Camera cam = Camera.main;
         if (cam != null)
         {
             centerX = cam.transform.position.x;
@@ -54,45 +107,81 @@ public class WaterMeshRenderer : MonoBehaviour
         return false;
     }
 
-    void BuildMesh(float centerX)
+    private void EnsureMeshData()
     {
-        int vertCount = points * 2;
+        if (points < 2) points = 2;
 
-        if (vertices == null || vertices.Length != vertCount)
+        if (_mesh == null)
         {
-            vertices = new Vector3[vertCount];
-            uvs = new Vector2[vertCount];
-            triangles = new int[(points - 1) * 6];
-            BuildTriangles(points);
+            _mesh = new Mesh { name = "Water Mesh" };
+            _mesh.MarkDynamic();
+
+            if (_meshFilter == null)
+                _meshFilter = GetComponent<MeshFilter>();
+
+            _meshFilter.sharedMesh = _mesh;
         }
 
+        if (_lastPoints == points &&
+            _vertices != null &&
+            _uvs != null &&
+            _uv2s != null &&
+            _triangles != null)
+        {
+            return;
+        }
+
+        _lastPoints = points;
+
+        int vertCount = points * 2;
+        _vertices = new Vector3[vertCount];
+        _uvs = new Vector2[vertCount];
+        _uv2s = new Vector2[vertCount];
+        _triangles = new int[(points - 1) * 6];
+
+        BuildTriangles();
+
+        _mesh.Clear();
+        _mesh.vertices = _vertices;
+        _mesh.uv = _uvs;
+        _mesh.uv2 = _uv2s;
+        _mesh.triangles = _triangles;
+        _mesh.RecalculateBounds();
+    }
+
+    private void UpdateMesh(float centerX)
+    {
         float startX = centerX - meshWidth * 0.5f;
         float dx = meshWidth / (points - 1);
+        float safeScale = Mathf.Approximately(textureWorldScale, 0f) ? 1f : textureWorldScale;
 
         for (int i = 0; i < points; i++)
         {
-            float x = startX + i * dx;
-            float y = wave.SampleHeight(x);
+            float worldX = startX + i * dx;
+            float surfaceY = waveManager.SampleSurfaceY(worldX);
 
-            vertices[i] = new Vector3(x, y, 0f);
-            vertices[i + points] = new Vector3(x, bottomY, 0f);
+            _vertices[i] = new Vector3(worldX, surfaceY, 0f);
+            _vertices[i + points] = new Vector3(worldX, bottomY, 0f);
 
-            float u = x / textureWorldScale;
-            uvs[i] = new Vector2(u, 1f);
-            uvs[i + points] = new Vector2(u, 0f);
+            float u = worldX / safeScale;
+            _uvs[i] = new Vector2(u, 1f);
+            _uvs[i + points] = new Vector2(u, 0f);
+
+            // Critical: both verts in a column carry the SAME local surface Y.
+            _uv2s[i] = new Vector2(surfaceY, 0f);
+            _uv2s[i + points] = new Vector2(surfaceY, 0f);
         }
 
-        mesh.Clear();
-        mesh.vertices = vertices;
-        mesh.uv = uvs;
-        mesh.triangles = triangles;
-        mesh.RecalculateNormals();
-        mesh.RecalculateBounds();
+        _mesh.vertices = _vertices;
+        _mesh.uv = _uvs;
+        _mesh.uv2 = _uv2s;
+        _mesh.RecalculateBounds();
     }
 
-    void BuildTriangles(int points)
+    private void BuildTriangles()
     {
         int t = 0;
+
         for (int i = 0; i < points - 1; i++)
         {
             int a = i;
@@ -100,8 +189,13 @@ public class WaterMeshRenderer : MonoBehaviour
             int c = i + points;
             int d = i + points + 1;
 
-            triangles[t++] = a; triangles[t++] = b; triangles[t++] = d;
-            triangles[t++] = a; triangles[t++] = d; triangles[t++] = c;
+            _triangles[t++] = a;
+            _triangles[t++] = b;
+            _triangles[t++] = d;
+
+            _triangles[t++] = a;
+            _triangles[t++] = d;
+            _triangles[t++] = c;
         }
     }
 }

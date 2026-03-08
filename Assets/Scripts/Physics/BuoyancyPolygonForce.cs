@@ -6,7 +6,10 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
     public MonoBehaviour bodySource; // must implement IForceBody
     private IForceBody body;
 
+    public WaveManager waveManager;
     public WaveField wave;
+
+    private IWaveService waveService => waveManager;
     public int sliceCount = 10;
 
     [HideInInspector] public float lastTotalSubmersion = 0f;
@@ -35,12 +38,15 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
             enabled = false;
             return;
         }
+
+        ResolveWaveRefs();
     }
 
     public void ApplyForces(IForceBody body)
     {
         if (!enabledFlag) return;
-        if (wave == null) return;
+        ResolveWaveRefs();
+        if (waveManager == null || wave == null) return;
 
         // --- Build world hull polygon ---
         Vector2[] localPoly =
@@ -56,7 +62,7 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
             worldPoly[i] = LocalToWorld(body, localPoly[i]);
 
         // --- Clip against wave surface ---
-        List<Vector2> submergedPoly = ClipPolygonWithWave(worldPoly, wave);
+        List<Vector2> submergedPoly = ClipPolygonWithWave(worldPoly);
         if (submergedPoly.Count < 3)
         {
             lastTotalSubmersion = 0f;
@@ -138,7 +144,7 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
 #endif
 
             // --- Wave momentum coupling (ported exactly) ---
-            float waveY = wave.SampleHeight(centroid.x);
+            float waveY = waveManager.SampleSurfaceY(centroid.x);
 
             float sliceBottomY = float.MaxValue;
             foreach (var pt in slicePoly)
@@ -152,8 +158,8 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
             else
             {
                 float waveVelocity =
-                    (wave.SampleSurfaceVelocity(centroid.x - sliceWidth * 0.5f) +
-                     wave.SampleSurfaceVelocity(centroid.x + sliceWidth * 0.5f)) * 0.5f * 0.5f;
+                    (waveManager.SampleSurfaceVelocity(centroid.x - sliceWidth * 0.5f) +
+                     waveManager.SampleSurfaceVelocity(centroid.x + sliceWidth * 0.5f)) * 0.5f * 0.5f;
 
                 float bodyVelocity = body.rb.GetPointVelocity(centroid).y;
                 float relativeVelocity = bodyVelocity - waveVelocity;
@@ -195,12 +201,12 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
             float avgX = accumulatedImpulseX / accumulatedSubmergedWidth;
             float netImpulse = accumulatedImpulse / accumulatedSubmergedWidth * 0.8f;
 
-            wave.AddImpulse(avgX, netImpulse, accumulatedSubmergedWidth * 0.5f);
+            waveManager.AddImpulse(avgX, netImpulse, accumulatedSubmergedWidth * 0.5f);
             body.AddForce(Vector2.down * (netImpulse / Time.fixedDeltaTime));
         }
     }
 
-    private List<Vector2> ClipPolygonWithWave(Vector2[] polygon, WaveField wave)
+    private List<Vector2> ClipPolygonWithWave(Vector2[] polygon)
     {
         // Simple per-edge clipping approximation: sample wave height at each vertex
         List<Vector2> output = new List<Vector2>();
@@ -211,8 +217,8 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
             Vector2 curr = polygon[i];
             Vector2 next = polygon[(i + 1) % n];
 
-            float waveCurr = wave.SampleHeight(curr.x);
-            float waveNext = wave.SampleHeight(next.x);
+            float waveCurr = waveManager.SampleSurfaceY(curr.x);
+            float waveNext = waveManager.SampleSurfaceY(next.x);
 
             bool currSubmerged = curr.y <= waveCurr;
             bool nextSubmerged = next.y <= waveNext;
@@ -381,6 +387,15 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
         return output;
     }
 
+    private void ResolveWaveRefs()
+    {
+        if (waveManager == null)
+            waveManager = FindFirstObjectByType<WaveManager>();
+
+        if (wave == null)
+            wave = FindFirstObjectByType<WaveField>();
+    }
+
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
@@ -388,7 +403,7 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
         if (bodySource == null) return;
 
         IForceBody body = bodySource as IForceBody;
-        if (body == null || body.rb == null || wave == null) return;
+        if (body == null || body.rb == null || waveManager == null) return;
 
         // --- Local hull (rectangle for now) ---
         Vector2[] localHull =
@@ -410,7 +425,8 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
             Gizmos.DrawLine(worldHull[i], worldHull[(i + 1) % worldHull.Length]);
 
         // --- Submerged polygon ---
-        List<Vector2> submergedPoly = ClipPolygonWithWave(worldHull, wave);
+        List<Vector2> submergedPoly = ClipPolygonWithWave(worldHull);
+
         if (submergedPoly.Count < 3) return;
 
         Gizmos.color = Color.cyan;
@@ -461,11 +477,12 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
         float drawMaxX = body.Position.x + body.Width;
 
         const int steps = 16;
-        Vector2 prev = new Vector2(drawMinX, wave.SampleHeight(drawMinX));
+        Vector2 prev = new Vector2(drawMinX, waveManager.SampleSurfaceY(drawMinX));
+        
         for (int i = 1; i <= steps; i++)
         {
             float x = Mathf.Lerp(drawMinX, drawMaxX, i / (float)steps);
-            Vector2 curr = new Vector2(x, wave.SampleHeight(x));
+            Vector2 curr = new Vector2(x, waveManager.SampleSurfaceY(x));
             Gizmos.DrawLine(prev, curr);
             prev = curr;
         }

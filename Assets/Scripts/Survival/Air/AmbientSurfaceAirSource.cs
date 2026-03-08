@@ -8,8 +8,8 @@ public sealed class AmbientSurfaceAirSource : MonoBehaviour, IAirSource
 
     [Header("Refs")]
     public PlayerAirState air;
-    public WaveField wave;
-
+    public WaveManager waveManager;
+    private IWaveService wave => waveManager;
     [Tooltip("Point representing where the player's mouth/head is.")]
     public Transform headPoint;
 
@@ -26,13 +26,26 @@ public sealed class AmbientSurfaceAirSource : MonoBehaviour, IAirSource
     {
         if (!air) air = GetComponent<PlayerAirState>();
         if (!headPoint) headPoint = transform;
+
+        ResolveWaveRef();
+    }
+
+    private void ResolveWaveRef()
+    {
+        if (waveManager == null && ServiceRoot.Instance != null)
+            waveManager = ServiceRoot.Instance.WaveManager;
+
+        if (waveManager == null)
+            waveManager = FindFirstObjectByType<WaveManager>();
     }
 
     public float GetAirFlowPerSecond(PlayerAirState airState, float dt)
     {
-        if (wave == null || headPoint == null) return 0f;
+        if (waveManager == null) ResolveWaveRef();
+        if (waveManager == null || headPoint == null) return 0f;
 
-        float waterY = wave.SampleHeight(headPoint.position.x);
+        float waterY = waveManager.SampleSurfaceY(headPoint.position.x); 
+
         float headY = headPoint.position.y;
 
         // Hysteresis band to prevent rapid toggling at the surface
