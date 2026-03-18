@@ -4,14 +4,17 @@ using UnityEngine;
 using UnityEngine.U2D;
 
 [RequireComponent(typeof(SpriteShapeController))]
-public sealed class NodeGroundSpriteShapeBinder : MonoBehaviour
+public sealed class GroundSpriteShapeBinder2D : MonoBehaviour, IGroundFillBottomSource
 {
     [Header("Refs")]
-    [SerializeField] private NodeGroundGenerator2D generator;
+    [SerializeField] private MonoBehaviour generatorSource; // must implement IGroundGeneratedNotifier
     [SerializeField] private EdgeCollider2D edge;
 
     [Header("Fill")]
     public float fillBottomY = -30f;
+
+    [Tooltip("Minimum visual ground thickness below the deepest generated terrain point.")]
+    [Min(0f)] public float extraFillDepth = 25f;
 
     public bool decimate = true;
     [Min(1)] public int decimateStep = 2;
@@ -21,6 +24,7 @@ public sealed class NodeGroundSpriteShapeBinder : MonoBehaviour
 
     private SpriteShapeController _ssc;
     private Coroutine _pending;
+    private IGroundGeneratedNotifier _generator;
 
     public float LastUsedBottomY { get; private set; }
 
@@ -30,29 +34,48 @@ public sealed class NodeGroundSpriteShapeBinder : MonoBehaviour
     {
         _ssc = GetComponent<SpriteShapeController>();
 
-        if (generator == null) generator = GetComponentInParent<NodeGroundGenerator2D>();
-        if (edge == null && generator != null) edge = generator.GetComponent<EdgeCollider2D>();
-        if (edge == null) edge = GetComponentInParent<EdgeCollider2D>();
+        if (generatorSource == null)
+            generatorSource = FindGeneratorSource();
+
+        _generator = generatorSource as IGroundGeneratedNotifier;
+
+        if (edge == null && generatorSource != null)
+            edge = generatorSource.GetComponent<EdgeCollider2D>();
+
+        if (edge == null)
+            edge = GetComponentInParent<EdgeCollider2D>();
     }
 
     private void OnEnable()
     {
-        if (generator != null)
-            generator.OnGenerated += HandleGenerated;
+        if (_generator != null)
+            _generator.OnGenerated += HandleGenerated;
 
         ScheduleRebuild();
     }
 
     private void OnDisable()
     {
-        if (generator != null)
-            generator.OnGenerated -= HandleGenerated;
+        if (_generator != null)
+            _generator.OnGenerated -= HandleGenerated;
 
         if (_pending != null)
         {
             StopCoroutine(_pending);
             _pending = null;
         }
+    }
+
+    private MonoBehaviour FindGeneratorSource()
+    {
+        MonoBehaviour[] sources = GetComponentsInParent<MonoBehaviour>(true);
+        for (int i = 0; i < sources.Length; i++)
+        {
+            if (sources[i] is IGroundGeneratedNotifier)
+                return sources[i];
+        }
+
+        return null;
     }
 
     private void HandleGenerated()
@@ -86,7 +109,7 @@ public sealed class NodeGroundSpriteShapeBinder : MonoBehaviour
         for (int i = 1; i < pts.Length; i++)
             minY = Mathf.Min(minY, pts[i].y);
 
-        float safeBottomY = Mathf.Min(fillBottomY, minY - 0.5f);
+        float safeBottomY = Mathf.Min(fillBottomY, minY - extraFillDepth);
 
         LastUsedBottomY = safeBottomY;
         OnBottomYChanged?.Invoke(LastUsedBottomY);

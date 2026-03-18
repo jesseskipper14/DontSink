@@ -19,6 +19,8 @@ public sealed class InteractPromptDriver : MonoBehaviour
     // Interactables we interacted with recently; prompt stays hidden until we leave range.
     private readonly HashSet<IInteractable> _suppressed = new();
 
+    private WorldItem _highlightedWorldItem;
+
     private void Reset()
     {
         interactor = GetComponent<Interactor2D>();
@@ -48,6 +50,11 @@ public sealed class InteractPromptDriver : MonoBehaviour
     {
         if (interactor != null)
             interactor.OnInteracted -= HandleInteracted;
+
+        ClearWorldItemHighlight();
+
+        if (promptUI != null)
+            promptUI.Hide();
     }
 
     private void HandleInteracted(IInteractable target)
@@ -57,6 +64,8 @@ public sealed class InteractPromptDriver : MonoBehaviour
 
         if (promptUI != null)
             promptUI.Hide();
+
+        ClearWorldItemHighlight();
     }
 
     private void LateUpdate()
@@ -64,14 +73,13 @@ public sealed class InteractPromptDriver : MonoBehaviour
         if (promptUI == null || interactor == null)
             return;
 
-        // Multiplayer gate: only show prompts for the local player.
         if (_localAuth != null && !_localAuth.IsLocal)
         {
+            ClearWorldItemHighlight();
             promptUI.Hide();
             return;
         }
 
-        // Clear suppressions once the player leaves range of those interactables.
         if (_suppressed.Count > 0)
         {
             _suppressed.RemoveWhere(t => t == null || !interactor.IsCandidatePresent(t));
@@ -79,18 +87,29 @@ public sealed class InteractPromptDriver : MonoBehaviour
 
         if (!interactor.TryGetBestTarget(out var target, out var ctx) || target == null)
         {
+            ClearWorldItemHighlight();
             promptUI.Hide();
             return;
         }
 
-        // If we just interacted with this thing and haven't left range yet, keep prompt hidden.
         if (_suppressed.Contains(target))
         {
+            ClearWorldItemHighlight();
             promptUI.Hide();
             return;
         }
 
-        // Prompt verb
+        // Pickup items: highlight only, no giant prompt box.
+        if (target is WorldItem worldItem)
+        {
+            SetWorldItemHighlight(worldItem);
+            promptUI.Hide();
+            return;
+        }
+
+        // Non-world-item interactables: normal prompt flow.
+        ClearWorldItemHighlight();
+
         string verb = defaultVerb;
         if (target is IInteractPromptProvider provider)
         {
@@ -98,7 +117,6 @@ public sealed class InteractPromptDriver : MonoBehaviour
             if (!string.IsNullOrWhiteSpace(v)) verb = v;
         }
 
-        // Prompt anchor/position
         Vector3 pos = (target as MonoBehaviour) != null
             ? ((MonoBehaviour)target).transform.position
             : (Vector3)ctx.Origin;
@@ -110,5 +128,27 @@ public sealed class InteractPromptDriver : MonoBehaviour
         }
 
         promptUI.Show(verb, pos);
+    }
+
+    private void SetWorldItemHighlight(WorldItem item)
+    {
+        if (_highlightedWorldItem == item)
+            return;
+
+        ClearWorldItemHighlight();
+
+        _highlightedWorldItem = item;
+
+        if (_highlightedWorldItem != null)
+            _highlightedWorldItem.SetHighlighted(true);
+    }
+
+    private void ClearWorldItemHighlight()
+    {
+        if (_highlightedWorldItem != null)
+        {
+            _highlightedWorldItem.SetHighlighted(false);
+            _highlightedWorldItem = null;
+        }
     }
 }

@@ -15,6 +15,8 @@ public sealed class BoatSceneController : MonoBehaviour
     [Header("Layout")]
     [Tooltip("X position for the dock you departed from (behind you).")]
     [SerializeField] private float sourceDockX = -20f;
+    [Tooltip("How far the target dock extends in +X from its anchor. This amount is subtracted so the dock ends at total travel distance.")]
+    [SerializeField] private float targetDockLength = 20f;
 
     [Tooltip("Base travel distance in world units before scaling.")]
     [SerializeField] private float baseTravelDistance = 200f;
@@ -142,11 +144,12 @@ public sealed class BoatSceneController : MonoBehaviour
         }
 
         float dist = baseTravelDistance * distanceScale;
+        float targetDockEndX = sourceDockX + dist;
 
         if (ctx.targetDockAnchor != null)
         {
             var p = ctx.targetDockAnchor.position;
-            p.x = dist;
+            p.x = targetDockEndX - targetDockLength;
             ctx.targetDockAnchor.position = p;
         }
     }

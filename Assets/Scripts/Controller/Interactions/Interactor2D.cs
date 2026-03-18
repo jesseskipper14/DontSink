@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// World-authoritative interaction resolver.
@@ -62,6 +62,8 @@ public class Interactor2D : MonoBehaviour
         // Fast path: if target is a MonoBehaviour, check distance first.
         if (target is MonoBehaviour mb)
         {
+            if (mb == null) return false; // 🔥 CRITICAL
+
             float d = Vector2.Distance((Vector2)mb.transform.position, (Vector2)transform.position);
             if (d > overlapRadius * 1.25f) // small slack
                 return false;

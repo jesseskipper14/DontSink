@@ -398,6 +398,7 @@ GameObject:
   - component: {fileID: 1106091230398458374}
   - component: {fileID: 7114558225535697250}
   - component: {fileID: 3780929030111351160}
+  - component: {fileID: 6673137092520073323}
   m_Layer: 0
   m_Name: CompartmentMerged_0
   m_TagString: Untagged
@@ -513,6 +514,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108afb6ff1b3a94429cb7f8b995ede9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6673137092520073323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8028715666858182058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d82d239d4de4e0146ae2ea72f25f96b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sortingLayerName: BoatView
+  sortingOrder: -50
 --- !u!1001 &145268043201849349
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -524,6 +539,14 @@ PrefabInstance:
     - target: {fileID: 3310013560795536328, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_Name
       value: HullSegment_Wooden
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
       objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -624,6 +647,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8010483122479472770, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010483122479472770, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 8043139812053460957, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
       propertyPath: m_Name
       value: DeckSegment_Wooden
@@ -650,6 +681,14 @@ PrefabInstance:
     - target: {fileID: 3310013560795536328, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_Name
       value: HullSegment_Wooden
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
       objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -714,6 +753,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: HullSegment_Wooden
       objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12
@@ -776,6 +823,14 @@ PrefabInstance:
     - target: {fileID: 3310013560795536328, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_Name
       value: HullSegment_Wooden
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
       objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -876,6 +931,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2860622250663761365, guid: d37e93d618ca8ba4f97a9f12ca263b48, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2860622250663761365, guid: d37e93d618ca8ba4f97a9f12ca263b48, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 8706727347045637987, guid: d37e93d618ca8ba4f97a9f12ca263b48, type: 3}
       propertyPath: m_Name
       value: Chair_Metal
@@ -901,6 +964,14 @@ PrefabInstance:
     - target: {fileID: 3310013560795536328, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_Name
       value: HullSegment_Wooden
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
       objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -965,6 +1036,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: HullSegment_Wooden
       objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6
@@ -1027,6 +1106,14 @@ PrefabInstance:
     - target: {fileID: 3310013560795536328, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_Name
       value: HullSegment_Wooden
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
       objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1091,6 +1178,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: HullSegment_Wooden
       objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 12
@@ -1153,6 +1248,14 @@ PrefabInstance:
     - target: {fileID: 3310013560795536328, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_Name
       value: HullSegment_Wooden
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
       objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1217,6 +1320,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: HullSegment_Wooden
       objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 12
@@ -1276,6 +1387,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2605882500432079490}
     m_Modifications:
+    - target: {fileID: 547867288179839138, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 547867288179839138, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 796141958746456975, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
       propertyPath: m_Name
       value: BoatWall_Wooden
@@ -1404,6 +1523,14 @@ PrefabInstance:
     - target: {fileID: 3310013560795536328, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_Name
       value: HullSegment_Wooden
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
       objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1644,6 +1771,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8010483122479472770, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010483122479472770, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 8043139812053460957, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
       propertyPath: m_Name
       value: DeckSegment_Wooden
@@ -1670,6 +1805,14 @@ PrefabInstance:
     - target: {fileID: 3310013560795536328, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_Name
       value: HullSegment_Wooden
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
       objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1796,6 +1939,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: HullSegment_Wooden
       objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6
@@ -1858,6 +2009,14 @@ PrefabInstance:
     - target: {fileID: 3310013560795536328, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_Name
       value: HullSegment_Wooden
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
       objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1988,6 +2147,14 @@ PrefabInstance:
       propertyPath: maxUseDistance
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 3133705925025852908, guid: 08302fb73e6642849bc0f4ca5bbe8167, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3133705925025852908, guid: 08302fb73e6642849bc0f4ca5bbe8167, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -2135464765
+      objectReference: {fileID: 0}
     - target: {fileID: 5720850196063633090, guid: 08302fb73e6642849bc0f4ca5bbe8167, type: 3}
       propertyPath: m_Name
       value: BoatBoardObject
@@ -2054,6 +2221,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: HullSegment_Wooden
       objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2116,6 +2291,14 @@ PrefabInstance:
     - target: {fileID: 3310013560795536328, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_Name
       value: HullSegment_Wooden
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
       objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2180,6 +2363,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: HullSegment_Wooden
       objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8
@@ -2242,6 +2433,14 @@ PrefabInstance:
     - target: {fileID: 3310013560795536328, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_Name
       value: HullSegment_Wooden
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
       objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2500,6 +2699,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: HullSegment_Wooden
       objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 15
@@ -2563,6 +2770,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: HullSegment_Wooden
       objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12
@@ -2622,6 +2837,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2605882500432079490}
     m_Modifications:
+    - target: {fileID: 547867288179839138, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 547867288179839138, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 796141958746456975, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
       propertyPath: m_Name
       value: BoatWall_Wooden
@@ -2688,6 +2911,14 @@ PrefabInstance:
     - target: {fileID: 3310013560795536328, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_Name
       value: HullSegment_Wooden
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
       objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2818,6 +3049,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: HullSegment_Wooden
       objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8
@@ -2917,6 +3156,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8010483122479472770, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010483122479472770, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 8043139812053460957, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
       propertyPath: m_Name
       value: DeckSegment_Wooden
@@ -2940,6 +3187,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2605882500432079490}
     m_Modifications:
+    - target: {fileID: 3736039036697952612, guid: 5b7b85a844cc11c4eb46be1e5183f040, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3736039036697952612, guid: 5b7b85a844cc11c4eb46be1e5183f040, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 6138649040144273514, guid: 5b7b85a844cc11c4eb46be1e5183f040, type: 3}
       propertyPath: m_Name
       value: MapTable
@@ -3041,6 +3296,14 @@ PrefabInstance:
     - target: {fileID: 7862525510988073635, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010483122479472770, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010483122479472770, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
       objectReference: {fileID: 0}
     - target: {fileID: 8043139812053460957, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
       propertyPath: m_Name
@@ -3167,6 +3430,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8010483122479472770, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010483122479472770, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
+      objectReference: {fileID: 0}
     - target: {fileID: 8043139812053460957, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
       propertyPath: m_Name
       value: DeckSegment_Wooden
@@ -3193,6 +3464,14 @@ PrefabInstance:
     - target: {fileID: 3310013560795536328, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_Name
       value: HullSegment_Wooden
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
       objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3256,6 +3535,14 @@ PrefabInstance:
     - target: {fileID: 3310013560795536328, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_Name
       value: HullSegment_Wooden
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971482814268499861, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1870559867
       objectReference: {fileID: 0}
     - target: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
       propertyPath: m_LocalPosition.x

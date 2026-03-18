@@ -46,7 +46,7 @@ Material:
     - _CloudDensity: 0.536
     - _CloudRadius: 0.05
     - _CloudScale: 1
-    - _Coverage: 0.5
+    - _Coverage: 0.6
     - _Density: 0.179
     - _DetailNoiseScale: 6
     - _DetailNoiseStrength: 1

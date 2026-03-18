@@ -3,28 +3,47 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class NodeWaterBottomBinder : MonoBehaviour
 {
-    [SerializeField] private NodeGroundSpriteShapeBinder ground;
+    [SerializeField] private MonoBehaviour groundSource; // must implement IGroundFillBottomSource
     [SerializeField] private WaterMeshRenderer water;
     [SerializeField] private float extraDepth = 0f;
 
+    private IGroundFillBottomSource _ground;
+
     private void Awake()
     {
-        if (ground == null) ground = FindAnyObjectByType<NodeGroundSpriteShapeBinder>();
-        if (water == null) water = FindAnyObjectByType<WaterMeshRenderer>();
+        if (groundSource == null)
+            groundSource = FindFirstGroundSource();
+
+        _ground = groundSource as IGroundFillBottomSource;
+
+        if (water == null)
+            water = FindAnyObjectByType<WaterMeshRenderer>();
     }
 
     private void OnEnable()
     {
-        if (ground != null)
-            ground.OnBottomYChanged += HandleBottomChanged;
+        if (_ground != null)
+            _ground.OnBottomYChanged += HandleBottomChanged;
 
         Apply();
     }
 
     private void OnDisable()
     {
-        if (ground != null)
-            ground.OnBottomYChanged -= HandleBottomChanged;
+        if (_ground != null)
+            _ground.OnBottomYChanged -= HandleBottomChanged;
+    }
+
+    private MonoBehaviour FindFirstGroundSource()
+    {
+        MonoBehaviour[] all = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        for (int i = 0; i < all.Length; i++)
+        {
+            if (all[i] is IGroundFillBottomSource)
+                return all[i];
+        }
+
+        return null;
     }
 
     private void HandleBottomChanged(float bottomY)
@@ -35,8 +54,8 @@ public sealed class NodeWaterBottomBinder : MonoBehaviour
     [ContextMenu("Apply")]
     public void Apply()
     {
-        if (ground == null || water == null) return;
-        ApplyFromBottom(ground.LastUsedBottomY);
+        if (_ground == null || water == null) return;
+        ApplyFromBottom(_ground.LastUsedBottomY);
     }
 
     private void ApplyFromBottom(float groundBottomY)

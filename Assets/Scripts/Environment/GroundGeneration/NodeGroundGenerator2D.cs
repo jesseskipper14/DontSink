@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class NodeGroundGenerator2D : MonoBehaviour
+public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotifier
 {
     [Header("Generation")]
     [Min(2)] public int pointCount = 220;
