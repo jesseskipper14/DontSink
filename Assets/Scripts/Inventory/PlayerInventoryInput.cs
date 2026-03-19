@@ -3,29 +3,14 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class PlayerInventoryInput : MonoBehaviour
 {
-    [Header("Refs")]
     [SerializeField] private PlayerInventory inventory;
-
-    [Header("Drop")]
     [SerializeField] private Transform dropPoint;
     [SerializeField] private Vector3 dropOffset = new(0.75f, 0f, 0f);
-    [SerializeField] private int dropQuantity = 1;
-
-    [Header("Input")]
-    [SerializeField] private bool enableScrollWheel = true;
-    [SerializeField] private bool enableNumberKeys = true;
-    [SerializeField] private bool enableDrop = true;
 
     private void Awake()
     {
         if (inventory == null)
-            inventory = GetComponentInParent<PlayerInventory>();
-
-        if (inventory == null)
-            inventory = GetComponentInChildren<PlayerInventory>();
-
-        if (inventory == null)
-            Debug.LogError($"{name}: PlayerInventory not found in hierarchy.", this);
+            inventory = GetComponentInParent<PlayerInventory>(true);
     }
 
     private void Update()
@@ -33,54 +18,45 @@ public sealed class PlayerInventoryInput : MonoBehaviour
         if (inventory == null)
             return;
 
-        HandleHotbarSelection();
+        HandleSelection();
         HandleDrop();
     }
 
-    private void HandleHotbarSelection()
+    private void HandleSelection()
     {
-        if (enableScrollWheel)
-        {
-            float scroll = Input.mouseScrollDelta.y;
-            if (scroll > 0.01f)
-            {
-                inventory.CycleSelectedHotbar(-1);
-            }
-            else if (scroll < -0.01f)
-            {
-                inventory.CycleSelectedHotbar(1);
-            }
-        }
+        float scroll = Input.mouseScrollDelta.y;
+        if (scroll > 0.01f)
+            inventory.CycleSelection(-1);
+        else if (scroll < -0.01f)
+            inventory.CycleSelection(1);
 
-        if (!enableNumberKeys)
+        if (Input.GetKeyDown(KeyCode.Alpha1)) SelectHotbar(0);
+        if (Input.GetKeyDown(KeyCode.Alpha2)) SelectHotbar(1);
+        if (Input.GetKeyDown(KeyCode.Alpha3)) SelectHotbar(2);
+        if (Input.GetKeyDown(KeyCode.Alpha4)) SelectHotbar(3);
+        if (Input.GetKeyDown(KeyCode.Alpha5)) SelectHotbar(4);
+        if (Input.GetKeyDown(KeyCode.Alpha6)) SelectHotbar(5);
+        if (Input.GetKeyDown(KeyCode.Alpha7)) SelectHotbar(6);
+        if (Input.GetKeyDown(KeyCode.Alpha8)) SelectHotbar(7);
+    }
+
+    private void SelectHotbar(int index)
+    {
+        if (index < 0 || index >= inventory.HotbarSlotCount)
             return;
 
-        int hotbarCount = inventory.HotbarSlotCount;
-
-        if (hotbarCount >= 1 && Input.GetKeyDown(KeyCode.Alpha1)) inventory.SetSelectedHotbarIndex(0);
-        if (hotbarCount >= 2 && Input.GetKeyDown(KeyCode.Alpha2)) inventory.SetSelectedHotbarIndex(1);
-        if (hotbarCount >= 3 && Input.GetKeyDown(KeyCode.Alpha3)) inventory.SetSelectedHotbarIndex(2);
-        if (hotbarCount >= 4 && Input.GetKeyDown(KeyCode.Alpha4)) inventory.SetSelectedHotbarIndex(3);
-        if (hotbarCount >= 5 && Input.GetKeyDown(KeyCode.Alpha5)) inventory.SetSelectedHotbarIndex(4);
-        if (hotbarCount >= 6 && Input.GetKeyDown(KeyCode.Alpha6)) inventory.SetSelectedHotbarIndex(5);
-        if (hotbarCount >= 7 && Input.GetKeyDown(KeyCode.Alpha7)) inventory.SetSelectedHotbarIndex(6);
-        if (hotbarCount >= 8 && Input.GetKeyDown(KeyCode.Alpha8)) inventory.SetSelectedHotbarIndex(7);
-        if (hotbarCount >= 9 && Input.GetKeyDown(KeyCode.Alpha9)) inventory.SetSelectedHotbarIndex(8);
+        inventory.SetSelectedSlot(PlayerInventory.HotbarIndexToSlotType(index));
     }
 
     private void HandleDrop()
     {
-        if (!enableDrop)
-            return;
-
         if (!Input.GetKeyDown(KeyCode.Q))
             return;
 
-        Vector3 spawnPosition = GetDropWorldPosition();
-        inventory.TryDropSelected(dropQuantity, spawnPosition);
+        inventory.TryDropSelected(GetDropWorldPositionForUI());
     }
 
-    private Vector3 GetDropWorldPosition()
+    public Vector3 GetDropWorldPositionForUI()
     {
         if (dropPoint != null)
             return dropPoint.position;

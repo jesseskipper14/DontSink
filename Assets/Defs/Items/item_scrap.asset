@@ -12,14 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
   m_Name: item_scrap
   m_EditorClassIdentifier: 
-  itemId: 
-  displayName: 
-  icon: {fileID: 0}
-  maxStack: 1
-  mass: 0
+  itemId: item_scrap
+  displayName: Piece of Scrap
+  icon: {fileID: 8359751659613310845, guid: 200513b7c0d7a1941a4895f66f525e76, type: 3}
+  maxStack: 5
   stowableInInventory: 1
   droppable: 1
   tradable: 1
   equipSlot: 0
-  bonusInventorySlots: 0
-  worldPrefab: {fileID: 0}
+  isContainer: 0
+  containerSlotCount: 0
+  containerColumnCount: 4
+  worldPrefab: {fileID: 61859146187821167, guid: fda867ae1ce428941bf3cc30e44e5d22, type: 3}

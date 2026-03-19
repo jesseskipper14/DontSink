@@ -4,71 +4,100 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class PlayerEquipment : MonoBehaviour
 {
-    [Header("Equipped Gear")]
-    [SerializeField] private ItemDefinition equippedBackpack;
-    [SerializeField] private ItemDefinition equippedToolbelt;
+    [SerializeField] private ItemInstance hands;
+    [SerializeField] private ItemInstance head;
+    [SerializeField] private ItemInstance feet;
+    [SerializeField] private ItemInstance toolbelt;
+    [SerializeField] private ItemInstance backpack;
+    [SerializeField] private ItemInstance body;
 
     public event Action EquipmentChanged;
 
-    public ItemDefinition EquippedBackpack => equippedBackpack;
-    public ItemDefinition EquippedToolbelt => equippedToolbelt;
-
-    public int BonusInventorySlots
+    public ItemInstance Get(BottomBarSlotType slot)
     {
-        get
+        return slot switch
         {
-            int total = 0;
-
-            if (equippedBackpack != null)
-                total += equippedBackpack.BonusInventorySlots;
-
-            if (equippedToolbelt != null)
-                total += equippedToolbelt.BonusInventorySlots;
-
-            return total;
-        }
+            BottomBarSlotType.Hands => hands,
+            BottomBarSlotType.Head => head,
+            BottomBarSlotType.Feet => feet,
+            BottomBarSlotType.Toolbelt => toolbelt,
+            BottomBarSlotType.Backpack => backpack,
+            BottomBarSlotType.Body => body,
+            _ => null
+        };
     }
 
-    public bool TrySetBackpack(ItemDefinition item)
+    public ItemInstance Remove(BottomBarSlotType slot)
     {
-        if (item != null && item.EquipSlot != ItemDefinition.EquipSlotType.Backpack)
+        ItemInstance current = Get(slot);
+        if (current == null)
+            return null;
+
+        SetDirect(slot, null);
+        EquipmentChanged?.Invoke();
+        return current;
+    }
+
+    public bool TryPlace(BottomBarSlotType slot, ItemInstance item, out ItemInstance displaced)
+    {
+        displaced = null;
+
+        if (item == null || item.Definition == null)
             return false;
 
-        if (equippedBackpack == item)
-            return true;
+        if (!CanEquip(slot, item))
+            return false;
 
-        equippedBackpack = item;
+        displaced = Get(slot);
+        SetDirect(slot, item);
         EquipmentChanged?.Invoke();
         return true;
     }
 
-    public bool TrySetToolbelt(ItemDefinition item)
+    public bool CanEquip(BottomBarSlotType slot, ItemInstance item)
     {
-        if (item != null && item.EquipSlot != ItemDefinition.EquipSlotType.Toolbelt)
+        if (item == null || item.Definition == null)
             return false;
 
-        if (equippedToolbelt == item)
-            return true;
-
-        equippedToolbelt = item;
-        EquipmentChanged?.Invoke();
-        return true;
+        return item.Definition.EquipSlot == slot;
     }
 
-#if UNITY_EDITOR
-    private void OnValidate()
+    private void SetDirect(BottomBarSlotType slot, ItemInstance item)
     {
-        if (equippedBackpack != null &&
-            equippedBackpack.EquipSlot != ItemDefinition.EquipSlotType.Backpack)
+        switch (slot)
         {
-            equippedBackpack = null;
-        }
-
-        if (equippedToolbelt != null &&
-            equippedToolbelt.EquipSlot != ItemDefinition.EquipSlotType.Toolbelt)
-        {
-            equippedToolbelt = null;
+            case BottomBarSlotType.Hands: hands = item; break;
+            case BottomBarSlotType.Head: head = item; break;
+            case BottomBarSlotType.Feet: feet = item; break;
+            case BottomBarSlotType.Toolbelt: toolbelt = item; break;
+            case BottomBarSlotType.Backpack: backpack = item; break;
+            case BottomBarSlotType.Body: body = item; break;
         }
     }
-#endif
+
+    public EquipmentSnapshot CaptureSnapshot()
+    {
+        return new EquipmentSnapshot
+        {
+            version = 1,
+            hands = hands != null ? hands.ToSnapshot() : null,
+            head = head != null ? head.ToSnapshot() : null,
+            feet = feet != null ? feet.ToSnapshot() : null,
+            toolbelt = toolbelt != null ? toolbelt.ToSnapshot() : null,
+            backpack = backpack != null ? backpack.ToSnapshot() : null,
+            body = body != null ? body.ToSnapshot() : null
+        };
+    }
+
+    public void RestoreSnapshot(EquipmentSnapshot snapshot, IItemDefinitionResolver resolver)
+    {
+        hands = ItemInstance.FromSnapshot(snapshot?.hands, resolver);
+        head = ItemInstance.FromSnapshot(snapshot?.head, resolver);
+        feet = ItemInstance.FromSnapshot(snapshot?.feet, resolver);
+        toolbelt = ItemInstance.FromSnapshot(snapshot?.toolbelt, resolver);
+        backpack = ItemInstance.FromSnapshot(snapshot?.backpack, resolver);
+        body = ItemInstance.FromSnapshot(snapshot?.body, resolver);
+
+        EquipmentChanged?.Invoke();
+    }
 }

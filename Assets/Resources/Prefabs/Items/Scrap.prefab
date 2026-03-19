@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7570094693861048571}
   - component: {fileID: 5263012356571068860}
   m_Layer: 10
-  m_Name: Pearl
+  m_Name: Scrap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,7 +80,7 @@ SpriteRenderer:
   m_SortingLayerID: 1939965397
   m_SortingLayer: 10
   m_SortingOrder: 0
-  m_Sprite: {fileID: 457403236684041259, guid: a40a21f8a2344e9418b6f432f29d4cdc, type: 3}
+  m_Sprite: {fileID: 8359751659613310845, guid: 200513b7c0d7a1941a4895f66f525e76, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -103,7 +103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24e5c9193be75ad41afb813c4cbce185, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 11400000, guid: 5d27ac2dd21a9bf46ac0c6a4c7c462ea, type: 2}
+  item: {fileID: 11400000, guid: 355b9f1c4fc797d439692fe54fd69086, type: 2}
   quantity: 1
   interactionPriority: 10
   maxPickupDistance: 3
@@ -248,7 +248,7 @@ SpriteRenderer:
   m_SortingLayerID: 1939965397
   m_SortingLayer: 10
   m_SortingOrder: -1
-  m_Sprite: {fileID: 457403236684041259, guid: a40a21f8a2344e9418b6f432f29d4cdc, type: 3}
+  m_Sprite: {fileID: 8359751659613310845, guid: 200513b7c0d7a1941a4895f66f525e76, type: 3}
   m_Color: {r: 0.49381453, g: 0.59341216, b: 0.764151, a: 1}
   m_FlipX: 0
   m_FlipY: 0

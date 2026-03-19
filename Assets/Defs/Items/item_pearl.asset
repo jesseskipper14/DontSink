@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
   m_Name: item_pearl
   m_EditorClassIdentifier: 
-  itemId: 
-  displayName: 
-  icon: {fileID: 0}
-  maxStack: 1
-  mass: 0
+  itemId: item_pearl
+  displayName: Pearl
+  icon: {fileID: 457403236684041259, guid: a40a21f8a2344e9418b6f432f29d4cdc, type: 3}
+  maxStack: 20
+  mass: 0.2
   stowableInInventory: 1
   droppable: 1
   tradable: 1
   equipSlot: 0
   bonusInventorySlots: 0
-  worldPrefab: {fileID: 0}
+  worldPrefab: {fileID: 61859146187821167, guid: 62a52df725567394e9bcdd64e8d36487, type: 3}

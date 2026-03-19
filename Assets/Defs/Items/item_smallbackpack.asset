@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
   m_Name: item_smallbackpack
   m_EditorClassIdentifier: 
-  itemId: 
-  displayName: 
-  icon: {fileID: 0}
+  itemId: item_smallbackpack
+  displayName: Small Backpack
+  icon: {fileID: -5433737350264751947, guid: 2b7153f159990bd43b2ecf65a800823d, type: 3}
   maxStack: 1
-  mass: 0
-  stowableInInventory: 1
+  mass: 2
+  stowableInInventory: 0
   droppable: 1
   tradable: 1
-  equipSlot: 0
-  bonusInventorySlots: 0
+  equipSlot: 1
+  bonusInventorySlots: 5
   worldPrefab: {fileID: 0}

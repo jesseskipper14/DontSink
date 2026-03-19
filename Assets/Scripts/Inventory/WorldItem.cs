@@ -3,45 +3,39 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class WorldItem : MonoBehaviour, IInteractable, IInteractPromptProvider
 {
-    [Header("Contents")]
-    [SerializeField] private ItemDefinition item;
-    [Min(1)]
-    [SerializeField] private int quantity = 1;
-
-    [Header("Interaction")]
+    [SerializeField] private ItemInstance itemInstance;
     [SerializeField] private int interactionPriority = 10;
     [SerializeField] private float maxPickupDistance = 1.5f;
     [SerializeField] private Transform promptAnchor;
-
-    [Header("Highlight")]
     [SerializeField] private GameObject highlightObject;
 
-    public ItemDefinition Item => item;
-    public int Quantity => Mathf.Max(1, quantity);
+    public ItemInstance Instance => itemInstance;
+    public ItemDefinition Item => itemInstance != null ? itemInstance.Definition : null;
+    public int Quantity => itemInstance != null ? itemInstance.Quantity : 0;
 
     public int InteractionPriority => interactionPriority;
 
     private void Awake()
     {
-        CacheHighlightObjectIfNeeded();
+        if (itemInstance != null)
+            itemInstance.EnsureContainerStateMatchesDefinition();
+
         SetHighlighted(false);
     }
 
-    public void Initialize(ItemDefinition definition, int amount)
+    public void Initialize(ItemInstance instance)
     {
-        item = definition;
-        quantity = Mathf.Max(1, amount);
+        itemInstance = instance;
 
-        if (item != null)
-            gameObject.name = $"WorldItem_{item.DisplayName}_{quantity}";
+        if (itemInstance != null)
+            itemInstance.EnsureContainerStateMatchesDefinition();
 
-        CacheHighlightObjectIfNeeded();
         SetHighlighted(false);
     }
 
     public bool CanInteract(in InteractContext context)
     {
-        if (item == null || quantity <= 0)
+        if (itemInstance == null || itemInstance.Definition == null || itemInstance.Quantity <= 0)
             return false;
 
         float dist = Vector2.Distance(context.Origin, transform.position);
@@ -52,35 +46,28 @@ public sealed class WorldItem : MonoBehaviour, IInteractable, IInteractPromptPro
         if (inventory == null)
             return false;
 
-        return CanInventoryFullyAccept(inventory, item, quantity);
+        return inventory.CanFullyAdd(itemInstance);
     }
 
     public void Interact(in InteractContext context)
     {
-        if (item == null || quantity <= 0)
+        if (itemInstance == null || itemInstance.Definition == null || itemInstance.Quantity <= 0)
             return;
 
         PlayerInventory inventory = FindInventory(context.InteractorGO);
         if (inventory == null)
             return;
 
-        bool success = inventory.TryAdd(item, quantity);
-        if (!success)
+        if (!inventory.TryAddInstance(itemInstance))
             return;
 
+        itemInstance = null;
         SetHighlighted(false);
         Destroy(gameObject);
     }
 
-    public string GetPromptVerb(in InteractContext context)
-    {
-        return "Pick Up";
-    }
-
-    public Transform GetPromptAnchor()
-    {
-        return promptAnchor != null ? promptAnchor : transform;
-    }
+    public string GetPromptVerb(in InteractContext context) => "Pick Up";
+    public Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
     public void SetHighlighted(bool highlighted)
     {
@@ -88,80 +75,19 @@ public sealed class WorldItem : MonoBehaviour, IInteractable, IInteractPromptPro
             highlightObject.SetActive(highlighted);
     }
 
-    private void CacheHighlightObjectIfNeeded()
-    {
-        if (highlightObject != null)
-            return;
-
-        Transform[] all = GetComponentsInChildren<Transform>(true);
-        for (int i = 0; i < all.Length; i++)
-        {
-            Transform t = all[i];
-            if (t == null || t == transform)
-                continue;
-
-            if (t.CompareTag("Highlight"))
-            {
-                highlightObject = t.gameObject;
-                break;
-            }
-        }
-    }
-
     private static PlayerInventory FindInventory(GameObject actor)
     {
         if (actor == null)
             return null;
 
-        if (actor.TryGetComponent<PlayerInventory>(out var inventory))
+        PlayerInventory inventory = actor.GetComponent<PlayerInventory>();
+        if (inventory != null)
             return inventory;
 
         inventory = actor.GetComponentInChildren<PlayerInventory>(true);
         if (inventory != null)
             return inventory;
 
-        inventory = actor.GetComponentInParent<PlayerInventory>();
-        return inventory;
+        return actor.GetComponentInParent<PlayerInventory>();
     }
-
-    private static bool CanInventoryFullyAccept(PlayerInventory inventory, ItemDefinition item, int quantity)
-    {
-        if (inventory == null || item == null || quantity <= 0)
-            return false;
-
-        if (!item.StowableInInventory)
-            return false;
-
-        int remaining = quantity;
-
-        for (int i = 0; i < inventory.Slots.Count; i++)
-        {
-            InventorySlot slot = inventory.Slots[i];
-            if (slot == null || slot.IsEmpty) continue;
-            if (slot.Item != item) continue;
-
-            remaining -= slot.RemainingCapacityFor(item);
-            if (remaining <= 0)
-                return true;
-        }
-
-        for (int i = 0; i < inventory.Slots.Count; i++)
-        {
-            InventorySlot slot = inventory.Slots[i];
-            if (slot == null || !slot.IsEmpty) continue;
-
-            remaining -= item.MaxStack;
-            if (remaining <= 0)
-                return true;
-        }
-
-        return false;
-    }
-
-#if UNITY_EDITOR
-    private void OnValidate()
-    {
-        quantity = Mathf.Max(1, quantity);
-    }
-#endif
 }

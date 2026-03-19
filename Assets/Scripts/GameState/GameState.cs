@@ -12,6 +12,10 @@ public sealed class GameState : MonoBehaviour
     [Header("Active Travel (null when not traveling)")]
     public TravelPayload activeTravel;
 
+    [Header("Player Loadout")]
+    public PlayerLoadoutSnapshot playerLoadout;
+
+    [Header("Boat Registry")]
     public BoatRegistry boatRegistry;
 
     public BoatSaveState boat = new BoatSaveState
