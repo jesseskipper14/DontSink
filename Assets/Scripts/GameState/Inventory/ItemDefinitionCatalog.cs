@@ -8,6 +8,11 @@ public sealed class ItemDefinitionCatalog : ScriptableObject, IItemDefinitionRes
 
     private Dictionary<string, ItemDefinition> byId;
 
+    public IReadOnlyList<ItemDefinition> GetAllItems()
+    {
+        return items;
+    }
+
     private void BuildLookup()
     {
         if (byId != null)

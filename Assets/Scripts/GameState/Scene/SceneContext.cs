@@ -15,7 +15,7 @@ public sealed class SceneContext : MonoBehaviour
     public WorldMapHeatmapController heatmap;
     public WorldMapRuntimeBinder runtimeBinder;
     public WorldMapTravelDebugController travelDebug;
-    public NodeTravelLauncher travelLauncher;
+    public NodeTravelController travelLauncher;
 
     [Header("Celestial Anchors")]
     public Transform sunTransform;
@@ -50,7 +50,7 @@ public sealed class SceneContext : MonoBehaviour
         if (heatmap == null) heatmap = FindAnyObjectByType<WorldMapHeatmapController>();
         if (runtimeBinder == null) runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
         if (travelDebug == null) travelDebug = FindAnyObjectByType<WorldMapTravelDebugController>();
-        if (travelLauncher == null) travelLauncher = FindAnyObjectByType<NodeTravelLauncher>();
+        if (travelLauncher == null) travelLauncher = FindAnyObjectByType<NodeTravelController>();
 
         // Note: sky/cloud renderers are intentionally NOT auto-wired here.
         // There are often multiple Renderers/SpriteRenderers in a scene; prefer explicit scene wiring.

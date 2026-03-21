@@ -54,10 +54,37 @@ public sealed class PlayerEquipment : MonoBehaviour
         return true;
     }
 
+    public bool TryPlaceIntoPreferredSlotIfEmpty(ItemInstance item)
+    {
+        if (item == null || item.Definition == null)
+            return false;
+
+        BottomBarSlotType preferred = item.Definition.EquipSlot;
+        if (preferred == BottomBarSlotType.None)
+            return false;
+
+        // Hands should not be used as automatic displaced-item fallback.
+        if (preferred == BottomBarSlotType.Hands)
+            return false;
+
+        if (Get(preferred) != null)
+            return false;
+
+        if (!CanEquip(preferred, item))
+            return false;
+
+        SetDirect(preferred, item);
+        EquipmentChanged?.Invoke();
+        return true;
+    }
+
     public bool CanEquip(BottomBarSlotType slot, ItemInstance item)
     {
         if (item == null || item.Definition == null)
             return false;
+
+        if (slot == BottomBarSlotType.Hands)
+            return true;
 
         return item.Definition.EquipSlot == slot;
     }

@@ -15,12 +15,16 @@ MonoBehaviour:
   itemId: item_scrap
   displayName: Piece of Scrap
   icon: {fileID: 8359751659613310845, guid: 200513b7c0d7a1941a4895f66f525e76, type: 3}
+  itemCategories: 64
   maxStack: 5
   stowableInInventory: 1
   droppable: 1
   tradable: 1
+  preferredDisplacedDestination: 2
   equipSlot: 0
   isContainer: 0
   containerSlotCount: 0
   containerColumnCount: 4
+  allowedContainerCategories: 0
+  isMajorCarryContainer: 0
   worldPrefab: {fileID: 61859146187821167, guid: fda867ae1ce428941bf3cc30e44e5d22, type: 3}

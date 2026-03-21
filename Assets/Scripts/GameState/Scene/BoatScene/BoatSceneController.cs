@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// FLAGGED FOR FIELD/METHOD CLEANUP
+
 public sealed class BoatSceneController : MonoBehaviour
 {
     [Header("Scenes")]
@@ -25,6 +27,8 @@ public sealed class BoatSceneController : MonoBehaviour
     [Min(0.05f)]
     [SerializeField] private float distanceScale = 1f;
 
+    [SerializeField] private PlayerLoadoutPersistence playerLoadoutPersistence;
+
     public TravelPayload Payload { get; private set; }
 
     private bool _completed;
@@ -37,6 +41,7 @@ public sealed class BoatSceneController : MonoBehaviour
     {
         ctx = FindAnyObjectByType<BoatSceneContext>();
         dockingPanel = FindAnyObjectByType<DockingActionPanel>();
+        playerLoadoutPersistence = FindAnyObjectByType<PlayerLoadoutPersistence>();
     }
 
     private void OnEnable()
@@ -216,16 +221,14 @@ public sealed class BoatSceneController : MonoBehaviour
         _completed = true;
         PersistBoatAndCargo();
 
-        var gs = GameState.I;
-        if (gs == null)
+        var transition = SceneTransitionController.I;
+        if (transition == null)
         {
-            Debug.LogError("[BoatSceneController] GameState missing on abort.");
+            Debug.LogError("[BoatSceneController] SceneTransitionController missing on abort.");
             return;
         }
 
-        gs.player.currentNodeId = Payload.fromNodeStableId;
-        gs.ClearTravel();
-        SceneManager.LoadScene(nodeSceneName);
+        transition.AbortTravelToSource();
     }
 
     private void CompleteTravelToDestination()
@@ -233,16 +236,14 @@ public sealed class BoatSceneController : MonoBehaviour
         _completed = true;
         PersistBoatAndCargo();
 
-        var gs = GameState.I;
-        if (gs == null)
+        var transition = SceneTransitionController.I;
+        if (transition == null)
         {
-            Debug.LogError("[BoatSceneController] GameState missing on completion.");
+            Debug.LogError("[BoatSceneController] SceneTransitionController missing on completion.");
             return;
         }
 
-        gs.player.currentNodeId = Payload.toNodeStableId;
-        gs.ClearTravel();
-        SceneManager.LoadScene(nodeSceneName);
+        transition.CompleteTravelToDestination();
     }
 
     [ContextMenu("DEBUG: Dock to Source (Abort Travel)")]

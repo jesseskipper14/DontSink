@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public sealed class NodeTravelLauncher : MonoBehaviour
+// FLAGGED FOR FIELD/METHOD CLEANUP
+
+public sealed class NodeTravelController : MonoBehaviour
 {
     [Header("Scene")]
     [SerializeField] private string boatSceneName = "BoatScene";
@@ -12,18 +14,26 @@ public sealed class NodeTravelLauncher : MonoBehaviour
     [SerializeField] private WorldMapGraphGenerator generator;
     [SerializeField] private WorldMapTravelDebugController travelDebug; // optional (for MaxRouteLength)
     [SerializeField] private WorldMapTravelRulesConfig travelRules;     // optional (for MaxRouteLength)
+    [SerializeField] private PlayerLoadoutPersistence playerLoadoutPersistence;
 
     [Header("Debug")]
     [SerializeField] private int seedOverride = 0; // 0 = use graph seed
     [SerializeField] private bool allowLaunchWithoutValidation = false;
 
     private readonly Dictionary<string, MapNodeRuntime> _nodesById = new();
+    
+    private void Awake()
+    {
+        if (playerLoadoutPersistence == null)
+            playerLoadoutPersistence = FindAnyObjectByType<PlayerLoadoutPersistence>();
+    }
 
     private void Reset()
     {
         runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
         generator = FindAnyObjectByType<WorldMapGraphGenerator>();
         travelDebug = FindAnyObjectByType<WorldMapTravelDebugController>();
+        playerLoadoutPersistence = FindAnyObjectByType<PlayerLoadoutPersistence>();
     }
 
     private void OnEnable()
@@ -189,11 +199,22 @@ public sealed class NodeTravelLauncher : MonoBehaviour
         gs.boat.boatPrefabGuid = boatId.BoatGuid;
         gs.boat.cargo = cargoManifest;
 
-        // Create payload and switch scene
-        gs.activeTravel = new TravelPayload(fromId, toId, seed, routeLength, gs.boat.boatInstanceId, boatId.BoatGuid, cargoManifest);
-        Debug.Log($"NodeTravelLauncher: Loading boat scene '{boatSceneName}' | {fromId} -> {toId} | boatGuid={boatId.BoatGuid} | cargo={cargoManifest.Count}");
+        SceneTransitionController transition = SceneTransitionController.I;
+        if (transition == null)
+        {
+            Debug.LogError("NodeTravelController: SceneTransitionController missing.");
+            return;
+        }
 
-        SceneManager.LoadScene(boatSceneName);
+        Debug.Log($"NodeTravelController: Starting travel | {fromId} -> {toId} | boatGuid={boatId.BoatGuid} | cargo={cargoManifest.Count}");
+        transition.StartTravelToBoatScene(
+            fromId,
+            toId,
+            seed,
+            routeLength,
+            gs.boat.boatInstanceId,
+            boatId.BoatGuid,
+            cargoManifest);
     }
 
     private bool IsPlayerBoardedToPlayerBoat()

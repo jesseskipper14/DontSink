@@ -9,6 +9,8 @@ public sealed class ItemContainerState
     [SerializeField] private int columnCount = 4;
     [SerializeField] private List<InventorySlot> slots = new();
 
+    [NonSerialized] public Action Changed;
+
     public int SlotCount => Mathf.Max(0, slotCount);
     public int ColumnCount => Mathf.Max(1, columnCount);
     public IReadOnlyList<InventorySlot> Slots => slots;
@@ -23,19 +25,36 @@ public sealed class ItemContainerState
         slotCount = Mathf.Max(0, desiredSlotCount);
         columnCount = Mathf.Max(1, desiredColumnCount);
 
+        if (slots == null)
+            slots = new List<InventorySlot>();
+
         while (slots.Count < slotCount)
             slots.Add(new InventorySlot());
 
         if (slots.Count > slotCount)
             slots.RemoveRange(slotCount, slots.Count - slotCount);
+
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i] == null)
+                slots[i] = new InventorySlot();
+        }
     }
 
     public InventorySlot GetSlot(int index)
     {
-        if (index < 0 || index >= slots.Count)
+        if (slots == null || index < 0 || index >= slots.Count)
             return null;
 
+        if (slots[index] == null)
+            slots[index] = new InventorySlot();
+
         return slots[index];
+    }
+
+    public void NotifyChanged()
+    {
+        Changed?.Invoke();
     }
 
     public ItemContainerSnapshot ToSnapshot()
@@ -44,18 +63,21 @@ public sealed class ItemContainerState
         {
             version = 1,
             slotCount = slotCount,
-            columnCount = columnCount
+            columnCount = columnCount,
+            slots = new List<ItemInstanceSnapshot>(slotCount)
         };
 
-        snapshot.slots = new List<ItemInstanceSnapshot>(slots.Count);
-
-        for (int i = 0; i < slots.Count; i++)
+        for (int i = 0; i < slotCount; i++)
         {
-            ItemInstanceSnapshot itemSnapshot = slots[i] != null && !slots[i].IsEmpty
-                ? slots[i].Instance.ToSnapshot()
-                : null;
+            InventorySlot slot = (slots != null && i < slots.Count) ? slots[i] : null;
 
-            snapshot.slots.Add(itemSnapshot);
+            if (slot == null || slot.IsEmpty || slot.Instance == null)
+            {
+                snapshot.slots.Add(null);
+                continue;
+            }
+
+            snapshot.slots.Add(slot.Instance.ToSnapshot());
         }
 
         return snapshot;
@@ -68,7 +90,7 @@ public sealed class ItemContainerState
 
         ItemContainerState state = new ItemContainerState(snapshot.slotCount, snapshot.columnCount);
 
-        int count = Mathf.Min(state.slots.Count, snapshot.slots.Count);
+        int count = Mathf.Min(state.slots.Count, snapshot.slots != null ? snapshot.slots.Count : 0);
         for (int i = 0; i < count; i++)
         {
             ItemInstance instance = ItemInstance.FromSnapshot(snapshot.slots[i], resolver);

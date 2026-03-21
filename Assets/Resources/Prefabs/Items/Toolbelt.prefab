@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7570094693861048571}
   - component: {fileID: 5263012356571068860}
   m_Layer: 10
-  m_Name: Pearl
+  m_Name: Toolbelt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 18.16, y: 2.41, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 5, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6298247239454974913}
@@ -80,7 +80,7 @@ SpriteRenderer:
   m_SortingLayerID: 1939965397
   m_SortingLayer: 10
   m_SortingOrder: 0
-  m_Sprite: {fileID: 457403236684041259, guid: a40a21f8a2344e9418b6f432f29d4cdc, type: 3}
+  m_Sprite: {fileID: 5040953308449433282, guid: 251e73321609ae842b1cb39aa37261cb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -105,11 +105,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemInstance:
     instanceId: 
-    definition: {fileID: 11400000, guid: 5d27ac2dd21a9bf46ac0c6a4c7c462ea, type: 2}
+    definition: {fileID: 11400000, guid: 1d64d87e588c82745b4f50b370126d0d, type: 2}
     quantity: 1
     containerState:
-      slotCount: 0
-      columnCount: 0
+      slotCount: 4
+      columnCount: 1
       slots: []
   interactionPriority: 10
   maxPickupDistance: 3
@@ -254,7 +254,7 @@ SpriteRenderer:
   m_SortingLayerID: 1939965397
   m_SortingLayer: 10
   m_SortingOrder: -1
-  m_Sprite: {fileID: 457403236684041259, guid: a40a21f8a2344e9418b6f432f29d4cdc, type: 3}
+  m_Sprite: {fileID: 5040953308449433282, guid: 251e73321609ae842b1cb39aa37261cb, type: 3}
   m_Color: {r: 0.49381453, g: 0.59341216, b: 0.764151, a: 1}
   m_FlipX: 0
   m_FlipY: 0

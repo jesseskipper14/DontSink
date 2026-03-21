@@ -30,7 +30,7 @@ public sealed class MapOverlayController : MonoBehaviour
     [SerializeField] private TMPro.TMP_Text selectedLabel;
     [SerializeField] private Button lockButton;
     [SerializeField] private Button travelButton;
-    [SerializeField] private NodeTravelLauncher travelLauncher; // optional convenience
+    [SerializeField] private NodeTravelController travelLauncher; // optional convenience
 
     [Header("Debug / State")]
     [SerializeField] private int selectedNodeIndex = -1;
@@ -683,7 +683,7 @@ public sealed class MapOverlayController : MonoBehaviour
     private void OnTravelClicked()
     {
         if (travelLauncher == null)
-            travelLauncher = FindAnyObjectByType<NodeTravelLauncher>();
+            travelLauncher = FindAnyObjectByType<NodeTravelController>();
 
         if (travelLauncher != null)
             travelLauncher.TryStartTravel();

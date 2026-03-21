@@ -13,52 +13,58 @@ public sealed class InventorySlotUI : MonoBehaviour,
 {
     public static InventorySlotUI CurrentHoveredSlot { get; private set; }
 
+    [Header("Visuals")]
     [SerializeField] private Image icon;
     [SerializeField] private Text countText;
     [SerializeField] private GameObject selectionHighlight;
     [SerializeField] private Image purposeIcon;
-    private Sprite assignedPurposeIcon;
 
-    private PlayerInventory boundInventory;
-    private PlayerEquipment boundEquipment;
-    private BottomBarSlotType boundSlotType = BottomBarSlotType.None;
-    private int boundHotbarIndex = -1;
-    private bool isEquipmentSlot;
+    [Header("Debug")]
+    [SerializeField] private bool verboseLogging = false;
+
+    private Sprite assignedPurposeIcon;
+    private IInventorySlotBinding binding;
 
     private PlayerInventoryUI owner;
     private InventoryDragController dragController;
 
-    public bool IsEquipmentSlot => isEquipmentSlot;
-    public int HotbarIndex => boundHotbarIndex;
-    public BottomBarSlotType SlotType => isEquipmentSlot ? boundSlotType : PlayerInventory.HotbarIndexToSlotType(boundHotbarIndex);
+    public RectTransform RectTransform => transform as RectTransform;
+    public bool IsEquipmentSlot =>
+        binding is EquipmentSlotBinding;
+
+    public int HotbarIndex
+    {
+        get
+        {
+            if (binding is HotbarSlotBinding hotbarBinding)
+                return PlayerInventory.SlotTypeToHotbarIndex(hotbarBinding.SlotType);
+
+            return -1;
+        }
+    }
+
+    public BottomBarSlotType SlotType =>
+        binding != null ? binding.SlotType : BottomBarSlotType.None;
+
+    public bool SupportsSelection =>
+        binding != null && binding.SupportsSelection;
 
     public void SetOwner(PlayerInventoryUI ownerUI)
     {
         owner = ownerUI;
+        Log($"SetOwner | owner={(owner != null ? owner.name : "NULL")}");
     }
 
     public void SetDragController(InventoryDragController controller)
     {
         dragController = controller;
+        Log($"SetDragController | drag={(dragController != null ? dragController.name : "NULL")}");
     }
 
-    public void BindInventory(PlayerInventory inventory, int index)
+    public void Bind(IInventorySlotBinding newBinding)
     {
-        boundInventory = inventory;
-        boundHotbarIndex = index;
-        boundEquipment = null;
-        boundSlotType = BottomBarSlotType.None;
-        isEquipmentSlot = false;
-        Refresh();
-    }
-
-    public void BindEquipment(PlayerEquipment equipment, BottomBarSlotType slotType)
-    {
-        boundEquipment = equipment;
-        boundSlotType = slotType;
-        boundInventory = null;
-        boundHotbarIndex = -1;
-        isEquipmentSlot = true;
+        binding = newBinding;
+        Log($"Bind | binding={(binding != null ? binding.GetType().Name : "NULL")} | slotType={SlotType}");
         Refresh();
     }
 
@@ -82,115 +88,117 @@ public sealed class InventorySlotUI : MonoBehaviour,
 
         if (countText != null)
             countText.text = hasItem && instance.Quantity > 1 ? instance.Quantity.ToString() : "";
+
+        Log($"Refresh | slotType={SlotType} | hasItem={hasItem} | item={DescribeItem(instance)} | countText='{(countText != null ? countText.text : "NO_TEXT")}'");
     }
 
     public void SetSelected(bool selected)
     {
         if (selectionHighlight != null)
-            selectionHighlight.SetActive(selected);
+            selectionHighlight.SetActive(selected && SupportsSelection);
+
+        Log($"SetSelected | slotType={SlotType} | selected={selected} | supportsSelection={SupportsSelection}");
     }
 
     public ItemInstance RemoveItem()
     {
-        if (!isEquipmentSlot)
+        if (binding == null)
         {
-            InventorySlot slot = boundInventory?.GetSlot(boundHotbarIndex);
-            if (slot == null || slot.IsEmpty)
-                return null;
-
-            ItemInstance item = slot.Instance;
-            slot.Clear();
-            boundInventory?.NotifyChanged();
-            return item;
+            LogWarning("RemoveItem failed because binding is null.");
+            return null;
         }
 
-        return boundEquipment?.Remove(boundSlotType);
+        ItemInstance removed = binding.RemoveItem();
+        Log($"RemoveItem | slotType={SlotType} | item={DescribeItem(removed)}");
+        return removed;
     }
 
     public bool TryPlaceItem(ItemInstance incoming, out ItemInstance displaced)
     {
         displaced = null;
 
-        if (incoming == null)
-            return false;
-
-        if (!isEquipmentSlot)
+        if (binding == null)
         {
-            InventorySlot slot = boundInventory?.GetSlot(boundHotbarIndex);
-            if (slot == null)
-                return false;
-
-            if (slot.IsEmpty)
-            {
-                slot.Set(incoming);
-                boundInventory?.NotifyChanged();
-                return true;
-            }
-
-            if (slot.Instance != null && slot.Instance.CanStackWith(incoming))
-            {
-                int moved = slot.Instance.AddQuantity(incoming.Quantity);
-                incoming.RemoveQuantity(moved);
-                boundInventory?.NotifyChanged();
-
-                if (incoming.IsDepleted())
-                    return true;
-
-                displaced = incoming;
-                return true;
-            }
-
-            displaced = slot.Instance;
-            slot.Set(incoming);
-            boundInventory?.NotifyChanged();
-            return true;
+            LogWarning("TryPlaceItem failed because binding is null.");
+            return false;
         }
 
-        if (boundEquipment == null)
+        if (incoming == null)
+        {
+            LogWarning("TryPlaceItem called with NULL incoming item.");
             return false;
+        }
 
-        bool ok = boundEquipment.TryPlace(boundSlotType, incoming, out displaced);
+        bool ok = binding.TryPlaceItem(incoming, out displaced);
+        Log($"TryPlaceItem | slotType={SlotType} | binding={binding.GetType().Name} | incoming={DescribeItem(incoming)} | ok={ok} | displaced={DescribeItem(displaced)}");
         return ok;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         CurrentHoveredSlot = this;
+        Log($"OnPointerEnter | slotType={SlotType}");
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         if (CurrentHoveredSlot == this)
             CurrentHoveredSlot = null;
+
+        Log($"OnPointerExit | slotType={SlotType}");
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        Log($"OnPointerClick | slotType={SlotType}");
         owner?.HandleSlotClicked(this);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        Log($"OnBeginDrag | slotType={SlotType} | item={DescribeItem(GetInstance())} | drag={(dragController != null ? dragController.name : "NULL")}");
         dragController?.BeginDrag(this);
     }
 
-    public void OnDrag(PointerEventData eventData) { }
+    public void OnDrag(PointerEventData eventData)
+    {
+    }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        Log($"OnEndDrag | slotType={SlotType} | hovered={(CurrentHoveredSlot != null ? CurrentHoveredSlot.SlotType.ToString() : "NULL")}");
         dragController?.EndDrag();
-    }
-
-    private ItemInstance GetInstance()
-    {
-        if (!isEquipmentSlot)
-            return boundInventory?.GetSlot(boundHotbarIndex)?.Instance;
-
-        return boundEquipment?.Get(boundSlotType);
     }
 
     public void SetPurposeIcon(Sprite sprite)
     {
         assignedPurposeIcon = sprite;
+        Log($"SetPurposeIcon | slotType={SlotType} | icon={(sprite != null ? sprite.name : "NULL")}");
+    }
+
+    private ItemInstance GetInstance()
+    {
+        return binding?.GetItem();
+    }
+
+    private string DescribeItem(ItemInstance item)
+    {
+        if (item == null)
+            return "empty";
+
+        string itemId = item.Definition != null ? item.Definition.ItemId : "NO_DEF";
+        return $"{itemId} x{item.Quantity} inst={item.InstanceId}";
+    }
+
+    private void Log(string msg)
+    {
+        if (!verboseLogging) return;
+        Debug.Log($"[InventorySlotUI:{name}] {msg}", this);
+    }
+
+    private void LogWarning(string msg)
+    {
+        if (!verboseLogging) return;
+        Debug.LogWarning($"[InventorySlotUI:{name}] {msg}", this);
     }
 }

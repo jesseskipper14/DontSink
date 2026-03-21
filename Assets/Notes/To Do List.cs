@@ -75,6 +75,6 @@ public class ToDoList : MonoBehaviour
  * Add background rain to add depth
  * Firehoses for flooding other boats!
  * Menu configuration for which buffs/outcomes/events are possible - aka to turn off pirates or other disruptive content
- * 
+ * Strange Matter that converts other inventory items into itself
  * */
 

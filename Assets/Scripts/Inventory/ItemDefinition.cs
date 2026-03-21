@@ -1,5 +1,29 @@
 using UnityEngine;
 
+[System.Flags]
+public enum ItemCategoryFlags
+{
+    None = 0,
+    General = 1 << 0,
+    Tool = 1 << 1,
+    Weapon = 1 << 2,
+    Ammo = 1 << 3,
+    Armor = 1 << 4,
+    Consumable = 1 << 5,
+    Resource = 1 << 6,
+    Oxygen = 1 << 7,
+    Fuel = 1 << 8,
+    Medical = 1 << 9,
+    Utility = 1 << 10
+}
+
+public enum PreferredDisplacedDestination
+{
+    None = 0,
+    MatchingEquipSlot,
+    AnyHotbar
+}
+
 [CreateAssetMenu(fileName = "ItemDefinition", menuName = "Game/Inventory/Item Definition")]
 public sealed class ItemDefinition : ScriptableObject
 {
@@ -7,6 +31,9 @@ public sealed class ItemDefinition : ScriptableObject
     [SerializeField] private string itemId;
     [SerializeField] private string displayName;
     [SerializeField] private Sprite icon;
+
+    [Header("Classification")]
+    [SerializeField] private ItemCategoryFlags itemCategories = ItemCategoryFlags.General;
 
     [Header("Stacking")]
     [Min(1)]
@@ -16,6 +43,8 @@ public sealed class ItemDefinition : ScriptableObject
     [SerializeField] private bool stowableInInventory = true;
     [SerializeField] private bool droppable = true;
     [SerializeField] private bool tradable = true;
+    [Header("Fallback Placement")]
+    [SerializeField] private PreferredDisplacedDestination preferredDisplacedDestination = PreferredDisplacedDestination.None;
 
     [Header("Equip")]
     [SerializeField] private BottomBarSlotType equipSlot = BottomBarSlotType.None;
@@ -26,6 +55,8 @@ public sealed class ItemDefinition : ScriptableObject
     [SerializeField] private int containerSlotCount = 0;
     [Min(1)]
     [SerializeField] private int containerColumnCount = 4;
+    [SerializeField] private ItemCategoryFlags allowedContainerCategories = ItemCategoryFlags.None;
+    [SerializeField] private bool isMajorCarryContainer = false;
 
     [Header("World")]
     [SerializeField] private WorldItem worldPrefab;
@@ -33,6 +64,9 @@ public sealed class ItemDefinition : ScriptableObject
     public string ItemId => itemId;
     public string DisplayName => string.IsNullOrWhiteSpace(displayName) ? name : displayName;
     public Sprite Icon => icon;
+
+    public ItemCategoryFlags ItemCategories => itemCategories;
+
     public int MaxStack => Mathf.Max(1, maxStack);
 
     public bool StowableInInventory => stowableInInventory;
@@ -45,8 +79,23 @@ public sealed class ItemDefinition : ScriptableObject
     public bool IsContainer => isContainer && containerSlotCount > 0;
     public int ContainerSlotCount => IsContainer ? Mathf.Max(1, containerSlotCount) : 0;
     public int ContainerColumnCount => Mathf.Max(1, containerColumnCount);
+    public ItemCategoryFlags AllowedContainerCategories => allowedContainerCategories;
+    public bool IsMajorCarryContainer => isMajorCarryContainer;
+
+    public PreferredDisplacedDestination PreferredDisplacedDestination => preferredDisplacedDestination;
 
     public WorldItem WorldPrefab => worldPrefab;
+
+    public bool CanContainerAccept(ItemDefinition incoming)
+    {
+        if (!IsContainer || incoming == null)
+            return false;
+
+        if (allowedContainerCategories == ItemCategoryFlags.None)
+            return false;
+
+        return (allowedContainerCategories & incoming.ItemCategories) != 0;
+    }
 
 #if UNITY_EDITOR
     private void OnValidate()
@@ -57,6 +106,12 @@ public sealed class ItemDefinition : ScriptableObject
 
         if (IsContainer)
             maxStack = 1;
+
+        if (!IsContainer)
+        {
+            allowedContainerCategories = ItemCategoryFlags.None;
+            isMajorCarryContainer = false;
+        }
     }
 #endif
 }

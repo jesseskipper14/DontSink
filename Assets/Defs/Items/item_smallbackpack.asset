@@ -15,11 +15,16 @@ MonoBehaviour:
   itemId: item_smallbackpack
   displayName: Small Backpack
   icon: {fileID: -5433737350264751947, guid: 2b7153f159990bd43b2ecf65a800823d, type: 3}
+  itemCategories: 1024
   maxStack: 1
-  mass: 2
-  stowableInInventory: 0
+  stowableInInventory: 1
   droppable: 1
   tradable: 1
-  equipSlot: 1
-  bonusInventorySlots: 5
-  worldPrefab: {fileID: 0}
+  preferredDisplacedDestination: 1
+  equipSlot: 13
+  isContainer: 1
+  containerSlotCount: 8
+  containerColumnCount: 2
+  allowedContainerCategories: 1643
+  isMajorCarryContainer: 1
+  worldPrefab: {fileID: 61859146187821167, guid: 06fd538a746b64842a7061f959cc9c7e, type: 3}

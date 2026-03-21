@@ -325,7 +325,9 @@ public sealed class PlayerInventory : MonoBehaviour
             return;
         }
 
-        hotbarSlotCount = Mathf.Clamp(snapshot.hotbarSlotCount, 1, MaxSupportedHotbarSlots);
+        if (snapshot != null && snapshot.hotbarSlotCount > 0)
+            hotbarSlotCount = Mathf.Clamp(snapshot.hotbarSlotCount, 1, MaxSupportedHotbarSlots);
+
         EnsureSlotCount();
 
         for (int i = 0; i < hotbarSlots.Count; i++)
