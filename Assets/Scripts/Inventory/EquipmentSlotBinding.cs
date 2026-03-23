@@ -51,4 +51,15 @@ public sealed class EquipmentSlotBinding : IInventorySlotBinding
 
         return equipment.TryPlace(slotType, incoming, out displaced);
     }
+
+    public bool CanAccept(ItemInstance incoming)
+    {
+        if (incoming == null)
+            return false;
+
+        if (equipment == null)
+            return false;
+
+        return equipment.CanEquip(slotType, incoming);
+    }
 }

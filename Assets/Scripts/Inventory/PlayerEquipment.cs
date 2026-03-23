@@ -15,7 +15,7 @@ public sealed class PlayerEquipment : MonoBehaviour
 
     public ItemInstance Get(BottomBarSlotType slot)
     {
-        return slot switch
+        ItemInstance raw = slot switch
         {
             BottomBarSlotType.Hands => hands,
             BottomBarSlotType.Head => head,
@@ -25,6 +25,8 @@ public sealed class PlayerEquipment : MonoBehaviour
             BottomBarSlotType.Body => body,
             _ => null
         };
+
+        return IsValidEquippedItem(raw) ? raw : null;
     }
 
     public ItemInstance Remove(BottomBarSlotType slot)
@@ -54,6 +56,17 @@ public sealed class PlayerEquipment : MonoBehaviour
         return true;
     }
 
+    public bool CanEquip(BottomBarSlotType slot, ItemInstance item)
+    {
+        if (item == null || item.Definition == null)
+            return false;
+
+        if (slot == BottomBarSlotType.Hands)
+            return true;
+
+        return item.Definition.EquipSlot == slot;
+    }
+
     public bool TryPlaceIntoPreferredSlotIfEmpty(ItemInstance item)
     {
         if (item == null || item.Definition == null)
@@ -63,7 +76,6 @@ public sealed class PlayerEquipment : MonoBehaviour
         if (preferred == BottomBarSlotType.None)
             return false;
 
-        // Hands should not be used as automatic displaced-item fallback.
         if (preferred == BottomBarSlotType.Hands)
             return false;
 
@@ -78,17 +90,6 @@ public sealed class PlayerEquipment : MonoBehaviour
         return true;
     }
 
-    public bool CanEquip(BottomBarSlotType slot, ItemInstance item)
-    {
-        if (item == null || item.Definition == null)
-            return false;
-
-        if (slot == BottomBarSlotType.Hands)
-            return true;
-
-        return item.Definition.EquipSlot == slot;
-    }
-
     private void SetDirect(BottomBarSlotType slot, ItemInstance item)
     {
         switch (slot)
@@ -101,6 +102,14 @@ public sealed class PlayerEquipment : MonoBehaviour
             case BottomBarSlotType.Body: body = item; break;
         }
     }
+
+    private static bool IsValidEquippedItem(ItemInstance item)
+    {
+        return item != null &&
+               item.Definition != null &&
+               item.Quantity > 0;
+    }
+
 
     public EquipmentSnapshot CaptureSnapshot()
     {

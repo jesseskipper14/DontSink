@@ -15,6 +15,9 @@ public sealed class WorldItem : MonoBehaviour, IInteractable, IInteractPromptPro
 
     public int InteractionPriority => interactionPriority;
 
+    [Header("Debug")]
+    [SerializeField] private bool verboseLogging = true;
+
     private void Awake()
     {
         if (itemInstance != null)
@@ -35,18 +38,43 @@ public sealed class WorldItem : MonoBehaviour, IInteractable, IInteractPromptPro
 
     public bool CanInteract(in InteractContext context)
     {
-        if (itemInstance == null || itemInstance.Definition == null || itemInstance.Quantity <= 0)
+        if (itemInstance == null)
+        {
+            Log("CanInteract FAIL: itemInstance is null");
             return false;
+        }
+
+        if (itemInstance.Definition == null)
+        {
+            Log("CanInteract FAIL: definition is null");
+            return false;
+        }
+
+        if (itemInstance.Quantity <= 0)
+        {
+            Log("CanInteract FAIL: quantity <= 0");
+            return false;
+        }
 
         float dist = Vector2.Distance(context.Origin, transform.position);
         if (dist > maxPickupDistance)
+        {
+            Log($"CanInteract FAIL: too far | dist={dist:F2} max={maxPickupDistance}");
             return false;
+        }
 
-        PlayerInventory inventory = FindInventory(context.InteractorGO);
-        if (inventory == null)
+        var resolver = FindAcquisitionResolver(context.InteractorGO);
+        if (resolver == null)
+        {
+            Log($"CanInteract FAIL: resolver NOT FOUND | actor={context.InteractorGO?.name}");
             return false;
+        }
 
-        return inventory.CanFullyAdd(itemInstance);
+        bool canAcquire = resolver.CanAcquire(itemInstance);
+
+        Log($"CanInteract RESULT: {canAcquire} | item={DescribeItem(itemInstance)}");
+
+        return canAcquire;
     }
 
     public void Interact(in InteractContext context)
@@ -54,11 +82,11 @@ public sealed class WorldItem : MonoBehaviour, IInteractable, IInteractPromptPro
         if (itemInstance == null || itemInstance.Definition == null || itemInstance.Quantity <= 0)
             return;
 
-        PlayerInventory inventory = FindInventory(context.InteractorGO);
-        if (inventory == null)
+        ItemAcquisitionResolver resolver = FindAcquisitionResolver(context.InteractorGO);
+        if (resolver == null)
             return;
 
-        if (!inventory.TryAddInstance(itemInstance))
+        if (!resolver.TryAcquire(itemInstance))
             return;
 
         itemInstance = null;
@@ -75,19 +103,34 @@ public sealed class WorldItem : MonoBehaviour, IInteractable, IInteractPromptPro
             highlightObject.SetActive(highlighted);
     }
 
-    private static PlayerInventory FindInventory(GameObject actor)
+    private static ItemAcquisitionResolver FindAcquisitionResolver(GameObject actor)
     {
         if (actor == null)
             return null;
 
-        PlayerInventory inventory = actor.GetComponent<PlayerInventory>();
-        if (inventory != null)
-            return inventory;
+        ItemAcquisitionResolver resolver = actor.GetComponent<ItemAcquisitionResolver>();
+        if (resolver != null)
+            return resolver;
 
-        inventory = actor.GetComponentInChildren<PlayerInventory>(true);
-        if (inventory != null)
-            return inventory;
+        resolver = actor.GetComponentInChildren<ItemAcquisitionResolver>(true);
+        if (resolver != null)
+            return resolver;
 
-        return actor.GetComponentInParent<PlayerInventory>();
+        return actor.GetComponentInParent<ItemAcquisitionResolver>();
+    }
+
+    private void Log(string msg)
+    {
+        if (!verboseLogging) return;
+        Debug.Log($"[WorldItem:{name}] {msg}", this);
+    }
+
+    private string DescribeItem(ItemInstance item)
+    {
+        if (item == null)
+            return "empty";
+
+        string itemId = item.Definition != null ? item.Definition.ItemId : "NO_DEF";
+        return $"{itemId} x{item.Quantity} inst={item.InstanceId}";
     }
 }

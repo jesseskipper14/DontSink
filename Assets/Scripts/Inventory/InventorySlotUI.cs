@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -18,6 +19,9 @@ public sealed class InventorySlotUI : MonoBehaviour,
     [SerializeField] private Text countText;
     [SerializeField] private GameObject selectionHighlight;
     [SerializeField] private Image purposeIcon;
+    [SerializeField] private Image background;
+    [SerializeField] private Color normalColor = Color.white;
+    [SerializeField] private Color invalidTargetColor = new Color(1f, 0.45f, 0.45f, 1f);
 
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = false;
@@ -29,8 +33,8 @@ public sealed class InventorySlotUI : MonoBehaviour,
     private InventoryDragController dragController;
 
     public RectTransform RectTransform => transform as RectTransform;
-    public bool IsEquipmentSlot =>
-        binding is EquipmentSlotBinding;
+
+    public bool IsEquipmentSlot => binding is EquipmentSlotBinding;
 
     public int HotbarIndex
     {
@@ -48,6 +52,8 @@ public sealed class InventorySlotUI : MonoBehaviour,
 
     public bool SupportsSelection =>
         binding != null && binding.SupportsSelection;
+
+    public string DebugSlotName => gameObject.name;
 
     public void SetOwner(PlayerInventoryUI ownerUI)
     {
@@ -150,14 +156,46 @@ public sealed class InventorySlotUI : MonoBehaviour,
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Log($"OnPointerClick | slotType={SlotType}");
-        owner?.HandleSlotClicked(this);
+        if (eventData == null)
+            return;
+
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            Log($"OnPointerClick | slotType={SlotType}");
+            owner?.HandleSlotClicked(this);
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Log($"OnBeginDrag | slotType={SlotType} | item={DescribeItem(GetInstance())} | drag={(dragController != null ? dragController.name : "NULL")}");
-        dragController?.BeginDrag(this);
+        if (dragController == null)
+            return;
+
+        if (dragController.IsDragging)
+        {
+            Log($"OnBeginDrag ignored because drag already active | slotType={SlotType}");
+            return;
+        }
+
+        ItemInstance boundItem = GetBoundItem();
+        bool ctrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+
+        if (ctrlHeld && boundItem != null && boundItem.CanSplit)
+        {
+            int splitAmount = Mathf.CeilToInt(boundItem.Quantity * 0.5f);
+            ItemInstance split = boundItem.SplitOff(splitAmount);
+
+            if (split != null)
+            {
+                Log($"OnBeginDrag split drag | slotType={SlotType} | split={DescribeItem(split)} | remaining={DescribeItem(boundItem)}");
+                Refresh();
+                dragController.BeginDrag(split, this);
+                return;
+            }
+        }
+
+        Log($"OnBeginDrag normal drag | slotType={SlotType} | item={DescribeItem(boundItem)}");
+        dragController.BeginDrag(this);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -176,6 +214,17 @@ public sealed class InventorySlotUI : MonoBehaviour,
         Log($"SetPurposeIcon | slotType={SlotType} | icon={(sprite != null ? sprite.name : "NULL")}");
     }
 
+    public ItemInstance GetBoundItem()
+    {
+        return binding?.GetItem();
+    }
+
+    public bool HasContainerItem()
+    {
+        ItemInstance item = GetBoundItem();
+        return item != null && item.IsContainer && item.ContainerState != null;
+    }
+
     private ItemInstance GetInstance()
     {
         return binding?.GetItem();
@@ -188,6 +237,77 @@ public sealed class InventorySlotUI : MonoBehaviour,
 
         string itemId = item.Definition != null ? item.Definition.ItemId : "NO_DEF";
         return $"{itemId} x{item.Quantity} inst={item.InstanceId}";
+    }
+
+    private bool isShowingInvalidTarget;
+
+    public void SetInvalidTargetVisual(bool invalid)
+    {
+        isShowingInvalidTarget = invalid;
+
+        if (background != null)
+            background.color = invalid ? invalidTargetColor : normalColor;
+    }
+
+    public bool CanAcceptPreview(ItemInstance incoming)
+    {
+        if (incoming == null)
+            return false;
+
+        if (binding != null && binding.CanAccept(incoming))
+            return true;
+
+        ItemInstance boundItem = GetBoundItem();
+        if (boundItem != null && boundItem.CanAcceptIntoContainer(incoming))
+            return true;
+
+        return false;
+    }
+
+    public void PlayInvalidTargetFeedback()
+    {
+        StopAllCoroutines();
+        StartCoroutine(ShakeInvalidRoutine());
+    }
+
+    private IEnumerator ShakeInvalidRoutine()
+    {
+        RectTransform rt = RectTransform;
+        if (rt == null)
+            yield break;
+
+        Vector2 original = rt.anchoredPosition;
+        const float duration = 0.12f;
+        const float magnitude = 8f;
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = elapsed / duration;
+            float x = Mathf.Sin(t * 24f) * magnitude * (1f - t);
+            rt.anchoredPosition = original + new Vector2(x, 0f);
+            yield return null;
+        }
+
+        rt.anchoredPosition = original;
+    }
+
+    public void ClearInvalidTargetVisual()
+    {
+        SetInvalidTargetVisual(false);
+    }
+
+    private void OnDisable()
+    {
+        if (dragController != null && dragController.IsDraggingFrom(this))
+        {
+            Log($"OnDisable | cancelling drag because this slot is active drag source | slotType={SlotType}");
+            dragController.CancelDrag();
+        }
+
+        if (CurrentHoveredSlot == this)
+            CurrentHoveredSlot = null;
     }
 
     private void Log(string msg)

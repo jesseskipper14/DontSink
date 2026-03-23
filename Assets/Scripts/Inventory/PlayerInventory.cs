@@ -35,6 +35,9 @@ public sealed class PlayerInventory : MonoBehaviour
         if (index < 0 || index >= hotbarSlots.Count)
             return null;
 
+        if (hotbarSlots[index] == null)
+            hotbarSlots[index] = new InventorySlot();
+
         return hotbarSlots[index];
     }
 
@@ -87,14 +90,19 @@ public sealed class PlayerInventory : MonoBehaviour
         EnsureSlotCount();
 
         if (!instance.IsStackable)
-            return FindFirstEmptySlot() >= 0;
+            return FindFirstEmptySlot(instance) >= 0;
 
         int remaining = instance.Quantity;
 
+        // First try stacking into existing valid stacks
         for (int i = 0; i < hotbarSlots.Count; i++)
         {
             InventorySlot slot = hotbarSlots[i];
-            if (slot.IsEmpty || slot.Instance == null)
+            if (slot == null || slot.IsEmpty || slot.Instance == null)
+                continue;
+
+            BottomBarSlotType slotType = HotbarIndexToSlotType(i);
+            if (!instance.Definition.IsAllowedInParentSlot(slotType))
                 continue;
 
             if (!slot.Instance.CanStackWith(instance))
@@ -105,9 +113,18 @@ public sealed class PlayerInventory : MonoBehaviour
                 return true;
         }
 
+        // Then count valid empty slots
         for (int i = 0; i < hotbarSlots.Count; i++)
         {
-            if (hotbarSlots[i].IsEmpty)
+            InventorySlot slot = hotbarSlots[i];
+            if (slot == null)
+                continue;
+
+            BottomBarSlotType slotType = HotbarIndexToSlotType(i);
+            if (!instance.Definition.IsAllowedInParentSlot(slotType))
+                continue;
+
+            if (slot.IsEmpty)
             {
                 remaining -= instance.MaxStack;
                 if (remaining <= 0)
@@ -120,6 +137,9 @@ public sealed class PlayerInventory : MonoBehaviour
 
     public bool TryAddInstance(ItemInstance instance)
     {
+        if (instance == null || instance.Definition == null || instance.Quantity <= 0)
+            return false;
+
         if (!CanFullyAdd(instance))
             return false;
 
@@ -130,7 +150,11 @@ public sealed class PlayerInventory : MonoBehaviour
             for (int i = 0; i < hotbarSlots.Count; i++)
             {
                 InventorySlot slot = hotbarSlots[i];
-                if (slot.IsEmpty || slot.Instance == null)
+                if (slot == null || slot.IsEmpty || slot.Instance == null)
+                    continue;
+
+                BottomBarSlotType slotType = HotbarIndexToSlotType(i);
+                if (!instance.Definition.IsAllowedInParentSlot(slotType))
                     continue;
 
                 if (!slot.Instance.CanStackWith(instance))
@@ -147,7 +171,7 @@ public sealed class PlayerInventory : MonoBehaviour
             }
         }
 
-        int empty = FindFirstEmptySlot();
+        int empty = FindFirstEmptySlot(instance);
         if (empty < 0)
             return false;
 
@@ -169,7 +193,7 @@ public sealed class PlayerInventory : MonoBehaviour
         if (selectedSlot >= BottomBarSlotType.Hotbar0 && selectedSlot <= BottomBarSlotType.Hotbar7)
         {
             int hotbarIndex = SlotTypeToHotbarIndex(selectedSlot);
-            return TryDropHotbarSlot(hotbarIndex, int.MaxValue, worldPosition);
+            return TryDropHotbarSlot(hotbarIndex, 1, worldPosition);
         }
 
         if (equipment == null)
@@ -224,23 +248,140 @@ public sealed class PlayerInventory : MonoBehaviour
         return true;
     }
 
+    public bool TryDropInstance(ItemInstance instance, Vector3 worldPosition)
+    {
+        if (instance == null || instance.Definition == null)
+            return false;
+
+        if (!instance.Definition.Droppable || instance.Definition.WorldPrefab == null)
+            return false;
+
+        WorldItem dropped = Instantiate(instance.Definition.WorldPrefab, worldPosition, Quaternion.identity);
+        dropped.Initialize(instance);
+
+        InventoryChanged?.Invoke();
+        return true;
+    }
+
+    public InventorySnapshot CaptureSnapshot()
+    {
+        EnsureSlotCount();
+
+        InventorySnapshot snapshot = new InventorySnapshot
+        {
+            version = 1,
+            hotbarSlotCount = HotbarSlotCount,
+            selectedSlot = selectedSlot,
+            hotbarSlots = new List<ItemInstanceSnapshot>(hotbarSlots.Count)
+        };
+
+        for (int i = 0; i < hotbarSlots.Count; i++)
+        {
+            ItemInstanceSnapshot itemSnapshot = hotbarSlots[i] != null && !hotbarSlots[i].IsEmpty
+                ? hotbarSlots[i].Instance.ToSnapshot()
+                : null;
+
+            snapshot.hotbarSlots.Add(itemSnapshot);
+        }
+
+        return snapshot;
+    }
+
+    public void RestoreSnapshot(InventorySnapshot snapshot, IItemDefinitionResolver resolver)
+    {
+        if (snapshot != null && snapshot.hotbarSlotCount > 0)
+            hotbarSlotCount = Mathf.Clamp(snapshot.hotbarSlotCount, 1, MaxSupportedHotbarSlots);
+
+        EnsureSlotCount();
+
+        for (int i = 0; i < hotbarSlots.Count; i++)
+        {
+            if (hotbarSlots[i] == null)
+                hotbarSlots[i] = new InventorySlot();
+
+            hotbarSlots[i].Clear();
+        }
+
+        if (snapshot != null && snapshot.hotbarSlots != null)
+        {
+            int count = Mathf.Min(hotbarSlots.Count, snapshot.hotbarSlots.Count);
+            for (int i = 0; i < count; i++)
+            {
+                ItemInstance instance = ItemInstance.FromSnapshot(snapshot.hotbarSlots[i], resolver);
+                hotbarSlots[i].Set(instance);
+            }
+
+            selectedSlot = snapshot.selectedSlot;
+        }
+        else
+        {
+            selectedSlot = BottomBarSlotType.Hotbar0;
+        }
+
+        InventoryChanged?.Invoke();
+        SelectionChanged?.Invoke();
+    }
+
+    private void ClearAllSlots()
+    {
+        EnsureSlotCount();
+
+        for (int i = 0; i < hotbarSlots.Count; i++)
+        {
+            if (hotbarSlots[i] == null)
+                hotbarSlots[i] = new InventorySlot();
+
+            hotbarSlots[i].Clear();
+        }
+    }
+
     private void EnsureSlotCount()
     {
         int desired = HotbarSlotCount;
+
+        if (hotbarSlots == null)
+            hotbarSlots = new List<InventorySlot>();
 
         while (hotbarSlots.Count < desired)
             hotbarSlots.Add(new InventorySlot());
 
         if (hotbarSlots.Count > desired)
             hotbarSlots.RemoveRange(desired, hotbarSlots.Count - desired);
+
+        for (int i = 0; i < hotbarSlots.Count; i++)
+        {
+            if (hotbarSlots[i] == null)
+                hotbarSlots[i] = new InventorySlot();
+        }
     }
 
     private int FindFirstEmptySlot()
     {
         for (int i = 0; i < hotbarSlots.Count; i++)
         {
-            if (hotbarSlots[i].IsEmpty)
+            if (hotbarSlots[i] != null && hotbarSlots[i].IsEmpty)
                 return i;
+        }
+
+        return -1;
+    }
+
+    private int FindFirstEmptySlot(ItemInstance instance)
+    {
+        for (int i = 0; i < hotbarSlots.Count; i++)
+        {
+            InventorySlot slot = hotbarSlots[i];
+            if (slot == null || !slot.IsEmpty)
+                continue;
+
+            if (instance != null && instance.Definition != null)
+            {
+                BottomBarSlotType slotType = HotbarIndexToSlotType(i);
+                if (!instance.Definition.IsAllowedInParentSlot(slotType))
+                    continue;
+            }
+
+            return i;
         }
 
         return -1;
@@ -288,68 +429,5 @@ public sealed class PlayerInventory : MonoBehaviour
             wrapped += count;
 
         return wrapped;
-    }
-
-    public InventorySnapshot CaptureSnapshot()
-    {
-        EnsureSlotCount();
-
-        InventorySnapshot snapshot = new InventorySnapshot
-        {
-            version = 1,
-            hotbarSlotCount = HotbarSlotCount,
-            selectedSlot = selectedSlot,
-            hotbarSlots = new List<ItemInstanceSnapshot>(hotbarSlots.Count)
-        };
-
-        for (int i = 0; i < hotbarSlots.Count; i++)
-        {
-            ItemInstanceSnapshot itemSnapshot = hotbarSlots[i] != null && !hotbarSlots[i].IsEmpty
-                ? hotbarSlots[i].Instance.ToSnapshot()
-                : null;
-
-            snapshot.hotbarSlots.Add(itemSnapshot);
-        }
-
-        return snapshot;
-    }
-
-    public void RestoreSnapshot(InventorySnapshot snapshot, IItemDefinitionResolver resolver)
-    {
-        if (snapshot == null)
-        {
-            ClearAllSlots();
-            selectedSlot = BottomBarSlotType.Hotbar0;
-            InventoryChanged?.Invoke();
-            SelectionChanged?.Invoke();
-            return;
-        }
-
-        if (snapshot != null && snapshot.hotbarSlotCount > 0)
-            hotbarSlotCount = Mathf.Clamp(snapshot.hotbarSlotCount, 1, MaxSupportedHotbarSlots);
-
-        EnsureSlotCount();
-
-        for (int i = 0; i < hotbarSlots.Count; i++)
-            hotbarSlots[i].Clear();
-
-        int count = Mathf.Min(hotbarSlots.Count, snapshot.hotbarSlots.Count);
-        for (int i = 0; i < count; i++)
-        {
-            ItemInstance instance = ItemInstance.FromSnapshot(snapshot.hotbarSlots[i], resolver);
-            hotbarSlots[i].Set(instance);
-        }
-
-        selectedSlot = snapshot.selectedSlot;
-        InventoryChanged?.Invoke();
-        SelectionChanged?.Invoke();
-    }
-
-    private void ClearAllSlots()
-    {
-        EnsureSlotCount();
-
-        for (int i = 0; i < hotbarSlots.Count; i++)
-            hotbarSlots[i].Clear();
     }
 }

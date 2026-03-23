@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public sealed class HotbarSlotBinding : IInventorySlotBinding
 {
@@ -36,6 +36,9 @@ public sealed class HotbarSlotBinding : IInventorySlotBinding
         displaced = null;
 
         if (incoming == null)
+            return false;
+
+        if (incoming.Definition != null && !incoming.Definition.IsAllowedInParentSlot(SlotType))
             return false;
 
         InventorySlot slot = inventory?.GetSlot(hotbarIndex);
@@ -85,6 +88,37 @@ public sealed class HotbarSlotBinding : IInventorySlotBinding
         displaced = slot.Instance;
         slot.Set(incoming);
         inventory?.NotifyChanged();
+        return true;
+    }
+
+    public bool CanAccept(ItemInstance incoming)
+    {
+        if (incoming == null || inventory == null)
+            return false;
+
+        // Respect parent-slot restrictions (this is the important one)
+        BottomBarSlotType slotType = PlayerInventory.HotbarIndexToSlotType(hotbarIndex);
+
+        if (incoming.Definition != null &&
+            !incoming.Definition.IsAllowedInParentSlot(slotType))
+            return false;
+
+        // Now check slot contents
+        InventorySlot slot = inventory.GetSlot(hotbarIndex);
+        if (slot == null)
+            return false;
+
+        ItemInstance existing = slot.Instance;
+
+        // Empty slot → allowed
+        if (existing == null)
+            return true;
+
+        // Stack case
+        if (existing.CanStackWith(incoming) && existing.RemainingStackSpace > 0)
+            return true;
+
+        // Otherwise allow swap
         return true;
     }
 }

@@ -5,8 +5,9 @@ using UnityEngine;
 public sealed class InventoryDebugSpawner : MonoBehaviour
 {
     [Header("Refs")]
-    [SerializeField] private PlayerInventory inventory;
     [SerializeField] private ItemDefinitionCatalog itemCatalog;
+    [SerializeField] private ItemAcquisitionResolver acquisitionResolver;
+    [SerializeField] private Transform dropOrigin;
 
     [Header("Spawn Selection")]
     [SerializeField] private int selectedIndex = 0;
@@ -27,8 +28,11 @@ public sealed class InventoryDebugSpawner : MonoBehaviour
 
     private void Awake()
     {
-        if (inventory == null)
-            inventory = GetComponent<PlayerInventory>();
+        if (acquisitionResolver == null)
+            acquisitionResolver = GetComponent<ItemAcquisitionResolver>();
+
+        if (dropOrigin == null)
+            dropOrigin = transform;
 
         RebuildCache();
         ClampSelectedIndex();
@@ -69,10 +73,8 @@ public sealed class InventoryDebugSpawner : MonoBehaviour
             return;
         }
 
-        // Uses the helper added below to ItemDefinitionCatalog.
         cachedItems.AddRange(itemCatalog.GetAllItems());
 
-        // Remove nulls just in case the catalog has dead entries.
         for (int i = cachedItems.Count - 1; i >= 0; i--)
         {
             if (cachedItems[i] == null)
@@ -83,12 +85,6 @@ public sealed class InventoryDebugSpawner : MonoBehaviour
     [ContextMenu("Spawn Selected")]
     public void SpawnSelected()
     {
-        if (inventory == null)
-        {
-            Debug.LogWarning("[InventoryDebugSpawner] No PlayerInventory assigned.", this);
-            return;
-        }
-
         if (cachedItems.Count == 0)
         {
             Debug.LogWarning("[InventoryDebugSpawner] Catalog cache is empty. Rebuild cache or assign catalog.", this);
@@ -105,14 +101,21 @@ public sealed class InventoryDebugSpawner : MonoBehaviour
         }
 
         int qty = Mathf.Clamp(spawnQuantity, 1, def.MaxStack);
-
         ItemInstance instance = ItemInstance.Create(def, qty);
-        bool success = inventory.TryAddInstance(instance);
+
+        bool acquired = false;
+        bool dropped = false;
+
+        if (acquisitionResolver != null)
+            acquired = acquisitionResolver.TryAcquire(instance);
+
+        if (!acquired)
+            dropped = TrySpawnToWorld(instance);
 
         if (logSpawnResults)
         {
             Debug.Log(
-                $"[InventoryDebugSpawner] SpawnSelected | index={selectedIndex} | itemId={def.ItemId} | name={def.DisplayName} | qty={qty} | instanceId={instance.InstanceId} | success={success}",
+                $"[InventoryDebugSpawner] SpawnSelected | index={selectedIndex} | itemId={def.ItemId} | name={def.DisplayName} | qty={qty} | instanceId={instance.InstanceId} | acquired={acquired} | dropped={dropped}",
                 this);
         }
     }
@@ -139,6 +142,24 @@ public sealed class InventoryDebugSpawner : MonoBehaviour
                 $"[InventoryDebugSpawner] [{i}] itemId={def.ItemId} | name={def.DisplayName} | maxStack={def.MaxStack} | equipSlot={def.EquipSlot} | container={def.IsContainer}",
                 this);
         }
+    }
+
+    private bool TrySpawnToWorld(ItemInstance instance)
+    {
+        if (instance == null || instance.Definition == null)
+            return false;
+
+        WorldItem prefab = instance.Definition.WorldPrefab;
+        if (prefab == null)
+        {
+            Debug.LogWarning($"[InventoryDebugSpawner] Cannot drop '{instance.Definition.ItemId}' because WorldPrefab is missing.", this);
+            return false;
+        }
+
+        Vector3 pos = dropOrigin != null ? dropOrigin.position : transform.position;
+        WorldItem worldItem = Instantiate(prefab, pos, Quaternion.identity);
+        worldItem.Initialize(instance);
+        return true;
     }
 
     private void ClampSelectedIndex()

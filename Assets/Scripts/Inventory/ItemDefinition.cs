@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [System.Flags]
@@ -43,6 +44,10 @@ public sealed class ItemDefinition : ScriptableObject
     [SerializeField] private bool stowableInInventory = true;
     [SerializeField] private bool droppable = true;
     [SerializeField] private bool tradable = true;
+
+    [Header("Parent Slot Rules")]
+    [SerializeField] private BottomBarSlotType[] disallowedParentSlots;
+
     [Header("Fallback Placement")]
     [SerializeField] private PreferredDisplacedDestination preferredDisplacedDestination = PreferredDisplacedDestination.None;
 
@@ -84,6 +89,8 @@ public sealed class ItemDefinition : ScriptableObject
 
     public PreferredDisplacedDestination PreferredDisplacedDestination => preferredDisplacedDestination;
 
+    public IReadOnlyList<BottomBarSlotType> DisallowedParentSlots => disallowedParentSlots;
+
     public WorldItem WorldPrefab => worldPrefab;
 
     public bool CanContainerAccept(ItemDefinition incoming)
@@ -95,6 +102,20 @@ public sealed class ItemDefinition : ScriptableObject
             return false;
 
         return (allowedContainerCategories & incoming.ItemCategories) != 0;
+    }
+
+    public bool IsAllowedInParentSlot(BottomBarSlotType parentSlot)
+    {
+        if (disallowedParentSlots == null || disallowedParentSlots.Length == 0)
+            return true;
+
+        for (int i = 0; i < disallowedParentSlots.Length; i++)
+        {
+            if (disallowedParentSlots[i] == parentSlot)
+                return false;
+        }
+
+        return true;
     }
 
 #if UNITY_EDITOR

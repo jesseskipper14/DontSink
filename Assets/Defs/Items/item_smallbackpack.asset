@@ -20,6 +20,7 @@ MonoBehaviour:
   stowableInInventory: 1
   droppable: 1
   tradable: 1
+  disallowedParentSlots: 040000000500000006000000070000000800000009000000
   preferredDisplacedDestination: 1
   equipSlot: 13
   isContainer: 1

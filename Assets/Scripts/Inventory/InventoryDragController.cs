@@ -10,6 +10,10 @@ public sealed class InventoryDragController : MonoBehaviour
     [SerializeField] private Text dragCount;
     [SerializeField] private Canvas canvas;
     [SerializeField] private DisplacedItemResolver displacedItemResolver;
+    [SerializeField] private PlayerInventoryUI playerInventoryUI;
+    [SerializeField] private LoadoutContainerOverlayUI loadoutOverlayUI;
+    [SerializeField] private PlayerInventory inventory;
+    [SerializeField] private PlayerInventoryInput inventoryInput;
 
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = true;
@@ -20,10 +24,19 @@ public sealed class InventoryDragController : MonoBehaviour
 
     private readonly List<RaycastResult> _raycastResults = new();
 
+    public bool IsDragging => isDragging;
+    public ItemInstance DraggedItem => draggedItem;
+
     private void Awake()
     {
         if (displacedItemResolver == null)
             displacedItemResolver = GetComponentInParent<DisplacedItemResolver>(true);
+
+        if (inventory == null)
+            inventory = GetComponentInParent<PlayerInventory>(true);
+
+        if (inventoryInput == null)
+            inventoryInput = GetComponentInParent<PlayerInventoryInput>(true);
 
         HideVisual();
         Log($"Awake | canvas={(canvas != null ? canvas.name : "NULL")} | dragIcon={(dragIcon != null ? dragIcon.name : "NULL")}");
@@ -31,6 +44,14 @@ public sealed class InventoryDragController : MonoBehaviour
 
     private void Update()
     {
+        if (!isDragging)
+        {
+            if (dragIcon != null && dragIcon.enabled)
+                HideVisual();
+
+            return;
+        }
+
         if (!isDragging || dragIcon == null || canvas == null)
             return;
 
@@ -46,6 +67,33 @@ public sealed class InventoryDragController : MonoBehaviour
 
         if (dragCount != null)
             dragCount.rectTransform.anchoredPosition = localPoint;
+
+        if (isDragging)
+        {
+            playerInventoryUI?.RefreshDragPreview(draggedItem);
+            loadoutOverlayUI?.RefreshDragPreview(draggedItem);
+        }
+        else
+        {
+            playerInventoryUI?.RefreshDragPreview(null);
+            loadoutOverlayUI?.RefreshDragPreview(null);
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            InventorySlotUI target = FindTargetSlotUnderMouse();
+
+            if (target != null)
+            {
+                bool deposited = TryDepositSingleInto(target);
+                if (deposited)
+                    target.Refresh();
+            }
+            else
+            {
+                TryDropSingleToWorld();
+            }
+        }
     }
 
     public void BeginDrag(InventorySlotUI slot)
@@ -70,6 +118,29 @@ public sealed class InventoryDragController : MonoBehaviour
         ShowVisual(item);
 
         Log($"BeginDrag | source={DescribeSlot(sourceSlot)} | item={DescribeItem(draggedItem)}");
+    }
+
+    public void BeginDrag(ItemInstance item, InventorySlotUI slot)
+    {
+        if (item == null || item.Definition == null)
+        {
+            LogWarning("BeginDrag(item, slot) failed because item was null/invalid.");
+            return;
+        }
+
+        if (isDragging)
+        {
+            LogWarning("BeginDrag(item, slot) ignored because drag is already active.");
+            return;
+        }
+
+        draggedItem = item;
+        sourceSlot = slot;
+        isDragging = true;
+
+        ShowVisual(item);
+
+        Log($"BeginDrag(item, slot) | source={DescribeSlot(sourceSlot)} | item={DescribeItem(draggedItem)}");
     }
 
     public void EndDrag()
@@ -142,11 +213,20 @@ public sealed class InventoryDragController : MonoBehaviour
             else
             {
                 LogWarning($"EndDrag | target rejected item | target={DescribeSlot(target)} | item={DescribeItem(working)}");
+                target.PlayInvalidTargetFeedback();
             }
         }
         else
         {
-            Log("EndDrag | no target under mouse, returning item to source.");
+            Log("EndDrag | no target under mouse, dropping dragged item into world.");
+
+            if (TryDropItemToWorld(working))
+            {
+                Cleanup();
+                return;
+            }
+
+            LogWarning("EndDrag | world drop failed, returning item to source.");
         }
 
         if (sourceSlot != null)
@@ -156,6 +236,11 @@ public sealed class InventoryDragController : MonoBehaviour
         }
 
         Cleanup();
+    }
+
+    public bool IsDraggingFrom(InventorySlotUI slot)
+    {
+        return isDragging && sourceSlot == slot;
     }
 
     private InventorySlotUI FindTargetSlotUnderMouse()
@@ -228,6 +313,9 @@ public sealed class InventoryDragController : MonoBehaviour
         sourceSlot = null;
         isDragging = false;
         HideVisual();
+
+        playerInventoryUI?.RefreshDragPreview(null);
+        loadoutOverlayUI?.RefreshDragPreview(null);
     }
 
     private string DescribeSlot(InventorySlotUI slot)
@@ -245,6 +333,132 @@ public sealed class InventoryDragController : MonoBehaviour
 
         string itemId = item.Definition != null ? item.Definition.ItemId : "NO_DEF";
         return $"{itemId} x{item.Quantity} inst={item.InstanceId}";
+    }
+
+    public bool TryDepositSingleInto(InventorySlotUI target)
+    {
+        if (!isDragging || draggedItem == null || target == null)
+            return false;
+
+        if (draggedItem.Quantity <= 0)
+            return false;
+
+        if (draggedItem.Quantity == 1)
+        {
+            if (target.TryPlaceItem(draggedItem, out ItemInstance displaced))
+            {
+                if (displaced != null && !displaced.IsDepleted())
+                {
+                    LogWarning("TryDepositSingleInto | target displaced item unexpectedly during single final place.");
+                    return false;
+                }
+
+                Cleanup();
+                return true;
+            }
+
+            return false;
+        }
+
+        ItemInstance singleToPlace = draggedItem.SplitOff(1);
+        if (singleToPlace == null)
+            return false;
+
+        if (target.TryPlaceItem(singleToPlace, out ItemInstance displacedRemainder))
+        {
+            if (displacedRemainder != null && !displacedRemainder.IsDepleted())
+            {
+                draggedItem.AddQuantity(1);
+                return false;
+            }
+
+            ShowVisual(draggedItem);
+            return true;
+        }
+
+        draggedItem.AddQuantity(1);
+        return false;
+    }
+
+    public void CancelDrag()
+    {
+        if (!isDragging && draggedItem == null)
+        {
+            HideVisual();
+            playerInventoryUI?.RefreshDragPreview(null);
+            return;
+        }
+
+        Log($"CancelDrag | item={DescribeItem(draggedItem)} | source={DescribeSlot(sourceSlot)}");
+
+        bool restored = false;
+
+        if (draggedItem != null && sourceSlot != null && sourceSlot.isActiveAndEnabled && sourceSlot.gameObject.activeInHierarchy)
+        {
+            if (sourceSlot.TryPlaceItem(draggedItem, out ItemInstance displaced))
+            {
+                if (displaced == null || displaced.IsDepleted())
+                    restored = true;
+            }
+        }
+
+        if (!restored && draggedItem != null && displacedItemResolver != null)
+            restored = displacedItemResolver.TryResolve(draggedItem, sourceSlot);
+
+        if (!restored && draggedItem != null)
+            LogWarning($"CancelDrag | failed to restore dragged item cleanly | item={DescribeItem(draggedItem)}");
+
+        Cleanup();
+    }
+
+    private bool TryDropItemToWorld(ItemInstance item)
+    {
+        if (item == null || item.Definition == null)
+            return false;
+
+        if (inventory == null)
+        {
+            LogWarning($"TryDropItemToWorld failed because inventory is null | item={DescribeItem(item)}");
+            return false;
+        }
+
+        Vector3 worldPos = inventoryInput != null
+            ? inventoryInput.GetDropWorldPositionForUI()
+            : transform.position;
+
+        bool ok = inventory.TryDropInstance(item, worldPos);
+        Log($"TryDropItemToWorld | item={DescribeItem(item)} | pos={worldPos} | ok={ok}");
+        return ok;
+    }
+
+    private bool TryDropSingleToWorld()
+    {
+        if (!isDragging || draggedItem == null)
+            return false;
+
+        if (draggedItem.Quantity == 1)
+        {
+            if (TryDropItemToWorld(draggedItem))
+            {
+                Cleanup();
+                return true;
+            }
+
+            return false;
+        }
+
+        ItemInstance single = draggedItem.SplitOff(1);
+        if (single == null)
+            return false;
+
+        if (TryDropItemToWorld(single))
+        {
+            ShowVisual(draggedItem);
+            return true;
+        }
+
+        draggedItem.AddQuantity(1);
+        return false;
     }
 
     private void Log(string msg)

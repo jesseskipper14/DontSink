@@ -6,4 +6,6 @@ public interface IInventorySlotBinding
 
     BottomBarSlotType SlotType { get; }
     bool SupportsSelection { get; }
+
+    bool CanAccept(ItemInstance incoming);
 }

@@ -19,6 +19,7 @@ public sealed class ItemInstance
     public bool IsContainer => definition != null && definition.IsContainer;
     public int MaxStack => definition != null ? Mathf.Max(1, definition.MaxStack) : 1;
     public bool IsStackable => definition != null && !IsContainer && MaxStack > 1;
+    public bool CanSplit => IsStackable && quantity > 1;
 
     public int RemainingStackSpace => IsStackable ? Mathf.Max(0, MaxStack - quantity) : 0;
 

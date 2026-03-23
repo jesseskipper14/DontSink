@@ -100,4 +100,38 @@ public sealed class ContainerSlotBinding : IInventorySlotBinding
         containerState.NotifyChanged();
         return true;
     }
+
+    public bool CanAccept(ItemInstance incoming)
+    {
+        if (incoming == null)
+            return false;
+
+        ItemContainerState state = ownerContainer != null ? ownerContainer.ContainerState : null;
+        if (state == null)
+            return false;
+
+        if (slotIndex < 0 || slotIndex >= state.SlotCount)
+            return false;
+
+        InventorySlot slot = state.GetSlot(slotIndex);
+        if (slot == null)
+            return false;
+
+        ItemInstance existing = slot.Instance;
+
+        // Empty slot: only allow if container accepts the item at all.
+        if (existing == null)
+            return ownerContainer.CanAcceptIntoContainer(incoming);
+
+        // Existing stack target.
+        if (existing.CanStackWith(incoming) && existing.RemainingStackSpace > 0)
+            return true;
+
+        // No container-in-container, category restrictions, etc.
+        if (!ownerContainer.CanAcceptIntoContainer(incoming))
+            return false;
+
+        // For now, allow swap only if incoming could legally sit in this container.
+        return true;
+    }
 }

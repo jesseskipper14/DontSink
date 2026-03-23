@@ -200,6 +200,19 @@ public sealed class ContainerInventoryPanelUI : MonoBehaviour
             equipPanelRoot.gameObject.SetActive(false);
     }
 
+    public void RefreshDragPreview(ItemInstance draggedItem)
+    {
+        for (int i = 0; i < spawnedSlots.Count; i++)
+        {
+            InventorySlotUI ui = spawnedSlots[i];
+            if (ui == null)
+                continue;
+
+            bool invalid = draggedItem != null && !ui.CanAcceptPreview(draggedItem);
+            ui.SetInvalidTargetVisual(invalid);
+        }
+    }
+
     private ContainerSection ResolveSection(BottomBarSlotType slotType)
     {
         if (slotType == BottomBarSlotType.Hands ||

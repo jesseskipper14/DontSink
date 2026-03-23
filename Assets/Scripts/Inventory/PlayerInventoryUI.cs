@@ -28,9 +28,11 @@ public sealed class PlayerInventoryUI : MonoBehaviour
     [SerializeField] private Sprite toolbeltSlotIcon;
     [SerializeField] private Sprite backpackSlotIcon;
     [SerializeField] private Sprite bodySlotIcon;
+    [SerializeField] private LoadoutContainerOverlayUI loadoutOverlay;
 
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = true;
+
 
     private void Awake()
     {
@@ -45,6 +47,9 @@ public sealed class PlayerInventoryUI : MonoBehaviour
 
         if (containerPanel == null)
             containerPanel = GetComponentInChildren<ContainerInventoryPanelUI>(true);
+
+        if (loadoutOverlay == null)
+            loadoutOverlay = GetComponentInChildren<LoadoutContainerOverlayUI>(true);
 
         Log($"Awake | inventory={(inventory != null ? inventory.name : "NULL")} | equipment={(equipment != null ? equipment.name : "NULL")} | drag={(dragController != null ? dragController.name : "NULL")}");
 
@@ -103,7 +108,10 @@ public sealed class PlayerInventoryUI : MonoBehaviour
         if (slotUI.SupportsSelection)
             inventory.SetSelectedSlot(slotUI.SlotType);
 
-        TryToggleContainerPanel(slotUI);
+        bool openAllActive = loadoutOverlay != null && loadoutOverlay.IsOpen;
+        if (!openAllActive)
+            TryToggleContainerPanel(slotUI);
+
         RefreshAll();
     }
 
@@ -112,21 +120,14 @@ public sealed class PlayerInventoryUI : MonoBehaviour
         if (containerPanel == null || slotUI == null)
             return;
 
-        if (!slotUI.IsEquipmentSlot)
-            return;
-
-        BottomBarSlotType slotType = slotUI.SlotType;
-        if (slotType != BottomBarSlotType.Backpack && slotType != BottomBarSlotType.Toolbelt)
-            return;
-
-        ItemInstance equipped = equipment != null ? equipment.Get(slotType) : null;
-        if (equipped == null || !equipped.IsContainer || equipped.ContainerState == null)
+        ItemInstance item = slotUI.GetBoundItem();
+        if (item == null || !item.IsContainer || item.ContainerState == null)
         {
             containerPanel.Hide();
             return;
         }
 
-        containerPanel.ToggleForContainer(equipped, slotType);
+        containerPanel.ToggleForContainer(item, slotUI.SlotType);
     }
 
     public void RefreshAll()
@@ -146,13 +147,33 @@ public sealed class PlayerInventoryUI : MonoBehaviour
         RefreshContainerPanelState();
     }
 
+    public IReadOnlyList<InventorySlotUI> GetAllVisibleLoadoutSlotUIs()
+    {
+        _visibleSlotsScratch.Clear();
+
+        for (int i = 0; i < allSlots.Count; i++)
+        {
+            InventorySlotUI ui = allSlots[i];
+            if (ui == null || !ui.isActiveAndEnabled || !ui.gameObject.activeInHierarchy)
+                continue;
+
+            _visibleSlotsScratch.Add(ui);
+        }
+
+        return _visibleSlotsScratch;
+    }
+
+    public bool IsInventoryPanelOpen => inventoryPanelRoot == null || inventoryPanelRoot.activeSelf;
+
+    private readonly List<InventorySlotUI> _visibleSlotsScratch = new();
+
     private void RefreshContainerPanelState()
     {
         if (containerPanel == null || !containerPanel.IsOpen)
             return;
 
         BottomBarSlotType slotType = containerPanel.BoundSourceSlotType;
-        ItemInstance current = equipment != null ? equipment.Get(slotType) : null;
+        ItemInstance current = GetCurrentItemForSlotType(slotType);
 
         if (current == null || !current.IsContainer || current.ContainerState == null)
         {
@@ -190,8 +211,8 @@ public sealed class PlayerInventoryUI : MonoBehaviour
         ClearExisting();
 
         SpawnEquipmentSlot(appendagesGroup, BottomBarSlotType.Hands);
-        SpawnEquipmentSlot(appendagesGroup, BottomBarSlotType.Head);
         SpawnEquipmentSlot(appendagesGroup, BottomBarSlotType.Feet);
+        SpawnEquipmentSlot(appendagesGroup, BottomBarSlotType.Head);
 
         if (inventory == null)
         {
@@ -203,8 +224,8 @@ public sealed class PlayerInventoryUI : MonoBehaviour
             SpawnHotbarSlot(hotbarGroup, i);
 
         SpawnEquipmentSlot(bodyGroup, BottomBarSlotType.Toolbelt);
-        SpawnEquipmentSlot(bodyGroup, BottomBarSlotType.Backpack);
         SpawnEquipmentSlot(bodyGroup, BottomBarSlotType.Body);
+        SpawnEquipmentSlot(bodyGroup, BottomBarSlotType.Backpack);
 
         Log($"RebuildBottomBar END | builtSlots={allSlots.Count}");
     }
@@ -256,6 +277,52 @@ public sealed class PlayerInventoryUI : MonoBehaviour
             BottomBarSlotType.Body => bodySlotIcon,
             _ => null
         };
+    }
+
+    private ItemInstance GetCurrentItemForSlotType(BottomBarSlotType slotType)
+    {
+        if (slotType >= BottomBarSlotType.Hotbar0 && slotType <= BottomBarSlotType.Hotbar7)
+        {
+            int hotbarIndex = PlayerInventory.SlotTypeToHotbarIndex(slotType);
+            return inventory != null ? inventory.GetSlot(hotbarIndex)?.Instance : null;
+        }
+
+        return equipment != null ? equipment.Get(slotType) : null;
+    }
+
+    public void HideSingleContainerPanel()
+    {
+        if (containerPanel != null)
+            containerPanel.Hide();
+    }
+
+    public void RefreshDragPreview(ItemInstance draggedItem)
+    {
+        for (int i = 0; i < allSlots.Count; i++)
+        {
+            InventorySlotUI ui = allSlots[i];
+            if (ui == null)
+                continue;
+
+            bool invalid = false;
+
+            if (draggedItem != null)
+                invalid = !ui.CanAcceptPreview(draggedItem);
+
+            ui.SetInvalidTargetVisual(invalid);
+        }
+
+        if (containerPanel != null && containerPanel.IsOpen)
+            containerPanel.RefreshDragPreview(draggedItem);
+    }
+
+    private void ClearDragPreview()
+    {
+        for (int i = 0; i < allSlots.Count; i++)
+        {
+            if (allSlots[i] != null)
+                allSlots[i].ClearInvalidTargetVisual();
+        }
     }
 
     private void Log(string msg)

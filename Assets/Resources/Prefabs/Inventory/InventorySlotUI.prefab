@@ -213,6 +213,9 @@ MonoBehaviour:
   countText: {fileID: 3150284904282772694}
   selectionHighlight: {fileID: 2442651740631325699}
   purposeIcon: {fileID: 7563986472880629514}
+  background: {fileID: 4303623333809846468}
+  normalColor: {r: 0.34901962, g: 0.39607844, b: 0.5764706, a: 1}
+  invalidTargetColor: {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 1}
   verboseLogging: 0
 --- !u!225 &3787497620750007277
 CanvasGroup:
@@ -284,7 +287,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.3501691, g: 0.39661857, b: 0.5754717, a: 0.29803923}
+  m_Color: {r: 0.3501691, g: 0.39661857, b: 0.5754717, a: 0.9372549}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
