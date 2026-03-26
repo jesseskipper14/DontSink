@@ -18,6 +18,12 @@ public enum ItemCategoryFlags
     Utility = 1 << 10
 }
 
+public enum PickupInteractionMode
+{
+    Instant = 0,
+    Hold = 1
+}
+
 public enum PreferredDisplacedDestination
 {
     None = 0,
@@ -61,7 +67,14 @@ public sealed class ItemDefinition : ScriptableObject
     [Min(1)]
     [SerializeField] private int containerColumnCount = 4;
     [SerializeField] private ItemCategoryFlags allowedContainerCategories = ItemCategoryFlags.None;
-    [SerializeField] private bool isMajorCarryContainer = false;
+    [SerializeField] private int containerTier = 0;
+
+    [Header("Pickup")]
+    [SerializeField] private PickupInteractionMode pickupMode = PickupInteractionMode.Instant;
+    [SerializeField] private float pickupHoldDuration = 0.4f;
+
+    public PickupInteractionMode PickupMode => pickupMode;
+    public float PickupHoldDuration => Mathf.Max(0.05f, pickupHoldDuration);
 
     [Header("World")]
     [SerializeField] private WorldItem worldPrefab;
@@ -85,8 +98,7 @@ public sealed class ItemDefinition : ScriptableObject
     public int ContainerSlotCount => IsContainer ? Mathf.Max(1, containerSlotCount) : 0;
     public int ContainerColumnCount => Mathf.Max(1, containerColumnCount);
     public ItemCategoryFlags AllowedContainerCategories => allowedContainerCategories;
-    public bool IsMajorCarryContainer => isMajorCarryContainer;
-
+    public int ContainerTier => Mathf.Max(0, containerTier);
     public PreferredDisplacedDestination PreferredDisplacedDestination => preferredDisplacedDestination;
 
     public IReadOnlyList<BottomBarSlotType> DisallowedParentSlots => disallowedParentSlots;
@@ -95,13 +107,21 @@ public sealed class ItemDefinition : ScriptableObject
 
     public bool CanContainerAccept(ItemDefinition incoming)
     {
+        Debug.Log("Can accept?");
         if (!IsContainer || incoming == null)
             return false;
 
         if (allowedContainerCategories == ItemCategoryFlags.None)
             return false;
 
-        return (allowedContainerCategories & incoming.ItemCategories) != 0;
+        if ((allowedContainerCategories & incoming.ItemCategories) == 0)
+            return false;
+
+        if (incoming.IsContainer && incoming.ContainerTier >= ContainerTier)
+            return false;
+
+        Debug.Log("Accepted");
+        return true;
     }
 
     public bool IsAllowedInParentSlot(BottomBarSlotType parentSlot)
@@ -124,14 +144,17 @@ public sealed class ItemDefinition : ScriptableObject
         maxStack = Mathf.Max(1, maxStack);
         containerSlotCount = Mathf.Max(0, containerSlotCount);
         containerColumnCount = Mathf.Max(1, containerColumnCount);
+        pickupHoldDuration = Mathf.Max(0.05f, pickupHoldDuration);
 
         if (IsContainer)
             maxStack = 1;
 
+        containerTier = Mathf.Max(0, containerTier);
+
         if (!IsContainer)
         {
             allowedContainerCategories = ItemCategoryFlags.None;
-            isMajorCarryContainer = false;
+            containerTier = 0;
         }
     }
 #endif

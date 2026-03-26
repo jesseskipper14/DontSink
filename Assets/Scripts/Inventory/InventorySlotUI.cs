@@ -72,6 +72,7 @@ public sealed class InventorySlotUI : MonoBehaviour,
         binding = newBinding;
         Log($"Bind | binding={(binding != null ? binding.GetType().Name : "NULL")} | slotType={SlotType}");
         Refresh();
+        SetSelected(false);
     }
 
     public void Refresh()
@@ -94,6 +95,9 @@ public sealed class InventorySlotUI : MonoBehaviour,
 
         if (countText != null)
             countText.text = hasItem && instance.Quantity > 1 ? instance.Quantity.ToString() : "";
+
+        if (!SupportsSelection && selectionHighlight != null)
+            selectionHighlight.SetActive(false);
 
         Log($"Refresh | slotType={SlotType} | hasItem={hasItem} | item={DescribeItem(instance)} | countText='{(countText != null ? countText.text : "NO_TEXT")}'");
     }

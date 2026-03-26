@@ -2,7 +2,8 @@
 
 /// <summary>
 /// World-authoritative interaction resolver.
-/// Evaluates overlap + optional raycast, then selects best IInteractable by priority + score.
+/// Evaluates overlap + optional raycast, then selects best target by priority + score.
+/// Supports separate intent lanes for Interact and Pickup.
 /// </summary>
 [DisallowMultipleComponent]
 public class Interactor2D : MonoBehaviour
@@ -16,12 +17,21 @@ public class Interactor2D : MonoBehaviour
     [Header("Scoring")]
     [SerializeField] private float aimBias = 0.35f; // how much "in front" matters vs distance
 
+    private IPickupInteractable _activeHoldPickupTarget;
+    private float _activeHoldPickupElapsed;
+    private bool _holdPickupTriggered;
+
     private IInteractionIntentSource intentSource;
 
     /// <summary>
-    /// Fired only when an interaction actually occurs (E pressed, target found, Interact called).
+    /// Fired only when a normal interaction actually occurs.
     /// </summary>
     public event System.Action<IInteractable> OnInteracted;
+
+    /// <summary>
+    /// Fired only when a pickup actually occurs.
+    /// </summary>
+    public event System.Action<IPickupInteractable> OnPickedUp;
 
     private void Awake()
     {
@@ -51,6 +61,24 @@ public class Interactor2D : MonoBehaviour
         return TryResolveBest(ctx, out best);
     }
 
+    public bool TryGetBestPickupTarget(out IPickupInteractable best, out InteractContext ctx)
+    {
+        best = null;
+
+        if (intentSource == null)
+        {
+            ctx = default;
+            return false;
+        }
+
+        var intent = intentSource.Current;
+        Vector2 origin = transform.position;
+        Vector2 aimDir = GetAimDir(origin, intent.AimWorld);
+
+        ctx = new InteractContext(gameObject, transform, origin, aimDir);
+        return TryResolveBestPickup(ctx, out best);
+    }
+
     /// <summary>
     /// Returns true if this target is currently in range per our overlap query.
     /// Used by prompt logic to know when the player has "left and re-entered".
@@ -59,13 +87,12 @@ public class Interactor2D : MonoBehaviour
     {
         if (target == null) return false;
 
-        // Fast path: if target is a MonoBehaviour, check distance first.
         if (target is MonoBehaviour mb)
         {
-            if (mb == null) return false; // 🔥 CRITICAL
+            if (mb == null) return false;
 
             float d = Vector2.Distance((Vector2)mb.transform.position, (Vector2)transform.position);
-            if (d > overlapRadius * 1.25f) // small slack
+            if (d > overlapRadius * 1.25f)
                 return false;
         }
 
@@ -79,27 +106,43 @@ public class Interactor2D : MonoBehaviour
         return false;
     }
 
+    public bool IsPickupCandidatePresent(IPickupInteractable target)
+    {
+        if (target == null) return false;
+
+        if (target is MonoBehaviour mb)
+        {
+            if (mb == null) return false;
+
+            float d = Vector2.Distance((Vector2)mb.transform.position, (Vector2)transform.position);
+            if (d > overlapRadius * 1.25f)
+                return false;
+        }
+
+        var hits = Physics2D.OverlapCircleAll(transform.position, overlapRadius, interactableMask);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            if (TryGetPickupInteractable(hits[i], out var it) && ReferenceEquals(it, target))
+                return true;
+        }
+
+        return false;
+    }
+
     private void Update()
     {
         var intent = intentSource.Current;
-        if (!intent.InteractPressed) return;
-
         Vector2 origin = transform.position;
-
-        // Determine aim direction:
-        // - If we have a world aim point, use it.
-        // - Else fall back to facing based on localScale.x
         Vector2 aimDir = GetAimDir(origin, intent.AimWorld);
-
         var ctx = new InteractContext(gameObject, transform, origin, aimDir);
 
-        if (TryResolveBest(ctx, out var target))
+        if (intent.InteractPressed && TryResolveBest(ctx, out var interactTarget))
         {
-            target.Interact(ctx);
-
-            // NEW: tell UI (and other listeners) that we interacted
-            OnInteracted?.Invoke(target);
+            interactTarget.Interact(ctx);
+            OnInteracted?.Invoke(interactTarget);
         }
+
+        HandlePickupIntent(intent, ctx);
     }
 
     private Vector2 GetAimDir(Vector2 origin, Vector2 aimWorld)
@@ -107,10 +150,10 @@ public class Interactor2D : MonoBehaviour
         if (aimWorld != Vector2.zero)
         {
             var d = aimWorld - origin;
-            if (d.sqrMagnitude > 0.0001f) return d.normalized;
+            if (d.sqrMagnitude > 0.0001f)
+                return d.normalized;
         }
 
-        // cheap fallback: left/right based on scale
         float facing = transform.localScale.x >= 0f ? 1f : -1f;
         return new Vector2(facing, 0f);
     }
@@ -118,10 +161,8 @@ public class Interactor2D : MonoBehaviour
     public bool TryResolveBest(in InteractContext ctx, out IInteractable best)
     {
         best = null;
-
         float bestScore = float.NegativeInfinity;
 
-        // Optional raycast: great for "what I'm looking at"
         if (useRaycast)
         {
             var hit = Physics2D.Raycast(ctx.Origin, ctx.AimDir, rayDistance, interactableMask);
@@ -129,7 +170,6 @@ public class Interactor2D : MonoBehaviour
             {
                 if (TryGetInteractable(hit.collider, out var i) && i.CanInteract(ctx))
                 {
-                    // Give ray hit a big base advantage
                     float score = 1000f + i.InteractionPriority;
                     best = i;
                     bestScore = score;
@@ -137,7 +177,6 @@ public class Interactor2D : MonoBehaviour
             }
         }
 
-        // Overlap: great for "what I'm near"
         var hits = Physics2D.OverlapCircleAll(ctx.Origin, overlapRadius, interactableMask);
         for (int n = 0; n < hits.Length; n++)
         {
@@ -147,11 +186,11 @@ public class Interactor2D : MonoBehaviour
 
             Vector2 to = (Vector2)col.transform.position - ctx.Origin;
             float dist = to.magnitude;
-            float distScore = -dist; // closer is better
+            float distScore = -dist;
 
             float front = 0f;
             if (to.sqrMagnitude > 0.0001f)
-                front = Vector2.Dot(ctx.AimDir, to.normalized); // -1..1
+                front = Vector2.Dot(ctx.AimDir, to.normalized);
 
             float score =
                 (i.InteractionPriority * 10f) +
@@ -168,14 +207,138 @@ public class Interactor2D : MonoBehaviour
         return best != null;
     }
 
+    public bool TryResolveBestPickup(in InteractContext ctx, out IPickupInteractable best)
+    {
+        best = null;
+        float bestScore = float.NegativeInfinity;
+
+        if (useRaycast)
+        {
+            var hit = Physics2D.Raycast(ctx.Origin, ctx.AimDir, rayDistance, interactableMask);
+            if (hit.collider != null)
+            {
+                if (TryGetPickupInteractable(hit.collider, out var i) && i.CanPickup(ctx))
+                {
+                    float score = 1000f + i.PickupPriority;
+                    best = i;
+                    bestScore = score;
+                }
+            }
+        }
+
+        var hits = Physics2D.OverlapCircleAll(ctx.Origin, overlapRadius, interactableMask);
+        for (int n = 0; n < hits.Length; n++)
+        {
+            var col = hits[n];
+            if (!TryGetPickupInteractable(col, out var i)) continue;
+            if (!i.CanPickup(ctx)) continue;
+
+            Vector2 to = (Vector2)col.transform.position - ctx.Origin;
+            float dist = to.magnitude;
+            float distScore = -dist;
+
+            float front = 0f;
+            if (to.sqrMagnitude > 0.0001f)
+                front = Vector2.Dot(ctx.AimDir, to.normalized);
+
+            float score =
+                (i.PickupPriority * 10f) +
+                (distScore * (1f - aimBias)) +
+                (front * aimBias * 2f);
+
+            if (score > bestScore)
+            {
+                bestScore = score;
+                best = i;
+            }
+        }
+
+        return best != null;
+    }
+
     private bool TryGetInteractable(Collider2D col, out IInteractable interactable)
     {
-        // allow either the collider object or a parent to host the interactable
         interactable = col.GetComponent<IInteractable>();
         if (interactable != null) return true;
 
         interactable = col.GetComponentInParent<IInteractable>();
         return interactable != null;
+    }
+
+    private bool TryGetPickupInteractable(Collider2D col, out IPickupInteractable interactable)
+    {
+        interactable = col.GetComponent<IPickupInteractable>();
+        if (interactable != null) return true;
+
+        interactable = col.GetComponentInParent<IPickupInteractable>();
+        return interactable != null;
+    }
+
+    private void HandlePickupIntent(InteractionIntent intent, in InteractContext ctx)
+    {
+        bool hasPickupTarget = TryResolveBestPickup(ctx, out var pickupTarget);
+
+        if (!hasPickupTarget || pickupTarget == null)
+        {
+            ResetHoldPickup();
+            return;
+        }
+
+        // Instant pickup path
+        if (pickupTarget.PickupMode == PickupInteractionMode.Instant)
+        {
+            if (intent.PickupPressed)
+            {
+                pickupTarget.Pickup(ctx);
+                OnPickedUp?.Invoke(pickupTarget);
+            }
+
+            ResetHoldPickup();
+            return;
+        }
+
+        // Hold pickup path
+        if (!intent.PickupHeld)
+        {
+            ResetHoldPickup();
+            return;
+        }
+
+        if (!ReferenceEquals(_activeHoldPickupTarget, pickupTarget))
+        {
+            _activeHoldPickupTarget = pickupTarget;
+            _activeHoldPickupElapsed = 0f;
+            _holdPickupTriggered = false;
+        }
+
+        if (_holdPickupTriggered)
+            return;
+
+        if (!pickupTarget.CanPickup(ctx))
+        {
+            ResetHoldPickup();
+            return;
+        }
+
+        _activeHoldPickupElapsed += Time.deltaTime;
+
+        if (_activeHoldPickupElapsed >= pickupTarget.PickupHoldDuration)
+        {
+            pickupTarget.Pickup(ctx);
+            OnPickedUp?.Invoke(pickupTarget);
+            _holdPickupTriggered = true;
+            ResetHoldPickup();
+        }
+
+        if (intent.PickupReleased)
+            ResetHoldPickup();
+    }
+
+    private void ResetHoldPickup()
+    {
+        _activeHoldPickupTarget = null;
+        _activeHoldPickupElapsed = 0f;
+        _holdPickupTriggered = false;
     }
 
 #if UNITY_EDITOR

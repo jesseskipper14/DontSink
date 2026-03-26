@@ -392,16 +392,16 @@ public sealed class PlayerInventory : MonoBehaviour
         List<BottomBarSlotType> result = new()
         {
             BottomBarSlotType.Hands,
-            BottomBarSlotType.Head,
-            BottomBarSlotType.Feet
+            BottomBarSlotType.Feet,
+            BottomBarSlotType.Head
         };
 
         for (int i = 0; i < HotbarSlotCount; i++)
             result.Add(HotbarIndexToSlotType(i));
 
         result.Add(BottomBarSlotType.Toolbelt);
-        result.Add(BottomBarSlotType.Backpack);
         result.Add(BottomBarSlotType.Body);
+        result.Add(BottomBarSlotType.Backpack);
 
         return result;
     }

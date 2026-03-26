@@ -17,7 +17,10 @@ public sealed class InteractPromptDriver : MonoBehaviour
     private ILocalPlayerAuthority _localAuth;
 
     // Interactables we interacted with recently; prompt stays hidden until we leave range.
-    private readonly HashSet<IInteractable> _suppressed = new();
+    private readonly HashSet<IInteractable> _suppressedInteract = new();
+
+    // Pickup targets we picked up recently; highlight stays hidden until we leave range.
+    private readonly HashSet<IPickupInteractable> _suppressedPickup = new();
 
     private WorldItem _highlightedWorldItem;
 
@@ -43,13 +46,19 @@ public sealed class InteractPromptDriver : MonoBehaviour
     private void OnEnable()
     {
         if (interactor != null)
+        {
             interactor.OnInteracted += HandleInteracted;
+            interactor.OnPickedUp += HandlePickedUp;
+        }
     }
 
     private void OnDisable()
     {
         if (interactor != null)
+        {
             interactor.OnInteracted -= HandleInteracted;
+            interactor.OnPickedUp -= HandlePickedUp;
+        }
 
         ClearWorldItemHighlight();
 
@@ -60,10 +69,16 @@ public sealed class InteractPromptDriver : MonoBehaviour
     private void HandleInteracted(IInteractable target)
     {
         if (target != null)
-            _suppressed.Add(target);
+            _suppressedInteract.Add(target);
 
         if (promptUI != null)
             promptUI.Hide();
+    }
+
+    private void HandlePickedUp(IPickupInteractable target)
+    {
+        if (target != null)
+            _suppressedPickup.Add(target);
 
         ClearWorldItemHighlight();
     }
@@ -80,51 +95,45 @@ public sealed class InteractPromptDriver : MonoBehaviour
             return;
         }
 
-        if (_suppressed.Count > 0)
-        {
-            _suppressed.RemoveWhere(t => t == null || !interactor.IsCandidatePresent(t));
-        }
+        if (_suppressedInteract.Count > 0)
+            _suppressedInteract.RemoveWhere(t => t == null || !interactor.IsCandidatePresent(t));
 
-        if (!interactor.TryGetBestTarget(out var target, out var ctx) || target == null)
-        {
-            ClearWorldItemHighlight();
-            promptUI.Hide();
-            return;
-        }
+        if (_suppressedPickup.Count > 0)
+            _suppressedPickup.RemoveWhere(t => t == null || !interactor.IsPickupCandidatePresent(t));
 
-        if (_suppressed.Contains(target))
-        {
-            ClearWorldItemHighlight();
-            promptUI.Hide();
-            return;
-        }
+        bool hasInteract = interactor.TryGetBestTarget(out var interactTarget, out var interactCtx) && interactTarget != null;
+        bool hasPickup = interactor.TryGetBestPickupTarget(out var pickupTarget, out var pickupCtx) && pickupTarget != null;
 
-        // Pickup items: highlight only, no giant prompt box.
-        if (target is WorldItem worldItem)
-        {
+        // Pickup lane: highlight world items only.
+        if (hasPickup && !_suppressedPickup.Contains(pickupTarget) && pickupTarget is WorldItem worldItem)
             SetWorldItemHighlight(worldItem);
+        else
+            ClearWorldItemHighlight();
+
+        // Interact lane: show normal prompt UI.
+        if (!hasInteract || _suppressedInteract.Contains(interactTarget))
+        {
             promptUI.Hide();
             return;
         }
-
-        // Non-world-item interactables: normal prompt flow.
-        ClearWorldItemHighlight();
 
         string verb = defaultVerb;
-        if (target is IInteractPromptProvider provider)
+        if (interactTarget is IInteractPromptProvider provider)
         {
-            var v = provider.GetPromptVerb(ctx);
-            if (!string.IsNullOrWhiteSpace(v)) verb = v;
+            var v = provider.GetPromptVerb(interactCtx);
+            if (!string.IsNullOrWhiteSpace(v))
+                verb = v;
         }
 
-        Vector3 pos = (target as MonoBehaviour) != null
-            ? ((MonoBehaviour)target).transform.position
-            : (Vector3)ctx.Origin;
+        Vector3 pos = (interactTarget as MonoBehaviour) != null
+            ? ((MonoBehaviour)interactTarget).transform.position
+            : (Vector3)interactCtx.Origin;
 
-        if (target is IInteractPromptProvider provider2)
+        if (interactTarget is IInteractPromptProvider provider2)
         {
             var anchor = provider2.GetPromptAnchor();
-            if (anchor != null) pos = anchor.position;
+            if (anchor != null)
+                pos = anchor.position;
         }
 
         promptUI.Show(verb, pos);

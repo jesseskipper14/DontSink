@@ -7,6 +7,7 @@ public class LocalInteractionIntentSource : MonoBehaviour, IInteractionIntentSou
 {
     [Header("Bindings (legacy input manager)")]
     [SerializeField] private KeyCode interactKey = KeyCode.E;
+    [SerializeField] private KeyCode pickupKey = KeyCode.F;
 
     [Header("Aim")]
     [Tooltip("If true, uses mouse position as aim world point. If false, AimWorld will be Vector2.zero.")]
@@ -26,6 +27,9 @@ public class LocalInteractionIntentSource : MonoBehaviour, IInteractionIntentSou
         Current = new InteractionIntent
         {
             InteractPressed = Input.GetKeyDown(interactKey),
+            PickupPressed = Input.GetKeyDown(pickupKey),
+            PickupHeld = Input.GetKey(pickupKey),
+            PickupReleased = Input.GetKeyUp(pickupKey),
             AimWorld = aimWorld
         };
     }

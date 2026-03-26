@@ -1,0 +1,238 @@
+﻿using UnityEngine;
+using TMPro;
+
+[DisallowMultipleComponent]
+public sealed class ExternalContainerOverlayUI : MonoBehaviour
+{
+    [Header("Refs")]
+    [SerializeField] private GameObject root;
+    [SerializeField] private Transform slotRoot;
+    [SerializeField] private InventorySlotUI slotPrefab;
+    [SerializeField] private TMP_Text titleText;
+    [SerializeField] private PlayerInventoryUI owner;
+    [SerializeField] private InventoryDragController dragController;
+
+    [Header("Close")]
+    [SerializeField] private KeyCode closeKey = KeyCode.Escape;
+    [SerializeField] private Transform playerTransform;
+    [SerializeField] private bool closeOnKey = true;
+    [SerializeField] private bool closeWhenSourceDestroyed = true;
+
+    private ItemContainerState _state;
+    private Transform _sourceTransform;
+    [SerializeField] private float _autoCloseDistance = -1f;
+    private bool _isOpen;
+
+    [SerializeField] private RectTransform panelRect;
+    [SerializeField] private Vector2 screenOffset = new Vector2(0, 150f);
+
+    private Camera _camera;
+    private Canvas _canvas;
+
+    public bool IsOpen => _isOpen;
+    public ItemContainerState CurrentState => _state;
+
+    private void Awake()
+    {
+        _camera = Camera.main;
+        _canvas = GetComponentInParent<Canvas>();
+
+        if (root == null)
+        {
+            Debug.LogWarning("[ExternalContainerOverlayUI] Root is not assigned. Assign ExternalInventoryPanel in the inspector.", this);
+        }
+
+
+        if (dragController == null)
+            dragController = GetComponentInParent<InventoryDragController>(true);
+
+         if (owner == null)
+            owner = GetComponentInParent<PlayerInventoryUI>(true);
+
+        if (panelRect == null && root != null)
+            panelRect = root.GetComponent<RectTransform>();
+
+        if (playerTransform == null)
+        {
+            PlayerInventory playerInventory = FindFirstObjectByType<PlayerInventory>();
+            if (playerInventory != null)
+                playerTransform = playerInventory.transform;
+        }
+
+        SetVisible(false);
+    }
+
+    private void OnDisable()
+    {
+        UnbindState();
+    }
+
+    private void Update()
+    {
+        if (!_isOpen)
+            return;
+
+        if (closeOnKey && Input.GetKeyDown(closeKey))
+        {
+            Close();
+            return;
+        }
+
+        if (closeWhenSourceDestroyed && _sourceTransform == null)
+        {
+            Close();
+            return;
+        }
+
+        if (_sourceTransform != null && playerTransform != null && _autoCloseDistance > 0f)
+        {
+            float dist = Vector2.Distance(playerTransform.position, _sourceTransform.position);
+            if (dist > _autoCloseDistance)
+            {
+                Close();
+                return;
+            }
+        }
+
+        UpdatePosition();
+    }
+
+    public void Open(
+        string title,
+        ItemContainerState state,
+        Transform sourceTransform = null,
+        float autoCloseDistance = -1f)
+    {
+        if (state == null)
+        {
+            Debug.LogWarning("[ExternalContainerOverlayUI] Open called with null state.");
+            return;
+        }
+
+        if (_state != state)
+        {
+            UnbindState();
+            _state = state;
+            BindState();
+        }
+
+        _sourceTransform = sourceTransform;
+        _autoCloseDistance = autoCloseDistance;
+
+        Rebuild();
+
+        if (titleText != null)
+            titleText.text = string.IsNullOrWhiteSpace(title) ? "Container" : title;
+
+        SetVisible(true);
+        _isOpen = true;
+    }
+
+    public void Close()
+    {
+        if (!_isOpen)
+            return;
+
+        Clear();
+        UnbindState();
+
+        _state = null;
+        _sourceTransform = null;
+        _autoCloseDistance = -1f;
+        _isOpen = false;
+
+        SetVisible(false);
+    }
+
+    private void BindState()
+    {
+        if (_state != null)
+            _state.Changed += HandleStateChanged;
+    }
+
+    private void UnbindState()
+    {
+        if (_state != null)
+            _state.Changed -= HandleStateChanged;
+    }
+
+    private void HandleStateChanged()
+    {
+        if (!_isOpen)
+            return;
+
+        RefreshSlots();
+    }
+
+    private void Rebuild()
+    {
+        Clear();
+
+        if (_state == null || slotRoot == null || slotPrefab == null)
+            return;
+
+        for (int i = 0; i < _state.SlotCount; i++)
+        {
+            InventorySlotUI slotUI = Instantiate(slotPrefab, slotRoot);
+
+            if (owner != null)
+                slotUI.SetOwner(owner);
+
+            if (dragController != null)
+                slotUI.SetDragController(dragController);
+
+            ExternalInventorySlotBinding binding = new ExternalInventorySlotBinding(_state, i);
+            slotUI.Bind(binding);
+        }
+    }
+
+    private void Clear()
+    {
+        if (slotRoot == null)
+            return;
+
+        for (int i = slotRoot.childCount - 1; i >= 0; i--)
+            Destroy(slotRoot.GetChild(i).gameObject);
+    }
+
+    private void SetVisible(bool visible)
+    {
+        if (root != null)
+            root.SetActive(visible);
+    }
+
+    private void UpdatePosition()
+    {
+        if (!_isOpen || _sourceTransform == null || panelRect == null || _camera == null || _canvas == null)
+            return;
+
+        Vector3 screenPos = _camera.WorldToScreenPoint(_sourceTransform.position);
+
+        RectTransform canvasRect = _canvas.transform as RectTransform;
+        if (canvasRect == null)
+            return;
+
+        Vector2 localPos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect,
+            screenPos,
+            _canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _camera,
+            out localPos
+        );
+
+        panelRect.anchoredPosition = localPos + screenOffset;
+    }
+
+    private void RefreshSlots()
+    {
+        if (slotRoot == null)
+            return;
+
+        for (int i = 0; i < slotRoot.childCount; i++)
+        {
+            InventorySlotUI slotUI = slotRoot.GetChild(i).GetComponent<InventorySlotUI>();
+            if (slotUI != null)
+                slotUI.Refresh();
+        }
+    }
+}

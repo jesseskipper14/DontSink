@@ -15,6 +15,11 @@ public sealed class InventoryDragController : MonoBehaviour
     [SerializeField] private PlayerInventory inventory;
     [SerializeField] private PlayerInventoryInput inventoryInput;
 
+    [Header("World Drop Targets")]
+    [SerializeField] private LayerMask worldDropTargetMask = ~0;
+    [SerializeField] private float worldDropTargetRadius = 0.2f;
+    [SerializeField] private Camera worldCamera;
+
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = true;
 
@@ -37,6 +42,9 @@ public sealed class InventoryDragController : MonoBehaviour
 
         if (inventoryInput == null)
             inventoryInput = GetComponentInParent<PlayerInventoryInput>(true);
+
+        if (worldCamera == null)
+            worldCamera = Camera.main;
 
         HideVisual();
         Log($"Awake | canvas={(canvas != null ? canvas.name : "NULL")} | dragIcon={(dragIcon != null ? dragIcon.name : "NULL")}");
@@ -218,7 +226,23 @@ public sealed class InventoryDragController : MonoBehaviour
         }
         else
         {
-            Log("EndDrag | no target under mouse, dropping dragged item into world.");
+            Log("EndDrag | no UI target under mouse, trying world container target.");
+
+            if (TryDepositDraggedItemIntoWorldTarget(working, out ItemInstance remainder))
+            {
+                if (remainder == null || remainder.IsDepleted())
+                {
+                    Cleanup();
+                    return;
+                }
+
+                draggedItem = remainder;
+                ShowVisual(draggedItem);
+                Log($"EndDrag | partial deposit into world target | remainder={DescribeItem(draggedItem)}");
+                return;
+            }
+
+            Log("EndDrag | no valid world container target, dropping dragged item into world.");
 
             if (TryDropItemToWorld(working))
             {
@@ -459,6 +483,68 @@ public sealed class InventoryDragController : MonoBehaviour
 
         draggedItem.AddQuantity(1);
         return false;
+    }
+
+    private bool TryGetWorldDropTargetUnderCursor(out IWorldItemDropTarget target)
+    {
+        target = null;
+
+        Camera cam = worldCamera != null ? worldCamera : Camera.main;
+        if (cam == null)
+        {
+            LogWarning("TryGetWorldDropTargetUnderCursor failed because no camera was available.");
+            return false;
+        }
+
+        Vector3 mouse = Input.mousePosition;
+        Vector3 world = cam.ScreenToWorldPoint(mouse);
+        Vector2 point = new Vector2(world.x, world.y);
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(point, worldDropTargetRadius, worldDropTargetMask);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider2D col = hits[i];
+            if (col == null)
+                continue;
+
+            target = col.GetComponent<IWorldItemDropTarget>();
+            if (target != null)
+            {
+                Log($"TryGetWorldDropTargetUnderCursor | hit={col.name} | direct target found");
+                return true;
+            }
+
+            target = col.GetComponentInParent<IWorldItemDropTarget>();
+            if (target != null)
+            {
+                Log($"TryGetWorldDropTargetUnderCursor | hit={col.name} | parent target found");
+                return true;
+            }
+        }
+
+        Log("TryGetWorldDropTargetUnderCursor | no world drop target hit.");
+        return false;
+    }
+
+    private bool TryDepositDraggedItemIntoWorldTarget(ItemInstance item, out ItemInstance remainder)
+    {
+        remainder = item;
+
+        if (item == null)
+            return false;
+
+        if (!TryGetWorldDropTargetUnderCursor(out IWorldItemDropTarget target))
+            return false;
+
+        if (!target.CanAcceptWorldDrop(item))
+        {
+            Log($"TryDepositDraggedItemIntoWorldTarget | target rejected preview | item={DescribeItem(item)}");
+            return false;
+        }
+
+        bool ok = target.TryAcceptWorldDrop(item, out remainder);
+        Log($"TryDepositDraggedItemIntoWorldTarget | item={DescribeItem(item)} | ok={ok} | remainder={DescribeItem(remainder)}");
+        return ok;
     }
 
     private void Log(string msg)
