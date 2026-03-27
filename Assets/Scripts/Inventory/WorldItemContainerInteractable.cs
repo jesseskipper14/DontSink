@@ -21,10 +21,11 @@ public sealed class WorldItemContainerInteractable : MonoBehaviour, IInteractabl
 
     public bool CanInteract(in InteractContext context)
     {
-        if (worldItem == null || worldItem.Instance == null)
+        ItemInstance containerItem = worldItem != null ? worldItem.Instance : null;
+        if (containerItem == null)
             return false;
 
-        if (!worldItem.Instance.IsContainer || worldItem.Instance.ContainerState == null)
+        if (!containerItem.IsContainer || containerItem.ContainerState == null)
             return false;
 
         float dist = Vector2.Distance(context.Origin, transform.position);
@@ -43,18 +44,18 @@ public sealed class WorldItemContainerInteractable : MonoBehaviour, IInteractabl
             return;
         }
 
-        ItemContainerState state = worldItem.Instance.ContainerState;
-        if (state == null)
+        ItemInstance containerItem = worldItem != null ? worldItem.Instance : null;
+        if (containerItem == null || !containerItem.IsContainer || containerItem.ContainerState == null)
             return;
 
-        if (overlay.IsOpen && overlay.CurrentState == state)
+        if (overlay.IsOpen && ReferenceEquals(overlay.CurrentContainer, containerItem))
         {
             overlay.Close();
             return;
         }
 
         string title = worldItem.Item != null ? worldItem.Item.DisplayName : "Container";
-        overlay.Open(title, state, transform, autoCloseDistance);
+        overlay.Open(title, containerItem, transform, autoCloseDistance);
     }
 
     public string GetPromptVerb(in InteractContext context) => "Open";

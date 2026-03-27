@@ -1,61 +1,107 @@
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
+[DisallowMultipleComponent]
 public sealed class InteractPromptUI : MonoBehaviour
 {
-    [SerializeField] private GameObject rootObject;
-    [SerializeField] private TMPro.TMP_Text tmpLabel;
-    [SerializeField] private Text legacyLabel;
-
-    [Header("Follow (optional)")]
+    [Header("Refs")]
+    [SerializeField] private RectTransform root;
+    [SerializeField] private RectTransform rowRoot;
+    [SerializeField] private InteractPromptActionRowUI rowPrefab;
     [SerializeField] private Camera worldCamera;
-    [SerializeField] private RectTransform canvasRect;
-    [SerializeField] private Vector2 screenOffset = new Vector2(0f, 40f);
+    [SerializeField] private Canvas canvas;
+    [SerializeField] private Vector2 screenOffset = new(0f, 64f);
 
-    private void Reset()
+    private readonly List<InteractPromptActionRowUI> _rows = new();
+
+    private void Awake()
     {
-        rootObject = gameObject;
-        tmpLabel = GetComponentInChildren<TMPro.TMP_Text>(true);
-        legacyLabel = GetComponentInChildren<Text>(true);
-        canvasRect = GetComponentInParent<Canvas>()?.GetComponent<RectTransform>();
-        worldCamera = Camera.main;
+        if (worldCamera == null)
+            worldCamera = Camera.main;
+
+        if (canvas == null)
+            canvas = GetComponentInParent<Canvas>();
+
+        Hide();
     }
 
-    private void Awake() => Hide();
-
-    public void Show(string verb, Vector3 worldPos)
+    public void Show(Vector3 worldPos, IReadOnlyList<PromptAction> actions)
     {
-        SetText($"Press E to {verb}");
+        if (actions == null || actions.Count == 0)
+        {
+            Hide();
+            return;
+        }
+
+        Rebuild(actions);
         Position(worldPos);
         SetVisible(true);
     }
 
-    public void Hide() => SetVisible(false);
-
-    public void Position(Vector3 worldPos)
+    public void Hide()
     {
-        if (canvasRect == null) return;
-        if (worldCamera == null) worldCamera = Camera.main;
-        if (worldCamera == null) return;
-
-        Vector3 sp = worldCamera.WorldToScreenPoint(worldPos);
-        sp += (Vector3)screenOffset;
-
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            canvasRect, sp, null, out var local);
-
-        (transform as RectTransform).anchoredPosition = local;
+        ClearRows();
+        SetVisible(false);
     }
 
-    private void SetText(string text)
+    private void Rebuild(IReadOnlyList<PromptAction> actions)
     {
-        if (tmpLabel != null) tmpLabel.text = text;
-        if (legacyLabel != null) legacyLabel.text = text;
+        ClearRows();
+
+        if (rowRoot == null || rowPrefab == null)
+            return;
+
+        for (int i = 0; i < actions.Count; i++)
+        {
+            InteractPromptActionRowUI row = Instantiate(rowPrefab, rowRoot);
+            row.Bind(actions[i]);
+            _rows.Add(row);
+        }
+    }
+
+    private void ClearRows()
+    {
+        for (int i = _rows.Count - 1; i >= 0; i--)
+        {
+            if (_rows[i] != null)
+                Destroy(_rows[i].gameObject);
+        }
+
+        _rows.Clear();
+
+        if (rowRoot == null)
+            return;
+
+        for (int i = rowRoot.childCount - 1; i >= 0; i--)
+            Destroy(rowRoot.GetChild(i).gameObject);
+    }
+
+    private void Position(Vector3 worldPos)
+    {
+        if (root == null || canvas == null || worldCamera == null)
+            return;
+
+        Vector3 screenPos = worldCamera.WorldToScreenPoint(worldPos);
+
+        RectTransform canvasRect = canvas.transform as RectTransform;
+        if (canvasRect == null)
+            return;
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect,
+            screenPos,
+            canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : worldCamera,
+            out Vector2 localPos
+        );
+
+        root.anchoredPosition = localPos + screenOffset;
     }
 
     private void SetVisible(bool visible)
     {
-        if (rootObject == null) rootObject = gameObject;
-        rootObject.SetActive(visible);
+        if (root != null)
+            root.gameObject.SetActive(visible);
+        else
+            gameObject.SetActive(visible);
     }
 }

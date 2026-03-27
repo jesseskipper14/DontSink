@@ -21,6 +21,17 @@ public class Interactor2D : MonoBehaviour
     private float _activeHoldPickupElapsed;
     private bool _holdPickupTriggered;
 
+    public IPickupInteractable ActiveHoldPickupTarget => _activeHoldPickupTarget;
+    public float ActiveHoldPickupElapsed => _activeHoldPickupElapsed;
+    public float ActiveHoldPickupDuration =>
+        _activeHoldPickupTarget != null ? Mathf.Max(0.0001f, _activeHoldPickupTarget.PickupHoldDuration) : 0f;
+    public float ActiveHoldPickupProgress =>
+        _activeHoldPickupTarget != null
+            ? Mathf.Clamp01(_activeHoldPickupElapsed / Mathf.Max(0.0001f, _activeHoldPickupTarget.PickupHoldDuration))
+            : 0f;
+    public bool IsHoldingPickup =>
+        _activeHoldPickupTarget != null && !_holdPickupTriggered;
+
     private IInteractionIntentSource intentSource;
 
     /// <summary>

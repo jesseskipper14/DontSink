@@ -1,11 +1,11 @@
 public sealed class ExternalInventorySlotBinding : IInventorySlotBinding
 {
-    private readonly ItemContainerState state;
+    private readonly ItemInstance containerItem;
     private readonly int slotIndex;
 
-    public ExternalInventorySlotBinding(ItemContainerState state, int slotIndex)
+    public ExternalInventorySlotBinding(ItemInstance containerItem, int slotIndex)
     {
-        this.state = state;
+        this.containerItem = containerItem;
         this.slotIndex = slotIndex;
     }
 
@@ -14,15 +14,16 @@ public sealed class ExternalInventorySlotBinding : IInventorySlotBinding
 
     public ItemInstance GetItem()
     {
-        return state?.GetSlot(slotIndex)?.Instance;
+        return containerItem?.ContainerState?.GetSlot(slotIndex)?.Instance;
     }
 
     public ItemInstance RemoveItem()
     {
+        ItemContainerState state = containerItem?.ContainerState;
         if (state == null)
             return null;
 
-        var slot = state.GetSlot(slotIndex);
+        InventorySlot slot = state.GetSlot(slotIndex);
         if (slot == null || slot.IsEmpty)
             return null;
 
@@ -34,68 +35,33 @@ public sealed class ExternalInventorySlotBinding : IInventorySlotBinding
 
     public bool TryPlaceItem(ItemInstance incoming, out ItemInstance displaced)
     {
-        displaced = null;
+        displaced = incoming;
 
-        if (state == null || incoming == null)
+        if (incoming == null)
             return false;
 
-        var slot = state.GetSlot(slotIndex);
-        if (slot == null)
-            return false;
-
-        // container insert case (same behavior as equipment binding)
-        if (!slot.IsEmpty && slot.Instance.IsContainer && !incoming.IsContainer)
+        if (ContainerPlacementUtility.TryPlaceIntoSlot(
+            containerItem,
+            slotIndex,
+            incoming,
+            out ItemInstance remainder,
+            out ItemInstance slotDisplaced))
         {
-            if (slot.Instance.TryInsertIntoContainer(incoming, out ItemInstance remainder))
+            if (slotDisplaced != null)
             {
-                displaced = remainder;
+                displaced = slotDisplaced;
                 return true;
             }
 
-            return false;
-        }
-
-        if (slot.IsEmpty)
-        {
-            slot.Set(incoming);
-            state.NotifyChanged();
+            displaced = remainder;
             return true;
         }
 
-        // stacking
-        if (slot.Instance.CanStackWith(incoming))
-        {
-            int moved = slot.Instance.AddQuantity(incoming.Quantity);
-            incoming.RemoveQuantity(moved);
-
-            if (incoming.IsDepleted())
-            {
-                state.NotifyChanged();
-                return true;
-            }
-
-            displaced = incoming;
-            state.NotifyChanged();
-            return true;
-        }
-
-        // swap
-        displaced = slot.Instance;
-        slot.Set(incoming);
-        state.NotifyChanged();
-        return true;
+        return false;
     }
 
     public bool CanAccept(ItemInstance incoming)
     {
-        if (state == null || incoming == null)
-            return false;
-
-        // NOTE: we don't have definition-level rules here yet
-        // phase 1: allow anything except container-in-container
-        if (incoming.IsContainer)
-            return false;
-
-        return true;
+        return ContainerPlacementUtility.CanPlaceIntoSlot(containerItem, slotIndex, incoming);
     }
 }

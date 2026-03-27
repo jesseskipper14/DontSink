@@ -27,5 +27,7 @@ MonoBehaviour:
   containerSlotCount: 8
   containerColumnCount: 2
   allowedContainerCategories: 1643
-  isMajorCarryContainer: 1
+  containerTier: 2
+  pickupMode: 0
+  pickupHoldDuration: 0.4
   worldPrefab: {fileID: 61859146187821167, guid: 06fd538a746b64842a7061f959cc9c7e, type: 3}

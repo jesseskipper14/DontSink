@@ -35,59 +35,57 @@ public sealed class HotbarSlotBinding : IInventorySlotBinding
     {
         displaced = null;
 
-        if (incoming == null)
+        if (incoming == null || inventory == null)
             return false;
 
         if (incoming.Definition != null && !incoming.Definition.IsAllowedInParentSlot(SlotType))
             return false;
 
-        InventorySlot slot = inventory?.GetSlot(hotbarIndex);
+        InventorySlot slot = inventory.GetSlot(hotbarIndex);
         if (slot == null)
             return false;
 
-        if (slot.IsEmpty)
-        {
-            slot.Set(incoming);
-            inventory?.NotifyChanged();
-            return true;
-        }
-
-        // NEW:
-        // If target slot contains a container item and incoming is NOT a container,
-        // dragging onto it means "try insert into that container".
-        // If insert fails, do NOT fall back to swap.
         if (slot.Instance != null && slot.Instance.IsContainer && !incoming.IsContainer)
         {
-            if (slot.Instance.TryInsertIntoContainer(incoming, out ItemInstance remainder))
+            if (ContainerPlacementUtility.TryAutoInsert(slot.Instance, incoming, out ItemInstance nestedRemainder))
             {
-                inventory?.NotifyChanged();
-
-                if (remainder == null || remainder.IsDepleted())
-                    return true;
-
-                displaced = remainder;
+                inventory.NotifyChanged();
+                displaced = nestedRemainder;
                 return true;
             }
 
             return false;
         }
 
-        if (slot.Instance != null && slot.Instance.CanStackWith(incoming))
+        if (slot.IsEmpty)
         {
-            int moved = slot.Instance.AddQuantity(incoming.Quantity);
-            incoming.RemoveQuantity(moved);
-            inventory?.NotifyChanged();
-
-            if (incoming.IsDepleted())
-                return true;
-
-            displaced = incoming;
+            slot.Set(incoming);
+            inventory.NotifyChanged();
             return true;
         }
 
-        displaced = slot.Instance;
+        if (slot.Instance != null && slot.Instance.CanStackWith(incoming) && slot.Instance.RemainingStackSpace > 0)
+        {
+            int moved = slot.Instance.AddQuantity(incoming.Quantity);
+            if (moved <= 0)
+                return false;
+
+            incoming.RemoveQuantity(moved);
+            inventory.NotifyChanged();
+
+            displaced = incoming.IsDepleted() ? null : incoming;
+            return true;
+        }
+
+        ItemInstance existing = slot.Instance;
+
+        if (existing != null && existing.Definition != null &&
+            !existing.Definition.IsAllowedInParentSlot(SlotType))
+            return false;
+
         slot.Set(incoming);
-        inventory?.NotifyChanged();
+        inventory.NotifyChanged();
+        displaced = existing;
         return true;
     }
 
@@ -96,29 +94,25 @@ public sealed class HotbarSlotBinding : IInventorySlotBinding
         if (incoming == null || inventory == null)
             return false;
 
-        // Respect parent-slot restrictions (this is the important one)
-        BottomBarSlotType slotType = PlayerInventory.HotbarIndexToSlotType(hotbarIndex);
-
         if (incoming.Definition != null &&
-            !incoming.Definition.IsAllowedInParentSlot(slotType))
+            !incoming.Definition.IsAllowedInParentSlot(SlotType))
             return false;
 
-        // Now check slot contents
         InventorySlot slot = inventory.GetSlot(hotbarIndex);
         if (slot == null)
             return false;
 
         ItemInstance existing = slot.Instance;
 
-        // Empty slot → allowed
+        if (existing != null && existing.IsContainer && !incoming.IsContainer)
+            return ContainerPlacementUtility.CanAutoInsert(existing, incoming);
+
         if (existing == null)
             return true;
 
-        // Stack case
         if (existing.CanStackWith(incoming) && existing.RemainingStackSpace > 0)
             return true;
 
-        // Otherwise allow swap
         return true;
     }
 }

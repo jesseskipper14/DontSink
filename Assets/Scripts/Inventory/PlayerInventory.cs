@@ -430,4 +430,283 @@ public sealed class PlayerInventory : MonoBehaviour
 
         return wrapped;
     }
+
+    public bool TryAutoInsert(ItemInstance incoming, out ItemInstance remainder)
+    {
+        remainder = incoming;
+
+        if (incoming == null || incoming.Definition == null || incoming.Quantity <= 0)
+            return false;
+
+        if (!incoming.Definition.StowableInInventory)
+            return false;
+
+        EnsureSlotCount();
+
+        bool changed = false;
+
+        // 1) Stack into non-hand equipment first
+        if (TryStackIntoEquipment(incoming, includeHands: false))
+        {
+            changed = true;
+
+            if (incoming.IsDepleted())
+            {
+                remainder = null;
+                InventoryChanged?.Invoke();
+                return true;
+            }
+        }
+
+        // 2) Stack into hotbar
+        if (TryStackIntoHotbar(incoming))
+        {
+            changed = true;
+
+            if (incoming.IsDepleted())
+            {
+                remainder = null;
+                InventoryChanged?.Invoke();
+                return true;
+            }
+        }
+
+        // 3) Place into empty non-hand equipment slot
+        if (TryPlaceIntoEmptyEquipmentSlot(incoming, includeHands: false))
+        {
+            remainder = null;
+            InventoryChanged?.Invoke();
+            return true;
+        }
+
+        // 4) Place into empty hotbar slot
+        if (TryPlaceIntoEmptyHotbarSlot(incoming))
+        {
+            remainder = null;
+            InventoryChanged?.Invoke();
+            return true;
+        }
+
+        // 5) Auto-insert into equipped containers (backpack, etc.)
+        if (TryInsertIntoEquippedContainers(incoming, out ItemInstance equippedContainerRemainder))
+        {
+            remainder = equippedContainerRemainder;
+            InventoryChanged?.Invoke();
+            return true;
+        }
+
+        // 6) Auto-insert into hotbar container items
+        if (TryInsertIntoHotbarContainers(incoming, out ItemInstance hotbarContainerRemainder))
+        {
+            remainder = hotbarContainerRemainder;
+            InventoryChanged?.Invoke();
+            return true;
+        }
+
+        // 7) Hands dead last
+        if (TryStackIntoEquipment(incoming, includeHands: true, handsOnly: true))
+        {
+            changed = true;
+
+            if (incoming.IsDepleted())
+            {
+                remainder = null;
+                InventoryChanged?.Invoke();
+                return true;
+            }
+        }
+
+        if (TryPlaceIntoEmptyEquipmentSlot(incoming, includeHands: true, handsOnly: true))
+        {
+            remainder = null;
+            InventoryChanged?.Invoke();
+            return true;
+        }
+
+        if (changed)
+        {
+            remainder = incoming;
+            InventoryChanged?.Invoke();
+            return true;
+        }
+
+        remainder = incoming;
+        return false;
+    }
+
+    private bool TryStackIntoEquipment(ItemInstance incoming, bool includeHands, bool handsOnly = false)
+    {
+        if (equipment == null)
+            return false;
+
+        bool changed = false;
+
+        foreach (BottomBarSlotType slotType in GetAutoInsertEquipmentSlots(includeHands, handsOnly))
+        {
+            ItemInstance existing = equipment.Get(slotType);
+            if (existing == null || existing.Definition == null)
+                continue;
+
+            if (!incoming.Definition.IsAllowedInParentSlot(slotType))
+                continue;
+
+            if (!existing.CanStackWith(incoming))
+                continue;
+
+            int moved = existing.AddQuantity(incoming.Quantity);
+            if (moved <= 0)
+                continue;
+
+            incoming.RemoveQuantity(moved);
+            changed = true;
+
+            if (incoming.IsDepleted())
+                return true;
+        }
+
+        return changed;
+    }
+
+    private bool TryStackIntoHotbar(ItemInstance incoming)
+    {
+        bool changed = false;
+
+        for (int i = 0; i < hotbarSlots.Count; i++)
+        {
+            InventorySlot slot = hotbarSlots[i];
+            if (slot == null || slot.IsEmpty || slot.Instance == null)
+                continue;
+
+            BottomBarSlotType slotType = HotbarIndexToSlotType(i);
+            if (!incoming.Definition.IsAllowedInParentSlot(slotType))
+                continue;
+
+            if (!slot.Instance.CanStackWith(incoming))
+                continue;
+
+            int moved = slot.Instance.AddQuantity(incoming.Quantity);
+            if (moved <= 0)
+                continue;
+
+            incoming.RemoveQuantity(moved);
+            changed = true;
+
+            if (incoming.IsDepleted())
+                return true;
+        }
+
+        return changed;
+    }
+
+    private bool TryPlaceIntoEmptyEquipmentSlot(ItemInstance incoming, bool includeHands, bool handsOnly = false)
+    {
+        if (equipment == null)
+            return false;
+
+        foreach (BottomBarSlotType slotType in GetAutoInsertEquipmentSlots(includeHands, handsOnly))
+        {
+            if (!incoming.Definition.IsAllowedInParentSlot(slotType))
+                continue;
+
+            if (equipment.Get(slotType) != null)
+                continue;
+
+            if (!equipment.CanEquip(slotType, incoming))
+                continue;
+
+            return equipment.TryPlace(slotType, incoming, out _);
+        }
+
+        return false;
+    }
+
+    private bool TryPlaceIntoEmptyHotbarSlot(ItemInstance incoming)
+    {
+        for (int i = 0; i < hotbarSlots.Count; i++)
+        {
+            InventorySlot slot = hotbarSlots[i];
+            if (slot == null || !slot.IsEmpty)
+                continue;
+
+            BottomBarSlotType slotType = HotbarIndexToSlotType(i);
+            if (!incoming.Definition.IsAllowedInParentSlot(slotType))
+                continue;
+
+            slot.Set(incoming);
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool TryInsertIntoEquippedContainers(ItemInstance incoming, out ItemInstance remainder)
+    {
+        remainder = incoming;
+
+        if (equipment == null)
+            return false;
+
+        foreach (BottomBarSlotType slotType in GetAutoInsertEquipmentSlots(includeHands: false, handsOnly: false))
+        {
+            ItemInstance containerItem = equipment.Get(slotType);
+            if (containerItem == null || !containerItem.IsContainer || containerItem.ContainerState == null)
+                continue;
+
+            if (ReferenceEquals(containerItem, incoming))
+                continue;
+
+            if (ContainerPlacementUtility.TryAutoInsert(containerItem, incoming, out ItemInstance containerRemainder))
+            {
+                remainder = containerRemainder;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool TryInsertIntoHotbarContainers(ItemInstance incoming, out ItemInstance remainder)
+    {
+        remainder = incoming;
+
+        for (int i = 0; i < hotbarSlots.Count; i++)
+        {
+            InventorySlot slot = hotbarSlots[i];
+            if (slot == null || slot.IsEmpty || slot.Instance == null)
+                continue;
+
+            ItemInstance containerItem = slot.Instance;
+            if (!containerItem.IsContainer || containerItem.ContainerState == null)
+                continue;
+
+            if (ReferenceEquals(containerItem, incoming))
+                continue;
+
+            if (ContainerPlacementUtility.TryAutoInsert(containerItem, incoming, out ItemInstance containerRemainder))
+            {
+                remainder = containerRemainder;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static IEnumerable<BottomBarSlotType> GetAutoInsertEquipmentSlots(bool includeHands, bool handsOnly = false)
+    {
+        if (handsOnly)
+        {
+            yield return BottomBarSlotType.Hands;
+            yield break;
+        }
+
+        yield return BottomBarSlotType.Backpack;
+        yield return BottomBarSlotType.Toolbelt;
+        yield return BottomBarSlotType.Body;
+        yield return BottomBarSlotType.Head;
+        yield return BottomBarSlotType.Feet;
+
+        if (includeHands)
+            yield return BottomBarSlotType.Hands;
+    }
 }

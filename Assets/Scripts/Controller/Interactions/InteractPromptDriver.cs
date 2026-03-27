@@ -6,6 +6,7 @@ public sealed class InteractPromptDriver : MonoBehaviour
 {
     [SerializeField] private Interactor2D interactor;
     [SerializeField] private InteractPromptUI promptUI;
+    private readonly List<PromptAction> _promptActions = new();
 
     [Header("Multiplayer (Optional)")]
     [Tooltip("If set, prompts will only show when this returns IsLocal=true. Leave null for singleplayer.")]
@@ -104,39 +105,84 @@ public sealed class InteractPromptDriver : MonoBehaviour
         bool hasInteract = interactor.TryGetBestTarget(out var interactTarget, out var interactCtx) && interactTarget != null;
         bool hasPickup = interactor.TryGetBestPickupTarget(out var pickupTarget, out var pickupCtx) && pickupTarget != null;
 
-        // Pickup lane: highlight world items only.
-        if (hasPickup && !_suppressedPickup.Contains(pickupTarget) && pickupTarget is WorldItem worldItem)
+        bool pickupVisible = hasPickup && !_suppressedPickup.Contains(pickupTarget);
+        bool interactVisible = hasInteract;
+
+        if (pickupVisible && pickupTarget is WorldItem worldItem)
             SetWorldItemHighlight(worldItem);
         else
             ClearWorldItemHighlight();
 
-        // Interact lane: show normal prompt UI.
-        if (!hasInteract || _suppressedInteract.Contains(interactTarget))
+        if (!pickupVisible && !interactVisible)
         {
             promptUI.Hide();
             return;
         }
 
-        string verb = defaultVerb;
-        if (interactTarget is IInteractPromptProvider provider)
-        {
-            var v = provider.GetPromptVerb(interactCtx);
-            if (!string.IsNullOrWhiteSpace(v))
-                verb = v;
-        }
+        Vector3 promptPos = transform.position;
 
-        Vector3 pos = (interactTarget as MonoBehaviour) != null
-            ? ((MonoBehaviour)interactTarget).transform.position
-            : (Vector3)interactCtx.Origin;
-
-        if (interactTarget is IInteractPromptProvider provider2)
+        if (interactVisible && interactTarget is IInteractPromptProvider interactProvider)
         {
-            var anchor = provider2.GetPromptAnchor();
+            Transform anchor = interactProvider.GetPromptAnchor();
             if (anchor != null)
-                pos = anchor.position;
+                promptPos = anchor.position;
+        }
+        else if (pickupVisible && pickupTarget is IInteractPromptProvider pickupProvider)
+        {
+            Transform anchor = pickupProvider.GetPromptAnchor();
+            if (anchor != null)
+                promptPos = anchor.position;
+        }
+        else if (interactVisible && interactTarget is MonoBehaviour interactMb)
+        {
+            promptPos = interactMb.transform.position;
+        }
+        else if (pickupVisible && pickupTarget is MonoBehaviour pickupMb)
+        {
+            promptPos = pickupMb.transform.position;
         }
 
-        promptUI.Show(verb, pos);
+        _promptActions.Clear();
+
+        if (interactVisible)
+        {
+            string interactVerb = "Interact";
+
+            if (interactTarget is IInteractPromptProvider interactPromptProvider)
+            {
+                string v = interactPromptProvider.GetPromptVerb(interactCtx);
+                if (!string.IsNullOrWhiteSpace(v))
+                    interactVerb = v;
+            }
+
+            _promptActions.Add(new PromptAction($"Press E to {interactVerb}", priority: 100));
+        }
+
+        if (pickupVisible)
+        {
+            string pickupVerb = "Pick up";
+
+            if (pickupTarget is IInteractPromptProvider pickupPromptProvider)
+            {
+                string v = pickupPromptProvider.GetPromptVerb(pickupCtx);
+                if (!string.IsNullOrWhiteSpace(v))
+                    pickupVerb = v;
+            }
+
+            bool isHoldPickup = pickupTarget.PickupMode == PickupInteractionMode.Hold;
+            float progress = 0f;
+
+            if (isHoldPickup && ReferenceEquals(interactor.ActiveHoldPickupTarget, pickupTarget))
+                progress = interactor.ActiveHoldPickupProgress;
+
+            _promptActions.Add(new PromptAction(
+                isHoldPickup ? $"Hold F to {pickupVerb}" : $"Press F to {pickupVerb}",
+                priority: 90,
+                showProgress: isHoldPickup,
+                progress01: progress));
+        }
+
+        promptUI.Show(promptPos, _promptActions);
     }
 
     private void SetWorldItemHighlight(WorldItem item)

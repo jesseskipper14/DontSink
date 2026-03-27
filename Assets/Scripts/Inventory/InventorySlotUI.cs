@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public sealed class InventorySlotUI : MonoBehaviour,
     IPointerEnterHandler,
     IPointerExitHandler,
+    IPointerDownHandler,
+    IPointerUpHandler,
     IPointerClickHandler,
     IBeginDragHandler,
     IDragHandler,
@@ -22,6 +24,9 @@ public sealed class InventorySlotUI : MonoBehaviour,
     [SerializeField] private Image background;
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color invalidTargetColor = new Color(1f, 0.45f, 0.45f, 1f);
+
+    private bool _dragBeganThisPress;
+    private bool _pointerIsDown;
 
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = false;
@@ -163,11 +168,40 @@ public sealed class InventorySlotUI : MonoBehaviour,
         if (eventData == null)
             return;
 
-        if (eventData.button == PointerEventData.InputButton.Left)
+        if (eventData.button != PointerEventData.InputButton.Left)
+            return;
+
+        bool ctrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+
+        // If a drag started during this press, do not also treat it like a quick-transfer click.
+        if (ctrlHeld && !_dragBeganThisPress)
         {
-            Log($"OnPointerClick | slotType={SlotType}");
-            owner?.HandleSlotClicked(this);
+            if (TryQuickTransfer())
+            {
+                Log($"OnPointerClick quick transfer | slotType={SlotType}");
+                return;
+            }
         }
+
+        Log($"OnPointerClick | slotType={SlotType}");
+        owner?.HandleSlotClicked(this);
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (eventData == null || eventData.button != PointerEventData.InputButton.Left)
+            return;
+
+        _pointerIsDown = true;
+        _dragBeganThisPress = false;
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (eventData == null || eventData.button != PointerEventData.InputButton.Left)
+            return;
+
+        _pointerIsDown = false;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -180,6 +214,8 @@ public sealed class InventorySlotUI : MonoBehaviour,
             Log($"OnBeginDrag ignored because drag already active | slotType={SlotType}");
             return;
         }
+
+        _dragBeganThisPress = true;
 
         ItemInstance boundItem = GetBoundItem();
         bool ctrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
@@ -258,14 +294,7 @@ public sealed class InventorySlotUI : MonoBehaviour,
         if (incoming == null)
             return false;
 
-        if (binding != null && binding.CanAccept(incoming))
-            return true;
-
-        ItemInstance boundItem = GetBoundItem();
-        if (boundItem != null && boundItem.CanAcceptIntoContainer(incoming))
-            return true;
-
-        return false;
+        return binding != null && binding.CanAccept(incoming);
     }
 
     public void PlayInvalidTargetFeedback()
@@ -300,6 +329,72 @@ public sealed class InventorySlotUI : MonoBehaviour,
     public void ClearInvalidTargetVisual()
     {
         SetInvalidTargetVisual(false);
+    }
+
+    private bool TryQuickTransfer()
+    {
+        if (dragController != null && dragController.IsDragging)
+            return false;
+
+        if (binding == null)
+            return false;
+
+        ItemInstance current = binding.GetItem();
+        if (current == null)
+            return false;
+
+        // Case 1: player inventory/equipment/hotbar -> open external container
+        if (binding is not ExternalInventorySlotBinding)
+        {
+            ExternalContainerOverlayUI overlay = FindFirstObjectByType<ExternalContainerOverlayUI>();
+            if (overlay == null || !overlay.IsOpen || overlay.CurrentContainer == null)
+                return false;
+
+            ItemInstance targetContainer = overlay.CurrentContainer;
+            if (ReferenceEquals(targetContainer, current))
+                return false;
+
+            ItemInstance removed = binding.RemoveItem();
+            if (removed == null)
+                return false;
+
+            if (ContainerPlacementUtility.TryAutoInsert(targetContainer, removed, out ItemInstance remainder))
+            {
+                if (remainder != null && !remainder.IsDepleted())
+                    binding.TryPlaceItem(remainder, out _);
+
+                Refresh();
+                return true;
+            }
+
+            // rollback
+            binding.TryPlaceItem(removed, out _);
+            Refresh();
+            return false;
+        }
+
+        // Case 2: external container -> player inventory
+        PlayerInventory playerInventory = FindFirstObjectByType<PlayerInventory>();
+        if (playerInventory == null)
+            return false;
+
+        ItemInstance removedFromSource = binding.RemoveItem();
+        if (removedFromSource == null)
+            return false;
+
+        if (playerInventory.TryAutoInsert(removedFromSource, out ItemInstance playerRemainder))
+        {
+            if (playerRemainder != null && !playerRemainder.IsDepleted())
+                binding.TryPlaceItem(playerRemainder, out _);
+
+            Refresh();
+            return true;
+        }
+
+        // rollback
+        binding.TryPlaceItem(removedFromSource, out _);
+        Refresh();
+        return false;
     }
 
     private void OnDisable()

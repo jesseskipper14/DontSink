@@ -37,101 +37,58 @@ public sealed class ContainerSlotBinding : IInventorySlotBinding
     {
         displaced = null;
 
-        if (incoming == null || containerState == null || ownerContainer == null)
+        if (incoming == null || ownerContainer == null || containerState == null)
             return false;
 
         InventorySlot slot = containerState.GetSlot(slotIndex);
         if (slot == null)
             return false;
 
-        // NEW:
-        // If this slot currently holds a container item and incoming is NOT a container,
-        // dragging onto it means "try insert into that container".
-        // If insert fails, do NOT fall back to swap.
+        // Dragging onto a slotted container means insert into that contained container.
         if (slot.Instance != null && slot.Instance.IsContainer && !incoming.IsContainer)
         {
-            if (slot.Instance.TryInsertIntoContainer(incoming, out ItemInstance remainder))
+            if (ContainerPlacementUtility.TryAutoInsert(slot.Instance, incoming, out ItemInstance nestedRemainder))
             {
                 containerState.NotifyChanged();
-
-                if (remainder == null || remainder.IsDepleted())
-                    return true;
-
-                displaced = remainder;
+                displaced = nestedRemainder;
                 return true;
             }
 
             return false;
         }
 
-        // TEMP RULE: no container-in-container placement.
-        if (incoming.IsContainer)
-            return false;
-
-        if (!ownerContainer.CanAcceptIntoContainer(incoming))
-            return false;
-
-        if (slot.IsEmpty)
+        if (ContainerPlacementUtility.TryPlaceIntoSlot(
+            ownerContainer,
+            slotIndex,
+            incoming,
+            out ItemInstance remainder,
+            out ItemInstance slotDisplaced))
         {
-            slot.Set(incoming);
-            containerState.NotifyChanged();
-            return true;
-        }
-
-        if (slot.Instance != null && slot.Instance.CanStackWith(incoming))
-        {
-            int moved = slot.Instance.AddQuantity(incoming.Quantity);
-            incoming.RemoveQuantity(moved);
-            containerState.NotifyChanged();
-
-            if (incoming.IsDepleted())
+            if (slotDisplaced != null)
+            {
+                displaced = slotDisplaced;
                 return true;
+            }
 
-            displaced = incoming;
+            displaced = remainder;
             return true;
         }
 
-        // Optional safety: only allow swap if the existing item is also valid for this container.
-        if (slot.Instance != null && !ownerContainer.CanAcceptIntoContainer(slot.Instance))
-            return false;
-
-        displaced = slot.Instance;
-        slot.Set(incoming);
-        containerState.NotifyChanged();
-        return true;
+        return false;
     }
 
     public bool CanAccept(ItemInstance incoming)
     {
-        if (incoming == null)
+        if (incoming == null || ownerContainer == null || containerState == null)
             return false;
 
-        ItemContainerState state = ownerContainer != null ? ownerContainer.ContainerState : null;
-        if (state == null)
-            return false;
-
-        if (slotIndex < 0 || slotIndex >= state.SlotCount)
-            return false;
-
-        InventorySlot slot = state.GetSlot(slotIndex);
+        InventorySlot slot = containerState.GetSlot(slotIndex);
         if (slot == null)
             return false;
 
-        ItemInstance existing = slot.Instance;
+        if (slot.Instance != null && slot.Instance.IsContainer && !incoming.IsContainer)
+            return ContainerPlacementUtility.CanAutoInsert(slot.Instance, incoming);
 
-        // Empty slot: only allow if container accepts the item at all.
-        if (existing == null)
-            return ownerContainer.CanAcceptIntoContainer(incoming);
-
-        // Existing stack target.
-        if (existing.CanStackWith(incoming) && existing.RemainingStackSpace > 0)
-            return true;
-
-        // No container-in-container, category restrictions, etc.
-        if (!ownerContainer.CanAcceptIntoContainer(incoming))
-            return false;
-
-        // For now, allow swap only if incoming could legally sit in this container.
-        return true;
+        return ContainerPlacementUtility.CanPlaceIntoSlot(ownerContainer, slotIndex, incoming);
     }
 }

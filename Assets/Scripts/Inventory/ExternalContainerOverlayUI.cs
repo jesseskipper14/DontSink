@@ -18,6 +18,7 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour
     [SerializeField] private bool closeOnKey = true;
     [SerializeField] private bool closeWhenSourceDestroyed = true;
 
+    private ItemInstance _containerItem;
     private ItemContainerState _state;
     private Transform _sourceTransform;
     [SerializeField] private float _autoCloseDistance = -1f;
@@ -30,7 +31,7 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour
     private Canvas _canvas;
 
     public bool IsOpen => _isOpen;
-    public ItemContainerState CurrentState => _state;
+    public ItemInstance CurrentContainer => _containerItem;
 
     private void Awake()
     {
@@ -99,20 +100,30 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour
 
     public void Open(
         string title,
-        ItemContainerState state,
+        ItemInstance containerItem,
         Transform sourceTransform = null,
         float autoCloseDistance = -1f)
     {
-        if (state == null)
+        if (containerItem == null || !containerItem.IsContainer)
         {
-            Debug.LogWarning("[ExternalContainerOverlayUI] Open called with null state.");
+            Debug.LogWarning("[ExternalContainerOverlayUI] Open called with invalid container item.");
             return;
         }
 
-        if (_state != state)
+        ItemContainerState state = containerItem.ContainerState;
+        if (state == null)
+        {
+            Debug.LogWarning("[ExternalContainerOverlayUI] Container has no state.");
+            return;
+        }
+
+        if (_containerItem != containerItem)
         {
             UnbindState();
+
+            _containerItem = containerItem;
             _state = state;
+
             BindState();
         }
 
@@ -137,6 +148,7 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour
         UnbindState();
 
         _state = null;
+        _containerItem = null;
         _sourceTransform = null;
         _autoCloseDistance = -1f;
         _isOpen = false;
@@ -181,7 +193,7 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour
             if (dragController != null)
                 slotUI.SetDragController(dragController);
 
-            ExternalInventorySlotBinding binding = new ExternalInventorySlotBinding(_state, i);
+            ExternalInventorySlotBinding binding = new ExternalInventorySlotBinding(_containerItem, i);
             slotUI.Bind(binding);
         }
     }

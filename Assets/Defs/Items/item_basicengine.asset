@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
-  m_Name: item_basicchest
+  m_Name: item_basicengine
   m_EditorClassIdentifier: 
-  itemId: item_basicchest
-  displayName: Basic Chest
-  icon: {fileID: 6926221435173647156, guid: 901eb17371bbf9e4b9101116dc72899f, type: 3}
-  itemCategories: 1024
+  itemId: item_basicengine
+  displayName: Basic Engine
+  icon: {fileID: -1351664179212386766, guid: a1a563a4e9de37949a80fd745e698620, type: 3}
+  itemCategories: 2048
   maxStack: 1
   stowableInInventory: 1
   droppable: 1
@@ -24,10 +24,10 @@ MonoBehaviour:
   preferredDisplacedDestination: 1
   equipSlot: 1
   isContainer: 1
-  containerSlotCount: 16
-  containerColumnCount: 4
-  allowedContainerCategories: 2047
-  containerTier: 3
+  containerSlotCount: 1
+  containerColumnCount: 1
+  allowedContainerCategories: 256
+  containerTier: 0
   pickupMode: 1
-  pickupHoldDuration: 1
-  worldPrefab: {fileID: 61859146187821167, guid: ce53c15d1b296344787ac703312cf6ea, type: 3}
+  pickupHoldDuration: 3
+  worldPrefab: {fileID: 4852340979861053125, guid: b61d4a2e49a95264984754f1e0e96650, type: 3}
