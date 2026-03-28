@@ -131,11 +131,10 @@ GameObject:
   - component: {fileID: 8596223445708447028}
   - component: {fileID: 5330355475732636874}
   - component: {fileID: 4852340979861053125}
-  - component: {fileID: -5570270040261377772}
-  - component: {fileID: 3603743187608587747}
   - component: {fileID: -788460587395443}
+  - component: {fileID: 3048486585468140483}
   m_Layer: 10
-  m_Name: BasicEngine
+  m_Name: BasicEngine_Installed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -312,38 +311,6 @@ MonoBehaviour:
   promptAnchor: {fileID: 8257903097564535626}
   highlightObject: {fileID: 7170654101832386509}
   verboseLogging: 1
---- !u!114 &-5570270040261377772
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8130874790704986176}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fff07833f2f70cd40a458dcced508abf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  worldItem: {fileID: 4852340979861053125}
-  playerTransform: {fileID: 0}
-  maxDepositDistance: 2.25
---- !u!114 &3603743187608587747
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8130874790704986176}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6cd1b56a5c1839d44b95968e2097f814, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  worldItem: {fileID: 4852340979861053125}
-  maxDistance: 3
-  interactionPriority: 5
-  promptAnchor: {fileID: 8257903097564535626}
-  autoCloseDistance: 2.25
 --- !u!114 &-788460587395443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -358,6 +325,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   definition: {fileID: 11400000, guid: e60ceeac81e917b45883fc23be9d558d, type: 2}
   ownerHardpoint: {fileID: 0}
+--- !u!114 &3048486585468140483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8130874790704986176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51cc1bb20586dad4f80c804ca27ced9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isOn: 0
+  fuelContainerDefinition: {fileID: 11400000, guid: d756ee9f3d518f54f8ed69a09a0155c8, type: 2}
 --- !u!1 &8721630635941789182
 GameObject:
   m_ObjectHideFlags: 0

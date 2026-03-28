@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
-  m_Name: item_basicchest
+  m_Name: item_backpack_small
   m_EditorClassIdentifier: 
-  itemId: item_basicchest
-  displayName: Basic Chest
-  icon: {fileID: 6926221435173647156, guid: 901eb17371bbf9e4b9101116dc72899f, type: 3}
+  itemId: item_backpack_small
+  displayName: Small Backpack
+  icon: {fileID: -5433737350264751947, guid: 2b7153f159990bd43b2ecf65a800823d, type: 3}
   itemCategories: 1024
   maxStack: 1
   stowableInInventory: 1
@@ -22,12 +22,14 @@ MonoBehaviour:
   tradable: 1
   disallowedParentSlots: 040000000500000006000000070000000800000009000000
   preferredDisplacedDestination: 1
-  equipSlot: 1
+  equipSlot: 13
   isContainer: 1
-  containerSlotCount: 16
-  containerColumnCount: 4
-  allowedContainerCategories: 2047
-  containerTier: 3
-  pickupMode: 1
-  pickupHoldDuration: 1
-  worldPrefab: {fileID: 61859146187821167, guid: ce53c15d1b296344787ac703312cf6ea, type: 3}
+  containerSlotCount: 8
+  containerColumnCount: 2
+  allowedContainerCategories: 1643
+  containerTier: 2
+  pickupMode: 0
+  pickupHoldDuration: 0.4
+  isModule: 0
+  moduleDefinition: {fileID: 0}
+  worldPrefab: {fileID: 61859146187821167, guid: 06fd538a746b64842a7061f959cc9c7e, type: 3}

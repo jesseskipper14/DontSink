@@ -41,7 +41,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Brightness: 0.7631879
+    - _Brightness: 0.9723095
     - _DeepDepthY: 250
     - _DepthBlendSoftness: 0.5
     - _DepthColorDistance: 50
@@ -58,7 +58,7 @@ Material:
     - _NoiseSpeed2: 0
     - _ShallowDepthY: 0
     - _SparkleBand: 0.001
-    - _SparkleIntensity: 0.9158255
+    - _SparkleIntensity: 1.1667715
     - _SurfaceBand: 0.25
     - _SurfaceY: 0
     - _ZWrite: 0

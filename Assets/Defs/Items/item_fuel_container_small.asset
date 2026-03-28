@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
+  m_Name: item_fuel_container_small
+  m_EditorClassIdentifier: 
+  itemId: item_fuel_container_small
+  displayName: Small Fuel Container
+  icon: {fileID: 6678344550347970788, guid: 236e5e964c379194898318993ac1b471, type: 3}
+  itemCategories: 3328
+  maxStack: 1
+  stowableInInventory: 1
+  droppable: 1
+  tradable: 1
+  disallowedParentSlots: 
+  preferredDisplacedDestination: 0
+  equipSlot: 0
+  isContainer: 1
+  containerSlotCount: 1
+  containerColumnCount: 1
+  allowedContainerCategories: 256
+  containerTier: 0
+  pickupMode: 0
+  pickupHoldDuration: 0.4
+  isModule: 0
+  moduleDefinition: {fileID: 0}
+  worldPrefab: {fileID: 61859146187821167, guid: 2528b76264c27bc4baa86a7b854b3cf0, type: 3}

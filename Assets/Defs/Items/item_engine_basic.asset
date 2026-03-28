@@ -10,24 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
-  m_Name: item_smallbackpack
+  m_Name: item_engine_basic
   m_EditorClassIdentifier: 
-  itemId: item_smallbackpack
-  displayName: Small Backpack
-  icon: {fileID: -5433737350264751947, guid: 2b7153f159990bd43b2ecf65a800823d, type: 3}
-  itemCategories: 1024
+  itemId: item_engine_basic
+  displayName: Basic Engine
+  icon: {fileID: -1351664179212386766, guid: a1a563a4e9de37949a80fd745e698620, type: 3}
+  itemCategories: 2048
   maxStack: 1
   stowableInInventory: 1
   droppable: 1
   tradable: 1
   disallowedParentSlots: 040000000500000006000000070000000800000009000000
   preferredDisplacedDestination: 1
-  equipSlot: 13
+  equipSlot: 1
   isContainer: 1
-  containerSlotCount: 8
-  containerColumnCount: 2
-  allowedContainerCategories: 1643
-  containerTier: 2
-  pickupMode: 0
-  pickupHoldDuration: 0.4
-  worldPrefab: {fileID: 61859146187821167, guid: 06fd538a746b64842a7061f959cc9c7e, type: 3}
+  containerSlotCount: 1
+  containerColumnCount: 1
+  allowedContainerCategories: 256
+  containerTier: 0
+  pickupMode: 1
+  pickupHoldDuration: 3
+  isModule: 1
+  moduleDefinition: {fileID: 11400000, guid: e60ceeac81e917b45883fc23be9d558d, type: 2}
+  worldPrefab: {fileID: 4852340979861053125, guid: b61d4a2e49a95264984754f1e0e96650, type: 3}

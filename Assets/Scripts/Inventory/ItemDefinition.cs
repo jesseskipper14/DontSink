@@ -77,33 +77,34 @@ public sealed class ItemDefinition : ScriptableObject
     public PickupInteractionMode PickupMode => pickupMode;
     public float PickupHoldDuration => Mathf.Max(0.05f, pickupHoldDuration);
 
+    [Header("Module")]
+    [SerializeField] private bool isModule;
+    [SerializeField] private ModuleDefinition moduleDefinition;
+
+    public bool IsModule => isModule;
+    public ModuleDefinition ModuleDefinition => moduleDefinition;
+
     [Header("World")]
     [SerializeField] private WorldItem worldPrefab;
 
     public string ItemId => itemId;
     public string DisplayName => string.IsNullOrWhiteSpace(displayName) ? name : displayName;
     public Sprite Icon => icon;
-
     public ItemCategoryFlags ItemCategories => itemCategories;
-
     public int MaxStack => Mathf.Max(1, maxStack);
-
     public bool StowableInInventory => stowableInInventory;
     public bool Droppable => droppable;
     public bool Tradable => tradable;
-
+    public bool IsInstallableModule => isModule && moduleDefinition != null;
     public BottomBarSlotType EquipSlot => equipSlot;
     public bool IsEquippable => equipSlot != BottomBarSlotType.None;
-
     public bool IsContainer => isContainer && containerSlotCount > 0;
     public int ContainerSlotCount => IsContainer ? Mathf.Max(1, containerSlotCount) : 0;
     public int ContainerColumnCount => Mathf.Max(1, containerColumnCount);
     public ItemCategoryFlags AllowedContainerCategories => allowedContainerCategories;
     public int ContainerTier => Mathf.Max(0, containerTier);
     public PreferredDisplacedDestination PreferredDisplacedDestination => preferredDisplacedDestination;
-
     public IReadOnlyList<BottomBarSlotType> DisallowedParentSlots => disallowedParentSlots;
-
     public WorldItem WorldPrefab => worldPrefab;
 
     public bool CanContainerAccept(ItemDefinition incoming)

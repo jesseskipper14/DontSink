@@ -162,9 +162,15 @@ public sealed class InteractPromptDriver : MonoBehaviour
         {
             string pickupVerb = "Pick up";
 
-            if (pickupTarget is IInteractPromptProvider pickupPromptProvider)
+            if (pickupTarget is IPickupPromptProvider pickupPromptProvider)
             {
-                string v = pickupPromptProvider.GetPromptVerb(pickupCtx);
+                string v = pickupPromptProvider.GetPickupPromptVerb(pickupCtx);
+                if (!string.IsNullOrWhiteSpace(v))
+                    pickupVerb = v;
+            }
+            else if (pickupTarget is IInteractPromptProvider fallbackPromptProvider)
+            {
+                string v = fallbackPromptProvider.GetPromptVerb(pickupCtx);
                 if (!string.IsNullOrWhiteSpace(v))
                     pickupVerb = v;
             }
@@ -180,6 +186,28 @@ public sealed class InteractPromptDriver : MonoBehaviour
                 priority: 90,
                 showProgress: isHoldPickup,
                 progress01: progress));
+        }
+
+        if (interactVisible && interactTarget is HardpointInteractable hardpointInteractable)
+        {
+            EngineModule engine = hardpointInteractable.GetInstalledEngine();
+            if (engine != null)
+            {
+                bool isOn = engine.IsOn;
+
+                _promptActions.Add(new PromptAction(
+                    isOn ? "Engine: ON" : "Engine: OFF",
+                    priority: 80,
+                    textColor: isOn ? Color.green : Color.red,
+                    pulse: isOn));
+            }
+
+            if (engine != null)
+            {
+                _promptActions.Add(new PromptAction(
+                    engine.IsOn ? "Press T to Turn Off" : "Press T to Turn On",
+                    priority: 85));
+            }
         }
 
         promptUI.Show(promptPos, _promptActions);

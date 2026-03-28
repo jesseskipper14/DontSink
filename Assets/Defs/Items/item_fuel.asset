@@ -10,24 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
-  m_Name: item_basicengine
+  m_Name: item_fuel
   m_EditorClassIdentifier: 
-  itemId: item_basicengine
-  displayName: Basic Engine
-  icon: {fileID: -1351664179212386766, guid: a1a563a4e9de37949a80fd745e698620, type: 3}
-  itemCategories: 2048
+  itemId: item_fuel
+  displayName: Fuel
+  icon: {fileID: -5855910142737896650, guid: b9d2fba0a94bfeb4fb36632ae9bad6f0, type: 3}
+  itemCategories: 256
   maxStack: 1
   stowableInInventory: 1
   droppable: 1
   tradable: 1
-  disallowedParentSlots: 040000000500000006000000070000000800000009000000
-  preferredDisplacedDestination: 1
+  disallowedParentSlots: 
+  preferredDisplacedDestination: 2
   equipSlot: 1
-  isContainer: 1
+  isContainer: 0
   containerSlotCount: 1
   containerColumnCount: 1
-  allowedContainerCategories: 256
+  allowedContainerCategories: 0
   containerTier: 0
-  pickupMode: 1
-  pickupHoldDuration: 3
-  worldPrefab: {fileID: 4852340979861053125, guid: b61d4a2e49a95264984754f1e0e96650, type: 3}
+  pickupMode: 0
+  pickupHoldDuration: 0.4
+  isModule: 0
+  moduleDefinition: {fileID: 0}
+  worldPrefab: {fileID: 61859146187821167, guid: 2528b76264c27bc4baa86a7b854b3cf0, type: 3}

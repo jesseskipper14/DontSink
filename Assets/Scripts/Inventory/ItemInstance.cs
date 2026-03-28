@@ -152,10 +152,6 @@ public sealed class ItemInstance
         if (!IsContainer || definition == null || containerState == null)
             return false;
 
-        // No container-in-container for now.
-        if (incoming.IsContainer)
-            return false;
-
         return definition.CanContainerAccept(incoming.Definition);
     }
 
