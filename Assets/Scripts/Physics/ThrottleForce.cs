@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ThrottleForce : MonoBehaviour, IOrderedForceProvider, IThrottleReceiver
@@ -7,12 +8,26 @@ public class ThrottleForce : MonoBehaviour, IOrderedForceProvider, IThrottleRece
 
     [SerializeField] private bool enabledFlag = true;
     [SerializeField] private int priority = 250;
-
-    //public float throttleForce = 1f;
-    //public float throttleInput;
-
     [SerializeField] private float maxForce = 25f;
-    private float throttle01; // actually [-1..1]
+
+    [Header("Engine Gating")]
+    [SerializeField] private Boat boat;
+    [SerializeField] private bool multiplyForceByActiveEngineCount = false;
+
+    private float throttle01; // [-1..1]
+    private readonly List<EngineModule> engines = new();
+
+    private void Awake()
+    {
+        ResolveBoat();
+        RefreshEngines();
+    }
+
+    private void OnEnable()
+    {
+        ResolveBoat();
+        RefreshEngines();
+    }
 
     public void SetThrottle(float value)
     {
@@ -21,15 +36,73 @@ public class ThrottleForce : MonoBehaviour, IOrderedForceProvider, IThrottleRece
 
     public void ApplyForces(IForceBody body)
     {
-        // removed dt so it would compile
+        if (!enabledFlag)
+            return;
 
-        // Replace this with your existing direction logic.
-        // Example: push along boat's local right:
+        if (boat == null)
+            ResolveBoat();
+
+        if (boat == null)
+            return;
+
+        RefreshEngines();
+
+        float absThrottle = Mathf.Abs(throttle01);
+        int activeEngineCount = 0;
+
+        for (int i = 0; i < engines.Count; i++)
+        {
+            EngineModule engine = engines[i];
+            if (engine == null)
+                continue;
+
+            engine.SetThrottleLoad(absThrottle);
+
+            if (engine.CanProduceThrust())
+                activeEngineCount++;
+        }
+
+        if (activeEngineCount <= 0)
+            return;
+
         Vector2 dir = (Vector2)transform.right;
+        float engineMultiplier = multiplyForceByActiveEngineCount ? activeEngineCount : 1f;
+        Vector2 f = dir * (throttle01 * maxForce * engineMultiplier);
 
-        Vector2 f = dir * (throttle01 * maxForce);
-
-        // Replace this with however your force system applies it:
         body.AddForce(f);
+    }
+
+    private void ResolveBoat()
+    {
+        if (boat != null)
+            return;
+
+        boat = GetComponentInParent<Boat>();
+        if (boat != null)
+            return;
+
+        GameObject playerBoatGo = GameObject.FindGameObjectWithTag("PlayerBoat");
+        if (playerBoatGo != null)
+            boat = playerBoatGo.GetComponent<Boat>();
+    }
+
+    private void RefreshEngines()
+    {
+        engines.Clear();
+
+        if (boat == null)
+            return;
+
+        Hardpoint[] hardpoints = boat.GetComponentsInChildren<Hardpoint>(true);
+        for (int i = 0; i < hardpoints.Length; i++)
+        {
+            Hardpoint hp = hardpoints[i];
+            if (hp == null || !hp.HasInstalledModule || hp.InstalledModule == null)
+                continue;
+
+            EngineModule engine = hp.InstalledModule.GetComponent<EngineModule>();
+            if (engine != null)
+                engines.Add(engine);
+        }
     }
 }

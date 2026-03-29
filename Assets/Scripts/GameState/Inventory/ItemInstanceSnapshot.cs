@@ -9,6 +9,7 @@ public sealed class ItemInstanceSnapshot
     public string instanceId;
     public string itemId;
     public int quantity;
+    public int currentCharges;
     public ItemContainerSnapshot container;
 }
 

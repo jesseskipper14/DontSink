@@ -153,6 +153,12 @@ public class Interactor2D : MonoBehaviour
             OnInteracted?.Invoke(interactTarget);
         }
 
+        if (intent.TogglePressed && TryResolveBest(ctx, out var toggleTarget))
+        {
+            if (toggleTarget is IToggleInteractable toggleInteractable && toggleInteractable.CanToggle(ctx))
+                toggleInteractable.Toggle(ctx);
+        }
+
         HandlePickupIntent(intent, ctx);
     }
 
@@ -295,7 +301,6 @@ public class Interactor2D : MonoBehaviour
             return;
         }
 
-        // Instant pickup path
         if (pickupTarget.PickupMode == PickupInteractionMode.Instant)
         {
             if (intent.PickupPressed)
@@ -308,7 +313,6 @@ public class Interactor2D : MonoBehaviour
             return;
         }
 
-        // Hold pickup path
         if (!intent.PickupHeld)
         {
             ResetHoldPickup();

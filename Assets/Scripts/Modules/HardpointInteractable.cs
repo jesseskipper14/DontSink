@@ -1,15 +1,13 @@
 ﻿using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPickupInteractable, IInteractPromptProvider, IPickupPromptProvider
+public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPickupInteractable, IInteractPromptProvider, IPickupPromptProvider, IToggleInteractable
 {
     [SerializeField] private Hardpoint hardpoint;
     [SerializeField] private int interactionPriority = 20;
     [SerializeField] private int pickupPriority = 20;
     [SerializeField] private float maxDistance = 1.75f;
     [SerializeField] private Transform promptAnchor;
-
-    [SerializeField] private KeyCode toggleKey = KeyCode.T;
 
     [Header("Removal")]
     [SerializeField] private PickupInteractionMode pickupMode = PickupInteractionMode.Hold;
@@ -26,63 +24,23 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
             hardpoint = GetComponent<Hardpoint>();
     }
 
-    private void Update()
-    {
-        if (hardpoint == null || !hardpoint.HasInstalledModule)
-            return;
-
-        if (!Input.GetKeyDown(toggleKey))
-            return;
-
-        Interactor2D interactor = FindFirstObjectByType<Interactor2D>();
-        if (interactor == null)
-            return;
-
-        if (!interactor.TryGetBestTarget(out IInteractable best, out InteractContext ctx))
-            return;
-
-        if (!ReferenceEquals(best, this))
-            return;
-
-        EngineModule engine = hardpoint.InstalledModule != null
-            ? hardpoint.InstalledModule.GetComponent<EngineModule>()
-            : null;
-
-        if (engine == null)
-            return;
-
-        engine.Toggle();
-    }
-
     public bool CanInteract(in InteractContext context)
     {
         if (hardpoint == null)
-        {
-            Debug.Log("[HP] CanInteract = false (no hardpoint)", this);
             return false;
-        }
 
         if (!IsInRange(context))
-        {
-            Debug.Log("[HP] CanInteract = false (out of range)", this);
             return false;
-        }
 
         if (hardpoint.HasInstalledModule)
-        {
-            Debug.Log("[HP] CanInteract = true (already has module)", this);
             return true;
-        }
 
-        bool found = TryFindCompatiblePlayerModule(
+        return TryFindCompatiblePlayerModule(
             context,
             out _,
             out _,
             out _,
             out _);
-
-        Debug.Log($"[HP] CanInteract empty hardpoint | foundModule={found}", this);
-        return found;
     }
 
     public void Interact(in InteractContext context)
@@ -90,7 +48,6 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
         if (hardpoint == null || !IsInRange(context))
             return;
 
-        // Empty hardpoint: install from selected slot / hotbar / hands
         if (!hardpoint.HasInstalledModule)
         {
             if (!TryFindCompatiblePlayerModule(
@@ -141,7 +98,6 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
 
             if (!removedFromSource)
             {
-                // Roll back if we failed to consume the source item.
                 hardpoint.TryRemove(out _);
                 Debug.LogWarning("[HardpointInteractable] Installed module but failed to remove source item. Rolled back install.", this);
                 return;
@@ -151,29 +107,15 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
             return;
         }
 
-        // OCCUPIED HARPOINT: open installed engine fuel inventory
-        EngineModule engine = hardpoint.InstalledModule != null
-            ? hardpoint.InstalledModule.GetComponent<EngineModule>()
-            : null;
-
-        if (engine != null && engine.FuelContainerItem != null)
+        // OCCUPIED HARDPOINT: open module UI
+        ModuleOverlayRunner runner = FindFirstObjectByType<ModuleOverlayRunner>();
+        if (runner == null)
         {
-            ExternalContainerOverlayUI overlay = FindFirstObjectByType<ExternalContainerOverlayUI>();
-            if (overlay == null)
-            {
-                Debug.LogWarning("[HardpointInteractable] No ExternalContainerOverlayUI found.");
-                return;
-            }
-
-            string title = $"{hardpoint.HardpointId} Fuel";
-            overlay.Open(
-                title,
-                engine.FuelContainerItem,
-                hardpoint.MountPoint != null ? hardpoint.MountPoint : transform,
-                2.25f);
-
+            Debug.LogWarning("[HardpointInteractable] No ModuleOverlayRunner found.");
             return;
         }
+
+        runner.OpenForHardpoint(hardpoint);
 
         Debug.Log($"[HardpointInteractable] Installed module has no engine fuel inventory on '{hardpoint.HardpointId}'.", this);
     }
@@ -215,19 +157,34 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
 
         if (!inventory.TryAutoInsert(returnedItem, out ItemInstance remainder))
         {
-            // rollback
             hardpoint.TryInstall(removedDefinition, out _);
             return;
         }
 
         if (remainder != null && !remainder.IsDepleted())
         {
-            // rollback
             hardpoint.TryInstall(removedDefinition, out _);
             return;
         }
 
         inventory.NotifyChanged();
+    }
+
+    public bool CanToggle(in InteractContext context)
+    {
+        if (hardpoint == null || !hardpoint.HasInstalledModule || !IsInRange(context))
+            return false;
+
+        return GetInstalledEngine() != null;
+    }
+
+    public void Toggle(in InteractContext context)
+    {
+        EngineModule engine = GetInstalledEngine();
+        if (engine == null)
+            return;
+
+        engine.Toggle();
     }
 
     public string GetPromptVerb(in InteractContext context)
@@ -263,11 +220,11 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
     }
 
     private bool TryFindCompatiblePlayerModule(
-    in InteractContext context,
-    out PlayerInventory inventory,
-    out ItemInstance sourceItem,
-    out BottomBarSlotType sourceSlotType,
-    out bool sourceIsEquipment)
+        in InteractContext context,
+        out PlayerInventory inventory,
+        out ItemInstance sourceItem,
+        out BottomBarSlotType sourceSlotType,
+        out bool sourceIsEquipment)
     {
         inventory = context.InteractorGO != null
             ? context.InteractorGO.GetComponentInChildren<PlayerInventory>()
@@ -284,7 +241,6 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
         if (equipment == null)
             return false;
 
-        // 1) selected slot first
         BottomBarSlotType selectedType = inventory.SelectedSlot;
 
         if (selectedType >= BottomBarSlotType.Hotbar0 && selectedType <= BottomBarSlotType.Hotbar7)
@@ -310,7 +266,6 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
             }
         }
 
-        // 2) hotbar fallback
         for (int i = 0; i < inventory.HotbarSlotCount; i++)
         {
             InventorySlot slot = inventory.GetSlot(i);

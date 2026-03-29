@@ -8,6 +8,7 @@ public sealed class ItemInstance
     [SerializeField] private ItemDefinition definition;
     [SerializeField] private int quantity = 1;
     [SerializeField] private ItemContainerState containerState;
+    [SerializeField] private int currentCharges;
 
     public string InstanceId => instanceId;
     public ItemDefinition Definition => definition;
@@ -20,6 +21,11 @@ public sealed class ItemInstance
     public int MaxStack => definition != null ? Mathf.Max(1, definition.MaxStack) : 1;
     public bool IsStackable => definition != null && !IsContainer && MaxStack > 1;
     public bool CanSplit => IsStackable && quantity > 1;
+
+    public bool HasCharges => definition != null && definition.HasCharges;
+    public int MaxCharges => definition != null ? definition.MaxCharges : 0;
+    public int CurrentCharges => HasCharges ? Mathf.Clamp(currentCharges, 0, MaxCharges) : 0;
+    public bool HasAnyCharges => !HasCharges || CurrentCharges > 0;
 
     public int RemainingStackSpace => IsStackable ? Mathf.Max(0, MaxStack - quantity) : 0;
 
@@ -38,7 +44,19 @@ public sealed class ItemInstance
         if (string.IsNullOrWhiteSpace(instanceId))
             instanceId = Guid.NewGuid().ToString("N");
 
+        InitializeChargesFromDefinition();
         EnsureContainerStateMatchesDefinition();
+    }
+
+    private void InitializeChargesFromDefinition()
+    {
+        if (definition == null || !definition.HasCharges)
+        {
+            currentCharges = 0;
+            return;
+        }
+
+        currentCharges = definition.MaxCharges;
     }
 
     public void EnsureContainerStateMatchesDefinition()
@@ -61,6 +79,9 @@ public sealed class ItemInstance
             return false;
 
         if (!IsStackable || !other.IsStackable)
+            return false;
+
+        if (HasCharges || other.HasCharges)
             return false;
 
         return definition == other.definition;
@@ -95,6 +116,50 @@ public sealed class ItemInstance
         return Create(definition, amount);
     }
 
+    public bool TryConsumeCharges(int amount)
+    {
+        if (!HasCharges || amount <= 0)
+            return false;
+
+        if (CurrentCharges < amount)
+            return false;
+
+        currentCharges -= amount;
+        return true;
+    }
+
+    public int ConsumeChargesUpTo(int amount)
+    {
+        if (!HasCharges || amount <= 0)
+            return 0;
+
+        int consumed = Mathf.Min(CurrentCharges, amount);
+        currentCharges -= consumed;
+        return consumed;
+    }
+
+    public void SetCharges(int value)
+    {
+        if (!HasCharges)
+        {
+            currentCharges = 0;
+            return;
+        }
+
+        currentCharges = Mathf.Clamp(value, 0, MaxCharges);
+    }
+
+    public void RefillCharges()
+    {
+        if (!HasCharges)
+        {
+            currentCharges = 0;
+            return;
+        }
+
+        currentCharges = MaxCharges;
+    }
+
     public bool IsDepleted()
     {
         return definition == null || quantity <= 0;
@@ -111,6 +176,7 @@ public sealed class ItemInstance
             instanceId = instanceId,
             itemId = definition.ItemId,
             quantity = quantity,
+            currentCharges = HasCharges ? CurrentCharges : 0,
             container = containerState != null ? containerState.ToSnapshot() : null
         };
     }
@@ -132,6 +198,11 @@ public sealed class ItemInstance
         instance.instanceId = string.IsNullOrWhiteSpace(snapshot.instanceId)
             ? Guid.NewGuid().ToString("N")
             : snapshot.instanceId;
+
+        if (def.HasCharges)
+            instance.currentCharges = Mathf.Clamp(snapshot.currentCharges, 0, def.MaxCharges);
+        else
+            instance.currentCharges = 0;
 
         if (def.IsContainer)
         {
@@ -167,7 +238,6 @@ public sealed class ItemInstance
 
         bool changed = false;
 
-        // 1) Stack into compatible existing stacks first
         for (int i = 0; i < containerState.SlotCount; i++)
         {
             InventorySlot slot = containerState.GetSlot(i);
@@ -192,7 +262,6 @@ public sealed class ItemInstance
             }
         }
 
-        // 2) Place into first empty slot
         for (int i = 0; i < containerState.SlotCount; i++)
         {
             InventorySlot slot = containerState.GetSlot(i);

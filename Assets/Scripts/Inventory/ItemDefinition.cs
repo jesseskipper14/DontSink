@@ -47,6 +47,11 @@ public sealed class ItemDefinition : ScriptableObject
     [Min(1)]
     [SerializeField] private int maxStack = 1;
 
+    [Header("Charges / Units")]
+    [SerializeField] private bool hasCharges;
+    [Min(1)]
+    [SerializeField] private int maxCharges = 1;
+
     [Header("Rules")]
     [SerializeField] private bool stowableInInventory = true;
     [SerializeField] private bool droppable = true;
@@ -92,6 +97,10 @@ public sealed class ItemDefinition : ScriptableObject
     public Sprite Icon => icon;
     public ItemCategoryFlags ItemCategories => itemCategories;
     public int MaxStack => Mathf.Max(1, maxStack);
+
+    public bool HasCharges => hasCharges;
+    public int MaxCharges => hasCharges ? Mathf.Max(1, maxCharges) : 0;
+
     public bool StowableInInventory => stowableInInventory;
     public bool Droppable => droppable;
     public bool Tradable => tradable;
@@ -109,7 +118,6 @@ public sealed class ItemDefinition : ScriptableObject
 
     public bool CanContainerAccept(ItemDefinition incoming)
     {
-        Debug.Log("Can accept?");
         if (!IsContainer || incoming == null)
             return false;
 
@@ -122,7 +130,6 @@ public sealed class ItemDefinition : ScriptableObject
         if (incoming.IsContainer && incoming.ContainerTier >= ContainerTier)
             return false;
 
-        Debug.Log("Accepted");
         return true;
     }
 
@@ -144,6 +151,7 @@ public sealed class ItemDefinition : ScriptableObject
     private void OnValidate()
     {
         maxStack = Mathf.Max(1, maxStack);
+        maxCharges = Mathf.Max(1, maxCharges);
         containerSlotCount = Mathf.Max(0, containerSlotCount);
         containerColumnCount = Mathf.Max(1, containerColumnCount);
         pickupHoldDuration = Mathf.Max(0.05f, pickupHoldDuration);
@@ -158,6 +166,9 @@ public sealed class ItemDefinition : ScriptableObject
             allowedContainerCategories = ItemCategoryFlags.None;
             containerTier = 0;
         }
+
+        if (!hasCharges)
+            maxCharges = 1;
     }
 #endif
 }

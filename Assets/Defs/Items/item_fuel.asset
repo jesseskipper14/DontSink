@@ -17,6 +17,8 @@ MonoBehaviour:
   icon: {fileID: -5855910142737896650, guid: b9d2fba0a94bfeb4fb36632ae9bad6f0, type: 3}
   itemCategories: 256
   maxStack: 1
+  hasCharges: 1
+  maxCharges: 100
   stowableInInventory: 1
   droppable: 1
   tradable: 1
@@ -32,4 +34,4 @@ MonoBehaviour:
   pickupHoldDuration: 0.4
   isModule: 0
   moduleDefinition: {fileID: 0}
-  worldPrefab: {fileID: 61859146187821167, guid: 2528b76264c27bc4baa86a7b854b3cf0, type: 3}
+  worldPrefab: {fileID: 61859146187821167, guid: d900f436a84f6dc48a1a34edb6e512e3, type: 3}

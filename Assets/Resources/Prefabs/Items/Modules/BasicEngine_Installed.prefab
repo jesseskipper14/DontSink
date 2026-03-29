@@ -306,6 +306,7 @@ MonoBehaviour:
       slotCount: 1
       columnCount: 1
       slots: []
+    currentCharges: 0
   interactionPriority: 10
   maxPickupDistance: 3
   promptAnchor: {fileID: 8257903097564535626}
@@ -339,6 +340,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isOn: 0
   fuelContainerDefinition: {fileID: 11400000, guid: d756ee9f3d518f54f8ed69a09a0155c8, type: 2}
+  fuelBurnRatePerSecond: 0.5
+  maxThrottleBurnMultiplier: 5
 --- !u!1 &8721630635941789182
 GameObject:
   m_ObjectHideFlags: 0
