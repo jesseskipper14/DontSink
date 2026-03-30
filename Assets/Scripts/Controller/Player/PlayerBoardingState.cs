@@ -9,6 +9,7 @@ public sealed class PlayerBoardingState : MonoBehaviour
     [SerializeField] private string hullLayerName = "Hull";
     [SerializeField] private string groundLayerName = "Ground";
     [SerializeField] private string nodeGroundLayerName = "NodeGround";
+    [SerializeField] private string nodeDockLayerName = "NodeDock";
 
     public bool IsBoarded { get; private set; }
     public Transform CurrentBoatRoot { get; private set; }
@@ -29,13 +30,15 @@ public sealed class PlayerBoardingState : MonoBehaviour
         _hullLayer = LayerMask.NameToLayer(hullLayerName);
         int groundLayer = LayerMask.NameToLayer(groundLayerName);
         int nodeGroundLayer = LayerMask.NameToLayer(nodeGroundLayerName);
+        int nodeDockLayer = LayerMask.NameToLayer(nodeDockLayerName);
 
         if (_hullLayer < 0) Debug.LogError($"Layer '{hullLayerName}' not found.");
         if (groundLayer < 0) Debug.LogError($"Layer '{groundLayerName}' not found.");
         if (nodeGroundLayer < 0) Debug.LogError($"Layer '{nodeGroundLayerName}' not found.");
+        if (nodeDockLayer < 0) Debug.LogError($"Layer '{nodeDockLayerName}' not found.");
 
         _boardedMask = 1 << _hullLayer;
-        _unboardedMask = (1 << groundLayer) | (1 << nodeGroundLayer);
+        _unboardedMask = (1 << groundLayer) | (1 << nodeGroundLayer) | (1 << nodeDockLayer);
 
         ApplyMask();
     }
@@ -66,7 +69,7 @@ public sealed class PlayerBoardingState : MonoBehaviour
 
         _rb.excludeLayers = mask;
 
-        // ---- Ground Detection Mask (NEW) ----
+        // ---- Ground Detection Mask ----
         _motor.groundMask = IsBoarded ? _boardedMask : _unboardedMask;
     }
 }

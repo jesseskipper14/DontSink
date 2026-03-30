@@ -23,6 +23,15 @@ public class BoatKit : ScriptableObject
     public GameObject MapTable;
     public GameObject PlayerSpawnPoint;
     public GameObject BoardedVolume;
+    public GameObject Ladder;
+
+    [Header("Hardpoints")]
+    public GameObject HardpointEngine;
+    public GameObject HardpointPump;
+    public GameObject HardpointUtility;
+    public GameObject HardpointWeapon;
+    public GameObject HardpointElectronics;
+    public GameObject HardpointHelm;
 
 #if UNITY_EDITOR
     [MenuItem("Tools/Boat Builder/Create BoatKit Asset")]

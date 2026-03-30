@@ -21,10 +21,14 @@ public static class BoatBuilderSceneTools
         public bool EnforceRequiredPieces;
         public int RequiredPlayerSpawnPoints;
 
-        // NEW: BoardedVolume sizing
         public float BoardedVolumePadding;
         public float BoardedVolumeExtraUp;
         public float BoardedVolumeExtraDown;
+
+        public HardpointType SelectedHardpointType;
+        public string HardpointIdPrefix;
+        public bool HardpointAutoCreateMountPoint;
+        public bool HardpointRenameObjectToId;
     }
 
     private static Context _ctx;
@@ -32,7 +36,6 @@ public static class BoatBuilderSceneTools
 
     public static bool IsPlacementEnabled { get; private set; }
 
-    // Preview ghost
     private static GameObject _previewInstance;
     private static GameObject _previewPrefabAsset;
     private static Vector3 _previewLastPos;
@@ -52,10 +55,12 @@ public static class BoatBuilderSceneTools
 
     public static void SetContext(Context ctx)
     {
-        // Default safety if caller didn't set these
         if (ctx.BoardedVolumePadding <= 0f) ctx.BoardedVolumePadding = 0f;
-        if (ctx.BoardedVolumeExtraUp <= 0f) ctx.BoardedVolumeExtraUp = 5.0f;   // IMPORTANT: headroom
+        if (ctx.BoardedVolumeExtraUp <= 0f) ctx.BoardedVolumeExtraUp = 5.0f;
         if (ctx.BoardedVolumeExtraDown <= 0f) ctx.BoardedVolumeExtraDown = 0f;
+
+        if (string.IsNullOrWhiteSpace(ctx.HardpointIdPrefix))
+            ctx.HardpointIdPrefix = "hardpoint";
 
         _ctx = ctx;
         SceneView.RepaintAll();
@@ -74,7 +79,7 @@ public static class BoatBuilderSceneTools
         SceneView.RepaintAll();
     }
 
-    [MenuItem("Tools/Boat Builder/Snap Selection %#g")] // Ctrl/Cmd + Shift + G
+    [MenuItem("Tools/Boat Builder/Snap Selection %#g")]
     public static void SnapSelectionNow()
     {
         var tr = Selection.transforms;
@@ -89,12 +94,10 @@ public static class BoatBuilderSceneTools
         }
     }
 
-    // ===========================
-    // Required pieces utilities
-    // ===========================
     public static Transform PeekBestBoatRoot() => FindBestBoatRootParent();
 
-    public static void GetRequiredPiecesStatus(Transform boatRoot,
+    public static void GetRequiredPiecesStatus(
+        Transform boatRoot,
         out bool hasBoatBoardObject,
         out bool hasMapTable,
         out int spawnPointCount,
@@ -107,12 +110,10 @@ public static class BoatBuilderSceneTools
 
         if (boatRoot == null) return;
 
-        // By component type (preferred when available)
         hasBoatBoardObject = boatRoot.GetComponentsInChildren<BoatBoardingInteractable>(true).Any();
         hasMapTable = boatRoot.GetComponentsInChildren<MapTableInteractable>(true).Any();
         hasBoardedVolume = boatRoot.GetComponentsInChildren<BoatBoardedVolume>(true).Any();
 
-        // Spawn points: use name match
         var trs = boatRoot.GetComponentsInChildren<Transform>(true);
         for (int i = 0; i < trs.Length; i++)
         {
@@ -132,7 +133,6 @@ public static class BoatBuilderSceneTools
 
         GetRequiredPiecesStatus(boatRoot, out var hasBoard, out var hasMap, out var spawnCount, out var hasVol);
 
-        // Order: volume first (safety), spawns, board, map
         if (!hasVol) { tool = BoatBuilderWindow.Tool.BoardedVolume; return true; }
         if (spawnCount < Mathf.Max(1, _ctx.RequiredPlayerSpawnPoints)) { tool = BoatBuilderWindow.Tool.PlayerSpawnPoint; return true; }
         if (!hasBoard) { tool = BoatBuilderWindow.Tool.BoatBoardObject; return true; }
@@ -141,12 +141,8 @@ public static class BoatBuilderSceneTools
         return false;
     }
 
-    // ===========================
-    // Scene GUI + Placement
-    // ===========================
     private static void OnSceneGUI(SceneView view)
     {
-        // This is the big one for preview responsiveness.
         view.wantsMouseMove = true;
 
         if (!IsPlacementEnabled)
@@ -162,7 +158,7 @@ public static class BoatBuilderSceneTools
             return;
         }
 
-        var prefab = GetPrefabForTool(_ctx.Kit, _ctx.ActiveTool);
+        var prefab = GetPrefabForTool(_ctx.Kit, _ctx.ActiveTool, _ctx.SelectedHardpointType);
         if (prefab == null)
         {
             DrawStatus(view, $"Missing prefab reference for {_ctx.ActiveTool} in BoatKit.");
@@ -173,7 +169,11 @@ public static class BoatBuilderSceneTools
         HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
         var e = Event.current;
 
-        DrawStatus(view, $"PLACING: {_ctx.ActiveTool} | Left-click to place | Right-click/Esc to cancel");
+        string placingLabel = _ctx.ActiveTool == BoatBuilderWindow.Tool.Hardpoint
+            ? $"PLACING: {_ctx.ActiveTool} ({_ctx.SelectedHardpointType})"
+            : $"PLACING: {_ctx.ActiveTool}";
+
+        DrawStatus(view, $"{placingLabel} | Left-click to place | Right-click/Esc to cancel");
 
         if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Escape)
         {
@@ -193,14 +193,12 @@ public static class BoatBuilderSceneTools
             return;
         }
 
-        // Preview update: update on mouse move OR drag OR repaint/layout.
         if (_ctx.ShowSnapPreview && (e.type == EventType.MouseMove || e.type == EventType.MouseDrag || e.type == EventType.Repaint || e.type == EventType.Layout))
         {
             var world = MouseToWorldOnZPlane(e.mousePosition, _ctx.ZPlane);
             if (_ctx.SnapOnPlace) world = Snap(world, _ctx.GridSize);
             UpdatePreview(prefab, world);
 
-            // Force frequent repaint while placing so preview doesn't feel delayed.
             if (e.type == EventType.MouseMove || e.type == EventType.MouseDrag || e.type == EventType.Layout)
                 view.Repaint();
         }
@@ -216,7 +214,6 @@ public static class BoatBuilderSceneTools
 
             var parent = _ctx.AutoParentToBoatRoot ? FindBestBoatRootParent() : null;
 
-            // Enforce required pieces (avoid duplicates for unique pieces)
             if (_ctx.EnforceRequiredPieces && parent != null)
             {
                 if (HandleRequiredDuplicateBlock(parent, _ctx.ActiveTool))
@@ -229,10 +226,20 @@ public static class BoatBuilderSceneTools
 
             var placed = PlacePrefab(prefab, world, parent);
 
-            // NEW: if this is BoardedVolume, auto-fit it to boat bounds + headroom
             if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.BoardedVolume && parent != null)
             {
                 AutoFitBoardedVolume(parent, placed, _ctx.BoardedVolumePadding, _ctx.BoardedVolumeExtraUp, _ctx.BoardedVolumeExtraDown);
+            }
+
+            if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.Hardpoint)
+            {
+                InitializePlacedHardpoint(
+                    placed,
+                    parent != null ? parent : placed.transform.parent,
+                    _ctx.SelectedHardpointType,
+                    _ctx.HardpointIdPrefix,
+                    _ctx.HardpointAutoCreateMountPoint,
+                    _ctx.HardpointRenameObjectToId);
             }
 
             e.Use();
@@ -314,159 +321,260 @@ public static class BoatBuilderSceneTools
 
     private static GameObject PlacePrefab(GameObject prefab, Vector3 worldPos, Transform parent)
     {
-        GameObject instance = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
-        if (instance == null) instance = UnityEngine.Object.Instantiate(prefab);
+        if (prefab == null)
+            return null;
 
-        Undo.RegisterCreatedObjectUndo(instance, "Place Boat Prefab");
+        GameObject instance = null;
+
+        if (PrefabUtility.IsPartOfPrefabAsset(prefab))
+            instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+        else
+            instance = UnityEngine.Object.Instantiate(prefab);
+
+        if (instance == null)
+            return null;
+
+        Undo.RegisterCreatedObjectUndo(instance, $"Place {prefab.name}");
 
         instance.transform.position = worldPos;
-        if (parent != null) instance.transform.SetParent(parent, true);
+        instance.transform.rotation = prefab.transform.rotation;
+
+        if (parent != null)
+            Undo.SetTransformParent(instance.transform, parent, "Parent placed object to BoatRoot");
 
         Selection.activeGameObject = instance;
-        EditorUtility.SetDirty(instance);
-        EditorSceneManager.MarkSceneDirty(instance.scene);
-
+        EditorGUIUtility.PingObject(instance);
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         return instance;
     }
 
-    // ===========================
-    // BoardedVolume auto fit
-    // ===========================
-    [MenuItem("Tools/Boat Builder/Fit BoardedVolume to Selected Boat")]
-    public static void FitBoardedVolumeToSelectedBoat()
+    private static void AutoFitBoardedVolume(Transform boatRoot, GameObject placed, float padding, float extraUp, float extraDown)
     {
-        var root = FindBestBoatRootParent();
-        if (root == null)
-        {
-            Debug.LogWarning("[BoatBuilder] Select a boat root or child first.");
+        if (boatRoot == null || placed == null)
             return;
-        }
 
-        var bv = root.GetComponentInChildren<BoatBoardedVolume>(true);
-        if (bv == null)
-        {
-            Debug.LogWarning("[BoatBuilder] No BoatBoardedVolume found under selected boat.");
-            return;
-        }
-
-        AutoFitBoardedVolume(root, bv.gameObject, _ctx.BoardedVolumePadding, _ctx.BoardedVolumeExtraUp, _ctx.BoardedVolumeExtraDown);
-        Selection.activeObject = bv.gameObject;
-    }
-
-    private static void AutoFitBoardedVolume(Transform boatRoot, GameObject boardedVolumeGO, float pad, float extraUp, float extraDown)
-    {
-        if (boatRoot == null || boardedVolumeGO == null) return;
-
-        // We assume BoardedVolume uses BoxCollider2D as a trigger.
-        var box = boardedVolumeGO.GetComponentInChildren<BoxCollider2D>(true);
+        var box = placed.GetComponent<BoxCollider2D>();
         if (box == null)
         {
-            Debug.LogWarning("[BoatBuilder] BoardedVolume prefab needs a BoxCollider2D to auto-fit.");
+            Debug.LogWarning("[BoatBuilder] BoardedVolume placed, but no BoxCollider2D found to auto-fit.", placed);
             return;
         }
 
-        // Compute bounds from colliders and renderers under boat root (excluding the boarded volume itself).
-        bool hasAny = false;
-        Bounds b = default;
+        var renderers = boatRoot.GetComponentsInChildren<Renderer>(true)
+            .Where(r => r != null && r.gameObject != placed)
+            .ToArray();
 
-        void Encapsulate(Bounds bb)
+        if (renderers.Length == 0)
         {
-            if (!hasAny) { b = bb; hasAny = true; }
-            else b.Encapsulate(bb);
-        }
-
-        var colliders = boatRoot.GetComponentsInChildren<Collider2D>(true);
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            var c = colliders[i];
-            if (c == null) continue;
-            if (c.transform.IsChildOf(boardedVolumeGO.transform)) continue;
-            Encapsulate(c.bounds);
-        }
-
-        var renderers = boatRoot.GetComponentsInChildren<Renderer>(true);
-        for (int i = 0; i < renderers.Length; i++)
-        {
-            var r = renderers[i];
-            if (r == null) continue;
-            if (r.transform.IsChildOf(boardedVolumeGO.transform)) continue;
-            Encapsulate(r.bounds);
-        }
-
-        if (!hasAny)
-        {
-            Debug.LogWarning("[BoatBuilder] Could not compute boat bounds (no colliders/renderers?).");
+            Debug.LogWarning("[BoatBuilder] Could not auto-fit BoardedVolume: no renderers found under boat root.", boatRoot);
             return;
         }
 
-        // Expand with padding + extra vertical headroom.
-        b.Expand(new Vector3(pad * 2f, pad * 2f, 0f));
+        Bounds bounds = renderers[0].bounds;
+        for (int i = 1; i < renderers.Length; i++)
+            bounds.Encapsulate(renderers[i].bounds);
 
-        // Apply asymmetric vertical expansion.
-        // Bounds are symmetric by default; we emulate asymmetry by shifting center upward.
-        float addUp = Mathf.Max(0f, extraUp);
-        float addDown = Mathf.Max(0f, extraDown);
+        bounds.Expand(new Vector3(padding * 2f, padding * 2f, 0f));
+        bounds.min += new Vector3(0f, -extraDown, 0f);
+        bounds.max += new Vector3(0f, extraUp, 0f);
 
-        var size = b.size;
-        size.y += (addUp + addDown);
+        Undo.RecordObject(placed.transform, "Auto-fit BoardedVolume");
+        Undo.RecordObject(box, "Resize BoardedVolume");
 
-        var center = b.center;
-        center.y += (addUp - addDown) * 0.5f;
+        placed.transform.position = new Vector3(bounds.center.x, bounds.center.y, placed.transform.position.z);
 
-        // Place BoardedVolume object at boat root (so it's stable), and set collider in local space.
-        Undo.RecordObject(boardedVolumeGO.transform, "Fit BoardedVolume");
-        boardedVolumeGO.transform.SetParent(boatRoot, true);
-        boardedVolumeGO.transform.position = boatRoot.position;
-        boardedVolumeGO.transform.rotation = Quaternion.identity;
+        Vector2 localSize = boatRoot.InverseTransformVector(bounds.size);
+        box.offset = Vector2.zero;
+        box.size = new Vector2(Mathf.Abs(localSize.x), Mathf.Abs(localSize.y));
 
-        // Convert world-space bounds center to local space of the collider's transform.
-        var colT = box.transform;
-
-        Undo.RecordObject(box, "Fit BoardedVolume Collider");
-        Vector3 localCenter = colT.InverseTransformPoint(center);
-
-        box.offset = (Vector2)localCenter;
-        box.size = new Vector2(size.x, size.y);
-        box.isTrigger = true;
-
-        EditorUtility.SetDirty(boardedVolumeGO);
+        EditorUtility.SetDirty(placed.transform);
         EditorUtility.SetDirty(box);
-        EditorSceneManager.MarkSceneDirty(boardedVolumeGO.scene);
     }
 
-    // ===========================
-    // Preview Ghost
-    // ===========================
-    private static void UpdatePreview(GameObject prefabAsset, Vector3 worldPos)
+    private static void InitializePlacedHardpoint(
+        GameObject placed,
+        Transform boatRoot,
+        HardpointType selectedType,
+        string idPrefix,
+        bool autoCreateMountPoint,
+        bool renameObjectToId)
     {
-        if (prefabAsset == null) { DestroyPreview(); return; }
+        if (placed == null)
+            return;
 
-        if (_previewInstance == null || _previewPrefabAsset != prefabAsset)
+        Hardpoint hardpoint = placed.GetComponent<Hardpoint>();
+        if (hardpoint == null)
+        {
+            Debug.LogWarning("[BoatBuilder] Placed hardpoint prefab has no Hardpoint component.", placed);
+            return;
+        }
+
+        Undo.RecordObject(hardpoint, "Configure Hardpoint");
+
+        SerializedObject hardpointSO = new SerializedObject(hardpoint);
+
+        SerializedProperty typeProp = hardpointSO.FindProperty("hardpointType");
+        if (typeProp != null)
+            typeProp.enumValueIndex = (int)selectedType;
+
+        string resolvedPrefix = ResolveHardpointPrefix(idPrefix, selectedType);
+        string generatedId = GenerateNextHardpointId(boatRoot, resolvedPrefix);
+
+        SerializedProperty idProp = hardpointSO.FindProperty("hardpointId");
+        if (idProp != null)
+            idProp.stringValue = generatedId;
+
+        SerializedProperty mountProp = hardpointSO.FindProperty("mountPoint");
+        if (mountProp != null)
+        {
+            Transform mount = placed.transform.Find("MountPoint");
+            if (mount == null && autoCreateMountPoint)
+            {
+                var mountGO = new GameObject("MountPoint");
+                Undo.RegisterCreatedObjectUndo(mountGO, "Create Hardpoint MountPoint");
+                mount = mountGO.transform;
+                Undo.SetTransformParent(mount, placed.transform, "Parent MountPoint");
+                mount.localPosition = Vector3.zero;
+                mount.localRotation = Quaternion.identity;
+                mount.localScale = Vector3.one;
+            }
+
+            if (mount != null)
+                mountProp.objectReferenceValue = mount;
+        }
+
+        hardpointSO.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(hardpoint);
+
+        var interactable = placed.GetComponent<HardpointInteractable>();
+        if (interactable != null)
+        {
+            Undo.RecordObject(interactable, "Configure Hardpoint Interactable");
+            SerializedObject interactableSO = new SerializedObject(interactable);
+
+            SerializedProperty hpRef = interactableSO.FindProperty("hardpoint");
+            if (hpRef != null)
+                hpRef.objectReferenceValue = hardpoint;
+
+            SerializedProperty promptAnchorProp = interactableSO.FindProperty("promptAnchor");
+            if (promptAnchorProp != null && promptAnchorProp.objectReferenceValue == null)
+                promptAnchorProp.objectReferenceValue = hardpoint.MountPoint;
+
+            interactableSO.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(interactable);
+        }
+
+        if (renameObjectToId)
+        {
+            Undo.RecordObject(placed, "Rename Hardpoint");
+            placed.name = generatedId;
+            EditorUtility.SetDirty(placed);
+        }
+
+        Selection.activeGameObject = placed;
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+    }
+
+    private static string ResolveHardpointPrefix(string configuredPrefix, HardpointType type)
+    {
+        if (!string.IsNullOrWhiteSpace(configuredPrefix) &&
+            !string.Equals(configuredPrefix.Trim(), "hardpoint", StringComparison.OrdinalIgnoreCase))
+        {
+            return SanitizeIdToken(configuredPrefix.Trim());
+        }
+
+        return type switch
+        {
+            HardpointType.Engine => "engine",
+            HardpointType.Pump => "pump",
+            HardpointType.Utility => "utility",
+            HardpointType.Weapon => "weapon",
+            HardpointType.Electronics => "electronics",
+            HardpointType.Helm => "helm",
+            _ => "hardpoint"
+        };
+    }
+
+    private static string GenerateNextHardpointId(Transform boatRoot, string prefix)
+    {
+        prefix = SanitizeIdToken(prefix);
+        int maxFound = 0;
+
+        if (boatRoot != null)
+        {
+            var existing = boatRoot.GetComponentsInChildren<Hardpoint>(true);
+            foreach (var hp in existing)
+            {
+                if (hp == null)
+                    continue;
+
+                string existingId = hp.HardpointId;
+                if (string.IsNullOrWhiteSpace(existingId))
+                    continue;
+
+                if (!existingId.StartsWith(prefix + "_", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                string suffix = existingId.Substring(prefix.Length + 1);
+                if (int.TryParse(suffix, out int n))
+                    maxFound = Mathf.Max(maxFound, n);
+            }
+        }
+
+        return $"{prefix}_{(maxFound + 1):00}";
+    }
+
+    private static string SanitizeIdToken(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "hardpoint";
+
+        string s = value.Trim().ToLowerInvariant();
+        s = s.Replace(" ", "_");
+        return s;
+    }
+
+    private static void DrawStatus(SceneView view, string text)
+    {
+        Handles.BeginGUI();
+        GUILayout.BeginArea(new Rect(12, 12, 520, 32), EditorStyles.helpBox);
+        GUILayout.Label(text, EditorStyles.boldLabel);
+        GUILayout.EndArea();
+        Handles.EndGUI();
+    }
+
+    private static void UpdatePreview(GameObject prefab, Vector3 worldPos)
+    {
+        if (prefab == null)
+        {
+            DestroyPreview();
+            return;
+        }
+
+        if (_previewInstance == null || _previewPrefabAsset != prefab)
         {
             DestroyPreview();
 
-            _previewInstance = PrefabUtility.InstantiatePrefab(prefabAsset) as GameObject;
-            if (_previewInstance == null) _previewInstance = UnityEngine.Object.Instantiate(prefabAsset);
+            if (PrefabUtility.IsPartOfPrefabAsset(prefab))
+                _previewInstance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+            else
+                _previewInstance = UnityEngine.Object.Instantiate(prefab);
 
-            _previewPrefabAsset = prefabAsset;
-            _previewInstance.name = $"__BoatBuilderPreview__{prefabAsset.name}";
+            if (_previewInstance == null)
+                return;
+
+            _previewPrefabAsset = prefab;
             _previewInstance.hideFlags = HideFlags.HideAndDontSave;
 
-            // Disable colliders and scripts to avoid side effects.
-            foreach (var c in _previewInstance.GetComponentsInChildren<Collider2D>(true))
-                c.enabled = false;
+            foreach (var col in _previewInstance.GetComponentsInChildren<Collider2D>(true))
+                col.enabled = false;
 
-            foreach (var mb in _previewInstance.GetComponentsInChildren<MonoBehaviour>(true))
-                mb.enabled = false;
-
-            // Tint sprites green.
             foreach (var sr in _previewInstance.GetComponentsInChildren<SpriteRenderer>(true))
             {
                 sr.color = new Color(0f, 1f, 0f, 0.35f);
                 sr.sortingOrder += 5000;
             }
 
-            // Hide mesh renderers if any.
             foreach (var mr in _previewInstance.GetComponentsInChildren<MeshRenderer>(true))
                 mr.enabled = false;
 
@@ -495,9 +603,6 @@ public static class BoatBuilderSceneTools
         _previewInstance = null;
     }
 
-    // ===========================
-    // Helpers
-    // ===========================
     private static Vector3 MouseToWorldOnZPlane(Vector2 mousePos, float zPlane)
     {
         var ray = HandleUtility.GUIPointToWorldRay(mousePos);
@@ -550,7 +655,7 @@ public static class BoatBuilderSceneTools
         return null;
     }
 
-    private static GameObject GetPrefabForTool(BoatKit kit, BoatBuilderWindow.Tool tool)
+    private static GameObject GetPrefabForTool(BoatKit kit, BoatBuilderWindow.Tool tool, HardpointType selectedHardpointType)
     {
         return tool switch
         {
@@ -560,21 +665,30 @@ public static class BoatBuilderSceneTools
             BoatBuilderWindow.Tool.PilotChair => kit.PilotChair,
             BoatBuilderWindow.Tool.CompartmentRect => kit.CompartmentRect,
             BoatBuilderWindow.Tool.Deck => kit.Deck,
+            BoatBuilderWindow.Tool.Ladder => kit.Ladder,
 
             BoatBuilderWindow.Tool.BoatBoardObject => kit.BoatBoardObject,
             BoatBuilderWindow.Tool.MapTable => kit.MapTable,
             BoatBuilderWindow.Tool.PlayerSpawnPoint => kit.PlayerSpawnPoint,
             BoatBuilderWindow.Tool.BoardedVolume => kit.BoardedVolume,
+
+            BoatBuilderWindow.Tool.Hardpoint => GetHardpointPrefab(kit, selectedHardpointType),
             _ => null
         };
     }
 
-    private static void DrawStatus(SceneView view, string text)
+    private static GameObject GetHardpointPrefab(BoatKit kit, HardpointType type)
     {
-        Handles.BeginGUI();
-        var r = new Rect(10, 10, view.position.width - 20, 40);
-        GUI.Label(r, text, EditorStyles.boldLabel);
-        Handles.EndGUI();
+        return type switch
+        {
+            HardpointType.Engine => kit.HardpointEngine,
+            HardpointType.Pump => kit.HardpointPump,
+            HardpointType.Utility => kit.HardpointUtility,
+            HardpointType.Weapon => kit.HardpointWeapon,
+            HardpointType.Electronics => kit.HardpointElectronics,
+            HardpointType.Helm => kit.HardpointHelm,
+            _ => null
+        };
     }
 }
 #endif

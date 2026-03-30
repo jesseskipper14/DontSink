@@ -49,6 +49,7 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
     private CharacterMotor2D motor;
     private ICharacterIntentSource intentSource;
     private IForceBody body;
+    private PlayerLadderClimber ladderClimber;
 
     // Jump press latch (solves Update vs FixedUpdate pulse drop)
     private bool _jumpPressedLatched;
@@ -60,6 +61,7 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
         motor = GetComponent<CharacterMotor2D>();
         body = GetComponent<IForceBody>();
         intentSource = GetComponent<ICharacterIntentSource>();
+        ladderClimber = GetComponent<PlayerLadderClimber>();
 
         if (body == null)
         {
@@ -78,6 +80,18 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
     public void ApplyForces(IForceBody body)
     {
         if (!enabledFlag) return;
+
+        if (ladderClimber != null && ladderClimber.IsClimbing)
+        {
+            _jumpPressedLatched = false;
+
+            if (intentSource is LocalCharacterIntentSource local)
+                local.ConsumeJumpPressed();
+
+            motor.UpdateGrounded();
+            motor.TickTimers(Time.fixedDeltaTime, jumpPressed: false);
+            return;
+        }
 
         float dt = Time.fixedDeltaTime;
         var intent = intentSource.Current;

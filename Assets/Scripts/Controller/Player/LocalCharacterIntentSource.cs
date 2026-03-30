@@ -14,20 +14,22 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
     [SerializeField] private KeyCode uprightKey = KeyCode.W;
 
     [Header("Swim Bindings")]
-    [SerializeField] private KeyCode swimUpKey = KeyCode.Space;     // reuse Space by default
-    [SerializeField] private KeyCode diveKey = KeyCode.LeftControl;           // or LeftControl
+    [SerializeField] private KeyCode swimUpKey = KeyCode.Space;
+    [SerializeField] private KeyCode diveKey = KeyCode.LeftControl;
     [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift;
+
+    [Header("Ladder Bindings")]
+    [SerializeField] private KeyCode climbUpKey = KeyCode.W;
+    [SerializeField] private KeyCode climbDownKey = KeyCode.S;
 
     public CharacterIntent Current { get; private set; }
 
-    // Latches JumpPressed until it is consumed by the motor/controller (usually in FixedUpdate).
     private bool _jumpPressedLatched;
 
     void Update()
     {
         float x = Input.GetAxisRaw(horizontalAxis);
 
-        // Latch: once true, stays true until consumed.
         if (Input.GetKeyDown(jumpKey))
             _jumpPressedLatched = true;
 
@@ -39,13 +41,13 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
             UprightHeld = Input.GetKey(uprightKey),
             SwimUpHeld = Input.GetKey(swimUpKey),
             DiveHeld = Input.GetKey(diveKey),
-            SprintHeld = Input.GetKey(sprintKey)
+            SprintHeld = Input.GetKey(sprintKey),
+
+            ClimbUpHeld = Input.GetKey(climbUpKey),
+            ClimbDownHeld = Input.GetKey(climbDownKey)
         };
     }
 
-    /// <summary>
-    /// Call this from your motor/controller AFTER you read JumpPressed in FixedUpdate.
-    /// </summary>
     public void ConsumeJumpPressed()
     {
         _jumpPressedLatched = false;
@@ -54,7 +56,7 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
     private void OnDisable()
     {
         _jumpPressedLatched = false;
-        Current = default; // zero MoveX, false buttons
+        Current = default;
     }
 
     private void OnEnable()

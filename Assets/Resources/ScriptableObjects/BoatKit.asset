@@ -22,3 +22,10 @@ MonoBehaviour:
   MapTable: {fileID: 6138649040144273514, guid: 5b7b85a844cc11c4eb46be1e5183f040, type: 3}
   PlayerSpawnPoint: {fileID: 8692631207410310795, guid: 05b658ca6a731104fa011b3e44cc26fe, type: 3}
   BoardedVolume: {fileID: 8631960592563685139, guid: 90c38b1b858a3a14490a9c242c60bfba, type: 3}
+  Ladder: {fileID: 2802821447643478481, guid: 88f78031fedb2f044a8354e7d5318b4c, type: 3}
+  HardpointEngine: {fileID: 3363453043375993549, guid: 028a492fde13236459f21a4838e45c2b, type: 3}
+  HardpointPump: {fileID: 3363453043375993549, guid: 47bfdd4caca8f1245872766899a7c11e, type: 3}
+  HardpointUtility: {fileID: 3363453043375993549, guid: f032db6fb40743c4a92fadcdf3de128c, type: 3}
+  HardpointWeapon: {fileID: 3363453043375993549, guid: a3300753d048b7442a40aacf57587b00, type: 3}
+  HardpointElectronics: {fileID: 3363453043375993549, guid: b197f07aba96f6f40b4dd5ec2c3ae6ed, type: 3}
+  HardpointHelm: {fileID: 3363453043375993549, guid: 6146a680691f8e44ab9f2ce73e8772c7, type: 3}

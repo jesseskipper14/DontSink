@@ -13,6 +13,11 @@ public class BoatBuilderWindow : EditorWindow
     private const string Prefs_ShowPreview = "BoatBuilder.ShowPreview";
     private const string Prefs_EnforceRequired = "BoatBuilder.EnforceRequired";
 
+    private const string Prefs_HardpointType = "BoatBuilder.HardpointType";
+    private const string Prefs_HardpointIdPrefix = "BoatBuilder.HardpointIdPrefix";
+    private const string Prefs_HardpointAutoMount = "BoatBuilder.HardpointAutoMount";
+    private const string Prefs_HardpointRenameObject = "BoatBuilder.HardpointRenameObject";
+
     public enum Tool
     {
         HullSegment = 0,
@@ -21,11 +26,14 @@ public class BoatBuilderWindow : EditorWindow
         PilotChair = 3,
         CompartmentRect = 4,
         Deck = 5,
+        Ladder = 6,
 
-        BoatBoardObject = 6,
-        MapTable = 7,
-        PlayerSpawnPoint = 8,
-        BoardedVolume = 9,
+        BoatBoardObject = 7,
+        MapTable = 8,
+        PlayerSpawnPoint = 9,
+        BoardedVolume = 10,
+
+        Hardpoint = 11,
     }
 
     private BoatKit _kit;
@@ -35,15 +43,19 @@ public class BoatBuilderWindow : EditorWindow
     private bool _autoParent = true;
     private bool _snapOnPlace = true;
 
-    // NEW
     private bool _showPreview = true;
     private bool _enforceRequired = true;
+
+    private HardpointType _hardpointType = HardpointType.Engine;
+    private string _hardpointIdPrefix = "hardpoint";
+    private bool _hardpointAutoCreateMountPoint = true;
+    private bool _hardpointRenameObjectToId = true;
 
     [MenuItem("Tools/Boat Builder/Window")]
     public static void Open()
     {
         var w = GetWindow<BoatBuilderWindow>("Boat Builder");
-        w.minSize = new Vector2(380, 300);
+        w.minSize = new Vector2(420, 340);
         w.Show();
     }
 
@@ -57,7 +69,11 @@ public class BoatBuilderWindow : EditorWindow
         _showPreview = EditorPrefs.GetBool(Prefs_ShowPreview, true);
         _enforceRequired = EditorPrefs.GetBool(Prefs_EnforceRequired, true);
 
-        // Restore last-used kit (if any)
+        _hardpointType = (HardpointType)EditorPrefs.GetInt(Prefs_HardpointType, (int)HardpointType.Engine);
+        _hardpointIdPrefix = EditorPrefs.GetString(Prefs_HardpointIdPrefix, "hardpoint");
+        _hardpointAutoCreateMountPoint = EditorPrefs.GetBool(Prefs_HardpointAutoMount, true);
+        _hardpointRenameObjectToId = EditorPrefs.GetBool(Prefs_HardpointRenameObject, true);
+
         var guid = EditorPrefs.GetString(Prefs_KIT_GUID, "");
         if (!string.IsNullOrEmpty(guid))
         {
@@ -85,6 +101,11 @@ public class BoatBuilderWindow : EditorWindow
         EditorPrefs.SetBool(Prefs_ShowPreview, _showPreview);
         EditorPrefs.SetBool(Prefs_EnforceRequired, _enforceRequired);
 
+        EditorPrefs.SetInt(Prefs_HardpointType, (int)_hardpointType);
+        EditorPrefs.SetString(Prefs_HardpointIdPrefix, _hardpointIdPrefix ?? "hardpoint");
+        EditorPrefs.SetBool(Prefs_HardpointAutoMount, _hardpointAutoCreateMountPoint);
+        EditorPrefs.SetBool(Prefs_HardpointRenameObject, _hardpointRenameObjectToId);
+
         if (_kit != null)
         {
             var path = AssetDatabase.GetAssetPath(_kit);
@@ -108,7 +129,12 @@ public class BoatBuilderWindow : EditorWindow
             BoardedVolumePadding = 0f,
             BoardedVolumeExtraUp = 5.0f,
             BoardedVolumeExtraDown = 0f,
-            RequiredPlayerSpawnPoints = 4
+            RequiredPlayerSpawnPoints = 4,
+
+            SelectedHardpointType = _hardpointType,
+            HardpointIdPrefix = string.IsNullOrWhiteSpace(_hardpointIdPrefix) ? "hardpoint" : _hardpointIdPrefix.Trim(),
+            HardpointAutoCreateMountPoint = _hardpointAutoCreateMountPoint,
+            HardpointRenameObjectToId = _hardpointRenameObjectToId
         });
     }
 
@@ -120,10 +146,12 @@ public class BoatBuilderWindow : EditorWindow
         new GUIContent("Chair"),
         new GUIContent("Compartment"),
         new GUIContent("Deck"),
+        new GUIContent("Ladder"),
         new GUIContent("Board"),
         new GUIContent("Map"),
         new GUIContent("Spawn"),
         new GUIContent("Volume"),
+        new GUIContent("Hardpoint"),
     };
 
     private void OnGUI()
@@ -184,6 +212,33 @@ public class BoatBuilderWindow : EditorWindow
                 new GUIContent("Enforce required pieces", "Prevents duplicate placement for unique required pieces and shows validation warnings"),
                 _enforceRequired);
 
+            if (_tool == Tool.Hardpoint)
+            {
+                EditorGUILayout.Space(8);
+                EditorGUILayout.LabelField("Hardpoint Authoring", EditorStyles.boldLabel);
+
+                _hardpointType = (HardpointType)EditorGUILayout.EnumPopup(
+                    new GUIContent("Hardpoint Type", "Sets the placed hardpoint's runtime type"),
+                    _hardpointType);
+
+                _hardpointIdPrefix = EditorGUILayout.TextField(
+                    new GUIContent("ID Prefix", "Base prefix used to generate IDs like engine_01"),
+                    _hardpointIdPrefix);
+
+                _hardpointAutoCreateMountPoint = EditorGUILayout.ToggleLeft(
+                    new GUIContent("Auto-create MountPoint", "Creates/assigns a MountPoint child if missing"),
+                    _hardpointAutoCreateMountPoint);
+
+                _hardpointRenameObjectToId = EditorGUILayout.ToggleLeft(
+                    new GUIContent("Rename object to ID", "Renames the placed hardpoint GameObject to the generated hardpoint ID"),
+                    _hardpointRenameObjectToId);
+
+                EditorGUILayout.HelpBox(
+                    "Hardpoint prefab is selected from BoatKit based on the chosen Hardpoint Type. " +
+                    "Placed objects are post-configured so their runtime Hardpoint data matches the editor selection.",
+                    MessageType.Info);
+            }
+
             if (EditorGUI.EndChangeCheck())
             {
                 Persist();
@@ -204,7 +259,6 @@ public class BoatBuilderWindow : EditorWindow
 
             EditorGUILayout.Space(6);
 
-            // Required pieces checklist (best effort)
             using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
             {
                 EditorGUILayout.LabelField("Required Pieces (best effort)", EditorStyles.boldLabel);

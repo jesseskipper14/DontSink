@@ -9,6 +9,8 @@ public struct CharacterIntent
     public bool SwimUpHeld;
     public bool DiveHeld;
     public bool SprintHeld;
+    public bool ClimbUpHeld;
+    public bool ClimbDownHeld;
 }
 
 public interface ICharacterIntentSource

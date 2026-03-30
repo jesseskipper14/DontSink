@@ -82,7 +82,7 @@ Rigidbody2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 32768
+    m_Bits: 99328
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -214,6 +214,8 @@ MonoBehaviour:
   enabledFlag: 1
   priority: 250
   maxForce: 500
+  boat: {fileID: 0}
+  multiplyForceByActiveEngineCount: 0
 --- !u!114 &1656717236630273122
 MonoBehaviour:
   m_ObjectHideFlags: 0
