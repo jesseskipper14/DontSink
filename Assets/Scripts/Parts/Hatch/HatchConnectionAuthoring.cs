@@ -5,7 +5,7 @@ public class HatchConnectionAuthoring : MonoBehaviour
 {
     [Header("References")]
     public Boat boat;                     // optional override; auto-found if null
-    public Hatch hatch;                   // optional override; auto-found if null
+    public HatchRuntime hatchRuntime;                   // optional override; auto-found if null
     public BoxCollider2D openingCollider; // recommended; defines the opening rectangle
 
     [Header("Resolve Settings")]
@@ -31,7 +31,7 @@ public class HatchConnectionAuthoring : MonoBehaviour
     public void ResolveAndApply()
     {
         if (boat == null) boat = GetComponentInParent<Boat>();
-        if (hatch == null) hatch = GetComponent<Hatch>();
+        if (hatchRuntime == null) hatchRuntime = GetComponent<HatchRuntime>();
         if (openingCollider == null) openingCollider = GetComponent<BoxCollider2D>();
 
         if (boat == null)
@@ -77,13 +77,14 @@ public class HatchConnectionAuthoring : MonoBehaviour
         conn.openingTopY = top;
 
         // 4) Optional: mirror hatch open/close into connection state (legacy-friendly)
-        if (hatch != null)
-            conn.isOpen = hatch.isOpen;
+        if (hatchRuntime != null)
+            conn.isOpen = hatchRuntime.IsOpen;
 
 #if UNITY_EDITOR
         UnityEditor.EditorUtility.SetDirty(boat);
         UnityEditor.EditorUtility.SetDirty(this);
-        if (hatch != null) UnityEditor.EditorUtility.SetDirty(hatch);
+        if (hatchRuntime != null)
+            UnityEditor.EditorUtility.SetDirty(hatchRuntime);
 #endif
     }
 

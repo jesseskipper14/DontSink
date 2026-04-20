@@ -74,6 +74,7 @@ GameObject:
   - component: {fileID: 602911317767468109}
   - component: {fileID: -7566764728112760401}
   - component: {fileID: -3348779385539125108}
+  - component: {fileID: 2304285462032090332}
   m_Layer: 3
   m_Name: Ladder
   m_TagString: Untagged
@@ -91,7 +92,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -26.2907, y: 20.25, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5540037343515051928}
@@ -140,15 +141,15 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
+  m_SortingOrder: 3
   m_Sprite: {fileID: 5820663090461918020, guid: 87804cc342b590d43a294464232f496b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
-  m_Size: {x: 0.32, y: 1}
+  m_Size: {x: 1.28, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -192,13 +193,13 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.32, y: 0.29}
-    newSize: {x: 0.32, y: 1}
+    oldSize: {x: 1.28, y: 1.16}
+    newSize: {x: 1.28, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 2
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.32, y: 1}
+  m_Size: {x: 1.28, y: 1}
   m_EdgeRadius: 0
 --- !u!114 &-3348779385539125108
 MonoBehaviour:
@@ -226,6 +227,28 @@ MonoBehaviour:
   maxInteractDistance: 1.5
   climbCenter: {fileID: 8485376572730471918}
   debugLogs: 1
+--- !u!114 &2304285462032090332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2802821447643478481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c42e824c5b3c5e4ca5e33f013c6207d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 602911317767468109}
+  boxCollider: {fileID: -7566764728112760401}
+  width: 1.28
+  height: 1
+  resizeAxis: 1
+  resizeSprite: 1
+  resizeCollider: 1
+  forceTiledSprite: 1
+  snapResizeInEditor: 1
+  resizeSnapIncrement: 1
 --- !u!1 &7097918113666592085
 GameObject:
   m_ObjectHideFlags: 0

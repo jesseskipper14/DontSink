@@ -11,6 +11,8 @@ public static class BoatBuilderSceneTools
     public struct Context
     {
         public BoatKit Kit;
+        public Transform BoatRootOverride;
+
         public BoatBuilderWindow.Tool ActiveTool;
         public float GridSize;
         public float ZPlane;
@@ -41,6 +43,9 @@ public static class BoatBuilderSceneTools
     private static Vector3 _previewLastPos;
     private static bool _previewVisible;
 
+    private const float HatchSplitMinPieceWidth = 0.1f;
+    private const float HatchSearchVerticalTolerance = 0.6f;
+
     static BoatBuilderSceneTools()
     {
         Attach();
@@ -64,6 +69,14 @@ public static class BoatBuilderSceneTools
 
         _ctx = ctx;
         SceneView.RepaintAll();
+    }
+
+    private static Transform ResolveBoatRootParent()
+    {
+        if (_ctx.BoatRootOverride != null)
+            return _ctx.BoatRootOverride;
+
+        return FindBestBoatRootParent();
     }
 
     public static void TogglePlacement()
@@ -94,7 +107,7 @@ public static class BoatBuilderSceneTools
         }
     }
 
-    public static Transform PeekBestBoatRoot() => FindBestBoatRootParent();
+    public static Transform PeekBestBoatRoot() => ResolveBoatRootParent();
 
     public static void GetRequiredPiecesStatus(
         Transform boatRoot,
@@ -173,7 +186,11 @@ public static class BoatBuilderSceneTools
             ? $"PLACING: {_ctx.ActiveTool} ({_ctx.SelectedHardpointType})"
             : $"PLACING: {_ctx.ActiveTool}";
 
-        DrawStatus(view, $"{placingLabel} | Left-click to place | Right-click/Esc to cancel");
+        string rootLabel = _ctx.BoatRootOverride != null
+            ? $" | Root: {_ctx.BoatRootOverride.name}"
+            : " | Root: auto";
+
+        DrawStatus(view, $"{placingLabel}{rootLabel} | Left-click to place | Right-click/Esc to cancel");
 
         if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Escape)
         {
@@ -212,11 +229,14 @@ public static class BoatBuilderSceneTools
             var world = MouseToWorldOnZPlane(e.mousePosition, _ctx.ZPlane);
             if (_ctx.SnapOnPlace) world = Snap(world, _ctx.GridSize);
 
-            var parent = _ctx.AutoParentToBoatRoot ? FindBestBoatRootParent() : null;
+            Transform boatRoot = _ctx.AutoParentToBoatRoot ? ResolveBoatRootParent() : null;
+            Transform parent = boatRoot != null
+                ? ResolvePlacementParentForTool(_ctx.ActiveTool, boatRoot)
+                : null;
 
-            if (_ctx.EnforceRequiredPieces && parent != null)
+            if (_ctx.EnforceRequiredPieces && boatRoot != null)
             {
-                if (HandleRequiredDuplicateBlock(parent, _ctx.ActiveTool))
+                if (HandleRequiredDuplicateBlock(boatRoot, _ctx.ActiveTool))
                 {
                     e.Use();
                     SceneView.RepaintAll();
@@ -224,18 +244,39 @@ public static class BoatBuilderSceneTools
                 }
             }
 
-            var placed = PlacePrefab(prefab, world, parent);
+            GameObject placed = null;
 
-            if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.BoardedVolume && parent != null)
+            if (_ctx.ActiveTool == BoatBuilderWindow.Tool.Hatch)
             {
-                AutoFitBoardedVolume(parent, placed, _ctx.BoardedVolumePadding, _ctx.BoardedVolumeExtraUp, _ctx.BoardedVolumeExtraDown);
+                placed = TryPlaceHatchWithFloorSplit(prefab, world, parent);
+            }
+            else
+            {
+                placed = PlacePrefab(prefab, world, parent);
+            }
+
+            if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.BoardedVolume && boatRoot != null)
+            {
+                AutoFitBoardedVolume(boatRoot, placed, _ctx.BoardedVolumePadding, _ctx.BoardedVolumeExtraUp, _ctx.BoardedVolumeExtraDown);
+            }
+
+            if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.CompartmentRect)
+            {
+                InitializePlacedCompartment(
+                    placed,
+                    boatRoot != null ? boatRoot : placed.transform.parent);
+            }
+
+            if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.ExteriorShell)
+            {
+                InitializePlacedVisualMarker(placed, BoatVisualCategory.ExteriorShell);
             }
 
             if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.Hardpoint)
             {
                 InitializePlacedHardpoint(
                     placed,
-                    parent != null ? parent : placed.transform.parent,
+                    boatRoot != null ? boatRoot : placed.transform.parent,
                     _ctx.SelectedHardpointType,
                     _ctx.HardpointIdPrefix,
                     _ctx.HardpointAutoCreateMountPoint,
@@ -389,6 +430,108 @@ public static class BoatBuilderSceneTools
 
         EditorUtility.SetDirty(placed.transform);
         EditorUtility.SetDirty(box);
+    }
+
+    private static void InitializePlacedCompartment(GameObject placed, Transform boatRoot)
+    {
+        if (placed == null)
+            return;
+
+        if (boatRoot == null)
+        {
+            Debug.LogWarning("[BoatBuilder] Cannot register compartment: no BoatRoot resolved.", placed);
+            return;
+        }
+
+        Boat boat = boatRoot.GetComponent<Boat>();
+        if (boat == null)
+        {
+            boat = boatRoot.GetComponentInParent<Boat>();
+        }
+
+        if (boat == null)
+        {
+            Debug.LogWarning(
+                $"[BoatBuilder] Cannot register compartment '{placed.name}': no Boat component found on BoatRoot '{boatRoot.name}' or its parents.",
+                placed);
+            return;
+        }
+
+        Compartment[] compartments = placed.GetComponentsInChildren<Compartment>(true);
+        if (compartments == null || compartments.Length == 0)
+        {
+            Debug.LogWarning(
+                $"[BoatBuilder] Placed CompartmentRect '{placed.name}' has no Compartment component.",
+                placed);
+            return;
+        }
+
+        Undo.RecordObject(boat, "Register placed compartment");
+
+        int added = 0;
+
+        foreach (Compartment compartment in compartments)
+        {
+            if (compartment == null)
+                continue;
+
+            if (boat.Compartments == null)
+                boat.Compartments = new System.Collections.Generic.List<Compartment>();
+
+            if (boat.Compartments.Contains(compartment))
+                continue;
+
+            boat.Compartments.Add(compartment);
+            added++;
+
+            EditorUtility.SetDirty(compartment);
+        }
+
+        EditorUtility.SetDirty(boat);
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+
+        Debug.Log(
+            $"[BoatBuilder] Registered {added} compartment(s) from '{placed.name}' to Boat '{boat.name}'.",
+            placed);
+    }
+
+    public static void RebuildCompartmentsFromBoatRoot(Transform boatRoot)
+    {
+        if (boatRoot == null)
+        {
+            Debug.LogWarning("[BoatBuilder] Cannot rebuild compartments: BoatRoot is null.");
+            return;
+        }
+
+        Boat boat = boatRoot.GetComponent<Boat>();
+        if (boat == null)
+            boat = boatRoot.GetComponentInParent<Boat>();
+
+        if (boat == null)
+        {
+            Debug.LogWarning($"[BoatBuilder] Cannot rebuild compartments: no Boat component found for '{boatRoot.name}'.", boatRoot);
+            return;
+        }
+
+        Compartment[] found = boatRoot.GetComponentsInChildren<Compartment>(true);
+
+        Undo.RecordObject(boat, "Rebuild Boat Compartments");
+
+        boat.Compartments = new System.Collections.Generic.List<Compartment>();
+
+        foreach (Compartment c in found)
+        {
+            if (c == null)
+                continue;
+
+            if (!boat.Compartments.Contains(c))
+                boat.Compartments.Add(c);
+        }
+
+        EditorUtility.SetDirty(boat);
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+
+        Debug.Log($"[BoatBuilder] Rebuilt Boat.Compartments for '{boat.name}'. Found {boat.Compartments.Count} compartment(s).", boat);
     }
 
     private static void InitializePlacedHardpoint(
@@ -633,21 +776,22 @@ public static class BoatBuilderSceneTools
         if (go != null)
         {
             var t = go.transform;
-            Transform top = t;
+
             while (t != null)
             {
-                top = t;
                 var n = t.name.ToLowerInvariant();
+
                 if (n.Contains("boat") || n.Contains("testboat") || n.Contains("boatroot"))
                     return t;
+
                 t = t.parent;
             }
-            return top;
         }
 
         foreach (var root in EditorSceneManager.GetActiveScene().GetRootGameObjects())
         {
             var n = root.name.ToLowerInvariant();
+
             if (n.Contains("boat") || n.Contains("testboat") || n.Contains("boatroot"))
                 return root.transform;
         }
@@ -666,13 +810,12 @@ public static class BoatBuilderSceneTools
             BoatBuilderWindow.Tool.CompartmentRect => kit.CompartmentRect,
             BoatBuilderWindow.Tool.Deck => kit.Deck,
             BoatBuilderWindow.Tool.Ladder => kit.Ladder,
-
             BoatBuilderWindow.Tool.BoatBoardObject => kit.BoatBoardObject,
             BoatBuilderWindow.Tool.MapTable => kit.MapTable,
             BoatBuilderWindow.Tool.PlayerSpawnPoint => kit.PlayerSpawnPoint,
             BoatBuilderWindow.Tool.BoardedVolume => kit.BoardedVolume,
-
             BoatBuilderWindow.Tool.Hardpoint => GetHardpointPrefab(kit, selectedHardpointType),
+            BoatBuilderWindow.Tool.ExteriorShell => kit.ExteriorShell,
             _ => null
         };
     }
@@ -689,6 +832,428 @@ public static class BoatBuilderSceneTools
             HardpointType.Helm => kit.HardpointHelm,
             _ => null
         };
+    }
+
+    private static GameObject TryPlaceHatchWithFloorSplit(GameObject hatchPrefab, Vector3 requestedWorldPos, Transform preferredParent)
+    {
+        if (hatchPrefab == null)
+            return null;
+
+        var hatchAuthoring = hatchPrefab.GetComponent<HatchAuthoring>();
+        if (hatchAuthoring == null)
+        {
+            Debug.LogWarning("[BoatBuilder] Hatch prefab is missing HatchAuthoring. Cannot perform floor split placement.", hatchPrefab);
+            return null;
+        }
+
+        float openingWidth = hatchAuthoring.OpeningWidth;
+        float minPieceWidth = HatchSplitMinPieceWidth;
+
+        if (!TryFindBestFloorSplit(
+                requestedWorldPos,
+                openingWidth,
+                minPieceWidth,
+                preferredParent,
+                out var floor,
+                out var split))
+        {
+            Debug.LogWarning("[BoatBuilder] No valid floor segment found under hatch placement. Hatch placement requires a splittable FloorSegmentAuthoring beneath it.");
+            return null;
+        }
+
+        Transform actualParent = floor.transform.parent != null ? floor.transform.parent : preferredParent;
+        Quaternion baseRot = floor.transform.rotation;
+
+        Debug.Log(
+            $"[BoatBuilder:Hatch] Splitting '{floor.name}' " +
+            $"leftWidth={split.LeftWidth:F3}, rightWidth={split.RightWidth:F3}, " +
+            $"leftCenter={split.LeftCenterX:F3}, rightCenter={split.RightCenterX:F3}",
+            floor);
+
+        // Create the new right-side piece first.
+        // The original floor remains untouched until hatch + right piece are confirmed.
+        GameObject rightPiece = CreateResizedFloorClone(
+            floor,
+            split.RightWidth,
+            split.RightCenterX,
+            actualParent,
+            "_Right");
+
+        if (rightPiece == null)
+        {
+            Debug.LogWarning("[BoatBuilder] Failed to create right split floor piece. Original floor preserved.", floor);
+            return null;
+        }
+
+        Vector3 hatchWorldPos = new Vector3(
+            requestedWorldPos.x,
+            floor.WorldCenterY,
+            requestedWorldPos.z);
+
+        GameObject hatchInstance = PlacePrefab(hatchPrefab, hatchWorldPos, actualParent);
+
+        if (hatchInstance == null)
+        {
+            Debug.LogWarning("[BoatBuilder] Hatch placement failed. Destroying right split clone. Original floor preserved.", floor);
+
+            Undo.DestroyObjectImmediate(rightPiece);
+            return null;
+        }
+
+        hatchInstance.transform.rotation = baseRot;
+
+        // Now mutate the original floor into the left piece.
+        // No deletion. No vanishing boat floor. Society heals, briefly.
+        RecordFloorSegmentForUndo(floor, "Resize original floor into left split piece");
+
+        floor.ApplyWidth(split.LeftWidth);
+        floor.SetWorldCenterXPreservingColliderOffset(split.LeftCenterX);
+
+        Undo.RecordObject(floor.gameObject, "Rename left split floor piece");
+        floor.gameObject.name = floor.gameObject.name + "_Left";
+
+        InitializePlacedHatch(hatchInstance, actualParent);
+
+        EditorUtility.SetDirty(floor);
+        EditorUtility.SetDirty(floor.gameObject);
+        EditorUtility.SetDirty(rightPiece);
+        EditorUtility.SetDirty(hatchInstance);
+
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+
+        return hatchInstance;
+    }
+
+    private static bool TryFindBestFloorSplit(
+    Vector3 requestedWorldPos,
+    float openingWidth,
+    float minPieceWidth,
+    Transform preferredParent,
+    out FloorSegmentAuthoring bestFloor,
+    out FloorSplitUtility.SplitResult bestSplit)
+    {
+        bestFloor = null;
+        bestSplit = default;
+
+        var candidates = preferredParent != null
+            ? preferredParent.GetComponentsInChildren<FloorSegmentAuthoring>(true)
+            : UnityEngine.Object.FindObjectsByType<FloorSegmentAuthoring>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+
+        float bestScore = float.PositiveInfinity;
+
+        //Debug.Log($"[BoatBuilder:Hatch] Searching split. requested=({requestedWorldPos.x:F2},{requestedWorldPos.y:F2}) openingWidth={openingWidth:F2} minPieceWidth={minPieceWidth:F2} candidates={candidates.Length}");
+
+        foreach (var floor in candidates)
+        {
+            if (floor == null)
+                continue;
+
+            float yDelta = Mathf.Abs(floor.transform.position.y - requestedWorldPos.y);
+            if (yDelta > HatchSearchVerticalTolerance)
+            {
+                Debug.Log($"[BoatBuilder:Hatch] Reject floor '{floor.name}' due to Y delta. floorY={floor.transform.position.y:F2} requestedY={requestedWorldPos.y:F2} yDelta={yDelta:F2} tol={HatchSearchVerticalTolerance:F2}", floor);
+                continue;
+            }
+
+            float segLeft = floor.WorldLeftX;
+            float segRight = floor.WorldRightX;
+            float openLeft = requestedWorldPos.x - openingWidth * 0.5f;
+            float openRight = requestedWorldPos.x + openingWidth * 0.5f;
+
+            //Debug.Log(
+            //    $"[BoatBuilder:Hatch] Candidate '{floor.name}' floorWidth={floor.Width:F2} floorX={floor.transform.position.x:F2} seg=[{segLeft:F2},{segRight:F2}] opening=[{openLeft:F2},{openRight:F2}]",
+            //    floor);
+
+            if (!FloorSplitUtility.TryComputeSplit(
+                    floor,
+                    requestedWorldPos.x,
+                    openingWidth,
+                    minPieceWidth,
+                    out var split))
+            {
+                Debug.LogWarning(
+                    $"[BoatBuilder:Hatch] Reject floor '{floor.name}' because split is invalid. " +
+                    $"Likely causes: opening wider than allowed span, click too close to edge, or minPieceWidth too large. " +
+                    $"floorWidth={floor.Width:F2} openingWidth={openingWidth:F2} minPieceWidth={minPieceWidth:F2}",
+                    floor);
+                continue;
+            }
+
+            float centerDelta = Mathf.Abs(floor.WorldCenterX - requestedWorldPos.x);
+            float score = yDelta * 10f + centerDelta;
+
+            Debug.Log(
+                $"[BoatBuilder:Hatch] VALID split on '{floor.name}'. leftWidth={split.LeftWidth:F2} rightWidth={split.RightWidth:F2} score={score:F2}",
+                floor);
+
+            if (score < bestScore)
+            {
+                bestScore = score;
+                bestFloor = floor;
+                bestSplit = split;
+            }
+        }
+
+        return bestFloor != null && bestSplit.IsValid;
+    }
+
+    private static GameObject CreateResizedFloorClone(
+    FloorSegmentAuthoring sourceFloor,
+    float newWidth,
+    float worldCenterX,
+    Transform parent,
+    string nameSuffix)
+    {
+        if (sourceFloor == null)
+            return null;
+
+        if (newWidth <= 0.01f)
+        {
+            Debug.LogWarning($"[BoatBuilder] Refusing to create split floor clone with invalid width {newWidth:F3}.", sourceFloor);
+            return null;
+        }
+
+        Transform resolvedParent = parent != null ? parent : sourceFloor.transform.parent;
+
+        // Instantiate directly under the intended parent while preserving world pose.
+        // This avoids the "instantiate, then reparent, then pray" ritual.
+        GameObject piece = UnityEngine.Object.Instantiate(
+            sourceFloor.gameObject,
+            sourceFloor.transform.position,
+            sourceFloor.transform.rotation,
+            resolvedParent);
+
+        if (piece == null)
+            return null;
+
+        Undo.RegisterCreatedObjectUndo(piece, $"Create split floor clone {nameSuffix}");
+
+        piece.transform.localScale = sourceFloor.transform.localScale;
+        piece.name = sourceFloor.name + nameSuffix;
+
+        var pieceAuthoring = piece.GetComponent<FloorSegmentAuthoring>();
+        if (pieceAuthoring == null)
+        {
+            Debug.LogWarning("[BoatBuilder] Split floor clone is missing FloorSegmentAuthoring. Destroying failed clone.", piece);
+            Undo.DestroyObjectImmediate(piece);
+            return null;
+        }
+
+        RecordFloorSegmentForUndo(pieceAuthoring, "Resize split floor clone");
+
+        pieceAuthoring.ApplyWidth(newWidth);
+
+        // Critical: move AFTER resizing, because the collider center/bounds may change.
+        pieceAuthoring.SetWorldCenterXPreservingColliderOffset(worldCenterX);
+
+        Debug.Log(
+            $"[BoatBuilder:Hatch] Created split clone '{piece.name}' " +
+            $"requestedCenterX={worldCenterX:F3}, actualCenterX={pieceAuthoring.WorldCenterX:F3}, " +
+            $"width={newWidth:F3}, actualBounds=[{pieceAuthoring.WorldLeftX:F3}, {pieceAuthoring.WorldRightX:F3}]",
+            piece);
+
+        EditorUtility.SetDirty(piece);
+        EditorUtility.SetDirty(pieceAuthoring);
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+
+        return piece;
+    }
+
+    private static void InitializePlacedHatch(GameObject placed, Transform boatRoot)
+    {
+        if (placed == null)
+            return;
+
+        var authoring = placed.GetComponent<HatchAuthoring>();
+        if (authoring == null)
+            return;
+
+        if (!string.IsNullOrWhiteSpace(authoring.HatchId))
+            return;
+
+        Undo.RecordObject(authoring, "Configure Hatch");
+
+        string id = GenerateNextHatchId(boatRoot, "hatch");
+        authoring.HatchId = id;
+
+        Undo.RecordObject(placed, "Rename Hatch");
+        placed.name = id;
+
+        EditorUtility.SetDirty(authoring);
+        EditorUtility.SetDirty(placed);
+    }
+
+    private static string GenerateNextHatchId(Transform boatRoot, string prefix)
+    {
+        int maxFound = 0;
+
+        if (boatRoot != null)
+        {
+            var existing = boatRoot.GetComponentsInChildren<HatchAuthoring>(true);
+            foreach (var h in existing)
+            {
+                if (h == null)
+                    continue;
+
+                string id = h.HatchId;
+                if (string.IsNullOrWhiteSpace(id))
+                    continue;
+
+                if (!id.StartsWith(prefix + "_", System.StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                string suffix = id.Substring(prefix.Length + 1);
+                if (int.TryParse(suffix, out int n))
+                    maxFound = Mathf.Max(maxFound, n);
+            }
+        }
+
+        return $"{prefix}_{(maxFound + 1):00}";
+    }
+
+    private static void RecordFloorSegmentForUndo(FloorSegmentAuthoring floor, string label)
+    {
+        if (floor == null)
+            return;
+
+        Undo.RecordObject(floor, label);
+        Undo.RecordObject(floor.transform, label);
+
+        if (floor.FloorCollider != null)
+            Undo.RecordObject(floor.FloorCollider, label);
+
+        if (floor.SpriteRenderer != null)
+        {
+            Undo.RecordObject(floor.SpriteRenderer, label);
+            Undo.RecordObject(floor.SpriteRenderer.transform, label);
+        }
+
+        if (floor.ResizableSegment != null)
+        {
+            Undo.RecordObject(floor.ResizableSegment, label);
+
+            if (floor.ResizableSegment.BoxCollider != null)
+                Undo.RecordObject(floor.ResizableSegment.BoxCollider, label);
+
+            if (floor.ResizableSegment.SpriteRenderer != null)
+            {
+                Undo.RecordObject(floor.ResizableSegment.SpriteRenderer, label);
+                Undo.RecordObject(floor.ResizableSegment.SpriteRenderer.transform, label);
+            }
+        }
+    }
+
+    private static Transform ResolvePlacementParentForTool(
+    BoatBuilderWindow.Tool tool,
+    Transform boatRoot)
+    {
+        if (boatRoot == null)
+            return null;
+
+        return tool switch
+        {
+            // Exterior shell / visual occluder
+            BoatBuilderWindow.Tool.ExteriorShell =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.ExteriorShell),
+
+            // Hull/body structural visuals
+            BoatBuilderWindow.Tool.HullSegment =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Hull),
+
+            BoatBuilderWindow.Tool.Wall =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Hull),
+
+            // Interior simulation/visuals
+            BoatBuilderWindow.Tool.CompartmentRect =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Interior),
+
+            BoatBuilderWindow.Tool.Ladder =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Interior),
+
+            // Exterior deck objects
+            BoatBuilderWindow.Tool.Deck =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.ExteriorDeck),
+
+            BoatBuilderWindow.Tool.Hatch =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.ExteriorDeck),
+
+            BoatBuilderWindow.Tool.PilotChair =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.ExteriorDeck),
+
+            // Volumes/triggers
+            BoatBuilderWindow.Tool.BoardedVolume =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Volume),
+
+            // Gameplay helpers/interactables
+            BoatBuilderWindow.Tool.PlayerSpawnPoint =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Gameplay),
+
+            BoatBuilderWindow.Tool.BoatBoardObject =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Gameplay),
+
+            BoatBuilderWindow.Tool.MapTable =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Gameplay),
+
+            BoatBuilderWindow.Tool.Hardpoint =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Gameplay),
+
+            _ => boatRoot
+        };
+    }
+
+    private static Transform GetOrCreateBoatCategoryRoot(Transform boatRoot, BoatVisualCategory category)
+    {
+        if (boatRoot == null)
+            return null;
+
+        string childName = category switch
+        {
+            BoatVisualCategory.ExteriorShell => "_Exterior",
+            BoatVisualCategory.Interior => "_Interior",
+            BoatVisualCategory.ExteriorDeck => "_Deck",
+            BoatVisualCategory.Gameplay => "_Gameplay",
+            BoatVisualCategory.Volume => "_Volumes",
+            BoatVisualCategory.AlwaysVisible => "_AlwaysVisible",
+            BoatVisualCategory.Hull => "_Hull",
+            _ => "_Misc"
+        };
+
+        Transform existing = boatRoot.Find(childName);
+        if (existing != null)
+            return existing;
+
+        GameObject go = new GameObject(childName);
+        Undo.RegisterCreatedObjectUndo(go, $"Create boat category root {childName}");
+
+        Transform t = go.transform;
+        Undo.SetTransformParent(t, boatRoot, $"Parent {childName} to BoatRoot");
+
+        t.localPosition = Vector3.zero;
+        t.localRotation = Quaternion.identity;
+        t.localScale = Vector3.one;
+
+        EditorUtility.SetDirty(go);
+        EditorSceneManager.MarkSceneDirty(boatRoot.gameObject.scene);
+
+        return t;
+    }
+
+    private static void InitializePlacedVisualMarker(GameObject placed, BoatVisualCategory category)
+    {
+        if (placed == null)
+            return;
+
+        BoatVisualMarker marker = placed.GetComponent<BoatVisualMarker>();
+        if (marker == null)
+        {
+            marker = placed.AddComponent<BoatVisualMarker>();
+            Undo.RegisterCreatedObjectUndo(marker, "Add Boat Visual Marker");
+        }
+
+        Undo.RecordObject(marker, "Configure Boat Visual Marker");
+        marker.EditorSetCategory(category);
+
+        EditorUtility.SetDirty(marker);
     }
 }
 #endif

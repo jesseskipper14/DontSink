@@ -34,6 +34,9 @@ public class Boat : MonoBehaviour, IForceBody
     [SerializeField] private float height = 1f;
     [SerializeField] private float volume = 1f;
 
+    [SerializeField] private Vector2 geometryLocalCenter = Vector2.zero;
+    public Vector2 GeometryLocalCenter => geometryLocalCenter;
+
     // ========================
     // Throttle
     // ========================
@@ -256,6 +259,52 @@ public class Boat : MonoBehaviour, IForceBody
         massContributions.Remove(c);
     }
 
+    public void SetAuthoritativeGeometry(float newWidth, float newHeight, float newVolume)
+    {
+        SetAuthoritativeGeometry(newWidth, newHeight, newVolume, geometryLocalCenter, false);
+    }
+
+    public void SetAuthoritativeGeometry(
+        float newWidth,
+        float newHeight,
+        float newVolume,
+        Vector2 newLocalCenter)
+    {
+        SetAuthoritativeGeometry(newWidth, newHeight, newVolume, newLocalCenter, false);
+    }
+
+    public void SetAuthoritativeGeometry(
+        float newWidth,
+        float newHeight,
+        float newVolume,
+        Vector2 newLocalCenter,
+        bool alsoSetBaseCenterOfMass)
+    {
+        width = Mathf.Max(0.01f, newWidth);
+        height = Mathf.Max(0.01f, newHeight);
+        volume = Mathf.Max(0.01f, newVolume);
+        geometryLocalCenter = newLocalCenter;
+
+        if (alsoSetBaseCenterOfMass)
+            baseLocalCenterOfMass = newLocalCenter;
+
+        if (rb != null)
+        {
+            rb.inertia = MomentOfInertia;
+            RecomputeMassAndCOM();
+        }
+    }
+
+    public void SetBaseLocalCenterOfMass(Vector2 newLocalCenterOfMass)
+    {
+        baseLocalCenterOfMass = newLocalCenterOfMass;
+
+        if (rb != null)
+        {
+            RecomputeMassAndCOM();
+        }
+    }
+
 
 
     // ========================
@@ -361,6 +410,206 @@ public class Boat : MonoBehaviour, IForceBody
         );
 #endif
     }
+
+#if UNITY_EDITOR
+    [ContextMenu("Auto-fit Geometry From Structure")]
+    private void EditorAutoFitGeometryFromStructure()
+    {
+        if (!TryComputeEditorLocalBounds(transform, out Bounds localBounds))
+        {
+            Debug.LogWarning("[Boat] Could not auto-fit geometry. No usable child renderers/colliders found.", this);
+            return;
+        }
+
+        float newWidth = Mathf.Max(0.01f, localBounds.size.x);
+        float newHeight = Mathf.Max(0.01f, localBounds.size.y);
+        float newVolume = Mathf.Max(0.01f, newWidth * newHeight);
+
+        UnityEditor.Undo.RecordObject(this, "Auto-fit Boat Geometry");
+
+        SetAuthoritativeGeometry(
+            newWidth,
+            newHeight,
+            newVolume,
+            localBounds.center,
+            alsoSetBaseCenterOfMass: true);
+
+        UnityEditor.EditorUtility.SetDirty(this);
+        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(gameObject.scene);
+
+        Debug.Log(
+            $"[Boat] Auto-fit geometry from structure. width={newWidth:F2}, height={newHeight:F2}, volume={newVolume:F2}, boundsCenter={localBounds.center}",
+            this);
+    }
+
+    private static bool TryComputeEditorLocalBounds(Transform boatRoot, out Bounds localBounds)
+    {
+        localBounds = default;
+
+        bool hasAny = false;
+        Vector3 min = new Vector3(float.PositiveInfinity, float.PositiveInfinity, 0f);
+        Vector3 max = new Vector3(float.NegativeInfinity, float.NegativeInfinity, 0f);
+
+        Collider2D[] colliders = boatRoot.GetComponentsInChildren<Collider2D>(true);
+        foreach (Collider2D col in colliders)
+        {
+            if (col == null)
+                continue;
+
+            if (col.isTrigger)
+                continue;
+
+            EncapsulateEditorWorldBoundsAsLocalAabb(boatRoot, col.bounds, ref min, ref max, ref hasAny);
+        }
+
+        if (!hasAny)
+        {
+            Renderer[] renderers = boatRoot.GetComponentsInChildren<Renderer>(true);
+            foreach (Renderer r in renderers)
+            {
+                if (r == null)
+                    continue;
+
+                if (r.GetComponent<CompartmentWaterRenderer>() != null)
+                    continue;
+
+                EncapsulateEditorWorldBoundsAsLocalAabb(boatRoot, r.bounds, ref min, ref max, ref hasAny);
+            }
+        }
+
+        if (!hasAny)
+            return false;
+
+        Vector3 center = (min + max) * 0.5f;
+        Vector3 size = max - min;
+
+        localBounds = new Bounds(center, size);
+        return true;
+    }
+
+    private static void EncapsulateEditorWorldBoundsAsLocalAabb(
+        Transform root,
+        Bounds worldBounds,
+        ref Vector3 min,
+        ref Vector3 max,
+        ref bool hasAny)
+    {
+        Vector3 c = worldBounds.center;
+        Vector3 e = worldBounds.extents;
+
+        Vector3[] corners =
+        {
+        new Vector3(c.x - e.x, c.y - e.y, c.z),
+        new Vector3(c.x - e.x, c.y + e.y, c.z),
+        new Vector3(c.x + e.x, c.y - e.y, c.z),
+        new Vector3(c.x + e.x, c.y + e.y, c.z),
+    };
+
+        for (int i = 0; i < corners.Length; i++)
+        {
+            Vector3 local = root.InverseTransformPoint(corners[i]);
+            min = Vector3.Min(min, local);
+            max = Vector3.Max(max, local);
+            hasAny = true;
+        }
+    }
+#endif
+
+#if UNITY_EDITOR
+    [ContextMenu("Auto-fit Geometry From Visual Renderers")]
+    private void EditorAutoFitGeometryFromVisualRenderers()
+    {
+        if (!TryComputeEditorVisualRendererBounds(transform, out Bounds localBounds))
+        {
+            Debug.LogWarning("[Boat] Could not auto-fit geometry from visual renderers. No usable renderers found.", this);
+            return;
+        }
+
+        float newWidth = Mathf.Max(0.01f, localBounds.size.x);
+        float newHeight = Mathf.Max(0.01f, localBounds.size.y);
+        float newVolume = Mathf.Max(0.01f, newWidth * newHeight);
+
+        UnityEditor.Undo.RecordObject(this, "Auto-fit Boat Geometry From Visual Renderers");
+
+        SetAuthoritativeGeometry(
+            newWidth,
+            newHeight,
+            newVolume,
+            localBounds.center,
+            alsoSetBaseCenterOfMass: true);
+
+        UnityEditor.EditorUtility.SetDirty(this);
+        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(gameObject.scene);
+
+        Debug.Log(
+            $"[Boat] Auto-fit geometry from visual renderers. " +
+            $"width={newWidth:F2}, height={newHeight:F2}, volume={newVolume:F2}, center={localBounds.center}",
+            this);
+    }
+
+    private static bool TryComputeEditorVisualRendererBounds(Transform boatRoot, out Bounds localBounds)
+    {
+        localBounds = default;
+
+        bool hasAny = false;
+        Vector3 min = new Vector3(float.PositiveInfinity, float.PositiveInfinity, 0f);
+        Vector3 max = new Vector3(float.NegativeInfinity, float.NegativeInfinity, 0f);
+
+        Renderer[] renderers = boatRoot.GetComponentsInChildren<Renderer>(true);
+
+        foreach (Renderer r in renderers)
+        {
+            if (r == null)
+                continue;
+
+            if (ShouldIgnoreRendererForBoatGeometry(r))
+                continue;
+
+            EncapsulateEditorWorldBoundsAsLocalAabb(
+                boatRoot,
+                r.bounds,
+                ref min,
+                ref max,
+                ref hasAny);
+        }
+
+        if (!hasAny)
+            return false;
+
+        localBounds = new Bounds((min + max) * 0.5f, max - min);
+        return true;
+    }
+
+    private static bool ShouldIgnoreRendererForBoatGeometry(Renderer r)
+    {
+        if (r == null)
+            return true;
+
+        // Water/flood rendering should not define the hull.
+        if (r.GetComponent<CompartmentWaterRenderer>() != null)
+            return true;
+
+        string n = r.gameObject.name.ToLowerInvariant();
+
+        // Expand this list as needed when some decorative/debug thing pollutes bounds.
+        if (n.Contains("water"))
+            return true;
+
+        if (n.Contains("debug"))
+            return true;
+
+        if (n.Contains("prompt"))
+            return true;
+
+        if (n.Contains("preview"))
+            return true;
+
+        if (n.Contains("gizmo"))
+            return true;
+
+        return false;
+    }
+#endif
 
     private void DrawConnectionGizmo()
     {

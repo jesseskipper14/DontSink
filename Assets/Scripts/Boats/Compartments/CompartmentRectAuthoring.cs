@@ -6,14 +6,13 @@ using UnityEditor;
 
 /// <summary>
 /// Authoring helper for rectangular compartments.
-/// Keeps dimensions integer, axis-aligned, and updates attached components.
-/// Intended to be saved inside Boat prefabs (persistent authoring).
+/// Keeps visual/collider/simulation geometry synchronized.
 /// </summary>
 [ExecuteAlways]
 [DisallowMultipleComponent]
 public class CompartmentRectAuthoring : MonoBehaviour
 {
-    [Header("Rect Size (whole numbers)")]
+    [Header("Rect Size (whole cells)")]
     [Min(1)] public int width = 4;
     [Min(1)] public int height = 2;
 
@@ -23,72 +22,191 @@ public class CompartmentRectAuthoring : MonoBehaviour
     [Header("Center Offset (in cells)")]
     public Vector2Int centerOffsetCells = Vector2Int.zero;
 
+    [Header("Refs")]
+    [SerializeField] private Compartment compartment;
+    [SerializeField] private BoxCollider2D boxCollider;
+    [SerializeField] private ResizableSegment2D resizableSegment;
+
     [Header("Auto components")]
     public bool ensureBoxCollider2D = true;
     public bool colliderIsTrigger = true;
 
-    // Cache
-    private int _lastW, _lastH;
+    [Header("Resizable Segment Sync")]
+    [Tooltip("If true, scene resize handles on ResizableSegment2D can update this authoring size.")]
+    [SerializeField] private bool allowResizableSegmentToDriveSize = true;
+
+    [Tooltip("Preserves current water fill percentage when compartment dimensions change.")]
+    [SerializeField] private bool preserveWaterFractionOnResize = true;
+
+    private int _lastW;
+    private int _lastH;
     private float _lastCell;
     private Vector2Int _lastOffset;
+    private float _lastSegmentWidth;
+    private float _lastSegmentHeight;
 
-    void OnEnable() => Apply();
-    void OnValidate() => Apply();
-    void Update()
+    private bool _applying;
+
+    public Vector2 WorldUnitSize => new Vector2(width * cellSize, height * cellSize);
+    public Vector2 LocalOffset => new Vector2(centerOffsetCells.x * cellSize, centerOffsetCells.y * cellSize);
+
+    private void Reset()
     {
-        // ExecuteAlways can get spammy. Only reapply if values changed.
-        if (_lastW != width || _lastH != height || !Mathf.Approximately(_lastCell, cellSize) || _lastOffset != centerOffsetCells)
+        ResolveRefs();
+        PullSizeFromResizableIfAvailable();
+        Apply();
+    }
+
+    private void OnEnable()
+    {
+        ResolveRefs();
+        Apply();
+    }
+
+    private void OnValidate()
+    {
+        ResolveRefs();
+        Apply();
+    }
+
+    private void Update()
+    {
+        if (_applying)
+            return;
+
+        ResolveRefs();
+
+        if (allowResizableSegmentToDriveSize && resizableSegment != null)
+        {
+            bool segmentChanged =
+                !Mathf.Approximately(_lastSegmentWidth, resizableSegment.Width) ||
+                !Mathf.Approximately(_lastSegmentHeight, resizableSegment.Height);
+
+            if (segmentChanged)
+            {
+                PullSizeFromResizableIfAvailable();
+                Apply();
+                return;
+            }
+        }
+
+        bool authoringChanged =
+            _lastW != width ||
+            _lastH != height ||
+            !Mathf.Approximately(_lastCell, cellSize) ||
+            _lastOffset != centerOffsetCells;
+
+        if (authoringChanged)
             Apply();
     }
 
-    private void Apply()
+    private void ResolveRefs()
     {
+        if (compartment == null)
+            compartment = GetComponent<Compartment>();
+
+        if (boxCollider == null)
+            boxCollider = GetComponent<BoxCollider2D>();
+
+        if (resizableSegment == null)
+            resizableSegment = GetComponent<ResizableSegment2D>();
+    }
+
+    private void PullSizeFromResizableIfAvailable()
+    {
+        if (resizableSegment == null)
+            return;
+
+        float safeCell = Mathf.Max(0.1f, cellSize);
+
+        width = Mathf.Max(1, Mathf.RoundToInt(resizableSegment.Width / safeCell));
+        height = Mathf.Max(1, Mathf.RoundToInt(resizableSegment.Height / safeCell));
+    }
+
+    public void Apply()
+    {
+        if (_applying)
+            return;
+
+        _applying = true;
+
         width = Mathf.Max(1, width);
         height = Mathf.Max(1, height);
         cellSize = Mathf.Max(0.1f, cellSize);
+
+        ResolveRefs();
+
+        Vector2 size = WorldUnitSize;
+        Vector2 offset = LocalOffset;
+
+        if (ensureBoxCollider2D)
+        {
+            if (boxCollider == null)
+                boxCollider = GetComponent<BoxCollider2D>();
+
+            if (boxCollider == null)
+                boxCollider = gameObject.AddComponent<BoxCollider2D>();
+
+            boxCollider.isTrigger = colliderIsTrigger;
+            boxCollider.size = size;
+            boxCollider.offset = offset;
+        }
+
+        if (resizableSegment != null)
+        {
+            resizableSegment.ApplySize(size.x, size.y);
+        }
+
+        if (compartment != null)
+        {
+            compartment.SetLocalRect(size, offset, preserveWaterFractionOnResize);
+        }
 
         _lastW = width;
         _lastH = height;
         _lastCell = cellSize;
         _lastOffset = centerOffsetCells;
 
-        // Rect in world units
-        Vector2 size = new Vector2(width * cellSize, height * cellSize);
-        Vector2 offset = new Vector2(centerOffsetCells.x * cellSize, centerOffsetCells.y * cellSize);
-
-        // Collider for selection/debug
-        if (ensureBoxCollider2D)
+        if (resizableSegment != null)
         {
-            var box = GetComponent<BoxCollider2D>();
-            if (box == null) box = gameObject.AddComponent<BoxCollider2D>();
-            box.isTrigger = colliderIsTrigger;
-            box.size = size;
-            box.offset = offset;
+            _lastSegmentWidth = resizableSegment.Width;
+            _lastSegmentHeight = resizableSegment.Height;
+        }
+        else
+        {
+            _lastSegmentWidth = size.x;
+            _lastSegmentHeight = size.y;
         }
 
-        // If you have a Compartment component, keep it in sync (best-effort).
-        // I don't know your exact API, so this is intentionally conservative:
-        var comp = GetComponent<Compartment>();
-        if (comp != null)
+#if UNITY_EDITOR
+        if (!Application.isPlaying)
         {
-            // Common patterns:
-            // - comp.Width/Height fields
-            // - comp.Bounds/Rect
-            // - polygon vertices
-            //
-            // If your Compartment has no such public fields, we’ll add a tiny method on Compartment
-            // like SetRectWorld(size, offset) and call it here.
-
-            // Example if Compartment has public width/height in cells:
-            // comp.Width = width;
-            // comp.Height = height;
-
-            // Leave as-is for now until we wire to your real Compartment API.
+            if (compartment != null) EditorUtility.SetDirty(compartment);
+            if (boxCollider != null) EditorUtility.SetDirty(boxCollider);
+            if (resizableSegment != null) EditorUtility.SetDirty(resizableSegment);
+            EditorUtility.SetDirty(this);
         }
+#endif
+
+        _applying = false;
     }
 
 #if UNITY_EDITOR
-    void OnDrawGizmos()
+    [ContextMenu("Apply Rect To Compartment")]
+    private void EditorApply()
+    {
+        Apply();
+    }
+
+    [ContextMenu("Pull Size From Resizable Segment")]
+    private void EditorPullSizeFromResizable()
+    {
+        ResolveRefs();
+        PullSizeFromResizableIfAvailable();
+        Apply();
+    }
+
+    private void OnDrawGizmos()
     {
         Gizmos.matrix = transform.localToWorldMatrix;
 

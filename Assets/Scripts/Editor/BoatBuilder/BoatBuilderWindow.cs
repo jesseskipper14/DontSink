@@ -8,6 +8,7 @@ public class BoatBuilderWindow : EditorWindow
     private const string Prefs_Z = "BoatBuilder.ZPlane";
     private const string Prefs_SelectedTool = "BoatBuilder.Tool";
     private const string Prefs_KIT_GUID = "BoatBuilder.KitGuid";
+    private const string Prefs_BoatRootGlobalId = "BoatBuilder.BoatRootGlobalId";
     private const string Prefs_AutoParent = "BoatBuilder.AutoParent";
     private const string Prefs_SnapOnPlace = "BoatBuilder.SnapOnPlace";
     private const string Prefs_ShowPreview = "BoatBuilder.ShowPreview";
@@ -34,9 +35,12 @@ public class BoatBuilderWindow : EditorWindow
         BoardedVolume = 10,
 
         Hardpoint = 11,
+        ExteriorShell = 12,
     }
 
     private BoatKit _kit;
+    private Transform _boatRootOverride;
+
     private Tool _tool;
     private float _grid = 1f;
     private float _zPlane = 0f;
@@ -55,7 +59,7 @@ public class BoatBuilderWindow : EditorWindow
     public static void Open()
     {
         var w = GetWindow<BoatBuilderWindow>("Boat Builder");
-        w.minSize = new Vector2(420, 340);
+        w.minSize = new Vector2(420, 390);
         w.Show();
     }
 
@@ -81,6 +85,8 @@ public class BoatBuilderWindow : EditorWindow
             _kit = AssetDatabase.LoadAssetAtPath<BoatKit>(path);
         }
 
+        TryRestoreBoatRootOverride();
+
         BoatBuilderSceneTools.Attach();
         SyncToSceneTools();
     }
@@ -89,6 +95,26 @@ public class BoatBuilderWindow : EditorWindow
     {
         Persist();
         SyncToSceneTools();
+    }
+
+    private void TryRestoreBoatRootOverride()
+    {
+        _boatRootOverride = null;
+
+        string id = EditorPrefs.GetString(Prefs_BoatRootGlobalId, "");
+
+        if (string.IsNullOrWhiteSpace(id))
+            return;
+
+        if (!GlobalObjectId.TryParse(id, out GlobalObjectId globalId))
+            return;
+
+        Object obj = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalId);
+
+        if (obj is GameObject go)
+            _boatRootOverride = go.transform;
+        else if (obj is Component c)
+            _boatRootOverride = c.transform;
     }
 
     private void Persist()
@@ -112,6 +138,71 @@ public class BoatBuilderWindow : EditorWindow
             var guid = AssetDatabase.AssetPathToGUID(path);
             EditorPrefs.SetString(Prefs_KIT_GUID, guid);
         }
+
+        if (_boatRootOverride != null)
+        {
+            GlobalObjectId id = GlobalObjectId.GetGlobalObjectIdSlow(_boatRootOverride.gameObject);
+            EditorPrefs.SetString(Prefs_BoatRootGlobalId, id.ToString());
+        }
+        else
+        {
+            EditorPrefs.DeleteKey(Prefs_BoatRootGlobalId);
+        }
+    }
+
+    private void GenerateNewBoatRoot()
+    {
+        string baseName = "BoatRoot";
+        string finalName = baseName;
+        int index = 1;
+
+        while (GameObject.Find(finalName) != null)
+        {
+            index++;
+            finalName = $"{baseName}_{index:00}";
+        }
+
+        GameObject root;
+
+        if (_kit != null && _kit.BoatRootPrefab != null)
+        {
+            if (PrefabUtility.IsPartOfPrefabAsset(_kit.BoatRootPrefab))
+                root = (GameObject)PrefabUtility.InstantiatePrefab(_kit.BoatRootPrefab);
+            else
+                root = Instantiate(_kit.BoatRootPrefab);
+
+            if (root == null)
+            {
+                Debug.LogWarning("[BoatBuilder] Failed to instantiate BoatRootPrefab. Falling back to empty BoatRoot.");
+                root = new GameObject(finalName);
+                Undo.RegisterCreatedObjectUndo(root, "Generate Boat Root");
+            }
+            else
+            {
+                Undo.RegisterCreatedObjectUndo(root, "Generate Boat Root From Prefab");
+            }
+        }
+        else
+        {
+            root = new GameObject(finalName);
+            Undo.RegisterCreatedObjectUndo(root, "Generate Boat Root");
+        }
+
+        root.name = finalName;
+        root.transform.position = Vector3.zero;
+        root.transform.rotation = Quaternion.identity;
+        root.transform.localScale = Vector3.one;
+
+        _boatRootOverride = root.transform;
+
+        Selection.activeTransform = _boatRootOverride;
+        EditorGUIUtility.PingObject(root);
+
+        Persist();
+        SyncToSceneTools();
+        SceneView.RepaintAll();
+
+        Debug.Log($"[BoatBuilder] Generated new boat root: {finalName}", root);
     }
 
     private void SyncToSceneTools()
@@ -119,6 +210,8 @@ public class BoatBuilderWindow : EditorWindow
         BoatBuilderSceneTools.SetContext(new BoatBuilderSceneTools.Context
         {
             Kit = _kit,
+            BoatRootOverride = _boatRootOverride,
+
             ActiveTool = _tool,
             GridSize = _grid,
             ZPlane = _zPlane,
@@ -152,6 +245,7 @@ public class BoatBuilderWindow : EditorWindow
         new GUIContent("Spawn"),
         new GUIContent("Volume"),
         new GUIContent("Hardpoint"),
+        new GUIContent("Shell"),
     };
 
     private void OnGUI()
@@ -161,7 +255,13 @@ public class BoatBuilderWindow : EditorWindow
         using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
         {
             EditorGUI.BeginChangeCheck();
-            _kit = (BoatKit)EditorGUILayout.ObjectField("Boat Kit", _kit, typeof(BoatKit), false);
+
+            _kit = (BoatKit)EditorGUILayout.ObjectField(
+                "Boat Kit",
+                _kit,
+                typeof(BoatKit),
+                false);
+
             if (EditorGUI.EndChangeCheck())
             {
                 Persist();
@@ -174,6 +274,67 @@ public class BoatBuilderWindow : EditorWindow
                     "Assign a BoatKit asset (Tools > Boat Builder > Create BoatKit Asset).",
                     MessageType.Info);
             }
+
+            EditorGUILayout.Space(6);
+
+            EditorGUI.BeginChangeCheck();
+
+            _boatRootOverride = (Transform)EditorGUILayout.ObjectField(
+                new GUIContent(
+                    "Fixed Boat Root",
+                    "When assigned, all placed pieces are parented directly under this root while Auto-parent is enabled."),
+                _boatRootOverride,
+                typeof(Transform),
+                true);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                Persist();
+                SyncToSceneTools();
+                SceneView.RepaintAll();
+            }
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (GUILayout.Button("Generate New Boat Root"))
+                {
+                    GenerateNewBoatRoot();
+                }
+            }
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (GUILayout.Button("Use Selection As Boat Root"))
+                {
+                    if (Selection.activeTransform != null)
+                    {
+                        _boatRootOverride = Selection.activeTransform;
+                        Persist();
+                        SyncToSceneTools();
+                        SceneView.RepaintAll();
+                    }
+                    else
+                    {
+                        Debug.LogWarning("[BoatBuilder] No selection to use as Boat Root.");
+                    }
+                }
+
+                if (GUILayout.Button("Clear Fixed Root"))
+                {    if (GUILayout.Button("Select BoatRoot"))
+
+                    _boatRootOverride = null;
+                    Persist();
+                    SyncToSceneTools();
+                    SceneView.RepaintAll();
+                }
+            }
+
+            if (_boatRootOverride == null)
+            {
+                EditorGUILayout.HelpBox(
+                    "No Fixed Boat Root assigned. Builder will fall back to auto-detection by root name. For sane parenting, select your BoatRoot and click Use Selection As Boat Root.",
+                    MessageType.Warning);
+            }
         }
 
         EditorGUILayout.Space(6);
@@ -181,7 +342,9 @@ public class BoatBuilderWindow : EditorWindow
         using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
         {
             EditorGUI.BeginChangeCheck();
+
             _tool = (Tool)GUILayout.Toolbar((int)_tool, ToolTabs);
+
             if (EditorGUI.EndChangeCheck())
             {
                 Persist();
@@ -197,7 +360,7 @@ public class BoatBuilderWindow : EditorWindow
             _zPlane = EditorGUILayout.FloatField(new GUIContent("Z Plane", "Where clicks place objects (2D usually 0)"), _zPlane);
 
             _autoParent = EditorGUILayout.ToggleLeft(
-                new GUIContent("Auto-parent to BoatRoot", "Parents under selected object or closest root named like a boat root"),
+                new GUIContent("Auto-parent to BoatRoot", "Parents under Fixed Boat Root if assigned, otherwise auto-detected BoatRoot."),
                 _autoParent);
 
             _snapOnPlace = EditorGUILayout.ToggleLeft(
@@ -266,7 +429,7 @@ public class BoatBuilderWindow : EditorWindow
                 var root = BoatBuilderSceneTools.PeekBestBoatRoot();
                 if (root == null)
                 {
-                    EditorGUILayout.HelpBox("Select your Boat root (or any child) to validate required pieces.", MessageType.Info);
+                    EditorGUILayout.HelpBox("Assign a Fixed Boat Root or select a Boat root to validate required pieces.", MessageType.Info);
                 }
                 else
                 {
@@ -281,6 +444,9 @@ public class BoatBuilderWindow : EditorWindow
                     {
                         if (GUILayout.Button("Select BoatRoot"))
                             Selection.activeTransform = root;
+
+                        if (GUILayout.Button("Rebuild Compartments"))
+                            BoatBuilderSceneTools.RebuildCompartmentsFromBoatRoot(root);
 
                         if (GUILayout.Button("Place First Missing"))
                         {
@@ -308,7 +474,7 @@ public class BoatBuilderWindow : EditorWindow
         {
             EditorGUILayout.LabelField("Notes", EditorStyles.boldLabel);
             EditorGUILayout.LabelField(" Tool places objects on the Z Plane.");
-            EditorGUILayout.LabelField(" For best parenting, select your Boat root before placing.");
+            EditorGUILayout.LabelField(" Fixed Boat Root prevents accidental nested placement.");
         }
     }
 

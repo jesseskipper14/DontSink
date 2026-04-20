@@ -253,6 +253,7 @@ MonoBehaviour:
   width: 20
   height: 5
   volume: 1
+  geometryLocalCenter: {x: 0, y: 0}
   throttleInput: 0
   throttleForce: 1
   CargoItems: []

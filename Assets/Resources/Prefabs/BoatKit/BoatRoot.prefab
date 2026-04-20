@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 2425872415087118993}
   - component: {fileID: 3301175116528709572}
   - component: {fileID: 4658135062933648623}
+  - component: {fileID: -558263347977270280}
   m_Layer: 0
   m_Name: BoatRoot
   m_TagString: PlayerBoat
@@ -87,6 +88,7 @@ MonoBehaviour:
   width: 20
   height: 5
   volume: 1
+  geometryLocalCenter: {x: 0, y: 0}
   throttleInput: 0
   throttleForce: 1
   CargoItems: []
@@ -157,6 +159,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodySource: {fileID: 6897017861151174155}
+  waveManager: {fileID: 0}
   wave: {fileID: 0}
   sliceCount: 10
   lastTotalSubmersion: 0
@@ -206,3 +209,27 @@ MonoBehaviour:
   enabledFlag: 1
   priority: 250
   maxForce: 500
+  boat: {fileID: 0}
+  multiplyForceByActiveEngineCount: 0
+--- !u!114 &-558263347977270280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac234bd22e9f3804181e2d23d0efc158, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  exteriorRoot: {fileID: 0}
+  interiorRoot: {fileID: 0}
+  exteriorDeckRoot: {fileID: 0}
+  alwaysVisibleRoot: {fileID: 0}
+  defaultBoardedMode: 2
+  unboardedMode: 0
+  hideInteriorWhenUnboarded: 1
+  hideInteriorOnExteriorDeck: 1
+  hideExteriorWhenInterior: 1
+  includeInactiveRenderers: 1

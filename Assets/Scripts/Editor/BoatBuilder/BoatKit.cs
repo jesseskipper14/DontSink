@@ -10,6 +10,9 @@ using UnityEditor;
 /// </summary>
 public class BoatKit : ScriptableObject
 {
+    [Header("Root")]
+    public GameObject BoatRootPrefab;
+
     [Header("Core Pieces")]
     public GameObject HullSegment;
     public GameObject Wall;
@@ -17,6 +20,7 @@ public class BoatKit : ScriptableObject
     public GameObject PilotChair;
     public GameObject CompartmentRect;
     public GameObject Deck;
+    public GameObject ExteriorShell;
 
     [Header("Gameplay Pieces (Builder Supported)")]
     public GameObject BoatBoardObject;

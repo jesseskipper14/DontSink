@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2774696704284986295}
   - component: {fileID: 6512632259146392225}
   - component: {fileID: 649692223756647261}
+  - component: {fileID: 7595124413089840488}
   m_Layer: 3
   m_Name: CompartmentInterior_Wooden
   m_TagString: Untagged
@@ -81,8 +82,13 @@ MonoBehaviour:
   height: 3
   cellSize: 1
   centerOffsetCells: {x: 0, y: 0}
+  compartment: {fileID: 317825384462496607}
+  boxCollider: {fileID: 2774696704284986295}
+  resizableSegment: {fileID: 7595124413089840488}
   ensureBoxCollider2D: 1
   colliderIsTrigger: 1
+  allowResizableSegmentToDriveSize: 1
+  preserveWaterFractionOnResize: 1
 --- !u!114 &6982198551322240824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,6 +200,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7595124413089840488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5391915971216815558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c42e824c5b3c5e4ca5e33f013c6207d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 895882396756966778}
+  boxCollider: {fileID: 2774696704284986295}
+  width: 4
+  height: 3
+  resizeAxis: 2
+  resizeSprite: 1
+  resizeCollider: 1
+  forceTiledSprite: 1
+  snapResizeInEditor: 1
+  resizeSnapIncrement: 1
 --- !u!1 &8415730559265682632
 GameObject:
   m_ObjectHideFlags: 0
@@ -205,7 +233,7 @@ GameObject:
   - component: {fileID: 5052840443238613969}
   - component: {fileID: 895882396756966778}
   m_Layer: 3
-  m_Name: Square
+  m_Name: compartment_sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

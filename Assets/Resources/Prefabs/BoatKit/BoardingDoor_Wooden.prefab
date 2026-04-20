@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6657326918736697652}
   - component: {fileID: -3439110668371042689}
   m_Layer: 3
-  m_Name: BoatBoardObject
+  m_Name: BoardingDoor_Wooden
   m_TagString: BoardingArea
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -75,10 +75,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -290999605
-  m_SortingLayer: 1
-  m_SortingOrder: 0
-  m_Sprite: {fileID: -1641096858768392839, guid: 312bfb391e8cf1f48a1f4142baaebb31, type: 3}
+  m_SortingLayerID: -2135464765
+  m_SortingLayer: 5
+  m_SortingOrder: 200
+  m_Sprite: {fileID: -3941940476993573489, guid: 9913a3ec66199ed4581af732051dc174, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -127,7 +127,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 10.24, y: 15.24}
+    oldSize: {x: 2.3, y: 2.5}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -153,4 +153,4 @@ MonoBehaviour:
   boardPoint: {fileID: 6794253249594855704}
   unboardPoint: {fileID: 0}
   parentPlayerToBoat: 1
-  postSnapNudge: {x: 0, y: 5}
+  postSnapNudge: {x: 0, y: 0}

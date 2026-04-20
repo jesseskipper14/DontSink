@@ -49,13 +49,18 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
         if (waveManager == null || wave == null) return;
 
         // --- Build world hull polygon ---
+        Vector2 localCenter = Vector2.zero;
+
+        if (bodySource is Boat boat)
+            localCenter = boat.GeometryLocalCenter;
+
         Vector2[] localPoly =
         {
-        new Vector2(-body.Width * 0.5f, -body.Height * 0.5f),
-        new Vector2(-body.Width * 0.5f,  body.Height * 0.5f),
-        new Vector2( body.Width * 0.5f,  body.Height * 0.5f),
-        new Vector2( body.Width * 0.5f, -body.Height * 0.5f)
-    };
+            new Vector2(localCenter.x - body.Width * 0.5f, localCenter.y - body.Height * 0.5f),
+            new Vector2(localCenter.x - body.Width * 0.5f, localCenter.y + body.Height * 0.5f),
+            new Vector2(localCenter.x + body.Width * 0.5f, localCenter.y + body.Height * 0.5f),
+            new Vector2(localCenter.x + body.Width * 0.5f, localCenter.y - body.Height * 0.5f)
+        };
 
         Vector2[] worldPoly = new Vector2[localPoly.Length];
         for (int i = 0; i < localPoly.Length; i++)
@@ -406,13 +411,18 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
         if (body == null || body.rb == null || waveManager == null) return;
 
         // --- Local hull (rectangle for now) ---
+        Vector2 localCenter = Vector2.zero;
+
+        if (bodySource is Boat boat)
+            localCenter = boat.GeometryLocalCenter;
+
         Vector2[] localHull =
         {
-        new Vector2(-body.Width * 0.5f, -body.Height * 0.5f),
-        new Vector2(-body.Width * 0.5f,  body.Height * 0.5f),
-        new Vector2( body.Width * 0.5f,  body.Height * 0.5f),
-        new Vector2( body.Width * 0.5f, -body.Height * 0.5f),
-    };
+            new Vector2(localCenter.x - body.Width * 0.5f, localCenter.y - body.Height * 0.5f),
+            new Vector2(localCenter.x - body.Width * 0.5f, localCenter.y + body.Height * 0.5f),
+            new Vector2(localCenter.x + body.Width * 0.5f, localCenter.y + body.Height * 0.5f),
+            new Vector2(localCenter.x + body.Width * 0.5f, localCenter.y - body.Height * 0.5f),
+        };
 
         // --- World hull ---
         Vector2[] worldHull = new Vector2[localHull.Length];

@@ -271,6 +271,42 @@ public class Compartment : MonoBehaviour, IMassContribution
         return clipped.ToArray();
     }
 
+    public void SetLocalRect(Vector2 size, Vector2 offset, bool preserveWaterFraction = true)
+    {
+        size.x = Mathf.Max(0.01f, size.x);
+        size.y = Mathf.Max(0.01f, size.y);
+
+        float oldMaxWaterArea = MaxWaterArea;
+        float oldWaterFraction = oldMaxWaterArea > 0.0001f
+            ? Mathf.Clamp01(waterArea / oldMaxWaterArea)
+            : 0f;
+
+        float left = offset.x - size.x * 0.5f;
+        float right = offset.x + size.x * 0.5f;
+        float bottom = offset.y - size.y * 0.5f;
+        float top = offset.y + size.y * 0.5f;
+
+        p0 = new Vector2(left, top);      // top-left
+        p1 = new Vector2(right, top);     // top-right
+        p2 = new Vector2(right, bottom);  // bottom-right
+        p3 = new Vector2(left, bottom);   // bottom-left
+
+        if (localCorners == null || localCorners.Length != 4)
+            localCorners = new Vector2[4];
+
+        localCorners[0] = p0;
+        localCorners[1] = p1;
+        localCorners[2] = p2;
+        localCorners[3] = p3;
+
+        if (preserveWaterFraction)
+            waterArea = Mathf.Clamp01(oldWaterFraction) * MaxWaterArea;
+        else
+            waterArea = Mathf.Min(waterArea, MaxWaterArea);
+
+        RecomputeWaterSurface();
+    }
+
 
 #if UNITY_EDITOR
     private void OnValidate()
