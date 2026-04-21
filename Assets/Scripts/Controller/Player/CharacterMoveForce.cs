@@ -37,6 +37,9 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
     [Header("Jump Angle Gate")]
     [SerializeField] private float maxJumpAngleDeg = 60f; // > this from upright disables jump
 
+    [Header("Jump Debug")]
+    [SerializeField] private bool debugJumpDecisions = true;
+
     [Header("Jump + Energy")]
     [SerializeField] private float jumpExertionImpulse01 = 0.18f;
 
@@ -103,31 +106,119 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
         float absFromUpright = Mathf.Abs(Mathf.DeltaAngle(body.rb.rotation, 0f));
         bool jumpAngleOk = absFromUpright <= maxJumpAngleDeg;
 
-        // Do not allow jump to be queued while airborne
+        if (intent.JumpPressed && debugJumpDecisions)
+        {
+            motor.DebugLogJumpCheck(
+                "CharacterMoveForce.BeforeLatch",
+                jumpPressed: true,
+                decision:
+                    $"rawPress. angle={absFromUpright:F1}/{maxJumpAngleDeg:F1}, " +
+                    $"jumpAngleOk={jumpAngleOk}, latchedBefore={_jumpPressedLatched}");
+        }
+
+        // Do not allow jump to be queued while airborne.
+        // This keeps your existing behavior, but now logs why it happened.
         if (!motor.IsGrounded)
+        {
+            if (_jumpPressedLatched && debugJumpDecisions)
+            {
+                motor.DebugLogJumpCheck(
+                    "CharacterMoveForce.ClearLatch",
+                    jumpPressed: true,
+                    decision: "Cleared latch because motor.IsGrounded=false.");
+            }
+
             _jumpPressedLatched = false;
+        }
 
         // Only latch jump when:
         // - grounded (no in-air queueing)
         // - within allowed jump angle
         if (intent.JumpPressed && motor.IsGrounded && jumpAngleOk)
+        {
             _jumpPressedLatched = true;
 
+            if (debugJumpDecisions)
+            {
+                motor.DebugLogJumpCheck(
+                    "CharacterMoveForce.Latch",
+                    jumpPressed: true,
+                    decision: "Latched jump.");
+            }
+        }
+
         // If jump was pressed but not eligible, consume it so it can't linger (local input)
-        if (intent.JumpPressed && (!motor.IsGrounded || !jumpAngleOk) && intentSource is LocalCharacterIntentSource localBadPress)
-            localBadPress.ConsumeJumpPressed();
+        if (intent.JumpPressed && (!motor.IsGrounded || !jumpAngleOk))
+        {
+            if (debugJumpDecisions)
+            {
+                string reason = !motor.IsGrounded
+                    ? "Jump press blocked/consumed: not grounded."
+                    : $"Jump press blocked/consumed: angle too steep ({absFromUpright:F1} > {maxJumpAngleDeg:F1}).";
+
+                motor.DebugLogJumpCheck(
+                    "CharacterMoveForce.BlockPress",
+                    jumpPressed: true,
+                    decision: reason);
+            }
+
+            if (intentSource is LocalCharacterIntentSource localBadPress)
+                localBadPress.ConsumeJumpPressed();
+        }
 
         motor.TickTimers(dt, _jumpPressedLatched);
 
         var ee = GetComponentInChildren<PlayerExertionEnergyState>();
 
         // --- Jump (grounded-only + angle-gated + energy-gated) ---
-        if (_jumpPressedLatched && motor.IsGrounded && jumpAngleOk)
+        if (_jumpPressedLatched)
         {
-            // No jump at 0 energy
-            if (ee != null && ee.Energy01 <= 0.0001f)
+            if (debugJumpDecisions)
             {
+                motor.DebugLogJumpCheck(
+                    "CharacterMoveForce.ExecuteGate",
+                    jumpPressed: true,
+                    decision:
+                        $"latched=true, grounded={motor.IsGrounded}, jumpAngleOk={jumpAngleOk}, " +
+                        $"energy={(ee != null ? ee.Energy01.ToString("F3") : "none")}");
+            }
+
+            if (!motor.IsGrounded)
+            {
+                if (debugJumpDecisions)
+                {
+                    motor.DebugLogJumpCheck(
+                        "CharacterMoveForce.ExecuteBlocked",
+                        jumpPressed: true,
+                        decision: "Latched jump blocked at execution: not grounded.");
+                }
+
                 _jumpPressedLatched = false;
+            }
+            else if (!jumpAngleOk)
+            {
+                if (debugJumpDecisions)
+                {
+                    motor.DebugLogJumpCheck(
+                        "CharacterMoveForce.ExecuteBlocked",
+                        jumpPressed: true,
+                        decision: $"Latched jump blocked at execution: angle too steep ({absFromUpright:F1}).");
+                }
+
+                _jumpPressedLatched = false;
+            }
+            else if (ee != null && ee.Energy01 <= 0.0001f)
+            {
+                if (debugJumpDecisions)
+                {
+                    motor.DebugLogJumpCheck(
+                        "CharacterMoveForce.ExecuteBlocked",
+                        jumpPressed: true,
+                        decision: "Latched jump blocked at execution: zero energy.");
+                }
+
+                _jumpPressedLatched = false;
+
                 if (intentSource is LocalCharacterIntentSource localNoJump)
                     localNoJump.ConsumeJumpPressed();
             }
@@ -146,6 +237,16 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
                 body.rb.linearVelocity = v;
 
                 body.AddForce(Vector2.up * ((motor.jumpImpulse * jumpAuth) * body.Mass / dt));
+
+                if (debugJumpDecisions)
+                {
+                    motor.DebugLogJumpCheck(
+                        "CharacterMoveForce.EXECUTED",
+                        jumpPressed: true,
+                        decision:
+                            $"Jump executed. jumpImpulse={motor.jumpImpulse:F2}, jumpAuth={jumpAuth:F2}, " +
+                            $"mass={body.Mass:F2}, dt={dt:F4}");
+                }
 
                 // Exertion impulse from jump
                 if (ee != null)

@@ -2,7 +2,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
-public sealed class LadderZone : MonoBehaviour, IInteractable
+public sealed class LadderZone : MonoBehaviour, IInteractable, IInteractionPointProvider
 {
     [Header("Climb")]
     [SerializeField] private float climbSpeed = 3.25f;
@@ -26,7 +26,9 @@ public sealed class LadderZone : MonoBehaviour, IInteractable
     [SerializeField] private Transform climbCenter;
 
     [Header("Debug")]
-    [SerializeField] private bool debugLogs = true;
+    [SerializeField] private bool debugLogs = false;
+
+    private Collider2D _collider;
 
     public int InteractionPriority => interactionPriority;
     public float ClimbSpeed => climbSpeed;
@@ -40,6 +42,24 @@ public sealed class LadderZone : MonoBehaviour, IInteractable
     public Transform TopExitPoint => topExitPoint;
     public Transform BottomExitPoint => bottomExitPoint;
     public Transform ClimbCenter => climbCenter != null ? climbCenter : transform;
+
+    private void Awake()
+    {
+        _collider = GetComponent<Collider2D>();
+        if (_collider != null)
+            _collider.isTrigger = true;
+    }
+
+    public Vector2 GetClosestInteractionPoint(Vector2 fromWorldPoint)
+    {
+        if (_collider == null)
+            _collider = GetComponent<Collider2D>();
+
+        if (_collider == null)
+            return transform.position;
+
+        return _collider.ClosestPoint(fromWorldPoint);
+    }
 
     public bool CanInteract(in InteractContext context)
     {
@@ -55,16 +75,19 @@ public sealed class LadderZone : MonoBehaviour, IInteractable
             return false;
         }
 
-        float dist = Vector2.Distance(context.Origin, transform.position);
+        Vector2 closestPoint = GetClosestInteractionPoint(context.Origin);
+        float dist = Vector2.Distance(context.Origin, closestPoint);
+
         if (dist > maxInteractDistance)
         {
-            Log($"CanInteract = false because distance {dist:0.00} > max {maxInteractDistance:0.00}.");
+            Log($"CanInteract = false because closest distance {dist:0.00} > max {maxInteractDistance:0.00}.");
             return false;
         }
 
         var climber = context.InteractorGO.GetComponentInChildren<PlayerLadderClimber>(true);
         bool can = climber != null && climber.CanBeginClimb(this);
-        Log($"CanInteract evaluated. climberFound={climber != null}, result={can}");
+
+        Log($"CanInteract evaluated. climberFound={climber != null}, closestDist={dist:0.00}, result={can}");
         return can;
     }
 
@@ -90,14 +113,16 @@ public sealed class LadderZone : MonoBehaviour, IInteractable
         minY = 0f;
         maxY = 0f;
 
-        Collider2D col = GetComponent<Collider2D>();
-        if (col == null)
+        if (_collider == null)
+            _collider = GetComponent<Collider2D>();
+
+        if (_collider == null)
         {
             Log("TryGetWorldYBounds failed because no Collider2D was found.");
             return false;
         }
 
-        Bounds b = col.bounds;
+        Bounds b = _collider.bounds;
         minY = b.min.y;
         maxY = b.max.y;
         return true;

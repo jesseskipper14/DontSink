@@ -15,21 +15,30 @@ public sealed class PlayerLadderClimber : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private bool disableGravityWhileClimbing = true;
     [SerializeField] private float detachDistance = 1.25f;
+    [SerializeField] private bool alignRotationToLadderWhileClimbing = true;
+    [SerializeField] private float rotationSnapSpeed = 18f;
 
     [Header("Facing")]
     [SerializeField] private bool faceUsingHorizontalInput = true;
 
     [Header("Implicit Entry")]
-    [SerializeField] private bool allowImplicitEntry = true;
+    [Tooltip("Keep false unless deliberately testing old behavior. Intentional interaction should start ladder climbing.")]
+    [SerializeField] private bool allowImplicitEntry = false;
     [SerializeField] private float implicitInputDeadzone = 0.01f;
 
     [Header("Exit")]
     [SerializeField] private bool jumpExitsLadder = true;
     [SerializeField] private bool groundedExitsAtTopOrBottom = true;
 
+    [Header("Debug")]
+    [SerializeField] private bool debugLogs = false;
+
     private Rigidbody2D _rb;
     private float _originalGravityScale;
     private LadderZone _activeLadder;
+
+    // Position tracked in ladder-local space while climbing.
+    private Vector3 _ladderLocalClimbPosition;
 
     public bool IsClimbing => _activeLadder != null;
     public LadderZone ActiveLadder => _activeLadder;
@@ -55,7 +64,9 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
         if (!IsClimbing)
         {
-            TryImplicitEnter();
+            if (allowImplicitEntry)
+                TryImplicitEnter();
+
             return;
         }
 
@@ -70,7 +81,7 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!IsClimbing || localCharacterIntentSource == null)
+        if (!IsClimbing || localCharacterIntentSource == null || _activeLadder == null)
             return;
 
         CharacterIntent intent = localCharacterIntentSource.Current;
@@ -78,17 +89,37 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         float vertical = GetVerticalIntent(intent);
         float horizontal = intent.MoveX;
 
-        Vector2 currentPos = _rb.position;
-        float targetX = _activeLadder.ClimbCenter.position.x;
+        Transform ladderFrame = _activeLadder.transform;
 
-        float snappedX = Mathf.Lerp(
-            currentPos.x,
-            targetX,
+        // Move along the ladder's local vertical axis, not world Y.
+        _ladderLocalClimbPosition.y += vertical * _activeLadder.ClimbSpeed * Time.fixedDeltaTime;
+
+        // Smoothly snap local X toward the ladder climb-center's local X.
+        float targetLocalX = ladderFrame.InverseTransformPoint(_activeLadder.ClimbCenter.position).x;
+
+        _ladderLocalClimbPosition.x = Mathf.Lerp(
+            _ladderLocalClimbPosition.x,
+            targetLocalX,
             1f - Mathf.Exp(-_activeLadder.SnapToCenterSpeed * Time.fixedDeltaTime));
 
-        float newY = currentPos.y + (vertical * _activeLadder.ClimbSpeed * Time.fixedDeltaTime);
+        Vector2 targetWorld = ladderFrame.TransformPoint(_ladderLocalClimbPosition);
 
-        _rb.MovePosition(new Vector2(snappedX, newY));
+        _rb.MovePosition(targetWorld);
+
+        if (alignRotationToLadderWhileClimbing)
+        {
+            float targetRot = ladderFrame.eulerAngles.z;
+
+            float snappedRot = Mathf.LerpAngle(
+                _rb.rotation,
+                targetRot,
+                1f - Mathf.Exp(-rotationSnapSpeed * Time.fixedDeltaTime));
+
+            _rb.MoveRotation(snappedRot);
+            _rb.angularVelocity = 0f;
+        }
+
+        _rb.linearVelocity = Vector2.zero;
 
         HandleAutoExit(vertical, horizontal);
     }
@@ -101,8 +132,28 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         if (IsClimbing)
             return false;
 
+        if (!CanAccessLadderByBoatContext(ladder))
+            return false;
+
         LadderZone bestNearby = FindBestNearbyLadder();
         return ReferenceEquals(bestNearby, ladder);
+    }
+
+    private bool CanAccessLadderByBoatContext(LadderZone ladder)
+    {
+        if (ladder == null)
+            return false;
+
+        Boat ladderBoat = ladder.GetComponentInParent<Boat>();
+        if (ladderBoat == null)
+            return true;
+
+        PlayerBoardingState boardingState = GetComponent<PlayerBoardingState>();
+        if (boardingState == null)
+            return false;
+
+        return boardingState.IsBoarded &&
+               boardingState.CurrentBoatRoot == ladderBoat.transform;
     }
 
     public bool TryBeginClimb(LadderZone ladder)
@@ -117,10 +168,28 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             _rb.gravityScale = 0f;
 
         _rb.linearVelocity = Vector2.zero;
+        _rb.angularVelocity = 0f;
 
-        Vector2 startPos = _rb.position;
-        startPos.x = ladder.ClimbCenter.position.x;
-        _rb.position = startPos;
+        if (alignRotationToLadderWhileClimbing)
+        {
+            float ladderRot = ladder.transform.eulerAngles.z;
+            _rb.rotation = ladderRot;
+            _rb.angularVelocity = 0f;
+        }
+
+        Transform ladderFrame = ladder.transform;
+
+        // Start from the player's current position in ladder-local space.
+        _ladderLocalClimbPosition = ladderFrame.InverseTransformPoint(_rb.position);
+
+        // Snap local X to climb center immediately on attach.
+        float targetLocalX = ladderFrame.InverseTransformPoint(ladder.ClimbCenter.position).x;
+        _ladderLocalClimbPosition.x = targetLocalX;
+
+        Vector2 snappedWorld = ladderFrame.TransformPoint(_ladderLocalClimbPosition);
+        _rb.position = snappedWorld;
+
+        Log($"Begin climb on ladder={ladder.name}, localPos={_ladderLocalClimbPosition}");
 
         return true;
     }
@@ -129,6 +198,8 @@ public sealed class PlayerLadderClimber : MonoBehaviour
     {
         if (_activeLadder == null)
             return;
+
+        Log($"End climb on ladder={_activeLadder.name}, keepVelocity={keepVelocity}");
 
         _activeLadder = null;
 
@@ -170,6 +241,8 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         LadderZone best = null;
         float bestScore = float.PositiveInfinity;
 
+        Vector2 playerPos = transform.position;
+
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hit = hits[i];
@@ -183,9 +256,16 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             if (ladder == null)
                 continue;
 
-            float dx = Mathf.Abs(transform.position.x - ladder.ClimbCenter.position.x);
-            float dy = Mathf.Abs(transform.position.y - ladder.transform.position.y);
-            float score = dx + (dy * 0.15f);
+            if (!CanAccessLadderByBoatContext(ladder))
+                continue;
+
+            Vector2 closestPoint = ladder.GetClosestInteractionPoint(playerPos);
+
+            float distance = Vector2.Distance(playerPos, closestPoint);
+
+            // Slight bias toward horizontal alignment, but no center-origin nonsense.
+            float climbCenterDx = Mathf.Abs(playerPos.x - ladder.ClimbCenter.position.x);
+            float score = distance + climbCenterDx * 0.05f;
 
             if (score < bestScore)
             {
@@ -202,8 +282,10 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         if (_activeLadder == null)
             return false;
 
-        float distToCenterX = Mathf.Abs(transform.position.x - _activeLadder.ClimbCenter.position.x);
-        if (distToCenterX > detachDistance)
+        Vector2 closestPoint = _activeLadder.GetClosestInteractionPoint(transform.position);
+        float distanceToLadder = Vector2.Distance(transform.position, closestPoint);
+
+        if (distanceToLadder > detachDistance)
             return false;
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, ladderSearchRadius, ladderMask);
@@ -294,6 +376,14 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         return up - down;
     }
 
+    private void Log(string message)
+    {
+        if (!debugLogs)
+            return;
+
+        Debug.Log($"[PlayerLadderClimber:{name}] {message}", this);
+    }
+
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
@@ -303,7 +393,7 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         if (_activeLadder != null)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawLine(transform.position, _activeLadder.ClimbCenter.position);
+            Gizmos.DrawLine(transform.position, _activeLadder.GetClosestInteractionPoint(transform.position));
         }
     }
 #endif

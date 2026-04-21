@@ -9326,6 +9326,7 @@ MonoBehaviour:
     m_Bits: 61440
   groundCheckLocalOffset: {x: 0, y: -1}
   groundCheckRadius: 0.2
+  debugJumpChecks: 0
 --- !u!114 &1220945565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9704,6 +9705,7 @@ MonoBehaviour:
   crawlMoveMultiplier: 0.3
   wadeMinMoveMultiplier: 0.4
   maxJumpAngleDeg: 60
+  debugJumpDecisions: 1
   jumpExertionImpulse01: 0.1
   jumpAuthorityAtLowEnergy: 0.65
   jumpAuthorityAtZeroEnergy: 0
@@ -9917,11 +9919,14 @@ MonoBehaviour:
   ladderSearchRadius: 0.75
   disableGravityWhileClimbing: 1
   detachDistance: 1.25
+  alignRotationToLadderWhileClimbing: 1
+  rotationSnapSpeed: 18
   faceUsingHorizontalInput: 1
-  allowImplicitEntry: 1
+  allowImplicitEntry: 0
   implicitInputDeadzone: 0.01
   jumpExitsLadder: 1
   groundedExitsAtTopOrBottom: 1
+  debugLogs: 0
 --- !u!1 &1226565580
 GameObject:
   m_ObjectHideFlags: 0
