@@ -49,20 +49,17 @@ public sealed class HatchInteractable : MonoBehaviour, IInteractable, IInteractP
         if (!hatchRuntime.IsOpen && !allowInteractWhenClosed)
             return false;
 
-        return hatchRuntime.CanToggle(out _);
+        // Important:
+        // Do NOT call hatchRuntime.CanToggle() here.
+        // A blocked close should still show "Close Hatch",
+        // then the runtime denies it and plays feedback.
+        return true;
     }
 
     public void Interact(in InteractContext context)
     {
         if (hatchRuntime == null)
             return;
-
-        if (!hatchRuntime.CanToggle(out string reason))
-        {
-            if (!string.IsNullOrWhiteSpace(reason))
-                Debug.Log($"[HatchInteractable] Toggle denied: {reason}", this);
-            return;
-        }
 
         hatchRuntime.Toggle();
     }

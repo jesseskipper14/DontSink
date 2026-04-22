@@ -205,37 +205,53 @@ public sealed class BoatVisualStateController : MonoBehaviour
     {
         _currentMode = mode;
 
-        Log($"ApplyMode {mode}");
+        bool exteriorVisible = false;
+        bool deckVisible = false;
+        bool interiorVisible = false;
+
+        // For the primitive pass, hull and always-visible groups stay visible.
+        bool hullVisible = true;
+        bool alwaysVisible = true;
 
         switch (mode)
         {
             case BoatVisibilityMode.UnboardedExterior:
-                SetRenderersEnabled(_exteriorRenderers, true);
-                SetRenderersEnabled(_deckRenderers, true);
-                SetRenderersEnabled(_interiorRenderers, !hideInteriorWhenUnboarded);
+                exteriorVisible = true;
+                deckVisible = true;
+                interiorVisible = !hideInteriorWhenUnboarded;
                 break;
 
             case BoatVisibilityMode.BoardedExteriorDeck:
-                SetRenderersEnabled(_exteriorRenderers, true);
-                SetRenderersEnabled(_deckRenderers, true);
-                SetRenderersEnabled(_interiorRenderers, !hideInteriorOnExteriorDeck);
+                exteriorVisible = true;
+                deckVisible = true;
+                interiorVisible = !hideInteriorOnExteriorDeck;
                 break;
 
             case BoatVisibilityMode.BoardedInterior:
-                SetRenderersEnabled(_exteriorRenderers, !hideExteriorWhenInterior);
-                SetRenderersEnabled(_deckRenderers, !hideDeckWhenInterior);
-                SetRenderersEnabled(_interiorRenderers, true);
+                exteriorVisible = !hideExteriorWhenInterior;
+                deckVisible = !hideDeckWhenInterior;
+                interiorVisible = true;
                 break;
 
             case BoatVisibilityMode.Transition:
-                SetRenderersEnabled(_exteriorRenderers, true);
-                SetRenderersEnabled(_deckRenderers, true);
-                SetRenderersEnabled(_interiorRenderers, true);
+                exteriorVisible = true;
+                deckVisible = true;
+                interiorVisible = true;
                 break;
         }
 
-        SetRenderersEnabled(_hullRenderers, true);
-        SetRenderersEnabled(_alwaysRenderers, true);
+        SetRenderersEnabled(_exteriorRenderers, exteriorVisible);
+        SetRenderersEnabled(_deckRenderers, deckVisible);
+        SetRenderersEnabled(_interiorRenderers, interiorVisible);
+        SetRenderersEnabled(_hullRenderers, hullVisible);
+        SetRenderersEnabled(_alwaysRenderers, alwaysVisible);
+
+        // After visibility group toggles, restore stateful hatch sprite presentation.
+        RefreshHatchesInRoot(exteriorRoot, exteriorVisible);
+        RefreshHatchesInRoot(exteriorDeckRoot, deckVisible);
+        RefreshHatchesInRoot(interiorRoot, interiorVisible);
+        RefreshHatchesInRoot(hullRoot, hullVisible);
+        RefreshHatchesInRoot(alwaysVisibleRoot, alwaysVisible);
 
         LogRendererCounts();
     }
@@ -342,7 +358,37 @@ public sealed class BoatVisualStateController : MonoBehaviour
             if (r == null)
                 continue;
 
-            r.enabled = enabled;
+            // If hiding the group, hide everything.
+            if (!enabled)
+            {
+                r.enabled = false;
+                continue;
+            }
+
+            // If showing the group, do NOT blindly enable renderers controlled by HatchRuntime.
+            // HatchRuntime will decide open vs closed sprite state.
+            HatchRuntime hatch = r.GetComponentInParent<HatchRuntime>();
+            if (hatch != null)
+                continue;
+
+            r.enabled = true;
+        }
+    }
+
+    private static void RefreshHatchesInRoot(Transform root, bool rootVisible)
+    {
+        if (root == null || !rootVisible)
+            return;
+
+        HatchRuntime[] hatches = root.GetComponentsInChildren<HatchRuntime>(true);
+
+        for (int i = 0; i < hatches.Length; i++)
+        {
+            HatchRuntime hatch = hatches[i];
+            if (hatch == null)
+                continue;
+
+            hatch.RefreshPresentation();
         }
     }
 }

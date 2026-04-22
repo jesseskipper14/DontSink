@@ -9926,6 +9926,13 @@ MonoBehaviour:
   implicitInputDeadzone: 0.01
   jumpExitsLadder: 1
   groundedExitsAtTopOrBottom: 1
+  blockClimbIntoSolid: 1
+  climbBlockMask:
+    serializedVersion: 2
+    m_Bits: 8
+  climbBlockSkin: 0.025
+  climbCastMaxHits: 8
+  debugClimbBlock: 1
   debugLogs: 0
 --- !u!1 &1226565580
 GameObject:

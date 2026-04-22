@@ -11,6 +11,9 @@ public sealed class HatchAuthoring : MonoBehaviour
     [Header("Collision")]
     [SerializeField] private Collider2D blockingCollider;
 
+    [Tooltip("Optional one-way ledge/platform collider used while hatch is open.")]
+    [SerializeField] private Collider2D ledgeCollider;
+
     [Header("Dimensions")]
     [Min(0.1f)]
     [SerializeField] private float openingWidth = 1f;
@@ -27,7 +30,9 @@ public sealed class HatchAuthoring : MonoBehaviour
     public SpriteRenderer FrameRenderer => frameRenderer;
     public SpriteRenderer ClosedRenderer => closedRenderer;
     public SpriteRenderer OpenRenderer => openRenderer;
+
     public Collider2D BlockingCollider => blockingCollider;
+    public Collider2D LedgeCollider => ledgeCollider;
 
     public float OpeningWidth => openingWidth;
     public float FrameWidth => frameWidth;
