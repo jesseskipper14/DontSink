@@ -25,7 +25,7 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _Radius: 0.597
+    - _Radius: 0.681
     - _Softness: 0.504
     m_Colors:
     - _InnerColor: {r: 1, g: 0.9, b: 0.6, a: 1}
