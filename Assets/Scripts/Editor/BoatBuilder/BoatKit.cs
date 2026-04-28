@@ -28,6 +28,8 @@ public class BoatKit : ScriptableObject
     public GameObject PlayerSpawnPoint;
     public GameObject BoardedVolume;
     public GameObject Ladder;
+    public GameObject Stairs;
+    public GameObject Ledge;
 
     [Header("Hardpoints")]
     public GameObject HardpointEngine;

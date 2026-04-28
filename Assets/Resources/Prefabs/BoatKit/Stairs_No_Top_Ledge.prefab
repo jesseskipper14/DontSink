@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8724730732855529869}
   - component: {fileID: 8571676054307072862}
   - component: {fileID: 929010190168498591}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: StairAccessZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 2805009529453325312}
   - component: {fileID: 2582508199844739160}
   - component: {fileID: 2689886129410088247}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Stairs_No_Top_Ledge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -291,6 +291,7 @@ MonoBehaviour:
   polygonCollider: {fileID: 2843047340232417002}
   spriteRenderer: {fileID: 0}
   meshFilter: {fileID: 6339251518712755466}
+  generatedInstanceMesh: {fileID: 0}
   generateTriangleMeshVisual: 1
   ascendRight: 0
   allowResizableSegmentToDriveSize: 1

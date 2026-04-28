@@ -100,6 +100,7 @@ GameObject:
   - component: {fileID: 773925805197138446}
   - component: {fileID: -3456149690731997741}
   - component: {fileID: 7144334043986142974}
+  - component: {fileID: -7019973726729329370}
   m_Layer: 3
   m_Name: DeckSegment_Wooden
   m_TagString: Untagged
@@ -234,4 +235,20 @@ MonoBehaviour:
   resizeCollider: 1
   forceTiledSprite: 1
   snapResizeInEditor: 1
-  resizeSnapIncrement: 1
+  resizeSnapIncrement: 0.5
+--- !u!114 &-7019973726729329370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8043139812053460957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e21b5c75addceb54fafe8fec8921c3b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roles: 5
+  countsAsBoundary: 1
+  isOpeningCarrier: 0
+  openingId: 

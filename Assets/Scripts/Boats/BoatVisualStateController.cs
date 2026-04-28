@@ -22,6 +22,11 @@ public sealed class BoatVisualStateController : MonoBehaviour
     [SerializeField] private bool hideDeckWhenInterior = false;
     [SerializeField] private bool includeInactiveRenderers = true;
 
+    [Header("Temporary Camera Layer Hiding")]
+    [SerializeField] private Camera targetCamera;
+    [SerializeField] private LayerMask hideByCameraMaskWhenInterior = 0;
+    [SerializeField] private bool autoFindMainCamera = true;
+
     private readonly Dictionary<PlayerBoardingState, List<BoatVisibilityZone>> _activeZonesByPlayer = new();
 
     private Renderer[] _exteriorRenderers;
@@ -32,6 +37,9 @@ public sealed class BoatVisualStateController : MonoBehaviour
 
     private BoatVisibilityMode _currentMode;
 
+    private int _originalCameraCullingMask;
+    private bool _cachedOriginalCameraMask;
+
     [Header("Debug")]
     [SerializeField] private bool logVisibility = false;
 
@@ -39,6 +47,8 @@ public sealed class BoatVisualStateController : MonoBehaviour
     {
         AutoAssignRootsIfMissing();
         CacheRenderers();
+        ResolveCameraIfNeeded();
+        CacheOriginalCameraMaskIfNeeded();
         ApplyMode(unboardedMode);
     }
 
@@ -253,7 +263,51 @@ public sealed class BoatVisualStateController : MonoBehaviour
         RefreshHatchesInRoot(hullRoot, hullVisible);
         RefreshHatchesInRoot(alwaysVisibleRoot, alwaysVisible);
 
+        ApplyTemporaryCameraLayerVisibility(mode);
+
         LogRendererCounts();
+    }
+
+    private void ResolveCameraIfNeeded()
+    {
+        if (targetCamera == null && autoFindMainCamera)
+            targetCamera = Camera.main;
+    }
+
+    private void CacheOriginalCameraMaskIfNeeded()
+    {
+        if (_cachedOriginalCameraMask)
+            return;
+
+        ResolveCameraIfNeeded();
+
+        if (targetCamera != null)
+        {
+            _originalCameraCullingMask = targetCamera.cullingMask;
+            _cachedOriginalCameraMask = true;
+        }
+    }
+
+    private void ApplyTemporaryCameraLayerVisibility(BoatVisibilityMode mode)
+    {
+        ResolveCameraIfNeeded();
+        CacheOriginalCameraMaskIfNeeded();
+
+        if (targetCamera == null || !_cachedOriginalCameraMask)
+            return;
+
+        int hiddenBits = hideByCameraMaskWhenInterior.value;
+
+        if (mode == BoatVisibilityMode.BoardedInterior)
+        {
+            targetCamera.cullingMask = _originalCameraCullingMask & ~hiddenBits;
+            Log($"Camera culling mask updated for interior. Hidden layer bits={hiddenBits}");
+        }
+        else
+        {
+            targetCamera.cullingMask = _originalCameraCullingMask;
+            Log("Camera culling mask restored to original.");
+        }
     }
 
     private void Log(string message)
@@ -275,7 +329,8 @@ public sealed class BoatVisualStateController : MonoBehaviour
             $"Interior={(_interiorRenderers != null ? _interiorRenderers.Length : -1)}, " +
             $"Deck={(_deckRenderers != null ? _deckRenderers.Length : -1)}, " +
             $"Hull={(_hullRenderers != null ? _hullRenderers.Length : -1)}, " +
-            $"Always={(_alwaysRenderers != null ? _alwaysRenderers.Length : -1)}",
+            $"Always={(_alwaysRenderers != null ? _alwaysRenderers.Length : -1)}, " +
+            $"Mode={_currentMode}",
             this);
     }
 
@@ -313,6 +368,8 @@ public sealed class BoatVisualStateController : MonoBehaviour
     {
         AutoAssignRootsIfMissing();
         CacheRenderers();
+        ResolveCameraIfNeeded();
+        CacheOriginalCameraMaskIfNeeded();
         ApplyMode(BoatVisibilityMode.UnboardedExterior);
     }
 
@@ -321,6 +378,8 @@ public sealed class BoatVisualStateController : MonoBehaviour
     {
         AutoAssignRootsIfMissing();
         CacheRenderers();
+        ResolveCameraIfNeeded();
+        CacheOriginalCameraMaskIfNeeded();
         ApplyMode(BoatVisibilityMode.BoardedExteriorDeck);
     }
 
@@ -329,6 +388,8 @@ public sealed class BoatVisualStateController : MonoBehaviour
     {
         AutoAssignRootsIfMissing();
         CacheRenderers();
+        ResolveCameraIfNeeded();
+        CacheOriginalCameraMaskIfNeeded();
         ApplyMode(BoatVisibilityMode.BoardedInterior);
     }
 

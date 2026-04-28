@@ -431,6 +431,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3668046080863497661}
   - component: {fileID: 9128411712561105741}
+  - component: {fileID: 104144219702885662}
   m_Layer: 3
   m_Name: Blocker
   m_TagString: Untagged
@@ -499,6 +500,22 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.9, y: 0.7}
   m_EdgeRadius: 0
+--- !u!114 &104144219702885662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4046497451530205361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e21b5c75addceb54fafe8fec8921c3b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roles: 16
+  countsAsBoundary: 0
+  isOpeningCarrier: 1
+  openingId: 
 --- !u!1 &4787909799836529759
 GameObject:
   m_ObjectHideFlags: 0
@@ -605,6 +622,7 @@ MonoBehaviour:
   interactionPriority: 20
   allowInteractWhenOpen: 1
   allowInteractWhenClosed: 1
+  requireMatchingBoatBoardingContext: 1
 --- !u!114 &1438953771414089786
 MonoBehaviour:
   m_ObjectHideFlags: 0

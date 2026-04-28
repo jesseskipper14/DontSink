@@ -31,7 +31,7 @@ public sealed class ResizableSegment2D : MonoBehaviour
     [SerializeField] private bool snapResizeInEditor = true;
 
     [Min(0.01f)]
-    [SerializeField] private float resizeSnapIncrement = 1f;
+    [SerializeField] private float resizeSnapIncrement = 0.5f;
 
     public bool SnapResizeInEditor => snapResizeInEditor;
     public float ResizeSnapIncrement => resizeSnapIncrement;
@@ -44,7 +44,12 @@ public sealed class ResizableSegment2D : MonoBehaviour
             return rawSize;
 
         float inc = Mathf.Max(0.01f, resizeSnapIncrement);
-        return Mathf.Max(inc, Mathf.Round(rawSize / inc) * inc);
+
+        // Stabilize snapping for fractional increments like 0.5.
+        // Adding a tiny epsilon reduces threshold jitter when dragging handles.
+        float snapped = Mathf.Round((rawSize + 0.0001f) / inc) * inc;
+
+        return Mathf.Max(inc, snapped);
     }
 
     public float Width => width;

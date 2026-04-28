@@ -18,6 +18,7 @@ public class BoatBuilderWindow : EditorWindow
     private const string Prefs_HardpointIdPrefix = "BoatBuilder.HardpointIdPrefix";
     private const string Prefs_HardpointAutoMount = "BoatBuilder.HardpointAutoMount";
     private const string Prefs_HardpointRenameObject = "BoatBuilder.HardpointRenameObject";
+    private const string Prefs_StairAscendRight = "BoatBuilder.StairAscendRight";
 
     public enum Tool
     {
@@ -28,21 +29,23 @@ public class BoatBuilderWindow : EditorWindow
         CompartmentRect = 4,
         Deck = 5,
         Ladder = 6,
+        Stairs = 7,
+        Ledge = 8,
 
-        BoatBoardObject = 7,
-        MapTable = 8,
-        PlayerSpawnPoint = 9,
-        BoardedVolume = 10,
+        BoatBoardObject = 9,
+        MapTable = 10,
+        PlayerSpawnPoint = 11,
+        BoardedVolume = 12,
 
-        Hardpoint = 11,
-        ExteriorShell = 12,
+        Hardpoint = 13,
+        ExteriorShell = 14,
     }
 
     private BoatKit _kit;
     private Transform _boatRootOverride;
 
     private Tool _tool;
-    private float _grid = 1f;
+    private float _grid = 0.5f;
     private float _zPlane = 0f;
     private bool _autoParent = true;
     private bool _snapOnPlace = true;
@@ -54,6 +57,7 @@ public class BoatBuilderWindow : EditorWindow
     private string _hardpointIdPrefix = "hardpoint";
     private bool _hardpointAutoCreateMountPoint = true;
     private bool _hardpointRenameObjectToId = true;
+    private bool _stairAscendRight = true;
 
     [MenuItem("Tools/Boat Builder/Window")]
     public static void Open()
@@ -65,7 +69,7 @@ public class BoatBuilderWindow : EditorWindow
 
     private void OnEnable()
     {
-        _grid = Mathf.Max(0.01f, EditorPrefs.GetFloat(Prefs_Grid, 1f));
+        _grid = Mathf.Max(0.01f, EditorPrefs.GetFloat(Prefs_Grid, 0.5f));
         _zPlane = EditorPrefs.GetFloat(Prefs_Z, 0f);
         _tool = (Tool)EditorPrefs.GetInt(Prefs_SelectedTool, 0);
         _autoParent = EditorPrefs.GetBool(Prefs_AutoParent, true);
@@ -77,6 +81,7 @@ public class BoatBuilderWindow : EditorWindow
         _hardpointIdPrefix = EditorPrefs.GetString(Prefs_HardpointIdPrefix, "hardpoint");
         _hardpointAutoCreateMountPoint = EditorPrefs.GetBool(Prefs_HardpointAutoMount, true);
         _hardpointRenameObjectToId = EditorPrefs.GetBool(Prefs_HardpointRenameObject, true);
+        _stairAscendRight = EditorPrefs.GetBool(Prefs_StairAscendRight, true);
 
         var guid = EditorPrefs.GetString(Prefs_KIT_GUID, "");
         if (!string.IsNullOrEmpty(guid))
@@ -131,6 +136,7 @@ public class BoatBuilderWindow : EditorWindow
         EditorPrefs.SetString(Prefs_HardpointIdPrefix, _hardpointIdPrefix ?? "hardpoint");
         EditorPrefs.SetBool(Prefs_HardpointAutoMount, _hardpointAutoCreateMountPoint);
         EditorPrefs.SetBool(Prefs_HardpointRenameObject, _hardpointRenameObjectToId);
+        EditorPrefs.SetBool(Prefs_StairAscendRight, _stairAscendRight);
 
         if (_kit != null)
         {
@@ -227,7 +233,8 @@ public class BoatBuilderWindow : EditorWindow
             SelectedHardpointType = _hardpointType,
             HardpointIdPrefix = string.IsNullOrWhiteSpace(_hardpointIdPrefix) ? "hardpoint" : _hardpointIdPrefix.Trim(),
             HardpointAutoCreateMountPoint = _hardpointAutoCreateMountPoint,
-            HardpointRenameObjectToId = _hardpointRenameObjectToId
+            HardpointRenameObjectToId = _hardpointRenameObjectToId,
+            StairAscendRight = _stairAscendRight,
         });
     }
 
@@ -240,6 +247,8 @@ public class BoatBuilderWindow : EditorWindow
         new GUIContent("Compartment"),
         new GUIContent("Deck"),
         new GUIContent("Ladder"),
+        new GUIContent("Stairs"),
+        new GUIContent("Ledge"),
         new GUIContent("Board"),
         new GUIContent("Map"),
         new GUIContent("Spawn"),
@@ -402,6 +411,36 @@ public class BoatBuilderWindow : EditorWindow
                     MessageType.Info);
             }
 
+            if (_tool == Tool.Stairs)
+            {
+                EditorGUILayout.Space(8);
+                EditorGUILayout.LabelField("Stair Authoring", EditorStyles.boldLabel);
+
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    EditorGUILayout.PrefixLabel("Orientation");
+
+                    if (GUILayout.Toggle(_stairAscendRight, "Ascend Right", EditorStyles.miniButtonLeft) != _stairAscendRight)
+                    {
+                        _stairAscendRight = true;
+                    }
+
+                    if (GUILayout.Toggle(!_stairAscendRight, "Ascend Left", EditorStyles.miniButtonRight) == true && _stairAscendRight)
+                    {
+                        _stairAscendRight = false;
+                    }
+                }
+
+                if (GUILayout.Button("Flip Stair Orientation"))
+                {
+                    _stairAscendRight = !_stairAscendRight;
+                }
+
+                EditorGUILayout.HelpBox(
+                    "Controls whether placed stairs rise from left to right or right to left.",
+                    MessageType.Info);
+            }
+
             if (EditorGUI.EndChangeCheck())
             {
                 Persist();
@@ -447,6 +486,9 @@ public class BoatBuilderWindow : EditorWindow
 
                         if (GUILayout.Button("Rebuild Compartments"))
                             BoatBuilderSceneTools.RebuildCompartmentsFromBoatRoot(root);
+
+                        if (GUILayout.Button("Repair All Spans"))
+                            SpanRepairUtility.RepairAllSpansUnderRoot(root);
 
                         if (GUILayout.Button("Place First Missing"))
                         {

@@ -17,6 +17,7 @@ public sealed class StairSlopeAuthoring : MonoBehaviour
     [SerializeField] private PolygonCollider2D polygonCollider;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private MeshFilter meshFilter;
+    [SerializeField, HideInInspector] private Mesh generatedInstanceMesh;
 
     [SerializeField] private bool generateTriangleMeshVisual = true;
 
@@ -328,13 +329,9 @@ public sealed class StairSlopeAuthoring : MonoBehaviour
         };
         }
 
-        var mesh = meshFilter.sharedMesh;
+        Mesh mesh = GetOrCreateOwnedMesh();
         if (mesh == null)
-        {
-            mesh = new Mesh();
-            mesh.name = "Generated Stair Triangle";
-            meshFilter.sharedMesh = mesh;
-        }
+            return;
 
         mesh.Clear();
         mesh.vertices = verts;
@@ -360,6 +357,39 @@ public sealed class StairSlopeAuthoring : MonoBehaviour
         _materialBlock.SetFloat(StepCountId, visualSteps);
         _materialBlock.SetFloat(AscendRightId, ascendRight ? 1f : 0f);
         meshRenderer.SetPropertyBlock(_materialBlock);
+    }
+
+    private Mesh GetOrCreateOwnedMesh()
+    {
+        if (meshFilter == null)
+            return null;
+
+        if (generatedInstanceMesh == null)
+        {
+            generatedInstanceMesh = new Mesh
+            {
+                name = $"Generated Stair Triangle ({gameObject.name})"
+            };
+
+            meshFilter.sharedMesh = generatedInstanceMesh;
+        }
+        else if (meshFilter.sharedMesh != generatedInstanceMesh)
+        {
+            meshFilter.sharedMesh = generatedInstanceMesh;
+        }
+
+        return generatedInstanceMesh;
+    }
+
+    private void OnDestroy()
+    {
+#if UNITY_EDITOR
+        if (!Application.isPlaying && generatedInstanceMesh != null)
+            DestroyImmediate(generatedInstanceMesh);
+        else
+#endif
+        if (generatedInstanceMesh != null)
+            Destroy(generatedInstanceMesh);
     }
 
 #if UNITY_EDITOR

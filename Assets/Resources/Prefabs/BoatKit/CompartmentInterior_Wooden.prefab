@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 6512632259146392225}
   - component: {fileID: 649692223756647261}
   - component: {fileID: 7595124413089840488}
+  - component: {fileID: -7298621665764393614}
   m_Layer: 3
   m_Name: CompartmentInterior_Wooden
   m_TagString: Untagged
@@ -52,15 +53,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   compartmentName: 
-  p0: {x: -2, y: 1.5}
-  p1: {x: 2, y: 1.5}
-  p2: {x: 2, y: -1.5}
-  p3: {x: -2, y: -1.5}
+  p0: {x: -1, y: 0.75}
+  p1: {x: 1, y: 0.75}
+  p2: {x: 1, y: -0.75}
+  p3: {x: -1, y: -0.75}
   localCorners:
-  - {x: -2, y: 1.5}
-  - {x: 2, y: 1.5}
-  - {x: 2, y: -1.5}
-  - {x: -2, y: -1.5}
+  - {x: -1, y: 0.75}
+  - {x: 1, y: 0.75}
+  - {x: 1, y: -0.75}
+  - {x: -1, y: -0.75}
   waterArea: 0
   minAirFraction: 0.2
   airIntegrity: 1
@@ -80,7 +81,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 4
   height: 3
-  cellSize: 1
+  cellSize: 0.5
   centerOffsetCells: {x: 0, y: 0}
   compartment: {fileID: 317825384462496607}
   boxCollider: {fileID: 2774696704284986295}
@@ -145,7 +146,7 @@ BoxCollider2D:
     drawMode: 2
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 4, y: 3}
+  m_Size: {x: 2, y: 1.5}
   m_EdgeRadius: 0
 --- !u!33 &6512632259146392225
 MeshFilter:
@@ -214,14 +215,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 895882396756966778}
   boxCollider: {fileID: 2774696704284986295}
-  width: 4
-  height: 3
+  width: 2
+  height: 1.5
   resizeAxis: 2
   resizeSprite: 1
   resizeCollider: 1
   forceTiledSprite: 1
   snapResizeInEditor: 1
-  resizeSnapIncrement: 1
+  resizeSnapIncrement: 0.5
+--- !u!114 &-7298621665764393614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5391915971216815558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d82d239d4de4e0146ae2ea72f25f96b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sortingLayerName: BoatForehull
+  sortingOrder: 99
 --- !u!1 &8415730559265682632
 GameObject:
   m_ObjectHideFlags: 0
@@ -303,7 +318,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
-  m_Size: {x: 4, y: 3}
+  m_Size: {x: 2, y: 1.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

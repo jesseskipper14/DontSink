@@ -193,5 +193,12 @@ public sealed class FloorSegmentAuthoring : MonoBehaviour
 
         Debug.Log($"[FloorSegmentAuthoring] Copied dimensions from collider. width={width:F3}, height={height:F3}", this);
     }
+
+    [ContextMenu("Repair Span")]
+    private void EditorRepairSpan()
+    {
+        if (!SpanRepairUtility.RepairFromSelectedFloor(this))
+            Debug.LogWarning("[FloorSegmentAuthoring] Repair Span failed or found nothing to repair.", this);
+    }
 #endif
 }

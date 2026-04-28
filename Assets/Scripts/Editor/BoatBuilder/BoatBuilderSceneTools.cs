@@ -31,6 +31,7 @@ public static class BoatBuilderSceneTools
         public string HardpointIdPrefix;
         public bool HardpointAutoCreateMountPoint;
         public bool HardpointRenameObjectToId;
+        public bool StairAscendRight;
     }
 
     private static Context _ctx;
@@ -250,21 +251,27 @@ public static class BoatBuilderSceneTools
             {
                 placed = TryPlaceHatchWithFloorSplit(prefab, world, parent);
             }
+            else if (_ctx.ActiveTool == BoatBuilderWindow.Tool.Ledge)
+            {
+                placed = TryPlaceLedgeWithOptionalFloorSplit(prefab, world, boatRoot, parent);
+            }
+            else if (_ctx.ActiveTool == BoatBuilderWindow.Tool.CompartmentRect)
+            {
+                placed = TryPlaceDetectedCompartment(prefab, world, boatRoot, parent);
+            }
             else
             {
                 placed = PlacePrefab(prefab, world, parent);
             }
 
+            if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.Stairs)
+            {
+                InitializePlacedStair(placed, _ctx.StairAscendRight);
+            }
+
             if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.BoardedVolume && boatRoot != null)
             {
                 AutoFitBoardedVolume(boatRoot, placed, _ctx.BoardedVolumePadding, _ctx.BoardedVolumeExtraUp, _ctx.BoardedVolumeExtraDown);
-            }
-
-            if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.CompartmentRect)
-            {
-                InitializePlacedCompartment(
-                    placed,
-                    boatRoot != null ? boatRoot : placed.transform.parent);
             }
 
             if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.ExteriorShell)
@@ -489,10 +496,6 @@ public static class BoatBuilderSceneTools
 
         EditorUtility.SetDirty(boat);
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-
-        Debug.Log(
-            $"[BoatBuilder] Registered {added} compartment(s) from '{placed.name}' to Boat '{boat.name}'.",
-            placed);
     }
 
     public static void RebuildCompartmentsFromBoatRoot(Transform boatRoot)
@@ -526,6 +529,32 @@ public static class BoatBuilderSceneTools
 
             if (!boat.Compartments.Contains(c))
                 boat.Compartments.Add(c);
+        }
+
+        if (boat.Connections == null)
+            boat.Connections = new System.Collections.Generic.List<CompartmentConnection>();
+        else
+            boat.Connections = boat.Connections
+                .Where(conn => conn != null)
+                .Distinct()
+                .ToList();
+
+        foreach (Compartment c in boat.Compartments)
+        {
+            if (c != null)
+                c.connections.Clear();
+        }
+
+        foreach (CompartmentConnection conn in boat.Connections)
+        {
+            if (conn == null)
+                continue;
+
+            if (conn.A != null && !conn.A.connections.Contains(conn))
+                conn.A.connections.Add(conn);
+
+            if (conn.B != null && !conn.B.connections.Contains(conn))
+                conn.B.connections.Add(conn);
         }
 
         EditorUtility.SetDirty(boat);
@@ -765,6 +794,8 @@ public static class BoatBuilderSceneTools
 
     private static Vector3 Snap(Vector3 p, float grid)
     {
+        grid = Mathf.Max(0.01f, grid);
+
         float Snap1(float v) => Mathf.Round(v / grid) * grid;
         return new Vector3(Snap1(p.x), Snap1(p.y), p.z);
     }
@@ -810,6 +841,8 @@ public static class BoatBuilderSceneTools
             BoatBuilderWindow.Tool.CompartmentRect => kit.CompartmentRect,
             BoatBuilderWindow.Tool.Deck => kit.Deck,
             BoatBuilderWindow.Tool.Ladder => kit.Ladder,
+            BoatBuilderWindow.Tool.Stairs => kit.Stairs,
+            BoatBuilderWindow.Tool.Ledge => kit.Ledge,
             BoatBuilderWindow.Tool.BoatBoardObject => kit.BoatBoardObject,
             BoatBuilderWindow.Tool.MapTable => kit.MapTable,
             BoatBuilderWindow.Tool.PlayerSpawnPoint => kit.PlayerSpawnPoint,
@@ -864,6 +897,11 @@ public static class BoatBuilderSceneTools
         Transform actualParent = floor.transform.parent != null ? floor.transform.parent : preferredParent;
         Quaternion baseRot = floor.transform.rotation;
 
+        SplitSpanRecord spanRecord = GetOrCreateSpanRecord(floor);
+        Transform spanRoot = spanRecord != null && spanRecord.TryGetRoot(out var resolvedRoot)
+            ? resolvedRoot
+            : actualParent;
+
         Debug.Log(
             $"[BoatBuilder:Hatch] Splitting '{floor.name}' " +
             $"leftWidth={split.LeftWidth:F3}, rightWidth={split.RightWidth:F3}, " +
@@ -884,6 +922,13 @@ public static class BoatBuilderSceneTools
             Debug.LogWarning("[BoatBuilder] Failed to create right split floor piece. Original floor preserved.", floor);
             return null;
         }
+
+        FloorSegmentAuthoring rightPieceFloor = rightPiece != null
+            ? rightPiece.GetComponent<FloorSegmentAuthoring>()
+            : null;
+
+        if (rightPieceFloor != null && spanRecord != null)
+            InheritSpanRecordFromSource(rightPieceFloor, spanRecord);
 
         Vector3 hatchWorldPos = new Vector3(
             requestedWorldPos.x,
@@ -910,9 +955,20 @@ public static class BoatBuilderSceneTools
         floor.SetWorldCenterXPreservingColliderOffset(split.LeftCenterX);
 
         Undo.RecordObject(floor.gameObject, "Rename left split floor piece");
-        floor.gameObject.name = floor.gameObject.name + "_Left";
+        floor.gameObject.name = BuildSplitPieceName(floor.gameObject.name, "_Left");
 
         InitializePlacedHatch(hatchInstance, actualParent);
+
+        if (spanRecord != null && spanRoot != null)
+        {
+            AttachRepairBlocker(
+                hatchInstance,
+                spanRecord,
+                spanRoot,
+                split.OpeningLeftX,
+                split.OpeningRightX,
+                "Hatch");
+        }
 
         EditorUtility.SetDirty(floor);
         EditorUtility.SetDirty(floor.gameObject);
@@ -922,6 +978,132 @@ public static class BoatBuilderSceneTools
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
 
         return hatchInstance;
+    }
+
+    private static GameObject TryPlaceLedgeWithOptionalFloorSplit(
+    GameObject ledgePrefab,
+    Vector3 requestedWorldPos,
+    Transform boatRoot,
+    Transform fallbackParent)
+    {
+        if (ledgePrefab == null)
+            return null;
+
+        if (!TryGetOpeningWidthFromLedgePrefab(ledgePrefab, out float openingWidth))
+        {
+            Debug.LogWarning(
+                "[BoatBuilder] Ledge prefab is missing a usable BoxCollider2D/HatchLedge width. " +
+                "Falling back to normal ledge placement.",
+                ledgePrefab);
+
+            return PlacePrefab(ledgePrefab, requestedWorldPos, fallbackParent);
+        }
+
+        float minPieceWidth = HatchSplitMinPieceWidth;
+
+        // Important:
+        // Search across the whole boat root, not the resolved ledge parent category.
+        Transform splitSearchRoot = boatRoot != null ? boatRoot : null;
+
+        if (!TryFindBestFloorSplit(
+                requestedWorldPos,
+                openingWidth,
+                minPieceWidth,
+                splitSearchRoot,
+                out var floor,
+                out var split))
+        {
+            // Ledges are allowed to exist standalone.
+            return PlacePrefab(ledgePrefab, requestedWorldPos, fallbackParent);
+        }
+
+        Transform actualParent = floor.transform.parent != null ? floor.transform.parent : fallbackParent;
+        Quaternion baseRot = floor.transform.rotation;
+
+        SplitSpanRecord spanRecord = GetOrCreateSpanRecord(floor);
+        Transform spanRoot = spanRecord != null && spanRecord.TryGetRoot(out var resolvedRoot)
+            ? resolvedRoot
+            : actualParent;
+
+        Debug.Log(
+            $"[BoatBuilder:Ledge] Splitting '{floor.name}' " +
+            $"leftWidth={split.LeftWidth:F3}, rightWidth={split.RightWidth:F3}, " +
+            $"leftCenter={split.LeftCenterX:F3}, rightCenter={split.RightCenterX:F3}",
+            floor);
+
+        GameObject rightPiece = CreateResizedFloorClone(
+            floor,
+            split.RightWidth,
+            split.RightCenterX,
+            actualParent,
+            "_Right");
+
+        if (rightPiece == null)
+        {
+            Debug.LogWarning(
+                "[BoatBuilder] Failed to create right split floor piece for ledge placement. " +
+                "Falling back to normal ledge placement.",
+                floor);
+
+            return PlacePrefab(ledgePrefab, requestedWorldPos, fallbackParent);
+        }
+
+        FloorSegmentAuthoring rightPieceFloor = rightPiece != null
+            ? rightPiece.GetComponent<FloorSegmentAuthoring>()
+            : null;
+
+        if (rightPieceFloor != null && spanRecord != null)
+            InheritSpanRecordFromSource(rightPieceFloor, spanRecord);
+
+        Vector3 ledgeWorldPos = new Vector3(
+            requestedWorldPos.x,
+            floor.WorldCenterY,
+            requestedWorldPos.z);
+
+        if (spanRecord != null)
+            MarkFloorAsSplitFragment(floor, spanRecord);
+
+        GameObject ledgeInstance = PlacePrefab(ledgePrefab, ledgeWorldPos, actualParent);
+
+        if (ledgeInstance == null)
+        {
+            Debug.LogWarning(
+                "[BoatBuilder] Ledge placement failed after split prep. Destroying right split clone and preserving original floor.",
+                floor);
+
+            Undo.DestroyObjectImmediate(rightPiece);
+            return null;
+        }
+
+        if (spanRecord != null && spanRoot != null)
+        {
+            AttachRepairBlocker(
+                ledgeInstance,
+                spanRecord,
+                spanRoot,
+                split.OpeningLeftX,
+                split.OpeningRightX,
+                "Ledge");
+        }
+
+        ledgeInstance.transform.rotation = baseRot;
+
+        RecordFloorSegmentForUndo(floor, "Resize original floor into left split piece");
+
+        floor.ApplyWidth(split.LeftWidth);
+        floor.SetWorldCenterXPreservingColliderOffset(split.LeftCenterX);
+
+        Undo.RecordObject(floor.gameObject, "Rename left split floor piece");
+        floor.gameObject.name = BuildSplitPieceName(floor.gameObject.name, "_Left");
+
+        EditorUtility.SetDirty(floor);
+        EditorUtility.SetDirty(floor.gameObject);
+        EditorUtility.SetDirty(rightPiece);
+        EditorUtility.SetDirty(ledgeInstance);
+
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+
+        return ledgeInstance;
     }
 
     private static bool TryFindBestFloorSplit(
@@ -1029,7 +1211,7 @@ public static class BoatBuilderSceneTools
         Undo.RegisterCreatedObjectUndo(piece, $"Create split floor clone {nameSuffix}");
 
         piece.transform.localScale = sourceFloor.transform.localScale;
-        piece.name = sourceFloor.name + nameSuffix;
+        piece.name = BuildSplitPieceName(sourceFloor.name, nameSuffix);
 
         var pieceAuthoring = piece.GetComponent<FloorSegmentAuthoring>();
         if (pieceAuthoring == null)
@@ -1170,6 +1352,12 @@ public static class BoatBuilderSceneTools
             BoatBuilderWindow.Tool.Ladder =>
                 GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Interior),
 
+            BoatBuilderWindow.Tool.Stairs =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Interior),
+
+            BoatBuilderWindow.Tool.Ledge =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Interior),
+
             // Exterior deck objects
             BoatBuilderWindow.Tool.Deck =>
                 GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.ExteriorDeck),
@@ -1254,6 +1442,374 @@ public static class BoatBuilderSceneTools
         marker.EditorSetCategory(category);
 
         EditorUtility.SetDirty(marker);
+    }
+
+    private static void InitializePlacedStair(GameObject placed, bool ascendRight)
+    {
+        if (placed == null)
+            return;
+
+        StairSlopeAuthoring stair = placed.GetComponent<StairSlopeAuthoring>();
+        if (stair == null)
+        {
+            Debug.LogWarning("[BoatBuilder] Placed stair prefab has no StairSlopeAuthoring.", placed);
+            return;
+        }
+
+        Undo.RecordObject(stair, "Configure Stair Orientation");
+
+        SerializedObject stairSO = new SerializedObject(stair);
+        SerializedProperty ascendProp = stairSO.FindProperty("ascendRight");
+
+        if (ascendProp != null)
+        {
+            ascendProp.boolValue = ascendRight;
+            stairSO.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(stair);
+        }
+
+        // Force immediate re-apply in editor so collider/mesh/trigger update now.
+        stair.Apply();
+
+        Selection.activeGameObject = placed;
+    }
+
+    private static bool TryGetOpeningWidthFromLedgePrefab(GameObject ledgePrefab, out float openingWidth)
+    {
+        openingWidth = 0f;
+
+        if (ledgePrefab == null)
+            return false;
+
+        HatchLedge hatchLedge = ledgePrefab.GetComponent<HatchLedge>();
+        if (hatchLedge == null)
+            hatchLedge = ledgePrefab.GetComponentInChildren<HatchLedge>(true);
+
+        BoxCollider2D box = null;
+
+        if (hatchLedge != null)
+            box = hatchLedge.Collider as BoxCollider2D;
+
+        if (box == null)
+            box = ledgePrefab.GetComponent<BoxCollider2D>();
+
+        if (box == null)
+            box = ledgePrefab.GetComponentInChildren<BoxCollider2D>(true);
+
+        if (box == null)
+            return false;
+
+        float localWidth = Mathf.Abs(box.size.x);
+        float scaleX = Mathf.Abs(box.transform.lossyScale.x);
+
+        openingWidth = localWidth * scaleX;
+        return openingWidth > 0.01f;
+    }
+
+    private static string GenerateNewSpanId()
+    {
+        return System.Guid.NewGuid().ToString("N");
+    }
+
+    private static SplitSpanRecord GetOrCreateSpanRecord(FloorSegmentAuthoring floor)
+    {
+        if (floor == null)
+            return null;
+
+        SplitSpanRecord record = floor.GetComponent<SplitSpanRecord>();
+        if (record == null)
+        {
+            record = floor.gameObject.AddComponent<SplitSpanRecord>();
+            Undo.RegisterCreatedObjectUndo(record, "Add SplitSpanRecord");
+
+            Transform root = floor.transform.parent != null ? floor.transform.parent : floor.transform;
+            Vector3 localPos = root.InverseTransformPoint(floor.transform.position);
+
+            float localStartX = localPos.x - floor.Width * 0.5f;
+            float localEndX = localPos.x + floor.Width * 0.5f;
+            float localCenterY = localPos.y;
+
+            record.InitializeNewRootRecord(
+                GenerateNewSpanId(),
+                root,
+                localStartX,
+                localEndX,
+                localCenterY,
+                "Floor");
+
+            EditorUtility.SetDirty(record);
+        }
+
+        return record;
+    }
+
+    private static void InheritSpanRecordFromSource(FloorSegmentAuthoring targetFloor, SplitSpanRecord sourceRecord)
+    {
+        if (targetFloor == null || sourceRecord == null)
+            return;
+
+        SplitSpanRecord targetRecord = targetFloor.GetComponent<SplitSpanRecord>();
+        if (targetRecord == null)
+        {
+            targetRecord = targetFloor.gameObject.AddComponent<SplitSpanRecord>();
+            Undo.RegisterCreatedObjectUndo(targetRecord, "Add SplitSpanRecord");
+        }
+
+        targetRecord.InitializeFromExistingRecord(
+            sourceRecord,
+            markAsSplitFragment: true,
+            newSplitDepth: sourceRecord.SplitDepth + 1);
+
+        EditorUtility.SetDirty(targetRecord);
+    }
+
+    private static void MarkFloorAsSplitFragment(FloorSegmentAuthoring floor, SplitSpanRecord sourceRecord)
+    {
+        if (floor == null || sourceRecord == null)
+            return;
+
+        SplitSpanRecord record = floor.GetComponent<SplitSpanRecord>();
+        if (record == null)
+        {
+            record = floor.gameObject.AddComponent<SplitSpanRecord>();
+            Undo.RegisterCreatedObjectUndo(record, "Add SplitSpanRecord");
+        }
+
+        record.InitializeFromExistingRecord(
+            sourceRecord,
+            markAsSplitFragment: true,
+            newSplitDepth: sourceRecord.SplitDepth + 1);
+
+        EditorUtility.SetDirty(record);
+    }
+
+    private static void AttachRepairBlocker(
+        GameObject openingObject,
+        SplitSpanRecord spanRecord,
+        Transform spanRoot,
+        float openingLeftWorldX,
+        float openingRightWorldX,
+        string blockerKind)
+    {
+        if (openingObject == null || spanRecord == null || spanRoot == null)
+            return;
+
+        SpanRepairBlocker blocker = openingObject.GetComponent<SpanRepairBlocker>();
+        if (blocker == null)
+        {
+            blocker = openingObject.AddComponent<SpanRepairBlocker>();
+            Undo.RegisterCreatedObjectUndo(blocker, "Add SpanRepairBlocker");
+        }
+
+        float localLeftX = spanRoot.InverseTransformPoint(new Vector3(openingLeftWorldX, 0f, 0f)).x;
+        float localRightX = spanRoot.InverseTransformPoint(new Vector3(openingRightWorldX, 0f, 0f)).x;
+
+        blocker.Initialize(
+            spanRecord.SpanId,
+            spanRoot,
+            localLeftX,
+            localRightX,
+            blockerKind);
+
+        EditorUtility.SetDirty(blocker);
+    }
+
+    private static string GetCleanSplitBaseName(string rawName)
+    {
+        if (string.IsNullOrWhiteSpace(rawName))
+            return "Segment";
+
+        string name = rawName;
+
+        bool changed;
+        do
+        {
+            changed = false;
+
+            if (name.EndsWith("_Left", StringComparison.OrdinalIgnoreCase))
+            {
+                name = name.Substring(0, name.Length - "_Left".Length);
+                changed = true;
+            }
+
+            if (name.EndsWith("_Right", StringComparison.OrdinalIgnoreCase))
+            {
+                name = name.Substring(0, name.Length - "_Right".Length);
+                changed = true;
+            }
+
+            int repairedIndex = name.LastIndexOf("_Repaired_", StringComparison.OrdinalIgnoreCase);
+            if (repairedIndex >= 0)
+            {
+                string suffix = name.Substring(repairedIndex);
+                if (System.Text.RegularExpressions.Regex.IsMatch(suffix, @"^_Repaired_\d+$", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+                {
+                    name = name.Substring(0, repairedIndex);
+                    changed = true;
+                }
+            }
+        }
+        while (changed);
+
+        return string.IsNullOrWhiteSpace(name) ? "Segment" : name;
+    }
+
+    private static string BuildSplitPieceName(string baseName, string sideSuffix)
+    {
+        return $"{GetCleanSplitBaseName(baseName)}{sideSuffix}";
+    }
+
+    private static string BuildRepairedPieceName(string baseName, int index)
+    {
+        return $"{GetCleanSplitBaseName(baseName)}_Repaired_{index:00}";
+    }
+
+    private static GameObject TryPlaceDetectedCompartment(
+    GameObject compartmentPrefab,
+    Vector3 requestedWorldPos,
+    Transform boatRoot,
+    Transform fallbackParent)
+    {
+        if (compartmentPrefab == null)
+            return null;
+
+        if (boatRoot == null)
+        {
+            Debug.LogWarning("[BoatBuilder] Cannot place detected compartment: no BoatRoot resolved.");
+            return null;
+        }
+
+        CompartmentBoundaryAuthoring[] boundaries =
+            boatRoot.GetComponentsInChildren<CompartmentBoundaryAuthoring>(true);
+
+        if (boundaries == null || boundaries.Length == 0)
+        {
+            Debug.LogWarning("[BoatBuilder] Cannot place detected compartment: no CompartmentBoundaryAuthoring objects found under BoatRoot.", boatRoot);
+            return null;
+        }
+
+        Vector2 click = new Vector2(requestedWorldPos.x, requestedWorldPos.y);
+
+        if (!CompartmentBoundedSpaceDetector.TryDetectBoundedSpaceAtPoint(
+                click,
+                boundaries,
+                out var result,
+                joinEpsilon: 0.12f,
+                minWidth: 0.1f,
+                minHeight: 0.1f))
+        {
+            Debug.LogWarning(
+                $"[BoatBuilder] Compartment placement failed at {click}: {result.Failure}",
+                boatRoot);
+            return null;
+        }
+
+        // Directional fit padding.
+        // Positive values expand the compartment slightly into structural boundaries.
+        // Keep these small so we hide seams without obviously penetrating the boat.
+        const float sideOverlap = 0.08f;
+        const float floorOverlap = 0.05f;
+        const float roofOverlap = 0.08f;
+
+        float paddedMinX = result.MinX - sideOverlap;
+        float paddedMaxX = result.MaxX + sideOverlap;
+        float paddedMinY = result.MinY - floorOverlap;
+        float paddedMaxY = result.MaxY + roofOverlap;
+
+        float width = Mathf.Max(0.01f, paddedMaxX - paddedMinX);
+        float height = Mathf.Max(0.01f, paddedMaxY - paddedMinY);
+
+        float centerX = (paddedMinX + paddedMaxX) * 0.5f;
+        float centerY = (paddedMinY + paddedMaxY) * 0.5f;
+
+        Vector3 worldCenter = new Vector3(centerX, centerY, requestedWorldPos.z);
+
+        Transform actualParent = fallbackParent != null ? fallbackParent : boatRoot;
+
+        GameObject placed = PlacePrefab(compartmentPrefab, worldCenter, actualParent);
+        if (placed == null)
+            return null;
+
+        if (!ConfigurePlacedCompartmentToBounds(
+                placed,
+                actualParent,
+                width,
+                height,
+                paddedMinY,
+                paddedMaxY,
+                result.IsOpenTop))
+        {
+            Debug.LogWarning("[BoatBuilder] Failed to configure placed compartment from detected bounds. Destroying placed object.", placed);
+            Undo.DestroyObjectImmediate(placed);
+            return null;
+        }
+
+        InitializePlacedCompartment(placed, boatRoot);
+
+        return placed;
+    }
+
+    private static bool ConfigurePlacedCompartmentToBounds(
+    GameObject placed,
+    Transform parentSpace,
+    float worldWidth,
+    float worldHeight,
+    float targetBottomWorldY,
+    float targetTopWorldY,
+    bool isOpenTop)
+    {
+        if (placed == null)
+            return false;
+
+        CompartmentRectAuthoring rect = placed.GetComponent<CompartmentRectAuthoring>();
+        if (rect == null)
+            rect = placed.GetComponentInChildren<CompartmentRectAuthoring>(true);
+
+        if (rect == null)
+        {
+            Debug.LogWarning("[BoatBuilder] Placed compartment prefab has no CompartmentRectAuthoring.", placed);
+            return false;
+        }
+
+        Undo.RecordObject(rect, "Configure detected compartment");
+        Undo.RecordObject(placed.transform, "Configure detected compartment transform");
+
+        float cellSize = Mathf.Max(0.1f, rect.cellSize);
+
+        int cellsWide = Mathf.Max(1, Mathf.CeilToInt(worldWidth / cellSize));
+
+        // Keep the current sizing policy:
+        // open-top can bias a little large, closed-top stays conservative.
+        int cellsHigh = isOpenTop
+            ? Mathf.Max(1, Mathf.CeilToInt(worldHeight / cellSize))
+            : Mathf.Max(1, Mathf.FloorToInt(worldHeight / cellSize));
+
+        if (cellsHigh <= 0)
+            cellsHigh = 1;
+
+        rect.width = cellsWide;
+        rect.height = cellsHigh;
+        rect.centerOffsetCells = Vector2Int.zero;
+
+        rect.Apply();
+
+        float appliedHeightWorld = rect.height * cellSize;
+
+        Vector3 pos = placed.transform.position;
+
+        // Always top-anchor vertically.
+        // For closed-top this respects the roof bottom.
+        // For open-top this respects the lower wall top.
+        float correctedCenterY = targetTopWorldY - appliedHeightWorld * 0.5f;
+        pos.y = correctedCenterY;
+
+        placed.transform.position = pos;
+
+        EditorUtility.SetDirty(rect);
+        EditorUtility.SetDirty(placed);
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+
+        return true;
     }
 }
 #endif

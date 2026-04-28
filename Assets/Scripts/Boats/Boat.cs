@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Boat : MonoBehaviour, IForceBody
@@ -132,14 +133,7 @@ public class Boat : MonoBehaviour, IForceBody
             Debug.LogError("Boat prefab missing GenericBuoyancy component!");
         }
 
-        foreach (var conn in Connections)
-        {
-            if (conn.A != null && !conn.A.connections.Contains(conn))
-                conn.A.connections.Add(conn);
-
-            if (conn.B != null && !conn.B.connections.Contains(conn))
-                conn.B.connections.Add(conn);
-        }
+        SanitizeCompartmentsAndConnections();
 
         massContributions.AddRange(GetComponentsInChildren<IMassContribution>());
 
@@ -442,6 +436,19 @@ public class Boat : MonoBehaviour, IForceBody
             this);
     }
 
+    [ContextMenu("Sanitize Compartments And Connections")]
+    private void EditorSanitizeCompartmentsAndConnections()
+    {
+        UnityEditor.Undo.RecordObject(this, "Sanitize Compartments And Connections");
+        SanitizeCompartmentsAndConnections();
+        UnityEditor.EditorUtility.SetDirty(this);
+        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(gameObject.scene);
+
+        Debug.Log(
+            $"[Boat] Sanitized Compartments/Connections. Compartments={Compartments.Count}, Connections={Connections.Count}",
+            this);
+    }
+
     private static bool TryComputeEditorLocalBounds(Transform boatRoot, out Bounds localBounds)
     {
         localBounds = default;
@@ -635,6 +642,46 @@ public class Boat : MonoBehaviour, IForceBody
         );
 
         return (Vector2)transform.position + rotated;
+    }
+
+    private void SanitizeCompartmentsAndConnections()
+    {
+        if (Compartments == null)
+            Compartments = new List<Compartment>();
+        else
+            Compartments = Compartments
+                .Where(c => c != null)
+                .Distinct()
+                .ToList();
+
+        if (Connections == null)
+            Connections = new List<CompartmentConnection>();
+        else
+            Connections = Connections
+                .Where(c => c != null)
+                .Distinct()
+                .ToList();
+
+        // Rebuild per-compartment connection backrefs from scratch.
+        for (int i = 0; i < Compartments.Count; i++)
+        {
+            Compartment c = Compartments[i];
+            if (c != null)
+                c.connections.Clear();
+        }
+
+        for (int i = 0; i < Connections.Count; i++)
+        {
+            CompartmentConnection conn = Connections[i];
+            if (conn == null)
+                continue;
+
+            if (conn.A != null && !conn.A.connections.Contains(conn))
+                conn.A.connections.Add(conn);
+
+            if (conn.B != null && !conn.B.connections.Contains(conn))
+                conn.B.connections.Add(conn);
+        }
     }
 }
 
