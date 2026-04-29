@@ -107,6 +107,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         InstalledModule installed = _hardpoint != null ? _hardpoint.InstalledModule : null;
         ModuleDefinition def = installed != null ? installed.Definition : null;
         EngineModule engine = installed != null ? installed.GetComponent<EngineModule>() : null;
+        PumpModule pump = installed != null ? installed.GetComponent<PumpModule>() : null;
 
         string title = def != null ? def.DisplayName : "Module";
         GUI.Label(new Rect(panel.x + pad, panel.y + 10f, panel.width - 80f, 24f), $"{title} [{_hardpoint?.HardpointId}]");
@@ -136,15 +137,15 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         Rect middleRect = new Rect(leftRect.xMax + 10f, contentY, middleW, contentH);
         Rect rightRect = new Rect(middleRect.xMax + 10f, contentY, rightW, contentH);
 
-        DrawLeftColumn(leftRect, engine);
-        DrawMiddleColumn(middleRect, engine);
-        DrawRightColumn(rightRect, engine);
+        DrawLeftColumn(leftRect, engine, pump);
+        DrawMiddleColumn(middleRect, engine, pump);
+        DrawRightColumn(rightRect, engine, pump);
 
         if (!string.IsNullOrWhiteSpace(_uiNote))
             GUI.Label(new Rect(panel.x + pad, panel.yMax - 26f, panel.width - pad * 2f - 40f, 20f), _uiNote);
     }
 
-    private void DrawLeftColumn(Rect rect, EngineModule engine)
+    private void DrawLeftColumn(Rect rect, EngineModule engine, PumpModule pump)
     {
         GUI.Box(rect, GUIContent.none);
 
@@ -222,13 +223,52 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
             if (!any)
                 GUI.Label(new Rect(x, y, w, 22f), "(Empty)");
         }
+        else if (pump != null)
+        {
+            GUI.Label(new Rect(x, y, w, 22f), $"Pump State: {(pump.IsOn ? "ON" : "OFF")}");
+            y += 28f;
+
+            bool canRun = pump.CanRun();
+            GUI.enabled = canRun;
+
+            if (GUI.Button(new Rect(x, y, 120f, 28f), pump.IsOn ? "Turn Off" : "Turn On"))
+                pump.Toggle();
+
+            GUI.enabled = true;
+
+            if (!canRun)
+                GUI.Label(new Rect(x + 130f, y + 4f, w - 130f, 22f), "No target compartment.");
+
+            y += 42f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Rate: {pump.PumpRatePerSecond:F2} water/sec");
+            y += 24f;
+
+            Compartment target = pump.TargetCompartment;
+            GUI.Label(
+                new Rect(x, y, w, 22f),
+                $"Target: {(target != null ? target.name : "None")}");
+            y += 24f;
+
+            if (target != null)
+            {
+                GUI.Label(new Rect(x, y, w, 22f), $"Water: {target.WaterArea:F2} / {target.MaxWaterArea:F2}");
+                y += 24f;
+
+                float fill01 = target.MaxWaterArea > 0f
+                    ? Mathf.Clamp01(target.WaterArea / target.MaxWaterArea)
+                    : 0f;
+
+                DrawSimpleBar(new Rect(x, y, Mathf.Min(160f, w), 10f), fill01);
+            }
+        }
         else
         {
             GUI.Label(new Rect(x, y, w, 22f), "No specialized module UI yet.");
         }
     }
 
-    private void DrawMiddleColumn(Rect rect, EngineModule engine)
+    private void DrawMiddleColumn(Rect rect, EngineModule engine, PumpModule pump)
     {
         float gap = 10f;
         float sectionH = (rect.height - gap * 2f) / 3f;
@@ -239,7 +279,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
 
         DrawPlaceholderSection(durabilityRect, "Durability", "Placeholder");
         DrawPlaceholderSection(upgradesRect, "Upgrades", "Placeholder");
-        DrawActionsSection(actionsRect, engine);
+        DrawActionsSection(actionsRect, engine, pump);
     }
 
     private void DrawPlaceholderSection(Rect rect, string title, string body)
@@ -249,7 +289,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         GUI.Label(new Rect(rect.x + 10f, rect.y + 32f, rect.width - 20f, 22f), body);
     }
 
-    private void DrawActionsSection(Rect rect, EngineModule engine)
+    private void DrawActionsSection(Rect rect, EngineModule engine, PumpModule pump)
     {
         GUI.Box(rect, GUIContent.none);
 
@@ -258,19 +298,77 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         float w = rect.width - 20f;
 
         GUI.Label(new Rect(x, y, w, 22f), "Actions");
-        y += 30f;
+        if (engine != null)
+        {
+            if (GUI.Button(new Rect(x, y, 140f, 28f), "Add Fuel"))
+                _uiNote = TryAddFuel(engine, out string addNote) ? addNote : addNote;
 
-        if (GUI.Button(new Rect(x, y, 140f, 28f), "Add Fuel"))
-            _uiNote = TryAddFuel(engine, out string addNote) ? addNote : addNote;
+            y += 36f;
 
-        y += 36f;
+            if (GUI.Button(new Rect(x, y, 140f, 28f), "Remove Fuel"))
+                _uiNote = TryRemoveFuel(engine, out string removeNote) ? removeNote : removeNote;
 
-        if (GUI.Button(new Rect(x, y, 140f, 28f), "Remove Fuel"))
-            _uiNote = TryRemoveFuel(engine, out string removeNote) ? removeNote : removeNote;
+            return;
+        }
+
+        if (pump != null)
+        {
+            if (GUI.Button(new Rect(x, y, 140f, 28f), pump.IsOn ? "Turn Off" : "Turn On"))
+            {
+                pump.Toggle();
+                _uiNote = pump.IsOn ? "Pump started." : "Pump stopped.";
+            }
+
+            y += 36f;
+
+            if (GUI.Button(new Rect(x, y, 140f, 28f), "Resolve Target"))
+            {
+                pump.ResolveTargetCompartment();
+                _uiNote = pump.TargetCompartment != null
+                    ? $"Target: {pump.TargetCompartment.name}"
+                    : "No target compartment found.";
+            }
+
+            return;
+        }
+
+        GUI.Label(new Rect(x, y, w, 22f), "No actions.");
     }
 
-    private void DrawRightColumn(Rect rect, EngineModule engine)
+    private void DrawRightColumn(Rect rect, EngineModule engine, PumpModule pump)
     {
+        if (pump != null)
+        {
+            GUI.Box(rect, GUIContent.none);
+
+            float x = rect.x + 10f;
+            float y = rect.y + 8f;
+            float w = rect.width - 20f;
+
+            GUI.Label(new Rect(x, y, w, 22f), "Pump Diagnostics");
+            y += 28f;
+
+            Compartment target = pump.TargetCompartment;
+            if (target == null)
+            {
+                GUI.Label(new Rect(x, y, w, 22f), "No compartment target.");
+                return;
+            }
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Compartment: {target.name}");
+            y += 24f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Water Area: {target.WaterArea:F2}");
+            y += 24f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Capacity: {target.MaxWaterArea:F2}");
+            y += 24f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Available: {target.AvailableCapacity:F2}");
+
+            return;
+        }
+
         float gap = 10f;
         float topH = rect.height * 0.48f;
         float bottomH = rect.height - topH - gap;
@@ -326,6 +424,21 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
             else
                 GUI.Label(new Rect(cell.x + 4f, cell.y + 4f, cell.width - 8f, 20f), $"S{i + 1}");
         }
+    }
+
+    private void DrawSimpleBar(Rect rect, float t)
+    {
+        t = Mathf.Clamp01(t);
+
+        Color prev = GUI.color;
+
+        GUI.color = new Color(1f, 1f, 1f, 0.18f);
+        GUI.DrawTexture(rect, Texture2D.whiteTexture);
+
+        GUI.color = new Color(0.2f, 0.6f, 1f, 0.95f);
+        GUI.DrawTexture(new Rect(rect.x, rect.y, rect.width * t, rect.height), Texture2D.whiteTexture);
+
+        GUI.color = prev;
     }
 
     private void DrawCompatibleInventorySlots(Rect rect, EngineModule engine)

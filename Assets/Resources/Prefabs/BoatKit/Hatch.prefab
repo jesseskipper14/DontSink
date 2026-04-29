@@ -1,5 +1,141 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1363769291426475266
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7746344193436881513}
+  - component: {fileID: 8340619996951885016}
+  - component: {fileID: 6331073985993638668}
+  - component: {fileID: 5454265949810558242}
+  - component: {fileID: 3088761915740687204}
+  m_Layer: 3
+  m_Name: CompartmentLink
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7746344193436881513
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363769291426475266}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9153136879467095405}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &8340619996951885016
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363769291426475266}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 2, y: 1}
+  m_EdgeRadius: 0
+--- !u!114 &6331073985993638668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363769291426475266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95685716c4e902340b153ca36d6c4b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  linkId: CompartmentLink
+  boat: {fileID: 0}
+  hatchRuntime: {fileID: -8442924910193302251}
+  openingCollider: {fileID: 8340619996951885016}
+  linkType: 0
+  sampleOffset: 0.6
+  autoResolveInEditor: 0
+  flowCoefficient: 1
+  externalSourceType: 2
+  externalRate: 0.1
+--- !u!114 &5454265949810558242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363769291426475266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26ad350454335e941a0d128c956fc453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boat: {fileID: 0}
+  hatchRuntime: {fileID: -8442924910193302251}
+  linkAuthoring: {fileID: 6331073985993638668}
+  logWarnings: 0
+  logStateChanges: 0
+--- !u!114 &3088761915740687204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363769291426475266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e21b5c75addceb54fafe8fec8921c3b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roles: 16
+  countsAsBoundary: 1
+  isOpeningCarrier: 0
+  openingId: 
 --- !u!1 &1698519921804181776
 GameObject:
   m_ObjectHideFlags: 0
@@ -200,6 +336,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   configureOneWayPlatformOnReset: 1
   surfaceArc: 160
+  autoSyncConnectionOpeningCollider: 1
+  resizableSegment: {fileID: 0}
+  connectionOpeningCollider: {fileID: 0}
+  openingWidthPadding: 0
+  openingHeight: 0.5
+  openingVerticalOffset: 0
 --- !u!1 &2514222963595885669
 GameObject:
   m_ObjectHideFlags: 0
@@ -528,8 +670,6 @@ GameObject:
   - component: {fileID: -2798278523008722897}
   - component: {fileID: -8442924910193302251}
   - component: {fileID: 6151297028266613626}
-  - component: {fileID: 1438953771414089786}
-  - component: {fileID: 5156438858079003652}
   m_Layer: 3
   m_Name: Hatch
   m_TagString: Untagged
@@ -556,6 +696,7 @@ Transform:
   - {fileID: 3668046080863497661}
   - {fileID: 1129555632282749942}
   - {fileID: 1938418211383247558}
+  - {fileID: 7746344193436881513}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &-2798278523008722897
@@ -623,40 +764,6 @@ MonoBehaviour:
   allowInteractWhenOpen: 1
   allowInteractWhenClosed: 1
   requireMatchingBoatBoardingContext: 1
---- !u!114 &1438953771414089786
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4787909799836529759}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd273d11b5cf69648afdc891b6649c1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boat: {fileID: 0}
-  hatchRuntime: {fileID: -8442924910193302251}
-  connectionTransform: {fileID: 9153136879467095405}
-  logWarnings: 0
-  logStateChanges: 0
---- !u!114 &5156438858079003652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4787909799836529759}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1cc3fb2dcb135ae45bab57880a079b27, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boat: {fileID: 0}
-  hatchRuntime: {fileID: -8442924910193302251}
-  openingCollider: {fileID: 9128411712561105741}
-  sampleOffset: 0.6
-  autoResolveInEditor: 0
 --- !u!1 &5448742033598671842
 GameObject:
   m_ObjectHideFlags: 0

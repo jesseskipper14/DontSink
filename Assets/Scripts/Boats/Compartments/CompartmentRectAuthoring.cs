@@ -17,7 +17,7 @@ public class CompartmentRectAuthoring : MonoBehaviour
     [Min(1)] public int height = 2;
 
     [Header("Grid")]
-    [Min(0.1f)] public float cellSize = 1f;
+    [Min(0.1f)] public float cellSize = 0.5f;
 
     [Header("Center Offset (in cells)")]
     public Vector2Int centerOffsetCells = Vector2Int.zero;

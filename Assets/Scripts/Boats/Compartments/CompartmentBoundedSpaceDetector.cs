@@ -47,11 +47,12 @@ public static class CompartmentBoundedSpaceDetector
         Vector2 clickWorld,
         IEnumerable<CompartmentBoundaryAuthoring> allBoundaries,
         out Result result,
-        float joinEpsilon = 0.06f,
+        float joinEpsilon = 0.12f,
         float minWidth = 0.1f,
         float minHeight = 0.1f)
     {
         result = default;
+
         List<CompartmentBoundaryAuthoring> boundaries = allBoundaries?
             .Where(b => b != null && b.CountsAsBoundary && b.Collider != null)
             .ToList();
@@ -62,43 +63,53 @@ public static class CompartmentBoundedSpaceDetector
             return false;
         }
 
-        CompartmentBoundaryAuthoring floor = FindBestFloorUnderClick(clickWorld, boundaries);
+        CompartmentBoundaryAuthoring floor = FindNearestHorizontalBlockerBelow(clickWorld, boundaries, joinEpsilon);
         if (floor == null)
         {
             result.Failure = FailureReason.NoFloorUnderClick;
             return false;
         }
 
-        Bounds floorBounds = floor.WorldBounds;
-        float floorTopY = floorBounds.max.y;
-        float floorLeftX = floorBounds.min.x;
-        float floorRightX = floorBounds.max.x;
+        CompartmentBoundaryAuthoring ceiling = FindNearestHorizontalBlockerAbove(clickWorld, boundaries, joinEpsilon);
 
-        CompartmentBoundaryAuthoring leftWall = FindNearestJoinedWallFromClick(
-            clickX: clickWorld.x,
-            floorTopY: floorTopY,
+        if (ceiling == null)
+        {
+            // Open-top fallback: use lower side wall top later once walls are found.
+            // Leave null for now.
+        }
+
+        float floorTopY = floor.WorldBounds.max.y;
+        float provisionalCeilingY = ceiling != null ? ceiling.WorldBounds.min.y : float.PositiveInfinity;
+
+        CompartmentBoundaryAuthoring leftWall = FindNearestVerticalBlocker(
+            clickWorld,
+            boundaries,
             searchLeft: true,
-            boundaries: boundaries,
-            joinEpsilon: joinEpsilon);
+            floorTopY: floorTopY,
+            ceilingY: provisionalCeilingY,
+            epsilon: joinEpsilon);
 
         if (leftWall == null)
         {
             result.Floor = floor;
+            result.Roof = ceiling;
             result.Failure = FailureReason.NoLeftWall;
             return false;
         }
 
-        CompartmentBoundaryAuthoring rightWall = FindNearestJoinedWallFromClick(
-            clickX: clickWorld.x,
-            floorTopY: floorTopY,
+        CompartmentBoundaryAuthoring rightWall = FindNearestVerticalBlocker(
+            clickWorld,
+            boundaries,
             searchLeft: false,
-            boundaries: boundaries,
-            joinEpsilon: joinEpsilon);
+            floorTopY: floorTopY,
+            ceilingY: provisionalCeilingY,
+            epsilon: joinEpsilon);
 
         if (rightWall == null)
         {
             result.Floor = floor;
             result.LeftWall = leftWall;
+            result.Roof = ceiling;
             result.Failure = FailureReason.NoRightWall;
             return false;
         }
@@ -106,68 +117,28 @@ public static class CompartmentBoundedSpaceDetector
         Bounds leftBounds = leftWall.WorldBounds;
         Bounds rightBounds = rightWall.WorldBounds;
 
-        bool leftJoined =
-            floorTopY >= leftBounds.min.y - joinEpsilon &&
-            floorTopY <= leftBounds.max.y + joinEpsilon;
-
-        if (!leftJoined)
-        {
-            result.Floor = floor;
-            result.LeftWall = leftWall;
-            result.Failure = FailureReason.LeftWallNotJoinedToFloor;
-            return false;
-        }
-
-        bool rightJoined =
-            floorTopY >= rightBounds.min.y - joinEpsilon &&
-            floorTopY <= rightBounds.max.y + joinEpsilon;
-
-        if (!rightJoined)
-        {
-            result.Floor = floor;
-            result.LeftWall = leftWall;
-            result.RightWall = rightWall;
-            result.Failure = FailureReason.RightWallNotJoinedToFloor;
-            return false;
-        }
+        float leftInnerX = leftBounds.max.x;
+        float rightInnerX = rightBounds.min.x;
 
         float leftTopY = leftBounds.max.y;
         float rightTopY = rightBounds.max.y;
 
-        Debug.Log(
-            $"BoundedSpace pre-roof: leftWall={leftWall.name} leftTopY={leftTopY:F2}, " +
-            $"rightWall={rightWall.name} rightTopY={rightTopY:F2}, " +
-            $"leftInnerX={leftBounds.max.x:F2}, rightInnerX={rightBounds.min.x:F2}, clickY={clickWorld.y:F2}");
-
-        CompartmentBoundaryAuthoring roof = FindNearestCeilingBetweenWalls(
-            leftInnerX: leftBounds.max.x,
-            rightInnerX: rightBounds.min.x,
-            clickY: clickWorld.y,
-            boundaries: boundaries,
-            joinEpsilon: joinEpsilon);
-
-        Debug.Log(
-            $"BoundedSpace roof result: roof={(roof != null ? roof.name : "NULL")} " +
-            $"openTop={(roof == null)}");
-
-        bool openTop = roof == null;
-
-        float minX = leftBounds.max.x;
-        float maxX = rightBounds.min.x;
-        float minY = floorTopY;
-        float maxY = openTop
+        bool openTop = ceiling == null;
+        float ceilingY = openTop
             ? Mathf.Min(leftTopY, rightTopY)
-            : roof.WorldBounds.min.y;
+            : ceiling.WorldBounds.min.y;
 
-        Debug.Log(
-            $"BoundedSpace final bounds: minX={minX:F2} maxX={maxX:F2} minY={minY:F2} maxY={maxY:F2}");
+        float minX = leftInnerX;
+        float maxX = rightInnerX;
+        float minY = floorTopY;
+        float maxY = ceilingY;
 
         if (maxX - minX <= minWidth || maxY - minY <= minHeight)
         {
             result.Floor = floor;
             result.LeftWall = leftWall;
             result.RightWall = rightWall;
-            result.Roof = roof;
+            result.Roof = ceiling;
             result.IsOpenTop = openTop;
             result.Failure = FailureReason.SpaceTooSmall;
             return false;
@@ -178,7 +149,7 @@ public static class CompartmentBoundedSpaceDetector
             result.Floor = floor;
             result.LeftWall = leftWall;
             result.RightWall = rightWall;
-            result.Roof = roof;
+            result.Roof = ceiling;
             result.IsOpenTop = openTop;
             result.MinX = minX;
             result.MaxX = maxX;
@@ -187,11 +158,6 @@ public static class CompartmentBoundedSpaceDetector
             result.Failure = FailureReason.ClickOutsideDetectedBounds;
             return false;
         }
-
-        List<CompartmentBoundaryAuthoring> openings = boundaries
-            .Where(b => b.IsOpeningCarrier && OverlapsContainerBand(b.WorldBounds, minX, maxX, minY, maxY, joinEpsilon))
-            .Distinct()
-            .ToList();
 
         result = new Result
         {
@@ -205,31 +171,32 @@ public static class CompartmentBoundedSpaceDetector
             Floor = floor,
             LeftWall = leftWall,
             RightWall = rightWall,
-            Roof = roof,
-            Openings = openings
+            Roof = ceiling,
+            Openings = new List<CompartmentBoundaryAuthoring>()
         };
 
         return true;
     }
 
-    private static CompartmentBoundaryAuthoring FindBestFloorUnderClick(
-        Vector2 click,
-        List<CompartmentBoundaryAuthoring> boundaries)
+    private static CompartmentBoundaryAuthoring FindNearestHorizontalBlockerBelow(
+    Vector2 click,
+    List<CompartmentBoundaryAuthoring> boundaries,
+    float epsilon)
     {
         CompartmentBoundaryAuthoring best = null;
         float bestDelta = float.PositiveInfinity;
 
         foreach (CompartmentBoundaryAuthoring b in boundaries)
         {
-            if (!b.IsHorizontalLike)
+            if (!b.IsHorizontalBlocker)
                 continue;
 
             Bounds bounds = b.WorldBounds;
 
-            bool spansClickX = click.x >= bounds.min.x && click.x <= bounds.max.x;
-            bool belowOrAtClick = bounds.max.y <= click.y + 0.001f;
+            bool spansClickX = click.x >= bounds.min.x - epsilon && click.x <= bounds.max.x + epsilon;
+            bool isBelow = bounds.max.y <= click.y + epsilon;
 
-            if (!spansClickX || !belowOrAtClick)
+            if (!spansClickX || !isBelow)
                 continue;
 
             float delta = click.y - bounds.max.y;
@@ -243,119 +210,88 @@ public static class CompartmentBoundedSpaceDetector
         return best;
     }
 
-    private static CompartmentBoundaryAuthoring FindNearestJoinedWallFromClick(
-    float clickX,
-    float floorTopY,
-    bool searchLeft,
-    List<CompartmentBoundaryAuthoring> boundaries,
-    float joinEpsilon)
+    private static CompartmentBoundaryAuthoring FindNearestHorizontalBlockerAbove(
+        Vector2 click,
+        List<CompartmentBoundaryAuthoring> boundaries,
+        float epsilon)
+    {
+        CompartmentBoundaryAuthoring best = null;
+        float bestDelta = float.PositiveInfinity;
+
+        foreach (CompartmentBoundaryAuthoring b in boundaries)
+        {
+            if (!b.IsHorizontalBlocker)
+                continue;
+
+            Bounds bounds = b.WorldBounds;
+
+            bool spansClickX = click.x >= bounds.min.x - epsilon && click.x <= bounds.max.x + epsilon;
+            bool isAbove = bounds.min.y >= click.y - epsilon;
+
+            if (!spansClickX || !isAbove)
+                continue;
+
+            float delta = bounds.min.y - click.y;
+            if (delta < bestDelta)
+            {
+                bestDelta = delta;
+                best = b;
+            }
+        }
+
+        return best;
+    }
+
+    private static CompartmentBoundaryAuthoring FindNearestVerticalBlocker(
+        Vector2 click,
+        List<CompartmentBoundaryAuthoring> boundaries,
+        bool searchLeft,
+        float floorTopY,
+        float ceilingY,
+        float epsilon)
     {
         CompartmentBoundaryAuthoring best = null;
         float bestDistance = float.PositiveInfinity;
 
         foreach (CompartmentBoundaryAuthoring b in boundaries)
         {
-            if (!b.IsVerticalLike)
+            if (!b.IsVerticalBlocker)
                 continue;
 
             Bounds bounds = b.WorldBounds;
 
-            // Wall must span the floor top Y, meaning it actually reaches the floor band.
-            bool spansFloorTopY =
-                floorTopY >= bounds.min.y - joinEpsilon &&
-                floorTopY <= bounds.max.y + joinEpsilon;
+            float blockerX = searchLeft ? bounds.max.x : bounds.min.x;
 
-            if (!spansFloorTopY)
-                continue;
-
-            float candidateBoundaryX = searchLeft ? bounds.max.x : bounds.min.x;
-
-            // Must be on the correct side of the click.
             if (searchLeft)
             {
-                if (candidateBoundaryX > clickX + joinEpsilon)
+                if (blockerX > click.x + epsilon)
                     continue;
             }
             else
             {
-                if (candidateBoundaryX < clickX - joinEpsilon)
+                if (blockerX < click.x - epsilon)
                     continue;
             }
 
-            float distance = Mathf.Abs(candidateBoundaryX - clickX);
-            if (distance < bestDistance)
+            // Must overlap the clicked vertical band at least around the click itself.
+            bool spansClickY = click.y >= bounds.min.y - epsilon && click.y <= bounds.max.y + epsilon;
+            bool reachesFloorBand = floorTopY >= bounds.min.y - epsilon && floorTopY <= bounds.max.y + epsilon;
+
+            bool reachesCeilingBand = true;
+            if (!float.IsPositiveInfinity(ceilingY))
+                reachesCeilingBand = ceilingY >= bounds.min.y - epsilon && ceilingY <= bounds.max.y + epsilon;
+
+            if (!spansClickY || !reachesFloorBand || !reachesCeilingBand)
+                continue;
+
+            float dist = Mathf.Abs(blockerX - click.x);
+            if (dist < bestDistance)
             {
-                bestDistance = distance;
+                bestDistance = dist;
                 best = b;
             }
         }
 
         return best;
-    }
-
-    private static CompartmentBoundaryAuthoring FindNearestCeilingBetweenWalls(
-    float leftInnerX,
-    float rightInnerX,
-    float clickY,
-    List<CompartmentBoundaryAuthoring> boundaries,
-    float joinEpsilon)
-    {
-        CompartmentBoundaryAuthoring best = null;
-        float bestCeilingY = float.PositiveInfinity;
-
-        foreach (CompartmentBoundaryAuthoring b in boundaries)
-        {
-            if (!b.HasRole(CompartmentBoundaryRole.Roof) &&
-                !b.HasRole(CompartmentBoundaryRole.Floor) &&
-                !b.HasRole(CompartmentBoundaryRole.Ledge))
-            {
-                continue;
-            }
-
-            Bounds bounds = b.WorldBounds;
-
-            bool spansBetweenWalls =
-                bounds.min.x <= leftInnerX + joinEpsilon &&
-                bounds.max.x >= rightInnerX - joinEpsilon;
-
-            if (!spansBetweenWalls)
-                continue;
-
-            // Ceiling must be above the click, otherwise it is not the ceiling of the clicked space.
-            bool aboveClick =
-                bounds.min.y >= clickY - joinEpsilon;
-
-            if (!aboveClick)
-                continue;
-
-            float ceilingY = bounds.min.y;
-
-            Debug.Log(
-                $"Ceiling candidate {b.name}: roles={b.Roles} " +
-                $"bounds=({bounds.min.x:F2},{bounds.min.y:F2})-({bounds.max.x:F2},{bounds.max.y:F2}) " +
-                $"leftInnerX={leftInnerX:F2} rightInnerX={rightInnerX:F2} clickY={clickY:F2} " +
-                $"spansBetweenWalls={spansBetweenWalls} aboveClick={aboveClick} ceilingY={ceilingY:F2}");
-
-            if (ceilingY < bestCeilingY)
-            {
-                bestCeilingY = ceilingY;
-                best = b;
-            }
-        }
-
-        return best;
-    }
-
-    private static bool OverlapsContainerBand(
-        Bounds bounds,
-        float minX,
-        float maxX,
-        float minY,
-        float maxY,
-        float epsilon)
-    {
-        bool overlapsX = bounds.max.x >= minX - epsilon && bounds.min.x <= maxX + epsilon;
-        bool overlapsY = bounds.max.y >= minY - epsilon && bounds.min.y <= maxY + epsilon;
-        return overlapsX && overlapsY;
     }
 }

@@ -524,7 +524,7 @@ public class Boat : MonoBehaviour, IForceBody
 
 #if UNITY_EDITOR
     [ContextMenu("Auto-fit Geometry From Visual Renderers")]
-    private void EditorAutoFitGeometryFromVisualRenderers()
+    public void EditorAutoFitGeometryFromVisualRenderers()
     {
         if (!TryComputeEditorVisualRendererBounds(transform, out Bounds localBounds))
         {

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 [DisallowMultipleComponent]
 public sealed class ResizableSegment2D : MonoBehaviour
@@ -32,6 +33,8 @@ public sealed class ResizableSegment2D : MonoBehaviour
 
     [Min(0.01f)]
     [SerializeField] private float resizeSnapIncrement = 0.5f;
+
+    public event Action<ResizableSegment2D> SizeApplied;
 
     public bool SnapResizeInEditor => snapResizeInEditor;
     public float ResizeSnapIncrement => resizeSnapIncrement;
@@ -135,6 +138,8 @@ public sealed class ResizableSegment2D : MonoBehaviour
                 spriteRenderer.transform.localScale = scale;
             }
         }
+
+        SizeApplied?.Invoke(this);
     }
 
     public void SyncSizeFromCollider()

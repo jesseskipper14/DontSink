@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
+  m_Name: item_pump_basic
+  m_EditorClassIdentifier: 
+  itemId: item_pump_basic
+  displayName: Basic Pump
+  icon: {fileID: 4707323939855302413, guid: 9fed185d39036524d86ef6615829459a, type: 3}
+  itemCategories: 2048
+  maxStack: 1
+  hasCharges: 0
+  maxCharges: 1
+  stowableInInventory: 1
+  droppable: 1
+  tradable: 1
+  disallowedParentSlots: 040000000500000006000000070000000800000009000000
+  preferredDisplacedDestination: 1
+  equipSlot: 1
+  isContainer: 1
+  containerSlotCount: 1
+  containerColumnCount: 1
+  allowedContainerCategories: 256
+  containerTier: 0
+  pickupMode: 1
+  pickupHoldDuration: 3
+  isModule: 1
+  moduleDefinition: {fileID: 11400000, guid: aefe6e145b08bff4092eabee27a350e2, type: 2}
+  worldPrefab: {fileID: 4852340979861053125, guid: 225180d160af7994b9ba579a723a5109, type: 3}

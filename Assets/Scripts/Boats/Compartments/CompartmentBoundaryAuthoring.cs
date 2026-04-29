@@ -8,7 +8,8 @@ public enum CompartmentBoundaryRole
     Wall = 1 << 1,
     Roof = 1 << 2,
     Ledge = 1 << 3,
-    Opening = 1 << 4
+    Hatch = 1 << 4,
+    Door = 1 << 5,
 }
 
 [DisallowMultipleComponent]
@@ -46,13 +47,15 @@ public sealed class CompartmentBoundaryAuthoring : MonoBehaviour
 
     public bool HasRole(CompartmentBoundaryRole role) => (roles & role) != 0;
 
-    public bool IsHorizontalLike =>
+    public bool IsHorizontalBlocker =>
         HasRole(CompartmentBoundaryRole.Floor) ||
         HasRole(CompartmentBoundaryRole.Roof) ||
-        HasRole(CompartmentBoundaryRole.Ledge);
+        HasRole(CompartmentBoundaryRole.Ledge) ||
+        HasRole(CompartmentBoundaryRole.Hatch);
 
-    public bool IsVerticalLike =>
-        HasRole(CompartmentBoundaryRole.Wall);
+    public bool IsVerticalBlocker =>
+        HasRole(CompartmentBoundaryRole.Wall) ||
+        HasRole(CompartmentBoundaryRole.Door);
 
     private void Awake()
     {

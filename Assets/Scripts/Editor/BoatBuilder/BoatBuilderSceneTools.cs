@@ -271,7 +271,14 @@ public static class BoatBuilderSceneTools
 
             if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.BoardedVolume && boatRoot != null)
             {
-                AutoFitBoardedVolume(boatRoot, placed, _ctx.BoardedVolumePadding, _ctx.BoardedVolumeExtraUp, _ctx.BoardedVolumeExtraDown);
+                AutoFitBoardedVolume(
+                    boatRoot,
+                    placed,
+                    _ctx.BoardedVolumePadding,
+                    _ctx.BoardedVolumeExtraUp,
+                    _ctx.BoardedVolumeExtraDown);
+
+                AutoFitBoatGeometryFromVisualRenderers(boatRoot);
             }
 
             if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.ExteriorShell)
@@ -1659,11 +1666,6 @@ public static class BoatBuilderSceneTools
         return $"{GetCleanSplitBaseName(baseName)}{sideSuffix}";
     }
 
-    private static string BuildRepairedPieceName(string baseName, int index)
-    {
-        return $"{GetCleanSplitBaseName(baseName)}_Repaired_{index:00}";
-    }
-
     private static GameObject TryPlaceDetectedCompartment(
     GameObject compartmentPrefab,
     Vector3 requestedWorldPos,
@@ -1780,9 +1782,7 @@ public static class BoatBuilderSceneTools
 
         // Keep the current sizing policy:
         // open-top can bias a little large, closed-top stays conservative.
-        int cellsHigh = isOpenTop
-            ? Mathf.Max(1, Mathf.CeilToInt(worldHeight / cellSize))
-            : Mathf.Max(1, Mathf.FloorToInt(worldHeight / cellSize));
+        int cellsHigh = Mathf.Max(1, Mathf.CeilToInt(worldHeight / cellSize));
 
         if (cellsHigh <= 0)
             cellsHigh = 1;
@@ -1810,6 +1810,30 @@ public static class BoatBuilderSceneTools
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
 
         return true;
+    }
+
+    public static void AutoFitBoatGeometryFromVisualRenderers(Transform boatRoot)
+    {
+        if (boatRoot == null)
+        {
+            Debug.LogWarning("[BoatBuilder] Cannot auto-fit boat geometry: BoatRoot is null.");
+            return;
+        }
+
+        Boat boat = boatRoot.GetComponent<Boat>();
+        if (boat == null)
+            boat = boatRoot.GetComponentInParent<Boat>();
+
+        if (boat == null)
+        {
+            Debug.LogWarning($"[BoatBuilder] Cannot auto-fit boat geometry: no Boat component found for '{boatRoot.name}'.", boatRoot);
+            return;
+        }
+
+        boat.EditorAutoFitGeometryFromVisualRenderers();
+
+        EditorUtility.SetDirty(boat);
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
     }
 }
 #endif

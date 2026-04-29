@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3373471673114733012}
   - component: {fileID: 2204226564169754437}
   - component: {fileID: -4097894079738318531}
-  - component: {fileID: 2823129831596435963}
   m_Layer: 3
   m_Name: BoatDoor_Metal
   m_TagString: Untagged
@@ -163,20 +162,3 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &2823129831596435963
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3384917859122636573}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1cc3fb2dcb135ae45bab57880a079b27, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boat: {fileID: 0}
-  hatch: {fileID: 0}
-  openingCollider: {fileID: 0}
-  sampleOffset: 0.6
-  autoResolveInEditor: 0

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f09bf4be73b727846b74f99b05bdebab, type: 3}
+  m_Name: module_pump_basic
+  m_EditorClassIdentifier: 
+  moduleId: engine_pump
+  displayName: Basic Pump
+  allowedHardpointTypes: 01000000
+  installedPrefab: {fileID: 8130874790704986176, guid: 0aea0dd56ac488a4bb7c214adff08923, type: 3}
+  itemDefinition: {fileID: 11400000, guid: 0bf82beaea0ec254fa382d06449712df, type: 2}

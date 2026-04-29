@@ -70,6 +70,10 @@ public sealed class Hardpoint : MonoBehaviour
         if (engine != null)
             engine.InitializeFuel();
 
+        PumpModule pump = go.GetComponent<PumpModule>();
+        if (pump != null)
+            pump.ResolveTargetCompartment();
+
         return true;
     }
 

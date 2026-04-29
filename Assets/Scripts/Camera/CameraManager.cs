@@ -22,22 +22,42 @@ public class CameraManager : MonoBehaviour
     [Header("Follow")]
     [SerializeField] private Transform followTarget;
     [SerializeField] private Vector3 followOffset = new Vector3(0f, 0f, -10f);
-    [Min(0f)][SerializeField] private float followSmooth = 12f; // 0 = snap
+    [Min(0f)][SerializeField] private float followSmooth = 12f;
     [SerializeField] private bool followActiveCameraOnly = true;
 
+    [Header("Focus Soft Pan")]
+    [Tooltip("Optional intent source. If left empty, this will search the follow target and its parents.")]
+    [SerializeField] private MonoBehaviour intentSourceComponent;
+
+    [Tooltip("Enables soft camera panning while focus/right-click is held.")]
+    [SerializeField] private bool focusSoftPanEnabled = true;
+
+    [Tooltip("How much of the player-to-cursor offset is applied to the camera.")]
+    [Min(0f)][SerializeField] private float focusPanStrength = 0.35f;
+
+    [Tooltip("Maximum world-space camera offset from focus panning.")]
+    [Min(0f)][SerializeField] private float focusPanMaxOffset = 3f;
+
+    [Tooltip("How quickly the soft pan offset catches up.")]
+    [Min(0f)][SerializeField] private float focusPanSmooth = 10f;
+
     private Camera activeCamera;
+    private ICharacterIntentSource _intentSource;
+    private Vector2 _focusPanOffset;
 
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
 
+        ResolveIntentSource();
+
         ActivateCamera(mainCamera);
 
-        mainCamera.orthographic = true;
+        if (mainCamera != null)
+            mainCamera.orthographic = true;
 
-        // Capture default if not set
-        if (defaultOrthoSize <= 0f)
+        if (defaultOrthoSize <= 0f && mainCamera != null)
             defaultOrthoSize = mainCamera.orthographicSize;
 
         ResetZoom();
@@ -45,11 +65,29 @@ public class CameraManager : MonoBehaviour
 
     private void OnEnable()
     {
-        // Whenever spectator cam activates, reset zoom
         ResetZoom();
     }
 
-    public void SetFollowTarget(Transform t) => followTarget = t;
+    public void SetFollowTarget(Transform t)
+    {
+        followTarget = t;
+        ResolveIntentSource();
+    }
+
+    public void SetFocusPanOverride(float strength, float maxOffset, float smooth)
+    {
+        focusPanStrength = Mathf.Max(0f, strength);
+        focusPanMaxOffset = Mathf.Max(0f, maxOffset);
+        focusPanSmooth = Mathf.Max(0f, smooth);
+    }
+
+    public void SetFocusPanEnabled(bool enabled)
+    {
+        focusSoftPanEnabled = enabled;
+
+        if (!enabled)
+            _focusPanOffset = Vector2.zero;
+    }
 
     public void ActivateCamera(Camera cam)
     {
@@ -93,7 +131,8 @@ public class CameraManager : MonoBehaviour
     {
         if (followTarget == null) return;
 
-        // Follow either the active camera only, or all cameras (usually active only).
+        UpdateFocusPanOffset();
+
         if (followActiveCameraOnly)
         {
             if (activeCamera != null)
@@ -108,7 +147,10 @@ public class CameraManager : MonoBehaviour
 
     private void Follow(Transform camXform)
     {
-        Vector3 desired = followTarget.position + followOffset;
+        Vector3 desired =
+            followTarget.position +
+            followOffset +
+            new Vector3(_focusPanOffset.x, _focusPanOffset.y, 0f);
 
         if (followSmooth <= 0.0001f)
         {
@@ -116,9 +158,75 @@ public class CameraManager : MonoBehaviour
             return;
         }
 
-        // exponential damping (frame-rate independent-ish)
         float t = 1f - Mathf.Exp(-followSmooth * Time.deltaTime);
         camXform.position = Vector3.Lerp(camXform.position, desired, t);
+    }
+
+    private void UpdateFocusPanOffset()
+    {
+        Vector2 targetOffset = Vector2.zero;
+
+        if (focusSoftPanEnabled)
+        {
+            if (_intentSource == null)
+                ResolveIntentSource();
+
+            if (_intentSource != null)
+            {
+                CharacterIntent intent = _intentSource.Current;
+
+                if (intent.FocusHeld)
+                {
+                    Vector2 fromPlayerToFocus =
+                        intent.FocusWorldPoint - (Vector2)followTarget.position;
+
+                    targetOffset = fromPlayerToFocus * focusPanStrength;
+
+                    if (targetOffset.magnitude > focusPanMaxOffset)
+                        targetOffset = targetOffset.normalized * focusPanMaxOffset;
+                }
+            }
+        }
+
+        if (focusPanSmooth <= 0.0001f)
+        {
+            _focusPanOffset = targetOffset;
+            return;
+        }
+
+        float t = 1f - Mathf.Exp(-focusPanSmooth * Time.deltaTime);
+        _focusPanOffset = Vector2.Lerp(_focusPanOffset, targetOffset, t);
+    }
+
+    private void ResolveIntentSource()
+    {
+        _intentSource = intentSourceComponent as ICharacterIntentSource;
+
+        if (_intentSource != null)
+            return;
+
+        if (followTarget == null)
+            return;
+
+        foreach (MonoBehaviour mb in followTarget.GetComponentsInParent<MonoBehaviour>())
+        {
+            if (mb is ICharacterIntentSource source)
+            {
+                _intentSource = source;
+                intentSourceComponent = mb;
+                return;
+            }
+        }
+
+        foreach (MonoBehaviour mb in followTarget.GetComponentsInChildren<MonoBehaviour>())
+        {
+            if (mb is ICharacterIntentSource source)
+            {
+                _intentSource = source;
+                intentSourceComponent = mb;
+                return;
+            }
+        }
     }
 
     private void SetWaveZ(float z)

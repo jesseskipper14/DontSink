@@ -175,16 +175,24 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
         if (hardpoint == null || !hardpoint.HasInstalledModule || !IsInRange(context))
             return false;
 
-        return GetInstalledEngine() != null;
+        return GetInstalledEngine() != null || GetInstalledPump() != null;
     }
 
     public void Toggle(in InteractContext context)
     {
         EngineModule engine = GetInstalledEngine();
-        if (engine == null)
+        if (engine != null)
+        {
+            engine.Toggle();
             return;
+        }
 
-        engine.Toggle();
+        PumpModule pump = GetInstalledPump();
+        if (pump != null)
+        {
+            pump.Toggle();
+            return;
+        }
     }
 
     public string GetPromptVerb(in InteractContext context)
@@ -208,7 +216,15 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
             return "Install Module";
         }
 
-        return "Open Fuel";
+        EngineModule engine = GetInstalledEngine();
+        if (engine != null)
+            return "Open Engine";
+
+        PumpModule pump = GetInstalledPump();
+        if (pump != null)
+            return "Open Pump";
+
+        return "Open Module";
     }
 
     public Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
@@ -310,5 +326,13 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
             return null;
 
         return hardpoint.InstalledModule.GetComponent<EngineModule>();
+    }
+
+    public PumpModule GetInstalledPump()
+    {
+        if (hardpoint == null || !hardpoint.HasInstalledModule || hardpoint.InstalledModule == null)
+            return null;
+
+        return hardpoint.InstalledModule.GetComponent<PumpModule>();
     }
 }

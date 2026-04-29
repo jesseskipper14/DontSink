@@ -490,6 +490,12 @@ public class BoatBuilderWindow : EditorWindow
                         if (GUILayout.Button("Repair All Spans"))
                             SpanRepairUtility.RepairAllSpansUnderRoot(root);
 
+                        if (GUILayout.Button("Auto-fit Geometry"))
+                            BoatBuilderSceneTools.AutoFitBoatGeometryFromVisualRenderers(root);
+
+                        if (GUILayout.Button("Generate Compartment Topology"))
+                            CompartmentTopologyGenerator.GenerateFromBoatRoot(root);
+
                         if (GUILayout.Button("Place First Missing"))
                         {
                             if (BoatBuilderSceneTools.TryGetFirstMissingRequiredTool(root, out var missing))

@@ -33,6 +33,30 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
         if (Input.GetKeyDown(jumpKey))
             _jumpPressedLatched = true;
 
+        bool focusHeld = Input.GetMouseButton(1); // right click
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            Debug.Log("[FocusDebug] Right mouse DOWN registered by LocalCharacterIntentSource.", this);
+        }
+
+        if (focusHeld)
+        {
+            Debug.Log("[FocusDebug] Right mouse HELD.", this);
+        }
+
+        Vector2 focusWorld = Vector2.zero;
+        if (focusHeld)
+        {
+            var cam = Camera.main;
+            if (cam != null)
+            {
+                Vector3 mouse = Input.mousePosition;
+                Vector3 world = cam.ScreenToWorldPoint(mouse);
+                focusWorld = new Vector2(world.x, world.y);
+            }
+        }
+
         Current = new CharacterIntent
         {
             MoveX = Mathf.Clamp(x, -1f, 1f),
@@ -44,7 +68,10 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
             SprintHeld = Input.GetKey(sprintKey),
 
             ClimbUpHeld = Input.GetKey(climbUpKey),
-            ClimbDownHeld = Input.GetKey(climbDownKey)
+            ClimbDownHeld = Input.GetKey(climbDownKey),
+
+            FocusHeld = focusHeld,
+            FocusWorldPoint = focusWorld
         };
     }
 

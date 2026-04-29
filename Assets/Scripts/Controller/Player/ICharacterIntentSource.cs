@@ -11,6 +11,8 @@ public struct CharacterIntent
     public bool SprintHeld;
     public bool ClimbUpHeld;
     public bool ClimbDownHeld;
+    public bool FocusHeld;
+    public Vector2 FocusWorldPoint;
 }
 
 public interface ICharacterIntentSource
