@@ -36,8 +36,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         _uiNote = null;
 
         _playerInventory = Object.FindFirstObjectByType<PlayerInventory>();
-        if (_playerInventory != null)
-            _playerEquipment = Object.FindFirstObjectByType<PlayerEquipment>(FindObjectsInactive.Include);
+        _playerEquipment = Object.FindFirstObjectByType<PlayerEquipment>(FindObjectsInactive.Include);
     }
 
     public MiniGameResult Tick(float dt, MiniGameInput input)
@@ -108,6 +107,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         ModuleDefinition def = installed != null ? installed.Definition : null;
         EngineModule engine = installed != null ? installed.GetComponent<EngineModule>() : null;
         PumpModule pump = installed != null ? installed.GetComponent<PumpModule>() : null;
+        GeneratorModule generator = installed != null ? installed.GetComponent<GeneratorModule>() : null;
 
         string title = def != null ? def.DisplayName : "Module";
         GUI.Label(new Rect(panel.x + pad, panel.y + 10f, panel.width - 80f, 24f), $"{title} [{_hardpoint?.HardpointId}]");
@@ -137,15 +137,15 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         Rect middleRect = new Rect(leftRect.xMax + 10f, contentY, middleW, contentH);
         Rect rightRect = new Rect(middleRect.xMax + 10f, contentY, rightW, contentH);
 
-        DrawLeftColumn(leftRect, engine, pump);
-        DrawMiddleColumn(middleRect, engine, pump);
-        DrawRightColumn(rightRect, engine, pump);
+        DrawLeftColumn(leftRect, engine, pump, generator);
+        DrawMiddleColumn(middleRect, engine, pump, generator);
+        DrawRightColumn(rightRect, engine, pump, generator);
 
         if (!string.IsNullOrWhiteSpace(_uiNote))
             GUI.Label(new Rect(panel.x + pad, panel.yMax - 26f, panel.width - pad * 2f - 40f, 20f), _uiNote);
     }
 
-    private void DrawLeftColumn(Rect rect, EngineModule engine, PumpModule pump)
+    private void DrawLeftColumn(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator)
     {
         GUI.Box(rect, GUIContent.none);
 
@@ -170,58 +170,14 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
             GUI.enabled = true;
 
             if (!canRun)
-                GUI.Label(new Rect(x + 130f, y + 4f, w - 130f, 22f), "No usable fuel inserted.");
+                DrawWarningLabel(new Rect(x + 130f, y + 4f, w - 130f, 22f), "No Fuel / Power");
 
             y += 42f;
 
             GUI.Label(new Rect(x, y, w, 22f), "Fuel");
             y += 24f;
 
-            ItemInstance fuelContainer = engine.FuelContainerItem;
-            if (fuelContainer == null)
-            {
-                GUI.Label(new Rect(x, y, w, 22f), "(No fuel container)");
-                return;
-            }
-
-            GUI.Label(new Rect(x, y, w, 22f), $"Container: {fuelContainer.Definition?.DisplayName ?? "Unknown"}");
-            y += 24f;
-
-            ItemContainerState state = fuelContainer.ContainerState;
-            if (state == null)
-            {
-                GUI.Label(new Rect(x, y, w, 22f), "(Container has no state)");
-                return;
-            }
-
-            int filled = 0;
-            for (int i = 0; i < state.SlotCount; i++)
-            {
-                InventorySlot slot = state.GetSlot(i);
-                if (slot != null && !slot.IsEmpty && slot.Instance != null)
-                    filled++;
-            }
-
-            GUI.Label(new Rect(x, y, w, 22f), $"Slots Used: {filled} / {state.SlotCount}");
-            y += 24f;
-
-            GUI.Label(new Rect(x, y, w, 22f), "Summary:");
-            y += 22f;
-
-            bool any = false;
-            for (int i = 0; i < state.SlotCount; i++)
-            {
-                InventorySlot slot = state.GetSlot(i);
-                if (slot == null || slot.IsEmpty || slot.Instance == null)
-                    continue;
-
-                any = true;
-                DrawItemSummaryWithCharges(new Rect(x, y, w, 42f), slot.Instance);
-                y += 44f;
-            }
-
-            if (!any)
-                GUI.Label(new Rect(x, y, w, 22f), "(Empty)");
+            DrawFuelContainerSummary(ref y, x, w, engine.FuelContainerItem);
         }
         else if (pump != null)
         {
@@ -237,7 +193,10 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
             GUI.enabled = true;
 
             if (!canRun)
-                GUI.Label(new Rect(x + 130f, y + 4f, w - 130f, 22f), "No target compartment.");
+            {
+                string reason = pump.TargetCompartment == null ? "No target compartment." : "No Power";
+                DrawWarningLabel(new Rect(x + 130f, y + 4f, w - 130f, 22f), reason);
+            }
 
             y += 42f;
 
@@ -245,9 +204,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
             y += 24f;
 
             Compartment target = pump.TargetCompartment;
-            GUI.Label(
-                new Rect(x, y, w, 22f),
-                $"Target: {(target != null ? target.name : "None")}");
+            GUI.Label(new Rect(x, y, w, 22f), $"Target: {(target != null ? target.name : "None")}");
             y += 24f;
 
             if (target != null)
@@ -262,13 +219,111 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
                 DrawSimpleBar(new Rect(x, y, Mathf.Min(160f, w), 10f), fill01);
             }
         }
+        else if (generator != null)
+        {
+            GUI.Label(new Rect(x, y, w, 22f), $"Generator State: {(generator.IsOn ? "ON" : "OFF")}");
+            y += 28f;
+
+            bool canRun = generator.CanRun();
+            GUI.enabled = canRun;
+
+            if (GUI.Button(new Rect(x, y, 120f, 28f), generator.IsOn ? "Turn Off" : "Turn On"))
+                generator.Toggle();
+
+            GUI.enabled = true;
+
+            if (!canRun)
+            {
+                string reason = generator.PowerState == null ? "No BoatPowerState." : "No Fuel";
+                DrawWarningLabel(new Rect(x + 130f, y + 4f, w - 130f, 22f), reason);
+            }
+
+            y += 42f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Output: {generator.PowerGeneratedPerSecond:F1} power/sec");
+            y += 24f;
+
+            GUI.Label(new Rect(x, y, w, 22f), "Fuel");
+            y += 24f;
+
+            DrawFuelContainerSummary(ref y, x, w, generator.FuelContainerItem);
+
+            BoatPowerState power = generator.PowerState;
+            if (power != null)
+            {
+                GUI.Label(new Rect(x, y, w, 22f), $"Boat Power: {power.CurrentPower:F1} / {power.MaxPower:F1}");
+                y += 24f;
+
+                GUI.Label(new Rect(x, y, w, 22f), $"Demand: {power.CurrentDemandPerSecond:F1} / sec");
+                y += 24f;
+
+                float production = generator.IsOn ? generator.PowerGeneratedPerSecond : 0f;
+                GUI.Label(new Rect(x, y, w, 22f), $"Net: {production - power.CurrentDemandPerSecond:F1} / sec");
+                y += 24f;
+
+                DrawSimpleBar(new Rect(x, y, Mathf.Min(160f, w), 10f), power.Normalized);
+            }
+        }
         else
         {
             GUI.Label(new Rect(x, y, w, 22f), "No specialized module UI yet.");
         }
     }
 
-    private void DrawMiddleColumn(Rect rect, EngineModule engine, PumpModule pump)
+    private void DrawFuelContainerSummary(ref float y, float x, float w, ItemInstance fuelContainer)
+    {
+        if (fuelContainer == null)
+        {
+            GUI.Label(new Rect(x, y, w, 22f), "(No fuel container)");
+            y += 24f;
+            return;
+        }
+
+        GUI.Label(new Rect(x, y, w, 22f), $"Container: {fuelContainer.Definition?.DisplayName ?? "Unknown"}");
+        y += 24f;
+
+        ItemContainerState state = fuelContainer.ContainerState;
+        if (state == null)
+        {
+            GUI.Label(new Rect(x, y, w, 22f), "(Container has no state)");
+            y += 24f;
+            return;
+        }
+
+        int filled = 0;
+        for (int i = 0; i < state.SlotCount; i++)
+        {
+            InventorySlot slot = state.GetSlot(i);
+            if (slot != null && !slot.IsEmpty && slot.Instance != null)
+                filled++;
+        }
+
+        GUI.Label(new Rect(x, y, w, 22f), $"Slots Used: {filled} / {state.SlotCount}");
+        y += 24f;
+
+        GUI.Label(new Rect(x, y, w, 22f), "Summary:");
+        y += 22f;
+
+        bool any = false;
+        for (int i = 0; i < state.SlotCount; i++)
+        {
+            InventorySlot slot = state.GetSlot(i);
+            if (slot == null || slot.IsEmpty || slot.Instance == null)
+                continue;
+
+            any = true;
+            DrawItemSummaryWithCharges(new Rect(x, y, w, 42f), slot.Instance);
+            y += 44f;
+        }
+
+        if (!any)
+        {
+            GUI.Label(new Rect(x, y, w, 22f), "(Empty)");
+            y += 24f;
+        }
+    }
+
+    private void DrawMiddleColumn(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator)
     {
         float gap = 10f;
         float sectionH = (rect.height - gap * 2f) / 3f;
@@ -279,7 +334,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
 
         DrawPlaceholderSection(durabilityRect, "Durability", "Placeholder");
         DrawPlaceholderSection(upgradesRect, "Upgrades", "Placeholder");
-        DrawActionsSection(actionsRect, engine, pump);
+        DrawActionsSection(actionsRect, engine, pump, generator);
     }
 
     private void DrawPlaceholderSection(Rect rect, string title, string body)
@@ -289,7 +344,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         GUI.Label(new Rect(rect.x + 10f, rect.y + 32f, rect.width - 20f, 22f), body);
     }
 
-    private void DrawActionsSection(Rect rect, EngineModule engine, PumpModule pump)
+    private void DrawActionsSection(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator)
     {
         GUI.Box(rect, GUIContent.none);
 
@@ -298,6 +353,8 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         float w = rect.width - 20f;
 
         GUI.Label(new Rect(x, y, w, 22f), "Actions");
+        y += 30f;
+
         if (engine != null)
         {
             if (GUI.Button(new Rect(x, y, 140f, 28f), "Add Fuel"))
@@ -315,8 +372,10 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         {
             if (GUI.Button(new Rect(x, y, 140f, 28f), pump.IsOn ? "Turn Off" : "Turn On"))
             {
-                pump.Toggle();
-                _uiNote = pump.IsOn ? "Pump started." : "Pump stopped.";
+                bool result = pump.Toggle();
+                _uiNote = result
+                    ? (pump.IsOn ? "Pump started." : "Pump stopped.")
+                    : "Pump cannot start.";
             }
 
             y += 36f;
@@ -332,10 +391,43 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
             return;
         }
 
+        if (generator != null)
+        {
+            if (GUI.Button(new Rect(x, y, 140f, 28f), generator.IsOn ? "Turn Off" : "Turn On"))
+            {
+                bool result = generator.Toggle();
+                _uiNote = result
+                    ? (generator.IsOn ? "Generator started." : "Generator stopped.")
+                    : "Generator cannot start: no fuel.";
+            }
+
+            y += 36f;
+
+            if (GUI.Button(new Rect(x, y, 140f, 28f), "Add Fuel"))
+                _uiNote = TryAddFuel(generator, out string addNote) ? addNote : addNote;
+
+            y += 36f;
+
+            if (GUI.Button(new Rect(x, y, 140f, 28f), "Remove Fuel"))
+                _uiNote = TryRemoveFuel(generator, out string removeNote) ? removeNote : removeNote;
+
+            y += 36f;
+
+            if (GUI.Button(new Rect(x, y, 140f, 28f), "Resolve Power"))
+            {
+                generator.ResolveOwnership();
+                _uiNote = generator.PowerState != null
+                    ? "Boat power linked."
+                    : "No BoatPowerState found.";
+            }
+
+            return;
+        }
+
         GUI.Label(new Rect(x, y, w, 22f), "No actions.");
     }
 
-    private void DrawRightColumn(Rect rect, EngineModule engine, PumpModule pump)
+    private void DrawRightColumn(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator)
     {
         if (pump != null)
         {
@@ -365,7 +457,37 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
             y += 24f;
 
             GUI.Label(new Rect(x, y, w, 22f), $"Available: {target.AvailableCapacity:F2}");
+            return;
+        }
 
+        if (generator != null)
+        {
+            GUI.Box(rect, GUIContent.none);
+
+            float x = rect.x + 10f;
+            float y = rect.y + 8f;
+            float w = rect.width - 20f;
+
+            GUI.Label(new Rect(x, y, w, 22f), "Power Diagnostics");
+            y += 28f;
+
+            BoatPowerState power = generator.PowerState;
+            if (power == null)
+            {
+                GUI.Label(new Rect(x, y, w, 22f), "No BoatPowerState linked.");
+                return;
+            }
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Current: {power.CurrentPower:F1}");
+            y += 24f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Max: {power.MaxPower:F1}");
+            y += 24f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Demand: {power.CurrentDemandPerSecond:F1}/sec");
+            y += 24f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Fill: {power.Normalized:P0}");
             return;
         }
 
@@ -376,11 +498,11 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         Rect containerRect = new Rect(rect.x, rect.y, rect.width, topH);
         Rect inventoryRect = new Rect(rect.x, containerRect.yMax + gap, rect.width, bottomH);
 
-        DrawContainerSlots(containerRect, engine);
-        DrawCompatibleInventorySlots(inventoryRect, engine);
+        DrawContainerSlots(containerRect, engine != null ? engine.FuelContainerItem : null);
+        DrawCompatibleInventorySlots(inventoryRect, engine != null ? engine.FuelContainerItem : null);
     }
 
-    private void DrawContainerSlots(Rect rect, EngineModule engine)
+    private void DrawContainerSlots(Rect rect, ItemInstance fuelContainer)
     {
         GUI.Box(rect, GUIContent.none);
 
@@ -391,9 +513,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         GUI.Label(new Rect(x, y, w, 22f), "Module Slots");
         y += 28f;
 
-        ItemInstance fuelContainer = engine != null ? engine.FuelContainerItem : null;
         ItemContainerState state = fuelContainer != null ? fuelContainer.ContainerState : null;
-
         if (state == null)
         {
             GUI.Label(new Rect(x, y, w, 22f), "(No container state)");
@@ -426,22 +546,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         }
     }
 
-    private void DrawSimpleBar(Rect rect, float t)
-    {
-        t = Mathf.Clamp01(t);
-
-        Color prev = GUI.color;
-
-        GUI.color = new Color(1f, 1f, 1f, 0.18f);
-        GUI.DrawTexture(rect, Texture2D.whiteTexture);
-
-        GUI.color = new Color(0.2f, 0.6f, 1f, 0.95f);
-        GUI.DrawTexture(new Rect(rect.x, rect.y, rect.width * t, rect.height), Texture2D.whiteTexture);
-
-        GUI.color = prev;
-    }
-
-    private void DrawCompatibleInventorySlots(Rect rect, EngineModule engine)
+    private void DrawCompatibleInventorySlots(Rect rect, ItemInstance fuelContainer)
     {
         GUI.Box(rect, GUIContent.none);
 
@@ -452,7 +557,6 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         GUI.Label(new Rect(x, y, w, 22f), "Compatible Inventory");
         y += 28f;
 
-        ItemInstance fuelContainer = engine != null ? engine.FuelContainerItem : null;
         if (fuelContainer == null || !fuelContainer.IsContainer)
         {
             GUI.Label(new Rect(x, y, w, 22f), "(No compatible container)");
@@ -528,6 +632,29 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         GUI.Label(new Rect(rect.x, rect.y + rect.height + 2f, rect.width, 14f), $"{item.CurrentCharges}/{item.MaxCharges}");
     }
 
+    private void DrawSimpleBar(Rect rect, float t)
+    {
+        t = Mathf.Clamp01(t);
+
+        Color prev = GUI.color;
+
+        GUI.color = new Color(1f, 1f, 1f, 0.18f);
+        GUI.DrawTexture(rect, Texture2D.whiteTexture);
+
+        GUI.color = new Color(0.2f, 0.6f, 1f, 0.95f);
+        GUI.DrawTexture(new Rect(rect.x, rect.y, rect.width * t, rect.height), Texture2D.whiteTexture);
+
+        GUI.color = prev;
+    }
+
+    private void DrawWarningLabel(Rect rect, string text)
+    {
+        Color prev = GUI.color;
+        GUI.color = Color.red;
+        GUI.Label(rect, text);
+        GUI.color = prev;
+    }
+
     private void GatherCompatibleInventoryItems(ItemInstance fuelContainer, List<ItemInstance> results)
     {
         results.Clear();
@@ -570,18 +697,55 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
 
     private bool TryAddFuel(EngineModule engine, out string note)
     {
-        note = "Add Fuel failed.";
-
         if (engine == null)
         {
             note = "No engine.";
             return false;
         }
 
-        ItemInstance fuelContainer = engine.FuelContainerItem;
+        return TryAddFuelToContainer(engine.FuelContainerItem, "Engine", out note);
+    }
+
+    private bool TryRemoveFuel(EngineModule engine, out string note)
+    {
+        if (engine == null)
+        {
+            note = "No engine.";
+            return false;
+        }
+
+        return TryRemoveFuelFromContainer(engine.FuelContainerItem, out note);
+    }
+
+    private bool TryAddFuel(GeneratorModule generator, out string note)
+    {
+        if (generator == null)
+        {
+            note = "No generator.";
+            return false;
+        }
+
+        return TryAddFuelToContainer(generator.FuelContainerItem, "Generator", out note);
+    }
+
+    private bool TryRemoveFuel(GeneratorModule generator, out string note)
+    {
+        if (generator == null)
+        {
+            note = "No generator.";
+            return false;
+        }
+
+        return TryRemoveFuelFromContainer(generator.FuelContainerItem, out note);
+    }
+
+    private bool TryAddFuelToContainer(ItemInstance fuelContainer, string ownerName, out string note)
+    {
+        note = "Add Fuel failed.";
+
         if (fuelContainer == null || !fuelContainer.IsContainer)
         {
-            note = "Engine has no valid fuel container.";
+            note = $"{ownerName} has no valid fuel container.";
             return false;
         }
 
@@ -631,6 +795,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
                 {
                     if (remainder != null && !remainder.IsDepleted())
                     {
+                        _playerInventory?.TryAutoInsert(remainder, out _);
                     }
 
                     _playerInventory?.NotifyChanged();
@@ -646,15 +811,9 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         return false;
     }
 
-    private bool TryRemoveFuel(EngineModule engine, out string note)
+    private bool TryRemoveFuelFromContainer(ItemInstance fuelContainer, out string note)
     {
         note = "Remove Fuel failed.";
-
-        if (engine == null)
-        {
-            note = "No engine.";
-            return false;
-        }
 
         if (_playerInventory == null)
         {
@@ -662,7 +821,6 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
             return false;
         }
 
-        ItemInstance fuelContainer = engine.FuelContainerItem;
         ItemContainerState state = fuelContainer != null ? fuelContainer.ContainerState : null;
         if (state == null)
         {

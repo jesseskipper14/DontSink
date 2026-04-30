@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
+  m_Name: item_generator_basic
+  m_EditorClassIdentifier: 
+  itemId: item_generator_basic
+  displayName: Basic Generator
+  icon: {fileID: 615969688876772431, guid: 6564df25cb8bf8e4a93a4c320238468e, type: 3}
+  itemCategories: 2048
+  maxStack: 1
+  hasCharges: 0
+  maxCharges: 1
+  stowableInInventory: 1
+  droppable: 1
+  tradable: 1
+  disallowedParentSlots: 040000000500000006000000070000000800000009000000
+  preferredDisplacedDestination: 1
+  equipSlot: 1
+  isContainer: 1
+  containerSlotCount: 1
+  containerColumnCount: 1
+  allowedContainerCategories: 256
+  containerTier: 0
+  pickupMode: 1
+  pickupHoldDuration: 3
+  isModule: 1
+  moduleDefinition: {fileID: 11400000, guid: b3b8503b3b5eead418fc51f3f77f2bd7, type: 2}
+  worldPrefab: {fileID: 4852340979861053125, guid: 4dbae50bc0b59ba40a73c76860f2982e, type: 3}

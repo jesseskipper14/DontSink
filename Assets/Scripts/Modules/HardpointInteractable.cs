@@ -175,7 +175,9 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
         if (hardpoint == null || !hardpoint.HasInstalledModule || !IsInRange(context))
             return false;
 
-        return GetInstalledEngine() != null || GetInstalledPump() != null;
+        return GetInstalledEngine() != null
+            || GetInstalledPump() != null
+            || GetInstalledGenerator() != null;
     }
 
     public void Toggle(in InteractContext context)
@@ -191,6 +193,13 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
         if (pump != null)
         {
             pump.Toggle();
+            return;
+        }
+
+        GeneratorModule generator = GetInstalledGenerator();
+        if (generator != null)
+        {
+            generator.Toggle();
             return;
         }
     }
@@ -223,6 +232,10 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
         PumpModule pump = GetInstalledPump();
         if (pump != null)
             return "Open Pump";
+
+        GeneratorModule generator = GetInstalledGenerator();
+        if (generator != null)
+            return "Open Generator";
 
         return "Open Module";
     }
@@ -334,5 +347,13 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
             return null;
 
         return hardpoint.InstalledModule.GetComponent<PumpModule>();
+    }
+
+    public GeneratorModule GetInstalledGenerator()
+    {
+        if (hardpoint == null || !hardpoint.HasInstalledModule || hardpoint.InstalledModule == null)
+            return null;
+
+        return hardpoint.InstalledModule.GetComponent<GeneratorModule>();
     }
 }

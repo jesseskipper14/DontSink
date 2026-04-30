@@ -4260,8 +4260,8 @@ MonoBehaviour:
   intentSourceComponent: {fileID: 0}
   focusSoftPanEnabled: 1
   focusPanStrength: 0.35
-  focusPanMaxOffset: 3
-  focusPanSmooth: 10
+  focusPanMaxOffset: 20
+  focusPanSmooth: 6
 --- !u!1 &643752051
 GameObject:
   m_ObjectHideFlags: 0
@@ -11787,12 +11787,12 @@ MonoBehaviour:
   speed: 0.5
   resolution: 1000
   width: 300
-  stiffness: 20
+  stiffness: 100
   damping: 0.01
   horizontalDamping: 0.7
   tension: 30
   viscosity: 0.02
-  maxWaveVelocity: 6
+  maxWaveVelocity: 1
 --- !u!4 &1434521171
 Transform:
   m_ObjectHideFlags: 0

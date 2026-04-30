@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class PumpModule : MonoBehaviour
+public sealed class PumpModule : MonoBehaviour, IPowerConsumerModule
 {
     [Header("State")]
     [SerializeField] private bool isOn;
@@ -9,6 +9,11 @@ public sealed class PumpModule : MonoBehaviour
     [Header("Pump")]
     [Tooltip("Water area removed per second from the target compartment.")]
     [SerializeField] private float pumpRatePerSecond = 0.35f;
+
+    [Header("Power")]
+    [SerializeField] private float powerDemandPerSecond = 1f;
+
+    private BoatPowerState powerState;
 
     [Tooltip("If true, the pump searches for its compartment automatically.")]
     [SerializeField] private bool autoResolveCompartment = true;
@@ -26,6 +31,19 @@ public sealed class PumpModule : MonoBehaviour
     public bool IsOn => isOn;
     public float PumpRatePerSecond => Mathf.Max(0f, pumpRatePerSecond);
     public Compartment TargetCompartment => targetCompartment;
+    public bool IsConsumingPower => isOn && targetCompartment != null && targetCompartment.WaterArea > 0f;
+    public float PowerDemandPerSecond => Mathf.Max(0f, powerDemandPerSecond);
+
+    public bool HasPowerAvailable
+    {
+        get
+        {
+            if (powerState == null)
+                ResolveOwnership();
+
+            return powerState != null && powerState.CurrentPower > 0f;
+        }
+    }
 
     private void Awake()
     {
@@ -60,12 +78,27 @@ public sealed class PumpModule : MonoBehaviour
         if (targetCompartment.WaterArea <= 0f)
             return;
 
+        if (powerState == null)
+            ResolveOwnership();
+
+        if (powerState == null || !powerState.TryConsume(PowerDemandPerSecond * Time.deltaTime))
+        {
+            isOn = false;
+            return;
+        }
+
         float amount = PumpRatePerSecond * Time.deltaTime;
         targetCompartment.RemoveWater(amount);
     }
 
     public bool SetOn(bool value)
     {
+        if (value && !CanRun())
+        {
+            isOn = false;
+            return false;
+        }
+
         isOn = value;
         return true;
     }
@@ -77,7 +110,7 @@ public sealed class PumpModule : MonoBehaviour
 
     public bool CanRun()
     {
-        return targetCompartment != null;
+        return targetCompartment != null && HasPowerAvailable;
     }
 
     public void SetTargetCompartment(Compartment compartment)
@@ -126,6 +159,9 @@ public sealed class PumpModule : MonoBehaviour
 
         if (ownerBoat == null)
             ownerBoat = GetComponentInParent<Boat>();
+
+        if (ownerBoat != null)
+            powerState = ownerBoat.GetComponent<BoatPowerState>();
     }
 
     private static Compartment FindBestCompartment(Boat boat, Vector2 worldPoint)

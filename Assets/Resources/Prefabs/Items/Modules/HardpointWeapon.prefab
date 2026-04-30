@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9141116475110502253}
-  m_Layer: 10
+  m_Layer: 3
   m_Name: MountPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 5916164892976296465}
   - component: {fileID: 9203517043623545370}
   - component: {fileID: 2625696029987183493}
-  m_Layer: 10
+  m_Layer: 3
   m_Name: HardpointWeapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,7 +61,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 11.69, y: 3.07, z: -0.07430349}
-  m_LocalScale: {x: 4, y: 4, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9141116475110502253}
@@ -109,8 +109,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 3818041681052141067, guid: d28d6d3699e975d44aa6703b06e820aa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -188,12 +188,12 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.3
+  m_Radius: 1
 --- !u!1 &6787353940955455982
 GameObject:
   m_ObjectHideFlags: 0
@@ -203,7 +203,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7434404790526906763}
-  m_Layer: 10
+  m_Layer: 3
   m_Name: PromptAnchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}

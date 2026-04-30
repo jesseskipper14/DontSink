@@ -74,6 +74,13 @@ public sealed class Hardpoint : MonoBehaviour
         if (pump != null)
             pump.ResolveTargetCompartment();
 
+        GeneratorModule generator = go.GetComponent<GeneratorModule>();
+        if (generator != null)
+        {
+            generator.InitializeFuel();
+            generator.ResolveOwnership();
+        }
+
         return true;
     }
 
