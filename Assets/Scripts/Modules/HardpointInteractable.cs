@@ -175,33 +175,27 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
         if (hardpoint == null || !hardpoint.HasInstalledModule || !IsInRange(context))
             return false;
 
-        return GetInstalledEngine() != null
-            || GetInstalledPump() != null
-            || GetInstalledGenerator() != null;
+        return GetInstalledToggleable() != null;
     }
 
     public void Toggle(in InteractContext context)
     {
-        EngineModule engine = GetInstalledEngine();
-        if (engine != null)
+        IModuleToggleable toggleable = GetInstalledToggleable();
+        toggleable?.Toggle();
+    }
+
+    private IModuleToggleable GetInstalledToggleable()
+    {
+        if (hardpoint == null || !hardpoint.HasInstalledModule || hardpoint.InstalledModule == null)
+            return null;
+
+        foreach (MonoBehaviour mb in hardpoint.InstalledModule.GetComponents<MonoBehaviour>())
         {
-            engine.Toggle();
-            return;
+            if (mb is IModuleToggleable toggleable)
+                return toggleable;
         }
 
-        PumpModule pump = GetInstalledPump();
-        if (pump != null)
-        {
-            pump.Toggle();
-            return;
-        }
-
-        GeneratorModule generator = GetInstalledGenerator();
-        if (generator != null)
-        {
-            generator.Toggle();
-            return;
-        }
+        return null;
     }
 
     public string GetPromptVerb(in InteractContext context)
@@ -220,6 +214,14 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
                 && moduleItem?.Definition?.ModuleDefinition != null)
             {
                 return $"Install {moduleItem.Definition.DisplayName}";
+            }
+
+            if (TryGetSelectedModuleItem(context, out ItemInstance selectedModuleItem))
+            {
+                ModuleDefinition selectedModuleDefinition = selectedModuleItem.Definition.ModuleDefinition;
+
+                if (!hardpoint.ModuleMatchesAcceptedTypes(selectedModuleDefinition))
+                    return $"Hardpoint accepts: {hardpoint.GetAcceptedTypesText()}";
             }
 
             return "Install Module";
@@ -355,5 +357,40 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
             return null;
 
         return hardpoint.InstalledModule.GetComponent<GeneratorModule>();
+    }
+
+    private bool TryGetSelectedModuleItem(
+    in InteractContext context,
+    out ItemInstance moduleItem)
+    {
+        moduleItem = null;
+
+        PlayerInventory inventory = context.InteractorGO != null
+            ? context.InteractorGO.GetComponentInChildren<PlayerInventory>()
+            : null;
+
+        if (inventory == null)
+            return false;
+
+        PlayerEquipment equipment = context.InteractorGO.GetComponentInChildren<PlayerEquipment>(true);
+        if (equipment == null)
+            return false;
+
+        BottomBarSlotType selectedType = inventory.SelectedSlot;
+
+        if (selectedType >= BottomBarSlotType.Hotbar0 && selectedType <= BottomBarSlotType.Hotbar7)
+        {
+            InventorySlot selectedHotbar = inventory.GetSlot(PlayerInventory.SlotTypeToHotbarIndex(selectedType));
+            moduleItem = selectedHotbar != null ? selectedHotbar.Instance : null;
+        }
+        else
+        {
+            moduleItem = equipment.Get(selectedType);
+        }
+
+        return moduleItem != null
+            && moduleItem.Definition != null
+            && moduleItem.Definition.IsModule
+            && moduleItem.Definition.ModuleDefinition != null;
     }
 }

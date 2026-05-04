@@ -38,7 +38,7 @@ public sealed class ContainerInventoryPanelUI : MonoBehaviour
 
     private readonly List<InventorySlotUI> spawnedSlots = new();
 
-    private ItemInstance boundContainerItem;
+    [System.NonSerialized] private ItemInstance boundContainerItem;
     private BottomBarSlotType boundSourceSlotType = BottomBarSlotType.None;
     private bool isOpen;
     private ContainerSection activeSection = ContainerSection.None;
@@ -47,7 +47,7 @@ public sealed class ContainerInventoryPanelUI : MonoBehaviour
     public BottomBarSlotType BoundSourceSlotType => boundSourceSlotType;
     public ItemInstance BoundContainerItem => boundContainerItem;
 
-    private ItemContainerState subscribedState;
+    [System.NonSerialized] private ItemContainerState subscribedState;
 
     private void Awake()
     {

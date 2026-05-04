@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &406999693499425914
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5703808774171021775}
+  m_Layer: 3
+  m_Name: ModuleBottomAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5703808774171021775
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 406999693499425914}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.3, z: -0.07430349}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9126828244924666281}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3524316323811778203
 GameObject:
   m_ObjectHideFlags: 0
@@ -9,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8257903097564535626}
-  m_Layer: 10
+  m_Layer: 3
   m_Name: PromptAnchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +72,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7475546025739489731}
   - component: {fileID: 3390287945595143791}
-  m_Layer: 10
+  m_Layer: 3
   m_Name: Highlight
   m_TagString: Highlight
   m_Icon: {fileID: 0}
@@ -104,8 +135,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1939965397
-  m_SortingLayer: 10
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
   m_SortingOrder: -1
   m_Sprite: {fileID: 4707323939855302413, guid: 9fed185d39036524d86ef6615829459a, type: 3}
   m_Color: {r: 0.49381453, g: 0.59341216, b: 0.764151, a: 1}
@@ -133,7 +164,8 @@ GameObject:
   - component: {fileID: 4852340979861053125}
   - component: {fileID: -788460587395443}
   - component: {fileID: 5704133069128531661}
-  m_Layer: 10
+  - component: {fileID: 2471266502949367100}
+  m_Layer: 3
   m_Name: BasicPump_Installed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -153,6 +185,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 5703808774171021775}
   - {fileID: 7475546025739489731}
   - {fileID: 4693907460653047433}
   - {fileID: 8257903097564535626}
@@ -199,8 +232,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1939965397
-  m_SortingLayer: 10
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 4707323939855302413, guid: 9fed185d39036524d86ef6615829459a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -340,9 +373,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isOn: 0
   pumpRatePerSecond: 0.35
+  powerDemandPerSecond: 1
   autoResolveCompartment: 1
   targetCompartment: {fileID: 0}
   debugLogs: 0
+--- !u!114 &2471266502949367100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8130874790704986176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b777a711e14d77f45b92b0d34bb86ce7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moduleAnchor: {fileID: 5703808774171021775}
 --- !u!1 &8721630635941789182
 GameObject:
   m_ObjectHideFlags: 0
@@ -352,7 +399,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4693907460653047433}
-  m_Layer: 10
+  m_Layer: 3
   m_Name: SlotAnchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -3,7 +3,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class WorldItem : MonoBehaviour, IPickupInteractable, IInteractPromptProvider
 {
-    [SerializeField] private ItemInstance itemInstance;
+    [SerializeReference] private ItemInstance itemInstance;
     [SerializeField] private int interactionPriority = 10;
     [SerializeField] private float maxPickupDistance = 1.5f;
     [SerializeField] private Transform promptAnchor;

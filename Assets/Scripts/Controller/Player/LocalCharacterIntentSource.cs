@@ -22,6 +22,11 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
     [SerializeField] private KeyCode climbUpKey = KeyCode.W;
     [SerializeField] private KeyCode climbDownKey = KeyCode.S;
 
+    [Header("Focus / Control Bindings")]
+    [SerializeField] private int focusMouseButton = 1;      // right mouse
+    [SerializeField] private int primaryUseMouseButton = 0; // left mouse
+    [SerializeField] private KeyCode cancelKey = KeyCode.Escape;
+
     public CharacterIntent Current { get; private set; }
 
     private bool _jumpPressedLatched;
@@ -33,29 +38,18 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
         if (Input.GetKeyDown(jumpKey))
             _jumpPressedLatched = true;
 
-        bool focusHeld = Input.GetMouseButton(1); // right click
-
-        if (Input.GetMouseButtonDown(1))
+        Vector2 aimWorld = Vector2.zero;
+        Camera cam = Camera.main;
+        if (cam != null)
         {
-            Debug.Log("[FocusDebug] Right mouse DOWN registered by LocalCharacterIntentSource.", this);
+            Vector3 mouse = Input.mousePosition;
+            Vector3 world = cam.ScreenToWorldPoint(mouse);
+            aimWorld = new Vector2(world.x, world.y);
         }
 
-        if (focusHeld)
-        {
-            Debug.Log("[FocusDebug] Right mouse HELD.", this);
-        }
-
-        Vector2 focusWorld = Vector2.zero;
-        if (focusHeld)
-        {
-            var cam = Camera.main;
-            if (cam != null)
-            {
-                Vector3 mouse = Input.mousePosition;
-                Vector3 world = cam.ScreenToWorldPoint(mouse);
-                focusWorld = new Vector2(world.x, world.y);
-            }
-        }
+        bool focusHeld = Input.GetMouseButton(focusMouseButton);
+        bool primaryUseHeld = Input.GetMouseButton(primaryUseMouseButton);
+        bool cancelHeld = Input.GetKey(cancelKey);
 
         Current = new CharacterIntent
         {
@@ -71,7 +65,11 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
             ClimbDownHeld = Input.GetKey(climbDownKey),
 
             FocusHeld = focusHeld,
-            FocusWorldPoint = focusWorld
+            FocusWorldPoint = aimWorld,
+
+            AimWorldPoint = aimWorld,
+            PrimaryUseHeld = primaryUseHeld,
+            CancelHeld = cancelHeld
         };
     }
 

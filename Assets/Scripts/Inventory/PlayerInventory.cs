@@ -10,7 +10,7 @@ public sealed class PlayerInventory : MonoBehaviour
     [SerializeField] private int hotbarSlotCount = 6;
     [SerializeField] private bool scrollIncludesEquipmentSlots = true;
     [SerializeField] private PlayerEquipment equipment;
-    [SerializeField] private List<InventorySlot> hotbarSlots = new();
+    [SerializeReference] private List<InventorySlot> hotbarSlots = new();
     [SerializeField] private BottomBarSlotType selectedSlot = BottomBarSlotType.Hotbar0;
 
     public event Action InventoryChanged;

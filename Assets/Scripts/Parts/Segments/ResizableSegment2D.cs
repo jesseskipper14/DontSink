@@ -1,6 +1,10 @@
 using UnityEngine;
 using System;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 [DisallowMultipleComponent]
 public sealed class ResizableSegment2D : MonoBehaviour
 {
@@ -39,6 +43,17 @@ public sealed class ResizableSegment2D : MonoBehaviour
     public bool SnapResizeInEditor => snapResizeInEditor;
     public float ResizeSnapIncrement => resizeSnapIncrement;
 
+    public float Width => width;
+    public float Height => height;
+    public ResizeAxis Axis => resizeAxis;
+
+    public SpriteRenderer SpriteRenderer => spriteRenderer;
+    public BoxCollider2D BoxCollider => boxCollider;
+
+#if UNITY_EDITOR
+    private bool _editorApplyQueued;
+#endif
+
     public float SnapSize(float rawSize)
     {
         rawSize = Mathf.Max(0.01f, rawSize);
@@ -54,13 +69,6 @@ public sealed class ResizableSegment2D : MonoBehaviour
 
         return Mathf.Max(inc, snapped);
     }
-
-    public float Width => width;
-    public float Height => height;
-    public ResizeAxis Axis => resizeAxis;
-
-    public SpriteRenderer SpriteRenderer => spriteRenderer;
-    public BoxCollider2D BoxCollider => boxCollider;
 
     private void Reset()
     {
@@ -166,9 +174,52 @@ public sealed class ResizableSegment2D : MonoBehaviour
     {
         width = Mathf.Max(0.01f, width);
         height = Mathf.Max(0.01f, height);
+        resizeSnapIncrement = Mathf.Max(0.01f, resizeSnapIncrement);
 
         if (!Application.isPlaying)
+        {
+            ResolveEditorRefsIfMissing();
+            QueueEditorApplySize();
+        }
+    }
+
+    private void ResolveEditorRefsIfMissing()
+    {
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        if (boxCollider == null)
+            boxCollider = GetComponent<BoxCollider2D>();
+    }
+
+    private void QueueEditorApplySize()
+    {
+        if (_editorApplyQueued)
+            return;
+
+        _editorApplyQueued = true;
+
+        EditorApplication.delayCall += () =>
+        {
+            _editorApplyQueued = false;
+
+            if (this == null)
+                return;
+
+            ResolveEditorRefsIfMissing();
             ApplySize(width, height);
+
+            EditorUtility.SetDirty(this);
+
+            if (gameObject != null)
+                EditorUtility.SetDirty(gameObject);
+
+            if (spriteRenderer != null)
+                EditorUtility.SetDirty(spriteRenderer);
+
+            if (boxCollider != null)
+                EditorUtility.SetDirty(boxCollider);
+        };
     }
 
     [ContextMenu("Sync Size From Collider")]
@@ -176,12 +227,22 @@ public sealed class ResizableSegment2D : MonoBehaviour
     {
         SyncSizeFromCollider();
         ApplySize(width, height);
+
+        EditorUtility.SetDirty(this);
+
+        if (gameObject != null)
+            EditorUtility.SetDirty(gameObject);
     }
 
     [ContextMenu("Normalize Scales And Apply")]
     private void EditorNormalizeScalesAndApply()
     {
         NormalizeScalesAndApply();
+
+        EditorUtility.SetDirty(this);
+
+        if (gameObject != null)
+            EditorUtility.SetDirty(gameObject);
     }
 #endif
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class GeneratorModule : MonoBehaviour
+public sealed class GeneratorModule : MonoBehaviour, IModuleToggleable, IInstalledModuleLifecycle
 {
     [Header("State")]
     [SerializeField] private bool isOn;
@@ -13,7 +13,7 @@ public sealed class GeneratorModule : MonoBehaviour
     [SerializeField] private ItemDefinition fuelContainerDefinition;
     [SerializeField] private float fuelBurnRatePerSecond = 0.05f;
 
-    private ItemInstance fuelContainerItem;
+    [SerializeReference] private ItemInstance fuelContainerItem; 
     private float fuelBurnAccumulator;
 
     private InstalledModule installedModule;
@@ -197,5 +197,15 @@ public sealed class GeneratorModule : MonoBehaviour
         }
 
         return remaining <= 0;
+    }
+
+    public void OnInstalled(Hardpoint owner)
+    {
+        InitializeFuel();
+        ResolveOwnership();
+    }
+
+    public void OnRemoved()
+    {
     }
 }

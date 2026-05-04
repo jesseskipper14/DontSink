@@ -1,5 +1,9 @@
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 [DisallowMultipleComponent]
 public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotifier
 {
@@ -90,6 +94,10 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
     private GameObject _leftWall;
     private GameObject _rightWall;
 
+#if UNITY_EDITOR
+    private bool _editorGenerateQueued;
+#endif
+
     public event System.Action OnGenerated;
 
     private void Awake()
@@ -105,11 +113,33 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        if (!regenerateOnValidate) return;
-        if (!Application.isPlaying) return;
+        if (!regenerateOnValidate)
+            return;
 
-        EnsureComponents();
-        Generate();
+        QueueEditorGenerate();
+    }
+
+    private void QueueEditorGenerate()
+    {
+        if (_editorGenerateQueued)
+            return;
+
+        _editorGenerateQueued = true;
+
+        EditorApplication.delayCall += () =>
+        {
+            _editorGenerateQueued = false;
+
+            if (this == null)
+                return;
+
+            Generate();
+
+            EditorUtility.SetDirty(this);
+
+            if (gameObject != null)
+                EditorUtility.SetDirty(gameObject);
+        };
     }
 #endif
 
@@ -117,24 +147,20 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
     public void Generate()
     {
         if (randomizeSeedOnGenerate)
-        {
             seed = Random.Range(int.MinValue, int.MaxValue);
-        }
 
         EnsureComponents();
 
-        // Layer
         int groundLayer = LayerMask.NameToLayer(groundLayerName);
         if (groundLayer < 0)
         {
-            Debug.LogWarning($"Layer '{groundLayerName}' not found. Ground will stay on Default.");
+            Debug.LogWarning($"Layer '{groundLayerName}' not found. Ground will stay on Default.", this);
         }
         else
         {
             gameObject.layer = groundLayer;
         }
 
-        // Deterministic noise offsets per instance
         var rng = new System.Random(seed);
         float noiseOffset = (float)rng.NextDouble() * 10000f;
         float landOffset = (float)rng.NextDouble() * 10000f;
@@ -149,14 +175,13 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
         float actualSlopeDrop = slopeDrop + Random.Range(-slopeRandomizationRange, slopeRandomizationRange);
 
         float slopeStartX = Mathf.Clamp(islandLength, xStart, xEnd);
-        float slopeEndX = Mathf.Clamp(islandLength + slopeLength, xStart, xEnd);
+        float slopeEndX = Mathf.Clamp(islandLength + actualSlopeLength, xStart, xEnd);
 
         for (int i = 0; i < pointCount; i++)
         {
             float x = xStart + dx * i;
             float y = landY;
 
-            // Left-side land section (mostly flat)
             if (x <= slopeStartX)
             {
                 if (landWobbleAmplitude > 0f)
@@ -165,22 +190,19 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
                     y += wobble * landWobbleAmplitude;
                 }
             }
-            // Slope-down transition
             else if (x <= slopeEndX)
             {
                 float t = Mathf.InverseLerp(slopeStartX, slopeEndX, x);
-                // Smoothstep for nicer beach shapes
                 t = t * t * (3f - 2f * t);
-                y = landY - (slopeDrop * t);
 
-                // Slope deformation (ramps in/out so seams stay clean)
+                y = landY - (actualSlopeDrop * t);
+
                 if (slopeDeformationAmplitude > 0f)
                 {
                     float fadeFrac = Mathf.Clamp01(slopeDeformationEdgeFade);
-                    float fadeIn = (fadeFrac <= 0f) ? 1f : Mathf.Clamp01(t / fadeFrac);
-                    float fadeOut = (fadeFrac <= 0f) ? 1f : Mathf.Clamp01((1f - t) / fadeFrac);
+                    float fadeIn = fadeFrac <= 0f ? 1f : Mathf.Clamp01(t / fadeFrac);
+                    float fadeOut = fadeFrac <= 0f ? 1f : Mathf.Clamp01((1f - t) / fadeFrac);
 
-                    // Smooth fades (avoids linear "crease" feeling)
                     fadeIn = fadeIn * fadeIn * (3f - 2f * fadeIn);
                     fadeOut = fadeOut * fadeOut * (3f - 2f * fadeOut);
 
@@ -190,22 +212,27 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
                         x,
                         slopeDeformationScale,
                         slopeDeformationOctaves,
-                        octavePersistence,   // reuse existing persistence
-                        octaveLacunarity,    // reuse existing lacunarity
+                        octavePersistence,
+                        octaveLacunarity,
                         noiseOffset + 1337.7f);
 
                     y += slopeDeform * slopeDeformationAmplitude * seamSafe;
                 }
             }
-            // Underwater continuation with deformation
             else
             {
-                y = landY - slopeDrop;
+                y = landY - actualSlopeDrop;
 
-                // Ramp deformation in so it doesn't pop right at slope end
                 float rampT = Mathf.Clamp01((x - slopeEndX) / deformationRampDistance);
 
-                float deform = FractalPerlin1D(x, deformationScale, deformationOctaves, octavePersistence, octaveLacunarity, noiseOffset);
+                float deform = FractalPerlin1D(
+                    x,
+                    deformationScale,
+                    deformationOctaves,
+                    octavePersistence,
+                    octaveLacunarity,
+                    noiseOffset);
+
                 y += deform * deformationAmplitude * rampT;
             }
 
@@ -224,11 +251,11 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
 
     private void EnsureComponents()
     {
-        if (_edge == null) _edge = GetComponent<EdgeCollider2D>();
-        if (_edge == null) _edge = gameObject.AddComponent<EdgeCollider2D>();
+        if (_edge == null)
+            _edge = GetComponent<EdgeCollider2D>();
 
-        // EdgeCollider2D expects points in local space
-        // We generate in local coordinates (x from 0..worldWidth), so keep transform clean-ish.
+        if (_edge == null)
+            _edge = gameObject.AddComponent<EdgeCollider2D>();
     }
 
     private void EnsureBoundaryWalls(float xStart, float xEnd)
@@ -249,32 +276,75 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
     {
         if (existing == null)
         {
-            existing = new GameObject(name);
-            existing.transform.SetParent(transform, false);
-
-            var box = existing.AddComponent<BoxCollider2D>();
-            box.size = new Vector2(boundaryWallThickness, boundaryWallHeight);
-            box.offset = new Vector2(0f, boundaryWallHeight * 0.5f); // sit on y=0 baseline
-
-            // no rigidbody needed: static collider works fine
+            Transform found = transform.Find(name);
+            if (found != null)
+                existing = found.gameObject;
         }
 
-        if (layer >= 0) existing.layer = layer;
+        if (existing == null)
+        {
+            existing = new GameObject(name);
+            existing.transform.SetParent(transform, false);
+        }
+
+        BoxCollider2D box = existing.GetComponent<BoxCollider2D>();
+        if (box == null)
+            box = existing.AddComponent<BoxCollider2D>();
+
+        box.size = new Vector2(boundaryWallThickness, boundaryWallHeight);
+        box.offset = new Vector2(0f, boundaryWallHeight * 0.5f);
+
+        if (layer >= 0)
+            existing.layer = layer;
+
         return existing;
     }
 
     private void PositionWall(GameObject wall, float x)
     {
+        if (wall == null)
+            return;
+
         wall.transform.localPosition = new Vector3(x, landY - (boundaryWallHeight * 0.5f), 0f);
-        // This places the wall so it spans upward around the landY baseline.
     }
 
     private void DestroyBoundaryWallsIfAny()
     {
-        if (_leftWall) Destroy(_leftWall);
-        if (_rightWall) Destroy(_rightWall);
+        if (_leftWall == null)
+        {
+            Transform found = transform.Find("BoundaryWall_Left");
+            if (found != null)
+                _leftWall = found.gameObject;
+        }
+
+        if (_rightWall == null)
+        {
+            Transform found = transform.Find("BoundaryWall_Right");
+            if (found != null)
+                _rightWall = found.gameObject;
+        }
+
+        DestroyWall(_leftWall);
+        DestroyWall(_rightWall);
+
         _leftWall = null;
         _rightWall = null;
+    }
+
+    private static void DestroyWall(GameObject wall)
+    {
+        if (wall == null)
+            return;
+
+#if UNITY_EDITOR
+        if (!Application.isPlaying)
+        {
+            DestroyImmediate(wall);
+            return;
+        }
+#endif
+
+        Destroy(wall);
     }
 
     private static float FractalPerlin1D(
@@ -293,7 +363,6 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
         for (int o = 0; o < octaves; o++)
         {
             float n = Mathf.PerlinNoise((x + offset) * baseScale * freq, 0.4567f);
-            // Convert 0..1 to -1..1
             n = (n - 0.5f) * 2f;
 
             sum += n * amp;
@@ -303,6 +372,6 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
             freq *= lacunarity;
         }
 
-        return (norm > 0f) ? (sum / norm) : 0f;
+        return norm > 0f ? sum / norm : 0f;
     }
 }

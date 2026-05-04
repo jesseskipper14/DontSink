@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule
+public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule, IModuleToggleable, IInstalledModuleLifecycle
 {
     private enum EngineRunMode
     {
@@ -27,7 +27,7 @@ public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule
     [Tooltip("Multiplier applied to power drain at full throttle.")]
     [SerializeField] private float maxThrottlePowerDemandMultiplier = 2f;
 
-    private ItemInstance fuelContainerItem;
+    [SerializeReference] private ItemInstance fuelContainerItem;
     private float fuelBurnAccumulator;
     private float throttleLoad01;
 
@@ -302,5 +302,17 @@ public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule
         }
 
         return true;
+    }
+
+    public void OnInstalled(Hardpoint owner)
+    {
+        installedModule = GetComponent<InstalledModule>();
+        InitializeFuel();
+        ResolvePowerState();
+    }
+
+    public void OnRemoved()
+    {
+
     }
 }

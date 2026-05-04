@@ -20,6 +20,7 @@ public sealed class ModuleDefinition : ScriptableObject
     public string DisplayName => displayName;
     public GameObject InstalledPrefab => installedPrefab;
     public ItemDefinition ItemDefinition => itemDefinition;
+    public HardpointType[] AllowedHardpointTypes => allowedHardpointTypes;
 
     public bool CanInstallOn(HardpointType hardpointType)
     {

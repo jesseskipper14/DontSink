@@ -47,6 +47,10 @@ public class CompartmentRectAuthoring : MonoBehaviour
 
     private bool _applying;
 
+#if UNITY_EDITOR
+    private bool _editorApplyQueued;
+#endif
+
     public Vector2 WorldUnitSize => new Vector2(width * cellSize, height * cellSize);
     public Vector2 LocalOffset => new Vector2(centerOffsetCells.x * cellSize, centerOffsetCells.y * cellSize);
 
@@ -54,20 +58,69 @@ public class CompartmentRectAuthoring : MonoBehaviour
     {
         ResolveRefs();
         PullSizeFromResizableIfAvailable();
+
+#if UNITY_EDITOR
+        if (!Application.isPlaying)
+            QueueEditorApply();
+        else
+            Apply();
+#else
         Apply();
+#endif
     }
 
     private void OnEnable()
     {
         ResolveRefs();
+
+#if UNITY_EDITOR
+        if (!Application.isPlaying)
+            QueueEditorApply();
+        else
+            Apply();
+#else
         Apply();
+#endif
     }
 
+#if UNITY_EDITOR
     private void OnValidate()
     {
+        width = Mathf.Max(1, width);
+        height = Mathf.Max(1, height);
+        cellSize = Mathf.Max(0.1f, cellSize);
+
         ResolveRefs();
-        Apply();
+
+        if (!Application.isPlaying)
+            QueueEditorApply();
+        else
+            Apply();
     }
+
+    private void QueueEditorApply()
+    {
+        if (_editorApplyQueued)
+            return;
+
+        _editorApplyQueued = true;
+
+        EditorApplication.delayCall += () =>
+        {
+            _editorApplyQueued = false;
+
+            if (this == null)
+                return;
+
+            Apply();
+
+            EditorUtility.SetDirty(this);
+
+            if (gameObject != null)
+                EditorUtility.SetDirty(gameObject);
+        };
+    }
+#endif
 
     private void Update()
     {
@@ -181,9 +234,15 @@ public class CompartmentRectAuthoring : MonoBehaviour
 #if UNITY_EDITOR
         if (!Application.isPlaying)
         {
-            if (compartment != null) EditorUtility.SetDirty(compartment);
-            if (boxCollider != null) EditorUtility.SetDirty(boxCollider);
-            if (resizableSegment != null) EditorUtility.SetDirty(resizableSegment);
+            if (compartment != null)
+                EditorUtility.SetDirty(compartment);
+
+            if (boxCollider != null)
+                EditorUtility.SetDirty(boxCollider);
+
+            if (resizableSegment != null)
+                EditorUtility.SetDirty(resizableSegment);
+
             EditorUtility.SetDirty(this);
         }
 #endif

@@ -13,6 +13,9 @@ public struct CharacterIntent
     public bool ClimbDownHeld;
     public bool FocusHeld;
     public Vector2 FocusWorldPoint;
+    public Vector2 AimWorldPoint;
+    public bool PrimaryUseHeld;
+    public bool CancelHeld;
 }
 
 public interface ICharacterIntentSource

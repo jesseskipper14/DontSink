@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class PumpModule : MonoBehaviour, IPowerConsumerModule
+public sealed class PumpModule : MonoBehaviour, IPowerConsumerModule, IModuleToggleable, IInstalledModuleLifecycle
 {
     [Header("State")]
     [SerializeField] private bool isOn;
@@ -240,5 +240,14 @@ public sealed class PumpModule : MonoBehaviour, IPowerConsumerModule
         }
 
         return true;
+    }
+
+    public void OnInstalled(Hardpoint owner)
+    {
+        ResolveTargetCompartment();
+    }
+
+    public void OnRemoved()
+    {
     }
 }

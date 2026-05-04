@@ -30,6 +30,7 @@ public class BoatKit : ScriptableObject
     public GameObject Ladder;
     public GameObject Stairs;
     public GameObject Ledge;
+    public GameObject TurretControllerChair;
 
     [Header("Hardpoints")]
     public GameObject HardpointEngine;

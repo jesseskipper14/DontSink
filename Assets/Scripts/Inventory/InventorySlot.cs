@@ -26,7 +26,7 @@ public enum BottomBarSlotType
 [Serializable]
 public sealed class InventorySlot
 {
-    [SerializeField] private ItemInstance itemInstance;
+    [SerializeReference] private ItemInstance itemInstance;
 
     public ItemInstance Instance => itemInstance;
     public ItemDefinition Item => itemInstance != null ? itemInstance.Definition : null;

@@ -18,8 +18,8 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour
     [SerializeField] private bool closeOnKey = true;
     [SerializeField] private bool closeWhenSourceDestroyed = true;
 
-    private ItemInstance _containerItem;
-    private ItemContainerState _state;
+    [System.NonSerialized] private ItemInstance _containerItem;
+    [System.NonSerialized] private ItemContainerState _state;
     private Transform _sourceTransform;
     [SerializeField] private float _autoCloseDistance = -1f;
     private bool _isOpen;

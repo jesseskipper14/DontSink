@@ -708,7 +708,7 @@ PrefabInstance:
     - target: {fileID: 2823129831596435963, guid: 9170d7c4cd3cb23489c3fa7c95b892c1, type: 3}
       propertyPath: openingCollider
       value: 
-      objectReference: {fileID: 713753334865125298}
+      objectReference: {fileID: 0}
     - target: {fileID: 3384917859122636573, guid: 9170d7c4cd3cb23489c3fa7c95b892c1, type: 3}
       propertyPath: m_Name
       value: BoatDoor_Metal
@@ -766,11 +766,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9170d7c4cd3cb23489c3fa7c95b892c1, type: 3}
---- !u!61 &713753334865125298 stripped
-BoxCollider2D:
-  m_CorrespondingSourceObject: {fileID: 2204226564169754437, guid: 9170d7c4cd3cb23489c3fa7c95b892c1, type: 3}
-  m_PrefabInstance: {fileID: 1689200062975162615}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7148201250547300465 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8377466802454413446, guid: 9170d7c4cd3cb23489c3fa7c95b892c1, type: 3}

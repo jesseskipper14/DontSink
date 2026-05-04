@@ -27,6 +27,7 @@ MonoBehaviour:
   Ladder: {fileID: 2802821447643478481, guid: 88f78031fedb2f044a8354e7d5318b4c, type: 3}
   Stairs: {fileID: 6557889835014041533, guid: 3463ea0dc2c083f4fba583f9caffd0cc, type: 3}
   Ledge: {fileID: 1402974058833541129, guid: 8f4a5e324c655be46b3e1186d0a62c08, type: 3}
+  TurretControllerChair: {fileID: 9058713699566922114, guid: 2415f08885deb994698036e4f5cab6a3, type: 3}
   HardpointEngine: {fileID: 3363453043375993549, guid: 028a492fde13236459f21a4838e45c2b, type: 3}
   HardpointPump: {fileID: 3363453043375993549, guid: 47bfdd4caca8f1245872766899a7c11e, type: 3}
   HardpointUtility: {fileID: 3363453043375993549, guid: f032db6fb40743c4a92fadcdf3de128c, type: 3}

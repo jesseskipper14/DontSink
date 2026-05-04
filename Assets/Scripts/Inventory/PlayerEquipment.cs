@@ -4,12 +4,12 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class PlayerEquipment : MonoBehaviour
 {
-    [SerializeField] private ItemInstance hands;
-    [SerializeField] private ItemInstance head;
-    [SerializeField] private ItemInstance feet;
-    [SerializeField] private ItemInstance toolbelt;
-    [SerializeField] private ItemInstance backpack;
-    [SerializeField] private ItemInstance body;
+    [SerializeReference] private ItemInstance hands;
+    [SerializeReference] private ItemInstance head;
+    [SerializeReference] private ItemInstance feet;
+    [SerializeReference] private ItemInstance toolbelt;
+    [SerializeReference] private ItemInstance backpack;
+    [SerializeReference] private ItemInstance body;
 
     public event Action EquipmentChanged;
 

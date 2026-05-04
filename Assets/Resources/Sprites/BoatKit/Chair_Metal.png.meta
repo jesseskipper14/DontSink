@@ -103,10 +103,10 @@ TextureImporter:
       name: Chair_Metal
       rect:
         serializedVersion: 2
-        x: 0
-        y: 8
-        width: 1024
-        height: 1517
+        x: 300
+        y: 447
+        width: 475
+        height: 663
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

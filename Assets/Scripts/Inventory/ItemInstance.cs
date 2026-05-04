@@ -7,7 +7,7 @@ public sealed class ItemInstance
     [SerializeField] private string instanceId;
     [SerializeField] private ItemDefinition definition;
     [SerializeField] private int quantity = 1;
-    [SerializeField] private ItemContainerState containerState;
+    [SerializeReference] private ItemContainerState containerState;
     [SerializeField] private int currentCharges;
 
     public string InstanceId => instanceId;

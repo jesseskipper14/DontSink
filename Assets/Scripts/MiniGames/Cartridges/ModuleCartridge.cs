@@ -108,6 +108,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         EngineModule engine = installed != null ? installed.GetComponent<EngineModule>() : null;
         PumpModule pump = installed != null ? installed.GetComponent<PumpModule>() : null;
         GeneratorModule generator = installed != null ? installed.GetComponent<GeneratorModule>() : null;
+        TurretModule turret = installed != null ? installed.GetComponent<TurretModule>() : null;
 
         string title = def != null ? def.DisplayName : "Module";
         GUI.Label(new Rect(panel.x + pad, panel.y + 10f, panel.width - 80f, 24f), $"{title} [{_hardpoint?.HardpointId}]");
@@ -137,15 +138,15 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         Rect middleRect = new Rect(leftRect.xMax + 10f, contentY, middleW, contentH);
         Rect rightRect = new Rect(middleRect.xMax + 10f, contentY, rightW, contentH);
 
-        DrawLeftColumn(leftRect, engine, pump, generator);
-        DrawMiddleColumn(middleRect, engine, pump, generator);
-        DrawRightColumn(rightRect, engine, pump, generator);
+        DrawLeftColumn(leftRect, engine, pump, generator, turret);
+        DrawMiddleColumn(middleRect, engine, pump, generator, turret);
+        DrawRightColumn(rightRect, engine, pump, generator, turret);
 
         if (!string.IsNullOrWhiteSpace(_uiNote))
             GUI.Label(new Rect(panel.x + pad, panel.yMax - 26f, panel.width - pad * 2f - 40f, 20f), _uiNote);
     }
 
-    private void DrawLeftColumn(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator)
+    private void DrawLeftColumn(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator, TurretModule turret)
     {
         GUI.Box(rect, GUIContent.none);
 
@@ -264,6 +265,35 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
                 DrawSimpleBar(new Rect(x, y, Mathf.Min(160f, w), 10f), power.Normalized);
             }
         }
+        else if (turret != null)
+        {
+            GUI.Label(new Rect(x, y, w, 22f), $"Turret State: {(turret.IsOn ? "ON" : "OFF")}");
+            y += 28f;
+
+            bool canRun = turret.CanRun();
+            GUI.enabled = canRun;
+
+            if (GUI.Button(new Rect(x, y, 120f, 28f), turret.IsOn ? "Turn Off" : "Turn On"))
+                turret.Toggle();
+
+            GUI.enabled = true;
+
+            if (!canRun)
+                DrawWarningLabel(new Rect(x + 130f, y + 4f, w - 130f, 22f), "No Power");
+
+            y += 42f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Pitch: {turret.PitchDegrees:F1}°");
+            y += 24f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Fire Cost: {turret.FirePowerCost:F1} power");
+            y += 24f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Cooldown: {turret.FireCooldown:F2}s");
+            y += 24f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Can Fire: {(turret.CanFire() ? "YES" : "NO")}");
+        }
         else
         {
             GUI.Label(new Rect(x, y, w, 22f), "No specialized module UI yet.");
@@ -323,7 +353,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         }
     }
 
-    private void DrawMiddleColumn(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator)
+    private void DrawMiddleColumn(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator, TurretModule turret)
     {
         float gap = 10f;
         float sectionH = (rect.height - gap * 2f) / 3f;
@@ -334,7 +364,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
 
         DrawPlaceholderSection(durabilityRect, "Durability", "Placeholder");
         DrawPlaceholderSection(upgradesRect, "Upgrades", "Placeholder");
-        DrawActionsSection(actionsRect, engine, pump, generator);
+        DrawActionsSection(actionsRect, engine, pump, generator, turret);
     }
 
     private void DrawPlaceholderSection(Rect rect, string title, string body)
@@ -344,7 +374,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         GUI.Label(new Rect(rect.x + 10f, rect.y + 32f, rect.width - 20f, 22f), body);
     }
 
-    private void DrawActionsSection(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator)
+    private void DrawActionsSection(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator, TurretModule turret)
     {
         GUI.Box(rect, GUIContent.none);
 
@@ -424,10 +454,35 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
             return;
         }
 
+        if (turret != null)
+        {
+            if (GUI.Button(new Rect(x, y, 140f, 28f), turret.IsOn ? "Turn Off" : "Turn On"))
+            {
+                bool result = turret.Toggle();
+                _uiNote = result
+                    ? (turret.IsOn ? "Turret online." : "Turret offline.")
+                    : "Turret cannot start: no power.";
+            }
+
+            y += 36f;
+
+            if (GUI.Button(new Rect(x, y, 140f, 28f), "Test Fire"))
+            {
+                bool fired = turret.TryFire();
+                _uiNote = fired ? "Fired." : "Cannot fire.";
+            }
+
+            y += 36f;
+
+            GUI.Label(new Rect(x, y, w, 22f), "Ammo: Placeholder");
+
+            return;
+        }
+
         GUI.Label(new Rect(x, y, w, 22f), "No actions.");
     }
 
-    private void DrawRightColumn(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator)
+    private void DrawRightColumn(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator, TurretModule turret)
     {
         if (pump != null)
         {
@@ -488,6 +543,33 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
             y += 24f;
 
             GUI.Label(new Rect(x, y, w, 22f), $"Fill: {power.Normalized:P0}");
+            return;
+        }
+
+        if (turret != null)
+        {
+            GUI.Box(rect, GUIContent.none);
+
+            float x = rect.x + 10f;
+            float y = rect.y + 8f;
+            float w = rect.width - 20f;
+
+            GUI.Label(new Rect(x, y, w, 22f), "Turret Diagnostics");
+            y += 28f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Power Demand: {turret.PowerDemandPerSecond:F2}/sec");
+            y += 24f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Shot Cost: {turret.FirePowerCost:F1}");
+            y += 24f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Can Fire: {(turret.CanFire() ? "YES" : "NO")}");
+            y += 24f;
+
+            GUI.Label(new Rect(x, y, w, 22f), "Ammo Type: Placeholder");
+            y += 24f;
+
+            GUI.Label(new Rect(x, y, w, 22f), "Ammo Count: Placeholder");
             return;
         }
 

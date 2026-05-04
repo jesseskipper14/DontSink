@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f09bf4be73b727846b74f99b05bdebab, type: 3}
+  m_Name: module_turret_basic
+  m_EditorClassIdentifier: 
+  moduleId: turret_basic
+  displayName: Basic Turret
+  allowedHardpointTypes: 03000000
+  installedPrefab: {fileID: 8130874790704986176, guid: 3d0e77f875505784cb859e205181615c, type: 3}
+  itemDefinition: {fileID: 11400000, guid: 239c0b9b8ba85484f926005419f23df2, type: 2}

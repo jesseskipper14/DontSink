@@ -15,9 +15,9 @@ public sealed class ContainerSubviewUI : MonoBehaviour
 
     private readonly List<InventorySlotUI> spawnedSlots = new();
 
-    private ItemInstance boundContainerItem;
+    [System.NonSerialized] private ItemInstance boundContainerItem;
     private InventorySlotUI sourceSlot;
-    private ItemContainerState subscribedState;
+    [System.NonSerialized] private ItemContainerState subscribedState;
 
     public InventorySlotUI SourceSlot => sourceSlot;
 

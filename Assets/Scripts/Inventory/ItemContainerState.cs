@@ -7,7 +7,7 @@ public sealed class ItemContainerState
 {
     [SerializeField] private int slotCount;
     [SerializeField] private int columnCount = 4;
-    [SerializeField] private List<InventorySlot> slots = new();
+    [SerializeReference] private List<InventorySlot> slots = new();
 
     [NonSerialized] public Action Changed;
 

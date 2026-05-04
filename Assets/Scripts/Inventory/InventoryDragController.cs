@@ -23,7 +23,7 @@ public sealed class InventoryDragController : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = true;
 
-    private ItemInstance draggedItem;
+    [System.NonSerialized] private ItemInstance draggedItem;
     private InventorySlotUI sourceSlot;
     private bool isDragging;
 

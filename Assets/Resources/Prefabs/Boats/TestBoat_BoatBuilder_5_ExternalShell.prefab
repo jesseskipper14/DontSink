@@ -404,6 +404,11 @@ MonoBehaviour:
   hideExteriorWhenInterior: 1
   hideDeckWhenInterior: 0
   includeInactiveRenderers: 1
+  targetCamera: {fileID: 0}
+  hideByCameraMaskWhenInterior:
+    serializedVersion: 2
+    m_Bits: 0
+  autoFindMainCamera: 1
   logVisibility: 0
 --- !u!1 &5500668249739642002
 GameObject:
@@ -1581,75 +1586,75 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: p0.x
-      value: -10
+      value: -2.5
       objectReference: {fileID: 0}
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: p0.y
-      value: 2.5
+      value: 0.625
       objectReference: {fileID: 0}
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: p1.x
-      value: 10
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: p1.y
-      value: 2.5
+      value: 0.625
       objectReference: {fileID: 0}
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: p2.x
-      value: 10
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: p2.y
-      value: -2.5
+      value: -0.625
       objectReference: {fileID: 0}
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: p3.x
-      value: -10
+      value: -2.5
       objectReference: {fileID: 0}
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: p3.y
-      value: -2.5
+      value: -0.625
       objectReference: {fileID: 0}
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: localCorners.Array.data[0].x
-      value: -10
+      value: -2.5
       objectReference: {fileID: 0}
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: localCorners.Array.data[0].y
-      value: 2.5
+      value: 0.625
       objectReference: {fileID: 0}
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: localCorners.Array.data[1].x
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
-      propertyPath: localCorners.Array.data[1].y
       value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
+      propertyPath: localCorners.Array.data[1].y
+      value: 0.625
+      objectReference: {fileID: 0}
+    - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: localCorners.Array.data[2].x
-      value: 10
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: localCorners.Array.data[2].y
-      value: -2.5
+      value: -0.625
       objectReference: {fileID: 0}
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: localCorners.Array.data[3].x
-      value: -10
+      value: -2.5
       objectReference: {fileID: 0}
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: localCorners.Array.data[3].y
-      value: -2.5
+      value: -0.625
       objectReference: {fileID: 0}
     - target: {fileID: 895882396756966778, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Size.x
-      value: 20
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 895882396756966778, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Size.y
-      value: 5
+      value: 1.25
       objectReference: {fileID: 0}
     - target: {fileID: 2578556333901072167, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: width
@@ -1661,11 +1666,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2774696704284986295, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Size.x
-      value: 20
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2774696704284986295, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Size.y
-      value: 5
+      value: 1.25
       objectReference: {fileID: 0}
     - target: {fileID: 5391915971216815558, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Name
@@ -1713,11 +1718,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7595124413089840488, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: width
-      value: 20
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7595124413089840488, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: height
-      value: 5
+      value: 1.25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
