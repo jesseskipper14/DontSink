@@ -15,8 +15,17 @@ public sealed class TurretControlStation : MonoBehaviour, IInteractable, IIntera
     [SerializeField] private Transform promptAnchor;
     [SerializeField] private bool pinOccupantToSeat = true;
 
+    [Header("Boat Access")]
+    [Tooltip("If true, turret stations that belong to a Boat can only be used by players boarded on that same boat.")]
+    [SerializeField] private bool requireMatchingBoatBoardingContext = true;
+
+    [Tooltip("If true, turret stations not under a Boat remain usable. Mostly future-proofing for dock/ruin/world stations.")]
+    [SerializeField] private bool allowAccessWhenNotPartOfBoat = true;
+
     private GameObject occupant;
     private PlayerTurretController occupantTurretController;
+
+    private Boat _cachedBoat;
 
     public int InteractionPriority => interactionPriority;
 
@@ -30,6 +39,8 @@ public sealed class TurretControlStation : MonoBehaviour, IInteractable, IIntera
 
         if (promptAnchor == null)
             promptAnchor = seatPoint != null ? seatPoint : transform;
+
+        CacheBoat();
     }
 
     private void Awake()
@@ -42,6 +53,8 @@ public sealed class TurretControlStation : MonoBehaviour, IInteractable, IIntera
 
         if (hardpoint == null)
             hardpoint = GetComponentInParent<Hardpoint>();
+
+        CacheBoat();
     }
 
     private void Update()
@@ -61,8 +74,6 @@ public sealed class TurretControlStation : MonoBehaviour, IInteractable, IIntera
             return;
         }
 
-        // If the player/controller exited turret mode through its own intent path,
-        // clear the chair occupancy too. No ghost gunners. Very rude to ghosts.
         if (!occupantTurretController.IsControllingTurret ||
             occupantTurretController.ActiveTurret != turret)
         {
@@ -85,36 +96,47 @@ public sealed class TurretControlStation : MonoBehaviour, IInteractable, IIntera
         if (!IsInRange(context))
             return false;
 
+        // Always allow the current occupant to leave.
+        if (occupant != null && context.InteractorGO == occupant)
+            return true;
+
+        if (!CanAccessByBoatContext(context))
+            return false;
+
         if (!TryResolveTurret(out _))
             return false;
 
-        // If empty, any valid interactor can sit/control.
-        if (occupant == null)
-            return true;
-
-        // If occupied, only the occupant can use E to exit.
-        return context.InteractorGO == occupant;
+        return occupant == null;
     }
 
     public void Interact(in InteractContext context)
     {
-        if (!CanInteract(context))
+        if (!IsInRange(context))
             return;
 
-        if (occupant == null)
+        if (occupant != null && context.InteractorGO == occupant)
         {
-            Seat(context.InteractorGO);
+            EjectOccupant();
             return;
         }
 
-        if (context.InteractorGO == occupant)
-            EjectOccupant();
+        if (!CanAccessByBoatContext(context))
+            return;
+
+        if (!TryResolveTurret(out _))
+            return;
+
+        if (occupant == null)
+            Seat(context.InteractorGO);
     }
 
     public string GetPromptVerb(in InteractContext context)
     {
         if (occupant != null && context.InteractorGO == occupant)
             return "Leave Turret";
+
+        if (!CanAccessByBoatContext(context))
+            return "Board Boat";
 
         if (!TryResolveTurret(out _))
             return "No Turret";
@@ -189,5 +211,71 @@ public sealed class TurretControlStation : MonoBehaviour, IInteractable, IIntera
     private bool IsInRange(in InteractContext context)
     {
         return Vector2.Distance(context.Origin, transform.position) <= maxDistance;
+    }
+
+    private bool CanAccessByBoatContext(in InteractContext context)
+    {
+        if (!requireMatchingBoatBoardingContext)
+            return true;
+
+        CacheBoat();
+
+        if (_cachedBoat == null)
+            return allowAccessWhenNotPartOfBoat;
+
+        PlayerBoardingState boarding = FindBoardingState(context);
+        if (boarding == null)
+            return false;
+
+        if (!boarding.IsBoarded)
+            return false;
+
+        return boarding.CurrentBoatRoot == _cachedBoat.transform;
+    }
+
+    private PlayerBoardingState FindBoardingState(in InteractContext context)
+    {
+        if (context.InteractorGO != null)
+        {
+            PlayerBoardingState fromGO =
+                context.InteractorGO.GetComponentInParent<PlayerBoardingState>();
+
+            if (fromGO != null)
+                return fromGO;
+
+            fromGO =
+                context.InteractorGO.GetComponentInChildren<PlayerBoardingState>(true);
+
+            if (fromGO != null)
+                return fromGO;
+        }
+
+        if (context.InteractorTransform != null)
+        {
+            PlayerBoardingState fromTransform =
+                context.InteractorTransform.GetComponentInParent<PlayerBoardingState>();
+
+            if (fromTransform != null)
+                return fromTransform;
+
+            fromTransform =
+                context.InteractorTransform.GetComponentInChildren<PlayerBoardingState>(true);
+
+            if (fromTransform != null)
+                return fromTransform;
+        }
+
+        return null;
+    }
+
+    private void CacheBoat()
+    {
+        if (_cachedBoat != null)
+            return;
+
+        _cachedBoat = GetComponentInParent<Boat>();
+
+        if (_cachedBoat == null && hardpoint != null)
+            _cachedBoat = hardpoint.GetComponentInParent<Boat>();
     }
 }

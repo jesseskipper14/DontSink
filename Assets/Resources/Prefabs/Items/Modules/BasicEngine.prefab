@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: -5570270040261377772}
   - component: {fileID: 3603743187608587747}
   - component: {fileID: -788460587395443}
+  - component: {fileID: -238003982479179712}
   m_Layer: 10
   m_Name: BasicEngine
   m_TagString: Untagged
@@ -252,7 +253,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.28, y: 0.28}
+    oldSize: {x: 1.4, y: 1.4}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -300,18 +301,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemInstance:
-    instanceId: 
-    definition: {fileID: 11400000, guid: b413736c925b2d844b8bafde6697e097, type: 2}
-    quantity: 1
-    containerState:
-      slotCount: 1
-      columnCount: 1
-      slots: []
+    rid: -2
   interactionPriority: 10
   maxPickupDistance: 3
   promptAnchor: {fileID: 8257903097564535626}
   highlightObject: {fileID: 7170654101832386509}
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
   verboseLogging: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &-5570270040261377772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343,6 +345,8 @@ MonoBehaviour:
   maxDistance: 3
   interactionPriority: 5
   promptAnchor: {fileID: 8257903097564535626}
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
   autoCloseDistance: 2.25
 --- !u!114 &-788460587395443
 MonoBehaviour:
@@ -358,6 +362,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   definition: {fileID: 11400000, guid: e60ceeac81e917b45883fc23be9d558d, type: 2}
   ownerHardpoint: {fileID: 0}
+--- !u!114 &-238003982479179712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8130874790704986176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26110550bd267f34f8f05f74e1b5ac80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owningBoatInstanceId: 
+  registered: 0
 --- !u!1 &8721630635941789182
 GameObject:
   m_ObjectHideFlags: 0

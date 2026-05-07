@@ -138,5 +138,21 @@ public sealed class BoatVisibilityZone : MonoBehaviour
     {
         priority = GetDefaultPriority(mode);
     }
+
+    public void EditorConfigure(
+    BoatVisibilityMode newMode,
+    int newPriority,
+    BoatVisualStateController newController)
+    {
+        mode = newMode;
+        priority = newPriority;
+        controller = newController;
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+            col.isTrigger = true;
+
+        UnityEditor.EditorUtility.SetDirty(this);
+    }
 #endif
 }

@@ -737,7 +737,7 @@ MonoBehaviour:
   enableLedgeWhenOpen: 1
   closeObstructionMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 131080
   triggersBlockClosing: 0
   ignoreOwnColliders: 1
   ignoreSameBoatRoot: 0

@@ -11,6 +11,13 @@ public class PilotChairInteractable : MonoBehaviour, IInteractable, IInteractPro
     [SerializeField] private Transform seatPoint; // where the player gets pinned
     [SerializeField] private bool pinOccupantToSeat = true;
 
+    [Header("Boat Access")]
+    [Tooltip("If true, pilot chairs that belong to a Boat can only be used by players boarded on that same boat.")]
+    [SerializeField] private bool requireMatchingBoatBoardingContext = true;
+
+    [Tooltip("If true, pilot chairs not under a Boat remain usable. Mostly future-proofing for dock/world test rigs.")]
+    [SerializeField] private bool allowAccessWhenNotPartOfBoat = true;
+
     [Header("Boat Control Output")]
     [Tooltip("Anything that implements IThrottleReceiver (usually ThrottleForce on the boat). If null, auto-resolves.")]
     [SerializeField] private ThrottleForce throttleForce; // direct (optional)
@@ -18,17 +25,40 @@ public class PilotChairInteractable : MonoBehaviour, IInteractable, IInteractPro
     private IThrottleReceiver throttleReceiver;
     private bool _missingThrottleLogged;
 
+    private Boat _cachedBoat;
+
     public int InteractionPriority => priority;
-    public string GetPromptVerb(in InteractContext context) => "Pilot";
+
+    public string GetPromptVerb(in InteractContext context)
+    {
+        if (occupant == context.InteractorGO)
+            return "Leave Helm";
+
+        if (!CanAccessByBoatContext(context))
+            return "Board Boat";
+
+        return "Pilot";
+    }
+
     public Transform GetPromptAnchor() => seatPoint != null ? seatPoint : transform;
 
     private GameObject occupant;
     private IBoatControlIntentSource occupantBoatIntent;
 
+    private void Reset()
+    {
+        if (seatPoint == null)
+            seatPoint = transform;
+
+        CacheBoat();
+    }
+
     private void Awake()
     {
         if (seatPoint == null)
-            seatPoint = transform; // fallback
+            seatPoint = transform;
+
+        CacheBoat();
 
         ResolveThrottleReceiver();
         LogMissingThrottleOnceIfNeeded();
@@ -36,23 +66,18 @@ public class PilotChairInteractable : MonoBehaviour, IInteractable, IInteractPro
 
     private void OnValidate()
     {
-        // Keep it honest in the inspector: throttleForce is allowed to be null.
-        // No further validation needed since ThrottleForce should implement IThrottleReceiver.
         if (seatPoint == null)
             seatPoint = transform;
     }
 
     private void ResolveThrottleReceiver()
     {
-        // 1) Explicit assignment
         if (throttleForce != null)
         {
             throttleReceiver = throttleForce;
             return;
         }
 
-        // 2) Prefer parent chain (same boat)
-        // Interfaces can't be fetched directly, so scan MonoBehaviours.
         var parents = GetComponentsInParent<MonoBehaviour>(true);
         for (int i = 0; i < parents.Length; i++)
         {
@@ -60,7 +85,6 @@ public class PilotChairInteractable : MonoBehaviour, IInteractable, IInteractPro
             {
                 throttleReceiver = r;
 
-                // If it's actually a ThrottleForce, cache it for inspector visibility.
                 if (parents[i] is ThrottleForce tf)
                     throttleForce = tf;
 
@@ -68,7 +92,6 @@ public class PilotChairInteractable : MonoBehaviour, IInteractable, IInteractPro
             }
         }
 
-        // 3) Fallback: search within root (still same boat, just broader)
         var root = transform.root;
         var all = root.GetComponentsInChildren<MonoBehaviour>(true);
         for (int i = 0; i < all.Length; i++)
@@ -76,8 +99,10 @@ public class PilotChairInteractable : MonoBehaviour, IInteractable, IInteractPro
             if (all[i] is IThrottleReceiver r)
             {
                 throttleReceiver = r;
+
                 if (all[i] is ThrottleForce tf)
                     throttleForce = tf;
+
                 return;
             }
         }
@@ -87,17 +112,22 @@ public class PilotChairInteractable : MonoBehaviour, IInteractable, IInteractPro
 
     private void LogMissingThrottleOnceIfNeeded()
     {
-        if (throttleReceiver != null) return;
-        if (_missingThrottleLogged) return;
+        if (throttleReceiver != null)
+            return;
+
+        if (_missingThrottleLogged)
+            return;
+
         _missingThrottleLogged = true;
 
-        Debug.LogError($"{name}: PilotChairInteractable needs a throttle receiver (IThrottleReceiver). " +
-                       $"Assign ThrottleForce on the chair prefab OR ensure the boat contains an IThrottleReceiver.", this);
+        Debug.LogError(
+            $"{name}: PilotChairInteractable needs a throttle receiver (IThrottleReceiver). " +
+            $"Assign ThrottleForce on the chair prefab OR ensure the boat contains an IThrottleReceiver.",
+            this);
     }
 
     private void Update()
     {
-        // If we’re missing throttle wiring, try again occasionally (spawn order can be weird).
         if (throttleReceiver == null)
         {
             ResolveThrottleReceiver();
@@ -106,22 +136,25 @@ public class PilotChairInteractable : MonoBehaviour, IInteractable, IInteractPro
 
         if (occupant == null)
         {
-            // ensure boat isn't being driven by ghosts
             throttleReceiver?.SetThrottle(0f);
             return;
         }
 
-        // Keep occupant seated (simple and effective)
+        if (!CanOccupantStillAccessSeat())
+        {
+            EjectOccupant();
+            return;
+        }
+
         if (pinOccupantToSeat && seatPoint != null)
         {
             occupant.transform.position = seatPoint.position;
 
-            // Stop physics drift if they have a Rigidbody2D
-            var rb = occupant.GetComponent<Rigidbody2D>();
-            if (rb != null) rb.linearVelocity = Vector2.zero;
+            Rigidbody2D rb = occupant.GetComponent<Rigidbody2D>();
+            if (rb != null)
+                rb.linearVelocity = Vector2.zero;
         }
 
-        // Read intent
         if (occupantBoatIntent == null)
         {
             throttleReceiver?.SetThrottle(0f);
@@ -131,23 +164,27 @@ public class PilotChairInteractable : MonoBehaviour, IInteractable, IInteractPro
         var intent = occupantBoatIntent.Current;
         throttleReceiver?.SetThrottle(intent.Throttle);
 
-        // Allow exit without needing to look at chair again
         if (intent.ExitPressed)
-        {
             EjectOccupant();
-        }
     }
 
     public bool CanInteract(in InteractContext context)
     {
-        // Distance gate
         float dist = Vector2.Distance(context.Origin, transform.position);
-        if (dist > maxUseDistance) return false;
+        if (dist > maxUseDistance)
+            return false;
 
-        // If chair can't drive anything, don't allow sitting (prevents “pilot but nothing happens”).
+        // Current occupant can always leave, even if the boat context got weird.
+        if (occupant != null && context.InteractorGO == occupant)
+            return true;
+
+        if (!CanAccessByBoatContext(context))
+            return false;
+
         if (throttleReceiver == null)
         {
             ResolveThrottleReceiver();
+
             if (throttleReceiver == null)
             {
                 LogMissingThrottleOnceIfNeeded();
@@ -155,46 +192,158 @@ public class PilotChairInteractable : MonoBehaviour, IInteractable, IInteractPro
             }
         }
 
-        // If unoccupied, anyone can sit.
-        if (occupant == null) return true;
-
-        // If occupied, only the current occupant can toggle to exit via interact.
-        return context.InteractorGO == occupant;
+        return occupant == null;
     }
 
     public void Interact(in InteractContext context)
     {
-        if (occupant == null)
-        {
-            Seat(context.InteractorGO);
-        }
-        else if (context.InteractorGO == occupant)
+        float dist = Vector2.Distance(context.Origin, transform.position);
+        if (dist > maxUseDistance)
+            return;
+
+        if (occupant != null && context.InteractorGO == occupant)
         {
             EjectOccupant();
+            return;
         }
+
+        if (!CanAccessByBoatContext(context))
+            return;
+
+        if (throttleReceiver == null)
+        {
+            ResolveThrottleReceiver();
+
+            if (throttleReceiver == null)
+            {
+                LogMissingThrottleOnceIfNeeded();
+                return;
+            }
+        }
+
+        if (occupant == null)
+            Seat(context.InteractorGO);
     }
 
     private void Seat(GameObject interactor)
     {
+        if (interactor == null)
+            return;
+
         occupant = interactor;
         occupantBoatIntent = interactor.GetComponent<IBoatControlIntentSource>();
 
         if (occupantBoatIntent == null)
         {
-            Debug.LogWarning($"{name}: Occupant '{interactor.name}' has no IBoatControlIntentSource. Add LocalBoatControlIntentSource.", interactor);
+            Debug.LogWarning(
+                $"{name}: Occupant '{interactor.name}' has no IBoatControlIntentSource. Add LocalBoatControlIntentSource.",
+                interactor);
         }
 
-        // Optional: tell player systems they're piloting (hook later)
+        if (pinOccupantToSeat && seatPoint != null)
+        {
+            occupant.transform.position = seatPoint.position;
+
+            Rigidbody2D rb = occupant.GetComponent<Rigidbody2D>();
+            if (rb != null)
+                rb.linearVelocity = Vector2.zero;
+        }
+
+        // Optional later:
         // interactor.GetComponent<IControlModeSink>()?.SetControlMode(ControlMode.Piloting);
     }
 
     private void EjectOccupant()
     {
-        // Optional: notify player systems
+        // Optional later:
         // occupant?.GetComponent<IControlModeSink>()?.SetControlMode(ControlMode.OnFoot);
 
         occupant = null;
         occupantBoatIntent = null;
         throttleReceiver?.SetThrottle(0f);
+    }
+
+    private bool CanAccessByBoatContext(in InteractContext context)
+    {
+        if (!requireMatchingBoatBoardingContext)
+            return true;
+
+        CacheBoat();
+
+        if (_cachedBoat == null)
+            return allowAccessWhenNotPartOfBoat;
+
+        PlayerBoardingState boarding = FindBoardingState(context);
+        if (boarding == null)
+            return false;
+
+        if (!boarding.IsBoarded)
+            return false;
+
+        return boarding.CurrentBoatRoot == _cachedBoat.transform;
+    }
+
+    private bool CanOccupantStillAccessSeat()
+    {
+        if (!requireMatchingBoatBoardingContext)
+            return true;
+
+        CacheBoat();
+
+        if (_cachedBoat == null)
+            return allowAccessWhenNotPartOfBoat;
+
+        if (occupant == null)
+            return false;
+
+        PlayerBoardingState boarding = occupant.GetComponentInParent<PlayerBoardingState>();
+        if (boarding == null)
+            boarding = occupant.GetComponentInChildren<PlayerBoardingState>(true);
+
+        if (boarding == null)
+            return false;
+
+        return boarding.IsBoarded && boarding.CurrentBoatRoot == _cachedBoat.transform;
+    }
+
+    private PlayerBoardingState FindBoardingState(in InteractContext context)
+    {
+        if (context.InteractorGO != null)
+        {
+            PlayerBoardingState fromGO =
+                context.InteractorGO.GetComponentInParent<PlayerBoardingState>();
+
+            if (fromGO != null)
+                return fromGO;
+
+            fromGO =
+                context.InteractorGO.GetComponentInChildren<PlayerBoardingState>(true);
+
+            if (fromGO != null)
+                return fromGO;
+        }
+
+        if (context.InteractorTransform != null)
+        {
+            PlayerBoardingState fromTransform =
+                context.InteractorTransform.GetComponentInParent<PlayerBoardingState>();
+
+            if (fromTransform != null)
+                return fromTransform;
+
+            fromTransform =
+                context.InteractorTransform.GetComponentInChildren<PlayerBoardingState>(true);
+
+            if (fromTransform != null)
+                return fromTransform;
+        }
+
+        return null;
+    }
+
+    private void CacheBoat()
+    {
+        if (_cachedBoat == null)
+            _cachedBoat = GetComponentInParent<Boat>();
     }
 }

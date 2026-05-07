@@ -9,6 +9,18 @@ public sealed class WorldItem : MonoBehaviour, IPickupInteractable, IInteractPro
     [SerializeField] private Transform promptAnchor;
     [SerializeField] private GameObject highlightObject;
 
+    [Header("Boat Access")]
+    [Tooltip("If true, world items that belong to a Boat can only be picked up by players boarded on that same boat.")]
+    [SerializeField] private bool requireMatchingBoatBoardingContext = true;
+
+    [Tooltip("If true, world items not under a Boat remain pickup-able. This preserves normal dock/world item behavior.")]
+    [SerializeField] private bool allowAccessWhenNotPartOfBoat = true;
+
+    [Header("Debug")]
+    [SerializeField] private bool verboseLogging = false;
+
+    private BoatOwnedItem _ownedItem;
+
     public ItemInstance Instance => itemInstance;
     public ItemDefinition Item => itemInstance != null ? itemInstance.Definition : null;
     public int Quantity => itemInstance != null ? itemInstance.Quantity : 0;
@@ -16,24 +28,34 @@ public sealed class WorldItem : MonoBehaviour, IPickupInteractable, IInteractPro
     public int PickupPriority => interactionPriority;
 
     public PickupInteractionMode PickupMode =>
-    itemInstance != null && itemInstance.Definition != null
-        ? itemInstance.Definition.PickupMode
-        : PickupInteractionMode.Instant;
+        itemInstance != null && itemInstance.Definition != null
+            ? itemInstance.Definition.PickupMode
+            : PickupInteractionMode.Instant;
 
     public float PickupHoldDuration =>
         itemInstance != null && itemInstance.Definition != null
             ? itemInstance.Definition.PickupHoldDuration
             : 0.4f;
 
-    [Header("Debug")]
-    [SerializeField] private bool verboseLogging = true;
+    private Boat _cachedBoat;
+
+    private void Reset()
+    {
+        if (promptAnchor == null)
+            promptAnchor = transform;
+
+        CacheBoat();
+    }
 
     private void Awake()
     {
+        CacheBoat();
+
         if (itemInstance != null)
             itemInstance.EnsureContainerStateMatchesDefinition();
 
         SetHighlighted(false);
+
     }
 
     public void Initialize(ItemInstance instance)
@@ -43,6 +65,7 @@ public sealed class WorldItem : MonoBehaviour, IPickupInteractable, IInteractPro
         if (itemInstance != null)
             itemInstance.EnsureContainerStateMatchesDefinition();
 
+        CacheBoat();
         SetHighlighted(false);
     }
 
@@ -73,7 +96,13 @@ public sealed class WorldItem : MonoBehaviour, IPickupInteractable, IInteractPro
             return false;
         }
 
-        var resolver = FindAcquisitionResolver(context.InteractorGO);
+        if (!CanAccessByBoatContext(context))
+        {
+            Log("CanPickup FAIL: boat access denied");
+            return false;
+        }
+
+        ItemAcquisitionResolver resolver = FindAcquisitionResolver(context.InteractorGO);
         if (resolver == null)
         {
             Log($"CanPickup FAIL: resolver NOT FOUND | actor={context.InteractorGO?.name}");
@@ -92,6 +121,9 @@ public sealed class WorldItem : MonoBehaviour, IPickupInteractable, IInteractPro
         if (itemInstance == null || itemInstance.Definition == null || itemInstance.Quantity <= 0)
             return;
 
+        if (!CanAccessByBoatContext(context))
+            return;
+
         ItemAcquisitionResolver resolver = FindAcquisitionResolver(context.InteractorGO);
         if (resolver == null)
             return;
@@ -100,17 +132,102 @@ public sealed class WorldItem : MonoBehaviour, IPickupInteractable, IInteractPro
             return;
 
         itemInstance = null;
+        BoatOwnedItem owned = GetComponent<BoatOwnedItem>();
+        if (owned != null)
+            owned.ClearOwnership();
+
         SetHighlighted(false);
         Destroy(gameObject);
     }
 
-    public string GetPromptVerb(in InteractContext context) => "Pick Up";
-    public Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
+    public string GetPromptVerb(in InteractContext context)
+    {
+        if (!CanAccessByBoatContext(context))
+            return "Board Boat";
+
+        return "Pick Up";
+    }
+
+    public Transform GetPromptAnchor()
+    {
+        return promptAnchor != null ? promptAnchor : transform;
+    }
 
     public void SetHighlighted(bool highlighted)
     {
         if (highlightObject != null)
             highlightObject.SetActive(highlighted);
+    }
+
+    private bool CanAccessByBoatContext(in InteractContext context)
+    {
+        if (!requireMatchingBoatBoardingContext)
+            return true;
+
+        CacheBoatOwnership();
+
+        if (_ownedItem == null || !_ownedItem.IsOwnedByBoat)
+            return allowAccessWhenNotPartOfBoat;
+
+        PlayerBoardingState boarding = FindBoardingState(context);
+        if (boarding == null || !boarding.IsBoarded)
+            return false;
+
+        Boat currentBoat = null;
+
+        if (boarding.CurrentBoatRoot != null)
+            currentBoat = boarding.CurrentBoatRoot.GetComponent<Boat>();
+
+        if (currentBoat == null)
+            return false;
+
+        return currentBoat.BoatInstanceId == _ownedItem.OwningBoatInstanceId;
+    }
+
+    private void CacheBoatOwnership()
+    {
+        if (_ownedItem == null)
+            _ownedItem = GetComponent<BoatOwnedItem>();
+    }
+
+    private PlayerBoardingState FindBoardingState(in InteractContext context)
+    {
+        if (context.InteractorGO != null)
+        {
+            PlayerBoardingState fromGO =
+                context.InteractorGO.GetComponentInParent<PlayerBoardingState>();
+
+            if (fromGO != null)
+                return fromGO;
+
+            fromGO = context.InteractorGO.GetComponentInChildren<PlayerBoardingState>(true);
+
+            if (fromGO != null)
+                return fromGO;
+        }
+
+        if (context.InteractorTransform != null)
+        {
+            PlayerBoardingState fromTransform =
+                context.InteractorTransform.GetComponentInParent<PlayerBoardingState>();
+
+            if (fromTransform != null)
+                return fromTransform;
+
+            fromTransform =
+                context.InteractorTransform.GetComponentInChildren<PlayerBoardingState>(true);
+
+            if (fromTransform != null)
+                return fromTransform;
+        }
+
+        return null;
+    }
+
+    private void CacheBoat()
+    {
+        if (_cachedBoat == null)
+            _cachedBoat = GetComponentInParent<Boat>();
     }
 
     private static ItemAcquisitionResolver FindAcquisitionResolver(GameObject actor)
@@ -131,7 +248,9 @@ public sealed class WorldItem : MonoBehaviour, IPickupInteractable, IInteractPro
 
     private void Log(string msg)
     {
-        if (!verboseLogging) return;
+        if (!verboseLogging)
+            return;
+
         Debug.Log($"[WorldItem:{name}] {msg}", this);
     }
 

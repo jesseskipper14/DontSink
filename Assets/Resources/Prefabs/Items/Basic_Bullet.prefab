@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 8929813312895450180}
   - component: {fileID: -5263073919629664472}
   - component: {fileID: -8352881644672781526}
+  - component: {fileID: 7533241951805928194}
+  - component: {fileID: 6115161348762468599}
   m_Layer: 0
   m_Name: Basic_Bullet
   m_TagString: Untagged
@@ -162,3 +164,43 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &7533241951805928194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5795355460495631054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24e5c9193be75ad41afb813c4cbce185, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemInstance:
+    rid: -2
+  interactionPriority: 10
+  maxPickupDistance: 1.5
+  promptAnchor: {fileID: 2348831984384540980}
+  highlightObject: {fileID: 0}
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
+  verboseLogging: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &6115161348762468599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5795355460495631054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26110550bd267f34f8f05f74e1b5ac80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owningBoatInstanceId: 
+  registered: 0

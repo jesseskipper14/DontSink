@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 61859146187821167}
   - component: {fileID: 7570094693861048571}
   - component: {fileID: 5263012356571068860}
+  - component: {fileID: -8012558463491840665}
   m_Layer: 10
   m_Name: Scrap
   m_TagString: Untagged
@@ -103,12 +104,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24e5c9193be75ad41afb813c4cbce185, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 11400000, guid: 355b9f1c4fc797d439692fe54fd69086, type: 2}
-  quantity: 1
+  itemInstance:
+    rid: -2
   interactionPriority: 10
   maxPickupDistance: 3
   promptAnchor: {fileID: 0}
   highlightObject: {fileID: 9130302141471108845}
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
+  verboseLogging: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!58 &7570094693861048571
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -172,6 +181,20 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-8012558463491840665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571194650393018128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26110550bd267f34f8f05f74e1b5ac80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owningBoatInstanceId: 
+  registered: 0
 --- !u!1 &9130302141471108845
 GameObject:
   m_ObjectHideFlags: 0

@@ -78,4 +78,5 @@ public sealed class BoatSaveState
 
     // Persistent cargo snapshot (latest known)
     public List<CargoManifest.Snapshot> cargo;
+    public BoatLooseItemManifest looseItems;
 }

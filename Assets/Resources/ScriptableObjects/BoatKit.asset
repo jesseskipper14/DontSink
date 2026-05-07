@@ -16,6 +16,7 @@ MonoBehaviour:
   HullSegment: {fileID: 3310013560795536328, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
   Wall: {fileID: 796141958746456975, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
   Hatch: {fileID: 4787909799836529759, guid: 41925050dfe016e40ac96c4749f7b9c8, type: 3}
+  Door: {fileID: 3384917859122636573, guid: 9170d7c4cd3cb23489c3fa7c95b892c1, type: 3}
   PilotChair: {fileID: 8706727347045637987, guid: d37e93d618ca8ba4f97a9f12ca263b48, type: 3}
   CompartmentRect: {fileID: 5391915971216815558, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
   Deck: {fileID: 8043139812053460957, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
@@ -34,3 +35,4 @@ MonoBehaviour:
   HardpointWeapon: {fileID: 3363453043375993549, guid: a3300753d048b7442a40aacf57587b00, type: 3}
   HardpointElectronics: {fileID: 3363453043375993549, guid: b197f07aba96f6f40b4dd5ec2c3ae6ed, type: 3}
   HardpointHelm: {fileID: 3363453043375993549, guid: 6146a680691f8e44ab9f2ce73e8772c7, type: 3}
+  BoatVisibilityZone: {fileID: 5848625884918575200, guid: a7e7abe4b3c39b64697381881a96965a, type: 3}

@@ -15,12 +15,15 @@ public class BoatBuilderWindow : EditorWindow
     private const string Prefs_SnapOnPlace = "BoatBuilder.SnapOnPlace";
     private const string Prefs_ShowPreview = "BoatBuilder.ShowPreview";
     private const string Prefs_EnforceRequired = "BoatBuilder.EnforceRequired";
-
     private const string Prefs_HardpointType = "BoatBuilder.HardpointType";
     private const string Prefs_HardpointIdPrefix = "BoatBuilder.HardpointIdPrefix";
     private const string Prefs_HardpointAutoMount = "BoatBuilder.HardpointAutoMount";
     private const string Prefs_HardpointRenameObject = "BoatBuilder.HardpointRenameObject";
     private const string Prefs_StairAscendRight = "BoatBuilder.StairAscendRight";
+    private const string Prefs_HideShellWhileEditing = "BoatBuilder.HideShellWhileEditing";
+    private const string Prefs_VisibilityZoneMode = "BoatBuilder.VisibilityZoneMode";
+    private const string Prefs_VisibilityZonePriority = "BoatBuilder.VisibilityZonePriority";
+    private const string Prefs_VisibilityZoneUseDefaultPriority = "BoatBuilder.VisibilityZoneUseDefaultPriority";
 
     public enum Tool
     {
@@ -42,6 +45,8 @@ public class BoatBuilderWindow : EditorWindow
         Hardpoint = 13,
         ExteriorShell = 14,
         TurretControllerChair = 15,
+        Door = 16,
+        BoatVisibilityZone = 17,
     }
 
     private struct ActionButtonDef
@@ -74,6 +79,11 @@ public class BoatBuilderWindow : EditorWindow
     private bool _hardpointAutoCreateMountPoint = true;
     private bool _hardpointRenameObjectToId = true;
     private bool _stairAscendRight = true;
+    private bool _hideShellWhileEditing;
+
+    private BoatVisibilityMode _visibilityZoneMode = BoatVisibilityMode.BoardedInterior;
+    private int _visibilityZonePriority = 100;
+    private bool _visibilityZoneUseDefaultPriority = true;
 
     private Vector2 _scroll;
 
@@ -101,6 +111,18 @@ public class BoatBuilderWindow : EditorWindow
         _hardpointRenameObjectToId = EditorPrefs.GetBool(Prefs_HardpointRenameObject, true);
         _stairAscendRight = EditorPrefs.GetBool(Prefs_StairAscendRight, true);
 
+        _visibilityZoneMode = (BoatVisibilityMode)EditorPrefs.GetInt(
+            Prefs_VisibilityZoneMode,
+            (int)BoatVisibilityMode.BoardedInterior);
+
+        _visibilityZonePriority = EditorPrefs.GetInt(
+            Prefs_VisibilityZonePriority,
+            BoatVisibilityZone.GetDefaultPriority(_visibilityZoneMode));
+
+        _visibilityZoneUseDefaultPriority = EditorPrefs.GetBool(
+            Prefs_VisibilityZoneUseDefaultPriority,
+            true);
+
         string startingModuleGuid = EditorPrefs.GetString(Prefs_HardpointStartingModuleGuid, "");
         if (!string.IsNullOrWhiteSpace(startingModuleGuid))
         {
@@ -124,11 +146,17 @@ public class BoatBuilderWindow : EditorWindow
         Selection.selectionChanged += HandleSelectionChanged;
 
         TryRefreshStateFromSelection();
+        ApplyShellVisibilityToCurrentRoot();
     }
 
     private void OnDisable()
     {
         Selection.selectionChanged -= HandleSelectionChanged;
+
+        // Restore shell visibility when closing the builder so the scene does not get left in a weird editing state.
+        Transform root = BoatBuilderSceneTools.PeekBestBoatRoot();
+        if (root != null)
+            BoatBuilderSceneTools.SetExteriorShellEditorHidden(root, false);
 
         Persist();
         SyncToSceneTools();
@@ -169,6 +197,11 @@ public class BoatBuilderWindow : EditorWindow
         EditorPrefs.SetBool(Prefs_HardpointAutoMount, _hardpointAutoCreateMountPoint);
         EditorPrefs.SetBool(Prefs_HardpointRenameObject, _hardpointRenameObjectToId);
         EditorPrefs.SetBool(Prefs_StairAscendRight, _stairAscendRight);
+        EditorPrefs.SetBool(Prefs_HideShellWhileEditing, _hideShellWhileEditing);
+
+        EditorPrefs.SetInt(Prefs_VisibilityZoneMode, (int)_visibilityZoneMode);
+        EditorPrefs.SetInt(Prefs_VisibilityZonePriority, _visibilityZonePriority);
+        EditorPrefs.SetBool(Prefs_VisibilityZoneUseDefaultPriority, _visibilityZoneUseDefaultPriority);
 
         if (_hardpointStartingModuleDefinition != null)
         {
@@ -279,6 +312,11 @@ public class BoatBuilderWindow : EditorWindow
             HardpointAutoCreateMountPoint = _hardpointAutoCreateMountPoint,
             HardpointRenameObjectToId = _hardpointRenameObjectToId,
             StairAscendRight = _stairAscendRight,
+
+            SelectedVisibilityZoneMode = _visibilityZoneMode,
+            VisibilityZonePriority = _visibilityZoneUseDefaultPriority
+                ? BoatVisibilityZone.GetDefaultPriority(_visibilityZoneMode)
+                : _visibilityZonePriority,
         });
     }
 
@@ -305,6 +343,7 @@ public class BoatBuilderWindow : EditorWindow
             {
                 Persist();
                 SyncToSceneTools();
+                ApplyShellVisibilityToCurrentRoot();
                 SceneView.RepaintAll();
             }
 
@@ -370,6 +409,7 @@ public class BoatBuilderWindow : EditorWindow
             {
                 Persist();
                 SyncToSceneTools();
+                ApplyShellVisibilityToCurrentRoot();
                 SceneView.RepaintAll();
             }
 
@@ -390,6 +430,7 @@ public class BoatBuilderWindow : EditorWindow
                         _boatRootOverride = Selection.activeTransform;
                         Persist();
                         SyncToSceneTools();
+                        ApplyShellVisibilityToCurrentRoot();
                         SceneView.RepaintAll();
                     }
                     else
@@ -403,6 +444,7 @@ public class BoatBuilderWindow : EditorWindow
                     _boatRootOverride = null;
                     Persist();
                     SyncToSceneTools();
+                    ApplyShellVisibilityToCurrentRoot();
                     SceneView.RepaintAll();
                 }
             }
@@ -432,6 +474,7 @@ public class BoatBuilderWindow : EditorWindow
         DrawToolGroup("Access / Movement", new[]
         {
             Tool.Hatch,
+            Tool.Door,
             Tool.Ledge,
             Tool.Ladder,
             Tool.Stairs
@@ -444,6 +487,7 @@ public class BoatBuilderWindow : EditorWindow
             Tool.MapTable,
             Tool.PlayerSpawnPoint,
             Tool.BoardedVolume,
+            Tool.BoatVisibilityZone,
             Tool.Hardpoint,
             Tool.TurretControllerChair
         });
@@ -510,6 +554,7 @@ public class BoatBuilderWindow : EditorWindow
             Tool.HullSegment => "Hull",
             Tool.Wall => "Wall",
             Tool.Hatch => "Hatch",
+            Tool.Door => "Door",
             Tool.PilotChair => "Chair",
             Tool.CompartmentRect => "Compartment",
             Tool.Deck => "Deck",
@@ -520,6 +565,7 @@ public class BoatBuilderWindow : EditorWindow
             Tool.MapTable => "Map",
             Tool.PlayerSpawnPoint => "Spawn",
             Tool.BoardedVolume => "Volume",
+            Tool.BoatVisibilityZone => "Visibility Zone",
             Tool.Hardpoint => "Hardpoint",
             Tool.TurretControllerChair => "Turret Chair",
             Tool.ExteriorShell => "Shell",
@@ -545,6 +591,12 @@ public class BoatBuilderWindow : EditorWindow
         _showPreview = EditorGUILayout.ToggleLeft(
             new GUIContent("Snap preview ghost", "Shows a green ghost of the selected prefab at the snapped placement position"),
             _showPreview);
+
+        _hideShellWhileEditing = EditorGUILayout.ToggleLeft(
+            new GUIContent(
+                "Hide exterior shell while editing",
+                "Temporarily hides the boat exterior shell in Scene View using editor Scene Visibility. Does not disable renderers or GameObjects."),
+            _hideShellWhileEditing);
 
         _enforceRequired = EditorGUILayout.ToggleLeft(
             new GUIContent("Enforce required pieces", "Prevents duplicate placement for unique required pieces and shows validation warnings"),
@@ -614,6 +666,36 @@ public class BoatBuilderWindow : EditorWindow
 
             EditorGUILayout.HelpBox(
                 "Controls whether placed stairs rise from left to right or right to left.",
+                MessageType.Info);
+        }
+
+        if (_tool == Tool.BoatVisibilityZone)
+        {
+            EditorGUILayout.Space(8);
+            EditorGUILayout.LabelField("Visibility Zone Authoring", EditorStyles.boldLabel);
+
+            EditorGUI.BeginChangeCheck();
+
+            _visibilityZoneMode = (BoatVisibilityMode)EditorGUILayout.EnumPopup(
+                new GUIContent("Mode", "Visibility mode applied while player overlaps this zone."),
+                _visibilityZoneMode);
+
+            _visibilityZoneUseDefaultPriority = EditorGUILayout.ToggleLeft(
+                new GUIContent("Use default priority for mode", "Uses BoatVisibilityZone.GetDefaultPriority(mode)."),
+                _visibilityZoneUseDefaultPriority);
+
+            using (new EditorGUI.DisabledScope(_visibilityZoneUseDefaultPriority))
+            {
+                _visibilityZonePriority = EditorGUILayout.IntField(
+                    new GUIContent("Priority", "Higher priority wins when zones overlap."),
+                    _visibilityZonePriority);
+            }
+
+            if (EditorGUI.EndChangeCheck() && _visibilityZoneUseDefaultPriority)
+                _visibilityZonePriority = BoatVisibilityZone.GetDefaultPriority(_visibilityZoneMode);
+
+            EditorGUILayout.HelpBox(
+                "Place trigger zones inside the boat. Highest-priority overlapping zone controls the boat visibility mode.",
                 MessageType.Info);
         }
     }
@@ -697,7 +779,12 @@ public class BoatBuilderWindow : EditorWindow
             }),
             new ActionButtonDef("Repair All Spans", () =>
             {
-                SpanRepairUtility.RepairAllSpansUnderRoot(root);
+                int floorCount = SpanRepairUtility.RepairAllSpansUnderRoot(root);
+                int wallCount = WallRepairUtility.RepairAllWallSpansUnderRoot(root);
+
+                Debug.Log(
+                    $"[BoatBuilder] Repair All complete. Floor spans repaired={floorCount}, wall spans repaired={wallCount}.",
+                    root);
             })
         );
 
@@ -909,6 +996,32 @@ public class BoatBuilderWindow : EditorWindow
             return changed;
         }
 
+        BoatVisibilityZone selectedZone = FindSelectedComponentInParents<BoatVisibilityZone>();
+        if (selectedZone != null)
+        {
+            if (_tool != Tool.BoatVisibilityZone)
+            {
+                _tool = Tool.BoatVisibilityZone;
+                changed = true;
+            }
+
+            if (_visibilityZoneMode != selectedZone.Mode)
+            {
+                _visibilityZoneMode = selectedZone.Mode;
+                changed = true;
+            }
+
+            if (_visibilityZonePriority != selectedZone.Priority)
+            {
+                _visibilityZonePriority = selectedZone.Priority;
+                _visibilityZoneUseDefaultPriority =
+                    _visibilityZonePriority == BoatVisibilityZone.GetDefaultPriority(_visibilityZoneMode);
+                changed = true;
+            }
+
+            return changed;
+        }
+
         return false;
     }
 
@@ -963,6 +1076,15 @@ public class BoatBuilderWindow : EditorWindow
             HardpointType.Helm => "helm",
             _ => "hardpoint"
         };
+    }
+
+    private void ApplyShellVisibilityToCurrentRoot()
+    {
+        Transform root = BoatBuilderSceneTools.PeekBestBoatRoot();
+        if (root == null)
+            return;
+
+        BoatBuilderSceneTools.SetExteriorShellEditorHidden(root, _hideShellWhileEditing);
     }
 }
 #endif

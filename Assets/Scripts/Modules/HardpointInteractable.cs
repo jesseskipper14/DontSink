@@ -1,13 +1,29 @@
 ﻿using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPickupInteractable, IInteractPromptProvider, IPickupPromptProvider, IToggleInteractable
+public sealed class HardpointInteractable :
+    MonoBehaviour,
+    IInteractable,
+    IPickupInteractable,
+    IInteractPromptProvider,
+    IPickupPromptProvider,
+    IToggleInteractable
 {
+    [Header("Refs")]
     [SerializeField] private Hardpoint hardpoint;
+    [SerializeField] private Transform promptAnchor;
+
+    [Header("Interaction")]
     [SerializeField] private int interactionPriority = 20;
     [SerializeField] private int pickupPriority = 20;
     [SerializeField] private float maxDistance = 1.75f;
-    [SerializeField] private Transform promptAnchor;
+
+    [Header("Boat Access")]
+    [Tooltip("If true, hardpoints/modules that belong to a Boat can only be used by players boarded on that same boat.")]
+    [SerializeField] private bool requireMatchingBoatBoardingContext = true;
+
+    [Tooltip("If true, hardpoints not under a Boat remain usable. This keeps future dock/ruin/world modules possible until they get their own access context.")]
+    [SerializeField] private bool allowAccessWhenNotPartOfBoat = true;
 
     [Header("Removal")]
     [SerializeField] private PickupInteractionMode pickupMode = PickupInteractionMode.Hold;
@@ -18,10 +34,28 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
     public PickupInteractionMode PickupMode => pickupMode;
     public float PickupHoldDuration => pickupHoldDuration;
 
+    private Boat _cachedBoat;
+
+    private void Reset()
+    {
+        if (hardpoint == null)
+            hardpoint = GetComponent<Hardpoint>();
+
+        if (promptAnchor == null)
+            promptAnchor = transform;
+
+        CacheBoat();
+    }
+
     private void Awake()
     {
         if (hardpoint == null)
             hardpoint = GetComponent<Hardpoint>();
+
+        if (promptAnchor == null)
+            promptAnchor = transform;
+
+        CacheBoat();
     }
 
     public bool CanInteract(in InteractContext context)
@@ -30,6 +64,9 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
             return false;
 
         if (!IsInRange(context))
+            return false;
+
+        if (!CanAccessHardpointByContext(context))
             return false;
 
         if (hardpoint.HasInstalledModule)
@@ -48,76 +85,16 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
         if (hardpoint == null || !IsInRange(context))
             return;
 
+        if (!CanAccessHardpointByContext(context))
+            return;
+
         if (!hardpoint.HasInstalledModule)
         {
-            if (!TryFindCompatiblePlayerModule(
-                context,
-                out PlayerInventory inventory,
-                out ItemInstance moduleItem,
-                out BottomBarSlotType sourceSlotType,
-                out bool sourceIsEquipment))
-                return;
-
-            if (moduleItem == null || moduleItem.Definition == null)
-                return;
-
-            ModuleDefinition moduleDefinition = moduleItem.Definition.ModuleDefinition;
-            if (moduleDefinition == null)
-                return;
-
-            if (!hardpoint.TryInstall(moduleDefinition, out _))
-                return;
-
-            bool removedFromSource = false;
-
-            if (sourceIsEquipment)
-            {
-                PlayerEquipment equipment = context.InteractorGO != null
-                    ? context.InteractorGO.GetComponentInChildren<PlayerEquipment>(true)
-                    : null;
-                if (equipment != null)
-                {
-                    ItemInstance equipped = equipment.Get(sourceSlotType);
-                    if (ReferenceEquals(equipped, moduleItem))
-                    {
-                        equipment.Remove(sourceSlotType);
-                        removedFromSource = true;
-                    }
-                }
-            }
-            else
-            {
-                int hotbarIndex = PlayerInventory.SlotTypeToHotbarIndex(sourceSlotType);
-                InventorySlot sourceSlot = inventory.GetSlot(hotbarIndex);
-                if (sourceSlot != null && ReferenceEquals(sourceSlot.Instance, moduleItem))
-                {
-                    sourceSlot.Clear();
-                    removedFromSource = true;
-                }
-            }
-
-            if (!removedFromSource)
-            {
-                hardpoint.TryRemove(out _);
-                Debug.LogWarning("[HardpointInteractable] Installed module but failed to remove source item. Rolled back install.", this);
-                return;
-            }
-
-            inventory.NotifyChanged();
+            TryInstallFromPlayerInventory(context);
             return;
         }
 
-        // OCCUPIED HARDPOINT: open module UI
-        ModuleOverlayRunner runner = FindFirstObjectByType<ModuleOverlayRunner>();
-        if (runner == null)
-        {
-            Debug.LogWarning("[HardpointInteractable] No ModuleOverlayRunner found.");
-            return;
-        }
-
-        runner.OpenForHardpoint(hardpoint);
-
-        Debug.Log($"[HardpointInteractable] Installed module has no engine fuel inventory on '{hardpoint.HardpointId}'.", this);
+        OpenInstalledModuleUI();
     }
 
     public bool CanPickup(in InteractContext context)
@@ -128,12 +105,21 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
         if (!hardpoint.HasInstalledModule)
             return false;
 
-        return IsInRange(context);
+        if (!IsInRange(context))
+            return false;
+
+        if (!CanAccessHardpointByContext(context))
+            return false;
+
+        return true;
     }
 
     public void Pickup(in InteractContext context)
     {
         if (hardpoint == null || !hardpoint.HasInstalledModule || !IsInRange(context))
+            return;
+
+        if (!CanAccessHardpointByContext(context))
             return;
 
         PlayerInventory inventory = context.InteractorGO != null
@@ -149,7 +135,7 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
         ItemDefinition itemDef = removedDefinition != null ? removedDefinition.ItemDefinition : null;
         if (itemDef == null)
         {
-            Debug.LogWarning("[HardpointInteractable] Removed module had no linked ItemDefinition.");
+            Debug.LogWarning("[HardpointInteractable] Removed module had no linked ItemDefinition.", this);
             return;
         }
 
@@ -175,27 +161,22 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
         if (hardpoint == null || !hardpoint.HasInstalledModule || !IsInRange(context))
             return false;
 
-        return GetInstalledToggleable() != null;
+        if (!CanAccessHardpointByContext(context))
+            return false;
+
+        return GetInstalledEngine() != null;
     }
 
     public void Toggle(in InteractContext context)
     {
-        IModuleToggleable toggleable = GetInstalledToggleable();
-        toggleable?.Toggle();
-    }
+        if (!CanAccessHardpointByContext(context))
+            return;
 
-    private IModuleToggleable GetInstalledToggleable()
-    {
-        if (hardpoint == null || !hardpoint.HasInstalledModule || hardpoint.InstalledModule == null)
-            return null;
+        EngineModule engine = GetInstalledEngine();
+        if (engine == null)
+            return;
 
-        foreach (MonoBehaviour mb in hardpoint.InstalledModule.GetComponents<MonoBehaviour>())
-        {
-            if (mb is IModuleToggleable toggleable)
-                return toggleable;
-        }
-
-        return null;
+        engine.Toggle();
     }
 
     public string GetPromptVerb(in InteractContext context)
@@ -203,51 +184,196 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
         if (hardpoint == null)
             return "Use Hardpoint";
 
+        if (!CanAccessHardpointByContext(context))
+            return "Board Boat";
+
         if (!hardpoint.HasInstalledModule)
         {
             if (TryFindCompatiblePlayerModule(
-                context,
-                out _,
-                out ItemInstance moduleItem,
-                out _,
-                out _)
+                    context,
+                    out _,
+                    out ItemInstance moduleItem,
+                    out _,
+                    out _)
                 && moduleItem?.Definition?.ModuleDefinition != null)
             {
                 return $"Install {moduleItem.Definition.DisplayName}";
             }
 
-            if (TryGetSelectedModuleItem(context, out ItemInstance selectedModuleItem))
-            {
-                ModuleDefinition selectedModuleDefinition = selectedModuleItem.Definition.ModuleDefinition;
-
-                if (!hardpoint.ModuleMatchesAcceptedTypes(selectedModuleDefinition))
-                    return $"Hardpoint accepts: {hardpoint.GetAcceptedTypesText()}";
-            }
-
             return "Install Module";
         }
-
-        EngineModule engine = GetInstalledEngine();
-        if (engine != null)
-            return "Open Engine";
-
-        PumpModule pump = GetInstalledPump();
-        if (pump != null)
-            return "Open Pump";
-
-        GeneratorModule generator = GetInstalledGenerator();
-        if (generator != null)
-            return "Open Generator";
 
         return "Open Module";
     }
 
-    public Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
+    public string GetPickupPromptVerb(in InteractContext context)
+    {
+        if (!CanAccessHardpointByContext(context))
+            return "Board Boat";
+
+        if (hardpoint != null && hardpoint.HasInstalledModule)
+            return "Remove Module";
+
+        return "Pick Up";
+    }
+
+    public Transform GetPromptAnchor()
+    {
+        return promptAnchor != null ? promptAnchor : transform;
+    }
+
+    public EngineModule GetInstalledEngine()
+    {
+        if (hardpoint == null || !hardpoint.HasInstalledModule || hardpoint.InstalledModule == null)
+            return null;
+
+        return hardpoint.InstalledModule.GetComponent<EngineModule>();
+    }
+
+    private void TryInstallFromPlayerInventory(in InteractContext context)
+    {
+        if (!TryFindCompatiblePlayerModule(
+                context,
+                out PlayerInventory inventory,
+                out ItemInstance moduleItem,
+                out BottomBarSlotType sourceSlotType,
+                out bool sourceIsEquipment))
+        {
+            return;
+        }
+
+        if (moduleItem == null || moduleItem.Definition == null)
+            return;
+
+        ModuleDefinition moduleDefinition = moduleItem.Definition.ModuleDefinition;
+        if (moduleDefinition == null)
+            return;
+
+        if (!hardpoint.TryInstall(moduleDefinition, out _))
+            return;
+
+        bool removedFromSource = false;
+
+        if (sourceIsEquipment)
+        {
+            PlayerEquipment equipment = context.InteractorGO != null
+                ? context.InteractorGO.GetComponentInChildren<PlayerEquipment>(true)
+                : null;
+
+            if (equipment != null)
+            {
+                ItemInstance equipped = equipment.Get(sourceSlotType);
+                if (ReferenceEquals(equipped, moduleItem))
+                {
+                    equipment.Remove(sourceSlotType);
+                    removedFromSource = true;
+                }
+            }
+        }
+        else
+        {
+            int hotbarIndex = PlayerInventory.SlotTypeToHotbarIndex(sourceSlotType);
+            InventorySlot sourceSlot = inventory.GetSlot(hotbarIndex);
+
+            if (sourceSlot != null && ReferenceEquals(sourceSlot.Instance, moduleItem))
+            {
+                sourceSlot.Clear();
+                removedFromSource = true;
+            }
+        }
+
+        if (!removedFromSource)
+        {
+            hardpoint.TryRemove(out _);
+            Debug.LogWarning(
+                "[HardpointInteractable] Installed module but failed to remove source item. Rolled back install.",
+                this);
+            return;
+        }
+
+        inventory.NotifyChanged();
+    }
+
+    private void OpenInstalledModuleUI()
+    {
+        ModuleOverlayRunner runner = FindFirstObjectByType<ModuleOverlayRunner>();
+        if (runner == null)
+        {
+            Debug.LogWarning("[HardpointInteractable] No ModuleOverlayRunner found.", this);
+            return;
+        }
+
+        runner.OpenForHardpoint(hardpoint);
+    }
 
     private bool IsInRange(in InteractContext context)
     {
         float dist = Vector2.Distance(context.Origin, transform.position);
         return dist <= maxDistance;
+    }
+
+    private bool CanAccessHardpointByContext(in InteractContext context)
+    {
+        if (!requireMatchingBoatBoardingContext)
+            return true;
+
+        CacheBoat();
+
+        // Future-friendly behavior:
+        // Boat modules require matching boat boarding.
+        // Non-boat hardpoints are allowed for now, so dock/ruin/world modules don't get blocked
+        // before we have a broader access-domain system.
+        if (_cachedBoat == null)
+            return allowAccessWhenNotPartOfBoat;
+
+        PlayerBoardingState boarding = FindBoardingState(context);
+        if (boarding == null)
+            return false;
+
+        if (!boarding.IsBoarded)
+            return false;
+
+        return boarding.CurrentBoatRoot == _cachedBoat.transform;
+    }
+
+    private PlayerBoardingState FindBoardingState(in InteractContext context)
+    {
+        if (context.InteractorGO != null)
+        {
+            PlayerBoardingState fromGO =
+                context.InteractorGO.GetComponentInParent<PlayerBoardingState>();
+
+            if (fromGO != null)
+                return fromGO;
+
+            fromGO = context.InteractorGO.GetComponentInChildren<PlayerBoardingState>(true);
+
+            if (fromGO != null)
+                return fromGO;
+        }
+
+        if (context.InteractorTransform != null)
+        {
+            PlayerBoardingState fromTransform =
+                context.InteractorTransform.GetComponentInParent<PlayerBoardingState>();
+
+            if (fromTransform != null)
+                return fromTransform;
+
+            fromTransform =
+                context.InteractorTransform.GetComponentInChildren<PlayerBoardingState>(true);
+
+            if (fromTransform != null)
+                return fromTransform;
+        }
+
+        return null;
+    }
+
+    private void CacheBoat()
+    {
+        if (_cachedBoat == null)
+            _cachedBoat = GetComponentInParent<Boat>();
     }
 
     private bool TryFindCompatiblePlayerModule(
@@ -268,15 +394,21 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
         if (inventory == null || hardpoint == null)
             return false;
 
-        PlayerEquipment equipment = context.InteractorGO.GetComponentInChildren<PlayerEquipment>(true);
+        PlayerEquipment equipment = context.InteractorGO != null
+            ? context.InteractorGO.GetComponentInChildren<PlayerEquipment>(true)
+            : null;
+
         if (equipment == null)
             return false;
 
         BottomBarSlotType selectedType = inventory.SelectedSlot;
 
-        if (selectedType >= BottomBarSlotType.Hotbar0 && selectedType <= BottomBarSlotType.Hotbar7)
+        if (selectedType >= BottomBarSlotType.Hotbar0 &&
+            selectedType <= BottomBarSlotType.Hotbar7)
         {
-            InventorySlot selectedHotbar = inventory.GetSlot(PlayerInventory.SlotTypeToHotbarIndex(selectedType));
+            InventorySlot selectedHotbar =
+                inventory.GetSlot(PlayerInventory.SlotTypeToHotbarIndex(selectedType));
+
             if (IsCompatibleModuleItem(selectedHotbar?.Instance))
             {
                 sourceItem = selectedHotbar.Instance;
@@ -325,72 +457,5 @@ public sealed class HardpointInteractable : MonoBehaviour, IInteractable, IPicku
             return false;
 
         return hardpoint != null && hardpoint.CanInstall(moduleDefinition);
-    }
-
-    public string GetPickupPromptVerb(in InteractContext context)
-    {
-        if (hardpoint != null && hardpoint.HasInstalledModule)
-            return "Remove Module";
-
-        return "Pick Up";
-    }
-
-    public EngineModule GetInstalledEngine()
-    {
-        if (hardpoint == null || !hardpoint.HasInstalledModule || hardpoint.InstalledModule == null)
-            return null;
-
-        return hardpoint.InstalledModule.GetComponent<EngineModule>();
-    }
-
-    public PumpModule GetInstalledPump()
-    {
-        if (hardpoint == null || !hardpoint.HasInstalledModule || hardpoint.InstalledModule == null)
-            return null;
-
-        return hardpoint.InstalledModule.GetComponent<PumpModule>();
-    }
-
-    public GeneratorModule GetInstalledGenerator()
-    {
-        if (hardpoint == null || !hardpoint.HasInstalledModule || hardpoint.InstalledModule == null)
-            return null;
-
-        return hardpoint.InstalledModule.GetComponent<GeneratorModule>();
-    }
-
-    private bool TryGetSelectedModuleItem(
-    in InteractContext context,
-    out ItemInstance moduleItem)
-    {
-        moduleItem = null;
-
-        PlayerInventory inventory = context.InteractorGO != null
-            ? context.InteractorGO.GetComponentInChildren<PlayerInventory>()
-            : null;
-
-        if (inventory == null)
-            return false;
-
-        PlayerEquipment equipment = context.InteractorGO.GetComponentInChildren<PlayerEquipment>(true);
-        if (equipment == null)
-            return false;
-
-        BottomBarSlotType selectedType = inventory.SelectedSlot;
-
-        if (selectedType >= BottomBarSlotType.Hotbar0 && selectedType <= BottomBarSlotType.Hotbar7)
-        {
-            InventorySlot selectedHotbar = inventory.GetSlot(PlayerInventory.SlotTypeToHotbarIndex(selectedType));
-            moduleItem = selectedHotbar != null ? selectedHotbar.Instance : null;
-        }
-        else
-        {
-            moduleItem = equipment.Get(selectedType);
-        }
-
-        return moduleItem != null
-            && moduleItem.Definition != null
-            && moduleItem.Definition.IsModule
-            && moduleItem.Definition.ModuleDefinition != null;
     }
 }

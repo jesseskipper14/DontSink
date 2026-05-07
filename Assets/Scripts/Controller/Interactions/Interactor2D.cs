@@ -17,6 +17,11 @@ public class Interactor2D : MonoBehaviour
     [Header("Scoring")]
     [SerializeField] private float aimBias = 0.35f; // how much "in front" matters vs distance
 
+    [Header("Mouse Hover Override")]
+    [SerializeField] private bool preferMouseHoveredInteractable = true;
+    [SerializeField, Min(0f)] private float mouseHoverRadius = 0.08f;
+    [SerializeField] private bool applyMouseHoverToPickup = true;
+
     private IPickupInteractable _activeHoldPickupTarget;
     private float _activeHoldPickupElapsed;
     private bool _holdPickupTriggered;
@@ -68,7 +73,14 @@ public class Interactor2D : MonoBehaviour
         Vector2 origin = transform.position;
         Vector2 aimDir = GetAimDir(origin, intent.AimWorld);
 
-        ctx = new InteractContext(gameObject, transform, origin, aimDir);
+        ctx = new InteractContext(
+            gameObject,
+            transform,
+            origin,
+            aimDir,
+            intent.AimWorld,
+            intent.HasAimWorld);
+
         return TryResolveBest(ctx, out best);
     }
 
@@ -145,7 +157,13 @@ public class Interactor2D : MonoBehaviour
         var intent = intentSource.Current;
         Vector2 origin = transform.position;
         Vector2 aimDir = GetAimDir(origin, intent.AimWorld);
-        var ctx = new InteractContext(gameObject, transform, origin, aimDir);
+        var ctx = new InteractContext(
+            gameObject,
+            transform,
+            origin,
+            aimDir,
+            intent.AimWorld,
+            intent.HasAimWorld);
 
         if (intent.InteractPressed && TryResolveBest(ctx, out var interactTarget))
         {
@@ -179,6 +197,12 @@ public class Interactor2D : MonoBehaviour
     {
         best = null;
         float bestScore = float.NegativeInfinity;
+
+        if (preferMouseHoveredInteractable &&
+        TryResolveMouseHoveredInteractable(ctx, out best))
+            {
+                return true;
+            }
 
         if (useRaycast)
         {
@@ -228,6 +252,13 @@ public class Interactor2D : MonoBehaviour
     {
         best = null;
         float bestScore = float.NegativeInfinity;
+
+        if (applyMouseHoverToPickup &&
+        preferMouseHoveredInteractable &&
+        TryResolveMouseHoveredPickup(ctx, out best))
+            {
+                return true;
+            }
 
         if (useRaycast)
         {
@@ -354,6 +385,106 @@ public class Interactor2D : MonoBehaviour
         _activeHoldPickupTarget = null;
         _activeHoldPickupElapsed = 0f;
         _holdPickupTriggered = false;
+    }
+
+    private bool TryResolveMouseHoveredInteractable(
+    in InteractContext ctx,
+    out IInteractable best)
+    {
+        best = null;
+
+        if (!ctx.HasAimWorld)
+            return false;
+
+        Collider2D[] hits = GetMouseHoverHits(ctx.AimWorld);
+        if (hits == null || hits.Length == 0)
+            return false;
+
+        float bestScore = float.NegativeInfinity;
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider2D col = hits[i];
+            if (col == null)
+                continue;
+
+            if (!TryGetInteractable(col, out IInteractable interactable))
+                continue;
+
+            if (!interactable.CanInteract(ctx))
+                continue;
+
+            float distToMouse = Vector2.Distance(ctx.AimWorld, col.ClosestPoint(ctx.AimWorld));
+
+            // Mouse hover wins over normal priority, but if multiple hovered things overlap,
+            // still prefer priority and closeness. Because chaos needs at least a filing cabinet.
+            float score =
+                (interactable.InteractionPriority * 10f) -
+                distToMouse;
+
+            if (score > bestScore)
+            {
+                bestScore = score;
+                best = interactable;
+            }
+        }
+
+        return best != null;
+    }
+
+    private bool TryResolveMouseHoveredPickup(
+        in InteractContext ctx,
+        out IPickupInteractable best)
+    {
+        best = null;
+
+        if (!ctx.HasAimWorld)
+            return false;
+
+        Collider2D[] hits = GetMouseHoverHits(ctx.AimWorld);
+        if (hits == null || hits.Length == 0)
+            return false;
+
+        float bestScore = float.NegativeInfinity;
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider2D col = hits[i];
+            if (col == null)
+                continue;
+
+            if (!TryGetPickupInteractable(col, out IPickupInteractable pickup))
+                continue;
+
+            if (!pickup.CanPickup(ctx))
+                continue;
+
+            float distToMouse = Vector2.Distance(ctx.AimWorld, col.ClosestPoint(ctx.AimWorld));
+
+            float score =
+                (pickup.PickupPriority * 10f) -
+                distToMouse;
+
+            if (score > bestScore)
+            {
+                bestScore = score;
+                best = pickup;
+            }
+        }
+
+        return best != null;
+    }
+
+    private Collider2D[] GetMouseHoverHits(Vector2 mouseWorld)
+    {
+        Collider2D[] pointHits = Physics2D.OverlapPointAll(mouseWorld, interactableMask);
+        if (pointHits != null && pointHits.Length > 0)
+            return pointHits;
+
+        if (mouseHoverRadius <= 0f)
+            return pointHits;
+
+        return Physics2D.OverlapCircleAll(mouseWorld, mouseHoverRadius, interactableMask);
     }
 
 #if UNITY_EDITOR

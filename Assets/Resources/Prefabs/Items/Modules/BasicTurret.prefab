@@ -284,6 +284,7 @@ GameObject:
   - component: {fileID: 4852340979861053125}
   - component: {fileID: -5570270040261377772}
   - component: {fileID: 3603743187608587747}
+  - component: {fileID: -7571058012574708267}
   m_Layer: 10
   m_Name: BasicTurret
   m_TagString: Untagged
@@ -451,19 +452,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemInstance:
-    instanceId: 
-    definition: {fileID: 11400000, guid: 239c0b9b8ba85484f926005419f23df2, type: 2}
-    quantity: 1
-    containerState:
-      slotCount: 1
-      columnCount: 1
-      slots: []
-    currentCharges: 0
+    rid: -2
   interactionPriority: 10
   maxPickupDistance: 3
   promptAnchor: {fileID: 8257903097564535626}
   highlightObject: {fileID: 7170654101832386509}
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
   verboseLogging: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &-5570270040261377772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -495,7 +496,23 @@ MonoBehaviour:
   maxDistance: 3
   interactionPriority: 5
   promptAnchor: {fileID: 8257903097564535626}
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
   autoCloseDistance: 2.25
+--- !u!114 &-7571058012574708267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8130874790704986176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26110550bd267f34f8f05f74e1b5ac80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owningBoatInstanceId: 
+  registered: 0
 --- !u!1 &8721630635941789182
 GameObject:
   m_ObjectHideFlags: 0

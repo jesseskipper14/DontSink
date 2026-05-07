@@ -17,6 +17,7 @@ public class BoatKit : ScriptableObject
     public GameObject HullSegment;
     public GameObject Wall;
     public GameObject Hatch;
+    public GameObject Door;
     public GameObject PilotChair;
     public GameObject CompartmentRect;
     public GameObject Deck;
@@ -39,6 +40,9 @@ public class BoatKit : ScriptableObject
     public GameObject HardpointWeapon;
     public GameObject HardpointElectronics;
     public GameObject HardpointHelm;
+
+    [Header("Visibility")]
+    public GameObject BoatVisibilityZone;
 
 #if UNITY_EDITOR
     [MenuItem("Tools/Boat Builder/Create BoatKit Asset")]

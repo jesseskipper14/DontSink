@@ -16,6 +16,7 @@ public sealed class PlayerInventory : MonoBehaviour
     public event Action InventoryChanged;
     public event Action SelectionChanged;
 
+    private GameObject DropActor => gameObject;
     public int HotbarSlotCount => Mathf.Clamp(hotbarSlotCount, 1, MaxSupportedHotbarSlots);
     public bool ScrollIncludesEquipmentSlots => scrollIncludesEquipmentSlots;
     public BottomBarSlotType SelectedSlot => selectedSlot;
@@ -208,8 +209,12 @@ public sealed class PlayerInventory : MonoBehaviour
 
         equipment.Remove(selectedSlot);
 
-        WorldItem dropped = Instantiate(equipped.Definition.WorldPrefab, worldPosition, Quaternion.identity);
-        dropped.Initialize(equipped);
+        if (!WorldItemDropUtility.TryDrop(equipped, worldPosition, DropActor, out _))
+        {
+            // Rollback if drop failed after removing from equipment.
+            equipment.TryPlace(selectedSlot, equipped, out _);
+            return false;
+        }
 
         return true;
     }
@@ -241,8 +246,20 @@ public sealed class PlayerInventory : MonoBehaviour
             slot.Clear();
         }
 
-        WorldItem dropped = Instantiate(droppedInstance.Definition.WorldPrefab, worldPosition, Quaternion.identity);
-        dropped.Initialize(droppedInstance);
+        if (!WorldItemDropUtility.TryDrop(droppedInstance, worldPosition, DropActor, out _))
+        {
+            // Rollback if drop failed after modifying the slot.
+            if (ReferenceEquals(droppedInstance, instance))
+            {
+                slot.Set(droppedInstance);
+            }
+            else
+            {
+                instance.AddQuantity(droppedInstance.Quantity);
+            }
+
+            return false;
+        }
 
         InventoryChanged?.Invoke();
         return true;
@@ -256,8 +273,8 @@ public sealed class PlayerInventory : MonoBehaviour
         if (!instance.Definition.Droppable || instance.Definition.WorldPrefab == null)
             return false;
 
-        WorldItem dropped = Instantiate(instance.Definition.WorldPrefab, worldPosition, Quaternion.identity);
-        dropped.Initialize(instance);
+        if (!WorldItemDropUtility.TryDrop(instance, worldPosition, DropActor, out _))
+            return false;
 
         InventoryChanged?.Invoke();
         return true;
@@ -708,5 +725,30 @@ public sealed class PlayerInventory : MonoBehaviour
 
         if (includeHands)
             yield return BottomBarSlotType.Hands;
+    }
+
+    private void ApplyBoatOwnershipToDroppedItem(WorldItem dropped)
+    {
+        if (dropped == null)
+            return;
+
+        BoatOwnedItem owned = dropped.GetComponent<BoatOwnedItem>();
+        if (owned == null)
+            owned = dropped.gameObject.AddComponent<BoatOwnedItem>();
+
+        PlayerBoardingState boarding =
+            GetComponentInParent<PlayerBoardingState>() ??
+            GetComponentInChildren<PlayerBoardingState>(true);
+
+        if (boarding != null &&
+            boarding.IsBoarded &&
+            boarding.CurrentBoatRoot != null &&
+            boarding.CurrentBoatRoot.TryGetComponent(out Boat boat))
+        {
+            owned.AssignToBoat(boat);
+            return;
+        }
+
+        owned.ClearOwnership();
     }
 }

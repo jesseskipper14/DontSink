@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 61859146187821167}
   - component: {fileID: 5263012356571068860}
   - component: {fileID: 2831798024974852460}
+  - component: {fileID: -408604559513387530}
   m_Layer: 10
   m_Name: Fuel
   m_TagString: Untagged
@@ -104,18 +105,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemInstance:
-    instanceId: 
-    definition: {fileID: 11400000, guid: 1feccda0eb15b454884060f25df7801f, type: 2}
-    quantity: 1
-    containerState:
-      slotCount: 1
-      columnCount: 1
-      slots: []
+    rid: -2
   interactionPriority: 10
   maxPickupDistance: 3
   promptAnchor: {fileID: 0}
   highlightObject: {fileID: 9130302141471108845}
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
   verboseLogging: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!50 &5263012356571068860
 Rigidbody2D:
   serializedVersion: 5
@@ -189,6 +191,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.32, y: 0.18}
   m_EdgeRadius: 0
+--- !u!114 &-408604559513387530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571194650393018128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26110550bd267f34f8f05f74e1b5ac80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owningBoatInstanceId: 
+  registered: 0
 --- !u!1 &9130302141471108845
 GameObject:
   m_ObjectHideFlags: 0

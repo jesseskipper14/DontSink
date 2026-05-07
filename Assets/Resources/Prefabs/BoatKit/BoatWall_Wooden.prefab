@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 4165706963578283412}
   - component: {fileID: -8826840778958376421}
   - component: {fileID: 6261171808211441339}
-  - component: {fileID: 2137412754155592155}
   - component: {fileID: 1953608127539474759}
+  - component: {fileID: -6775809725125050526}
   m_Layer: 3
   m_Name: BoatWall_Wooden
   m_TagString: Untagged
@@ -132,23 +132,6 @@ MonoBehaviour:
   forceTiledSprite: 1
   snapResizeInEditor: 1
   resizeSnapIncrement: 0.5
---- !u!114 &2137412754155592155
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 796141958746456975}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d06cda71ede939408153eb631285685, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  floorCollider: {fileID: 4165706963578283412}
-  spriteRenderer: {fileID: 9201706322582889397}
-  resizableSegment: {fileID: 6261171808211441339}
-  width: 0.82
-  height: 1
 --- !u!114 &1953608127539474759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,6 +148,23 @@ MonoBehaviour:
   countsAsBoundary: 1
   isOpeningCarrier: 0
   openingId: 
+--- !u!114 &-6775809725125050526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 796141958746456975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f78dd69811c4cb45915ab2dbd37d82a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallCollider: {fileID: 4165706963578283412}
+  spriteRenderer: {fileID: 9201706322582889397}
+  resizableSegment: {fileID: 6261171808211441339}
+  width: 0.82
+  height: 1
 --- !u!1 &3278005499063283336
 GameObject:
   m_ObjectHideFlags: 0

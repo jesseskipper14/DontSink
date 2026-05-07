@@ -35,6 +35,9 @@ public static partial class BoatBuilderSceneTools
         public bool HardpointAutoCreateMountPoint;
         public bool HardpointRenameObjectToId;
         public bool StairAscendRight;
+
+        public BoatVisibilityMode SelectedVisibilityZoneMode;
+        public int VisibilityZonePriority;
     }
 
     private static Context _ctx;
@@ -148,9 +151,12 @@ public static partial class BoatBuilderSceneTools
         HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
         var e = Event.current;
 
-        string placingLabel = _ctx.ActiveTool == BoatBuilderWindow.Tool.Hardpoint
-            ? $"PLACING: {_ctx.ActiveTool} ({_ctx.SelectedHardpointType})"
-            : $"PLACING: {_ctx.ActiveTool}";
+        string placingLabel =
+            _ctx.ActiveTool == BoatBuilderWindow.Tool.Hardpoint
+                ? $"PLACING: {_ctx.ActiveTool} ({_ctx.SelectedHardpointType})"
+                : _ctx.ActiveTool == BoatBuilderWindow.Tool.BoatVisibilityZone
+                    ? $"PLACING: {_ctx.ActiveTool} ({_ctx.SelectedVisibilityZoneMode})"
+                    : $"PLACING: {_ctx.ActiveTool}";
 
         string rootLabel = _ctx.BoatRootOverride != null
             ? $" | Root: {_ctx.BoatRootOverride.name}"
@@ -224,9 +230,18 @@ public static partial class BoatBuilderSceneTools
             {
                 placed = TryPlaceDetectedCompartment(prefab, world, boatRoot, parent);
             }
+            else if (_ctx.ActiveTool == BoatBuilderWindow.Tool.Door)
+            {
+                placed = TryPlaceDoorWithWallSplit(prefab, world, boatRoot, parent);
+            }
             else
             {
                 placed = PlacePrefab(prefab, world, parent);
+            }
+
+            if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.Wall)
+            {
+                InitializePlacedWall(placed);
             }
 
             if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.Stairs)
@@ -244,6 +259,15 @@ public static partial class BoatBuilderSceneTools
                     _ctx.BoardedVolumeExtraDown);
 
                 AutoFitBoatGeometryFromVisualRenderers(boatRoot);
+            }
+
+            if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.BoatVisibilityZone)
+            {
+                InitializePlacedVisibilityZone(
+                    placed,
+                    boatRoot != null ? boatRoot : placed.transform.parent,
+                    _ctx.SelectedVisibilityZoneMode,
+                    _ctx.VisibilityZonePriority);
             }
 
             if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.ExteriorShell)
@@ -428,6 +452,7 @@ public static partial class BoatBuilderSceneTools
             BoatBuilderWindow.Tool.HullSegment => kit.HullSegment,
             BoatBuilderWindow.Tool.Wall => kit.Wall,
             BoatBuilderWindow.Tool.Hatch => kit.Hatch,
+            BoatBuilderWindow.Tool.Door => kit.Door,
             BoatBuilderWindow.Tool.PilotChair => kit.PilotChair,
             BoatBuilderWindow.Tool.CompartmentRect => kit.CompartmentRect,
             BoatBuilderWindow.Tool.Deck => kit.Deck,
@@ -438,6 +463,7 @@ public static partial class BoatBuilderSceneTools
             BoatBuilderWindow.Tool.MapTable => kit.MapTable,
             BoatBuilderWindow.Tool.PlayerSpawnPoint => kit.PlayerSpawnPoint,
             BoatBuilderWindow.Tool.BoardedVolume => kit.BoardedVolume,
+            BoatBuilderWindow.Tool.BoatVisibilityZone => kit.BoatVisibilityZone,
             BoatBuilderWindow.Tool.Hardpoint => GetHardpointPrefab(kit, selectedHardpointType),
             BoatBuilderWindow.Tool.ExteriorShell => kit.ExteriorShell,
             BoatBuilderWindow.Tool.TurretControllerChair => kit.TurretControllerChair,

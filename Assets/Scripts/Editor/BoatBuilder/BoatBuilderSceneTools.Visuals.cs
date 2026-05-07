@@ -92,11 +92,17 @@ public static partial class BoatBuilderSceneTools
                 BoatBuilderWindow.Tool.Hatch =>
                     GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.ExteriorDeck),
 
+                BoatBuilderWindow.Tool.Door =>
+                    GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Interior),
+
                 BoatBuilderWindow.Tool.PilotChair =>
                     GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.ExteriorDeck),
 
                 // Volumes/triggers
                 BoatBuilderWindow.Tool.BoardedVolume =>
+                    GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Volume),
+
+                BoatBuilderWindow.Tool.BoatVisibilityZone =>
                     GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Volume),
 
                 // Gameplay helpers/interactables
@@ -227,5 +233,129 @@ public static partial class BoatBuilderSceneTools
             EditorUtility.SetDirty(boat);
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         }
+
+    public static void SetExteriorShellEditorHidden(Transform boatRoot, bool hidden)
+    {
+        if (boatRoot == null)
+            return;
+
+        List<GameObject> targets = CollectExteriorShellVisibilityTargets(boatRoot);
+
+        for (int i = 0; i < targets.Count; i++)
+        {
+            GameObject go = targets[i];
+            if (go == null)
+                continue;
+
+            if (hidden)
+                SceneVisibilityManager.instance.Hide(go, true);
+            else
+                SceneVisibilityManager.instance.Show(go, true);
+        }
+
+        SceneView.RepaintAll();
+    }
+
+    private static List<GameObject> CollectExteriorShellVisibilityTargets(Transform boatRoot)
+    {
+        List<GameObject> result = new List<GameObject>();
+        HashSet<GameObject> seen = new HashSet<GameObject>();
+
+        AddUniqueVisibilityTarget(result, seen, boatRoot.Find("_Exterior"));
+        AddUniqueVisibilityTarget(result, seen, boatRoot.Find("Exterior"));
+
+        BoatVisualMarker[] markers = boatRoot.GetComponentsInChildren<BoatVisualMarker>(true);
+        for (int i = 0; i < markers.Length; i++)
+        {
+            BoatVisualMarker marker = markers[i];
+            if (marker == null)
+                continue;
+
+            if (marker.Category != BoatVisualCategory.ExteriorShell)
+                continue;
+
+            AddUniqueVisibilityTarget(result, seen, marker.transform);
+        }
+
+        return result;
+    }
+
+    private static void AddUniqueVisibilityTarget(
+        List<GameObject> result,
+        HashSet<GameObject> seen,
+        Transform target)
+    {
+        if (target == null)
+            return;
+
+        GameObject go = target.gameObject;
+        if (go == null)
+            return;
+
+        if (!seen.Add(go))
+            return;
+
+        result.Add(go);
+    }
+
+    private static void InitializePlacedVisibilityZone(
+    GameObject placed,
+    Transform boatRoot,
+    BoatVisibilityMode mode,
+    int priority)
+    {
+        if (placed == null)
+            return;
+
+        BoatVisibilityZone zone = placed.GetComponent<BoatVisibilityZone>();
+        if (zone == null)
+            zone = placed.GetComponentInChildren<BoatVisibilityZone>(true);
+
+        if (zone == null)
+        {
+            Debug.LogWarning("[BoatBuilder] Placed visibility zone prefab has no BoatVisibilityZone component.", placed);
+            return;
+        }
+
+        BoatVisualStateController controller = null;
+
+        if (boatRoot != null)
+        {
+            controller = boatRoot.GetComponent<BoatVisualStateController>();
+            if (controller == null)
+                controller = boatRoot.GetComponentInChildren<BoatVisualStateController>(true);
+        }
+
+        Undo.RecordObject(zone, "Configure Boat Visibility Zone");
+        zone.EditorConfigure(mode, priority, controller);
+
+        Collider2D col = zone.GetComponent<Collider2D>();
+        if (col != null)
+        {
+            Undo.RecordObject(col, "Configure Boat Visibility Zone Collider");
+            col.isTrigger = true;
+            EditorUtility.SetDirty(col);
+        }
+
+        string modeName = mode.ToString();
+        string objectName = $"VisibilityZone_{modeName}";
+
+        Undo.RecordObject(placed, "Rename Boat Visibility Zone");
+        placed.name = objectName;
+
+        InitializePlacedVisualMarker(placed, BoatVisualCategory.Volume);
+
+        EditorUtility.SetDirty(zone);
+        EditorUtility.SetDirty(placed);
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+
+        if (controller == null)
+        {
+            Debug.LogWarning(
+                "[BoatBuilder] Visibility zone placed, but no BoatVisualStateController found on/under boat root. " +
+                "Zone will try to auto-resolve at runtime, but you probably want the controller on BoatRoot.",
+                placed);
+        }
+    }
 }
 #endif

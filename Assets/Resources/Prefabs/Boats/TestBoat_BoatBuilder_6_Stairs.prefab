@@ -1233,6 +1233,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8447928697861625910}
     m_Modifications:
+    - target: {fileID: -6775809725125050526, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
+      propertyPath: height
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 796141958746456975, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
       propertyPath: m_Name
       value: BoatWall_Wooden
@@ -1857,6 +1861,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8447928697861625910}
     m_Modifications:
+    - target: {fileID: -6775809725125050526, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
+      propertyPath: height
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 796141958746456975, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
       propertyPath: m_Name
       value: BoatWall_Wooden

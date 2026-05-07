@@ -567,6 +567,8 @@ MonoBehaviour:
   maxPickupDistance: 3
   promptAnchor: {fileID: 1817727847620943648}
   highlightObject: {fileID: 5455390427940978382}
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
   verboseLogging: 1
   references:
     version: 2
@@ -1115,6 +1117,8 @@ MonoBehaviour:
   seatPoint: {fileID: 0}
   promptAnchor: {fileID: 0}
   pinOccupantToSeat: 1
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
 --- !u!61 &8499443934313787654
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1499,6 +1503,8 @@ MonoBehaviour:
   maxPickupDistance: 3
   promptAnchor: {fileID: 2812265462636683136}
   highlightObject: {fileID: 603769359801502100}
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
   verboseLogging: 1
   references:
     version: 2
@@ -2195,6 +2201,8 @@ MonoBehaviour:
   maxPickupDistance: 3
   promptAnchor: {fileID: 9207235678032519342}
   highlightObject: {fileID: 5268155112217765181}
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
   verboseLogging: 1
   references:
     version: 2
@@ -2637,6 +2645,8 @@ MonoBehaviour:
   maxPickupDistance: 3
   promptAnchor: {fileID: 5520837650073072265}
   highlightObject: {fileID: 1450469956944098250}
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
   verboseLogging: 1
   references:
     version: 2
@@ -2850,6 +2860,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1056299324801769405}
     m_Modifications:
+    - target: {fileID: -6775809725125050526, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
+      propertyPath: height
+      value: 9.5
+      objectReference: {fileID: 0}
     - target: {fileID: 796141958746456975, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
       propertyPath: m_Name
       value: BoatWall_Wooden
@@ -3175,6 +3189,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1056299324801769405}
     m_Modifications:
+    - target: {fileID: -6775809725125050526, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
+      propertyPath: height
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 796141958746456975, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
       propertyPath: m_Name
       value: BoatWall_Wooden
@@ -3557,6 +3575,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1056299324801769405}
     m_Modifications:
+    - target: {fileID: -6775809725125050526, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
+      propertyPath: height
+      value: 9.5
+      objectReference: {fileID: 0}
     - target: {fileID: 796141958746456975, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
       propertyPath: m_Name
       value: BoatWall_Wooden
@@ -3731,6 +3753,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1056299324801769405}
     m_Modifications:
+    - target: {fileID: -6775809725125050526, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
+      propertyPath: height
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 796141958746456975, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
       propertyPath: m_Name
       value: BoatWall_Wooden
@@ -3809,6 +3835,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1056299324801769405}
     m_Modifications:
+    - target: {fileID: -6775809725125050526, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
+      propertyPath: height
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 796141958746456975, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
       propertyPath: m_Name
       value: BoatWall_Wooden
@@ -4878,6 +4908,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1056299324801769405}
     m_Modifications:
+    - target: {fileID: -6775809725125050526, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
+      propertyPath: height
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 796141958746456975, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
       propertyPath: m_Name
       value: BoatWall_Wooden
@@ -5034,6 +5068,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1056299324801769405}
     m_Modifications:
+    - target: {fileID: -6775809725125050526, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
+      propertyPath: height
+      value: 9.5
+      objectReference: {fileID: 0}
     - target: {fileID: 796141958746456975, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
       propertyPath: m_Name
       value: BoatWall_Wooden
@@ -6658,6 +6696,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1056299324801769405}
     m_Modifications:
+    - target: {fileID: -6775809725125050526, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
+      propertyPath: height
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 796141958746456975, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
       propertyPath: m_Name
       value: BoatWall_Wooden
