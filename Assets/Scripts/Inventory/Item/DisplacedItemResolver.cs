@@ -53,7 +53,7 @@ public sealed class DisplacedItemResolver : MonoBehaviour
             return true;
         }
 
-        // 3) Drop to world
+        // 3) Drop to world through shared utility so boat ownership/sorting hooks apply.
         if (TryDropToWorld(displaced))
         {
             Log("Resolved by dropping to world.");
@@ -87,13 +87,25 @@ public sealed class DisplacedItemResolver : MonoBehaviour
         if (item == null || item.Definition == null)
             return false;
 
-        if (!item.Definition.Droppable || item.Definition.WorldPrefab == null)
-            return false;
-
         Vector3 dropPos = worldDropOrigin != null ? worldDropOrigin.position : Vector3.zero;
-        WorldItem dropped = Instantiate(item.Definition.WorldPrefab, dropPos, Quaternion.identity);
-        dropped.Initialize(item);
-        return true;
+
+        GameObject actor = null;
+
+        if (inventory != null)
+            actor = inventory.gameObject;
+        else if (equipment != null)
+            actor = equipment.gameObject;
+        else
+            actor = gameObject;
+
+        bool ok = WorldItemDropUtility.TryDrop(item, dropPos, actor, out WorldItem dropped);
+
+        Log(
+            $"TryDropToWorld | item={DescribeItem(item)} | pos={dropPos} " +
+            $"| actor={(actor != null ? actor.name : "NULL")} " +
+            $"| dropped={(dropped != null ? dropped.name : "NULL")} | ok={ok}");
+
+        return ok;
     }
 
     private string DescribeItem(ItemInstance item)

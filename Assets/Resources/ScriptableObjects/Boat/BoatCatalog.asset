@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f066cef0abb71c4d8371dfcc71e9b48, type: 3}
   m_Name: BoatCatalog
   m_EditorClassIdentifier: 
+  verboseLogging: 0
   entries:
   - prefab: {fileID: 2683575577854610556, guid: a4801e98a0f699748a7b4b5340a55bf8, type: 3}
     guid: 895d3597dcd4418385064ee3e5b49040
@@ -20,14 +21,14 @@ MonoBehaviour:
   - prefab: {fileID: 766143842879840708, guid: 95cfb855bcfd083498efb38d30829f7e, type: 3}
     guid: 69d8b1ab910349a3a1ba99b0cb04fd32
   - prefab: {fileID: 7392891369482145387, guid: ca2a141b7840c7149a9d7b68d49e00b9, type: 3}
-    guid: 69d8b1ab910349a3a1ba99b0cb04fd32
+    guid: 7b266ed5a1504e08862fe8f47c978180
   - prefab: {fileID: 7912382354799273575, guid: e197dd85143f29a4393f653964dd8eae, type: 3}
-    guid: 69d8b1ab910349a3a1ba99b0cb04fd32
+    guid: 3b76d0f6fae4407c9bc31cb7eee973a1
   - prefab: {fileID: 4165500235639627636, guid: e74eda4a5a5613445a868173758d57e5, type: 3}
-    guid: 69d8b1ab910349a3a1ba99b0cb04fd32
+    guid: 81285dcdf2c54ec59a155aae831830b8
   - prefab: {fileID: 218755307891420339, guid: 0f9361f2f00c06244a0c7537fcde9bac, type: 3}
-    guid: 69d8b1ab910349a3a1ba99b0cb04fd32
+    guid: 592c59c9bc3e47579287ddc8ed20550d
   - prefab: {fileID: 7044191691679805810, guid: 560725d4a0464c147be15ce413f7a0eb, type: 3}
-    guid: 69d8b1ab910349a3a1ba99b0cb04fd32
+    guid: 8633e03e22894d89a3617cbd2ab2db7b
   - prefab: {fileID: 2368661393605829580, guid: d94d7258e6441f2418c7c6621bc7bf9d, type: 3}
-    guid: 69d8b1ab910349a3a1ba99b0cb04fd32
+    guid: d1002f0ec13b44ed8148f1715cf5022d

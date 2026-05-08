@@ -17,6 +17,7 @@ public sealed class BoatSceneController : MonoBehaviour
     [Header("Layout")]
     [Tooltip("X position for the dock you departed from (behind you).")]
     [SerializeField] private float sourceDockX = -20f;
+
     [Tooltip("How far the target dock extends in +X from its anchor. This amount is subtracted so the dock ends at total travel distance.")]
     [SerializeField] private float targetDockLength = 20f;
 
@@ -29,12 +30,14 @@ public sealed class BoatSceneController : MonoBehaviour
 
     [SerializeField] private PlayerLoadoutPersistence playerLoadoutPersistence;
 
+    [Header("Debug")]
+    [SerializeField] private bool verboseLogging = true;
+
     public TravelPayload Payload { get; private set; }
 
     private bool _completed;
     private bool _initialized;
 
-    // NEW: which dock we are currently “in range” of (if any)
     private DockTrigger _activeDockInRange;
 
     private void Reset()
@@ -61,7 +64,7 @@ public sealed class BoatSceneController : MonoBehaviour
         if (_initialized) return;
         _initialized = true;
 
-        var gs = GameState.I;
+        GameState gs = GameState.I;
         if (gs == null)
         {
             Debug.LogError("[BoatSceneController] GameState missing. Cannot run BoatScene.");
@@ -83,6 +86,10 @@ public sealed class BoatSceneController : MonoBehaviour
             return;
         }
 
+        Log(
+            $"Start | payload from='{Payload.fromNodeStableId}' to='{Payload.toNodeStableId}' " +
+            $"boatId='{Payload.boatInstanceId}' boatGuid='{Payload.boatPrefabGuid}'");
+
         LayoutDocks();
     }
 
@@ -102,7 +109,6 @@ public sealed class BoatSceneController : MonoBehaviour
     {
         if (ctx == null) return;
 
-        // Idempotent: avoid double subscriptions.
         if (ctx.sourceDockTrigger != null)
         {
             ctx.sourceDockTrigger.OnEnteredRange -= OnDockEnteredRange;
@@ -143,7 +149,7 @@ public sealed class BoatSceneController : MonoBehaviour
     {
         if (ctx.sourceDockAnchor != null)
         {
-            var p = ctx.sourceDockAnchor.position;
+            Vector3 p = ctx.sourceDockAnchor.position;
             p.x = sourceDockX;
             ctx.sourceDockAnchor.position = p;
         }
@@ -153,10 +159,12 @@ public sealed class BoatSceneController : MonoBehaviour
 
         if (ctx.targetDockAnchor != null)
         {
-            var p = ctx.targetDockAnchor.position;
+            Vector3 p = ctx.targetDockAnchor.position;
             p.x = targetDockEndX - targetDockLength;
             ctx.targetDockAnchor.position = p;
         }
+
+        Log($"LayoutDocks | sourceDockX={sourceDockX} | dist={dist} | targetDockEndX={targetDockEndX}");
     }
 
     private void OnDockEnteredRange(DockTrigger trigger, Collider2D other)
@@ -188,20 +196,12 @@ public sealed class BoatSceneController : MonoBehaviour
     private void ConfirmDock(DockTrigger trigger)
     {
         if (_completed) return;
-
-        // Must still be the active dock in range
         if (_activeDockInRange != trigger) return;
 
         if (dockingPanel != null)
             dockingPanel.Hide();
 
-        // FUTURE-PROOF HOOK:
-        // In the future, instead of instantly transitioning, you can:
-        // - open a Docking mini-game via MiniGameOverlayHost
-        // - on success/partial/fail, decide whether to proceed
-        //
-        // For now: immediate scene transition.
-        Payload ??= (GameState.I != null ? GameState.I.activeTravel : null);
+        Payload ??= GameState.I != null ? GameState.I.activeTravel : null;
         if (Payload == null) return;
 
         switch (trigger.kind)
@@ -221,7 +221,7 @@ public sealed class BoatSceneController : MonoBehaviour
         _completed = true;
         PersistBoatAndCargo();
 
-        var transition = SceneTransitionController.I;
+        SceneTransitionController transition = SceneTransitionController.I;
         if (transition == null)
         {
             Debug.LogError("[BoatSceneController] SceneTransitionController missing on abort.");
@@ -236,7 +236,7 @@ public sealed class BoatSceneController : MonoBehaviour
         _completed = true;
         PersistBoatAndCargo();
 
-        var transition = SceneTransitionController.I;
+        SceneTransitionController transition = SceneTransitionController.I;
         if (transition == null)
         {
             Debug.LogError("[BoatSceneController] SceneTransitionController missing on completion.");
@@ -276,22 +276,62 @@ public sealed class BoatSceneController : MonoBehaviour
 
     private void PersistBoatAndCargo()
     {
-        var gs = GameState.I;
+        SceneTransitionController transition = SceneTransitionController.I;
+        if (transition != null)
+        {
+            transition.SaveCurrentBoatState("BoatSceneController.PersistBoatAndCargo");
+            return;
+        }
+
+        // Fallback if transition singleton is missing.
+        PersistBoatAndCargoFallback();
+    }
+
+    private void PersistBoatAndCargoFallback()
+    {
+        GameState gs = GameState.I;
         if (gs == null) return;
         if (gs.boatRegistry == null) return;
+        if (gs.boat == null) return;
 
-        if (!gs.boatRegistry.TryGetById(gs.boat.boatInstanceId, out var boatObj) || boatObj == null)
+        if (!gs.boatRegistry.TryGetById(gs.boat.boatInstanceId, out Boat boatObj) || boatObj == null)
+        {
+            LogWarning($"Persist fallback failed: no boat found for id='{gs.boat.boatInstanceId}'.");
             return;
+        }
 
-        var boatRoot = boatObj.transform;
+        Transform boatRoot = boatObj.transform;
 
-        var boatId = boatRoot.GetComponent<BoatIdentity>();
+        BoatIdentity boatId = boatRoot.GetComponent<BoatIdentity>();
         if (boatId != null)
             gs.boat.boatPrefabGuid = boatId.BoatGuid;
 
-        var boarded = boatRoot.GetComponentInChildren<BoatBoardedVolume>(true);
-        var volumeCol = boarded != null ? boarded.GetComponent<Collider2D>() : null;
+        BoatBoardedVolume boarded = boatRoot.GetComponentInChildren<BoatBoardedVolume>(true);
+        Collider2D volumeCol = boarded != null ? boarded.GetComponent<Collider2D>() : null;
 
         gs.boat.cargo = CargoManifest.Capture(boatRoot, volumeCol);
+
+        BoatLooseItemPersistence loosePersistence = boatObj.GetComponent<BoatLooseItemPersistence>();
+        if (loosePersistence != null)
+        {
+            BoatLooseItemManifest manifest = loosePersistence.CaptureManifest();
+            gs.SetBoatLooseItems(manifest, "BoatSceneController fallback capture");
+        }
+        else
+        {
+            LogWarning($"Persist fallback: boat '{boatObj.name}' has no BoatLooseItemPersistence.");
+        }
+    }
+
+    private void Log(string msg)
+    {
+        if (!verboseLogging) return;
+        Debug.Log($"[BoatSceneController] {msg}", this);
+    }
+
+    private void LogWarning(string msg)
+    {
+        if (!verboseLogging) return;
+        Debug.LogWarning($"[BoatSceneController] {msg}", this);
     }
 }

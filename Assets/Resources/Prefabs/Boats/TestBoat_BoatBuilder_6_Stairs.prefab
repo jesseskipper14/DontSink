@@ -54,6 +54,7 @@ GameObject:
   - component: {fileID: 413487242788520712}
   - component: {fileID: 3534999070087195009}
   - component: {fileID: 2355715659551089012}
+  - component: {fileID: 858208811881568974}
   m_Layer: 0
   m_Name: TestBoat_BoatBuilder_6_Stairs
   m_TagString: PlayerBoat
@@ -280,6 +281,19 @@ MonoBehaviour:
     m_Bits: 0
   autoFindMainCamera: 1
   logVisibility: 0
+--- !u!114 &858208811881568974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 218755307891420339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e49df955b1f8df441989c381c35d95c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boatGuid: 592c59c9bc3e47579287ddc8ed20550d
 --- !u!1 &992328706717222590
 GameObject:
   m_ObjectHideFlags: 0
