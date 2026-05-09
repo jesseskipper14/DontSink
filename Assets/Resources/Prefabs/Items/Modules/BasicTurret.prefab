@@ -256,7 +256,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1939965397
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: -1
   m_Sprite: {fileID: 6599434632670861906, guid: c313ebc5092a7844ea5c0db2902c43c9, type: 3}
   m_Color: {r: 0.49381453, g: 0.59341216, b: 0.764151, a: 1}
@@ -285,6 +285,8 @@ GameObject:
   - component: {fileID: -5570270040261377772}
   - component: {fileID: 3603743187608587747}
   - component: {fileID: -7571058012574708267}
+  - component: {fileID: -938845009435855760}
+  - component: {fileID: -1987137170849868778}
   m_Layer: 10
   m_Name: BasicTurret
   m_TagString: Untagged
@@ -480,6 +482,9 @@ MonoBehaviour:
   worldItem: {fileID: 4852340979861053125}
   playerTransform: {fileID: 0}
   maxDepositDistance: 2.25
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
+  verboseLogging: 0
 --- !u!114 &3603743187608587747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,6 +504,7 @@ MonoBehaviour:
   requireMatchingBoatBoardingContext: 1
   allowAccessWhenNotPartOfBoat: 1
   autoCloseDistance: 2.25
+  verboseLogging: 0
 --- !u!114 &-7571058012574708267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -513,6 +519,46 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   owningBoatInstanceId: 
   registered: 0
+--- !u!114 &-938845009435855760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8130874790704986176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a957b6eed87a54447a5d53b3ce0234f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownedItem: {fileID: 0}
+  rb: {fileID: 0}
+  hullLayerName: Hull
+  groundLayerName: Ground
+  nodeGroundLayerName: NodeGround
+  nodeDockLayerName: NodeDock
+  verboseLogging: 0
+--- !u!114 &-1987137170849868778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8130874790704986176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 384918fa0a508aa4180ae38e210558d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownedItem: {fileID: 0}
+  includeInactiveRenderers: 1
+  boatOwnedSortingLayer: BoatItem
+  boatOwnedSortingOrder: 0
+  boatOwnedGameObjectLayer: HullItem
+  applyGameObjectLayerToChildren: 1
+  restoreOriginalSortingOnUnowned: 1
+  restoreOriginalGameObjectLayerOnUnowned: 1
+  verboseLogging: 0
 --- !u!1 &8721630635941789182
 GameObject:
   m_ObjectHideFlags: 0

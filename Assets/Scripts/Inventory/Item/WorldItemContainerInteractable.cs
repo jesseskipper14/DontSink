@@ -12,15 +12,19 @@ public sealed class WorldItemContainerInteractable : MonoBehaviour, IInteractabl
     [Tooltip("If true, world containers that belong to a Boat can only be opened by players boarded on that same boat.")]
     [SerializeField] private bool requireMatchingBoatBoardingContext = true;
 
-    [Tooltip("If true, world containers not under a Boat remain usable. This preserves normal dock/world containers.")]
+    [Tooltip("If true, world containers not owned by or parented under a Boat remain usable. This preserves normal dock/world containers.")]
     [SerializeField] private bool allowAccessWhenNotPartOfBoat = true;
 
     [Header("Container UI")]
     [SerializeField] private float autoCloseDistance = 2.25f;
 
+    [Header("Debug")]
+    [SerializeField] private bool verboseLogging = false;
+
     public int InteractionPriority => interactionPriority;
 
-    private Boat _cachedBoat;
+    private BoatOwnedItem _ownedItem;
+    private Boat _cachedParentBoat;
 
     private void Reset()
     {
@@ -30,7 +34,7 @@ public sealed class WorldItemContainerInteractable : MonoBehaviour, IInteractabl
         if (promptAnchor == null)
             promptAnchor = transform;
 
-        CacheBoat();
+        CacheBoatContext();
     }
 
     private void Awake()
@@ -41,7 +45,7 @@ public sealed class WorldItemContainerInteractable : MonoBehaviour, IInteractabl
         if (promptAnchor == null)
             promptAnchor = transform;
 
-        CacheBoat();
+        CacheBoatContext();
     }
 
     public bool CanInteract(in InteractContext context)
@@ -112,19 +116,86 @@ public sealed class WorldItemContainerInteractable : MonoBehaviour, IInteractabl
         if (!requireMatchingBoatBoardingContext)
             return true;
 
-        CacheBoat();
+        CacheBoatContext();
 
-        if (_cachedBoat == null)
-            return allowAccessWhenNotPartOfBoat;
+        // Registry-authoritative loose item ownership.
+        if (_ownedItem != null && _ownedItem.IsOwnedByBoat)
+        {
+            bool ok = IsInteractorBoardedOnBoatId(context, _ownedItem.OwningBoatInstanceId);
+
+            Log(
+                $"Access by BoatOwnedItem | item='{name}' ownedBoatId='{_ownedItem.OwningBoatInstanceId}' ok={ok}");
+
+            return ok;
+        }
+
+        // Backward-compatible parented boat object access.
+        // Useful for built-in boat fixtures that are actually under BoatRoot.
+        if (_cachedParentBoat != null)
+        {
+            bool ok = IsInteractorBoardedOnBoat(context, _cachedParentBoat);
+
+            Log(
+                $"Access by parent Boat | item='{name}' boat='{_cachedParentBoat.name}' id='{_cachedParentBoat.BoatInstanceId}' ok={ok}");
+
+            return ok;
+        }
+
+        // Normal world/dock containers.
+        // If the interactor is currently boarded, do NOT allow access to unowned world objects.
+        // This prevents inside-boat players from reaching outside containers through the hull.
+        PlayerBoardingState boarding = FindBoardingState(context);
+        if (boarding != null && boarding.IsBoarded)
+        {
+            Log($"Access denied: interactor is boarded, but container '{name}' is not owned by/parented to that boat.");
+            return false;
+        }
+
+        return allowAccessWhenNotPartOfBoat;
+    }
+
+    private bool IsInteractorBoardedOnBoatId(in InteractContext context, string boatInstanceId)
+    {
+        if (string.IsNullOrWhiteSpace(boatInstanceId))
+            return false;
 
         PlayerBoardingState boarding = FindBoardingState(context);
-        if (boarding == null)
+        if (boarding == null || !boarding.IsBoarded || boarding.CurrentBoatRoot == null)
             return false;
 
-        if (!boarding.IsBoarded)
+        Boat currentBoat =
+            boarding.CurrentBoatRoot.GetComponent<Boat>() ??
+            boarding.CurrentBoatRoot.GetComponentInParent<Boat>();
+
+        if (currentBoat == null)
             return false;
 
-        return boarding.CurrentBoatRoot == _cachedBoat.transform;
+        return currentBoat.BoatInstanceId == boatInstanceId;
+    }
+
+    private bool IsInteractorBoardedOnBoat(in InteractContext context, Boat requiredBoat)
+    {
+        if (requiredBoat == null)
+            return false;
+
+        PlayerBoardingState boarding = FindBoardingState(context);
+        if (boarding == null || !boarding.IsBoarded || boarding.CurrentBoatRoot == null)
+            return false;
+
+        Boat currentBoat =
+            boarding.CurrentBoatRoot.GetComponent<Boat>() ??
+            boarding.CurrentBoatRoot.GetComponentInParent<Boat>();
+
+        if (currentBoat == null)
+            return false;
+
+        if (!string.IsNullOrWhiteSpace(requiredBoat.BoatInstanceId) &&
+            !string.IsNullOrWhiteSpace(currentBoat.BoatInstanceId))
+        {
+            return currentBoat.BoatInstanceId == requiredBoat.BoatInstanceId;
+        }
+
+        return currentBoat == requiredBoat || boarding.CurrentBoatRoot == requiredBoat.transform;
     }
 
     private PlayerBoardingState FindBoardingState(in InteractContext context)
@@ -161,9 +232,20 @@ public sealed class WorldItemContainerInteractable : MonoBehaviour, IInteractabl
         return null;
     }
 
-    private void CacheBoat()
+    private void CacheBoatContext()
     {
-        if (_cachedBoat == null)
-            _cachedBoat = GetComponentInParent<Boat>();
+        if (_ownedItem == null)
+            _ownedItem = GetComponent<BoatOwnedItem>();
+
+        if (_cachedParentBoat == null)
+            _cachedParentBoat = GetComponentInParent<Boat>();
+    }
+
+    private void Log(string msg)
+    {
+        if (!verboseLogging)
+            return;
+
+        Debug.Log($"[WorldItemContainerInteractable:{name}] {msg}", this);
     }
 }

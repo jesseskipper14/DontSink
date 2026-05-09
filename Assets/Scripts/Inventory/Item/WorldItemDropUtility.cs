@@ -37,6 +37,14 @@ public static class WorldItemDropUtility
         if (owned == null)
             owned = dropped.gameObject.AddComponent<BoatOwnedItem>();
 
+        BoatOwnedItemLayerPolicy layerPolicy = dropped.GetComponent<BoatOwnedItemLayerPolicy>();
+        if (layerPolicy == null)
+            layerPolicy = dropped.gameObject.AddComponent<BoatOwnedItemLayerPolicy>();
+
+        BoatOwnedItemVisualPolicy visualPolicy = dropped.GetComponent<BoatOwnedItemVisualPolicy>();
+        if (visualPolicy == null)
+            visualPolicy = dropped.gameObject.AddComponent<BoatOwnedItemVisualPolicy>();
+
         if (TryFindBoardedBoat(actor, out Boat boat))
         {
             owned.AssignToBoat(boat);

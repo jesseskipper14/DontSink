@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: -8352881644672781526}
   - component: {fileID: 7533241951805928194}
   - component: {fileID: 6115161348762468599}
+  - component: {fileID: 1254404081884302381}
+  - component: {fileID: -5038278526832923775}
   m_Layer: 0
   m_Name: Basic_Bullet
   m_TagString: Untagged
@@ -204,3 +206,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   owningBoatInstanceId: 
   registered: 0
+--- !u!114 &1254404081884302381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5795355460495631054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a957b6eed87a54447a5d53b3ce0234f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownedItem: {fileID: 0}
+  rb: {fileID: 0}
+  hullLayerName: Hull
+  groundLayerName: Ground
+  nodeGroundLayerName: NodeGround
+  nodeDockLayerName: NodeDock
+  verboseLogging: 0
+--- !u!114 &-5038278526832923775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5795355460495631054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 384918fa0a508aa4180ae38e210558d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownedItem: {fileID: 0}
+  includeInactiveRenderers: 1
+  boatOwnedSortingLayer: BoatItem
+  boatOwnedSortingOrder: 0
+  boatOwnedGameObjectLayer: HullItem
+  applyGameObjectLayerToChildren: 1
+  restoreOriginalSortingOnUnowned: 1
+  restoreOriginalGameObjectLayerOnUnowned: 1
+  verboseLogging: 0

@@ -167,7 +167,16 @@ public sealed class WorldItem : MonoBehaviour, IPickupInteractable, IInteractPro
         CacheBoatOwnership();
 
         if (_ownedItem == null || !_ownedItem.IsOwnedByBoat)
+        {
+            PlayerBoardingState unownedBoarding = FindBoardingState(context);
+            if (unownedBoarding != null && unownedBoarding.IsBoarded)
+            {
+                Log("CanAccessByBoatContext FAIL: interactor is boarded, but item is not boat-owned.");
+                return false;
+            }
+
             return allowAccessWhenNotPartOfBoat;
+        }
 
         PlayerBoardingState boarding = FindBoardingState(context);
         if (boarding == null || !boarding.IsBoarded)
@@ -176,7 +185,9 @@ public sealed class WorldItem : MonoBehaviour, IPickupInteractable, IInteractPro
         Boat currentBoat = null;
 
         if (boarding.CurrentBoatRoot != null)
-            currentBoat = boarding.CurrentBoatRoot.GetComponent<Boat>();
+            currentBoat =
+                boarding.CurrentBoatRoot.GetComponent<Boat>() ??
+                boarding.CurrentBoatRoot.GetComponentInParent<Boat>();
 
         if (currentBoat == null)
             return false;

@@ -1612,7 +1612,7 @@ MonoBehaviour:
   targetCamera: {fileID: 0}
   hideByCameraMaskWhenInterior:
     serializedVersion: 2
-    m_Bits: 65536
+    m_Bits: 66560
   autoFindMainCamera: 1
   logVisibility: 0
 --- !u!114 &4870372379708269299
@@ -1656,6 +1656,7 @@ MonoBehaviour:
   boat: {fileID: 2101037204814164539}
   itemRegistry: {fileID: -973708930737128964}
   itemCatalog: {fileID: 11400000, guid: d39434bc65a89584c811f84d322f558a, type: 2}
+  verboseLogging: 0
 --- !u!1 &2386554054473765223
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,6 +7,7 @@ public sealed class PlayerBoardingState : MonoBehaviour
 {
     [Header("Layer Names")]
     [SerializeField] private string hullLayerName = "Hull";
+    [SerializeField] private string hullItemLayerName = "HullItem";
     [SerializeField] private string groundLayerName = "Ground";
     [SerializeField] private string nodeGroundLayerName = "NodeGround";
     [SerializeField] private string nodeDockLayerName = "NodeDock";
@@ -25,6 +26,7 @@ public sealed class PlayerBoardingState : MonoBehaviour
     private CharacterMotor2D _motor;
 
     private int _hullLayer;
+    private int _hullItemLayer;
     private int _groundLayer;
     private int _nodeGroundLayer;
     private int _nodeDockLayer;
@@ -33,6 +35,7 @@ public sealed class PlayerBoardingState : MonoBehaviour
     private LayerMask _unboardedGroundMask;
 
     private int _hullBit;
+    private int _hullItemBit;
     private int _nonBoatWorldBits;
 
     private SpriteRenderer[] _spriteRenderers;
@@ -47,16 +50,19 @@ public sealed class PlayerBoardingState : MonoBehaviour
         CacheSpriteRenderers();
 
         _hullLayer = LayerMask.NameToLayer(hullLayerName);
+        _hullItemLayer = LayerMask.NameToLayer(hullItemLayerName);
         _groundLayer = LayerMask.NameToLayer(groundLayerName);
         _nodeGroundLayer = LayerMask.NameToLayer(nodeGroundLayerName);
         _nodeDockLayer = LayerMask.NameToLayer(nodeDockLayerName);
 
         if (_hullLayer < 0) Debug.LogError($"Layer '{hullLayerName}' not found.", this);
+        if (_hullItemLayer < 0) Debug.LogError($"Layer '{hullItemLayerName}' not found.", this);
         if (_groundLayer < 0) Debug.LogError($"Layer '{groundLayerName}' not found.", this);
         if (_nodeGroundLayer < 0) Debug.LogError($"Layer '{nodeGroundLayerName}' not found.", this);
         if (_nodeDockLayer < 0) Debug.LogError($"Layer '{nodeDockLayerName}' not found.", this);
 
         _hullBit = LayerBitOrZero(_hullLayer);
+        _hullItemBit = LayerBitOrZero(_hullItemLayer);
 
         _nonBoatWorldBits =
             LayerBitOrZero(_groundLayer) |
@@ -105,6 +111,10 @@ public sealed class PlayerBoardingState : MonoBehaviour
     private void ApplyMask()
     {
         int mask = _rb.excludeLayers;
+
+        // Player should never collide with loose boat-owned visual/context items.
+        // HullItem is for visibility/context, not physical blocking.
+        mask |= _hullItemBit;
 
         if (IsBoarded)
         {

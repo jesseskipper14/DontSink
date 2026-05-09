@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 5263012356571068860}
   - component: {fileID: 2139720628300888734}
   - component: {fileID: 448474240523413715}
+  - component: {fileID: 5673681725850549010}
+  - component: {fileID: -9011886402141120778}
   m_Layer: 10
   m_Name: BasicChest
   m_TagString: Untagged
@@ -81,7 +83,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1939965397
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_Sprite: {fileID: 6926221435173647156, guid: 901eb17371bbf9e4b9101116dc72899f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -139,6 +141,7 @@ MonoBehaviour:
   requireMatchingBoatBoardingContext: 1
   allowAccessWhenNotPartOfBoat: 1
   autoCloseDistance: 2.25
+  verboseLogging: 0
 --- !u!114 &-7394905386297835353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,6 +157,9 @@ MonoBehaviour:
   worldItem: {fileID: 61859146187821167}
   playerTransform: {fileID: 0}
   maxDepositDistance: 5
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
+  verboseLogging: 0
 --- !u!50 &5263012356571068860
 Rigidbody2D:
   serializedVersion: 5
@@ -241,6 +247,46 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   owningBoatInstanceId: 
   registered: 0
+--- !u!114 &5673681725850549010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571194650393018128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a957b6eed87a54447a5d53b3ce0234f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownedItem: {fileID: 0}
+  rb: {fileID: 0}
+  hullLayerName: Hull
+  groundLayerName: Ground
+  nodeGroundLayerName: NodeGround
+  nodeDockLayerName: NodeDock
+  verboseLogging: 0
+--- !u!114 &-9011886402141120778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571194650393018128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 384918fa0a508aa4180ae38e210558d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownedItem: {fileID: 0}
+  includeInactiveRenderers: 1
+  boatOwnedSortingLayer: BoatItem
+  boatOwnedSortingOrder: 0
+  boatOwnedGameObjectLayer: HullItem
+  applyGameObjectLayerToChildren: 1
+  restoreOriginalSortingOnUnowned: 1
+  restoreOriginalGameObjectLayerOnUnowned: 1
+  verboseLogging: 0
 --- !u!1 &9130302141471108845
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,7 +361,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1939965397
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: -1
   m_Sprite: {fileID: 6926221435173647156, guid: 901eb17371bbf9e4b9101116dc72899f, type: 3}
   m_Color: {r: 0.49381453, g: 0.59341216, b: 0.764151, a: 1}

@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 5263012356571068860}
   - component: {fileID: 2831798024974852460}
   - component: {fileID: -8043555091083592779}
+  - component: {fileID: -9173300809533254995}
+  - component: {fileID: -1890586876200684843}
   m_Layer: 10
   m_Name: FuelContainerSmall
   m_TagString: Untagged
@@ -79,7 +81,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1939965397
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_Sprite: {fileID: 6678344550347970788, guid: 236e5e964c379194898318993ac1b471, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -205,6 +207,46 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   owningBoatInstanceId: 
   registered: 0
+--- !u!114 &-9173300809533254995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571194650393018128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a957b6eed87a54447a5d53b3ce0234f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownedItem: {fileID: 0}
+  rb: {fileID: 0}
+  hullLayerName: Hull
+  groundLayerName: Ground
+  nodeGroundLayerName: NodeGround
+  nodeDockLayerName: NodeDock
+  verboseLogging: 0
+--- !u!114 &-1890586876200684843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571194650393018128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 384918fa0a508aa4180ae38e210558d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownedItem: {fileID: 0}
+  includeInactiveRenderers: 1
+  boatOwnedSortingLayer: BoatItem
+  boatOwnedSortingOrder: 0
+  boatOwnedGameObjectLayer: HullItem
+  applyGameObjectLayerToChildren: 1
+  restoreOriginalSortingOnUnowned: 1
+  restoreOriginalGameObjectLayerOnUnowned: 1
+  verboseLogging: 0
 --- !u!1 &9130302141471108845
 GameObject:
   m_ObjectHideFlags: 0
@@ -279,7 +321,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1939965397
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: -1
   m_Sprite: {fileID: 6678344550347970788, guid: 236e5e964c379194898318993ac1b471, type: 3}
   m_Color: {r: 0.49381453, g: 0.59341216, b: 0.764151, a: 1}
