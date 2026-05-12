@@ -486,102 +486,39 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
     {
         if (pump != null)
         {
-            GUI.Box(rect, GUIContent.none);
-
-            float x = rect.x + 10f;
-            float y = rect.y + 8f;
-            float w = rect.width - 20f;
-
-            GUI.Label(new Rect(x, y, w, 22f), "Pump Diagnostics");
-            y += 28f;
-
-            Compartment target = pump.TargetCompartment;
-            if (target == null)
-            {
-                GUI.Label(new Rect(x, y, w, 22f), "No compartment target.");
-                return;
-            }
-
-            GUI.Label(new Rect(x, y, w, 22f), $"Compartment: {target.name}");
-            y += 24f;
-
-            GUI.Label(new Rect(x, y, w, 22f), $"Water Area: {target.WaterArea:F2}");
-            y += 24f;
-
-            GUI.Label(new Rect(x, y, w, 22f), $"Capacity: {target.MaxWaterArea:F2}");
-            y += 24f;
-
-            GUI.Label(new Rect(x, y, w, 22f), $"Available: {target.AvailableCapacity:F2}");
-            return;
-        }
-
-        if (generator != null)
-        {
-            GUI.Box(rect, GUIContent.none);
-
-            float x = rect.x + 10f;
-            float y = rect.y + 8f;
-            float w = rect.width - 20f;
-
-            GUI.Label(new Rect(x, y, w, 22f), "Power Diagnostics");
-            y += 28f;
-
-            BoatPowerState power = generator.PowerState;
-            if (power == null)
-            {
-                GUI.Label(new Rect(x, y, w, 22f), "No BoatPowerState linked.");
-                return;
-            }
-
-            GUI.Label(new Rect(x, y, w, 22f), $"Current: {power.CurrentPower:F1}");
-            y += 24f;
-
-            GUI.Label(new Rect(x, y, w, 22f), $"Max: {power.MaxPower:F1}");
-            y += 24f;
-
-            GUI.Label(new Rect(x, y, w, 22f), $"Demand: {power.CurrentDemandPerSecond:F1}/sec");
-            y += 24f;
-
-            GUI.Label(new Rect(x, y, w, 22f), $"Fill: {power.Normalized:P0}");
+            DrawPumpDiagnostics(rect, pump);
             return;
         }
 
         if (turret != null)
         {
-            GUI.Box(rect, GUIContent.none);
-
-            float x = rect.x + 10f;
-            float y = rect.y + 8f;
-            float w = rect.width - 20f;
-
-            GUI.Label(new Rect(x, y, w, 22f), "Turret Diagnostics");
-            y += 28f;
-
-            GUI.Label(new Rect(x, y, w, 22f), $"Power Demand: {turret.PowerDemandPerSecond:F2}/sec");
-            y += 24f;
-
-            GUI.Label(new Rect(x, y, w, 22f), $"Shot Cost: {turret.FirePowerCost:F1}");
-            y += 24f;
-
-            GUI.Label(new Rect(x, y, w, 22f), $"Can Fire: {(turret.CanFire() ? "YES" : "NO")}");
-            y += 24f;
-
-            GUI.Label(new Rect(x, y, w, 22f), "Ammo Type: Placeholder");
-            y += 24f;
-
-            GUI.Label(new Rect(x, y, w, 22f), "Ammo Count: Placeholder");
+            DrawTurretDiagnostics(rect, turret);
             return;
         }
 
-        float gap = 10f;
-        float topH = rect.height * 0.48f;
-        float bottomH = rect.height - topH - gap;
+        if (generator != null)
+        {
+            float gap = 10f;
+            float diagnosticsH = rect.height * 0.34f;
+            float fuelAreaH = rect.height - diagnosticsH - gap;
 
-        Rect containerRect = new Rect(rect.x, rect.y, rect.width, topH);
-        Rect inventoryRect = new Rect(rect.x, containerRect.yMax + gap, rect.width, bottomH);
+            Rect diagnosticsRect = new Rect(rect.x, rect.y, rect.width, diagnosticsH);
+            Rect fuelRect = new Rect(rect.x, diagnosticsRect.yMax + gap, rect.width, fuelAreaH);
 
-        DrawContainerSlots(containerRect, engine != null ? engine.FuelContainerItem : null);
-        DrawCompatibleInventorySlots(inventoryRect, engine != null ? engine.FuelContainerItem : null);
+            DrawGeneratorDiagnostics(diagnosticsRect, generator);
+            DrawFuelInventoryArea(fuelRect, generator.FuelContainerItem);
+
+            return;
+        }
+
+        if (engine != null)
+        {
+            DrawFuelInventoryArea(rect, engine.FuelContainerItem);
+            return;
+        }
+
+        GUI.Box(rect, GUIContent.none);
+        GUI.Label(new Rect(rect.x + 10f, rect.y + 8f, rect.width - 20f, 22f), "No module details.");
     }
 
     private void DrawContainerSlots(Rect rect, ItemInstance fuelContainer)
@@ -941,5 +878,104 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
 
         note = "No fuel to remove.";
         return false;
+    }
+
+    private void DrawFuelInventoryArea(Rect rect, ItemInstance fuelContainer)
+    {
+        float gap = 10f;
+        float topH = rect.height * 0.48f;
+        float bottomH = rect.height - topH - gap;
+
+        Rect containerRect = new Rect(rect.x, rect.y, rect.width, topH);
+        Rect inventoryRect = new Rect(rect.x, containerRect.yMax + gap, rect.width, bottomH);
+
+        DrawContainerSlots(containerRect, fuelContainer);
+        DrawCompatibleInventorySlots(inventoryRect, fuelContainer);
+    }
+
+    private void DrawPumpDiagnostics(Rect rect, PumpModule pump)
+    {
+        GUI.Box(rect, GUIContent.none);
+
+        float x = rect.x + 10f;
+        float y = rect.y + 8f;
+        float w = rect.width - 20f;
+
+        GUI.Label(new Rect(x, y, w, 22f), "Pump Diagnostics");
+        y += 28f;
+
+        Compartment target = pump.TargetCompartment;
+        if (target == null)
+        {
+            GUI.Label(new Rect(x, y, w, 22f), "No compartment target.");
+            return;
+        }
+
+        GUI.Label(new Rect(x, y, w, 22f), $"Compartment: {target.name}");
+        y += 24f;
+
+        GUI.Label(new Rect(x, y, w, 22f), $"Water Area: {target.WaterArea:F2}");
+        y += 24f;
+
+        GUI.Label(new Rect(x, y, w, 22f), $"Capacity: {target.MaxWaterArea:F2}");
+        y += 24f;
+
+        GUI.Label(new Rect(x, y, w, 22f), $"Available: {target.AvailableCapacity:F2}");
+    }
+
+    private void DrawTurretDiagnostics(Rect rect, TurretModule turret)
+    {
+        GUI.Box(rect, GUIContent.none);
+
+        float x = rect.x + 10f;
+        float y = rect.y + 8f;
+        float w = rect.width - 20f;
+
+        GUI.Label(new Rect(x, y, w, 22f), "Turret Diagnostics");
+        y += 28f;
+
+        GUI.Label(new Rect(x, y, w, 22f), $"Power Demand: {turret.PowerDemandPerSecond:F2}/sec");
+        y += 24f;
+
+        GUI.Label(new Rect(x, y, w, 22f), $"Shot Cost: {turret.FirePowerCost:F1}");
+        y += 24f;
+
+        GUI.Label(new Rect(x, y, w, 22f), $"Can Fire: {(turret.CanFire() ? "YES" : "NO")}");
+        y += 24f;
+
+        GUI.Label(new Rect(x, y, w, 22f), "Ammo Type: Placeholder");
+        y += 24f;
+
+        GUI.Label(new Rect(x, y, w, 22f), "Ammo Count: Placeholder");
+    }
+
+    private void DrawGeneratorDiagnostics(Rect rect, GeneratorModule generator)
+    {
+        GUI.Box(rect, GUIContent.none);
+
+        float x = rect.x + 10f;
+        float y = rect.y + 8f;
+        float w = rect.width - 20f;
+
+        GUI.Label(new Rect(x, y, w, 22f), "Power Diagnostics");
+        y += 28f;
+
+        BoatPowerState power = generator != null ? generator.PowerState : null;
+        if (power == null)
+        {
+            GUI.Label(new Rect(x, y, w, 22f), "No BoatPowerState linked.");
+            return;
+        }
+
+        GUI.Label(new Rect(x, y, w, 22f), $"Current: {power.CurrentPower:F1}");
+        y += 22f;
+
+        GUI.Label(new Rect(x, y, w, 22f), $"Max: {power.MaxPower:F1}");
+        y += 22f;
+
+        GUI.Label(new Rect(x, y, w, 22f), $"Demand: {power.CurrentDemandPerSecond:F1}/sec");
+        y += 22f;
+
+        GUI.Label(new Rect(x, y, w, 22f), $"Fill: {power.Normalized:P0}");
     }
 }

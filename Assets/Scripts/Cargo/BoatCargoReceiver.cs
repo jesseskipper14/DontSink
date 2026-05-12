@@ -1,22 +1,26 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
-public class BoatCargoReceiver : MonoBehaviour
+public sealed class BoatCargoReceiver : MonoBehaviour
 {
-    private Boat boat;
+    [Header("Deprecated")]
+    [SerializeField] private bool logDeprecatedWarning = true;
 
-    void Awake()
+    private void Awake()
     {
-        boat = GetComponent<Boat>();
+        if (!logDeprecatedWarning)
+            return;
+
+        Debug.LogWarning(
+            "[BoatCargoReceiver] Deprecated and intentionally disabled. " +
+            "Old Cargo auto-attach bypasses modern item/boat ownership persistence. " +
+            "Remove this component from boat prefabs/scenes when convenient.",
+            this);
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        Cargo cargo = other.GetComponent<Cargo>();
-        if (cargo == null) return;
-
-        if (cargo.isAttachedToBoat) return;
-
-        boat.AttachCargo(cargo);
+        // Intentionally disabled.
+        // Modern cargo/items must use CargoManifest / WorldItem / BoatOwnedItem paths.
     }
 }

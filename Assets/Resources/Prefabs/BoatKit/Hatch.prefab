@@ -235,7 +235,7 @@ GameObject:
   - component: {fileID: 1085779505242416945}
   - component: {fileID: 877422218926824540}
   - component: {fileID: 322668347513272644}
-  m_Layer: 3
+  m_Layer: 19
   m_Name: Ledge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -311,7 +311,7 @@ PlatformEffector2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2060412230604209013}
   m_Enabled: 1
-  m_UseColliderMask: 1
+  m_UseColliderMask: 0
   m_ColliderMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -838,7 +838,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -132021941
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 5
   m_Sprite: {fileID: -2600214068234761099, guid: f8e6b0d5905634f4686f63e4ef5fcd45, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

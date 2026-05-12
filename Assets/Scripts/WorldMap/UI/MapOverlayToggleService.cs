@@ -8,6 +8,7 @@ public sealed class MapOverlayToggleService : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private bool allowHotkeyM = true;
+    [SerializeField] private bool respectGameplayInputBlocker = true;
 
     [Header("Auto-close")]
     [SerializeField] private bool autoCloseWhenFar = false;
@@ -17,20 +18,29 @@ public sealed class MapOverlayToggleService : MonoBehaviour
 
     private void Awake()
     {
-        if (overlay == null) overlay = FindAnyObjectByType<MapOverlayController>();
+        if (overlay == null)
+            overlay = FindAnyObjectByType<MapOverlayController>();
+
         if (player == null)
         {
-            var p = GameObject.FindGameObjectWithTag("Player");
-            if (p != null) player = p.transform;
+            GameObject p = GameObject.FindGameObjectWithTag("Player");
+            if (p != null)
+                player = p.transform;
         }
     }
 
     private void Update()
     {
-        if (allowHotkeyM && Input.GetKeyDown(KeyCode.M))
+        bool inputBlocked = respectGameplayInputBlocker && GameplayInputBlocker.IsBlocked;
+
+        if (!inputBlocked && allowHotkeyM && Input.GetKeyDown(KeyCode.M))
             Toggle(null);
 
-        if (autoCloseWhenFar && overlay != null && overlay.IsVisible && _openSource != null && player != null)
+        if (autoCloseWhenFar &&
+            overlay != null &&
+            overlay.IsVisible &&
+            _openSource != null &&
+            player != null)
         {
             float d = Vector2.Distance(player.position, _openSource.position);
             if (d > autoCloseDistance)
@@ -40,22 +50,29 @@ public sealed class MapOverlayToggleService : MonoBehaviour
 
     public void Toggle(Transform source)
     {
-        if (overlay == null) return;
+        if (overlay == null)
+            return;
 
-        if (overlay.IsVisible) Close();
-        else Open(source);
+        if (overlay.IsVisible)
+            Close();
+        else
+            Open(source);
     }
 
     public void Open(Transform source)
     {
-        if (overlay == null) return;
+        if (overlay == null)
+            return;
+
         _openSource = source;
         overlay.SetVisible(true);
     }
 
     public void Close()
     {
-        if (overlay == null) return;
+        if (overlay == null)
+            return;
+
         overlay.SetVisible(false);
         _openSource = null;
     }

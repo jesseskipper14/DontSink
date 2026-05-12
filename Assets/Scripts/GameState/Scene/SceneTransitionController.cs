@@ -44,6 +44,7 @@ public sealed class SceneTransitionController : MonoBehaviour
         }
 
         SaveCurrentPlayerLoadout();
+        CapturePlayerSceneContext(gs, "StartTravelToBoatScene");
 
         // Capture current boat state before leaving NodeScene.
         // This matters if loose items/cargo exist on the boat while docked.
@@ -88,6 +89,7 @@ public sealed class SceneTransitionController : MonoBehaviour
         }
 
         SaveCurrentPlayerLoadout();
+        CapturePlayerSceneContext(gs, "CompleteTravelToDestination");
         SaveCurrentBoatState("CompleteTravelToDestination before loading NodeScene");
 
         gs.player.currentNodeId = payload.toNodeStableId;
@@ -114,6 +116,7 @@ public sealed class SceneTransitionController : MonoBehaviour
         }
 
         SaveCurrentPlayerLoadout();
+        CapturePlayerSceneContext(gs, "AbortTravelToSource");
         SaveCurrentBoatState("AbortTravelToSource before loading NodeScene");
 
         gs.player.currentNodeId = payload.fromNodeStableId;
@@ -216,6 +219,10 @@ public sealed class SceneTransitionController : MonoBehaviour
 
         CaptureCargo(gs, boatRoot);
         CaptureLooseItems(gs, boat);
+        CaptureModulesAndPower(gs, boat);
+        CaptureCompartments(gs, boat);
+        CaptureAccessStates(gs, boat);
+        CaptureBoatTransform(gs, boat);
 
         gs.LogState($"SaveCurrentBoatState reason='{reason}'");
         return true;
@@ -302,6 +309,142 @@ public sealed class SceneTransitionController : MonoBehaviour
 
         int count = manifest?.looseItems != null ? manifest.looseItems.Count : -1;
         Log($"CaptureLooseItems | count={count}");
+    }
+
+    private void CaptureModulesAndPower(GameState gs, Boat boat)
+    {
+        if (gs == null || boat == null)
+            return;
+
+        BoatModuleStatePersistence persistence = boat.GetComponent<BoatModuleStatePersistence>();
+        if (persistence == null)
+        {
+            LogWarning($"CaptureModulesAndPower skipped: boat '{boat.name}' has no BoatModuleStatePersistence.");
+            gs.SetBoatModuleStates(new BoatModuleStateManifest(), "No BoatModuleStatePersistence found");
+            gs.SetBoatPowerSnapshot(null, "No BoatModuleStatePersistence found");
+            return;
+        }
+
+        BoatModuleStateManifest modules = persistence.CaptureModuleManifest();
+        BoatPowerSnapshot power = persistence.CapturePowerSnapshot();
+
+        gs.SetBoatModuleStates(modules, $"Captured from boat '{boat.name}'");
+        gs.SetBoatPowerSnapshot(power, $"Captured from boat '{boat.name}'");
+
+        int moduleCount = modules?.modules != null ? modules.modules.Count : -1;
+        Log($"CaptureModulesAndPower | moduleCount={moduleCount} | power={(power != null ? $"{power.currentPower:F1}/{power.maxPower:F1}" : "NULL")}");
+    }
+
+    private void CaptureCompartments(GameState gs, Boat boat)
+    {
+        if (gs == null || boat == null)
+            return;
+
+        BoatCompartmentStatePersistence persistence = boat.GetComponent<BoatCompartmentStatePersistence>();
+        if (persistence == null)
+        {
+            LogWarning($"CaptureCompartments skipped: boat '{boat.name}' has no BoatCompartmentStatePersistence.");
+            gs.SetBoatCompartmentStates(new BoatCompartmentStateManifest(), "No BoatCompartmentStatePersistence found");
+            return;
+        }
+
+        BoatCompartmentStateManifest manifest = persistence.CaptureManifest();
+
+        gs.SetBoatCompartmentStates(
+            manifest,
+            $"Captured from boat '{boat.name}'");
+
+        int count = manifest?.compartments != null ? manifest.compartments.Count : -1;
+        Log($"CaptureCompartments | count={count}");
+    }
+
+    private void CaptureAccessStates(GameState gs, Boat boat)
+    {
+        if (gs == null || boat == null)
+            return;
+
+        BoatAccessStatePersistence persistence = boat.GetComponent<BoatAccessStatePersistence>();
+        if (persistence == null)
+        {
+            LogWarning($"CaptureAccessStates skipped: boat '{boat.name}' has no BoatAccessStatePersistence.");
+            gs.SetBoatAccessStates(new BoatAccessStateManifest(), "No BoatAccessStatePersistence found");
+            return;
+        }
+
+        BoatAccessStateManifest manifest = persistence.CaptureManifest();
+
+        gs.SetBoatAccessStates(
+            manifest,
+            $"Captured from boat '{boat.name}'");
+
+        int count = manifest?.accessPoints != null ? manifest.accessPoints.Count : -1;
+        Log($"CaptureAccessStates | count={count}");
+    }
+
+    private void CaptureBoatTransform(GameState gs, Boat boat)
+    {
+        if (gs == null || boat == null)
+            return;
+
+        BoatTransformSnapshot snapshot = new BoatTransformSnapshot
+        {
+            version = 1,
+            worldY = boat.transform.position.y
+        };
+
+        gs.SetBoatTransformState(
+            snapshot,
+            $"Captured from boat '{boat.name}'");
+
+        Log($"CaptureBoatTransform | worldY={snapshot.worldY:F3}");
+    }
+
+    private void CapturePlayerSceneContext(GameState gs, string reason)
+    {
+        if (gs == null)
+            return;
+
+        PlayerBoardingState boarding = Object.FindAnyObjectByType<PlayerBoardingState>();
+
+        if (boarding == null)
+        {
+            LogWarning($"CapturePlayerSceneContext skipped: no PlayerBoardingState found. reason='{reason}'");
+            gs.SetPlayerSceneContext(new PlayerSceneContextSnapshot
+            {
+                version = 1,
+                hasValue = false,
+                wasBoarded = false,
+                boatInstanceId = null
+            }, reason);
+
+            return;
+        }
+
+        string boatInstanceId = null;
+
+        if (boarding.IsBoarded && boarding.CurrentBoatRoot != null)
+        {
+            Boat boat =
+                boarding.CurrentBoatRoot.GetComponent<Boat>() ??
+                boarding.CurrentBoatRoot.GetComponentInParent<Boat>();
+
+            if (boat != null)
+                boatInstanceId = boat.BoatInstanceId;
+        }
+
+        var snapshot = new PlayerSceneContextSnapshot
+        {
+            version = 1,
+            hasValue = true,
+            wasBoarded = boarding.IsBoarded,
+            boatInstanceId = boatInstanceId
+        };
+
+        gs.SetPlayerSceneContext(snapshot, reason);
+
+        Log(
+            $"CapturePlayerSceneContext | reason='{reason}' " +
+            $"wasBoarded={snapshot.wasBoarded} boatInstanceId='{snapshot.boatInstanceId}'");
     }
 
     private void Log(string msg)

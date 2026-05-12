@@ -2,7 +2,7 @@
 using TMPro;
 
 [DisallowMultipleComponent]
-public sealed class ExternalContainerOverlayUI : MonoBehaviour
+public sealed class ExternalContainerOverlayUI : MonoBehaviour, IEscapeClosable
 {
     [Header("Refs")]
     [SerializeField] private GameObject root;
@@ -18,6 +18,10 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour
     [SerializeField] private bool closeOnKey = true;
     [SerializeField] private bool closeWhenSourceDestroyed = true;
 
+    [Header("Escape Routing")]
+    [SerializeField] private bool closeViaGlobalEscapeRouter = true;
+    [SerializeField] private int escapePriority = 800;
+
     [System.NonSerialized] private ItemInstance _containerItem;
     [System.NonSerialized] private ItemContainerState _state;
     private Transform _sourceTransform;
@@ -30,6 +34,8 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour
     private Camera _camera;
     private Canvas _canvas;
 
+    public int EscapePriority => escapePriority;
+    public bool IsEscapeOpen => _isOpen;
     public bool IsOpen => _isOpen;
     public ItemInstance CurrentContainer => _containerItem;
 
@@ -66,6 +72,9 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour
     private void OnDisable()
     {
         UnbindState();
+
+        if (EscapeCloseRegistry.I != null)
+            EscapeCloseRegistry.I.Unregister(this);
     }
 
     private void Update()
@@ -73,7 +82,7 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour
         if (!_isOpen)
             return;
 
-        if (closeOnKey && Input.GetKeyDown(closeKey))
+        if (!closeViaGlobalEscapeRouter && closeOnKey && Input.GetKeyDown(closeKey))
         {
             Close();
             return;
@@ -137,6 +146,13 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour
 
         SetVisible(true);
         _isOpen = true;
+
+        if (closeViaGlobalEscapeRouter)
+        {
+            EscapeCloseRegistry registry = EscapeCloseRegistry.GetOrFind();
+            if (registry != null)
+                registry.Register(this);
+        }
     }
 
     public void Close()
@@ -152,6 +168,9 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour
         _sourceTransform = null;
         _autoCloseDistance = -1f;
         _isOpen = false;
+
+        if (EscapeCloseRegistry.I != null)
+            EscapeCloseRegistry.I.Unregister(this);
 
         SetVisible(false);
     }
@@ -246,5 +265,14 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour
             if (slotUI != null)
                 slotUI.Refresh();
         }
+    }
+
+    public bool CloseFromEscape()
+    {
+        if (!_isOpen)
+            return false;
+
+        Close();
+        return true;
     }
 }

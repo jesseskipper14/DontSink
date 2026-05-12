@@ -116,7 +116,7 @@ MonoBehaviour:
   highlightObject: {fileID: 9130302141471108845}
   requireMatchingBoatBoardingContext: 1
   allowAccessWhenNotPartOfBoat: 1
-  verboseLogging: 1
+  verboseLogging: 0
   references:
     version: 2
     RefIds:

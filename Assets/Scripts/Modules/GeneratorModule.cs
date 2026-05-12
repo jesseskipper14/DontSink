@@ -208,4 +208,24 @@ public sealed class GeneratorModule : MonoBehaviour, IModuleToggleable, IInstall
     public void OnRemoved()
     {
     }
+
+    public ItemInstanceSnapshot CaptureFuelContainerSnapshot()
+    {
+        return fuelContainerItem != null ? fuelContainerItem.ToSnapshot() : null;
+    }
+
+    public void RestorePersistentState(
+        bool restoredIsOn,
+        ItemInstanceSnapshot fuelSnapshot,
+        IItemDefinitionResolver resolver)
+    {
+        fuelContainerItem = ItemInstance.FromSnapshot(fuelSnapshot, resolver);
+
+        if (fuelContainerItem == null)
+            InitializeFuel();
+
+        fuelBurnAccumulator = 0f;
+        ResolveOwnership();
+        SetOn(restoredIsOn);
+    }
 }

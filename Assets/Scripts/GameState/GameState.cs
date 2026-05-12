@@ -21,6 +21,9 @@ public sealed class GameState : MonoBehaviour
     [Header("Boat Registry")]
     public BoatRegistry boatRegistry;
 
+    [Header("Player Scene Context")]
+    public PlayerSceneContextSnapshot playerSceneContext;
+
     public BoatSaveState boat = new BoatSaveState
     {
         boatPrefabGuid = "",
@@ -153,6 +156,21 @@ public sealed class GameState : MonoBehaviour
         LogState($"SetBoatLooseItems reason='{reason}'");
     }
 
+    public void SetBoatAccessStates(BoatAccessStateManifest manifest, string reason = "")
+    {
+        EnsureBoatStateDefaults();
+
+        if (boat == null)
+        {
+            Debug.LogWarning($"[GameState:{name}] SetBoatAccessStates failed: boat state null. reason='{reason}'", this);
+            return;
+        }
+
+        boat.accessStates = manifest ?? new BoatAccessStateManifest();
+
+        LogState($"SetBoatAccessStates reason='{reason}'");
+    }
+
     public void LogState(string label)
     {
         if (!verboseLogging)
@@ -187,6 +205,15 @@ public sealed class GameState : MonoBehaviour
 
         if (boat.looseItems == null)
             boat.looseItems = new BoatLooseItemManifest();
+
+        if (boat.moduleStates == null)
+            boat.moduleStates = new BoatModuleStateManifest();
+
+        if (boat.compartmentStates == null)
+            boat.compartmentStates = new BoatCompartmentStateManifest();
+
+        if (boat.accessStates == null)
+            boat.accessStates = new BoatAccessStateManifest();
     }
 
     private string DescribeTravel(TravelPayload payload)
@@ -239,6 +266,81 @@ public sealed class GameState : MonoBehaviour
 
         Debug.LogWarning($"[GameState:{name}] {msg}", this);
     }
+
+    public void SetBoatModuleStates(BoatModuleStateManifest manifest, string reason = "")
+    {
+        EnsureBoatStateDefaults();
+
+        if (boat == null)
+        {
+            Debug.LogWarning($"[GameState:{name}] SetBoatModuleStates failed: boat state null. reason='{reason}'", this);
+            return;
+        }
+
+        boat.moduleStates = manifest ?? new BoatModuleStateManifest();
+
+        LogState($"SetBoatModuleStates reason='{reason}'");
+    }
+
+    public void SetBoatCompartmentStates(BoatCompartmentStateManifest manifest, string reason = "")
+    {
+        EnsureBoatStateDefaults();
+
+        if (boat == null)
+        {
+            Debug.LogWarning($"[GameState:{name}] SetBoatCompartmentStates failed: boat state null. reason='{reason}'", this);
+            return;
+        }
+
+        boat.compartmentStates = manifest ?? new BoatCompartmentStateManifest();
+
+        LogState($"SetBoatCompartmentStates reason='{reason}'");
+    }
+
+    public void SetBoatPowerSnapshot(BoatPowerSnapshot snapshot, string reason = "")
+    {
+        EnsureBoatStateDefaults();
+
+        if (boat == null)
+        {
+            Debug.LogWarning($"[GameState:{name}] SetBoatPowerSnapshot failed: boat state null. reason='{reason}'", this);
+            return;
+        }
+
+        boat.power = snapshot;
+
+        LogState($"SetBoatPowerSnapshot reason='{reason}'");
+    }
+
+    public void SetBoatTransformState(BoatTransformSnapshot snapshot, string reason = "")
+    {
+        EnsureBoatStateDefaults();
+
+        if (boat == null)
+        {
+            Debug.LogWarning($"[GameState:{name}] SetBoatTransformState failed: boat state null. reason='{reason}'", this);
+            return;
+        }
+
+        boat.transformState = snapshot;
+
+        LogState($"SetBoatTransformState reason='{reason}'");
+    }
+
+    public void SetPlayerSceneContext(PlayerSceneContextSnapshot snapshot, string reason = "")
+    {
+        playerSceneContext = snapshot;
+
+        if (verboseLogging)
+        {
+            Debug.Log(
+                $"[GameState:{name}] SetPlayerSceneContext reason='{reason}' " +
+                $"hasValue={(snapshot != null && snapshot.hasValue)} " +
+                $"wasBoarded={(snapshot != null && snapshot.wasBoarded)} " +
+                $"boatInstanceId='{(snapshot != null ? snapshot.boatInstanceId : "NULL")}'",
+                this);
+        }
+    }
 }
 
 [System.Serializable]
@@ -282,4 +384,30 @@ public sealed class BoatSaveState
 
     public List<CargoManifest.Snapshot> cargo;
     public BoatLooseItemManifest looseItems;
+
+    public BoatModuleStateManifest moduleStates;
+    public BoatPowerSnapshot power;
+
+    public BoatCompartmentStateManifest compartmentStates;
+    public BoatTransformSnapshot transformState;
+
+    public BoatAccessStateManifest accessStates;
+}
+
+[System.Serializable]
+public sealed class BoatTransformSnapshot
+{
+    public int version = 1;
+
+    public float worldY;
+}
+
+[System.Serializable]
+public sealed class PlayerSceneContextSnapshot
+{
+    public int version = 1;
+
+    public bool hasValue;
+    public bool wasBoarded;
+    public string boatInstanceId;
 }

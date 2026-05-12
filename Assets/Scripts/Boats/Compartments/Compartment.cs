@@ -12,6 +12,9 @@ public class Compartment : MonoBehaviour, IMassContribution
     // Identification
     // ========================
 
+    [SerializeField] private string compartmentId = "";
+    public string CompartmentId => compartmentId;
+
     public string compartmentName;
 
     // ========================
@@ -205,6 +208,13 @@ public class Compartment : MonoBehaviour, IMassContribution
         return p.y;
     }
 
+    public void RestorePersistentFluidState(float restoredWaterArea, float restoredAirIntegrity)
+    {
+        waterArea = Mathf.Clamp(restoredWaterArea, 0f, MaxWaterArea);
+        airIntegrity = Mathf.Clamp01(restoredAirIntegrity);
+        RecomputeWaterSurface();
+    }
+
 
     // ========================
     // Geometry Math
@@ -339,6 +349,17 @@ public class Compartment : MonoBehaviour, IMassContribution
             Vector2 b = corners[(i + 1) % 4];
             Gizmos.DrawLine(a, b);
         }
+    }
+
+    [ContextMenu("Generate Compartment Id")]
+    private void EditorGenerateCompartmentId()
+    {
+        if (!string.IsNullOrWhiteSpace(compartmentId))
+            return;
+
+        UnityEditor.Undo.RecordObject(this, "Generate Compartment Id");
+        compartmentId = System.Guid.NewGuid().ToString("N");
+        UnityEditor.EditorUtility.SetDirty(this);
     }
 
 #endif

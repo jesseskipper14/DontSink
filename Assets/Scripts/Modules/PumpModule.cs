@@ -250,4 +250,10 @@ public sealed class PumpModule : MonoBehaviour, IPowerConsumerModule, IModuleTog
     public void OnRemoved()
     {
     }
+
+    public void RestorePersistentState(bool restoredIsOn)
+    {
+        ResolveTargetCompartment();
+        SetOn(restoredIsOn);
+    }
 }

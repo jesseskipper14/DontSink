@@ -70,6 +70,12 @@ public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule, IModuleT
         installedModule = GetComponent<InstalledModule>();
     }
 
+    private void Start()
+    {
+        InitializeFuel();
+        ResolvePowerState();
+    }
+
     private void Update()
     {
         if (!isOn)
@@ -314,5 +320,27 @@ public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule, IModuleT
     public void OnRemoved()
     {
 
+    }
+
+    public ItemInstanceSnapshot CaptureFuelContainerSnapshot()
+    {
+        return fuelContainerItem != null ? fuelContainerItem.ToSnapshot() : null;
+    }
+
+    public void RestorePersistentState(
+        bool restoredIsOn,
+        ItemInstanceSnapshot fuelSnapshot,
+        IItemDefinitionResolver resolver)
+    {
+        fuelContainerItem = ItemInstance.FromSnapshot(fuelSnapshot, resolver);
+
+        if (fuelContainerItem == null)
+            InitializeFuel();
+
+        fuelBurnAccumulator = 0f;
+        throttleLoad01 = 0f;
+
+        ResolvePowerState();
+        SetOn(restoredIsOn);
     }
 }

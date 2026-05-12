@@ -108,6 +108,15 @@ public sealed class InteractPromptDriver : MonoBehaviour
         bool pickupVisible = hasPickup && !_suppressedPickup.Contains(pickupTarget);
         bool interactVisible = hasInteract;
 
+        if (pickupVisible && interactVisible && !ArePromptTargetsRelated(interactTarget, pickupTarget))
+        {
+            // Avoid mixed prompts like:
+            // E = Door, F = nearby module remove.
+            //
+            // If two objects overlap, prefer the E/interact target for the displayed prompt.
+            pickupVisible = false;
+        }
+
         if (pickupVisible && pickupTarget is WorldItem worldItem)
             SetWorldItemHighlight(worldItem);
         else
@@ -190,22 +199,18 @@ public sealed class InteractPromptDriver : MonoBehaviour
 
         if (interactVisible && interactTarget is HardpointInteractable hardpointInteractable)
         {
-            EngineModule engine = hardpointInteractable.GetInstalledEngine();
-            if (engine != null)
+            if (hardpointInteractable.TryGetInstalledToggleState(out bool isOn, out string label))
             {
-                bool isOn = engine.IsOn;
+                string stateLabel = string.IsNullOrWhiteSpace(label) ? "Module" : label;
 
                 _promptActions.Add(new PromptAction(
-                    isOn ? "Engine: ON" : "Engine: OFF",
+                    isOn ? $"{stateLabel}: ON" : $"{stateLabel}: OFF",
                     priority: 80,
                     textColor: isOn ? Color.green : Color.red,
                     pulse: isOn));
-            }
 
-            if (engine != null)
-            {
                 _promptActions.Add(new PromptAction(
-                    engine.IsOn ? "Press T to Turn Off" : "Press T to Turn On",
+                    isOn ? "Press T to Turn Off" : "Press T to Turn On",
                     priority: 85));
             }
         }
@@ -233,5 +238,32 @@ public sealed class InteractPromptDriver : MonoBehaviour
             _highlightedWorldItem.SetHighlighted(false);
             _highlightedWorldItem = null;
         }
+    }
+
+    private static bool ArePromptTargetsRelated(IInteractable interactTarget, IPickupInteractable pickupTarget)
+    {
+        if (interactTarget == null || pickupTarget == null)
+            return false;
+
+        if (ReferenceEquals(interactTarget, pickupTarget))
+            return true;
+
+        MonoBehaviour interactMb = interactTarget as MonoBehaviour;
+        MonoBehaviour pickupMb = pickupTarget as MonoBehaviour;
+
+        if (interactMb == null || pickupMb == null)
+            return false;
+
+        if (interactMb.gameObject == pickupMb.gameObject)
+            return true;
+
+        // Covers cases where one component is on a child and one is on a parent.
+        if (interactMb.transform.IsChildOf(pickupMb.transform))
+            return true;
+
+        if (pickupMb.transform.IsChildOf(interactMb.transform))
+            return true;
+
+        return false;
     }
 }

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class PlayerInventoryUI : MonoBehaviour
+public sealed class PlayerInventoryUI : MonoBehaviour, IEscapeClosable
 {
     [Header("Refs")]
     [SerializeField] private PlayerInventory inventory;
@@ -29,6 +29,15 @@ public sealed class PlayerInventoryUI : MonoBehaviour
     [SerializeField] private Sprite backpackSlotIcon;
     [SerializeField] private Sprite bodySlotIcon;
     [SerializeField] private LoadoutContainerOverlayUI loadoutOverlay;
+
+    [Header("Escape Routing")]
+    [SerializeField] private bool closeViaGlobalEscapeRouter = true;
+    [SerializeField] private int escapePriority = 300;
+
+    public int EscapePriority => escapePriority;
+    public bool IsEscapeOpen =>
+        IsInventoryPanelOpen ||
+        (loadoutOverlay != null && loadoutOverlay.IsOpen);
 
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = true;
@@ -83,16 +92,32 @@ public sealed class PlayerInventoryUI : MonoBehaviour
         if (equipment != null)
             equipment.EquipmentChanged -= RefreshAll;
 
+        if (EscapeCloseRegistry.I != null)
+            EscapeCloseRegistry.I.Unregister(this);
+
         Log("OnDisable | unsubscribed from events");
     }
 
     public void ToggleInventoryPanel()
     {
-        if (inventoryPanelRoot != null)
+        if (inventoryPanelRoot == null)
+            return;
+
+        if (inventoryPanelRoot.activeSelf)
+            CloseInventoryPanel();
+        else
+            OpenInventoryPanel();
+    }
+
+    public bool CloseFromEscape()
+    {
+        if (IsInventoryPanelOpen)
         {
-            inventoryPanelRoot.SetActive(!inventoryPanelRoot.activeSelf);
-            Log($"ToggleInventoryPanel | nowActive={inventoryPanelRoot.activeSelf}");
+            CloseInventoryPanel();
+            return true;
         }
+
+        return false;
     }
 
     public void HandleSlotClicked(InventorySlotUI slotUI)
@@ -163,7 +188,7 @@ public sealed class PlayerInventoryUI : MonoBehaviour
         return _visibleSlotsScratch;
     }
 
-    public bool IsInventoryPanelOpen => inventoryPanelRoot == null || inventoryPanelRoot.activeSelf;
+    public bool IsInventoryPanelOpen => inventoryPanelRoot != null && inventoryPanelRoot.activeSelf;
 
     private readonly List<InventorySlotUI> _visibleSlotsScratch = new();
 
@@ -323,6 +348,39 @@ public sealed class PlayerInventoryUI : MonoBehaviour
             if (allSlots[i] != null)
                 allSlots[i].ClearInvalidTargetVisual();
         }
+    }
+
+    public void OpenInventoryPanel()
+    {
+        if (inventoryPanelRoot != null && !inventoryPanelRoot.activeSelf)
+        {
+            inventoryPanelRoot.SetActive(true);
+            Log("OpenInventoryPanel");
+        }
+
+        if (closeViaGlobalEscapeRouter)
+        {
+            EscapeCloseRegistry registry = EscapeCloseRegistry.GetOrFind();
+            if (registry != null)
+                registry.Register(this);
+        }
+    }
+
+    public void CloseInventoryPanel()
+    {
+        if (loadoutOverlay != null && loadoutOverlay.IsOpen)
+            loadoutOverlay.CloseAll();
+
+        HideSingleContainerPanel();
+
+        if (inventoryPanelRoot != null && inventoryPanelRoot.activeSelf)
+        {
+            inventoryPanelRoot.SetActive(false);
+            Log("CloseInventoryPanel");
+        }
+
+        if (EscapeCloseRegistry.I != null)
+            EscapeCloseRegistry.I.Unregister(this);
     }
 
     private void Log(string msg)

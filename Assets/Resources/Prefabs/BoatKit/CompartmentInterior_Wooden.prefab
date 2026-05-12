@@ -52,6 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27ea268ea48c88a42badf739a7110a9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  compartmentId: 
   compartmentName: 
   p0: {x: -0.5, y: 0.375}
   p1: {x: 0.5, y: 0.375}

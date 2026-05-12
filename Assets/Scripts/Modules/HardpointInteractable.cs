@@ -122,6 +122,12 @@ public sealed class HardpointInteractable :
         if (!CanAccessHardpointByContext(context))
             return;
 
+        if (InstalledModuleHasContents())
+        {
+            Debug.Log("[HardpointInteractable] Cannot remove module while it contains items.", this);
+            return;
+        }
+
         PlayerInventory inventory = context.InteractorGO != null
             ? context.InteractorGO.GetComponentInChildren<PlayerInventory>()
             : null;
@@ -164,7 +170,7 @@ public sealed class HardpointInteractable :
         if (!CanAccessHardpointByContext(context))
             return false;
 
-        return GetInstalledEngine() != null;
+        return TryGetInstalledToggleable(out _);
     }
 
     public void Toggle(in InteractContext context)
@@ -172,11 +178,10 @@ public sealed class HardpointInteractable :
         if (!CanAccessHardpointByContext(context))
             return;
 
-        EngineModule engine = GetInstalledEngine();
-        if (engine == null)
+        if (!TryGetInstalledToggleable(out IModuleToggleable toggleable))
             return;
 
-        engine.Toggle();
+        toggleable.Toggle();
     }
 
     public string GetPromptVerb(in InteractContext context)
@@ -212,7 +217,12 @@ public sealed class HardpointInteractable :
             return "Board Boat";
 
         if (hardpoint != null && hardpoint.HasInstalledModule)
+        {
+            if (InstalledModuleHasContents())
+                return "Remove Module (Empty First)";
+
             return "Remove Module";
+        }
 
         return "Pick Up";
     }
@@ -228,6 +238,67 @@ public sealed class HardpointInteractable :
             return null;
 
         return hardpoint.InstalledModule.GetComponent<EngineModule>();
+    }
+
+    private bool TryGetInstalledToggleable(out IModuleToggleable toggleable)
+    {
+        toggleable = null;
+
+        if (hardpoint == null || !hardpoint.HasInstalledModule || hardpoint.InstalledModule == null)
+            return false;
+
+        MonoBehaviour[] behaviours = hardpoint.InstalledModule.GetComponents<MonoBehaviour>();
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is IModuleToggleable candidate)
+            {
+                toggleable = candidate;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool TryGetInstalledToggleState(out bool isOn, out string label)
+    {
+        isOn = false;
+        label = "Module";
+
+        if (hardpoint == null || !hardpoint.HasInstalledModule || hardpoint.InstalledModule == null)
+            return false;
+
+        InstalledModule installed = hardpoint.InstalledModule;
+        ModuleDefinition def = installed.Definition;
+
+        label = def != null ? def.DisplayName : "Module";
+
+        if (installed.TryGetComponent(out EngineModule engine))
+        {
+            isOn = engine.IsOn;
+            return true;
+        }
+
+        if (installed.TryGetComponent(out GeneratorModule generator))
+        {
+            isOn = generator.IsOn;
+            return true;
+        }
+
+        if (installed.TryGetComponent(out PumpModule pump))
+        {
+            isOn = pump.IsOn;
+            return true;
+        }
+
+        if (installed.TryGetComponent(out TurretModule turret))
+        {
+            isOn = turret.IsOn;
+            return true;
+        }
+
+        return false;
     }
 
     private void TryInstallFromPlayerInventory(in InteractContext context)
@@ -457,5 +528,42 @@ public sealed class HardpointInteractable :
             return false;
 
         return hardpoint != null && hardpoint.CanInstall(moduleDefinition);
+    }
+
+    private bool InstalledModuleHasContents()
+    {
+        if (hardpoint == null || !hardpoint.HasInstalledModule || hardpoint.InstalledModule == null)
+            return false;
+
+        InstalledModule installed = hardpoint.InstalledModule;
+
+        if (installed.TryGetComponent(out EngineModule engine))
+            return ContainerHasContents(engine.FuelContainerItem);
+
+        if (installed.TryGetComponent(out GeneratorModule generator))
+            return ContainerHasContents(generator.FuelContainerItem);
+
+        // Later:
+        // if (installed.TryGetComponent(out AmmoModule ammo)) ...
+        // if (installed.TryGetComponent(out StorageModule storage)) ...
+
+        return false;
+    }
+
+    private static bool ContainerHasContents(ItemInstance container)
+    {
+        if (container == null || !container.IsContainer || container.ContainerState == null)
+            return false;
+
+        ItemContainerState state = container.ContainerState;
+
+        for (int i = 0; i < state.SlotCount; i++)
+        {
+            InventorySlot slot = state.GetSlot(i);
+            if (slot != null && !slot.IsEmpty && slot.Instance != null)
+                return true;
+        }
+
+        return false;
     }
 }

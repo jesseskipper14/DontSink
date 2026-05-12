@@ -223,4 +223,9 @@ public sealed class TurretModule : MonoBehaviour, IModuleToggleable, IInstalledM
             ? ownerBoat.GetComponent<BoatPowerState>()
             : null;
     }
+
+    public void RestorePersistentState(bool restoredIsOn)
+    {
+        SetOn(restoredIsOn);
+    }
 }

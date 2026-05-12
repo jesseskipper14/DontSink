@@ -15,6 +15,8 @@ public class WaveManager : MonoBehaviour, IWaveService
     [Header("Transition")]
     [SerializeField] private float transitionDuration = 5f;
 
+    [SerializeField] private bool autoFindWaveField = true;
+
     [Header("Debug")]
     [SerializeField] private bool debugSetWave;
     [SerializeField] private float debugAmplitude = 0.5f;
@@ -113,6 +115,9 @@ public class WaveManager : MonoBehaviour, IWaveService
         ampTarget = amplitude;
         freqTarget = frequency;
         speedTarget = speed;
+
+        if (autoFindWaveField && waveField == null)
+            waveField = FindFirstObjectByType<WaveField>();
     }
 
     private void Update()
@@ -120,6 +125,9 @@ public class WaveManager : MonoBehaviour, IWaveService
         UpdateAmplitude();
         UpdateFrequency();
         UpdateSpeed();
+
+        if (autoFindWaveField && waveField == null)
+            waveField = FindFirstObjectByType<WaveField>();
 
         // Apply to wave field
         if (waveField != null)

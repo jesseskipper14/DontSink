@@ -33,6 +33,12 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
 
     void Update()
     {
+        if (GameplayInputBlocker.IsBlocked)
+        {
+            Current = default;
+            return;
+        }
+
         float x = Input.GetAxisRaw(horizontalAxis);
 
         if (Input.GetKeyDown(jumpKey))

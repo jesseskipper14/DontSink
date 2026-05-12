@@ -26,8 +26,8 @@ MonoBehaviour:
   preferredDisplacedDestination: 0
   equipSlot: 0
   isContainer: 1
-  containerSlotCount: 1
-  containerColumnCount: 1
+  containerSlotCount: 4
+  containerColumnCount: 4
   allowedContainerCategories: 256
   containerTier: 0
   pickupMode: 0

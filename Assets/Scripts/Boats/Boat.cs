@@ -137,8 +137,9 @@ public class Boat : MonoBehaviour, IForceBody
 
         massContributions.AddRange(GetComponentsInChildren<IMassContribution>());
 
+        // Deprecated old Cargo path intentionally disabled.
+        // Modern cargo/items are handled by CargoManifest / WorldItem / BoatOwnedItem persistence.
         CargoItems.Clear();
-        CargoItems.AddRange(GetComponentsInChildren<Cargo>());
 
         RecomputeMassAndCOM();
     }
@@ -169,11 +170,9 @@ public class Boat : MonoBehaviour, IForceBody
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Cargo cargo = collision.gameObject.GetComponent<Cargo>();
-        if (cargo != null && !cargo.isAttachedToBoat)
-        {
-            AttachCargo(cargo);
-        }
+        // Deprecated old Cargo auto-attach intentionally disabled.
+        // Modern dropped items/cargo must enter the boat ownership system through
+        // WorldItemDropUtility / BoatOwnedItem / CargoManifest paths.
     }
 
     // ========================
@@ -314,29 +313,22 @@ public class Boat : MonoBehaviour, IForceBody
     // Cargo
     // ========================
 
+    [System.Obsolete("Old Cargo path is deprecated. Use modern item/cargo ownership persistence instead.")]
     public void RegisterCargo(Cargo cargo)
     {
-        if (!CargoItems.Contains(cargo))
-            CargoItems.Add(cargo);
+        // Intentionally disabled.
     }
 
+    [System.Obsolete("Old Cargo auto-attach is deprecated. Use modern item/cargo ownership persistence instead.")]
     public void AttachCargo(Cargo cargo)
     {
-        cargo.isAttachedToBoat = true;
-        cargo.attachedBoat = this;
+        if (cargo == null)
+            return;
 
-        cargo.localPositionOnBoat =
-            transform.InverseTransformPoint(cargo.transform.position);
-
-        cargo.transform.SetParent(transform);
-
-        var col = cargo.GetComponent<Collider2D>();
-        if (col != null)
-            col.enabled = false;
-
-        RegisterCargo(cargo);
-
-        //Debug.Log($"[Cargo] Attached cargo ({cargo.mass}kg)");
+        Debug.LogWarning(
+            $"[Boat:{name}] Ignored deprecated AttachCargo call for '{cargo.name}'. " +
+            "Use modern item/cargo ownership persistence instead.",
+            this);
     }
 
     // ========================

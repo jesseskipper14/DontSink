@@ -265,24 +265,24 @@ public class WaveField : MonoBehaviour
         return LeftX + i * Dx;
     }
 
-    private void OnDrawGizmos()
-    {
-        if (debugOn)
-        {
-            if (heights == null) return;
+    //private void OnDrawGizmos()
+    //{
+    //    if (debugOn)
+    //    {
+    //        if (heights == null) return;
 
-            Gizmos.color = Color.red;
+    //        Gizmos.color = Color.red;
 
-            for (int i = 0; i < resolution; i++)
-            {
-                if (Mathf.Abs(heights[i]) > debugThreshold)
-                {
-                    // Convert node index to world X
-                    float worldX = i * Dx; // or use your WorldXFromIndex(i) function
-                    Vector3 pos = new Vector3(worldX, heights[i], 0f);
-                    Gizmos.DrawSphere(pos, 1.0f); // small sphere to mark node
-                }
-            }
-        }
-    }
+    //        for (int i = 0; i < resolution; i++)
+    //        {
+    //            if (Mathf.Abs(heights[i]) > debugThreshold)
+    //            {
+    //                // Convert node index to world X
+    //                float worldX = i * Dx; // or use your WorldXFromIndex(i) function
+    //                Vector3 pos = new Vector3(worldX, heights[i], 0f);
+    //                Gizmos.DrawSphere(pos, 1.0f); // small sphere to mark node
+    //            }
+    //        }
+    //    }
+    //}
 }

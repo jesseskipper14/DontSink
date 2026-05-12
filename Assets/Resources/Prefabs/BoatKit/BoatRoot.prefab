@@ -11,9 +11,12 @@ GameObject:
   - component: {fileID: 9137842763216339877}
   - component: {fileID: 134015770593356340}
   - component: {fileID: 6897017861151174155}
+  - component: {fileID: -7303112162547176585}
   - component: {fileID: 484301100798610016}
+  - component: {fileID: -6001213580712153411}
   - component: {fileID: 7097834975048569350}
   - component: {fileID: -8660866960567562250}
+  - component: {fileID: 3411208425902499903}
   - component: {fileID: -9167066603116839321}
   - component: {fileID: -1492508034575852510}
   - component: {fileID: -558263347977270280}
@@ -99,6 +102,20 @@ MonoBehaviour:
   - {fileID: 0}
   Connections: []
   boatInstanceId: 
+--- !u!114 &-7303112162547176585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10421cee6e4ccbf428d61ec82665d756, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  warnForMissingIds: 1
+  verboseLogging: 0
 --- !u!114 &484301100798610016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,6 +128,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 537c942282e004c46a93d05de411b9bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-6001213580712153411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 572d83b1c3e6b0746be11fc1940780ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boat: {fileID: 6897017861151174155}
+  warnForMissingIds: 1
+  verboseLogging: 0
 --- !u!114 &7097834975048569350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,6 +168,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4cabb3ce25298d40b1e7f8f347f0c47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3411208425902499903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af254c42c03704f4181e2236c739cc2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boat: {fileID: 0}
+  itemCatalog: {fileID: 11400000, guid: d39434bc65a89584c811f84d322f558a, type: 2}
+  verboseLogging: 0
 --- !u!114 &-9167066603116839321
 MonoBehaviour:
   m_ObjectHideFlags: 0

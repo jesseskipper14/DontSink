@@ -319,6 +319,16 @@ public sealed class HatchRuntime : MonoBehaviour
         transform.localPosition = _baseLocalPosition;
     }
 
+    public string AccessStateId =>
+    authoring != null ? authoring.HatchId : null;
+
+    public void RestoreOpenState(bool open)
+    {
+        isOpen = open;
+        RefreshPresentation();
+        StateChanged?.Invoke(isOpen);
+    }
+
 #if UNITY_EDITOR
     [ContextMenu("Open Hatch")]
     private void EditorOpen()

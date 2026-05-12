@@ -642,6 +642,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27ea268ea48c88a42badf739a7110a9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  compartmentId: 
   compartmentName: CompartmentMerged_0
   p0: {x: -3.5, y: 3.5}
   p1: {x: 5.5, y: 3.5}

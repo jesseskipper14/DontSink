@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class LoadoutContainerOverlayUI : MonoBehaviour
+public sealed class LoadoutContainerOverlayUI : MonoBehaviour, IEscapeClosable
 {
     [Header("Refs")]
     [SerializeField] private PlayerInventoryUI playerInventoryUI;
@@ -13,6 +13,13 @@ public sealed class LoadoutContainerOverlayUI : MonoBehaviour
     [SerializeField] private Camera uiCamera;
     [SerializeField] private ContainerSubviewUI subviewPrefab;
     [SerializeField] private InventoryDragController dragController;
+
+    [Header("Escape Routing")]
+    [SerializeField] private bool closeViaGlobalEscapeRouter = true;
+    [SerializeField] private int escapePriority = 350;
+
+    public int EscapePriority => escapePriority;
+    public bool IsEscapeOpen => IsOpen;
 
     public bool IsOpen => activeSubviews.Count > 0;
 
@@ -31,6 +38,14 @@ public sealed class LoadoutContainerOverlayUI : MonoBehaviour
 
         if (dragController == null)
             dragController = GetComponentInParent<InventoryDragController>(true);
+
+        if (playerInventoryUI == null)
+            playerInventoryUI = GetComponentInParent<PlayerInventoryUI>(true);
+    }
+
+    private void OnDisable()
+    {
+        UnregisterFromEscape();
     }
 
     public void ToggleAll()
@@ -75,6 +90,9 @@ public sealed class LoadoutContainerOverlayUI : MonoBehaviour
         if (playerInventoryUI != null)
             playerInventoryUI.HideSingleContainerPanel();
 
+        if (IsOpen)
+            RegisterWithEscape();
+
         Log($"OpenAll | created={activeSubviews.Count}");
     }
 
@@ -90,7 +108,19 @@ public sealed class LoadoutContainerOverlayUI : MonoBehaviour
         }
 
         activeSubviews.Clear();
+
+        UnregisterFromEscape();
+
         Log("CloseAll");
+    }
+
+    public bool CloseFromEscape()
+    {
+        if (!IsOpen)
+            return false;
+
+        CloseAll();
+        return true;
     }
 
     public void RefreshPositions()
@@ -180,15 +210,35 @@ public sealed class LoadoutContainerOverlayUI : MonoBehaviour
         }
     }
 
+    private void RegisterWithEscape()
+    {
+        if (!closeViaGlobalEscapeRouter)
+            return;
+
+        EscapeCloseRegistry registry = EscapeCloseRegistry.GetOrFind();
+        if (registry != null)
+            registry.Register(this);
+    }
+
+    private void UnregisterFromEscape()
+    {
+        if (EscapeCloseRegistry.I != null)
+            EscapeCloseRegistry.I.Unregister(this);
+    }
+
     private void Log(string msg)
     {
-        if (!verboseLogging) return;
+        if (!verboseLogging)
+            return;
+
         Debug.Log($"[LoadoutContainerOverlayUI:{name}] {msg}", this);
     }
 
     private void LogWarning(string msg)
     {
-        if (!verboseLogging) return;
+        if (!verboseLogging)
+            return;
+
         Debug.LogWarning($"[LoadoutContainerOverlayUI:{name}] {msg}", this);
     }
 }

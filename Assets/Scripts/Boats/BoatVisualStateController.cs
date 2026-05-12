@@ -257,11 +257,11 @@ public sealed class BoatVisualStateController : MonoBehaviour
         SetRenderersEnabled(_alwaysRenderers, alwaysVisible);
 
         // After visibility group toggles, restore stateful hatch sprite presentation.
-        RefreshHatchesInRoot(exteriorRoot, exteriorVisible);
-        RefreshHatchesInRoot(exteriorDeckRoot, deckVisible);
-        RefreshHatchesInRoot(interiorRoot, interiorVisible);
-        RefreshHatchesInRoot(hullRoot, hullVisible);
-        RefreshHatchesInRoot(alwaysVisibleRoot, alwaysVisible);
+        RefreshAccessPresentationInRoot(exteriorRoot, exteriorVisible);
+        RefreshAccessPresentationInRoot(exteriorDeckRoot, deckVisible);
+        RefreshAccessPresentationInRoot(interiorRoot, interiorVisible);
+        RefreshAccessPresentationInRoot(hullRoot, hullVisible);
+        RefreshAccessPresentationInRoot(alwaysVisibleRoot, alwaysVisible);
 
         ApplyTemporaryCameraLayerVisibility(mode);
 
@@ -426,23 +426,24 @@ public sealed class BoatVisualStateController : MonoBehaviour
                 continue;
             }
 
-            // If showing the group, do NOT blindly enable renderers controlled by HatchRuntime.
-            // HatchRuntime will decide open vs closed sprite state.
-            HatchRuntime hatch = r.GetComponentInParent<HatchRuntime>();
-            if (hatch != null)
+            // If showing the group, do NOT blindly enable renderers controlled by stateful access runtimes.
+            // Their runtime owns open/closed sprite selection.
+            if (r.GetComponentInParent<HatchRuntime>() != null)
+                continue;
+
+            if (r.GetComponentInParent<DoorRuntime>() != null)
                 continue;
 
             r.enabled = true;
         }
     }
 
-    private static void RefreshHatchesInRoot(Transform root, bool rootVisible)
+    private static void RefreshAccessPresentationInRoot(Transform root, bool rootVisible)
     {
         if (root == null || !rootVisible)
             return;
 
         HatchRuntime[] hatches = root.GetComponentsInChildren<HatchRuntime>(true);
-
         for (int i = 0; i < hatches.Length; i++)
         {
             HatchRuntime hatch = hatches[i];
@@ -450,6 +451,16 @@ public sealed class BoatVisualStateController : MonoBehaviour
                 continue;
 
             hatch.RefreshPresentation();
+        }
+
+        DoorRuntime[] doors = root.GetComponentsInChildren<DoorRuntime>(true);
+        for (int i = 0; i < doors.Length; i++)
+        {
+            DoorRuntime door = doors[i];
+            if (door == null)
+                continue;
+
+            door.RefreshPresentation();
         }
     }
 }

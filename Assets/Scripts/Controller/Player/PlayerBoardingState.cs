@@ -8,6 +8,7 @@ public sealed class PlayerBoardingState : MonoBehaviour
     [Header("Layer Names")]
     [SerializeField] private string hullLayerName = "Hull";
     [SerializeField] private string hullItemLayerName = "HullItem";
+    [SerializeField] private string hatchLedgeLayerName = "HatchLedge";
     [SerializeField] private string groundLayerName = "Ground";
     [SerializeField] private string nodeGroundLayerName = "NodeGround";
     [SerializeField] private string nodeDockLayerName = "NodeDock";
@@ -27,6 +28,7 @@ public sealed class PlayerBoardingState : MonoBehaviour
 
     private int _hullLayer;
     private int _hullItemLayer;
+    private int _hatchLedgeLayer;
     private int _groundLayer;
     private int _nodeGroundLayer;
     private int _nodeDockLayer;
@@ -36,6 +38,7 @@ public sealed class PlayerBoardingState : MonoBehaviour
 
     private int _hullBit;
     private int _hullItemBit;
+    private int _hatchLedgeBit;
     private int _nonBoatWorldBits;
 
     private SpriteRenderer[] _spriteRenderers;
@@ -51,25 +54,28 @@ public sealed class PlayerBoardingState : MonoBehaviour
 
         _hullLayer = LayerMask.NameToLayer(hullLayerName);
         _hullItemLayer = LayerMask.NameToLayer(hullItemLayerName);
+        _hatchLedgeLayer = LayerMask.NameToLayer(hatchLedgeLayerName);
         _groundLayer = LayerMask.NameToLayer(groundLayerName);
         _nodeGroundLayer = LayerMask.NameToLayer(nodeGroundLayerName);
         _nodeDockLayer = LayerMask.NameToLayer(nodeDockLayerName);
 
         if (_hullLayer < 0) Debug.LogError($"Layer '{hullLayerName}' not found.", this);
         if (_hullItemLayer < 0) Debug.LogError($"Layer '{hullItemLayerName}' not found.", this);
+        if (_hatchLedgeLayer < 0) Debug.LogError($"Layer '{hatchLedgeLayerName}' not found.", this);
         if (_groundLayer < 0) Debug.LogError($"Layer '{groundLayerName}' not found.", this);
         if (_nodeGroundLayer < 0) Debug.LogError($"Layer '{nodeGroundLayerName}' not found.", this);
         if (_nodeDockLayer < 0) Debug.LogError($"Layer '{nodeDockLayerName}' not found.", this);
 
         _hullBit = LayerBitOrZero(_hullLayer);
         _hullItemBit = LayerBitOrZero(_hullItemLayer);
+        _hatchLedgeBit = LayerBitOrZero(_hatchLedgeLayer);
 
         _nonBoatWorldBits =
             LayerBitOrZero(_groundLayer) |
             LayerBitOrZero(_nodeGroundLayer) |
             LayerBitOrZero(_nodeDockLayer);
 
-        _boardedGroundMask = _hullBit;
+        _boardedGroundMask = _hullBit | _hatchLedgeBit;
         _unboardedGroundMask = _nonBoatWorldBits;
 
         ApplyMask();

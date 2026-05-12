@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -71,6 +72,28 @@ public sealed class PlayerLadderClimber : MonoBehaviour
     [SerializeField, Min(1)] private int climbCastMaxHits = 8;
     [SerializeField] private bool debugClimbBlock = false;
 
+    [Header("Hatch Ledge Collision Safety")]
+    [SerializeField] private bool ignoreHatchLedgeLayerWhileClimbing = true;
+
+    [Tooltip("GameObject layer used by HatchLedge colliders.")]
+    [SerializeField] private string hatchLedgeLayerName = "HatchLedge";
+
+    [Tooltip("Minimum time after leaving a ladder before HatchLedge collision can restore. Actual restore waits until the player is no longer penetrating a ledge.")]
+    [SerializeField, Min(0f)]
+    private float hatchLedgeMinimumIgnoreAfterDetachSeconds = 0.05f;
+
+    [Tooltip("Extra bounds padding used while checking whether the player is still penetrating a hatch ledge.")]
+    [SerializeField, Min(0f)]
+    private float hatchLedgeOverlapCheckPadding = 0.05f;
+
+    [Tooltip("Small negative distance tolerance for Physics2D.Distance before treating the player as penetrating the ledge.")]
+    [SerializeField, Min(0f)]
+    private float hatchLedgePenetrationTolerance = 0.002f;
+
+    [Tooltip("Safety cap. If the player remains penetrating longer than this, keep ignoring HatchLedge and log a warning instead of forcing a physics explosion.")]
+    [SerializeField, Min(0.25f)]
+    private float maxHatchLedgeRestoreWaitSeconds = 3f;
+
     [Header("Debug")]
     [SerializeField] private bool debugLogs = false;
 
@@ -78,6 +101,15 @@ public sealed class PlayerLadderClimber : MonoBehaviour
     private float _originalGravityScale;
     private LadderZone _activeLadder;
     private RaycastHit2D[] _climbCastHits;
+
+    private int _hatchLedgeLayer = -1;
+    private int _hatchLedgeBit = 0;
+    private int _excludeLayersBeforeClimb = 0;
+    private bool _hasExcludeLayersBeforeClimb;
+    private Coroutine _restoreHatchLedgeLayerRoutine;
+
+    private Collider2D[] _playerColliders;
+    private Collider2D[] _hatchLedgeOverlapBuffer;
 
     // Position tracked in ladder-local space while climbing.
     private Vector3 _ladderLocalClimbPosition;
@@ -96,6 +128,24 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             motor = GetComponent<CharacterMotor2D>();
 
         _climbCastHits = new RaycastHit2D[Mathf.Max(1, climbCastMaxHits)];
+        _playerColliders = GetComponentsInChildren<Collider2D>(true);
+        _hatchLedgeOverlapBuffer = new Collider2D[24];
+
+        CacheHatchLedgeLayer();
+    }
+
+    private void CacheHatchLedgeLayer()
+    {
+        _hatchLedgeLayer = LayerMask.NameToLayer(hatchLedgeLayerName);
+        _hatchLedgeBit = _hatchLedgeLayer >= 0 ? 1 << _hatchLedgeLayer : 0;
+
+        if (ignoreHatchLedgeLayerWhileClimbing && _hatchLedgeLayer < 0)
+        {
+            Debug.LogError(
+                $"[PlayerLadderClimber:{name}] Hatch ledge layer '{hatchLedgeLayerName}' does not exist. " +
+                "Create it in Project Settings > Tags and Layers, then put HatchLedge objects on that layer.",
+                this);
+        }
     }
 
     private void Update()
@@ -134,18 +184,14 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         float horizontal = intent.MoveX;
 
         Transform ladderFrame = _activeLadder.transform;
-
         Vector3 proposedLocalPos = _ladderLocalClimbPosition;
 
         float centerLocalX = GetClimbCenterLocalX(ladderFrame);
 
-        // Vertical climb along ladder-local Y.
         proposedLocalPos.y += vertical * _activeLadder.ClimbSpeed * Time.fixedDeltaTime;
 
-        // Horizontal drift while still attached.
         ApplyHorizontalLadderMovement(ref proposedLocalPos, centerLocalX, horizontal);
 
-        // Natural side detach when player has moved far enough away from the ladder.
         float localXDistanceFromCenter = Mathf.Abs(proposedLocalPos.x - centerLocalX);
         if (allowHorizontalMovementWhileClimbing && localXDistanceFromCenter > maxAttachedLocalXDistance)
         {
@@ -167,7 +213,6 @@ public sealed class PlayerLadderClimber : MonoBehaviour
                     this);
             }
 
-            // Reject the blocked movement. Keep last valid ladder-local position.
             proposedLocalPos = _ladderLocalClimbPosition;
             proposedWorld = ladderFrame.TransformPoint(proposedLocalPos);
         }
@@ -205,6 +250,8 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             return false;
 
         _activeLadder = ladder;
+        BeginIgnoringHatchLedgeLayer();
+
         _originalGravityScale = _rb.gravityScale;
 
         if (disableGravityWhileClimbing)
@@ -221,8 +268,6 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         }
 
         Transform ladderFrame = ladder.transform;
-
-        // Start from the player's current position in ladder-local space.
         _ladderLocalClimbPosition = ladderFrame.InverseTransformPoint(_rb.position);
 
         float centerLocalX = GetClimbCenterLocalX(ladderFrame);
@@ -261,6 +306,8 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
         if (!keepVelocity)
             _rb.linearVelocity = Vector2.zero;
+
+        ScheduleRestoreHatchLedgeLayer();
     }
 
     private void TryImplicitEnter()
@@ -360,7 +407,6 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             Vector2 closestPoint = ladder.GetClosestInteractionPoint(playerPos);
             float distance = Vector2.Distance(playerPos, closestPoint);
 
-            // Slight bias toward horizontal alignment, but no center-origin nonsense.
             float climbCenterDx = Mathf.Abs(playerPos.x - ladder.ClimbCenter.position.x);
             float score = distance + climbCenterDx * 0.05f;
 
@@ -462,6 +508,9 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             ? climbBlockMask
             : motor != null ? motor.groundMask : ~0;
 
+        if (ignoreHatchLedgeLayerWhileClimbing && _hatchLedgeBit != 0)
+            mask &= ~_hatchLedgeBit;
+
         ContactFilter2D filter = new ContactFilter2D
         {
             useLayerMask = true,
@@ -487,9 +536,6 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             if (hit.collider.attachedRigidbody == _rb)
                 continue;
 
-            // Open hatch ledges are one-way/platform surfaces.
-            // They should not block ladder climbing from below.
-            // The PlatformEffector2D handles normal walking/standing behavior.
             HatchLedge hatchLedge = hit.collider.GetComponent<HatchLedge>();
             if (hatchLedge == null)
                 hatchLedge = hit.collider.GetComponentInParent<HatchLedge>();
@@ -497,7 +543,6 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             if (hatchLedge != null)
                 continue;
 
-            // Do not treat the active ladder trigger as a blocker.
             LadderZone ladder = hit.collider.GetComponent<LadderZone>();
             if (ladder == null)
                 ladder = hit.collider.GetComponentInParent<LadderZone>();
@@ -567,6 +612,163 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         return up - down;
     }
 
+    private void BeginIgnoringHatchLedgeLayer()
+    {
+        if (!ignoreHatchLedgeLayerWhileClimbing)
+            return;
+
+        if (_hatchLedgeBit == 0)
+            return;
+
+        if (_restoreHatchLedgeLayerRoutine != null)
+        {
+            StopCoroutine(_restoreHatchLedgeLayerRoutine);
+            _restoreHatchLedgeLayerRoutine = null;
+        }
+
+        if (!_hasExcludeLayersBeforeClimb)
+        {
+            _excludeLayersBeforeClimb = _rb.excludeLayers;
+            _hasExcludeLayersBeforeClimb = true;
+        }
+
+        _rb.excludeLayers |= _hatchLedgeBit;
+
+        Log($"BeginIgnoringHatchLedgeLayer | layer='{hatchLedgeLayerName}' excludeLayers={_rb.excludeLayers}");
+    }
+
+    private void ScheduleRestoreHatchLedgeLayer()
+    {
+        if (!ignoreHatchLedgeLayerWhileClimbing)
+            return;
+
+        if (_restoreHatchLedgeLayerRoutine != null)
+            StopCoroutine(_restoreHatchLedgeLayerRoutine);
+
+        _restoreHatchLedgeLayerRoutine = StartCoroutine(RestoreHatchLedgeLayerWhenSafe());
+    }
+
+    private IEnumerator RestoreHatchLedgeLayerWhenSafe()
+    {
+        float minDelay = Mathf.Max(0f, hatchLedgeMinimumIgnoreAfterDetachSeconds);
+        if (minDelay > 0f)
+            yield return new WaitForSeconds(minDelay);
+
+        float deadline = Time.time + Mathf.Max(0.25f, maxHatchLedgeRestoreWaitSeconds);
+
+        while (IsPenetratingHatchLedge())
+        {
+            if (Time.time >= deadline)
+            {
+                Debug.LogWarning(
+                    $"[PlayerLadderClimber:{name}] Still penetrating HatchLedge after {maxHatchLedgeRestoreWaitSeconds:F2}s. " +
+                    "Keeping HatchLedge ignored to avoid boat launch. This likely means the ladder exit point needs adjustment.",
+                    this);
+
+                _restoreHatchLedgeLayerRoutine = null;
+                yield break;
+            }
+
+            yield return null;
+        }
+
+        RestoreHatchLedgeLayer();
+        _restoreHatchLedgeLayerRoutine = null;
+    }
+
+    private bool IsPenetratingHatchLedge()
+    {
+        if (_hatchLedgeBit == 0)
+            return false;
+
+        if (_playerColliders == null || _playerColliders.Length == 0)
+            _playerColliders = GetComponentsInChildren<Collider2D>(true);
+
+        if (_hatchLedgeOverlapBuffer == null || _hatchLedgeOverlapBuffer.Length == 0)
+            _hatchLedgeOverlapBuffer = new Collider2D[24];
+
+        ContactFilter2D filter = new ContactFilter2D
+        {
+            useLayerMask = true,
+            layerMask = _hatchLedgeBit,
+            useTriggers = false
+        };
+
+        for (int i = 0; i < _playerColliders.Length; i++)
+        {
+            Collider2D playerCol = _playerColliders[i];
+            if (playerCol == null || !playerCol.enabled || playerCol.isTrigger)
+                continue;
+
+            Bounds b = playerCol.bounds;
+            Vector2 center = b.center;
+            Vector2 size = new Vector2(
+                b.size.x + hatchLedgeOverlapCheckPadding * 2f,
+                b.size.y + hatchLedgeOverlapCheckPadding * 2f);
+
+            int hitCount = Physics2D.OverlapBox(
+                center,
+                size,
+                0f,
+                filter,
+                _hatchLedgeOverlapBuffer);
+
+            for (int h = 0; h < hitCount; h++)
+            {
+                Collider2D hit = _hatchLedgeOverlapBuffer[h];
+                if (hit == null || !hit.enabled || hit.isTrigger)
+                    continue;
+
+                HatchLedge ledge = hit.GetComponent<HatchLedge>();
+                if (ledge == null)
+                    ledge = hit.GetComponentInParent<HatchLedge>();
+
+                if (ledge == null)
+                    continue;
+
+                ColliderDistance2D distance = Physics2D.Distance(playerCol, hit);
+
+                if (distance.isOverlapped && distance.distance < -hatchLedgePenetrationTolerance)
+                {
+                    Log(
+                        $"Still penetrating HatchLedge '{hit.name}' distance={distance.distance:F4}. " +
+                        "Keeping HatchLedge ignored.");
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private void RestoreHatchLedgeLayer()
+    {
+        if (!_hasExcludeLayersBeforeClimb)
+            return;
+
+        _rb.excludeLayers = _excludeLayersBeforeClimb;
+        _hasExcludeLayersBeforeClimb = false;
+
+        Log($"RestoreHatchLedgeLayer | excludeLayers={_rb.excludeLayers}");
+    }
+
+    private void OnDisable()
+    {
+        if (_restoreHatchLedgeLayerRoutine != null)
+        {
+            StopCoroutine(_restoreHatchLedgeLayerRoutine);
+            _restoreHatchLedgeLayerRoutine = null;
+        }
+
+        RestoreHatchLedgeLayer();
+
+        if (disableGravityWhileClimbing && _rb != null && IsClimbing)
+            _rb.gravityScale = _originalGravityScale;
+
+        _activeLadder = null;
+    }
+
     private void Log(string message)
     {
         if (!debugLogs)
@@ -576,6 +778,12 @@ public sealed class PlayerLadderClimber : MonoBehaviour
     }
 
 #if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (string.IsNullOrWhiteSpace(hatchLedgeLayerName))
+            hatchLedgeLayerName = "HatchLedge";
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = new Color(0.2f, 0.8f, 1f, 0.9f);

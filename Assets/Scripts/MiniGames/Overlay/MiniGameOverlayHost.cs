@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MiniGames
 {
-    public sealed class MiniGameOverlayHost : MonoBehaviour
+    public sealed class MiniGameOverlayHost : MonoBehaviour, IEscapeClosable
     {
         [Header("Behavior")]
         public KeyCode exitKey = KeyCode.Escape;
@@ -12,10 +12,16 @@ namespace MiniGames
         [SerializeField] private bool isOpen;
         [SerializeField] private string activeTargetId;
 
+        [Header("Escape Routing")]
+        [SerializeField] private bool closeViaGlobalEscapeRouter = true;
+        [SerializeField] private int escapePriority = 1000;
+
         private IMiniGameCartridge _cartridge;
         private MiniGameContext _context;
         private MiniGameResult _lastResult;
 
+        public int EscapePriority => escapePriority;
+        public bool IsEscapeOpen => isOpen;
         public bool IsOpen => isOpen;
         public MiniGameResult LastResult => _lastResult;
         public IOverlayDebugDrawable DebugDrawable { get; private set; }
@@ -38,6 +44,13 @@ namespace MiniGames
 
             activeTargetId = _context.targetId;
             isOpen = true;
+
+            if (closeViaGlobalEscapeRouter)
+            {
+                EscapeCloseRegistry registry = EscapeCloseRegistry.GetOrFind();
+                if (registry != null)
+                    registry.Register(this);
+            }
 
             _cartridge.Begin(_context);
         }
@@ -69,7 +82,7 @@ namespace MiniGames
         {
             if (!isOpen) return;
 
-            if (Input.GetKeyDown(exitKey))
+            if (!closeViaGlobalEscapeRouter && Input.GetKeyDown(exitKey))
             {
                 Close();
                 return;
@@ -107,7 +120,22 @@ namespace MiniGames
             _context = null;
 
             isOpen = false;
+
+            if (EscapeCloseRegistry.I != null)
+                EscapeCloseRegistry.I.Unregister(this);
+
             activeTargetId = null;
+        }
+
+        public bool CloseFromEscape()
+        {
+            if (!isOpen)
+                return false;
+
+            Close();
+            return true;
         }
     }
 }
+
+

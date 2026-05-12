@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// FLAGGED FOR FIELD/METHOD CLEANUP
-
+// BoatSceneController owns BoatScene dock layout + docking UI.
+// SceneTransitionController owns persistence and scene loading.
 public sealed class BoatSceneController : MonoBehaviour
 {
     [Header("Scenes")]
@@ -28,8 +28,6 @@ public sealed class BoatSceneController : MonoBehaviour
     [Min(0.05f)]
     [SerializeField] private float distanceScale = 1f;
 
-    [SerializeField] private PlayerLoadoutPersistence playerLoadoutPersistence;
-
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = true;
 
@@ -43,8 +41,7 @@ public sealed class BoatSceneController : MonoBehaviour
     private void Reset()
     {
         ctx = FindAnyObjectByType<BoatSceneContext>();
-        dockingPanel = FindAnyObjectByType<DockingActionPanel>();
-        playerLoadoutPersistence = FindAnyObjectByType<PlayerLoadoutPersistence>();
+        dockingPanel = FindAnyObjectByType<DockingActionPanel>(FindObjectsInactive.Include);
     }
 
     private void OnEnable()
@@ -61,20 +58,22 @@ public sealed class BoatSceneController : MonoBehaviour
 
     private void Start()
     {
-        if (_initialized) return;
+        if (_initialized)
+            return;
+
         _initialized = true;
 
         GameState gs = GameState.I;
         if (gs == null)
         {
-            Debug.LogError("[BoatSceneController] GameState missing. Cannot run BoatScene.");
+            Debug.LogError("[BoatSceneController] GameState missing. Cannot run BoatScene.", this);
             return;
         }
 
         Payload = gs.activeTravel;
         if (Payload == null)
         {
-            Debug.LogError("[BoatSceneController] No active travel payload. Returning to node scene.");
+            Debug.LogError("[BoatSceneController] No active travel payload. Returning to node scene.", this);
             SceneManager.LoadScene(nodeSceneName);
             return;
         }
@@ -82,7 +81,7 @@ public sealed class BoatSceneController : MonoBehaviour
         EnsureContext();
         if (ctx == null)
         {
-            Debug.LogError("[BoatSceneController] Missing BoatSceneContext in BoatScene.");
+            Debug.LogError("[BoatSceneController] Missing BoatSceneContext in BoatScene.", this);
             return;
         }
 
@@ -95,19 +94,24 @@ public sealed class BoatSceneController : MonoBehaviour
 
     private void EnsureContext()
     {
-        if (ctx != null) return;
+        if (ctx != null)
+            return;
+
         ctx = FindAnyObjectByType<BoatSceneContext>();
     }
 
     private void EnsureDockingPanel()
     {
-        if (dockingPanel != null) return;
+        if (dockingPanel != null)
+            return;
+
         dockingPanel = FindAnyObjectByType<DockingActionPanel>(FindObjectsInactive.Include);
     }
 
     private void HookDockEvents()
     {
-        if (ctx == null) return;
+        if (ctx == null)
+            return;
 
         if (ctx.sourceDockTrigger != null)
         {
@@ -130,7 +134,8 @@ public sealed class BoatSceneController : MonoBehaviour
 
     private void UnhookDockEvents()
     {
-        if (ctx == null) return;
+        if (ctx == null)
+            return;
 
         if (ctx.sourceDockTrigger != null)
         {
@@ -169,12 +174,14 @@ public sealed class BoatSceneController : MonoBehaviour
 
     private void OnDockEnteredRange(DockTrigger trigger, Collider2D other)
     {
-        if (_completed) return;
+        if (_completed)
+            return;
 
         _activeDockInRange = trigger;
 
         EnsureDockingPanel();
-        if (dockingPanel == null) return;
+        if (dockingPanel == null)
+            return;
 
         string msg = trigger.kind == DockTrigger.DockKind.Source
             ? "Dock (return to departure node)"
@@ -185,7 +192,8 @@ public sealed class BoatSceneController : MonoBehaviour
 
     private void OnDockExitedRange(DockTrigger trigger, Collider2D other)
     {
-        if (_activeDockInRange != trigger) return;
+        if (_activeDockInRange != trigger)
+            return;
 
         _activeDockInRange = null;
 
@@ -195,14 +203,21 @@ public sealed class BoatSceneController : MonoBehaviour
 
     private void ConfirmDock(DockTrigger trigger)
     {
-        if (_completed) return;
-        if (_activeDockInRange != trigger) return;
+        if (_completed)
+            return;
+
+        if (_activeDockInRange != trigger)
+            return;
 
         if (dockingPanel != null)
             dockingPanel.Hide();
 
         Payload ??= GameState.I != null ? GameState.I.activeTravel : null;
-        if (Payload == null) return;
+        if (Payload == null)
+        {
+            Debug.LogError("[BoatSceneController] Cannot dock because Payload is null.", this);
+            return;
+        }
 
         switch (trigger.kind)
         {
@@ -218,13 +233,19 @@ public sealed class BoatSceneController : MonoBehaviour
 
     private void AbortTravelToSource()
     {
+        if (_completed)
+            return;
+
         _completed = true;
-        PersistBoatAndCargo();
 
         SceneTransitionController transition = SceneTransitionController.I;
         if (transition == null)
         {
-            Debug.LogError("[BoatSceneController] SceneTransitionController missing on abort.");
+            Debug.LogError(
+                "[BoatSceneController] SceneTransitionController missing on abort. " +
+                "Cannot safely persist/transition. Add SceneTransitionController to bootstrap.",
+                this);
+            _completed = false;
             return;
         }
 
@@ -233,13 +254,19 @@ public sealed class BoatSceneController : MonoBehaviour
 
     private void CompleteTravelToDestination()
     {
+        if (_completed)
+            return;
+
         _completed = true;
-        PersistBoatAndCargo();
 
         SceneTransitionController transition = SceneTransitionController.I;
         if (transition == null)
         {
-            Debug.LogError("[BoatSceneController] SceneTransitionController missing on completion.");
+            Debug.LogError(
+                "[BoatSceneController] SceneTransitionController missing on completion. " +
+                "Cannot safely persist/transition. Add SceneTransitionController to bootstrap.",
+                this);
+            _completed = false;
             return;
         }
 
@@ -249,11 +276,10 @@ public sealed class BoatSceneController : MonoBehaviour
     [ContextMenu("DEBUG: Dock to Source (Abort Travel)")]
     public void DebugDockToSource()
     {
-        PersistBoatAndCargo();
         Payload = GameState.I != null ? GameState.I.activeTravel : Payload;
         if (GameState.I == null || Payload == null)
         {
-            Debug.LogError("[BoatSceneController] Missing GameState/Payload.");
+            Debug.LogError("[BoatSceneController] Missing GameState/Payload.", this);
             return;
         }
 
@@ -263,75 +289,21 @@ public sealed class BoatSceneController : MonoBehaviour
     [ContextMenu("DEBUG: Dock to Destination (Complete Travel)")]
     public void DebugDockToDestination()
     {
-        PersistBoatAndCargo();
         Payload = GameState.I != null ? GameState.I.activeTravel : Payload;
         if (GameState.I == null || Payload == null)
         {
-            Debug.LogError("[BoatSceneController] Missing GameState/Payload.");
+            Debug.LogError("[BoatSceneController] Missing GameState/Payload.", this);
             return;
         }
 
         CompleteTravelToDestination();
     }
 
-    private void PersistBoatAndCargo()
-    {
-        SceneTransitionController transition = SceneTransitionController.I;
-        if (transition != null)
-        {
-            transition.SaveCurrentBoatState("BoatSceneController.PersistBoatAndCargo");
-            return;
-        }
-
-        // Fallback if transition singleton is missing.
-        PersistBoatAndCargoFallback();
-    }
-
-    private void PersistBoatAndCargoFallback()
-    {
-        GameState gs = GameState.I;
-        if (gs == null) return;
-        if (gs.boatRegistry == null) return;
-        if (gs.boat == null) return;
-
-        if (!gs.boatRegistry.TryGetById(gs.boat.boatInstanceId, out Boat boatObj) || boatObj == null)
-        {
-            LogWarning($"Persist fallback failed: no boat found for id='{gs.boat.boatInstanceId}'.");
-            return;
-        }
-
-        Transform boatRoot = boatObj.transform;
-
-        BoatIdentity boatId = boatRoot.GetComponent<BoatIdentity>();
-        if (boatId != null)
-            gs.boat.boatPrefabGuid = boatId.BoatGuid;
-
-        BoatBoardedVolume boarded = boatRoot.GetComponentInChildren<BoatBoardedVolume>(true);
-        Collider2D volumeCol = boarded != null ? boarded.GetComponent<Collider2D>() : null;
-
-        gs.boat.cargo = CargoManifest.Capture(boatRoot, volumeCol);
-
-        BoatLooseItemPersistence loosePersistence = boatObj.GetComponent<BoatLooseItemPersistence>();
-        if (loosePersistence != null)
-        {
-            BoatLooseItemManifest manifest = loosePersistence.CaptureManifest();
-            gs.SetBoatLooseItems(manifest, "BoatSceneController fallback capture");
-        }
-        else
-        {
-            LogWarning($"Persist fallback: boat '{boatObj.name}' has no BoatLooseItemPersistence.");
-        }
-    }
-
     private void Log(string msg)
     {
-        if (!verboseLogging) return;
-        Debug.Log($"[BoatSceneController] {msg}", this);
-    }
+        if (!verboseLogging)
+            return;
 
-    private void LogWarning(string msg)
-    {
-        if (!verboseLogging) return;
-        Debug.LogWarning($"[BoatSceneController] {msg}", this);
+        Debug.Log($"[BoatSceneController] {msg}", this);
     }
 }

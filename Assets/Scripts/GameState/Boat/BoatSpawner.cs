@@ -59,6 +59,10 @@ public sealed class BoatSpawner : MonoBehaviour
         Log($"Instantiated boatGO='{boatGO.name}' prefabSource='{prefabSource}'");
 
         AssignBoatIdentity(gs, boatGO);
+        RestoreBoatTransform(gs, boatGO);
+        RestoreModulesAndPower(gs, boatGO);
+        RestoreCompartments(gs, boatGO);
+        RestoreAccessStates(gs, boatGO);
         RestoreCargo(gs, boatGO);
         RestoreLooseItems(gs, boatGO);
         RefreshAutoRegistration(boatGO);
@@ -205,6 +209,45 @@ public sealed class BoatSpawner : MonoBehaviour
         Log("AssignBoatIdentity END");
     }
 
+    private void RestoreBoatTransform(GameState gs, GameObject boatGO)
+    {
+        Log("RestoreBoatTransform BEGIN");
+
+        if (gs == null)
+        {
+            LogWarning("RestoreBoatTransform skipped: GameState is NULL.");
+            return;
+        }
+
+        if (boatGO == null)
+        {
+            LogWarning("RestoreBoatTransform skipped: boatGO is NULL.");
+            return;
+        }
+
+        BoatTransformSnapshot snapshot = gs.boat != null ? gs.boat.transformState : null;
+        if (snapshot == null)
+        {
+            Log("RestoreBoatTransform skipped: no saved transform state.");
+            return;
+        }
+
+        Vector3 p = boatGO.transform.position;
+        p.y = snapshot.worldY;
+        boatGO.transform.position = p;
+
+        Rigidbody2D rb = boatGO.GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            // Prevent inherited spawn/drop momentum from causing the freshly restored boat
+            // to belly-flop itself into the sea like a dramatic idiot.
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+
+        Log($"RestoreBoatTransform END | restored worldY={snapshot.worldY:F3}");
+    }
+
     private string ResolveBoatInstanceId(GameState gs, out string source)
     {
         source = "none";
@@ -279,6 +322,114 @@ public sealed class BoatSpawner : MonoBehaviour
         }
 
         Log("RestoreCargo END");
+    }
+
+    private void RestoreModulesAndPower(GameState gs, GameObject boatGO)
+    {
+        Log("RestoreModulesAndPower BEGIN");
+
+        if (gs == null)
+        {
+            LogWarning("RestoreModulesAndPower skipped: GameState is NULL.");
+            return;
+        }
+
+        if (boatGO == null)
+        {
+            LogWarning("RestoreModulesAndPower skipped: boatGO is NULL.");
+            return;
+        }
+
+        BoatModuleStatePersistence persistence = boatGO.GetComponent<BoatModuleStatePersistence>();
+        if (persistence == null)
+        {
+            LogWarning($"RestoreModulesAndPower skipped: spawned boat '{boatGO.name}' has no BoatModuleStatePersistence.");
+            return;
+        }
+
+        BoatModuleStateManifest moduleManifest = gs.boat != null ? gs.boat.moduleStates : null;
+        BoatPowerSnapshot powerSnapshot = gs.boat != null ? gs.boat.power : null;
+
+        int moduleCount = moduleManifest?.modules != null ? moduleManifest.modules.Count : -1;
+
+        Log(
+            $"RestoreModulesAndPower resolved | moduleCount={moduleCount} " +
+            $"| power={(powerSnapshot != null ? $"{powerSnapshot.currentPower:F1}/{powerSnapshot.maxPower:F1}" : "NULL")}");
+
+        persistence.RestoreAll(moduleManifest, powerSnapshot);
+
+        Log("RestoreModulesAndPower END");
+    }
+
+    private void RestoreCompartments(GameState gs, GameObject boatGO)
+    {
+        Log("RestoreCompartments BEGIN");
+
+        if (gs == null)
+        {
+            LogWarning("RestoreCompartments skipped: GameState is NULL.");
+            return;
+        }
+
+        if (boatGO == null)
+        {
+            LogWarning("RestoreCompartments skipped: boatGO is NULL.");
+            return;
+        }
+
+        BoatCompartmentStatePersistence persistence = boatGO.GetComponent<BoatCompartmentStatePersistence>();
+        if (persistence == null)
+        {
+            LogWarning($"RestoreCompartments skipped: spawned boat '{boatGO.name}' has no BoatCompartmentStatePersistence.");
+            return;
+        }
+
+        BoatCompartmentStateManifest manifest = gs.boat != null ? gs.boat.compartmentStates : null;
+        int count = manifest?.compartments != null ? manifest.compartments.Count : -1;
+
+        Log($"RestoreCompartments resolved | count={count}");
+
+        persistence.RestoreManifest(manifest);
+
+        Log("RestoreCompartments END");
+    }
+
+
+    private void RestoreAccessStates(GameState gs, GameObject boatGO)
+    {
+        Log("RestoreAccessStates BEGIN");
+
+        if (gs == null)
+        {
+            LogWarning("RestoreAccessStates skipped: GameState is NULL.");
+            return;
+        }
+
+        if (boatGO == null)
+        {
+            LogWarning("RestoreAccessStates skipped: boatGO is NULL.");
+            return;
+        }
+
+        BoatAccessStatePersistence persistence = boatGO.GetComponent<BoatAccessStatePersistence>();
+        if (persistence == null)
+        {
+            LogWarning($"RestoreAccessStates skipped: spawned boat '{boatGO.name}' has no BoatAccessStatePersistence.");
+            return;
+        }
+
+        BoatAccessStateManifest manifest = gs.boat != null ? gs.boat.accessStates : null;
+        int count = manifest?.accessPoints != null ? manifest.accessPoints.Count : -1;
+
+        Log($"RestoreAccessStates resolved | count={count}");
+
+        persistence.RestoreManifest(manifest);
+
+        BoatVisualStateController visuals = boatGO.GetComponent<BoatVisualStateController>();
+        if (visuals != null)
+            visuals.ApplyMode(BoatVisibilityMode.UnboardedExterior);
+
+        Log("RestoreAccessStates END");
     }
 
     private void RestoreLooseItems(GameState gs, GameObject boatGO)

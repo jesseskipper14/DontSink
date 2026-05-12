@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public sealed class MapOverlayController : MonoBehaviour
+public sealed class MapOverlayController : MonoBehaviour, IEscapeClosable
 {
     [Header("Refs")]
     [SerializeField] private WorldMapGraphGenerator generator;
@@ -31,6 +31,13 @@ public sealed class MapOverlayController : MonoBehaviour
     [SerializeField] private Button lockButton;
     [SerializeField] private Button travelButton;
     [SerializeField] private NodeTravelController travelLauncher; // optional convenience
+
+    [Header("Escape Routing")]
+    [SerializeField] private bool closeViaGlobalEscapeRouter = true;
+    [SerializeField] private int escapePriority = 250;
+
+    public int EscapePriority => escapePriority;
+    public bool IsEscapeOpen => IsVisible;
 
     [Header("Debug / State")]
     [SerializeField] private int selectedNodeIndex = -1;
@@ -93,6 +100,9 @@ public sealed class MapOverlayController : MonoBehaviour
     {
         if (generator != null)
             generator.OnGraphGenerated -= Rebuild;
+
+        if (EscapeCloseRegistry.I != null)
+            EscapeCloseRegistry.I.Unregister(this);
     }
 
     private void Start()
@@ -125,11 +135,35 @@ public sealed class MapOverlayController : MonoBehaviour
     {
         _visible = visible;
 
-        if (overlayRoot == null) return;
+        if (overlayRoot != null)
+        {
+            overlayRoot.alpha = visible ? 1f : 0f;
+            overlayRoot.blocksRaycasts = visible;
+            overlayRoot.interactable = visible;
+        }
 
-        overlayRoot.alpha = visible ? 1f : 0f;
-        overlayRoot.blocksRaycasts = visible;
-        overlayRoot.interactable = visible;
+        if (closeViaGlobalEscapeRouter)
+        {
+            if (visible)
+            {
+                EscapeCloseRegistry registry = EscapeCloseRegistry.GetOrFind();
+                if (registry != null)
+                    registry.Register(this);
+            }
+            else if (EscapeCloseRegistry.I != null)
+            {
+                EscapeCloseRegistry.I.Unregister(this);
+            }
+        }
+    }
+
+    public bool CloseFromEscape()
+    {
+        if (!IsVisible)
+            return false;
+
+        SetVisible(false);
+        return true;
     }
 
     [ContextMenu("Rebuild Overlay")]

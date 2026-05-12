@@ -19,6 +19,9 @@ public class LocalInteractionIntentSource : MonoBehaviour, IInteractionIntentSou
     [Tooltip("If true, uses mouse position as aim world point. If false, AimWorld will be Vector2.zero.")]
     [SerializeField] private bool useMouseAim = true;
 
+    [Header("Gameplay Input Blocking")]
+    [SerializeField] private bool respectGameplayInputBlocker = true;
+
     public InteractionIntent Current { get; private set; }
 
     private float _lastClickTime = -999f;
@@ -26,6 +29,12 @@ public class LocalInteractionIntentSource : MonoBehaviour, IInteractionIntentSou
 
     private void Update()
     {
+        if (respectGameplayInputBlocker && GameplayInputBlocker.IsBlocked)
+        {
+            ClearIntentAndResetClickState();
+            return;
+        }
+
         Vector2 aimWorld = Vector2.zero;
         bool hasAimWorld = false;
 
@@ -70,5 +79,15 @@ public class LocalInteractionIntentSource : MonoBehaviour, IInteractionIntentSou
             AimWorld = aimWorld,
             HasAimWorld = hasAimWorld
         };
+    }
+
+    private void ClearIntentAndResetClickState()
+    {
+        Current = default;
+
+        // Important: do not let UI clicks count as half of a future double-click
+        // after the menu closes. Yes, that bug would absolutely happen.
+        _lastClickTime = -999f;
+        _lastClickScreenPos = default;
     }
 }
