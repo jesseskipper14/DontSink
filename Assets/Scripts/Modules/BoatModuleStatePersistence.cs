@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -6,6 +7,9 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
     [Header("Refs")]
     [SerializeField] private Boat boat;
     [SerializeField] private ItemDefinitionCatalog itemCatalog;
+
+    [Tooltip("Temporary/simple module lookup for save/load. Add every ModuleDefinition that can be installed on this boat.")]
+    [SerializeField] private ModuleDefinition[] moduleDefinitions;
 
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = false;
@@ -30,11 +34,22 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
 
             InstalledModule installed = hp.InstalledModule;
 
+            string moduleId = installed.Definition != null
+                ? installed.Definition.ModuleId
+                : null;
+
+            if (string.IsNullOrWhiteSpace(moduleId))
+            {
+                LogWarning(
+                    $"Hardpoint '{hp.HardpointId}' has installed module '{installed.name}' but its Definition/ModuleId is missing. " +
+                    "Snapshot will be incomplete.");
+            }
+
             var snap = new BoatModuleStateSnapshot
             {
                 version = 1,
                 hardpointId = hp.HardpointId,
-                moduleId = installed.Definition != null ? installed.Definition.ModuleId : null,
+                moduleId = moduleId,
                 isOn = false,
                 fuelContainer = null
             };
@@ -56,6 +71,12 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
             else if (installed.TryGetComponent(out TurretModule turret))
             {
                 snap.isOn = turret.IsOn;
+            }
+
+            if (installed.TryGetComponent(out StorageModule storage))
+            {
+                snap.storageContainer = storage.CaptureContainerSnapshot();
+                snap.cargoRack = storage.CaptureCargoRackSnapshot();
             }
 
             manifest.modules.Add(snap);
@@ -125,11 +146,55 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
 
         Hardpoint[] hardpoints = GetComponentsInChildren<Hardpoint>(true);
 
+        Dictionary<string, BoatModuleStateSnapshot> savedByHardpointId =
+            new Dictionary<string, BoatModuleStateSnapshot>();
+
         for (int i = 0; i < manifest.modules.Count; i++)
         {
             BoatModuleStateSnapshot snap = manifest.modules[i];
+
             if (snap == null || string.IsNullOrWhiteSpace(snap.hardpointId))
                 continue;
+
+            savedByHardpointId[snap.hardpointId] = snap;
+        }
+
+        // Pass 1:
+        // The save manifest is authoritative. If a hardpoint has no saved module
+        // snapshot, it should be empty after load.
+        for (int i = 0; i < hardpoints.Length; i++)
+        {
+            Hardpoint hp = hardpoints[i];
+
+            if (hp == null || string.IsNullOrWhiteSpace(hp.HardpointId))
+                continue;
+
+            if (savedByHardpointId.ContainsKey(hp.HardpointId))
+                continue;
+
+            if (!hp.HasInstalledModule || hp.InstalledModule == null)
+                continue;
+
+            ModuleDefinition removedDefinition;
+            bool removed = hp.TryRemove(out removedDefinition);
+
+            if (removed)
+            {
+                Log(
+                    $"Removed installed module from hardpoint '{hp.HardpointId}' because save manifest has no module snapshot for it.");
+            }
+            else
+            {
+                LogWarning(
+                    $"Tried to clear hardpoint '{hp.HardpointId}' because save manifest has no module snapshot, but TryRemove failed.");
+            }
+        }
+
+        // Pass 2:
+        // Restore every saved module.
+        foreach (KeyValuePair<string, BoatModuleStateSnapshot> pair in savedByHardpointId)
+        {
+            BoatModuleStateSnapshot snap = pair.Value;
 
             Hardpoint hp = FindHardpointById(hardpoints, snap.hardpointId);
             if (hp == null)
@@ -138,9 +203,11 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
                 continue;
             }
 
+            EnsureSavedModuleInstalled(hp, snap);
+
             if (!hp.HasInstalledModule || hp.InstalledModule == null)
             {
-                LogWarning($"Hardpoint '{snap.hardpointId}' has no installed module. Skipping saved state.");
+                LogWarning($"Hardpoint '{snap.hardpointId}' still has no installed module after restore attempt. Skipping saved state.");
                 continue;
             }
 
@@ -168,7 +235,15 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
             }
             else
             {
-                Log($"Installed module on '{snap.hardpointId}' has no supported persistence component.");
+                // Expected for passive modules like lockers/racks.
+                Log($"Installed module on '{snap.hardpointId}' has no active persistence component.");
+            }
+
+            if (installed.TryGetComponent(out StorageModule storage))
+            {
+                storage.RestoreContainerSnapshot(snap.storageContainer, itemCatalog);
+                storage.RestoreCargoRackSnapshot(snap.cargoRack);
+                Log($"Restored StorageModule contents/cargo rack on '{snap.hardpointId}'.");
             }
         }
     }
@@ -178,6 +253,82 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
         // Power first so engines/turrets using boat power can turn back on successfully.
         RestorePowerSnapshot(powerSnapshot);
         RestoreModuleManifest(moduleManifest);
+    }
+
+    private void EnsureSavedModuleInstalled(Hardpoint hp, BoatModuleStateSnapshot snap)
+    {
+        if (hp == null || snap == null)
+            return;
+
+        if (string.IsNullOrWhiteSpace(snap.moduleId))
+        {
+            LogWarning($"Saved module on hardpoint '{snap.hardpointId}' has no moduleId. Cannot restore install.");
+            return;
+        }
+
+        if (hp.HasInstalledModule && hp.InstalledModule != null)
+        {
+            string currentId = hp.InstalledModule.Definition != null
+                ? hp.InstalledModule.Definition.ModuleId
+                : null;
+
+            if (string.Equals(currentId, snap.moduleId, System.StringComparison.Ordinal))
+                return;
+
+            LogWarning(
+                $"Hardpoint '{hp.HardpointId}' has installed moduleId='{currentId}', " +
+                $"but save expects moduleId='{snap.moduleId}'. Replacing installed module.");
+
+            hp.TryRemove(out _);
+        }
+
+        ModuleDefinition module = FindModuleDefinitionById(snap.moduleId);
+        if (module == null)
+        {
+            LogWarning(
+                $"Could not resolve ModuleDefinition for moduleId='{snap.moduleId}'. " +
+                "Add it to BoatModuleStatePersistence.moduleDefinitions on the boat prefab.");
+            return;
+        }
+
+        if (!hp.CanInstall(module))
+        {
+            LogWarning(
+                $"Cannot restore module '{module.DisplayName}' to hardpoint '{hp.HardpointId}'. " +
+                $"Hardpoint accepts: {hp.GetAcceptedTypesText()}");
+            return;
+        }
+
+        if (!hp.TryInstall(module, out InstalledModule installed) || installed == null)
+        {
+            LogWarning(
+                $"TryInstall failed while restoring module '{module.DisplayName}' " +
+                $"to hardpoint '{hp.HardpointId}'.");
+            return;
+        }
+
+        Log($"Restored installed module '{module.DisplayName}' on hardpoint '{hp.HardpointId}'.");
+    }
+
+    private ModuleDefinition FindModuleDefinitionById(string moduleId)
+    {
+        if (string.IsNullOrWhiteSpace(moduleId))
+            return null;
+
+        if (moduleDefinitions == null)
+            return null;
+
+        for (int i = 0; i < moduleDefinitions.Length; i++)
+        {
+            ModuleDefinition def = moduleDefinitions[i];
+            if (def == null)
+                continue;
+
+            if (string.Equals(def.ModuleId, moduleId, System.StringComparison.Ordinal))
+                return def;
+        }
+
+        return null;
     }
 
     private static Hardpoint FindHardpointById(Hardpoint[] hardpoints, string hardpointId)

@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
+  m_Name: item_small_locker
+  m_EditorClassIdentifier: 
+  itemId: item_small_locker_basic
+  displayName: Small Locker
+  icon: {fileID: -7723789692142364088, guid: c03d8c0d618ad2e4b87561eef0fc5d2f, type: 3}
+  itemCategories: 2048
+  maxStack: 1
+  hasCharges: 0
+  maxCharges: 1
+  stowableInInventory: 1
+  droppable: 1
+  tradable: 1
+  disallowedParentSlots: 040000000500000006000000070000000800000009000000
+  preferredDisplacedDestination: 1
+  equipSlot: 1
+  isContainer: 0
+  containerSlotCount: 1
+  containerColumnCount: 1
+  allowedContainerCategories: 0
+  containerTier: 0
+  pickupMode: 1
+  pickupHoldDuration: 3
+  isModule: 1
+  moduleDefinition: {fileID: 11400000, guid: 74201bafb45ac2a4cb28ff77bf69cece, type: 2}
+  worldPrefab: {fileID: 4363263784485809776, guid: 7d48581cd525a46498ae23761fdf7dc3, type: 3}

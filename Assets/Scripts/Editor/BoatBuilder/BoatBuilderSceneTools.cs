@@ -473,11 +473,21 @@ public static partial class BoatBuilderSceneTools
 
     private static GameObject GetHardpointPrefab(BoatKit kit, HardpointType type)
     {
+        if (kit == null)
+            return null;
+
         return type switch
         {
             HardpointType.Engine => kit.HardpointEngine,
             HardpointType.Pump => kit.HardpointPump,
             HardpointType.Utility => kit.HardpointUtility,
+
+            // Storage can have its own prefab, but safely falls back to Utility
+            // so the builder works before we make fancy furniture icons like civilized mammals.
+            HardpointType.Storage => kit.HardpointStorage != null
+                ? kit.HardpointStorage
+                : kit.HardpointUtility,
+
             HardpointType.Weapon => kit.HardpointWeapon,
             HardpointType.Electronics => kit.HardpointElectronics,
             HardpointType.Helm => kit.HardpointHelm,

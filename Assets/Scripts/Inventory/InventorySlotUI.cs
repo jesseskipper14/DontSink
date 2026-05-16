@@ -19,6 +19,7 @@ public sealed class InventorySlotUI : MonoBehaviour,
     [Header("Visuals")]
     [SerializeField] private Image icon;
     [SerializeField] private Text countText;
+    [SerializeField] private Sprite cargoFallbackIcon;
     [SerializeField] private GameObject selectionHighlight;
     [SerializeField] private Image purposeIcon;
     [SerializeField] private Image background;
@@ -85,26 +86,51 @@ public sealed class InventorySlotUI : MonoBehaviour,
         ItemInstance instance = GetInstance();
         bool hasItem = instance != null && instance.Definition != null;
 
+        CargoCrateStoredSnapshot cargoSnapshot = null;
+        bool hasCargo = !hasItem && TryGetCargoSnapshot(out cargoSnapshot);
+
         if (icon != null)
         {
-            icon.enabled = hasItem;
-            icon.sprite = hasItem ? instance.Definition.Icon : null;
+            icon.enabled = hasItem || hasCargo;
+
+            if (hasItem)
+            {
+                icon.sprite = instance.Definition.Icon;
+            }
+            else if (hasCargo)
+            {
+                icon.sprite = ResolveCargoIcon(cargoSnapshot);
+            }
+            else
+            {
+                icon.sprite = null;
+            }
         }
 
         if (purposeIcon != null)
         {
-            bool showPurpose = !hasItem && assignedPurposeIcon != null;
+            bool showPurpose = !hasItem && !hasCargo && assignedPurposeIcon != null;
             purposeIcon.enabled = showPurpose;
             purposeIcon.sprite = showPurpose ? assignedPurposeIcon : null;
         }
 
         if (countText != null)
-            countText.text = hasItem && instance.Quantity > 1 ? instance.Quantity.ToString() : "";
+        {
+            if (hasItem)
+                countText.text = instance.Quantity > 1 ? instance.Quantity.ToString() : "";
+            else if (hasCargo)
+                countText.text = cargoSnapshot.quantity > 1 ? cargoSnapshot.quantity.ToString() : FormatCargoShortLabel(cargoSnapshot);
+            else
+                countText.text = "";
+        }
 
         if (!SupportsSelection && selectionHighlight != null)
             selectionHighlight.SetActive(false);
 
-        Log($"Refresh | slotType={SlotType} | hasItem={hasItem} | item={DescribeItem(instance)} | countText='{(countText != null ? countText.text : "NO_TEXT")}'");
+        Log(
+            $"Refresh | slotType={SlotType} | hasItem={hasItem} | hasCargo={hasCargo} " +
+            $"| item={DescribeItem(instance)} | cargo={(cargoSnapshot != null ? cargoSnapshot.itemId : "NULL")} " +
+            $"| countText='{(countText != null ? countText.text : "NO_TEXT")}'");
     }
 
     public void SetSelected(bool selected)
@@ -279,6 +305,46 @@ public sealed class InventorySlotUI : MonoBehaviour,
         return $"{itemId} x{item.Quantity} inst={item.InstanceId}";
     }
 
+    private bool TryGetCargoSnapshot(out CargoCrateStoredSnapshot snapshot)
+    {
+        snapshot = null;
+
+        if (binding is StorageModuleSlotBinding storageBinding)
+            return storageBinding.TryGetCargoSnapshot(out snapshot);
+
+        return false;
+    }
+
+    private Sprite ResolveCargoIcon(CargoCrateStoredSnapshot snapshot)
+    {
+        if (snapshot == null)
+            return cargoFallbackIcon;
+
+        // For now, use the optional fallback icon.
+        // We are intentionally not resolving TradeCargoPrefabCatalog here yet,
+        // because InventorySlotUI is generic UI and should not know cargo catalogs forever.
+        return cargoFallbackIcon;
+    }
+
+    private string FormatCargoShortLabel(CargoCrateStoredSnapshot snapshot)
+    {
+        if (snapshot == null)
+            return "Cargo";
+
+        if (string.IsNullOrWhiteSpace(snapshot.itemId))
+            return "Cargo";
+
+        string raw = snapshot.itemId.Replace("_", " ").Replace("-", " ").Trim();
+
+        if (raw.Length == 0)
+            return "Cargo";
+
+        // Keep this short because it is going into tiny count text.
+        return raw.Length <= 3
+            ? raw.ToUpperInvariant()
+            : char.ToUpperInvariant(raw[0]) + raw.Substring(1).ToLowerInvariant();
+    }
+
     private bool isShowingInvalidTarget;
 
     public void SetInvalidTargetVisual(bool invalid)
@@ -343,22 +409,47 @@ public sealed class InventorySlotUI : MonoBehaviour,
         if (current == null)
             return false;
 
-        // Case 1: player inventory/equipment/hotbar -> open external container
-        if (binding is not ExternalInventorySlotBinding)
+        bool isExternalLikeSlot =
+            binding is ExternalInventorySlotBinding ||
+            binding is StorageModuleSlotBinding;
+
+        // Case 1: player inventory/equipment/hotbar -> open external container/storage
+        if (!isExternalLikeSlot)
         {
             ExternalContainerOverlayUI overlay = FindFirstObjectByType<ExternalContainerOverlayUI>();
-            if (overlay == null || !overlay.IsOpen || overlay.CurrentContainer == null)
-                return false;
-
-            ItemInstance targetContainer = overlay.CurrentContainer;
-            if (ReferenceEquals(targetContainer, current))
+            if (overlay == null || !overlay.IsOpen)
                 return false;
 
             ItemInstance removed = binding.RemoveItem();
             if (removed == null)
                 return false;
 
-            if (ContainerPlacementUtility.TryAutoInsert(targetContainer, removed, out ItemInstance remainder))
+            bool inserted = false;
+            ItemInstance remainder = removed;
+
+            if (overlay.CurrentStorageModule != null)
+            {
+                inserted = ContainerPlacementUtility.TryAutoInsert(
+                    overlay.CurrentStorageModule,
+                    removed,
+                    out remainder);
+            }
+            else if (overlay.CurrentContainer != null)
+            {
+                if (ReferenceEquals(overlay.CurrentContainer, current))
+                {
+                    binding.TryPlaceItem(removed, out _);
+                    Refresh();
+                    return false;
+                }
+
+                inserted = ContainerPlacementUtility.TryAutoInsert(
+                    overlay.CurrentContainer,
+                    removed,
+                    out remainder);
+            }
+
+            if (inserted)
             {
                 if (remainder != null && !remainder.IsDepleted())
                     binding.TryPlaceItem(remainder, out _);
@@ -373,7 +464,7 @@ public sealed class InventorySlotUI : MonoBehaviour,
             return false;
         }
 
-        // Case 2: external container -> player inventory
+        // Case 2: external container/storage -> player inventory
         PlayerInventory playerInventory = FindFirstObjectByType<PlayerInventory>();
         if (playerInventory == null)
             return false;

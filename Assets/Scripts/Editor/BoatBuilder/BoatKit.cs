@@ -37,6 +37,7 @@ public class BoatKit : ScriptableObject
     public GameObject HardpointEngine;
     public GameObject HardpointPump;
     public GameObject HardpointUtility;
+    public GameObject HardpointStorage;
     public GameObject HardpointWeapon;
     public GameObject HardpointElectronics;
     public GameObject HardpointHelm;

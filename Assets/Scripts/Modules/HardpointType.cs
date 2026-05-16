@@ -5,5 +5,6 @@ public enum HardpointType
     Utility,
     Weapon,
     Electronics,
-    Helm
+    Helm,
+    Storage
 }

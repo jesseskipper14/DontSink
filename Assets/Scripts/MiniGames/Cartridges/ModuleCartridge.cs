@@ -109,6 +109,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         PumpModule pump = installed != null ? installed.GetComponent<PumpModule>() : null;
         GeneratorModule generator = installed != null ? installed.GetComponent<GeneratorModule>() : null;
         TurretModule turret = installed != null ? installed.GetComponent<TurretModule>() : null;
+        StorageModule storage = installed != null ? installed.GetComponent<StorageModule>() : null;
 
         string title = def != null ? def.DisplayName : "Module";
         GUI.Label(new Rect(panel.x + pad, panel.y + 10f, panel.width - 80f, 24f), $"{title} [{_hardpoint?.HardpointId}]");
@@ -138,15 +139,15 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         Rect middleRect = new Rect(leftRect.xMax + 10f, contentY, middleW, contentH);
         Rect rightRect = new Rect(middleRect.xMax + 10f, contentY, rightW, contentH);
 
-        DrawLeftColumn(leftRect, engine, pump, generator, turret);
-        DrawMiddleColumn(middleRect, engine, pump, generator, turret);
-        DrawRightColumn(rightRect, engine, pump, generator, turret);
+        DrawLeftColumn(leftRect, engine, pump, generator, turret, storage);
+        DrawMiddleColumn(middleRect, engine, pump, generator, turret, storage);
+        DrawRightColumn(rightRect, engine, pump, generator, turret, storage);
 
         if (!string.IsNullOrWhiteSpace(_uiNote))
             GUI.Label(new Rect(panel.x + pad, panel.yMax - 26f, panel.width - pad * 2f - 40f, 20f), _uiNote);
     }
 
-    private void DrawLeftColumn(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator, TurretModule turret)
+    private void DrawLeftColumn(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator, TurretModule turret, StorageModule storage)
     {
         GUI.Box(rect, GUIContent.none);
 
@@ -294,6 +295,36 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
 
             GUI.Label(new Rect(x, y, w, 22f), $"Can Fire: {(turret.CanFire() ? "YES" : "NO")}");
         }
+        else if (storage != null)
+        {
+            storage.EnsureContainer();
+
+            string modeText = storage.IsFixedStorage
+                ? "Fixed Storage"
+                : storage.IsContainerRack
+                    ? "Container Rack"
+                    : "Storage";
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Storage Type: {modeText}");
+            y += 24f;
+
+            ItemContainerState state = storage.ContainerState;
+            if (state == null)
+            {
+                GUI.Label(new Rect(x, y, w, 22f), "(No storage state)");
+                return;
+            }
+
+            int filled = CountFilledSlots(state);
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Slots Used: {filled} / {state.SlotCount}");
+            y += 24f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Columns: {state.ColumnCount}");
+            y += 24f;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"Secured: {(GetStorageSecuredText(storage))}");
+        }
         else
         {
             GUI.Label(new Rect(x, y, w, 22f), "No specialized module UI yet.");
@@ -353,7 +384,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         }
     }
 
-    private void DrawMiddleColumn(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator, TurretModule turret)
+    private void DrawMiddleColumn(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator, TurretModule turret, StorageModule storage)
     {
         float gap = 10f;
         float sectionH = (rect.height - gap * 2f) / 3f;
@@ -364,7 +395,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
 
         DrawPlaceholderSection(durabilityRect, "Durability", "Placeholder");
         DrawPlaceholderSection(upgradesRect, "Upgrades", "Placeholder");
-        DrawActionsSection(actionsRect, engine, pump, generator, turret);
+        DrawActionsSection(actionsRect, engine, pump, generator, turret, storage);
     }
 
     private void DrawPlaceholderSection(Rect rect, string title, string body)
@@ -374,7 +405,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         GUI.Label(new Rect(rect.x + 10f, rect.y + 32f, rect.width - 20f, 22f), body);
     }
 
-    private void DrawActionsSection(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator, TurretModule turret)
+    private void DrawActionsSection(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator, TurretModule turret, StorageModule storage)
     {
         GUI.Box(rect, GUIContent.none);
 
@@ -479,11 +510,37 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
             return;
         }
 
+        if (storage != null)
+        {
+            if (GUI.Button(new Rect(x, y, 160f, 28f), "Add Item"))
+                _uiNote = TryAddItemToStorage(storage, out string addNote) ? addNote : addNote;
+
+            y += 36f;
+
+            if (GUI.Button(new Rect(x, y, 160f, 28f), "Remove Item"))
+                _uiNote = TryRemoveItemFromStorage(storage, out string removeNote) ? removeNote : removeNote;
+
+            y += 36f;
+
+            GUI.Label(new Rect(x, y, w, 44f),
+                storage.IsContainerRack
+                    ? "Rack accepts containers/crates."
+                    : "Locker accepts normal storage items.");
+
+            return;
+        }
+
         GUI.Label(new Rect(x, y, w, 22f), "No actions.");
     }
 
-    private void DrawRightColumn(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator, TurretModule turret)
+    private void DrawRightColumn(Rect rect, EngineModule engine, PumpModule pump, GeneratorModule generator, TurretModule turret, StorageModule storage)
     {
+        if (storage != null)
+        {
+            DrawStorageInventoryArea(rect, storage);
+            return;
+        }
+
         if (pump != null)
         {
             DrawPumpDiagnostics(rect, pump);
@@ -977,5 +1034,314 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         y += 22f;
 
         GUI.Label(new Rect(x, y, w, 22f), $"Fill: {power.Normalized:P0}");
+    }
+
+    private void DrawStorageInventoryArea(Rect rect, StorageModule storage)
+    {
+        float gap = 10f;
+        float topH = rect.height * 0.58f;
+        float bottomH = rect.height - topH - gap;
+
+        Rect storageRect = new Rect(rect.x, rect.y, rect.width, topH);
+        Rect inventoryRect = new Rect(rect.x, storageRect.yMax + gap, rect.width, bottomH);
+
+        DrawStorageSlots(storageRect, storage);
+        DrawCompatibleStorageInventorySlots(inventoryRect, storage);
+    }
+
+    private void DrawStorageSlots(Rect rect, StorageModule storage)
+    {
+        GUI.Box(rect, GUIContent.none);
+
+        float x = rect.x + 10f;
+        float y = rect.y + 8f;
+        float w = rect.width - 20f;
+
+        GUI.Label(new Rect(x, y, w, 22f), "Storage Slots");
+        y += 28f;
+
+        if (storage == null)
+        {
+            GUI.Label(new Rect(x, y, w, 22f), "(No storage module)");
+            return;
+        }
+
+        storage.EnsureContainer();
+
+        ItemContainerState state = storage.ContainerState;
+        if (state == null)
+        {
+            GUI.Label(new Rect(x, y, w, 22f), "(No storage state)");
+            return;
+        }
+
+        int columns = Mathf.Clamp(state.ColumnCount, 1, 8);
+        float cellSize = Mathf.Min(64f, (w - (columns - 1) * 6f) / columns);
+        float startX = x;
+        float startY = y;
+
+        for (int i = 0; i < state.SlotCount; i++)
+        {
+            int col = i % columns;
+            int row = i / columns;
+
+            Rect cell = new Rect(
+                startX + col * (cellSize + 6f),
+                startY + row * (cellSize + 26f),
+                cellSize,
+                cellSize);
+
+            InventorySlot slot = state.GetSlot(i);
+            GUI.Box(cell, GUIContent.none);
+
+            if (slot != null && !slot.IsEmpty && slot.Instance != null)
+                DrawSlotContents(cell, slot.Instance);
+            else
+                GUI.Label(new Rect(cell.x + 4f, cell.y + 4f, cell.width - 8f, 20f), $"S{i + 1}");
+        }
+    }
+
+    private void DrawCompatibleStorageInventorySlots(Rect rect, StorageModule storage)
+    {
+        GUI.Box(rect, GUIContent.none);
+
+        float x = rect.x + 10f;
+        float y = rect.y + 8f;
+        float w = rect.width - 20f;
+
+        GUI.Label(new Rect(x, y, w, 22f), "Compatible Inventory");
+        y += 28f;
+
+        if (storage == null)
+        {
+            GUI.Label(new Rect(x, y, w, 22f), "(No storage module)");
+            return;
+        }
+
+        List<ItemInstance> compatible = new List<ItemInstance>(16);
+        GatherCompatibleStorageItems(storage, compatible);
+
+        const int displayCount = 12;
+        const int columns = 4;
+
+        float cellSize = Mathf.Min(64f, (w - (columns - 1) * 6f) / columns);
+        float startX = x;
+        float startY = y;
+
+        for (int i = 0; i < displayCount; i++)
+        {
+            int col = i % columns;
+            int row = i / columns;
+
+            Rect cell = new Rect(
+                startX + col * (cellSize + 6f),
+                startY + row * (cellSize + 26f),
+                cellSize,
+                cellSize);
+
+            GUI.Box(cell, GUIContent.none);
+
+            if (i < compatible.Count && compatible[i] != null)
+                DrawSlotContents(cell, compatible[i]);
+            else
+                GUI.Label(new Rect(cell.x + 4f, cell.y + 4f, cell.width - 8f, 20f), "(Empty)");
+        }
+    }
+
+    private bool TryAddItemToStorage(StorageModule storage, out string note)
+    {
+        note = "Add item failed.";
+
+        if (storage == null)
+        {
+            note = "No storage module.";
+            return false;
+        }
+
+        storage.EnsureContainer();
+
+        if (_playerInventory != null)
+        {
+            for (int i = 0; i < _playerInventory.HotbarSlotCount; i++)
+            {
+                InventorySlot slot = _playerInventory.GetSlot(i);
+                if (slot == null || slot.IsEmpty || slot.Instance == null)
+                    continue;
+
+                ItemInstance candidate = slot.Instance;
+                if (!storage.CanAcceptItem(candidate))
+                    continue;
+
+                slot.Clear();
+
+                if (ContainerPlacementUtility.TryAutoInsert(storage, candidate, out ItemInstance remainder))
+                {
+                    if (remainder != null && !remainder.IsDepleted())
+                        slot.Set(remainder);
+
+                    _playerInventory.NotifyChanged();
+                    note = $"Stored {candidate.Definition.DisplayName}.";
+                    return true;
+                }
+
+                slot.Set(candidate);
+            }
+        }
+
+        if (_playerEquipment != null)
+        {
+            for (int i = 0; i < EquipmentSlots.Length; i++)
+            {
+                BottomBarSlotType slotType = EquipmentSlots[i];
+                ItemInstance candidate = _playerEquipment.Get(slotType);
+                if (candidate == null)
+                    continue;
+
+                if (!storage.CanAcceptItem(candidate))
+                    continue;
+
+                _playerEquipment.Remove(slotType);
+
+                if (ContainerPlacementUtility.TryAutoInsert(storage, candidate, out ItemInstance remainder))
+                {
+                    if (remainder != null && !remainder.IsDepleted())
+                        _playerInventory?.TryAutoInsert(remainder, out _);
+
+                    _playerInventory?.NotifyChanged();
+                    note = $"Stored {candidate.Definition.DisplayName}.";
+                    return true;
+                }
+
+                _playerEquipment.TryPlace(slotType, candidate, out _);
+            }
+        }
+
+        note = storage.IsContainerRack
+            ? "No compatible containers/crates found."
+            : "No compatible items found.";
+
+        return false;
+    }
+
+    private bool TryRemoveItemFromStorage(StorageModule storage, out string note)
+    {
+        note = "Remove item failed.";
+
+        if (_playerInventory == null)
+        {
+            note = "No player inventory found.";
+            return false;
+        }
+
+        if (storage == null || storage.ContainerState == null)
+        {
+            note = "No storage state.";
+            return false;
+        }
+
+        ItemContainerState state = storage.ContainerState;
+
+        for (int i = 0; i < state.SlotCount; i++)
+        {
+            InventorySlot slot = state.GetSlot(i);
+            if (slot == null || slot.IsEmpty || slot.Instance == null)
+                continue;
+
+            ItemInstance removed = slot.Instance;
+            slot.Clear();
+
+            if (_playerInventory.TryAutoInsert(removed, out ItemInstance remainder))
+            {
+                if (remainder != null && !remainder.IsDepleted())
+                {
+                    slot.Set(remainder);
+                    _playerInventory.NotifyChanged();
+                    state.NotifyChanged();
+                    note = "Inventory had no room for all removed items.";
+                    return false;
+                }
+
+                _playerInventory.NotifyChanged();
+                state.NotifyChanged();
+                note = $"Removed {removed.Definition.DisplayName}.";
+                return true;
+            }
+
+            slot.Set(removed);
+            note = "No room in inventory.";
+            return false;
+        }
+
+        note = "Storage is empty.";
+        return false;
+    }
+
+    private void GatherCompatibleStorageItems(StorageModule storage, List<ItemInstance> results)
+    {
+        results.Clear();
+
+        if (storage == null)
+            return;
+
+        if (_playerInventory != null)
+        {
+            for (int i = 0; i < _playerInventory.HotbarSlotCount; i++)
+            {
+                InventorySlot slot = _playerInventory.GetSlot(i);
+                TryAddCompatibleStorageItem(slot != null ? slot.Instance : null, storage, results);
+            }
+        }
+
+        if (_playerEquipment != null)
+        {
+            for (int i = 0; i < EquipmentSlots.Length; i++)
+            {
+                ItemInstance equipped = _playerEquipment.Get(EquipmentSlots[i]);
+                TryAddCompatibleStorageItem(equipped, storage, results);
+            }
+        }
+    }
+
+    private void TryAddCompatibleStorageItem(ItemInstance candidate, StorageModule storage, List<ItemInstance> results)
+    {
+        if (candidate == null || candidate.Definition == null)
+            return;
+
+        if (!storage.CanAcceptItem(candidate))
+            return;
+
+        if (results.Contains(candidate))
+            return;
+
+        results.Add(candidate);
+    }
+
+    private static int CountFilledSlots(ItemContainerState state)
+    {
+        if (state == null)
+            return 0;
+
+        int filled = 0;
+
+        for (int i = 0; i < state.SlotCount; i++)
+        {
+            InventorySlot slot = state.GetSlot(i);
+            if (slot != null && !slot.IsEmpty && slot.Instance != null)
+                filled++;
+        }
+
+        return filled;
+    }
+
+    private static string GetStorageSecuredText(StorageModule storage)
+    {
+        if (storage == null || storage.InstalledModule == null || storage.InstalledModule.Definition == null)
+            return "Unknown";
+
+        StorageModuleDefinition def = storage.InstalledModule.Definition.Storage;
+        if (def == null)
+            return "Unknown";
+
+        return def.CountsAsSecuredStorage ? "Yes" : "No";
     }
 }

@@ -2,9 +2,10 @@ using UnityEngine;
 
 /// <summary>
 /// Minimal carry controller for CargoCrate.
-/// - Disables physics while carried (no moving-platform bounce nonsense).
+/// - Disables physics while carried.
 /// - Parents to carryAnchor for visuals.
 /// - Applies movement multipliers while carrying.
+/// - Exposes a safe release API for storage racks / cargo systems.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class PlayerCarryController2D : MonoBehaviour
@@ -20,13 +21,16 @@ public sealed class PlayerCarryController2D : MonoBehaviour
     [Header("Drop")]
     public Vector2 dropLocalOffset = new Vector2(0.45f, 0.05f);
 
-    private CargoCrate _carried;
-
     [Header("Input")]
     public KeyCode dropKey = KeyCode.E;
 
+    private CargoCrate _carried;
+
     private float _baseMaxSpeed;
     private float _baseMoveForce;
+
+    public bool IsCarrying => _carried != null;
+    public CargoCrate CarriedCargo => _carried;
 
     private void Reset()
     {
@@ -36,8 +40,11 @@ public sealed class PlayerCarryController2D : MonoBehaviour
 
     private void Awake()
     {
-        if (motor == null) motor = GetComponentInParent<CharacterMotor2D>();
-        if (carryAnchor == null) carryAnchor = transform;
+        if (motor == null)
+            motor = GetComponentInParent<CharacterMotor2D>();
+
+        if (carryAnchor == null)
+            carryAnchor = transform;
 
         if (motor != null)
         {
@@ -60,17 +67,13 @@ public sealed class PlayerCarryController2D : MonoBehaviour
             _carried.transform.rotation = carryAnchor.rotation;
         }
 
-        if (motor != null)
-        {
-            bool carrying = _carried != null;
-            motor.maxSpeed = carrying ? _baseMaxSpeed * maxSpeedMultiplier : _baseMaxSpeed;
-            motor.moveForce = carrying ? _baseMoveForce * moveForceMultiplier : _baseMoveForce;
-        }
+        ApplyMovementModifiers();
     }
 
     public void ToggleCarry(CargoCrate crate)
     {
-        if (crate == null) return;
+        if (crate == null)
+            return;
 
         if (_carried == crate)
         {
@@ -80,20 +83,89 @@ public sealed class PlayerCarryController2D : MonoBehaviour
 
         if (_carried != null)
         {
-            // Already carrying something; ignore for now (no juggling).
+            // Already carrying something; ignore for now.
             return;
         }
 
         PickUp(crate);
     }
 
+    public bool TryGetCarriedCargo(out CargoCrate crate)
+    {
+        crate = _carried;
+        return crate != null;
+    }
+
+    /// <summary>
+    /// Releases the carried cargo without dropping it into the world.
+    /// Use this when another system, like a storage rack, is taking ownership.
+    /// </summary>
+    public bool TryReleaseCarriedCargoForStorage(CargoCrate expected, out CargoCrate released)
+    {
+        released = null;
+
+        if (_carried == null)
+            return false;
+
+        if (expected != null && _carried != expected)
+            return false;
+
+        CargoCrate crate = _carried;
+        _carried = null;
+
+        crate.IsCarried = false;
+        crate.transform.SetParent(null, true);
+
+        Rigidbody2D rb = crate.GetRigidbody();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.simulated = false;
+        }
+
+        crate.ApplyGroundSorting();
+
+        ApplyMovementModifiers();
+
+        released = crate;
+        return true;
+    }
+
+    public void Drop()
+    {
+        if (_carried == null)
+            return;
+
+        CargoCrate crate = _carried;
+        _carried = null;
+
+        crate.ApplyGroundSorting();
+        crate.IsCarried = false;
+        crate.transform.SetParent(null, true);
+
+        Vector3 dropPos = transform.TransformPoint((Vector3)dropLocalOffset);
+        crate.transform.position = dropPos;
+
+        Rigidbody2D rb = crate.GetRigidbody();
+        if (rb != null)
+        {
+            rb.simulated = true;
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+
+        ApplyMovementModifiers();
+    }
+
     private void PickUp(CargoCrate crate)
     {
         _carried = crate;
+
         crate.ApplyHeldSorting();
         crate.IsCarried = true;
 
-        var rb = crate.GetRigidbody();
+        Rigidbody2D rb = crate.GetRigidbody();
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
@@ -104,28 +176,17 @@ public sealed class PlayerCarryController2D : MonoBehaviour
         crate.transform.SetParent(carryAnchor, true);
         crate.transform.localPosition = Vector3.zero;
         crate.transform.localRotation = Quaternion.identity;
+
+        ApplyMovementModifiers();
     }
 
-    private void Drop()
+    private void ApplyMovementModifiers()
     {
-        if (_carried == null) return;
+        if (motor == null)
+            return;
 
-        var crate = _carried;
-        _carried = null;
-        crate.ApplyGroundSorting();
-
-        crate.IsCarried = false;
-        crate.transform.SetParent(null, true);
-
-        Vector3 dropPos = transform.TransformPoint((Vector3)dropLocalOffset);
-        crate.transform.position = dropPos;
-
-        var rb = crate.GetRigidbody();
-        if (rb != null)
-        {
-            rb.simulated = true;
-            rb.linearVelocity = Vector2.zero;
-            rb.angularVelocity = 0f;
-        }
+        bool carrying = _carried != null;
+        motor.maxSpeed = carrying ? _baseMaxSpeed * maxSpeedMultiplier : _baseMaxSpeed;
+        motor.moveForce = carrying ? _baseMoveForce * moveForceMultiplier : _baseMoveForce;
     }
 }

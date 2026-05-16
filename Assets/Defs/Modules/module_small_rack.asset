@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f09bf4be73b727846b74f99b05bdebab, type: 3}
+  m_Name: module_small_rack
+  m_EditorClassIdentifier: 
+  moduleId: small_rack_basic
+  displayName: Small Rack
+  allowedHardpointTypes: 06000000
+  installedPrefab: {fileID: 2666357289410987568, guid: 4cb4f1c1666c0c8428c620139bbf9ea0, type: 3}
+  itemDefinition: {fileID: 11400000, guid: 830be0af62dec7149a6107d54e2f2d4c, type: 2}
+  storage:
+    mode: 2
+    slotCount: 4
+    columnCount: 2
+    acceptsPortableContainers: 1
+    acceptsCargoCrates: 1
+    countsAsSecuredStorage: 1
+    looseFailureChance: 0.1

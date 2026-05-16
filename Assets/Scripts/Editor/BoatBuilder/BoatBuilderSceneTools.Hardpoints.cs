@@ -111,6 +111,7 @@ public static partial class BoatBuilderSceneTools
                 HardpointType.Engine => "engine",
                 HardpointType.Pump => "pump",
                 HardpointType.Utility => "utility",
+                HardpointType.Storage => "storage",
                 HardpointType.Weapon => "weapon",
                 HardpointType.Electronics => "electronics",
                 HardpointType.Helm => "helm",

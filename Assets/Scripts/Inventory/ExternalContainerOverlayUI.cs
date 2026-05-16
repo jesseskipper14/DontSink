@@ -23,7 +23,9 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour, IEscapeClosable
     [SerializeField] private int escapePriority = 800;
 
     [System.NonSerialized] private ItemInstance _containerItem;
+    [System.NonSerialized] private StorageModule _storageModule;
     [System.NonSerialized] private ItemContainerState _state;
+
     private Transform _sourceTransform;
     [SerializeField] private float _autoCloseDistance = -1f;
     private bool _isOpen;
@@ -37,7 +39,9 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour, IEscapeClosable
     public int EscapePriority => escapePriority;
     public bool IsEscapeOpen => _isOpen;
     public bool IsOpen => _isOpen;
+
     public ItemInstance CurrentContainer => _containerItem;
+    public StorageModule CurrentStorageModule => _storageModule;
 
     private void Awake()
     {
@@ -49,11 +53,10 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour, IEscapeClosable
             Debug.LogWarning("[ExternalContainerOverlayUI] Root is not assigned. Assign ExternalInventoryPanel in the inspector.", this);
         }
 
-
         if (dragController == null)
             dragController = GetComponentInParent<InventoryDragController>(true);
 
-         if (owner == null)
+        if (owner == null)
             owner = GetComponentInParent<PlayerInventoryUI>(true);
 
         if (panelRect == null && root != null)
@@ -126,11 +129,16 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour, IEscapeClosable
             return;
         }
 
-        if (_containerItem != containerItem)
+        bool sourceChanged =
+            _containerItem != containerItem ||
+            _storageModule != null;
+
+        if (sourceChanged)
         {
             UnbindState();
 
             _containerItem = containerItem;
+            _storageModule = null;
             _state = state;
 
             BindState();
@@ -147,12 +155,57 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour, IEscapeClosable
         SetVisible(true);
         _isOpen = true;
 
-        if (closeViaGlobalEscapeRouter)
+        RegisterEscape();
+    }
+
+    public void OpenStorage(
+        string title,
+        StorageModule storageModule,
+        Transform sourceTransform = null,
+        float autoCloseDistance = -1f)
+    {
+        if (storageModule == null)
         {
-            EscapeCloseRegistry registry = EscapeCloseRegistry.GetOrFind();
-            if (registry != null)
-                registry.Register(this);
+            Debug.LogWarning("[ExternalContainerOverlayUI] OpenStorage called with null storage module.");
+            return;
         }
+
+        storageModule.EnsureContainer();
+
+        ItemContainerState state = storageModule.ContainerState;
+        if (state == null)
+        {
+            Debug.LogWarning("[ExternalContainerOverlayUI] Storage module has no state.");
+            return;
+        }
+
+        bool sourceChanged =
+            _storageModule != storageModule ||
+            _containerItem != null;
+
+        if (sourceChanged)
+        {
+            UnbindState();
+
+            _containerItem = null;
+            _storageModule = storageModule;
+            _state = state;
+
+            BindState();
+        }
+
+        _sourceTransform = sourceTransform;
+        _autoCloseDistance = autoCloseDistance;
+
+        Rebuild();
+
+        if (titleText != null)
+            titleText.text = string.IsNullOrWhiteSpace(title) ? "Storage" : title;
+
+        SetVisible(true);
+        _isOpen = true;
+
+        RegisterEscape();
     }
 
     public void Close()
@@ -165,6 +218,7 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour, IEscapeClosable
 
         _state = null;
         _containerItem = null;
+        _storageModule = null;
         _sourceTransform = null;
         _autoCloseDistance = -1f;
         _isOpen = false;
@@ -173,6 +227,16 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour, IEscapeClosable
             EscapeCloseRegistry.I.Unregister(this);
 
         SetVisible(false);
+    }
+
+    private void RegisterEscape()
+    {
+        if (!closeViaGlobalEscapeRouter)
+            return;
+
+        EscapeCloseRegistry registry = EscapeCloseRegistry.GetOrFind();
+        if (registry != null)
+            registry.Register(this);
     }
 
     private void BindState()
@@ -212,7 +276,11 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour, IEscapeClosable
             if (dragController != null)
                 slotUI.SetDragController(dragController);
 
-            ExternalInventorySlotBinding binding = new ExternalInventorySlotBinding(_containerItem, i);
+            IInventorySlotBinding binding =
+                _storageModule != null
+                    ? new StorageModuleSlotBinding(_storageModule, i)
+                    : new ExternalInventorySlotBinding(_containerItem, i);
+
             slotUI.Bind(binding);
         }
     }
@@ -243,12 +311,11 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour, IEscapeClosable
         if (canvasRect == null)
             return;
 
-        Vector2 localPos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             canvasRect,
             screenPos,
             _canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _camera,
-            out localPos
+            out Vector2 localPos
         );
 
         panelRect.anchoredPosition = localPos + screenOffset;
