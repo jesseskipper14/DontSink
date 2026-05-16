@@ -28,7 +28,7 @@ public sealed class GameState : MonoBehaviour
     {
         boatPrefabGuid = "",
         boatInstanceId = "boat_001",
-        cargo = new List<CargoManifest.Snapshot>(),
+        //cargo = new List<CargoManifest.Snapshot>(),
         looseItems = new BoatLooseItemManifest()
     };
 
@@ -92,8 +92,8 @@ public sealed class GameState : MonoBehaviour
             if (string.IsNullOrWhiteSpace(payload.toNodeStableId))
                 LogWarning("BeginTravel payload has EMPTY toNodeStableId.");
 
-            if (payload.cargoManifest == null)
-                LogWarning("BeginTravel payload cargoManifest is NULL.");
+            //if (payload.cargoManifest == null)
+            //    LogWarning("BeginTravel payload cargoManifest is NULL.");
         }
 
         LogState("BeginTravel END");
@@ -129,8 +129,8 @@ public sealed class GameState : MonoBehaviour
             if (string.IsNullOrWhiteSpace(boat.boatInstanceId))
                 LogWarning("BoatSaveState has EMPTY boatInstanceId.");
 
-            if (boat.cargo == null)
-                LogWarning("BoatSaveState cargo list is NULL.");
+            //if (boat.cargo == null)
+            //    LogWarning("BoatSaveState cargo list is NULL.");
 
             if (boat.looseItems == null)
                 LogWarning("BoatSaveState looseItems is NULL.");
@@ -193,15 +193,15 @@ public sealed class GameState : MonoBehaviour
             {
                 boatPrefabGuid = "",
                 boatInstanceId = "boat_001",
-                cargo = new List<CargoManifest.Snapshot>(),
+                //cargo = new List<CargoManifest.Snapshot>(),
                 looseItems = new BoatLooseItemManifest()
             };
 
             return;
         }
 
-        if (boat.cargo == null)
-            boat.cargo = new List<CargoManifest.Snapshot>();
+        //if (boat.cargo == null)
+        //    boat.cargo = new List<CargoManifest.Snapshot>();
 
         if (boat.looseItems == null)
             boat.looseItems = new BoatLooseItemManifest();
@@ -227,8 +227,8 @@ public sealed class GameState : MonoBehaviour
             $"seed={payload.seed}, " +
             $"routeLength={payload.routeLength}, " +
             $"boatInstanceId='{payload.boatInstanceId}', " +
-            $"boatPrefabGuid='{payload.boatPrefabGuid}', " +
-            $"cargoCount={(payload.cargoManifest != null ? payload.cargoManifest.Count : -1)}";
+            $"boatPrefabGuid='{payload.boatPrefabGuid}'";
+            //$"cargoCount={(payload.cargoManifest != null ? payload.cargoManifest.Count : -1)}";
     }
 
     private string DescribeBoat(BoatSaveState state)
@@ -239,7 +239,7 @@ public sealed class GameState : MonoBehaviour
         return
             $"boatInstanceId='{state.boatInstanceId}', " +
             $"boatPrefabGuid='{state.boatPrefabGuid}', " +
-            $"cargoCount={(state.cargo != null ? state.cargo.Count : -1)}, " +
+            //$"cargoCount={(state.cargo != null ? state.cargo.Count : -1)}, " +
             $"looseItems={(state.looseItems != null ? DescribeLooseItems(state.looseItems) : "NULL")}";
     }
 
@@ -354,7 +354,7 @@ public sealed class TravelPayload
     public string boatInstanceId;
     public string boatPrefabGuid;
 
-    public List<CargoManifest.Snapshot> cargoManifest;
+    //public List<CargoManifest.Snapshot> cargoManifest;
 
     public TravelPayload(
         string from,
@@ -362,8 +362,8 @@ public sealed class TravelPayload
         int seed,
         float len,
         string boatInstanceId,
-        string boatPrefabGuid,
-        List<CargoManifest.Snapshot> cargoManifest)
+        string boatPrefabGuid)
+        //List<CargoManifest.Snapshot> cargoManifest)
     {
         fromNodeStableId = from;
         toNodeStableId = to;
@@ -372,7 +372,7 @@ public sealed class TravelPayload
 
         this.boatInstanceId = boatInstanceId;
         this.boatPrefabGuid = boatPrefabGuid;
-        this.cargoManifest = cargoManifest;
+        //this.cargoManifest = cargoManifest;
     }
 }
 
@@ -382,7 +382,7 @@ public sealed class BoatSaveState
     public string boatPrefabGuid;
     public string boatInstanceId;
 
-    public List<CargoManifest.Snapshot> cargo;
+    //public List<CargoManifest.Snapshot> cargo;
     public BoatLooseItemManifest looseItems;
 
     public BoatModuleStateManifest moduleStates;

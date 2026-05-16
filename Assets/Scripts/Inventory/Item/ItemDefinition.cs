@@ -16,7 +16,8 @@ public enum ItemCategoryFlags
     Fuel = 1 << 8,
     Medical = 1 << 9,
     Utility = 1 << 10,
-    Module = 1 << 11
+    Module = 1 << 11,
+    Cargo = 1 << 12
 }
 
 public enum PickupInteractionMode

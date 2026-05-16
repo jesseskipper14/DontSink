@@ -139,7 +139,7 @@ public sealed class MainMenuController : MonoBehaviour
                 ? "boat_001"
                 : defaultBoatInstanceId,
 
-            cargo = new System.Collections.Generic.List<CargoManifest.Snapshot>(),
+            //cargo = new System.Collections.Generic.List<CargoManifest.Snapshot>(),
             looseItems = new BoatLooseItemManifest(),
             moduleStates = new BoatModuleStateManifest(),
             compartmentStates = new BoatCompartmentStateManifest(),

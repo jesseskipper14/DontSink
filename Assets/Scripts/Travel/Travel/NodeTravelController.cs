@@ -193,11 +193,11 @@ public sealed class NodeTravelController : MonoBehaviour
         var boarded = boatRoot.GetComponentInChildren<BoatBoardedVolume>(true);
         var volumeCol = boarded != null ? boarded.GetComponent<Collider2D>() : null;
 
-        var cargoManifest = CargoManifest.Capture(boatRoot, volumeCol);
+        //var cargoManifest = CargoManifest.Capture(boatRoot, volumeCol);
 
         // Persist current selections too (so NodeScene can spawn correctly even without travel)
         gs.boat.boatPrefabGuid = boatId.BoatGuid;
-        gs.boat.cargo = cargoManifest;
+        //gs.boat.cargo = cargoManifest;
 
         SceneTransitionController transition = SceneTransitionController.I;
         if (transition == null)
@@ -206,15 +206,15 @@ public sealed class NodeTravelController : MonoBehaviour
             return;
         }
 
-        Debug.Log($"NodeTravelController: Starting travel | {fromId} -> {toId} | boatGuid={boatId.BoatGuid} | cargo={cargoManifest.Count}");
+        Debug.Log($"NodeTravelController: Starting travel | {fromId} -> {toId} | boatGuid={boatId.BoatGuid}"); //| cargo={cargoManifest.Count}");
         transition.StartTravelToBoatScene(
             fromId,
             toId,
             seed,
             routeLength,
             gs.boat.boatInstanceId,
-            boatId.BoatGuid,
-            cargoManifest);
+            boatId.BoatGuid);
+            //cargoManifest);
     }
 
     private bool IsPlayerBoardedToPlayerBoat()

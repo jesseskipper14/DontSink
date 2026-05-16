@@ -76,7 +76,6 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
             if (installed.TryGetComponent(out StorageModule storage))
             {
                 snap.storageContainer = storage.CaptureContainerSnapshot();
-                snap.cargoRack = storage.CaptureCargoRackSnapshot();
             }
 
             manifest.modules.Add(snap);
@@ -242,7 +241,6 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
             if (installed.TryGetComponent(out StorageModule storage))
             {
                 storage.RestoreContainerSnapshot(snap.storageContainer, itemCatalog);
-                storage.RestoreCargoRackSnapshot(snap.cargoRack);
                 Log($"Restored StorageModule contents/cargo rack on '{snap.hardpointId}'.");
             }
         }

@@ -65,6 +65,10 @@ public sealed class WorldItem : MonoBehaviour, IPickupInteractable, IInteractPro
         if (itemInstance != null)
             itemInstance.EnsureContainerStateMatchesDefinition();
 
+        CargoWorldLabel cargoLabel = GetComponentInChildren<CargoWorldLabel>(true);
+        if (cargoLabel != null)
+            cargoLabel.Refresh();
+
         CacheBoat();
         SetHighlighted(false);
     }

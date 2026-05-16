@@ -9,6 +9,23 @@ namespace MiniGames
     {
         private enum TradeTab { Buy, Sell, All }
 
+        private sealed class TradeUiState
+        {
+            public TradeTab tab = TradeTab.Buy;
+
+            public readonly Dictionary<string, int> qtyByOfferId =
+                new Dictionary<string, int>(StringComparer.Ordinal);
+
+            public Vector2 offerScroll;
+            public Vector2 invScroll;
+            public string invFilter;
+            public bool invOnlyRelevant;
+            public string lastUiNote;
+        }
+
+        private static readonly Dictionary<string, TradeUiState> UiStateByKey =
+            new Dictionary<string, TradeUiState>(StringComparer.Ordinal);
+
         private readonly string _nodeId;
         private readonly int _timeBucket;
         private readonly IReadOnlyList<NodeMarketOffer> _offers;
@@ -23,18 +40,25 @@ namespace MiniGames
 
         private MiniGameContext _ctx;
         private bool _requestedClose;
-        private string _lastUiNote;
 
-        private TradeTab _tab = TradeTab.Buy;
+        private TradeUiState _uiState;
 
-        private Vector2 _offerScroll;
-        private Vector2 _invScroll;
+        private readonly Dictionary<string, int> _basePriceByItemId =
+            new Dictionary<string, int>(StringComparer.Ordinal);
 
-        private readonly Dictionary<string, int> _qtyByOfferId = new Dictionary<string, int>();
-        private string _invFilter;
-        private bool _invOnlyRelevant;
+        private readonly List<TradeLine> _tmpLines = new List<TradeLine>(32);
 
-        private readonly Dictionary<string, int> _basePriceByItemId = new Dictionary<string, int>(StringComparer.Ordinal);
+        private string StateKey
+        {
+            get
+            {
+                // Intentionally stable across cartridge recreation. If the time bucket changes
+                // while the overlay rebuilds, including it here would reset UI state.
+                return string.IsNullOrWhiteSpace(_nodeId)
+                    ? "trade:unknown-node"
+                    : $"trade:{_nodeId}";
+            }
+        }
 
         // Back-compat signature (WorldMap inventory).
         public TradeCartridge(
@@ -45,11 +69,19 @@ namespace MiniGames
             MapNodeState nodeState,
             ITradeFeePreview feePreview,
             ResourceCatalog resourceCatalog)
-            : this(nodeId, timeBucket, offers, player, (player != null ? (IItemStore)player.inventory : null), nodeState, feePreview, resourceCatalog)
+            : this(
+                nodeId,
+                timeBucket,
+                offers,
+                player,
+                player != null ? (IItemStore)player.inventory : null,
+                nodeState,
+                feePreview,
+                resourceCatalog)
         {
         }
 
-        // NEW: injected store (inventory OR physical crate store).
+        // Injected store: world-map inventory OR physical cargo item store.
         public TradeCartridge(
             string nodeId,
             int timeBucket,
@@ -74,41 +106,14 @@ namespace MiniGames
             BuildBasePriceCache();
         }
 
-        private void BuildBasePriceCache()
-        {
-            _basePriceByItemId.Clear();
-            if (_resourceCatalog == null || _resourceCatalog.Resources == null) return;
-
-            for (int i = 0; i < _resourceCatalog.Resources.Count; i++)
-            {
-                var def = _resourceCatalog.Resources[i];
-                if (def == null) continue;
-                if (string.IsNullOrWhiteSpace(def.itemId)) continue;
-
-                _basePriceByItemId[def.itemId] = Mathf.Max(1, def.basePrice);
-            }
-        }
-
-        private int GetBasePrice(string itemId)
-        {
-            if (string.IsNullOrWhiteSpace(itemId)) return 1;
-            return _basePriceByItemId.TryGetValue(itemId, out var p) ? Mathf.Max(1, p) : 1;
-        }
-
         public void Begin(MiniGameContext context)
         {
             _ctx = context ?? new MiniGameContext();
+            _uiState = GetOrCreateUiState();
 
-            _qtyByOfferId.Clear();
-            for (int i = 0; i < _offers.Count; i++)
-            {
-                var o = _offers[i];
-                if (o == null || string.IsNullOrWhiteSpace(o.offerId)) continue;
-                _qtyByOfferId[o.offerId] = 0;
-            }
+            EnsureQuantityState();
 
             _requestedClose = false;
-            _lastUiNote = null;
         }
 
         public MiniGameResult Tick(float dt, MiniGameInput input)
@@ -119,7 +124,9 @@ namespace MiniGames
                 {
                     outcome = MiniGameOutcome.Cancelled,
                     quality01 = 1f,
-                    note = _lastUiNote ?? "Closed",
+                    note = _uiState != null && !string.IsNullOrWhiteSpace(_uiState.lastUiNote)
+                        ? _uiState.lastUiNote
+                        : "Closed",
                     hasMeaningfulProgress = false
                 };
             }
@@ -162,31 +169,45 @@ namespace MiniGames
 
         public void DrawOverlayGUI(Rect panel)
         {
+            if (_uiState == null)
+                _uiState = GetOrCreateUiState();
+
+            EnsureQuantityState();
+
             if (_player == null || _itemStore == null)
             {
-                GUI.Label(new Rect(panel.x + 14, panel.y + 14, panel.width - 28, 22),
+                GUI.Label(
+                    new Rect(panel.x + 14, panel.y + 14, panel.width - 28, 22),
                     "TRADE (missing player/item store)");
+
                 return;
             }
 
             float pad = 14f;
 
-            GUI.Label(new Rect(panel.x + pad, panel.y + 10, panel.width - pad * 2f, 22),
+            GUI.Label(
+                new Rect(panel.x + pad, panel.y + 10, panel.width - pad * 2f, 22),
                 $"TRADE @ {_nodeId} (day {_timeBucket})");
 
-            GUI.Label(new Rect(panel.x + pad, panel.y + 32, panel.width - pad * 2f, 22),
+            GUI.Label(
+                new Rect(panel.x + pad, panel.y + 32, panel.width - pad * 2f, 22),
                 $"Credits: {_player.credits}");
 
-            float bx = panel.xMax - 34;
-            float by = panel.y + 8;
-            if (GUI.Button(new Rect(bx, by, 26, 22), "X"))
+            float closeX = panel.xMax - 34;
+            float closeY = panel.y + 8;
+            if (GUI.Button(new Rect(closeX, closeY, 26, 22), "X"))
             {
                 _requestedClose = true;
-                _lastUiNote = "Closed";
+                _uiState.lastUiNote = "Closed";
             }
 
             float invW = Mathf.Clamp(panel.width * 0.28f, 260f, 420f);
-            var invRect = new Rect(panel.xMax - pad - invW, panel.y + 60f, invW, panel.height - 110f);
+            Rect invRect = new Rect(
+                panel.xMax - pad - invW,
+                panel.y + 60f,
+                invW,
+                panel.height - 110f);
+
             DrawInventoryPanel(invRect);
 
             GUI.Box(new Rect(invRect.x - 6, panel.y + 50, 2, panel.height - 70), GUIContent.none);
@@ -197,27 +218,28 @@ namespace MiniGames
             float tabH = 22f;
 
             if (GUI.Button(new Rect(tabX + 0 * (tabW + 6), tabY, tabW, tabH), "BUY"))
-                _tab = TradeTab.Buy;
+                SetTab(TradeTab.Buy);
 
             if (GUI.Button(new Rect(tabX + 1 * (tabW + 6), tabY, tabW, tabH), "SELL"))
-                _tab = TradeTab.Sell;
+                SetTab(TradeTab.Sell);
 
             if (GUI.Button(new Rect(tabX + 2 * (tabW + 6), tabY, tabW, tabH), "ALL"))
-                _tab = TradeTab.All;
+                SetTab(TradeTab.All);
 
             float listX = panel.x + pad;
             float listY = panel.y + 90f;
             float listW = invRect.xMin - pad - listX;
             float listH = panel.height - 170f;
 
-            var viewRect = new Rect(listX, listY, listW, listH);
+            Rect viewRect = new Rect(listX, listY, listW, listH);
 
-            var contentRect = new Rect(
-                0, 0,
+            Rect contentRect = new Rect(
+                0,
+                0,
                 Mathf.Max(1f, viewRect.width - 16f),
                 Mathf.Max(1, _offers.Count + 1) * 34f + 24f);
 
-            _offerScroll = GUI.BeginScrollView(viewRect, _offerScroll, contentRect);
+            _uiState.offerScroll = GUI.BeginScrollView(viewRect, _uiState.offerScroll, contentRect);
 
             float y = 6f;
 
@@ -228,64 +250,151 @@ namespace MiniGames
 
             for (int i = 0; i < _offers.Count; i++)
             {
-                var o = _offers[i];
-                if (o == null) continue;
-                if (o.quantityRemaining <= 0) continue;
+                NodeMarketOffer offer = _offers[i];
+                if (offer == null)
+                    continue;
 
-                if (_tab == TradeTab.Buy && o.kind != MarketOfferKind.SellToPlayer) continue;
-                if (_tab == TradeTab.Sell && o.kind != MarketOfferKind.BuyFromPlayer) continue;
+                if (offer.quantityRemaining <= 0)
+                    continue;
+
+                if (_uiState.tab == TradeTab.Buy && offer.kind != MarketOfferKind.SellToPlayer)
+                    continue;
+
+                if (_uiState.tab == TradeTab.Sell && offer.kind != MarketOfferKind.BuyFromPlayer)
+                    continue;
 
                 any = true;
-                DrawOfferRow(o, y, contentRect.width);
+                DrawOfferRow(offer, y, contentRect.width);
                 y += 34f;
             }
 
             if (!any)
-            {
                 GUI.Label(new Rect(6, y, contentRect.width - 12, 22), "(No offers)");
-            }
 
             GUI.EndScrollView();
 
-            var preview = ComputePreview();
+            TradePreview preview = ComputePreview();
             string signFinal = preview.finalDelta >= 0 ? "+" : "-";
 
-            GUI.Label(new Rect(panel.x + pad, panel.yMax - 118, panel.width - pad * 2f, 22),
+            GUI.Label(
+                new Rect(panel.x + pad, panel.yMax - 118, panel.width - pad * 2f, 22),
                 $"Trade Balance: {preview.tradeBalance}");
 
-            GUI.Label(new Rect(panel.x + pad, panel.yMax - 102, panel.width - pad * 2f, 22),
+            GUI.Label(
+                new Rect(panel.x + pad, panel.yMax - 102, panel.width - pad * 2f, 22),
                 $"Fee: {preview.fee}");
 
-            GUI.Label(new Rect(panel.x + pad, panel.yMax - 86, panel.width - pad * 2f, 22),
+            GUI.Label(
+                new Rect(panel.x + pad, panel.yMax - 86, panel.width - pad * 2f, 22),
                 $"Final: {preview.finalDelta}");
 
-            GUI.Label(new Rect(panel.x + pad, panel.yMax - 70, panel.width - pad * 2f, 22),
+            GUI.Label(
+                new Rect(panel.x + pad, panel.yMax - 70, panel.width - pad * 2f, 22),
                 $"Preview: Δcredits {signFinal}{Mathf.Abs(preview.finalDelta)} → {preview.creditsAfter}");
 
             if (preview.insufficientCredits)
             {
-                GUI.Label(new Rect(panel.x + pad, panel.yMax - 58, panel.width - pad * 2f, 22),
+                GUI.Label(
+                    new Rect(panel.x + pad, panel.yMax - 58, panel.width - pad * 2f, 22),
                     "Not enough credits.");
             }
 
-            var btnRow = new Rect(panel.x + pad, panel.yMax - 48, panel.width - pad * 2f, 34);
-            float bw = 110f;
+            Rect btnRow = new Rect(panel.x + pad, panel.yMax - 48, panel.width - pad * 2f, 34);
+            float buttonWidth = 110f;
 
-            if (GUI.Button(new Rect(btnRow.x, btnRow.y, bw, btnRow.height), "Clear"))
+            if (GUI.Button(new Rect(btnRow.x, btnRow.y, buttonWidth, btnRow.height), "Clear"))
                 ClearAll();
 
-            if (GUI.Button(new Rect(btnRow.xMax - bw * 2f - 10f, btnRow.y, bw, btnRow.height), "Preview"))
-                _lastUiNote = BuildPreviewString();
+            if (GUI.Button(new Rect(btnRow.xMax - buttonWidth * 2f - 10f, btnRow.y, buttonWidth, btnRow.height), "Preview"))
+                _uiState.lastUiNote = BuildPreviewString();
 
             GUI.enabled = !preview.insufficientCredits;
 
-            if (GUI.Button(new Rect(btnRow.xMax - bw, btnRow.y, bw, btnRow.height), "Confirm"))
+            if (GUI.Button(new Rect(btnRow.xMax - buttonWidth, btnRow.y, buttonWidth, btnRow.height), "Confirm"))
                 ConfirmTransaction();
 
             GUI.enabled = true;
         }
 
-        private void DrawHeaderRow(float y, float w)
+        private void BuildBasePriceCache()
+        {
+            _basePriceByItemId.Clear();
+
+            if (_resourceCatalog == null || _resourceCatalog.Resources == null)
+                return;
+
+            for (int i = 0; i < _resourceCatalog.Resources.Count; i++)
+            {
+                var def = _resourceCatalog.Resources[i];
+                if (def == null)
+                    continue;
+
+                if (string.IsNullOrWhiteSpace(def.itemId))
+                    continue;
+
+                _basePriceByItemId[def.itemId] = Mathf.Max(1, def.basePrice);
+            }
+        }
+
+        private int GetBasePrice(string itemId)
+        {
+            if (string.IsNullOrWhiteSpace(itemId))
+                return 1;
+
+            return _basePriceByItemId.TryGetValue(itemId, out int price)
+                ? Mathf.Max(1, price)
+                : 1;
+        }
+
+        private TradeUiState GetOrCreateUiState()
+        {
+            string key = StateKey;
+
+            if (!UiStateByKey.TryGetValue(key, out TradeUiState state) || state == null)
+            {
+                state = new TradeUiState();
+                UiStateByKey[key] = state;
+            }
+
+            return state;
+        }
+
+        private void EnsureQuantityState()
+        {
+            if (_uiState == null)
+                _uiState = GetOrCreateUiState();
+
+            HashSet<string> valid = new HashSet<string>(StringComparer.Ordinal);
+
+            for (int i = 0; i < _offers.Count; i++)
+            {
+                NodeMarketOffer offer = _offers[i];
+                if (offer == null || string.IsNullOrWhiteSpace(offer.offerId))
+                    continue;
+
+                valid.Add(offer.offerId);
+
+                if (!_uiState.qtyByOfferId.ContainsKey(offer.offerId))
+                    _uiState.qtyByOfferId[offer.offerId] = 0;
+            }
+
+            List<string> keys = new List<string>(_uiState.qtyByOfferId.Keys);
+            for (int i = 0; i < keys.Count; i++)
+            {
+                if (!valid.Contains(keys[i]))
+                    _uiState.qtyByOfferId.Remove(keys[i]);
+            }
+        }
+
+        private void SetTab(TradeTab tab)
+        {
+            if (_uiState == null)
+                _uiState = GetOrCreateUiState();
+
+            _uiState.tab = tab;
+        }
+
+        private void DrawHeaderRow(float y, float width)
         {
             GUI.Label(new Rect(6, y, 60, 22), "OFFER");
             GUI.Label(new Rect(66, y, 120, 22), "RESOURCE");
@@ -293,58 +402,60 @@ namespace MiniGames
             GUI.Label(new Rect(326, y, 140, 22), "STOCK");
         }
 
-        private void DrawOfferRow(NodeMarketOffer o, float y, float w)
+        private void DrawOfferRow(NodeMarketOffer offer, float y, float width)
         {
-            string label = o.kind == MarketOfferKind.SellToPlayer ? "BUY" : "SELL";
-            int qty = _qtyByOfferId.TryGetValue(o.offerId, out var q) ? q : 0;
-            int have = _itemStore.GetCount(o.itemId);
+            string label = offer.kind == MarketOfferKind.SellToPlayer ? "BUY" : "SELL";
 
-            int basePrice = GetBasePrice(o.itemId);
+            int qty = GetQty(offer.offerId);
+            int have = _itemStore.GetCount(offer.itemId);
+            int basePrice = GetBasePrice(offer.itemId);
 
             GUI.Label(new Rect(6, y, 60, 22), label);
-            GUI.Label(new Rect(66, y, 120, 22), o.itemId);
+            GUI.Label(new Rect(66, y, 120, 22), offer.itemId);
 
-            var prevColor = GUI.color;
-            GUI.color = GetDealColor(o.kind, o.unitPrice, basePrice);
-            GUI.Label(new Rect(186, y, 50, 22), $"{o.unitPrice}c");
-            GUI.color = prevColor;
+            Color previousColor = GUI.color;
+            GUI.color = GetDealColor(offer.kind, offer.unitPrice, basePrice);
+            GUI.Label(new Rect(186, y, 50, 22), $"{offer.unitPrice}c");
+            GUI.color = previousColor;
+
             GUI.Label(new Rect(236, y, 90, 22), $"({basePrice}c)");
 
-            if (o.kind == MarketOfferKind.SellToPlayer)
-                GUI.Label(new Rect(326, y, 240, 22), $"Trader has {o.quantityRemaining}");
+            if (offer.kind == MarketOfferKind.SellToPlayer)
+                GUI.Label(new Rect(326, y, 240, 22), $"Trader has {offer.quantityRemaining}");
             else
-                GUI.Label(new Rect(326, y, 240, 22), $"Trader wants {o.quantityRemaining} / You have {have}");
+                GUI.Label(new Rect(326, y, 240, 22), $"Trader wants {offer.quantityRemaining} / You have {have}");
 
-            float bx = w - 84f;
+            float buttonX = width - 84f;
 
-            if (GUI.Button(new Rect(bx, y, 24, 22), "-"))
+            if (GUI.Button(new Rect(buttonX, y, 24, 22), "-"))
             {
-                var ev = Event.current;
+                Event ev = Event.current;
+
                 if (ev != null && ev.shift && ev.control)
-                    SetQty(o.offerId, 0);
+                    SetQty(offer.offerId, 0);
                 else if (ev != null && ev.shift)
-                    SetQty(o.offerId, qty - 10);
+                    SetQty(offer.offerId, qty - 10);
                 else if (ev != null && ev.control)
-                    SetQty(o.offerId, qty - 5);
+                    SetQty(offer.offerId, qty - 5);
                 else
-                    SetQty(o.offerId, qty - 1);
+                    SetQty(offer.offerId, qty - 1);
             }
 
-            GUI.Label(new Rect(bx + 28, y, 28, 22), qty.ToString());
+            GUI.Label(new Rect(buttonX + 28, y, 28, 22), qty.ToString());
 
-            if (GUI.Button(new Rect(bx + 58, y, 24, 22), "+"))
+            if (GUI.Button(new Rect(buttonX + 58, y, 24, 22), "+"))
             {
-                var ev = Event.current;
-                int max = GetMaxQtyForOffer(o);
+                Event ev = Event.current;
+                int max = GetMaxQtyForOffer(offer);
 
                 if (ev != null && ev.shift && ev.control)
-                    SetQty(o.offerId, max);
+                    SetQty(offer.offerId, max);
                 else if (ev != null && ev.shift)
-                    SetQty(o.offerId, Mathf.Min(qty + 10, max));
+                    SetQty(offer.offerId, Mathf.Min(qty + 10, max));
                 else if (ev != null && ev.control)
-                    SetQty(o.offerId, Mathf.Min(qty + 5, max));
+                    SetQty(offer.offerId, Mathf.Min(qty + 5, max));
                 else
-                    SetQty(o.offerId, Mathf.Min(qty + 1, max));
+                    SetQty(offer.offerId, Mathf.Min(qty + 1, max));
             }
         }
 
@@ -354,51 +465,94 @@ namespace MiniGames
             currentPrice = Mathf.Max(1, currentPrice);
 
             float ratio = currentPrice / (float)basePrice;
-            float signed = (kind == MarketOfferKind.SellToPlayer) ? (1f - ratio) : (ratio - 1f);
+            float signed = kind == MarketOfferKind.SellToPlayer
+                ? 1f - ratio
+                : ratio - 1f;
+
             signed = Mathf.Clamp(signed, -0.75f, 0.75f);
             float t = (signed + 0.75f) / 1.5f;
 
             if (t < 0.5f)
-                return Color.Lerp(new Color(1f, 0.35f, 0.35f, 1f), new Color(1f, 0.92f, 0.35f, 1f), t / 0.5f);
+            {
+                return Color.Lerp(
+                    new Color(1f, 0.35f, 0.35f, 1f),
+                    new Color(1f, 0.92f, 0.35f, 1f),
+                    t / 0.5f);
+            }
 
-            return Color.Lerp(new Color(1f, 0.92f, 0.35f, 1f), new Color(0.35f, 1f, 0.50f, 1f), (t - 0.5f) / 0.5f);
+            return Color.Lerp(
+                new Color(1f, 0.92f, 0.35f, 1f),
+                new Color(0.35f, 1f, 0.50f, 1f),
+                (t - 0.5f) / 0.5f);
+        }
+
+        private int GetQty(string offerId)
+        {
+            if (_uiState == null)
+                _uiState = GetOrCreateUiState();
+
+            if (string.IsNullOrWhiteSpace(offerId))
+                return 0;
+
+            return _uiState.qtyByOfferId.TryGetValue(offerId, out int qty)
+                ? Mathf.Max(0, qty)
+                : 0;
         }
 
         private void SetQty(string offerId, int qty)
         {
+            if (string.IsNullOrWhiteSpace(offerId))
+                return;
+
+            if (_uiState == null)
+                _uiState = GetOrCreateUiState();
+
+            EnsureQuantityState();
+
             qty = Mathf.Clamp(qty, 0, 999);
 
-            var offer = FindOfferById(offerId);
+            NodeMarketOffer offer = FindOfferById(offerId);
             if (offer != null)
                 qty = Mathf.Min(qty, GetMaxQtyForOffer(offer));
 
-            _qtyByOfferId[offerId] = qty;
+            _uiState.qtyByOfferId[offerId] = Mathf.Max(0, qty);
         }
 
         private void ClearAll()
         {
-            var keys = new List<string>(_qtyByOfferId.Keys);
-            for (int i = 0; i < keys.Count; i++)
-                _qtyByOfferId[keys[i]] = 0;
+            if (_uiState == null)
+                _uiState = GetOrCreateUiState();
 
-            _lastUiNote = null;
+            List<string> keys = new List<string>(_uiState.qtyByOfferId.Keys);
+            for (int i = 0; i < keys.Count; i++)
+                _uiState.qtyByOfferId[keys[i]] = 0;
+
+            _uiState.lastUiNote = null;
         }
 
         private string BuildPreviewString()
         {
             int creditsDelta = 0;
 
-            foreach (var o in _offers)
+            foreach (NodeMarketOffer offer in _offers)
             {
-                if (o == null) continue;
-                if (!_qtyByOfferId.TryGetValue(o.offerId, out var qty) || qty <= 0) continue;
+                if (offer == null)
+                    continue;
 
-                qty = Mathf.Min(qty, GetMaxQtyForOffer(o));
-                if (qty <= 0) continue;
+                int qty = GetQty(offer.offerId);
+                if (qty <= 0)
+                    continue;
 
-                int total = o.unitPrice * qty;
-                if (o.kind == MarketOfferKind.SellToPlayer) creditsDelta -= total;
-                else creditsDelta += total;
+                qty = Mathf.Min(qty, GetMaxQtyForOffer(offer));
+                if (qty <= 0)
+                    continue;
+
+                int total = offer.unitPrice * qty;
+
+                if (offer.kind == MarketOfferKind.SellToPlayer)
+                    creditsDelta -= total;
+                else
+                    creditsDelta += total;
             }
 
             string sign = creditsDelta >= 0 ? "+" : "-";
@@ -407,27 +561,32 @@ namespace MiniGames
 
         private void ConfirmTransaction()
         {
-            var draft = new TradeTransactionDraft
+            TradeTransactionDraft draft = new TradeTransactionDraft
             {
                 nodeId = _nodeId,
                 vendorId = null
             };
 
-            foreach (var o in _offers)
+            foreach (NodeMarketOffer offer in _offers)
             {
-                if (o == null) continue;
-                if (!_qtyByOfferId.TryGetValue(o.offerId, out var qty) || qty <= 0) continue;
+                if (offer == null)
+                    continue;
 
-                qty = Mathf.Min(qty, GetMaxQtyForOffer(o));
-                if (qty <= 0) continue;
+                int qty = GetQty(offer.offerId);
+                if (qty <= 0)
+                    continue;
+
+                qty = Mathf.Min(qty, GetMaxQtyForOffer(offer));
+                if (qty <= 0)
+                    continue;
 
                 draft.lines.Add(new TradeLine
                 {
-                    offerId = o.offerId,
-                    itemId = o.itemId,
+                    offerId = offer.offerId,
+                    itemId = offer.itemId,
                     quantity = qty,
-                    unitPrice = o.unitPrice,
-                    direction = o.kind == MarketOfferKind.SellToPlayer
+                    unitPrice = offer.unitPrice,
+                    direction = offer.kind == MarketOfferKind.SellToPlayer
                         ? TradeDirection.BuyFromNode
                         : TradeDirection.SellToNode
                 });
@@ -435,7 +594,10 @@ namespace MiniGames
 
             if (draft.lines.Count == 0)
             {
-                _lastUiNote = "No lines selected";
+                if (_uiState == null)
+                    _uiState = GetOrCreateUiState();
+
+                _uiState.lastUiNote = "No lines selected";
                 return;
             }
 
@@ -449,19 +611,23 @@ namespace MiniGames
                 payloadJson = json
             });
 
-            _lastUiNote = "Trade submitted";
+            if (_uiState == null)
+                _uiState = GetOrCreateUiState();
+
+            _uiState.lastUiNote = "Trade submitted";
             ClearAll();
         }
 
-        private int GetMaxQtyForOffer(NodeMarketOffer o)
+        private int GetMaxQtyForOffer(NodeMarketOffer offer)
         {
-            if (o == null) return 0;
+            if (offer == null)
+                return 0;
 
-            int max = Mathf.Max(0, o.quantityRemaining);
+            int max = Mathf.Max(0, offer.quantityRemaining);
 
-            if (o.kind == MarketOfferKind.BuyFromPlayer)
+            if (offer.kind == MarketOfferKind.BuyFromPlayer)
             {
-                int have = _itemStore.GetCount(o.itemId);
+                int have = _itemStore.GetCount(offer.itemId);
                 max = Mathf.Min(max, have);
             }
 
@@ -470,15 +636,18 @@ namespace MiniGames
 
         private NodeMarketOffer FindOfferById(string offerId)
         {
+            if (string.IsNullOrWhiteSpace(offerId))
+                return null;
+
             for (int i = 0; i < _offers.Count; i++)
             {
-                var o = _offers[i];
-                if (o != null && o.offerId == offerId) return o;
+                NodeMarketOffer offer = _offers[i];
+                if (offer != null && offer.offerId == offerId)
+                    return offer;
             }
+
             return null;
         }
-
-        private readonly List<TradeLine> _tmpLines = new List<TradeLine>(32);
 
         private struct TradePreview
         {
@@ -495,32 +664,40 @@ namespace MiniGames
 
             int tradeBalance = 0;
 
-            foreach (var o in _offers)
+            foreach (NodeMarketOffer offer in _offers)
             {
-                if (o == null) continue;
-                if (!_qtyByOfferId.TryGetValue(o.offerId, out var qty) || qty <= 0) continue;
+                if (offer == null)
+                    continue;
 
-                qty = Mathf.Min(qty, GetMaxQtyForOffer(o));
-                if (qty <= 0) continue;
+                int qty = GetQty(offer.offerId);
+                if (qty <= 0)
+                    continue;
 
-                int lineTotal = o.unitPrice * qty;
+                qty = Mathf.Min(qty, GetMaxQtyForOffer(offer));
+                if (qty <= 0)
+                    continue;
 
-                if (o.kind == MarketOfferKind.SellToPlayer) tradeBalance -= lineTotal;
-                else tradeBalance += lineTotal;
+                int lineTotal = offer.unitPrice * qty;
+
+                if (offer.kind == MarketOfferKind.SellToPlayer)
+                    tradeBalance -= lineTotal;
+                else
+                    tradeBalance += lineTotal;
 
                 _tmpLines.Add(new TradeLine
                 {
-                    offerId = o.offerId,
-                    itemId = o.itemId,
+                    offerId = offer.offerId,
+                    itemId = offer.itemId,
                     quantity = qty,
-                    unitPrice = o.unitPrice,
-                    direction = o.kind == MarketOfferKind.SellToPlayer
+                    unitPrice = offer.unitPrice,
+                    direction = offer.kind == MarketOfferKind.SellToPlayer
                         ? TradeDirection.BuyFromNode
                         : TradeDirection.SellToNode
                 });
             }
 
             int fee = 0;
+
             if (_feePreview != null && _nodeState != null && _tmpLines.Count > 0)
                 fee = Mathf.Max(0, _feePreview.ComputeFeeTotal(_nodeState, _tmpLines, _timeBucket));
 
@@ -537,56 +714,74 @@ namespace MiniGames
             };
         }
 
-        private void DrawInventoryPanel(Rect r)
+        private void DrawInventoryPanel(Rect rect)
         {
-            GUI.Box(r, GUIContent.none);
+            if (_uiState == null)
+                _uiState = GetOrCreateUiState();
 
-            float x = r.x + 10;
-            float y = r.y + 8;
-            float w = r.width - 20;
+            GUI.Box(rect, GUIContent.none);
 
-            GUI.Label(new Rect(x, y, w, 20), "PLAYER INVENTORY");
+            float x = rect.x + 10;
+            float y = rect.y + 8;
+            float width = rect.width - 20;
+
+            GUI.Label(new Rect(x, y, width, 20), "PLAYER INVENTORY");
             y += 22;
 
             GUI.Label(new Rect(x, y, 44, 20), "Filter");
-            _invFilter = GUI.TextField(new Rect(x + 48, y, w - 48 - 110, 20), _invFilter ?? "");
-            _invOnlyRelevant = GUI.Toggle(new Rect(x + w - 110, y, 110, 20), _invOnlyRelevant, "Relevant");
+            _uiState.invFilter = GUI.TextField(
+                new Rect(x + 48, y, width - 48 - 110, 20),
+                _uiState.invFilter ?? "");
+
+            _uiState.invOnlyRelevant = GUI.Toggle(
+                new Rect(x + width - 110, y, 110, 20),
+                _uiState.invOnlyRelevant,
+                "Relevant");
+
             y += 26;
 
-            var entries = new List<(string id, int count)>();
+            List<(string id, int count)> entries = new List<(string id, int count)>();
             CollectInventoryEntries(entries);
 
-            string f = (_invFilter ?? "").Trim();
-            if (!string.IsNullOrEmpty(f))
+            string filter = (_uiState.invFilter ?? "").Trim();
+            if (!string.IsNullOrEmpty(filter))
             {
                 for (int i = entries.Count - 1; i >= 0; i--)
-                    if (entries[i].id.IndexOf(f, StringComparison.OrdinalIgnoreCase) < 0)
+                {
+                    if (entries[i].id.IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0)
                         entries.RemoveAt(i);
+                }
             }
 
-            if (_invOnlyRelevant)
+            if (_uiState.invOnlyRelevant)
             {
-                var relevant = BuildRelevantItemSet();
+                HashSet<string> relevant = BuildRelevantItemSet();
+
                 for (int i = entries.Count - 1; i >= 0; i--)
+                {
                     if (!relevant.Contains(entries[i].id))
                         entries.RemoveAt(i);
+                }
             }
 
             entries.Sort((a, b) =>
             {
-                int c = b.count.CompareTo(a.count);
-                return c != 0 ? c : string.Compare(a.id, b.id, StringComparison.OrdinalIgnoreCase);
+                int countCompare = b.count.CompareTo(a.count);
+                return countCompare != 0
+                    ? countCompare
+                    : string.Compare(a.id, b.id, StringComparison.OrdinalIgnoreCase);
             });
 
             float listY = y;
-            float listH = r.yMax - 10 - listY;
+            float listH = rect.yMax - 10 - listY;
 
-            var view = new Rect(x, listY, w, listH);
-            var content = new Rect(0, 0, w - 16, Mathf.Max(1, entries.Count) * 22 + 6);
+            Rect view = new Rect(x, listY, width, listH);
+            Rect content = new Rect(0, 0, width - 16, Mathf.Max(1, entries.Count) * 22 + 6);
 
-            _invScroll = GUI.BeginScrollView(view, _invScroll, content);
+            _uiState.invScroll = GUI.BeginScrollView(view, _uiState.invScroll, content);
 
             float yy = 4;
+
             if (entries.Count == 0)
             {
                 GUI.Label(new Rect(4, yy, content.width - 8, 20), "(empty)");
@@ -595,9 +790,11 @@ namespace MiniGames
             {
                 for (int i = 0; i < entries.Count; i++)
                 {
-                    var e = entries[i];
-                    GUI.Label(new Rect(4, yy, content.width - 70, 20), e.id);
-                    GUI.Label(new Rect(content.width - 60, yy, 56, 20), e.count.ToString());
+                    (string id, int count) entry = entries[i];
+
+                    GUI.Label(new Rect(4, yy, content.width - 70, 20), entry.id);
+                    GUI.Label(new Rect(content.width - 60, yy, 56, 20), entry.count.ToString());
+
                     yy += 22;
                 }
             }
@@ -608,22 +805,27 @@ namespace MiniGames
         private void CollectInventoryEntries(List<(string id, int count)> outList)
         {
             outList.Clear();
-            foreach (var kvp in _itemStore.Enumerate())
+
+            foreach (KeyValuePair<string, int> kvp in _itemStore.Enumerate())
             {
-                if (kvp.Value <= 0) continue;
+                if (kvp.Value <= 0)
+                    continue;
+
                 outList.Add((kvp.Key, kvp.Value));
             }
         }
 
         private HashSet<string> BuildRelevantItemSet()
         {
-            var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            HashSet<string> set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             for (int i = 0; i < _offers.Count; i++)
             {
-                var o = _offers[i];
-                if (o == null) continue;
-                set.Add(o.itemId);
+                NodeMarketOffer offer = _offers[i];
+                if (offer == null)
+                    continue;
+
+                set.Add(offer.itemId);
             }
 
             return set;

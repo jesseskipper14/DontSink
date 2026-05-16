@@ -209,10 +209,6 @@ MonoBehaviour:
     slotCount: 0
     columnCount: 0
     slots: []
-  cargoRackState:
-    slotCount: 0
-    columnCount: 0
-    slots: []
   references:
     version: 2
     RefIds: []
@@ -292,7 +288,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   storageModule: {fileID: -4281208711863345086}
-  cargoPrefabCatalog: {fileID: 11400000, guid: 2902c3e55ec11334d984901adf6a2cf5, type: 2}
   anchorRoot: {fileID: 0}
   autoGenerateAnchorsIfMissing: 1
   gridOrigin: {x: -0.9, y: -0.9}
@@ -300,6 +295,12 @@ MonoBehaviour:
   visualScale: 1
   sortingOrderOffset: 5
   onlyForContainerRack: 1
+  showCargoLabels: 1
+  cargoLabelFont: {fileID: 0}
+  cargoLabelLocalOffset: {x: 0, y: 0, z: -0.01}
+  cargoLabelFontSize: 3
+  cargoLabelMaxCharacters: 14
+  cargoLabelSortingOrderOffset: 2
   verboseLogging: 0
 --- !u!1 &3236304710411494947
 GameObject:

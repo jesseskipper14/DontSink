@@ -2,12 +2,15 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 [DisallowMultipleComponent]
 public sealed class InventoryDragController : MonoBehaviour
 {
     [SerializeField] private Image dragIcon;
     [SerializeField] private Text dragCount;
+    [SerializeField] private TMP_Text dragCargoLabel;
+    [SerializeField] private int dragCargoLabelMaxCharacters = 10;
     [SerializeField] private Canvas canvas;
     [SerializeField] private DisplacedItemResolver displacedItemResolver;
     [SerializeField] private PlayerInventoryUI playerInventoryUI;
@@ -75,6 +78,9 @@ public sealed class InventoryDragController : MonoBehaviour
 
         if (dragCount != null)
             dragCount.rectTransform.anchoredPosition = localPoint;
+
+        if (dragCargoLabel != null)
+            dragCargoLabel.rectTransform.anchoredPosition = localPoint;
 
         if (isDragging)
         {
@@ -304,28 +310,54 @@ public sealed class InventoryDragController : MonoBehaviour
 
     private void ShowVisual(ItemInstance item)
     {
+        bool hasItem = item != null && item.Definition != null;
+        bool isCargo = hasItem && CargoLabelFormatter.IsCargo(item);
+
         if (dragIcon != null)
         {
-            dragIcon.enabled = true;
-            dragIcon.sprite = item.Definition != null ? item.Definition.Icon : null;
+            dragIcon.enabled = hasItem;
+            dragIcon.sprite = hasItem ? item.Definition.Icon : null;
         }
 
         if (dragCount != null)
         {
-            dragCount.gameObject.SetActive(item.Quantity > 1);
-            dragCount.text = item.Quantity > 1 ? item.Quantity.ToString() : "";
+            bool showCount = hasItem && !isCargo && item.Quantity > 1;
+            dragCount.gameObject.SetActive(showCount);
+            dragCount.text = showCount ? item.Quantity.ToString() : "";
+        }
+
+        if (dragCargoLabel != null)
+        {
+            dragCargoLabel.gameObject.SetActive(isCargo);
+            dragCargoLabel.text = isCargo
+                ? CargoLabelFormatter.Format(item.Definition, dragCargoLabelMaxCharacters)
+                : "";
+
+            dragCargoLabel.alignment = TextAlignmentOptions.Center;
+            dragCargoLabel.color = Color.black;
+            dragCargoLabel.textWrappingMode = TextWrappingModes.NoWrap;
+            dragCargoLabel.raycastTarget = false;
         }
     }
 
     private void HideVisual()
     {
         if (dragIcon != null)
+        {
             dragIcon.enabled = false;
+            dragIcon.sprite = null;
+        }
 
         if (dragCount != null)
         {
             dragCount.text = "";
             dragCount.gameObject.SetActive(false);
+        }
+
+        if (dragCargoLabel != null)
+        {
+            dragCargoLabel.text = "";
+            dragCargoLabel.gameObject.SetActive(false);
         }
     }
 

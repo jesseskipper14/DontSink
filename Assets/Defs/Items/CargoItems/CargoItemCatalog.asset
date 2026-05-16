@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c6b2a990574abc4090a2c954fdfca15, type: 3}
+  m_Name: CargoItemCatalog
+  m_EditorClassIdentifier: 
+  entries:
+  - tradeItemId: cloth
+    cargoItemDefinition: {fileID: 11400000, guid: a4709e9f13d18434a84a778758edbe51, type: 2}
+  - tradeItemId: fish
+    cargoItemDefinition: {fileID: 11400000, guid: 8e0cbbc09f123c744ae1cf1891684fc6, type: 2}
+  - tradeItemId: fuel
+    cargoItemDefinition: {fileID: 11400000, guid: e93902e11aa08ec4dbeeb73dca6a7c05, type: 2}
+  - tradeItemId: grain
+    cargoItemDefinition: {fileID: 11400000, guid: 7be52de35e2bc1543bf8b57d3e16e97f, type: 2}
+  - tradeItemId: luxuries
+    cargoItemDefinition: {fileID: 11400000, guid: 7f5fbe259ce89ca4387ce0efe9b9b1b1, type: 2}
+  - tradeItemId: medkit
+    cargoItemDefinition: {fileID: 11400000, guid: bf9ae13d5091a1a438b836a4d4faf75c, type: 2}
+  - tradeItemId: rope
+    cargoItemDefinition: {fileID: 11400000, guid: 8484c3e926b740d469b37e5f96769556, type: 2}
+  - tradeItemId: scrap
+    cargoItemDefinition: {fileID: 11400000, guid: 29783d5bd80983e4cb757192ef3a2aba, type: 2}
+  - tradeItemId: wood
+    cargoItemDefinition: {fileID: 11400000, guid: b7594c912df5a284183405c919875e38, type: 2}

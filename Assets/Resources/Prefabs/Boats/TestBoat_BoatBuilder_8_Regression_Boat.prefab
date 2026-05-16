@@ -1456,7 +1456,6 @@ MonoBehaviour:
   geometryLocalCenter: {x: 5, y: 3.6960678}
   throttleInput: 0
   throttleForce: 1
-  CargoItems: []
   Compartments:
   - {fileID: 0}
   - {fileID: 1875061771293676635}

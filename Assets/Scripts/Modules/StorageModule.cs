@@ -6,14 +6,11 @@ public sealed class StorageModule : MonoBehaviour, IInstalledModuleLifecycle
     [Header("Runtime")]
     [SerializeField] private InstalledModule installedModule;
     [SerializeField] private ItemContainerState containerState;
-    [SerializeField] private CargoRackState cargoRackState;
 
     public InstalledModule InstalledModule => installedModule;
     public ItemContainerState ContainerState => containerState;
 
     public bool HasContainer => containerState != null;
-    public CargoRackState CargoRackState => cargoRackState;
-    public bool HasCargoRackState => cargoRackState != null;
 
     public StorageModuleMode Mode
     {
@@ -70,14 +67,6 @@ public sealed class StorageModule : MonoBehaviour, IInstalledModuleLifecycle
         {
             containerState.EnsureLayout(slotCount, columnCount);
         }
-
-        if (def.Storage.IsContainerRack)
-        {
-            if (cargoRackState == null)
-                cargoRackState = new CargoRackState(slotCount, columnCount);
-            else
-                cargoRackState.EnsureLayout(slotCount, columnCount);
-        }
     }
 
     public bool CanAcceptItem(ItemInstance item)
@@ -125,40 +114,13 @@ public sealed class StorageModule : MonoBehaviour, IInstalledModuleLifecycle
             return false;
 
         bool isPortableContainer = itemDef.IsContainer;
-
-        // Temporary cargo crate detection.
-        // Later this should become a real ItemCategoryFlags.CargoCrate or
-        // ItemDefinition flag, because string-matching IDs is how code starts smoking indoors.
-        bool isCargoCrate = IsProbablyCargoCrate(itemDef);
+        bool isCargo = (itemDef.ItemCategories & ItemCategoryFlags.Cargo) != 0;
 
         if (isPortableContainer && storage.AcceptsPortableContainers)
             return true;
 
-        if (isCargoCrate && storage.AcceptsCargoCrates)
+        if (isCargo && storage.AcceptsCargoCrates)
             return true;
-
-        return false;
-    }
-
-    private static bool IsProbablyCargoCrate(ItemDefinition itemDef)
-    {
-        if (itemDef == null)
-            return false;
-
-        string id = itemDef.ItemId;
-        string display = itemDef.DisplayName;
-
-        if (!string.IsNullOrWhiteSpace(id) &&
-            id.ToLowerInvariant().Contains("crate"))
-        {
-            return true;
-        }
-
-        if (!string.IsNullOrWhiteSpace(display) &&
-            display.ToLowerInvariant().Contains("crate"))
-        {
-            return true;
-        }
 
         return false;
     }
@@ -205,17 +167,6 @@ public sealed class StorageModule : MonoBehaviour, IInstalledModuleLifecycle
             containerState.NotifyChanged();
     }
 
-    public bool IsCargoSlotOccupied(int slotIndex)
-    {
-        EnsureContainer();
-
-        if (cargoRackState == null)
-            return false;
-
-        CargoRackSlot slot = cargoRackState.GetSlot(slotIndex);
-        return slot != null && !slot.IsEmpty;
-    }
-
     public bool IsItemSlotOccupied(int slotIndex)
     {
         EnsureContainer();
@@ -229,7 +180,7 @@ public sealed class StorageModule : MonoBehaviour, IInstalledModuleLifecycle
 
     public bool IsRackSlotCompletelyEmpty(int slotIndex)
     {
-        return !IsItemSlotOccupied(slotIndex) && !IsCargoSlotOccupied(slotIndex);
+        return !IsItemSlotOccupied(slotIndex);
     }
 
     public bool CanAcceptItemInSlot(ItemInstance item, int slotIndex)
@@ -237,131 +188,7 @@ public sealed class StorageModule : MonoBehaviour, IInstalledModuleLifecycle
         if (item == null)
             return false;
 
-        if (IsCargoSlotOccupied(slotIndex))
-            return false;
-
         return CanAcceptItem(item);
-    }
-
-    public bool CanStoreCargoCrate(CargoCrate crate)
-    {
-        if (crate == null)
-            return false;
-
-        ModuleDefinition def = GetModuleDefinition();
-        if (def == null || !def.HasStorage || def.Storage == null)
-            return false;
-
-        if (!def.Storage.IsContainerRack)
-            return false;
-
-        if (!def.Storage.AcceptsCargoCrates)
-            return false;
-
-        EnsureContainer();
-
-        if (cargoRackState == null)
-            return false;
-
-        for (int i = 0; i < cargoRackState.SlotCount; i++)
-        {
-            if (IsRackSlotCompletelyEmpty(i))
-                return true;
-        }
-
-        return false;
-    }
-
-    public bool TryStoreCargoCrate(CargoCrate crate, out int storedSlotIndex)
-    {
-        storedSlotIndex = -1;
-
-        if (!CanStoreCargoCrate(crate))
-            return false;
-
-        CargoCrateStoredSnapshot snapshot = CargoCrateSnapshotUtility.Capture(crate);
-        if (snapshot == null)
-            return false;
-
-        for (int i = 0; i < cargoRackState.SlotCount; i++)
-        {
-            if (!IsRackSlotCompletelyEmpty(i))
-                continue;
-
-            CargoRackSlot slot = cargoRackState.GetSlot(i);
-            if (slot == null)
-                continue;
-
-            slot.Set(snapshot);
-            storedSlotIndex = i;
-
-            cargoRackState.NotifyChanged();
-
-            if (containerState != null)
-                containerState.NotifyChanged();
-
-            Destroy(crate.gameObject);
-            return true;
-        }
-
-        return false;
-    }
-
-    public CargoCrateStoredSnapshot RemoveCargoCrateSnapshotAt(int slotIndex)
-    {
-        EnsureContainer();
-
-        if (cargoRackState == null)
-            return null;
-
-        CargoRackSlot slot = cargoRackState.GetSlot(slotIndex);
-        if (slot == null || slot.IsEmpty)
-            return null;
-
-        CargoCrateStoredSnapshot snapshot = slot.Clear();
-
-        cargoRackState.NotifyChanged();
-
-        if (containerState != null)
-            containerState.NotifyChanged();
-
-        return snapshot;
-    }
-
-    public CargoRackStateSnapshot CaptureCargoRackSnapshot()
-    {
-        EnsureContainer();
-
-        return cargoRackState != null
-            ? cargoRackState.ToSnapshot()
-            : null;
-    }
-
-    public void RestoreCargoRackSnapshot(CargoRackStateSnapshot snapshot)
-    {
-        ModuleDefinition def = GetModuleDefinition();
-
-        if (def == null || !def.HasStorage || def.Storage == null)
-            return;
-
-        if (!def.Storage.IsContainerRack)
-            return;
-
-        if (snapshot != null)
-        {
-            cargoRackState = CargoRackState.FromSnapshot(snapshot);
-        }
-        else
-        {
-            int slotCount = Mathf.Max(1, def.Storage.SlotCount);
-            int columnCount = Mathf.Max(1, def.Storage.ColumnCount);
-            cargoRackState = new CargoRackState(slotCount, columnCount);
-        }
-
-        EnsureContainer();
-
-        cargoRackState?.NotifyChanged();
-        containerState?.NotifyChanged();
     }
 
     private void CacheRefs()

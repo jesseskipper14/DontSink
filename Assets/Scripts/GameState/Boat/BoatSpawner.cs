@@ -13,7 +13,7 @@ public sealed class BoatSpawner : MonoBehaviour
 
     [Header("Catalogs")]
     [SerializeField] private BoatCatalog boatCatalog;
-    [SerializeField] private TradeCargoPrefabCatalog tradeCargoPrefabCatalog;
+    //[SerializeField] private TradeCargoPrefabCatalog tradeCargoPrefabCatalog;
 
     [Header("Fallback")]
     [SerializeField] private GameObject defaultBoatPrefab;
@@ -63,7 +63,7 @@ public sealed class BoatSpawner : MonoBehaviour
         RestoreModulesAndPower(gs, boatGO);
         RestoreCompartments(gs, boatGO);
         RestoreAccessStates(gs, boatGO);
-        RestoreCargo(gs, boatGO);
+        //RestoreCargo(gs, boatGO);
         RestoreLooseItems(gs, boatGO);
         RefreshAutoRegistration(boatGO);
 
@@ -271,58 +271,58 @@ public sealed class BoatSpawner : MonoBehaviour
         return null;
     }
 
-    private void RestoreCargo(GameState gs, GameObject boatGO)
-    {
-        Log("RestoreCargo BEGIN");
+    //private void RestoreCargo(GameState gs, GameObject boatGO)
+    //{
+    //    Log("RestoreCargo BEGIN");
 
-        if (tradeCargoPrefabCatalog == null)
-        {
-            LogWarning("RestoreCargo skipped because tradeCargoPrefabCatalog is NULL.");
-            return;
-        }
+    //    if (tradeCargoPrefabCatalog == null)
+    //    {
+    //        LogWarning("RestoreCargo skipped because tradeCargoPrefabCatalog is NULL.");
+    //        return;
+    //    }
 
-        if (gs == null)
-        {
-            LogWarning("RestoreCargo skipped because GameState is NULL.");
-            return;
-        }
+    //    if (gs == null)
+    //    {
+    //        LogWarning("RestoreCargo skipped because GameState is NULL.");
+    //        return;
+    //    }
 
-        if (boatGO == null)
-        {
-            LogWarning("RestoreCargo skipped because boatGO is NULL.");
-            return;
-        }
+    //    if (boatGO == null)
+    //    {
+    //        LogWarning("RestoreCargo skipped because boatGO is NULL.");
+    //        return;
+    //    }
 
-        List<CargoManifest.Snapshot> manifest = null;
-        string manifestSource = "none";
+    //    List<CargoManifest.Snapshot> manifest = null;
+    //    string manifestSource = "none";
 
-        if (gs.activeTravel != null && gs.activeTravel.cargoManifest != null)
-        {
-            manifest = gs.activeTravel.cargoManifest;
-            manifestSource = "GameState.activeTravel.cargoManifest";
-        }
-        else if (gs.boat != null)
-        {
-            manifest = gs.boat.cargo;
-            manifestSource = "GameState.boat.cargo";
-        }
+    //    if (gs.activeTravel != null && gs.activeTravel.cargoManifest != null)
+    //    {
+    //        manifest = gs.activeTravel.cargoManifest;
+    //        manifestSource = "GameState.activeTravel.cargoManifest";
+    //    }
+    //    else if (gs.boat != null)
+    //    {
+    //        manifest = gs.boat.cargo;
+    //        manifestSource = "GameState.boat.cargo";
+    //    }
 
-        Log(
-            $"RestoreCargo resolved manifestSource='{manifestSource}' " +
-            $"| count={(manifest != null ? manifest.Count : -1)}");
+    //    Log(
+    //        $"RestoreCargo resolved manifestSource='{manifestSource}' " +
+    //        $"| count={(manifest != null ? manifest.Count : -1)}");
 
-        if (manifest != null && manifest.Count > 0)
-        {
-            Log($"RestoreCargo: restoring {manifest.Count} cargo snapshots.");
-            CargoManifest.Restore(boatGO.transform, manifest, tradeCargoPrefabCatalog);
-        }
-        else
-        {
-            Log("RestoreCargo: no cargo to restore.");
-        }
+    //    if (manifest != null && manifest.Count > 0)
+    //    {
+    //        //Log($"RestoreCargo: restoring {manifest.Count} cargo snapshots.");
+    //        //CargoManifest.Restore(boatGO.transform, manifest, tradeCargoPrefabCatalog);
+    //    }
+    //    else
+    //    {
+    //        Log("RestoreCargo: no cargo to restore.");
+    //    }
 
-        Log("RestoreCargo END");
-    }
+    //    Log("RestoreCargo END");
+    //}
 
     private void RestoreModulesAndPower(GameState gs, GameObject boatGO)
     {

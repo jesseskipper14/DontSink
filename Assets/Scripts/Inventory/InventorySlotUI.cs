@@ -25,6 +25,8 @@ public sealed class InventorySlotUI : MonoBehaviour,
     [SerializeField] private Image background;
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color invalidTargetColor = new Color(1f, 0.45f, 0.45f, 1f);
+    [SerializeField] private TMPro.TMP_Text cargoLabelText;
+    [SerializeField] private int cargoLabelMaxCharacters = 10;
 
     private bool _dragBeganThisPress;
     private bool _pointerIsDown;
@@ -86,20 +88,25 @@ public sealed class InventorySlotUI : MonoBehaviour,
         ItemInstance instance = GetInstance();
         bool hasItem = instance != null && instance.Definition != null;
 
-        CargoCrateStoredSnapshot cargoSnapshot = null;
-        bool hasCargo = !hasItem && TryGetCargoSnapshot(out cargoSnapshot);
+        bool isCargo = CargoLabelFormatter.IsCargo(instance);
+
+        if (cargoLabelText != null)
+        {
+            cargoLabelText.enabled = isCargo;
+
+            if (isCargo)
+                cargoLabelText.text = CargoLabelFormatter.Format(instance.Definition, cargoLabelMaxCharacters);
+            else
+                cargoLabelText.text = "";
+        }
 
         if (icon != null)
         {
-            icon.enabled = hasItem || hasCargo;
+            icon.enabled = hasItem;
 
             if (hasItem)
             {
                 icon.sprite = instance.Definition.Icon;
-            }
-            else if (hasCargo)
-            {
-                icon.sprite = ResolveCargoIcon(cargoSnapshot);
             }
             else
             {
@@ -109,7 +116,7 @@ public sealed class InventorySlotUI : MonoBehaviour,
 
         if (purposeIcon != null)
         {
-            bool showPurpose = !hasItem && !hasCargo && assignedPurposeIcon != null;
+            bool showPurpose = !hasItem && assignedPurposeIcon != null;
             purposeIcon.enabled = showPurpose;
             purposeIcon.sprite = showPurpose ? assignedPurposeIcon : null;
         }
@@ -118,8 +125,6 @@ public sealed class InventorySlotUI : MonoBehaviour,
         {
             if (hasItem)
                 countText.text = instance.Quantity > 1 ? instance.Quantity.ToString() : "";
-            else if (hasCargo)
-                countText.text = cargoSnapshot.quantity > 1 ? cargoSnapshot.quantity.ToString() : FormatCargoShortLabel(cargoSnapshot);
             else
                 countText.text = "";
         }
@@ -128,8 +133,8 @@ public sealed class InventorySlotUI : MonoBehaviour,
             selectionHighlight.SetActive(false);
 
         Log(
-            $"Refresh | slotType={SlotType} | hasItem={hasItem} | hasCargo={hasCargo} " +
-            $"| item={DescribeItem(instance)} | cargo={(cargoSnapshot != null ? cargoSnapshot.itemId : "NULL")} " +
+            $"Refresh | slotType={SlotType} | hasItem={hasItem} " +
+            $"| item={DescribeItem(instance)} " +
             $"| countText='{(countText != null ? countText.text : "NO_TEXT")}'");
     }
 
@@ -303,46 +308,6 @@ public sealed class InventorySlotUI : MonoBehaviour,
 
         string itemId = item.Definition != null ? item.Definition.ItemId : "NO_DEF";
         return $"{itemId} x{item.Quantity} inst={item.InstanceId}";
-    }
-
-    private bool TryGetCargoSnapshot(out CargoCrateStoredSnapshot snapshot)
-    {
-        snapshot = null;
-
-        if (binding is StorageModuleSlotBinding storageBinding)
-            return storageBinding.TryGetCargoSnapshot(out snapshot);
-
-        return false;
-    }
-
-    private Sprite ResolveCargoIcon(CargoCrateStoredSnapshot snapshot)
-    {
-        if (snapshot == null)
-            return cargoFallbackIcon;
-
-        // For now, use the optional fallback icon.
-        // We are intentionally not resolving TradeCargoPrefabCatalog here yet,
-        // because InventorySlotUI is generic UI and should not know cargo catalogs forever.
-        return cargoFallbackIcon;
-    }
-
-    private string FormatCargoShortLabel(CargoCrateStoredSnapshot snapshot)
-    {
-        if (snapshot == null)
-            return "Cargo";
-
-        if (string.IsNullOrWhiteSpace(snapshot.itemId))
-            return "Cargo";
-
-        string raw = snapshot.itemId.Replace("_", " ").Replace("-", " ").Trim();
-
-        if (raw.Length == 0)
-            return "Cargo";
-
-        // Keep this short because it is going into tiny count text.
-        return raw.Length <= 3
-            ? raw.ToUpperInvariant()
-            : char.ToUpperInvariant(raw[0]) + raw.Substring(1).ToLowerInvariant();
     }
 
     private bool isShowingInvalidTarget;

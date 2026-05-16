@@ -33,8 +33,8 @@ public sealed class SceneTransitionController : MonoBehaviour
         int seed,
         float routeLength,
         string boatInstanceId,
-        string boatPrefabGuid,
-        System.Collections.Generic.List<CargoManifest.Snapshot> cargoManifest)
+        string boatPrefabGuid)
+        //System.Collections.Generic.List<CargoManifest.Snapshot> cargoManifest)
     {
         GameState gs = GameState.I;
         if (gs == null)
@@ -50,8 +50,8 @@ public sealed class SceneTransitionController : MonoBehaviour
         // This matters if loose items/cargo exist on the boat while docked.
         SaveCurrentBoatState("StartTravelToBoatScene before loading BoatScene");
 
-        System.Collections.Generic.List<CargoManifest.Snapshot> payloadCargo =
-            cargoManifest ?? gs.boat?.cargo;
+        //System.Collections.Generic.List<CargoManifest.Snapshot> payloadCargo =
+        //    cargoManifest ?? gs.boat?.cargo;
 
         var payload = new TravelPayload(
             fromNodeStableId,
@@ -59,15 +59,15 @@ public sealed class SceneTransitionController : MonoBehaviour
             seed,
             routeLength,
             boatInstanceId,
-            boatPrefabGuid,
-            payloadCargo);
+            boatPrefabGuid);
+            //payloadCargo);
 
         gs.BeginTravel(payload);
 
         Log(
             $"StartTravelToBoatScene | from={fromNodeStableId} | to={toNodeStableId} " +
-            $"| seed={seed} | routeLength={routeLength} | boatId={boatInstanceId} " +
-            $"| boatGuid={boatPrefabGuid} | cargoCount={(payloadCargo != null ? payloadCargo.Count : 0)}");
+            $"| seed={seed} | routeLength={routeLength} | boatId={boatInstanceId} ");
+            //$"| boatGuid={boatPrefabGuid} | cargoCount={(payloadCargo != null ? payloadCargo.Count : 0)}");
 
         SceneManager.LoadScene(boatSceneName);
     }
@@ -217,7 +217,7 @@ public sealed class SceneTransitionController : MonoBehaviour
             LogWarning($"SaveCurrentBoatState | boat '{boat.name}' has empty BoatInstanceId.");
         }
 
-        CaptureCargo(gs, boatRoot);
+        //CaptureCargo(gs, boatRoot);
         CaptureLooseItems(gs, boat);
         CaptureModulesAndPower(gs, boat);
         CaptureCompartments(gs, boat);
@@ -272,21 +272,21 @@ public sealed class SceneTransitionController : MonoBehaviour
         return fallback;
     }
 
-    private void CaptureCargo(GameState gs, Transform boatRoot)
-    {
-        if (gs == null || gs.boat == null || boatRoot == null)
-            return;
+    //private void CaptureCargo(GameState gs, Transform boatRoot)
+    //{
+    //    if (gs == null || gs.boat == null || boatRoot == null)
+    //        return;
 
-        BoatBoardedVolume boarded = boatRoot.GetComponentInChildren<BoatBoardedVolume>(true);
-        Collider2D volumeCol = boarded != null ? boarded.GetComponent<Collider2D>() : null;
+    //    BoatBoardedVolume boarded = boatRoot.GetComponentInChildren<BoatBoardedVolume>(true);
+    //    Collider2D volumeCol = boarded != null ? boarded.GetComponent<Collider2D>() : null;
 
-        gs.boat.cargo = CargoManifest.Capture(boatRoot, volumeCol);
+    //    //gs.boat.cargo = CargoManifest.Capture(boatRoot, volumeCol);
 
-        Log(
-            $"CaptureCargo | cargoCount={(gs.boat.cargo != null ? gs.boat.cargo.Count : -1)} " +
-            $"| boardedVolume={(boarded != null ? boarded.name : "NULL")} " +
-            $"| volumeCol={(volumeCol != null ? volumeCol.name : "NULL")}");
-    }
+    //    Log(
+    //        //$"CaptureCargo | cargoCount={(gs.boat.cargo != null ? gs.boat.cargo.Count : -1)} " +
+    //        $"| boardedVolume={(boarded != null ? boarded.name : "NULL")} " +
+    //        $"| volumeCol={(volumeCol != null ? volumeCol.name : "NULL")}");
+    //}
 
     private void CaptureLooseItems(GameState gs, Boat boat)
     {

@@ -3,7 +3,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
-public sealed class CargoCrate : MonoBehaviour, IInteractable, IInteractPromptProvider, ICargoManifestPayload
+public sealed class CargoCrate : MonoBehaviour, IInteractable, IInteractPromptProvider
 {
     [Header("Crate Data")]
     public string itemId;

@@ -79,28 +79,4 @@ public sealed class StorageModuleSlotBinding : IInventorySlotBinding
         storageModule.EnsureContainer();
         return ContainerPlacementUtility.CanPlaceIntoSlot(storageModule, slotIndex, incoming);
     }
-
-    public bool TryGetCargoSnapshot(out CargoCrateStoredSnapshot snapshot)
-    {
-        snapshot = null;
-
-        if (storageModule == null)
-            return false;
-
-        storageModule.EnsureContainer();
-
-        CargoRackState cargoState = storageModule.CargoRackState;
-        if (cargoState == null)
-            return false;
-
-        if (slotIndex < 0 || slotIndex >= cargoState.SlotCount)
-            return false;
-
-        CargoRackSlot slot = cargoState.GetSlot(slotIndex);
-        if (slot == null || slot.IsEmpty || slot.Crate == null)
-            return false;
-
-        snapshot = slot.Crate;
-        return true;
-    }
 }

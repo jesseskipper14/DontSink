@@ -598,8 +598,8 @@ public static class SaveGameService
         if (!Mathf.Approximately(travel.routeLength, 0f))
             return true;
 
-        if (travel.cargoManifest != null && travel.cargoManifest.Count > 0)
-            return true;
+        //if (travel.cargoManifest != null && travel.cargoManifest.Count > 0)
+        //    return true;
 
         return false;
     }

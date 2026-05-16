@@ -7,9 +7,6 @@ public sealed class StorageRackVisualSlots : MonoBehaviour, IInstalledModuleLife
     [Header("Refs")]
     [SerializeField] private StorageModule storageModule;
 
-    [Tooltip("Used to resolve stored physical cargo snapshots into cargo crate prefab sprites.")]
-    [SerializeField] private TradeCargoPrefabCatalog cargoPrefabCatalog;
-
     [Tooltip("Optional parent containing Slot_00, Slot_01, etc. If empty, anchors are auto-generated at runtime.")]
     [SerializeField] private Transform anchorRoot;
 
@@ -29,6 +26,14 @@ public sealed class StorageRackVisualSlots : MonoBehaviour, IInstalledModuleLife
     [Tooltip("If true, only ContainerRack storage modules show visuals.")]
     [SerializeField] private bool onlyForContainerRack = true;
 
+    [Header("Cargo Label")]
+    [SerializeField] private bool showCargoLabels = true;
+    [SerializeField] private TMPro.TMP_FontAsset cargoLabelFont;
+    [SerializeField] private Vector3 cargoLabelLocalOffset = new Vector3(0f, 0f, -0.01f);
+    [SerializeField] private float cargoLabelFontSize = 3f;
+    [SerializeField] private int cargoLabelMaxCharacters = 14;
+    [SerializeField] private int cargoLabelSortingOrderOffset = 2;
+
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = false;
 
@@ -38,7 +43,6 @@ public sealed class StorageRackVisualSlots : MonoBehaviour, IInstalledModuleLife
     private bool _needsRefresh;
 
     private ItemContainerState _boundItemState;
-    private CargoRackState _boundCargoState;
 
     private void Awake()
     {
@@ -63,13 +67,11 @@ public sealed class StorageRackVisualSlots : MonoBehaviour, IInstalledModuleLife
         storageModule.EnsureContainer();
 
         ItemContainerState currentItemState = storageModule.ContainerState;
-        CargoRackState currentCargoState = storageModule.CargoRackState;
 
         // Save/load restore can replace either state object.
         // If that happens after this visual component already subscribed,
         // rebind and refresh. Unity lifecycle roulette, now with shelves.
-        if (!ReferenceEquals(currentItemState, _boundItemState) ||
-            !ReferenceEquals(currentCargoState, _boundCargoState))
+        if (!ReferenceEquals(currentItemState, _boundItemState))
         {
             Bind();
             RefreshVisuals();
@@ -122,16 +124,15 @@ public sealed class StorageRackVisualSlots : MonoBehaviour, IInstalledModuleLife
         storageModule.EnsureContainer();
 
         ItemContainerState itemState = storageModule.ContainerState;
-        CargoRackState cargoState = storageModule.CargoRackState;
 
-        if (itemState == null && cargoState == null)
+        if (itemState == null)
         {
             Log("Refresh skipped: both itemState and cargoState are null.");
             return;
         }
 
-        int slotCount = GetVisualSlotCount(itemState, cargoState);
-        int columnCount = GetVisualColumnCount(itemState, cargoState);
+        int slotCount = GetVisualSlotCount(itemState);
+        int columnCount = GetVisualColumnCount(itemState);
 
         EnsureAnchors(slotCount, columnCount);
 
@@ -140,7 +141,6 @@ public sealed class StorageRackVisualSlots : MonoBehaviour, IInstalledModuleLife
             if (i < 0 || i >= _anchors.Count || _anchors[i] == null)
                 continue;
 
-            // Lane 1: portable containers / item instances.
             InventorySlot itemSlot = itemState != null ? itemState.GetSlot(i) : null;
             if (itemSlot != null && !itemSlot.IsEmpty && itemSlot.Instance != null)
             {
@@ -150,23 +150,11 @@ public sealed class StorageRackVisualSlots : MonoBehaviour, IInstalledModuleLife
 
                 continue;
             }
-
-            // Lane 2: physical cargo crates stored as snapshots.
-            CargoRackSlot cargoSlot = cargoState != null ? cargoState.GetSlot(i) : null;
-            if (cargoSlot != null && !cargoSlot.IsEmpty && cargoSlot.Crate != null)
-            {
-                GameObject cargoVisual = CreateVisualForCargo(cargoSlot.Crate, _anchors[i], i);
-                if (cargoVisual != null)
-                    _spawnedVisuals.Add(cargoVisual);
-
-                continue;
-            }
         }
 
         Log(
             $"Refreshed rack visuals. slots={slotCount}, " +
             $"itemState={(itemState != null ? "yes" : "no")}, " +
-            $"cargoState={(cargoState != null ? "yes" : "no")}, " +
             $"visuals={_spawnedVisuals.Count}");
     }
 
@@ -180,13 +168,9 @@ public sealed class StorageRackVisualSlots : MonoBehaviour, IInstalledModuleLife
         storageModule.EnsureContainer();
 
         _boundItemState = storageModule.ContainerState;
-        _boundCargoState = storageModule.CargoRackState;
 
         if (_boundItemState != null)
             _boundItemState.Changed += HandleStorageChanged;
-
-        if (_boundCargoState != null)
-            _boundCargoState.Changed += HandleStorageChanged;
     }
 
     private void Unbind()
@@ -194,11 +178,7 @@ public sealed class StorageRackVisualSlots : MonoBehaviour, IInstalledModuleLife
         if (_boundItemState != null)
             _boundItemState.Changed -= HandleStorageChanged;
 
-        if (_boundCargoState != null)
-            _boundCargoState.Changed -= HandleStorageChanged;
-
         _boundItemState = null;
-        _boundCargoState = null;
     }
 
     private void HandleStorageChanged()
@@ -270,6 +250,9 @@ public sealed class StorageRackVisualSlots : MonoBehaviour, IInstalledModuleLife
             sprite,
             anchor);
 
+        if (showCargoLabels && CargoLabelFormatter.IsCargo(item))
+            AddCargoLabelToVisual(visual, item);
+
         if (visual == null)
             return null;
 
@@ -285,38 +268,37 @@ public sealed class StorageRackVisualSlots : MonoBehaviour, IInstalledModuleLife
         return visual;
     }
 
-    private GameObject CreateVisualForCargo(CargoCrateStoredSnapshot snapshot, Transform anchor, int slotIndex)
+    private void AddCargoLabelToVisual(GameObject visual, ItemInstance item)
     {
-        if (snapshot == null || anchor == null)
-            return null;
+        if (visual == null || item == null || item.Definition == null)
+            return;
 
-        Sprite sprite = TryGetCargoSprite(snapshot);
-        if (sprite == null)
+        GameObject labelGO = new GameObject("CargoLabel");
+        labelGO.transform.SetParent(visual.transform, false);
+        labelGO.transform.localPosition = cargoLabelLocalOffset;
+        labelGO.transform.localRotation = Quaternion.identity;
+        labelGO.transform.localScale = Vector3.one;
+
+        TMPro.TextMeshPro text = labelGO.AddComponent<TMPro.TextMeshPro>();
+        text.text = CargoLabelFormatter.Format(item.Definition, cargoLabelMaxCharacters);
+        text.alignment = TMPro.TextAlignmentOptions.Center;
+        text.fontStyle = TMPro.FontStyles.Bold;
+        text.color = Color.black;
+        text.fontSize = cargoLabelFontSize;
+        text.textWrappingMode = TMPro.TextWrappingModes.NoWrap;
+
+        if (cargoLabelFont != null)
+            text.font = cargoLabelFont;
+
+        Renderer textRenderer = text.GetComponent<Renderer>();
+        SpriteRenderer spriteRenderer = visual.GetComponent<SpriteRenderer>();
+
+        if (textRenderer != null && spriteRenderer != null)
         {
-            Log(
-                $"No cargo sprite found for slot={slotIndex}, " +
-                $"typeGuid='{snapshot.typeGuid}', itemId='{snapshot.itemId}'. " +
-                $"Is Cargo Prefab Catalog assigned? Does the resolved prefab have a SpriteRenderer?");
-
-            return null;
+            textRenderer.sortingLayerID = spriteRenderer.sortingLayerID;
+            textRenderer.sortingOrder = spriteRenderer.sortingOrder + cargoLabelSortingOrderOffset;
+            labelGO.layer = visual.layer;
         }
-
-        string itemId = string.IsNullOrWhiteSpace(snapshot.itemId)
-            ? "cargo"
-            : snapshot.itemId;
-
-        GameObject visual = CreateSpriteVisual(
-            $"RackVisual_Cargo_{slotIndex:00}_{itemId}",
-            sprite,
-            anchor);
-
-        BoxCollider2D col = visual.AddComponent<BoxCollider2D>();
-        col.isTrigger = true;
-
-        RackStoredCargoInteractable interactable = visual.AddComponent<RackStoredCargoInteractable>();
-        interactable.Initialize(storageModule, slotIndex, cargoPrefabCatalog);
-
-        return visual;
     }
 
     private GameObject CreateSpriteVisual(string objectName, Sprite sprite, Transform anchor)
@@ -352,48 +334,16 @@ public sealed class StorageRackVisualSlots : MonoBehaviour, IInstalledModuleLife
         return sr != null ? sr.sprite : null;
     }
 
-    private Sprite TryGetCargoSprite(CargoCrateStoredSnapshot snapshot)
-    {
-        if (snapshot == null)
-            return null;
-
-        if (cargoPrefabCatalog == null)
-        {
-            Log("TryGetCargoSprite failed: cargoPrefabCatalog is null.");
-            return null;
-        }
-
-        if (string.IsNullOrWhiteSpace(snapshot.typeGuid))
-        {
-            Log($"TryGetCargoSprite failed: snapshot typeGuid is empty. itemId='{snapshot.itemId}'.");
-            return null;
-        }
-
-        GameObject prefab = cargoPrefabCatalog.Resolve(snapshot.typeGuid);
-        if (prefab == null)
-        {
-            Log($"TryGetCargoSprite failed: catalog could not resolve typeGuid='{snapshot.typeGuid}'.");
-            return null;
-        }
-
-        SpriteRenderer sr = prefab.GetComponentInChildren<SpriteRenderer>(true);
-        return sr != null ? sr.sprite : null;
-    }
-
-    private static int GetVisualSlotCount(ItemContainerState itemState, CargoRackState cargoState)
+    private static int GetVisualSlotCount(ItemContainerState itemState)
     {
         int itemCount = itemState != null ? itemState.SlotCount : 0;
-        int cargoCount = cargoState != null ? cargoState.SlotCount : 0;
-        return Mathf.Max(itemCount, cargoCount);
+        return itemCount;
     }
 
-    private static int GetVisualColumnCount(ItemContainerState itemState, CargoRackState cargoState)
+    private static int GetVisualColumnCount(ItemContainerState itemState)
     {
         if (itemState != null && itemState.ColumnCount > 0)
             return itemState.ColumnCount;
-
-        if (cargoState != null && cargoState.ColumnCount > 0)
-            return cargoState.ColumnCount;
 
         return 1;
     }

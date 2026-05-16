@@ -94,9 +94,6 @@ public sealed class HardpointInteractable :
             return;
         }
 
-        if (TryStoreCarriedCargoInInstalledRack(context))
-            return;
-
         OpenInstalledModuleUI();
     }
 
@@ -210,9 +207,6 @@ public sealed class HardpointInteractable :
 
             return "Install Module";
         }
-
-        if (CanStoreCarriedCargoPrompt(context))
-            return "Store Cargo";
 
         return "Open Module";
     }
@@ -600,83 +594,5 @@ public sealed class HardpointInteractable :
         }
 
         return false;
-    }
-
-    private bool TryStoreCarriedCargoInInstalledRack(in InteractContext context)
-    {
-        if (hardpoint == null || !hardpoint.HasInstalledModule || hardpoint.InstalledModule == null)
-            return false;
-
-        if (!hardpoint.InstalledModule.TryGetComponent(out StorageModule storage))
-            return false;
-
-        if (!storage.IsContainerRack)
-            return false;
-
-        PlayerCarryController2D carry = FindCarryController(context);
-        if (carry == null)
-            return false;
-
-        if (!carry.TryGetCarriedCargo(out CargoCrate carriedCrate) || carriedCrate == null)
-            return false;
-
-        if (!storage.CanStoreCargoCrate(carriedCrate))
-            return false;
-
-        if (!carry.TryReleaseCarriedCargoForStorage(carriedCrate, out CargoCrate released) || released == null)
-            return false;
-
-        if (!storage.TryStoreCargoCrate(released, out int storedSlotIndex))
-        {
-            // Storage failed after release. Re-pickup is awkward because PickUp is private,
-            // so drop the crate safely near the player instead of destroying it.
-            carry.ToggleCarry(released);
-            Debug.LogWarning(
-                $"[HardpointInteractable] Failed to store carried cargo crate in rack after release. Recovered by re-carrying crate.",
-                this);
-
-            return false;
-        }
-
-        Debug.Log(
-            $"[HardpointInteractable] Stored carried cargo crate '{released.itemId}' in rack slot {storedSlotIndex}.",
-            this);
-
-        return true;
-    }
-
-    private static PlayerCarryController2D FindCarryController(in InteractContext context)
-    {
-        if (context.InteractorGO == null)
-            return null;
-
-        PlayerCarryController2D carry =
-            context.InteractorGO.GetComponentInParent<PlayerCarryController2D>();
-
-        if (carry != null)
-            return carry;
-
-        return context.InteractorGO.GetComponentInChildren<PlayerCarryController2D>(true);
-    }
-
-    private bool CanStoreCarriedCargoPrompt(in InteractContext context)
-    {
-        if (hardpoint == null || !hardpoint.HasInstalledModule || hardpoint.InstalledModule == null)
-            return false;
-
-        if (!hardpoint.InstalledModule.TryGetComponent(out StorageModule storage))
-            return false;
-
-        if (!storage.IsContainerRack)
-            return false;
-
-        PlayerCarryController2D carry = FindCarryController(context);
-        if (carry == null)
-            return false;
-
-        if (!carry.TryGetCarriedCargo(out CargoCrate carriedCrate) || carriedCrate == null)
-            return false;
-
-        return storage.CanStoreCargoCrate(carriedCrate);
     }
 }

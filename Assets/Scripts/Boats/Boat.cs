@@ -48,13 +48,6 @@ public class Boat : MonoBehaviour, IForceBody
     public float throttleForce = 1f;
 
     // ========================
-    // Cargo
-    // ========================
-
-    [Header("Cargo")]
-    public List<Cargo> CargoItems = new List<Cargo>();
-
-    // ========================
     // Compartments
     // ========================
 
@@ -136,10 +129,6 @@ public class Boat : MonoBehaviour, IForceBody
         SanitizeCompartmentsAndConnections();
 
         massContributions.AddRange(GetComponentsInChildren<IMassContribution>());
-
-        // Deprecated old Cargo path intentionally disabled.
-        // Modern cargo/items are handled by CargoManifest / WorldItem / BoatOwnedItem persistence.
-        CargoItems.Clear();
 
         RecomputeMassAndCOM();
     }
@@ -307,28 +296,6 @@ public class Boat : MonoBehaviour, IForceBody
     private void EqualizeAllCompartments(float dt)
     {
         CompartmentNetwork.EqualizeNetwork(Compartments, dt);
-    }
-
-    // ========================
-    // Cargo
-    // ========================
-
-    [System.Obsolete("Old Cargo path is deprecated. Use modern item/cargo ownership persistence instead.")]
-    public void RegisterCargo(Cargo cargo)
-    {
-        // Intentionally disabled.
-    }
-
-    [System.Obsolete("Old Cargo auto-attach is deprecated. Use modern item/cargo ownership persistence instead.")]
-    public void AttachCargo(Cargo cargo)
-    {
-        if (cargo == null)
-            return;
-
-        Debug.LogWarning(
-            $"[Boat:{name}] Ignored deprecated AttachCargo call for '{cargo.name}'. " +
-            "Use modern item/cargo ownership persistence instead.",
-            this);
     }
 
     // ========================
