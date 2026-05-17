@@ -21,7 +21,7 @@ public sealed class TradeBoatSceneRunner : MonoBehaviour
     public ResourceCatalog resourceCatalog;
 
     [Header("Physical Store")]
-    public PhysicalCrateItemStore physicalStore;
+    public PhysicalCargoItemStore physicalStore;
 
     [Header("Fallback Offers (if market service unavailable)")]
     public List<NodeMarketOffer> debugOffers = new List<NodeMarketOffer>();
@@ -49,7 +49,7 @@ public sealed class TradeBoatSceneRunner : MonoBehaviour
         playerRef = FindAnyObjectByType<WorldMapPlayerRef>();
         timeOfDay = FindAnyObjectByType<TimeOfDayManager>();
         binder = FindAnyObjectByType<WorldMapRuntimeBinder>();
-        physicalStore = FindAnyObjectByType<PhysicalCrateItemStore>();
+        physicalStore = FindAnyObjectByType<PhysicalCargoItemStore>();
         resourceCatalog = FindAnyObjectByType<ResourceCatalog>();
     }
 
@@ -59,7 +59,7 @@ public sealed class TradeBoatSceneRunner : MonoBehaviour
         if (playerRef == null) playerRef = FindAnyObjectByType<WorldMapPlayerRef>();
         if (timeOfDay == null) timeOfDay = FindAnyObjectByType<TimeOfDayManager>();
         if (binder == null) binder = FindAnyObjectByType<WorldMapRuntimeBinder>();
-        if (physicalStore == null) physicalStore = FindAnyObjectByType<PhysicalCrateItemStore>();
+        if (physicalStore == null) physicalStore = FindAnyObjectByType<PhysicalCargoItemStore>();
 
         BuildPoliciesIfPossible();
         BuildMarketIfPossible();
@@ -119,7 +119,7 @@ public sealed class TradeBoatSceneRunner : MonoBehaviour
     private void OnMiniGameEffect(MiniGameEffect e)
     {
         if (playerRef?.State == null) return;
-        if (physicalStore == null) return;
+        //if (physicalStore == null) return;
 
         if (e.kind != MiniGameEffectKind.Transaction) return;
         if (e.system != "Trade") return;
@@ -171,12 +171,12 @@ public sealed class TradeBoatSceneRunner : MonoBehaviour
         if (overlay == null) overlay = FindAnyObjectByType<MiniGameOverlayHost>();
         if (playerRef == null) playerRef = FindAnyObjectByType<WorldMapPlayerRef>();
         if (timeOfDay == null) timeOfDay = FindAnyObjectByType<TimeOfDayManager>();
-        if (physicalStore == null) physicalStore = FindAnyObjectByType<PhysicalCrateItemStore>();
+        if (physicalStore == null) physicalStore = FindAnyObjectByType<PhysicalCargoItemStore>();
 
         if (overlay == null) { Debug.LogError("[TradeBoatSceneRunner] Missing MiniGameOverlayHost."); return; }
         if (playerRef == null || playerRef.State == null) { Debug.LogError("[TradeBoatSceneRunner] Missing WorldMapPlayerRef/State."); return; }
         if (resourceCatalog == null) { Debug.LogError("[TradeBoatSceneRunner] Missing ResourceCatalog (assign in inspector)."); return; }
-        if (physicalStore == null) { Debug.LogError("[TradeBoatSceneRunner] Missing PhysicalCrateItemStore."); return; }
+        if (physicalStore == null) { Debug.LogError("[TradeBoatSceneRunner] Missing PhysicalCargoItemStore."); return; }
 
         BuildPoliciesIfPossible();
         BuildMarketIfPossible();

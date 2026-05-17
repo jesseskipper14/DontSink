@@ -1,37 +1,26 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
 public sealed class MarketSellZone : MonoBehaviour
 {
-    private readonly HashSet<CargoCrate> _inside = new HashSet<CargoCrate>();
-
-    public IReadOnlyCollection<CargoCrate> CratesInside => _inside;
+    public Collider2D ZoneCollider { get; private set; }
 
     private void Awake()
     {
-        var col = GetComponent<Collider2D>();
-        if (col != null) col.isTrigger = true;
+        CacheCollider();
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnValidate()
     {
-        var crate = other != null ? other.GetComponentInParent<CargoCrate>() : null;
-        if (crate != null) _inside.Add(crate);
+        CacheCollider();
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    private void CacheCollider()
     {
-        var crate = other != null ? other.GetComponentInParent<CargoCrate>() : null;
-        if (crate != null) _inside.Remove(crate);
-    }
+        ZoneCollider = GetComponent<Collider2D>();
 
-    public List<CargoCrate> SnapshotList()
-    {
-        var list = new List<CargoCrate>(_inside.Count);
-        foreach (var c in _inside)
-            if (c != null) list.Add(c);
-        return list;
+        if (ZoneCollider != null)
+            ZoneCollider.isTrigger = true;
     }
 }

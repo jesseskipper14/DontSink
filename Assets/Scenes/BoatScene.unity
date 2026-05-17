@@ -8790,6 +8790,7 @@ GameObject:
   m_Component:
   - component: {fileID: 678932697}
   - component: {fileID: 678932698}
+  - component: {fileID: 678932699}
   m_Layer: 17
   m_Name: Hands
   m_TagString: Untagged
@@ -8867,6 +8868,39 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &678932699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 678932696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28213135d25adb1449622afee4c11b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  equipment: {fileID: 404701633}
+  handVisualAnchor: {fileID: 678932697}
+  sortingSource: {fileID: 270512359}
+  heldSpriteRenderer: {fileID: 0}
+  visualRoot: {fileID: 0}
+  localPosition: {x: 0, y: 0, z: 0}
+  localEulerAngles: {x: 0, y: 0, z: 0}
+  localScale: {x: 3.3, y: 3.3, z: 1}
+  preferWorldPrefabSprite: 1
+  syncSortingEveryFrame: 1
+  sortingOrderOffset: 5
+  syncGameObjectLayer: 1
+  applyLayerRecursively: 1
+  showCargoLabel: 1
+  cargoLabel: {fileID: 0}
+  cargoLabelLocalPosition: {x: 0, y: 0, z: 0}
+  cargoLabelFontSize: 3
+  cargoLabelMaxCharacters: 14
+  cargoLabelSortingOrderOffset: 2
+  cargoLabelColor: {r: 0, g: 0, b: 0, a: 1}
+  verboseLogging: 0
 --- !u!1 &687514586
 GameObject:
   m_ObjectHideFlags: 0
