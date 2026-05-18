@@ -33,6 +33,10 @@ public class BoatKit : ScriptableObject
     public GameObject Ledge;
     public GameObject TurretControllerChair;
 
+    [Header("Cargo / Securing")]
+    public GameObject CargoZoneFloor;
+    public GameObject BoatCleat;
+
     [Header("Hardpoints")]
     public GameObject HardpointEngine;
     public GameObject HardpointPump;

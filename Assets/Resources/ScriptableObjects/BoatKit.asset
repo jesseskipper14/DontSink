@@ -29,9 +29,12 @@ MonoBehaviour:
   Stairs: {fileID: 6557889835014041533, guid: 3463ea0dc2c083f4fba583f9caffd0cc, type: 3}
   Ledge: {fileID: 1402974058833541129, guid: 8f4a5e324c655be46b3e1186d0a62c08, type: 3}
   TurretControllerChair: {fileID: 9058713699566922114, guid: 2415f08885deb994698036e4f5cab6a3, type: 3}
+  CargoZoneFloor: {fileID: 5848625884918575200, guid: 8c3c53a9936827d4997a5e4f9155b576, type: 3}
+  BoatCleat: {fileID: 5848625884918575200, guid: 2522abb216ef4e2419f0643ee9b9d7c0, type: 3}
   HardpointEngine: {fileID: 3363453043375993549, guid: 028a492fde13236459f21a4838e45c2b, type: 3}
   HardpointPump: {fileID: 3363453043375993549, guid: 47bfdd4caca8f1245872766899a7c11e, type: 3}
   HardpointUtility: {fileID: 3363453043375993549, guid: f032db6fb40743c4a92fadcdf3de128c, type: 3}
+  HardpointStorage: {fileID: 3363453043375993549, guid: 6d9e8e5ec0a7fa6428c4d17e591c84bb, type: 3}
   HardpointWeapon: {fileID: 3363453043375993549, guid: a3300753d048b7442a40aacf57587b00, type: 3}
   HardpointElectronics: {fileID: 3363453043375993549, guid: b197f07aba96f6f40b4dd5ec2c3ae6ed, type: 3}
   HardpointHelm: {fileID: 3363453043375993549, guid: 6146a680691f8e44ab9f2ce73e8772c7, type: 3}

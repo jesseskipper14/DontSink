@@ -47,6 +47,8 @@ public class BoatBuilderWindow : EditorWindow
         TurretControllerChair = 15,
         Door = 16,
         BoatVisibilityZone = 17,
+        CargoZoneFloor = 18,
+        BoatCleat = 19,
     }
 
     private struct ActionButtonDef
@@ -491,6 +493,12 @@ public class BoatBuilderWindow : EditorWindow
             Tool.Hardpoint,
             Tool.TurretControllerChair
         });
+
+        DrawToolGroup("Cargo / Securing", new[]
+        {
+            Tool.CargoZoneFloor,
+            Tool.BoatCleat
+        });
     }
 
     private void DrawToolGroup(string label, Tool[] tools)
@@ -569,6 +577,8 @@ public class BoatBuilderWindow : EditorWindow
             Tool.Hardpoint => "Hardpoint",
             Tool.TurretControllerChair => "Turret Chair",
             Tool.ExteriorShell => "Shell",
+            Tool.CargoZoneFloor => "Cargo Floor",
+            Tool.BoatCleat => "Cleat",
             _ => tool.ToString()
         };
     }

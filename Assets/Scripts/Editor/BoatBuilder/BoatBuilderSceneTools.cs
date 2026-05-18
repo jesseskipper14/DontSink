@@ -239,6 +239,11 @@ public static partial class BoatBuilderSceneTools
                 placed = PlacePrefab(prefab, world, parent);
             }
 
+            if (placed != null && boatRoot != null)
+            {
+                ApplyBuilderSurfaceSnapIfPresent(placed, boatRoot);
+            }
+
             if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.Wall)
             {
                 InitializePlacedWall(placed);
@@ -285,6 +290,16 @@ public static partial class BoatBuilderSceneTools
                     _ctx.HardpointAutoCreateMountPoint,
                     _ctx.HardpointRenameObjectToId,
                     _ctx.HardpointStartingModuleDefinition);
+            }
+
+            if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.CargoZoneFloor)
+            {
+                InitializePlacedCargoZoneFloor(placed);
+            }
+
+            if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.BoatCleat)
+            {
+                InitializePlacedBoatSecureZone(placed, SecureZoneKind.TieDownAnchor);
             }
 
             e.Use();
@@ -467,6 +482,8 @@ public static partial class BoatBuilderSceneTools
             BoatBuilderWindow.Tool.Hardpoint => GetHardpointPrefab(kit, selectedHardpointType),
             BoatBuilderWindow.Tool.ExteriorShell => kit.ExteriorShell,
             BoatBuilderWindow.Tool.TurretControllerChair => kit.TurretControllerChair,
+            BoatBuilderWindow.Tool.CargoZoneFloor => kit.CargoZoneFloor,
+            BoatBuilderWindow.Tool.BoatCleat => kit.BoatCleat,
             _ => null
         };
     }

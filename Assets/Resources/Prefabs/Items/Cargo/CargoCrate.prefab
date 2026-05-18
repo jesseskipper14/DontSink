@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: -6493721098686300077}
   - component: {fileID: -1145900039046892594}
   - component: {fileID: -6181863487164022527}
+  - component: {fileID: -3808767628955649266}
   m_Layer: 10
   m_Name: CargoCrate
   m_TagString: Untagged
@@ -273,6 +274,31 @@ MonoBehaviour:
   syncGameObjectLayer: 1
   applyLayerRecursively: 1
   verboseLogging: 0
+--- !u!114 &-3808767628955649266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4124277612827551974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b38d6028d93b84c48b4467f385b8e843, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionPriority: 25
+  maxInteractDistance: 1.6
+  placeholderSecureQuality01: 0.75
+  isSecured: 0
+  secureZoneStableId: 
+  secureSlotIndex: -1
+  secureQualityMax01: 0
+  secureQualityCurrent01: 0
+  securedLocalPosition: {x: 0, y: 0}
+  securedLocalRotationZ: 0
+  usedRope: 0
+  ropeBonus01: 0
+  verboseLogging: 1
 --- !u!1 &6747998717389050764
 GameObject:
   m_ObjectHideFlags: 0

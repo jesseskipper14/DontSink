@@ -155,16 +155,23 @@ public sealed class InteractPromptDriver : MonoBehaviour
 
         if (interactVisible)
         {
-            string interactVerb = "Interact";
-
-            if (interactTarget is IInteractPromptProvider interactPromptProvider)
+            if (interactTarget is IInteractPromptActionProvider actionProvider)
             {
-                string v = interactPromptProvider.GetPromptVerb(interactCtx);
-                if (!string.IsNullOrWhiteSpace(v))
-                    interactVerb = v;
+                actionProvider.GetPromptActions(interactCtx, _promptActions);
             }
+            else
+            {
+                string interactVerb = "Interact";
 
-            _promptActions.Add(new PromptAction($"Press E to {interactVerb}", priority: 100));
+                if (interactTarget is IInteractPromptProvider interactPromptProvider)
+                {
+                    string v = interactPromptProvider.GetPromptVerb(interactCtx);
+                    if (!string.IsNullOrWhiteSpace(v))
+                        interactVerb = v;
+                }
+
+                _promptActions.Add(new PromptAction($"Press E to {interactVerb}", priority: 100));
+            }
         }
 
         if (pickupVisible)
@@ -215,6 +222,7 @@ public sealed class InteractPromptDriver : MonoBehaviour
             }
         }
 
+        _promptActions.Sort((a, b) => b.Priority.CompareTo(a.Priority));
         promptUI.Show(promptPos, _promptActions);
     }
 

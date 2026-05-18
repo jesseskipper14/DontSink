@@ -11,6 +11,8 @@ public struct InteractionIntent
 
     public bool TogglePressed;
 
+    public bool UnsecurePressed;
+
     public Vector2 AimWorld;
     public bool HasAimWorld;
 }

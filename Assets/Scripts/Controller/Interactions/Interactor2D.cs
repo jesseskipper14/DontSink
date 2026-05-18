@@ -39,15 +39,9 @@ public class Interactor2D : MonoBehaviour
 
     private IInteractionIntentSource intentSource;
 
-    /// <summary>
-    /// Fired only when a normal interaction actually occurs.
-    /// </summary>
     public event System.Action<IInteractable> OnInteracted;
-
-    /// <summary>
-    /// Fired only when a pickup actually occurs.
-    /// </summary>
     public event System.Action<IPickupInteractable> OnPickedUp;
+    public event System.Action<IUnsecureInteractable> OnUnsecured;
 
     private void Awake()
     {
@@ -171,6 +165,12 @@ public class Interactor2D : MonoBehaviour
             OnInteracted?.Invoke(interactTarget);
         }
 
+        if (intent.UnsecurePressed && TryResolveBestUnsecure(ctx, out var unsecureTarget))
+        {
+            unsecureTarget.Unsecure(ctx);
+            OnUnsecured?.Invoke(unsecureTarget);
+        }
+
         if (intent.TogglePressed && TryResolveBest(ctx, out var toggleTarget))
         {
             if (toggleTarget is IToggleInteractable toggleInteractable && toggleInteractable.CanToggle(ctx))
@@ -178,6 +178,146 @@ public class Interactor2D : MonoBehaviour
         }
 
         HandlePickupIntent(intent, ctx);
+    }
+
+    public bool TryGetBestUnsecureTarget(out IUnsecureInteractable best, out InteractContext ctx)
+    {
+        best = null;
+
+        if (intentSource == null)
+        {
+            ctx = default;
+            return false;
+        }
+
+        var intent = intentSource.Current;
+        Vector2 origin = transform.position;
+        Vector2 aimDir = GetAimDir(origin, intent.AimWorld);
+
+        ctx = new InteractContext(
+            gameObject,
+            transform,
+            origin,
+            aimDir,
+            intent.AimWorld,
+            intent.HasAimWorld);
+
+        return TryResolveBestUnsecure(ctx, out best);
+    }
+
+    public bool TryResolveBestUnsecure(in InteractContext ctx, out IUnsecureInteractable best)
+    {
+        best = null;
+        float bestScore = float.NegativeInfinity;
+
+        if (preferMouseHoveredInteractable &&
+            TryResolveMouseHoveredUnsecure(ctx, out best))
+        {
+            return true;
+        }
+
+        if (useRaycast)
+        {
+            var hit = Physics2D.Raycast(ctx.Origin, ctx.AimDir, rayDistance, interactableMask);
+            if (hit.collider != null)
+            {
+                if (TryGetUnsecureInteractable(hit.collider, out var u) && u.CanUnsecure(ctx))
+                {
+                    float score = 1000f + GetUnsecurePriority(u);
+                    best = u;
+                    bestScore = score;
+                }
+            }
+        }
+
+        var hits = Physics2D.OverlapCircleAll(ctx.Origin, overlapRadius, interactableMask);
+        for (int n = 0; n < hits.Length; n++)
+        {
+            var col = hits[n];
+            if (!TryGetUnsecureInteractable(col, out var u)) continue;
+            if (!u.CanUnsecure(ctx)) continue;
+
+            Vector2 to = (Vector2)col.transform.position - ctx.Origin;
+            float dist = to.magnitude;
+            float distScore = -dist;
+
+            float front = 0f;
+            if (to.sqrMagnitude > 0.0001f)
+                front = Vector2.Dot(ctx.AimDir, to.normalized);
+
+            float score =
+                (GetUnsecurePriority(u) * 10f) +
+                (distScore * (1f - aimBias)) +
+                (front * aimBias * 2f);
+
+            if (score > bestScore)
+            {
+                bestScore = score;
+                best = u;
+            }
+        }
+
+        return best != null;
+    }
+
+    private bool TryResolveMouseHoveredUnsecure(
+        in InteractContext ctx,
+        out IUnsecureInteractable best)
+    {
+        best = null;
+
+        if (!ctx.HasAimWorld)
+            return false;
+
+        Collider2D[] hits = GetMouseHoverHits(ctx.AimWorld);
+        if (hits == null || hits.Length == 0)
+            return false;
+
+        float bestScore = float.NegativeInfinity;
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider2D col = hits[i];
+            if (col == null)
+                continue;
+
+            if (!TryGetUnsecureInteractable(col, out IUnsecureInteractable unsecure))
+                continue;
+
+            if (!unsecure.CanUnsecure(ctx))
+                continue;
+
+            float distToMouse = Vector2.Distance(ctx.AimWorld, col.ClosestPoint(ctx.AimWorld));
+
+            float score =
+                (GetUnsecurePriority(unsecure) * 10f) -
+                distToMouse;
+
+            if (score > bestScore)
+            {
+                bestScore = score;
+                best = unsecure;
+            }
+        }
+
+        return best != null;
+    }
+
+    private bool TryGetUnsecureInteractable(Collider2D col, out IUnsecureInteractable unsecure)
+    {
+        unsecure = col.GetComponent<IUnsecureInteractable>();
+        if (unsecure != null) return true;
+
+        unsecure = col.GetComponentInParent<IUnsecureInteractable>();
+        return unsecure != null;
+    }
+
+    private static int GetUnsecurePriority(IUnsecureInteractable unsecure)
+    {
+        if (unsecure is IInteractable interactable)
+            return interactable.InteractionPriority;
+
+        return 0;
     }
 
     private Vector2 GetAimDir(Vector2 origin, Vector2 aimWorld)

@@ -6,5 +6,6 @@ public enum BoatVisualCategory
     Gameplay = 3,
     Volume = 4,
     AlwaysVisible = 5,
-    Hull = 6
+    Hull = 6,
+    Cargo = 7
 }

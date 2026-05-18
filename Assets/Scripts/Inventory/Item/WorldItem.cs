@@ -93,6 +93,13 @@ public sealed class WorldItem : MonoBehaviour, IPickupInteractable, IInteractPro
             return false;
         }
 
+        BoatSecuredItem secured = GetComponent<BoatSecuredItem>();
+        if (secured != null && secured.IsSecured)
+        {
+            Log("CanPickup FAIL: item is secured");
+            return false;
+        }
+
         float dist = Vector2.Distance(context.Origin, transform.position);
         if (dist > maxPickupDistance)
         {

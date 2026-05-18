@@ -478,6 +478,34 @@ public static partial class BoatBuilderSceneTools
         return size.x > 0.0001f || size.y > 0.0001f;
     }
 
+    private static void ApplyBuilderSurfaceSnapIfPresent(GameObject placed, Transform boatRoot)
+    {
+        if (placed == null || boatRoot == null)
+            return;
+
+        BoatBuilderSurfaceSnapAuthoring snap =
+            placed.GetComponent<BoatBuilderSurfaceSnapAuthoring>() ??
+            placed.GetComponentInChildren<BoatBuilderSurfaceSnapAuthoring>(true);
+
+        if (snap == null || !snap.SnapOnBuilderPlace)
+            return;
+
+        bool snapped = snap.EditorSnapToSurface(boatRoot);
+
+        if (!snapped)
+            return;
+
+        CargoZoneFloorAuthoring cargoFloor =
+            placed.GetComponent<CargoZoneFloorAuthoring>() ??
+            placed.GetComponentInChildren<CargoZoneFloorAuthoring>(true);
+
+        if (cargoFloor != null)
+            cargoFloor.RefreshZone();
+
+        EditorUtility.SetDirty(placed);
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+    }
+
     private static void InitializePlacedWall(GameObject placed)
     {
         if (placed == null)
@@ -534,6 +562,82 @@ public static partial class BoatBuilderSceneTools
 
         EditorUtility.SetDirty(authoring);
         EditorUtility.SetDirty(placed);
+    }
+
+    private static void InitializePlacedCargoZoneFloor(GameObject placed)
+    {
+        if (placed == null)
+            return;
+
+        CargoZoneFloorAuthoring authoring =
+            placed.GetComponent<CargoZoneFloorAuthoring>() ??
+            placed.GetComponentInChildren<CargoZoneFloorAuthoring>(true);
+
+        if (authoring != null)
+        {
+            Undo.RecordObject(authoring, "Initialize Cargo Zone Floor");
+            authoring.RefreshZone();
+            EditorUtility.SetDirty(authoring);
+        }
+
+        BoatSecureZone zone =
+            placed.GetComponentInChildren<BoatSecureZone>(true);
+
+        if (zone != null)
+        {
+            Undo.RecordObject(zone, "Initialize Cargo Secure Zone");
+
+            SerializedObject so = new SerializedObject(zone);
+
+            SerializedProperty kindProp = so.FindProperty("zoneKind");
+            if (kindProp != null)
+                kindProp.enumValueIndex = (int)SecureZoneKind.CargoBay;
+
+            SerializedProperty capacityModeProp = so.FindProperty("capacityMode");
+            if (capacityModeProp != null)
+                capacityModeProp.enumValueIndex = (int)SecureZoneCapacityMode.AreaBased;
+
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            EditorUtility.SetDirty(zone);
+        }
+
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+    }
+
+    private static void InitializePlacedBoatSecureZone(GameObject placed, SecureZoneKind kind)
+    {
+        if (placed == null)
+            return;
+
+        BoatSecureZone zone =
+            placed.GetComponent<BoatSecureZone>() ??
+            placed.GetComponentInChildren<BoatSecureZone>(true);
+
+        if (zone == null)
+            return;
+
+        Undo.RecordObject(zone, "Initialize Boat Secure Zone");
+
+        SerializedObject so = new SerializedObject(zone);
+
+        SerializedProperty kindProp = so.FindProperty("zoneKind");
+        if (kindProp != null)
+            kindProp.enumValueIndex = (int)kind;
+
+        SerializedProperty capacityModeProp = so.FindProperty("capacityMode");
+        if (capacityModeProp != null)
+            capacityModeProp.enumValueIndex =
+                kind == SecureZoneKind.CargoBay
+                    ? (int)SecureZoneCapacityMode.AreaBased
+                    : (int)SecureZoneCapacityMode.Fixed;
+
+        so.ApplyModifiedPropertiesWithoutUndo();
+
+        zone.ApplyKindDefaults();
+
+        EditorUtility.SetDirty(zone);
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
     }
 
     private static string GenerateNextDoorId(Transform boatRoot, string prefix)

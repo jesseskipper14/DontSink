@@ -121,6 +121,13 @@ public static partial class BoatBuilderSceneTools
                 BoatBuilderWindow.Tool.TurretControllerChair =>
                     GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Gameplay),
 
+                // Cargo / securing
+                BoatBuilderWindow.Tool.CargoZoneFloor =>
+                    GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Cargo),
+
+                BoatBuilderWindow.Tool.BoatCleat =>
+                    GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Cargo),
+
                 _ => boatRoot
             };
         }
@@ -139,10 +146,11 @@ public static partial class BoatBuilderSceneTools
                 BoatVisualCategory.Volume => "_Volumes",
                 BoatVisualCategory.AlwaysVisible => "_AlwaysVisible",
                 BoatVisualCategory.Hull => "_Hull",
+                BoatVisualCategory.Cargo => "_Cargo",
                 _ => "_Misc"
             };
 
-            Transform existing = boatRoot.Find(childName);
+        Transform existing = boatRoot.Find(childName);
             if (existing != null)
                 return existing;
 

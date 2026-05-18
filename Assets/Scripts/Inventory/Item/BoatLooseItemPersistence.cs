@@ -53,13 +53,25 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
                 worldItem.transform.eulerAngles.z
             );
 
+            BoatSecuredItem secured = worldItem.GetComponent<BoatSecuredItem>();
+
             manifest.looseItems.Add(new BoatLooseItemSnapshot
             {
-                version = 1,
+                version = 2,
                 owningBoatInstanceId = boat.BoatInstanceId,
                 item = itemSnapshot,
                 localPosition = localPos,
-                localRotationZ = localRotZ
+                localRotationZ = localRotZ,
+
+                isSecured = secured != null && secured.IsSecured,
+                secureZoneStableId = secured != null ? secured.SecureZoneStableId : null,
+                secureSlotIndex = secured != null ? secured.SecureSlotIndex : -1,
+                secureQualityMax01 = secured != null ? secured.SecureQualityMax01 : 0f,
+                secureQualityCurrent01 = secured != null ? secured.SecureQualityCurrent01 : 0f,
+                securedLocalPosition = secured != null ? secured.SecuredLocalPosition : Vector2.zero,
+                securedLocalRotationZ = secured != null ? secured.SecuredLocalRotationZ : 0f,
+                usedRope = secured != null && secured.UsedRope,
+                ropeBonus01 = secured != null ? secured.RopeBonus01 : 0f
             });
         }
 
@@ -123,10 +135,48 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
 
         owned.AssignToBoat(boat);
 
+        if (snapshot.isSecured)
+        {
+            BoatSecuredItem secured = spawned.GetComponent<BoatSecuredItem>();
+            if (secured == null)
+                secured = spawned.gameObject.AddComponent<BoatSecuredItem>();
+
+            BoatSecureZone zone = FindSecureZone(snapshot.secureZoneStableId);
+
+            secured.RestoreSecuredState(
+                boat,
+                zone,
+                snapshot.secureSlotIndex,
+                snapshot.secureQualityMax01,
+                snapshot.secureQualityCurrent01,
+                snapshot.securedLocalPosition,
+                snapshot.securedLocalRotationZ,
+                snapshot.usedRope,
+                snapshot.ropeBonus01);
+        }
+
         Log(
             $"Restored loose item | itemId='{snapshot.item.itemId}' " +
             $"instanceId='{snapshot.item.instanceId}' " +
             $"boatId='{boat.BoatInstanceId}' pos={worldPos}");
+    }
+
+    private BoatSecureZone FindSecureZone(string stableId)
+    {
+        if (string.IsNullOrWhiteSpace(stableId))
+            return null;
+
+        BoatSecureZone[] zones = boat != null
+            ? boat.GetComponentsInChildren<BoatSecureZone>(true)
+            : FindObjectsByType<BoatSecureZone>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+
+        for (int i = 0; i < zones.Length; i++)
+        {
+            if (zones[i] != null && zones[i].StableId == stableId)
+                return zones[i];
+        }
+
+        return null;
     }
 
     private void EnsureBoatOwnedItemPolicies(WorldItem spawned, out BoatOwnedItem owned)
