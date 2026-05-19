@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
-  m_Name: item_toolbelt
+  m_Name: item_rope
   m_EditorClassIdentifier: 
-  itemId: item_toolbelt
-  displayName: Toolbelt
-  icon: {fileID: 5040953308449433282, guid: 251e73321609ae842b1cb39aa37261cb, type: 3}
-  itemCategories: 1024
-  maxStack: 1
+  itemId: item_rope
+  displayName: Rope
+  icon: {fileID: 5915552919383038655, guid: b3fdd21d834e4d644b086c3c545e01ad, type: 3}
+  itemCategories: 96
+  maxStack: 50
   hasCharges: 0
   maxCharges: 1
   stowableInInventory: 1
   droppable: 1
   tradable: 1
-  disallowedParentSlots: 040000000500000006000000070000000800000009000000
-  preferredDisplacedDestination: 1
-  equipSlot: 12
-  isContainer: 1
-  containerSlotCount: 4
-  containerColumnCount: 1
-  allowedContainerCategories: 1574
-  containerTier: 1
+  disallowedParentSlots: 
+  preferredDisplacedDestination: 2
+  equipSlot: 0
+  isContainer: 0
+  containerSlotCount: 0
+  containerColumnCount: 4
+  allowedContainerCategories: 0
+  containerTier: 0
   pickupMode: 0
   pickupHoldDuration: 0.4
   isModule: 0
   moduleDefinition: {fileID: 0}
-  worldPrefab: {fileID: 61859146187821167, guid: e3f5b61d7b19fb74c882f5ad485861cb, type: 3}
+  worldPrefab: {fileID: 61859146187821167, guid: d9acb9a3462c2794ea697477013e7749, type: 3}

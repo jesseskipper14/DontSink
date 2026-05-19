@@ -16,9 +16,11 @@ GameObject:
   - component: {fileID: -6001213580712153411}
   - component: {fileID: 7097834975048569350}
   - component: {fileID: -8660866960567562250}
+  - component: {fileID: -2375970012441519120}
   - component: {fileID: 3411208425902499903}
   - component: {fileID: -9167066603116839321}
   - component: {fileID: -1492508034575852510}
+  - component: {fileID: -1824022060306915919}
   - component: {fileID: -558263347977270280}
   - component: {fileID: 7296790530309691680}
   - component: {fileID: 3301175116528709572}
@@ -97,7 +99,6 @@ MonoBehaviour:
   geometryLocalCenter: {x: 0, y: 0}
   throttleInput: 0
   throttleForce: 1
-  CargoItems: []
   Compartments:
   - {fileID: 0}
   Connections: []
@@ -168,6 +169,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4cabb3ce25298d40b1e7f8f347f0c47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-2375970012441519120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51ad228aa8065ac42a50d8bf49217fc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boat: {fileID: 6897017861151174155}
+  itemRegistry: {fileID: 0}
+  itemCatalog: {fileID: 0}
+  verboseLogging: 0
 --- !u!114 &3411208425902499903
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,6 +199,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boat: {fileID: 0}
   itemCatalog: {fileID: 11400000, guid: d39434bc65a89584c811f84d322f558a, type: 2}
+  moduleDefinitions: []
   verboseLogging: 0
 --- !u!114 &-9167066603116839321
 MonoBehaviour:
@@ -209,6 +227,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20330a0e4de38e749bf28a399308184f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-1824022060306915919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe2acb35cc5bafa43a1552abb75bce1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  listenForKey: 1
+  triggerKey: 105
+  targetRigidbody: {fileID: 134015770593356340}
+  applyPhysicsImpulse: 1
+  impulse: {x: 10, y: 0}
+  affectSecuredCargo: 1
+  securingImpactSeverity01: 0.4
+  breakLooseCargoImpulse: {x: 5, y: 0}
+  onlyAffectThisBoat: 1
+  verboseLogging: 1
 --- !u!114 &-558263347977270280
 MonoBehaviour:
   m_ObjectHideFlags: 0

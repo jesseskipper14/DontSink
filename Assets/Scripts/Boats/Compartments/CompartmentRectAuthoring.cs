@@ -92,10 +92,9 @@ public class CompartmentRectAuthoring : MonoBehaviour
 
         ResolveRefs();
 
-        if (!Application.isPlaying)
-            QueueEditorApply();
-        else
-            Apply();
+        // Never call Apply() directly from OnValidate.
+        // SpriteRenderer.size can internally SendMessage, which Unity forbids during validation/check consistency.
+        QueueEditorApply();
     }
 
     private void QueueEditorApply()

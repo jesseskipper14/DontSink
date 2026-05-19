@@ -7,10 +7,6 @@ public sealed class StorageModuleWorldDropTarget : MonoBehaviour, IWorldItemDrop
     [SerializeField] private StorageModule storageModule;
     [SerializeField] private InstalledModule installedModule;
 
-    [Header("Access")]
-    [SerializeField] private bool requireMatchingBoatBoardingContext = true;
-    [SerializeField] private bool allowWhenNotPartOfBoat = true;
-
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = false;
 

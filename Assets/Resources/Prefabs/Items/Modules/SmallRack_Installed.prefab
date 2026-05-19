@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2636774726262552542
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3598128312659287857}
+  m_Layer: 3
+  m_Name: ModuleBottomAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3598128312659287857
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2636774726262552542}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.5, z: -0.07430349}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7846984295782120496}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2666357289410987568
 GameObject:
   m_ObjectHideFlags: 0
@@ -19,6 +50,7 @@ GameObject:
   - component: {fileID: -6142338926240950186}
   - component: {fileID: 5445820683461145920}
   - component: {fileID: 3329763202100177027}
+  - component: {fileID: 4936329990267705680}
   m_Layer: 3
   m_Name: SmallRack_Installed
   m_TagString: Untagged
@@ -39,6 +71,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 3598128312659287857}
   - {fileID: 5020270421907819455}
   - {fileID: 4688528343023333256}
   m_Father: {fileID: 0}
@@ -302,6 +335,19 @@ MonoBehaviour:
   cargoLabelMaxCharacters: 14
   cargoLabelSortingOrderOffset: 2
   verboseLogging: 0
+--- !u!114 &4936329990267705680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2666357289410987568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b777a711e14d77f45b92b0d34bb86ce7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moduleAnchor: {fileID: 3598128312659287857}
 --- !u!1 &3236304710411494947
 GameObject:
   m_ObjectHideFlags: 0

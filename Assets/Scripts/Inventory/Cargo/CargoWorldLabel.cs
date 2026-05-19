@@ -12,9 +12,6 @@ public sealed class CargoWorldLabel : MonoBehaviour
     [SerializeField] private SpriteRenderer sortingSource;
 
     [Header("Formatting")]
-    [SerializeField] private bool stripCrateOfPrefix = true;
-    [SerializeField] private bool stripCargoPrefix = true;
-    [SerializeField] private bool stripCrateSuffix = true;
     [SerializeField] private int maxCharacters = 14;
 
     [Header("Sorting")]

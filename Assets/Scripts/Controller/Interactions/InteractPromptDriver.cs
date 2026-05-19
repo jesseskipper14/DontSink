@@ -161,7 +161,9 @@ public sealed class InteractPromptDriver : MonoBehaviour
             }
             else
             {
-                string interactVerb = "Interact";
+                string interactVerb = string.IsNullOrWhiteSpace(defaultVerb)
+                    ? "Interact"
+                    : defaultVerb;
 
                 if (interactTarget is IInteractPromptProvider interactPromptProvider)
                 {

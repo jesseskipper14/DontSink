@@ -11,6 +11,7 @@ public sealed class BoatOwnedItem : MonoBehaviour
 
     private BoatItemRegistry _registry;
 
+    public bool IsRegistered => registered;
     public string OwningBoatInstanceId => owningBoatInstanceId;
     public bool IsOwnedByBoat => !string.IsNullOrWhiteSpace(owningBoatInstanceId);
 

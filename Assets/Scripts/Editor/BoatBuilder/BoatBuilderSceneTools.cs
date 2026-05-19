@@ -290,16 +290,25 @@ public static partial class BoatBuilderSceneTools
                     _ctx.HardpointAutoCreateMountPoint,
                     _ctx.HardpointRenameObjectToId,
                     _ctx.HardpointStartingModuleDefinition);
+
+                if (boatRoot != null && !TryValidatePlacedHardpointAgainstCargo(placed, boatRoot))
+                    placed = null;
             }
 
             if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.CargoZoneFloor)
             {
                 InitializePlacedCargoZoneFloor(placed);
+
+                if (boatRoot != null && !TryValidatePlacedCargoBlocker(placed, boatRoot))
+                    placed = null;
             }
 
             if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.BoatCleat)
             {
                 InitializePlacedBoatSecureZone(placed, SecureZoneKind.TieDownAnchor);
+
+                if (boatRoot != null && !TryValidatePlacedCargoBlocker(placed, boatRoot))
+                    placed = null;
             }
 
             e.Use();

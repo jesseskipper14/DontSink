@@ -29,7 +29,6 @@ public sealed class InventorySlotUI : MonoBehaviour,
     [SerializeField] private int cargoLabelMaxCharacters = 10;
 
     private bool _dragBeganThisPress;
-    private bool _pointerIsDown;
 
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = false;
@@ -223,7 +222,6 @@ public sealed class InventorySlotUI : MonoBehaviour,
         if (eventData == null || eventData.button != PointerEventData.InputButton.Left)
             return;
 
-        _pointerIsDown = true;
         _dragBeganThisPress = false;
     }
 
@@ -231,8 +229,6 @@ public sealed class InventorySlotUI : MonoBehaviour,
     {
         if (eventData == null || eventData.button != PointerEventData.InputButton.Left)
             return;
-
-        _pointerIsDown = false;
     }
 
     public void OnBeginDrag(PointerEventData eventData)

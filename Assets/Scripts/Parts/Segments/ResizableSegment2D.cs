@@ -111,7 +111,8 @@ public sealed class ResizableSegment2D : MonoBehaviour
             if (resizeAxis == ResizeAxis.Vertical || resizeAxis == ResizeAxis.Both)
                 size.y = height;
 
-            boxCollider.size = size;
+            if ((boxCollider.size - size).sqrMagnitude > 0.000001f)
+                boxCollider.size = size;
         }
 
         if (resizeSprite && spriteRenderer != null)
@@ -129,8 +130,11 @@ public sealed class ResizableSegment2D : MonoBehaviour
                 if (resizeAxis == ResizeAxis.Vertical || resizeAxis == ResizeAxis.Both)
                     size.y = height;
 
-                spriteRenderer.size = size;
-                spriteRenderer.transform.localScale = Vector3.one;
+                if ((spriteRenderer.size - size).sqrMagnitude > 0.000001f)
+                    spriteRenderer.size = size;
+
+                if (spriteRenderer.transform.localScale != Vector3.one)
+                    spriteRenderer.transform.localScale = Vector3.one;
             }
             else if (spriteRenderer.sprite != null)
             {

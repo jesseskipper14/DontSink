@@ -75,6 +75,8 @@ GameObject:
   - component: {fileID: 5916164892976296465}
   - component: {fileID: 9203517043623545370}
   - component: {fileID: 2625696029987183493}
+  - component: {fileID: -1727379228223738854}
+  - component: {fileID: -2669414983559856104}
   m_Layer: 3
   m_Name: HardpointHelm
   m_TagString: Untagged
@@ -189,10 +191,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hardpoint: {fileID: 5916164892976296465}
+  promptAnchor: {fileID: 7434404790526906763}
   interactionPriority: 20
   pickupPriority: 20
   maxDistance: 2
-  promptAnchor: {fileID: 7434404790526906763}
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
   pickupMode: 1
   pickupHoldDuration: 2
 --- !u!58 &2625696029987183493
@@ -231,6 +235,48 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 1
+--- !u!114 &-1727379228223738854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3363453043375993549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3cc115ae0cd4df41a17ffd191061ec6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enabledForBuilderBlocking: 1
+  size: {x: 3, y: 3}
+  localOffset: {x: 0, y: 1}
+  drawGizmo: 1
+--- !u!114 &-2669414983559856104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3363453043375993549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d2ed2a1414d7da4c9aa64f7537e64a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  snapOnBuilderPlace: 1
+  anchor: 0
+  boundsSource: 0
+  anchorRenderers: []
+  anchorColliders: []
+  yOffsetFromSurfaceTop: 0
+  maxVerticalSnapDistance: 5
+  horizontalInset: 0.03
+  surfaceLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  includeTriggerSurfaces: 0
+  requireBoatRootChild: 1
+  verboseLogging: 0
 --- !u!1 &6787353940955455982
 GameObject:
   m_ObjectHideFlags: 0

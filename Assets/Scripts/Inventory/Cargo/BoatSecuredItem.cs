@@ -142,11 +142,22 @@ public sealed class BoatSecuredItem :
 
     public void Interact(in InteractContext context)
     {
+        CargoSecuringMiniGameRunner runner = CargoSecuringMiniGameRunner.GetOrFind();
+
         if (isSecured)
         {
+            if (runner != null && runner.TryOpenFasten(this, context.InteractorGO))
+                return;
+
             TryFastenDefault();
             return;
         }
+
+        if (!CanSecure(context, out BoatSecureZone zone))
+            return;
+
+        if (runner != null && runner.TryOpenSecure(this, zone, context.InteractorGO))
+            return;
 
         TrySecurePlaceholder(context);
     }

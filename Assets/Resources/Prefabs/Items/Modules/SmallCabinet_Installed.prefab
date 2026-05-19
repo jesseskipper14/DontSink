@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 4062055699655783657}
   - component: {fileID: -9166655500319729016}
   - component: {fileID: 6534637766576766024}
+  - component: {fileID: 3732440609382978045}
   m_Layer: 3
   m_Name: SmallCabinet_Installed
   m_TagString: Untagged
@@ -38,6 +39,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 3794695216648065608}
   - {fileID: 7095986673690663291}
   - {fileID: 3053980494560027884}
   - {fileID: 6144259721904609897}
@@ -224,6 +226,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a7baaf922e187646a07ad1ffd2cb2ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  storageModule: {fileID: 0}
+  installedModule: {fileID: 0}
+  requireMatchingBoatBoardingContext: 1
+  allowWhenNotPartOfBoat: 1
+  verboseLogging: 0
 --- !u!61 &6534637766576766024
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -270,6 +277,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2.030303, y: 2.2121212}
   m_EdgeRadius: 0
+--- !u!114 &3732440609382978045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3018305932997409295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b777a711e14d77f45b92b0d34bb86ce7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moduleAnchor: {fileID: 3794695216648065608}
 --- !u!1 &5283044358488635389
 GameObject:
   m_ObjectHideFlags: 0
@@ -415,6 +435,37 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 5, z: 0}
   m_LocalScale: {x: 8, y: 8, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5940068019386620317}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8250234389456382795
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3794695216648065608}
+  m_Layer: 3
+  m_Name: ModuleBottomAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3794695216648065608
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8250234389456382795}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -1, z: -0.07430349}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5940068019386620317}

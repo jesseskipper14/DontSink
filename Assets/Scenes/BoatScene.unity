@@ -3122,7 +3122,6 @@ GameObject:
   - component: {fileID: 270512332}
   - component: {fileID: 270512343}
   - component: {fileID: 270512342}
-  - component: {fileID: 270512341}
   - component: {fileID: 270512340}
   - component: {fileID: 270512339}
   - component: {fileID: 270512329}
@@ -3469,24 +3468,6 @@ MonoBehaviour:
   - scrap
   amounts: 
   maxWaitSeconds: 1
---- !u!114 &270512341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 270512327}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5efa802f2288e254cbef950685b73e66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  carryAnchor: {fileID: 678932697}
-  motor: {fileID: 270512330}
-  maxSpeedMultiplier: 1
-  moveForceMultiplier: 1
-  dropLocalOffset: {x: 0.45, y: 0.05}
-  dropKey: 113
 --- !u!114 &270512342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3536,6 +3517,7 @@ MonoBehaviour:
   interactKey: 101
   pickupKey: 102
   toggleKey: 116
+  unsecureKey: 120
   enableDoubleClickInteract: 1
   doubleClickMaxInterval: 0.28
   doubleClickMaxScreenDistance: 18
@@ -7818,17 +7800,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50e2a4f0020dc574cbffec34b451ef75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cargoPrefabs: {fileID: 11400000, guid: 2902c3e55ec11334d984901adf6a2cf5, type: 2}
-  spawnPoint: {fileID: 0}
-  sellZone: {fileID: 0}
-  maxUnitsPerCrate: 10
-  spawnHorizontalStep: 0.45
-  spawnVerticalStep: 0.05
-  sortingPolicy: {fileID: 11400000, guid: 48eb05948a91d7b42872beb5751dbd86, type: 2}
-  groundSortingLayer: BoatCargo
-  groundSortingOrder: 0
-  heldSortingLayer: BoatHeldCargo
-  heldSortingOrder: 10
 --- !u!114 &579210105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12975,8 +12946,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1196879040}
   m_HandleRect: {fileID: 1196879039}
   m_Direction: 3
-  m_Value: 0.99999994
-  m_Size: 0.16666664
+  m_Value: 1
+  m_Size: 0.16666669
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -24892,6 +24863,7 @@ GameObject:
   - component: {fileID: 1702019522}
   - component: {fileID: 1702019526}
   - component: {fileID: 1702019527}
+  - component: {fileID: 1702019528}
   m_Layer: 0
   m_Name: Runners
   m_TagString: Untagged
@@ -24996,6 +24968,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   overlay: {fileID: 226212242}
+--- !u!114 &1702019528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702019521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbc4eca0fc5620b45b06ac7a35dc14a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  overlay: {fileID: 226212242}
+  ropeItemDefinition: {fileID: 11400000, guid: 5834004e1afeba54ebb693e07c4c43b6, type: 2}
+  secureRopeCost: 3
+  fastenRopeCost: 1
+  ropeBonus01: 0.15
+  secureQualityAtPerfect: 1
+  fastenRestoreAtPerfect: 0.7
+  verboseLogging: 0
 --- !u!1 &1705467291
 GameObject:
   m_ObjectHideFlags: 0

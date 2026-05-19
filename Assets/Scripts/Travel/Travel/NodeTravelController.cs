@@ -1,14 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 // FLAGGED FOR FIELD/METHOD CLEANUP
 
 public sealed class NodeTravelController : MonoBehaviour
 {
-    [Header("Scene")]
-    [SerializeField] private string boatSceneName = "BoatScene";
-
     [Header("Refs")]
     [SerializeField] private WorldMapRuntimeBinder runtimeBinder;
     [SerializeField] private WorldMapGraphGenerator generator;

@@ -136,4 +136,9 @@ public sealed class PlayerEquipment : MonoBehaviour
 
         EquipmentChanged?.Invoke();
     }
+
+    public void NotifyChanged()
+    {
+        EquipmentChanged?.Invoke();
+    }
 }

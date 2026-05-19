@@ -16,8 +16,12 @@ GameObject:
   - component: {fileID: -4944119643132668274}
   - component: {fileID: -6493721098686300077}
   - component: {fileID: -1145900039046892594}
-  - component: {fileID: -6181863487164022527}
   - component: {fileID: -3808767628955649266}
+  - component: {fileID: -6811883798127294128}
+  - component: {fileID: -6181863487164022527}
+  - component: {fileID: -2964769926014982786}
+  - component: {fileID: 5505755446079400409}
+  - component: {fileID: -8434105766481387384}
   m_Layer: 10
   m_Name: CargoCrate
   m_TagString: Untagged
@@ -109,7 +113,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 1.5
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
@@ -250,6 +254,56 @@ MonoBehaviour:
   restoreOriginalSortingOnUnowned: 1
   restoreOriginalGameObjectLayerOnUnowned: 1
   verboseLogging: 0
+--- !u!114 &-3808767628955649266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4124277612827551974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b38d6028d93b84c48b4467f385b8e843, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionPriority: 25
+  maxInteractDistance: 1.6
+  placeholderSecureQuality01: 0.75
+  fastenRestoreAmount01: 0.25
+  enablePassiveDecay: 0
+  passiveDecayPerSecond: 0.0025
+  impactQualityLossAtSeverityOne: 0.5
+  breakLooseWhenQualityDepleted: 1
+  breakLooseQualityThreshold01: 0.001
+  isSecured: 0
+  secureZoneStableId: 
+  secureSlotIndex: -1
+  secureQualityMax01: 0
+  secureQualityCurrent01: 0
+  securedLocalPosition: {x: 0, y: 0}
+  securedLocalRotationZ: 0
+  usedRope: 0
+  ropeBonus01: 0
+  verboseLogging: 1
+--- !u!114 &-6811883798127294128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4124277612827551974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06d0a205c2a3920439c097f31fd0b2d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bodySource: {fileID: 5505755446079400409}
+  waveManager: {fileID: 0}
+  wave: {fileID: 0}
+  sliceCount: 10
+  lastTotalSubmersion: 0
+  enabledFlag: 1
+  priority: 50
 --- !u!114 &-6181863487164022527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,7 +328,7 @@ MonoBehaviour:
   syncGameObjectLayer: 1
   applyLayerRecursively: 1
   verboseLogging: 0
---- !u!114 &-3808767628955649266
+--- !u!114 &-2964769926014982786
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -283,22 +337,38 @@ MonoBehaviour:
   m_GameObject: {fileID: 4124277612827551974}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b38d6028d93b84c48b4467f385b8e843, type: 3}
+  m_Script: {fileID: 11500000, guid: d5e906a068d9b1d43b275115706b31d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactionPriority: 25
-  maxInteractDistance: 1.6
-  placeholderSecureQuality01: 0.75
-  isSecured: 0
-  secureZoneStableId: 
-  secureSlotIndex: -1
-  secureQualityMax01: 0
-  secureQualityCurrent01: 0
-  securedLocalPosition: {x: 0, y: 0}
-  securedLocalRotationZ: 0
-  usedRope: 0
-  ropeBonus01: 0
-  verboseLogging: 1
+  submersionSource: {fileID: -6811883798127294128}
+  enabledFlag: 1
+  priority: 100
+--- !u!114 &5505755446079400409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4124277612827551974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5cc12ff57ca8414b9993d63ebb70291, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  width: 1.4
+  height: 1.4
+--- !u!114 &-8434105766481387384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4124277612827551974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d25d72d0396500e4c803080c99afb5b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6747998717389050764
 GameObject:
   m_ObjectHideFlags: 0
