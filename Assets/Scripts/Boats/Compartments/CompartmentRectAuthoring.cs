@@ -26,6 +26,7 @@ public class CompartmentRectAuthoring : MonoBehaviour
     [SerializeField] private Compartment compartment;
     [SerializeField] private BoxCollider2D boxCollider;
     [SerializeField] private ResizableSegment2D resizableSegment;
+    [SerializeField] private BoatVisibilityZone visibilityZone;
 
     [Header("Auto components")]
     public bool ensureBoxCollider2D = true;
@@ -162,7 +163,43 @@ public class CompartmentRectAuthoring : MonoBehaviour
 
         if (resizableSegment == null)
             resizableSegment = GetComponent<ResizableSegment2D>();
+
+        if (visibilityZone == null)
+            visibilityZone = GetComponent<BoatVisibilityZone>();
     }
+
+#if UNITY_EDITOR
+    public void EditorEnsureInteriorVisibilityZone(BoatVisualStateController controller)
+    {
+        ResolveRefs();
+
+        if (visibilityZone == null)
+            visibilityZone = GetComponent<BoatVisibilityZone>();
+
+        if (visibilityZone == null)
+        {
+            visibilityZone = gameObject.AddComponent<BoatVisibilityZone>();
+            Undo.RegisterCreatedObjectUndo(visibilityZone, "Add Interior Visibility Zone");
+        }
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+        {
+            Undo.RecordObject(col, "Configure Interior Visibility Zone Collider");
+            col.isTrigger = true;
+            EditorUtility.SetDirty(col);
+        }
+
+        Undo.RecordObject(visibilityZone, "Configure Interior Visibility Zone");
+        visibilityZone.EditorConfigure(
+            BoatVisibilityMode.BoardedInterior,
+            BoatVisibilityZone.GetDefaultPriority(BoatVisibilityMode.BoardedInterior),
+            controller);
+
+        EditorUtility.SetDirty(visibilityZone);
+        EditorUtility.SetDirty(this);
+    }
+#endif
 
     private void PullSizeFromResizableIfAvailable()
     {

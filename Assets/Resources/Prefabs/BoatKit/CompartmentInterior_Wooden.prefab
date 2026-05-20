@@ -87,6 +87,7 @@ MonoBehaviour:
   compartment: {fileID: 317825384462496607}
   boxCollider: {fileID: 2774696704284986295}
   resizableSegment: {fileID: 7595124413089840488}
+  visibilityZone: {fileID: 0}
   ensureBoxCollider2D: 1
   colliderIsTrigger: 1
   allowResizableSegmentToDriveSize: 1

@@ -16,6 +16,7 @@ public sealed class PlayerInventory : MonoBehaviour
     public event Action InventoryChanged;
     public event Action SelectionChanged;
 
+    public PlayerEquipment Equipment => equipment;
     private GameObject DropActor => gameObject;
     public int HotbarSlotCount => Mathf.Clamp(hotbarSlotCount, 1, MaxSupportedHotbarSlots);
     public bool ScrollIncludesEquipmentSlots => scrollIncludesEquipmentSlots;

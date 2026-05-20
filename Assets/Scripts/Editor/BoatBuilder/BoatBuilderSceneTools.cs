@@ -244,6 +244,13 @@ public static partial class BoatBuilderSceneTools
                 ApplyBuilderSurfaceSnapIfPresent(placed, boatRoot);
             }
 
+            if (placed != null &&
+                _ctx.ActiveTool == BoatBuilderWindow.Tool.CompartmentRect &&
+                boatRoot != null)
+            {
+                InitializeCompartmentInteriorVisibilityZone(placed, boatRoot);
+            }
+
             if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.Wall)
             {
                 InitializePlacedWall(placed);

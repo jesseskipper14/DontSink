@@ -209,7 +209,11 @@ public static class InventoryConsumableUtility
         if (inventory == null)
             return null;
 
+        if (inventory.Equipment != null)
+            return inventory.Equipment;
+
         return inventory.GetComponentInParent<PlayerEquipment>(true) ??
-               inventory.GetComponentInChildren<PlayerEquipment>(true);
+               inventory.GetComponentInChildren<PlayerEquipment>(true) ??
+               Object.FindAnyObjectByType<PlayerEquipment>();
     }
 }

@@ -365,5 +365,38 @@ public static partial class BoatBuilderSceneTools
                 placed);
         }
     }
+
+    private static void InitializeCompartmentInteriorVisibilityZone(
+        GameObject placed,
+        Transform boatRoot)
+    {
+        if (placed == null || boatRoot == null)
+            return;
+
+        CompartmentRectAuthoring authoring =
+            placed.GetComponent<CompartmentRectAuthoring>() ??
+            placed.GetComponentInChildren<CompartmentRectAuthoring>(true);
+
+        if (authoring == null)
+            return;
+
+        BoatVisualStateController controller =
+            boatRoot.GetComponent<BoatVisualStateController>() ??
+            boatRoot.GetComponentInChildren<BoatVisualStateController>(true);
+
+        authoring.EditorEnsureInteriorVisibilityZone(controller);
+
+        InitializePlacedVisualMarker(placed, BoatVisualCategory.Interior);
+
+        EditorUtility.SetDirty(placed);
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+
+        if (controller == null)
+        {
+            Debug.LogWarning(
+                "[BoatBuilder] Generated compartment interior visibility zone, but no BoatVisualStateController was found on/under BoatRoot.",
+                placed);
+        }
+    }
 }
 #endif

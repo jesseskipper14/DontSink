@@ -266,10 +266,10 @@ MonoBehaviour:
   exteriorDeckRoot: {fileID: 0}
   hullRoot: {fileID: 0}
   alwaysVisibleRoot: {fileID: 0}
-  defaultBoardedMode: 2
+  defaultBoardedMode: 1
   unboardedMode: 0
-  hideInteriorWhenUnboarded: 1
-  hideInteriorOnExteriorDeck: 1
+  hideInteriorWhenUnboarded: 0
+  hideInteriorOnExteriorDeck: 0
   hideExteriorWhenInterior: 1
   hideDeckWhenInterior: 0
   includeInactiveRenderers: 1
