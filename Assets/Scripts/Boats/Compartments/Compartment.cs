@@ -195,17 +195,29 @@ public class Compartment : MonoBehaviour, IMassContribution
 
     public void RecomputeWaterSurface()
     {
+        ClampWaterArea();
         waterSurfaceOffset = SolveSurfaceOffsetFromArea(waterArea);
+    }
+
+    private void ClampWaterArea()
+    {
+        waterArea = Mathf.Clamp(waterArea, 0f, MaxWaterArea);
     }
 
     public float GetWaterSurfaceWorldY()
     {
+        // Keep cached surface in sync with serialized/debug-edited waterArea.
+        // This is intentionally defensive because gameplay and visuals must not disagree.
+        RecomputeWaterSurface();
+
         Vector2 planeNormal = -Physics2D.gravity.normalized;
 
-        // find a point on the plane
-        Vector2 p = planeNormal * waterSurfaceOffset;
+        // For normal gravity this is simply waterSurfaceOffset,
+        // but keep it correct for non-perfectly-vertical gravity too.
+        if (Mathf.Abs(planeNormal.y) < 0.0001f)
+            return transform.position.y;
 
-        return p.y;
+        return waterSurfaceOffset / planeNormal.y;
     }
 
     public void RestorePersistentFluidState(float restoredWaterArea, float restoredAirIntegrity)
@@ -275,9 +287,17 @@ public class Compartment : MonoBehaviour, IMassContribution
 
     public Vector2[] GetWaterPolygonWorld()
     {
+        RecomputeWaterSurface();
+
         Vector2 planeNormal = -Physics2D.gravity.normalized;
         float planeOffset = waterSurfaceOffset;
-        List<Vector2> clipped = ConvexPolygonUtil.ClipBelowPlane(GetWorldCorners(), planeNormal, planeOffset);
+
+        List<Vector2> clipped =
+            ConvexPolygonUtil.ClipBelowPlane(
+                GetWorldCorners(),
+                planeNormal,
+                planeOffset);
+
         return clipped.ToArray();
     }
 
@@ -328,6 +348,9 @@ public class Compartment : MonoBehaviour, IMassContribution
             p0.y = p1.y = mid + 0.5f;
             p2.y = p3.y = mid - 0.5f;
         }
+
+        ClampWaterArea();
+        RecomputeWaterSurface();
     }
 
     private void OnDrawGizmos()

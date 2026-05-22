@@ -549,18 +549,90 @@ public static partial class BoatBuilderSceneTools
         if (authoring == null)
             return;
 
-        if (!string.IsNullOrWhiteSpace(authoring.DoorId))
+        string id = authoring.DoorId;
+
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            Undo.RecordObject(authoring, "Configure Door");
+
+            id = GenerateNextDoorId(boatRoot, "door");
+            authoring.DoorId = id;
+
+            Undo.RecordObject(placed, "Rename Door");
+            placed.name = id;
+
+            EditorUtility.SetDirty(authoring);
+            EditorUtility.SetDirty(placed);
+        }
+
+        EnsureDoorCompartmentLink(placed, boatRoot, authoring, id);
+
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+    }
+
+    private static void EnsureDoorCompartmentLink(
+    GameObject placed,
+    Transform boatRoot,
+    DoorAuthoring authoring,
+    string doorId)
+    {
+        if (placed == null || authoring == null)
             return;
 
-        Undo.RecordObject(authoring, "Configure Door");
+        DoorRuntime runtime =
+            placed.GetComponent<DoorRuntime>() ??
+            placed.GetComponentInChildren<DoorRuntime>(true);
 
-        string id = GenerateNextDoorId(boatRoot, "door");
-        authoring.DoorId = id;
+        BoxCollider2D openingCollider = authoring.BlockingCollider as BoxCollider2D;
 
-        Undo.RecordObject(placed, "Rename Door");
-        placed.name = id;
+        if (openingCollider == null)
+        {
+            Debug.LogWarning(
+                $"[BoatBuilder] Door '{placed.name}' cannot generate compartment topology link because its BlockingCollider is not a BoxCollider2D.",
+                placed);
+            return;
+        }
 
-        EditorUtility.SetDirty(authoring);
+        CompartmentLinkAuthoring link =
+            placed.GetComponent<CompartmentLinkAuthoring>() ??
+            placed.GetComponentInChildren<CompartmentLinkAuthoring>(true);
+
+        if (link == null)
+        {
+            link = Undo.AddComponent<CompartmentLinkAuthoring>(placed);
+        }
+
+        Undo.RecordObject(link, "Configure Door Compartment Link");
+
+        Boat boat =
+            boatRoot != null
+                ? boatRoot.GetComponent<Boat>() ?? boatRoot.GetComponentInParent<Boat>()
+                : placed.GetComponentInParent<Boat>();
+
+        link.boat = boat;
+        link.linkType = CompartmentLinkType.Door;
+        link.hatchRuntime = null;
+        link.doorRuntime = runtime;
+        link.openingCollider = openingCollider;
+
+        if (link.flowCoefficient <= 0f)
+            link.flowCoefficient = 1f;
+
+        SerializedObject so = new SerializedObject(link);
+        SerializedProperty idProp = so.FindProperty("linkId");
+        if (idProp != null)
+            idProp.stringValue = string.IsNullOrWhiteSpace(doorId) ? placed.name : doorId;
+        so.ApplyModifiedPropertiesWithoutUndo();
+
+        CompartmentLinkRuntimeLink runtimeLink =
+            placed.GetComponent<CompartmentLinkRuntimeLink>() ??
+            placed.GetComponentInChildren<CompartmentLinkRuntimeLink>(true);
+
+        if (runtimeLink == null)
+            runtimeLink = Undo.AddComponent<CompartmentLinkRuntimeLink>(placed);
+
+        EditorUtility.SetDirty(link);
+        EditorUtility.SetDirty(runtimeLink);
         EditorUtility.SetDirty(placed);
     }
 

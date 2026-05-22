@@ -101,15 +101,16 @@ namespace Survival.Vitals
             RecomputeMaxAir();
 
             // Track surface time
-            if (!IsUnderwater) _timeSinceSurfaced += dt;
-            else _timeSinceSurfaced = 0f;
-
-            // Sum flows from sources (to detect underwater oxygenation supply)
+            // Poll sources first, because sources may update IsUnderwater.
             float sourceFlow = 0f;
             for (int i = 0; i < _sources.Count; i++)
                 sourceFlow += _sources[i].GetAirFlowPerSecond(this, dt);
 
             _lastSourceFlowPerSecond = sourceFlow;
+
+            // Track surface time using the freshly resolved underwater state.
+            if (!IsUnderwater) _timeSinceSurfaced += dt;
+            else _timeSinceSurfaced = 0f;
 
             bool ambientOxygenation = !IsUnderwater && _timeSinceSurfaced >= surfaceRegenDelay;
             bool sourceProvides = IsUnderwater && _lastSourceFlowPerSecond > 0.001f;

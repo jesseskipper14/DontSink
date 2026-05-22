@@ -6,6 +6,7 @@ public sealed class CompartmentLinkRuntimeLink : MonoBehaviour
     [Header("Refs")]
     [SerializeField] private Boat boat;
     [SerializeField] private HatchRuntime hatchRuntime;
+    [SerializeField] private DoorRuntime doorRuntime;
     [SerializeField] private CompartmentLinkAuthoring linkAuthoring;
 
     [Header("Debug")]
@@ -16,6 +17,7 @@ public sealed class CompartmentLinkRuntimeLink : MonoBehaviour
     {
         boat = GetComponentInParent<Boat>();
         hatchRuntime = GetComponent<HatchRuntime>();
+        doorRuntime = GetComponent<DoorRuntime>();
         linkAuthoring = GetComponent<CompartmentLinkAuthoring>();
     }
 
@@ -26,6 +28,9 @@ public sealed class CompartmentLinkRuntimeLink : MonoBehaviour
         if (hatchRuntime != null)
             hatchRuntime.StateChanged += HandleHatchStateChanged;
 
+        if (doorRuntime != null)
+            doorRuntime.StateChanged += HandleDoorStateChanged;
+
         SyncState();
     }
 
@@ -33,9 +38,17 @@ public sealed class CompartmentLinkRuntimeLink : MonoBehaviour
     {
         if (hatchRuntime != null)
             hatchRuntime.StateChanged -= HandleHatchStateChanged;
+
+        if (doorRuntime != null)
+            doorRuntime.StateChanged -= HandleDoorStateChanged;
     }
 
     private void HandleHatchStateChanged(bool isOpen)
+    {
+        SyncState();
+    }
+
+    private void HandleDoorStateChanged(bool isOpen)
     {
         SyncState();
     }
@@ -105,6 +118,9 @@ public sealed class CompartmentLinkRuntimeLink : MonoBehaviour
 
         if (linkAuthoring == null)
             linkAuthoring = GetComponent<CompartmentLinkAuthoring>();
+
+        if (doorRuntime == null)
+            doorRuntime = GetComponent<DoorRuntime>();
     }
 
 #if UNITY_EDITOR

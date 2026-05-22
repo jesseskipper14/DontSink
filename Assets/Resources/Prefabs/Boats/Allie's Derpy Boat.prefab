@@ -113,9 +113,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
+  m_SortingOrder: 25
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &378278268560671619
 MonoBehaviour:
@@ -129,6 +129,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108afb6ff1b3a94429cb7f8b995ede9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sortingLayerName: BoatView
+  sortingOrder: 25
+  waterColor: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+  waterMaterial: {fileID: 0}
 --- !u!1 &4007922317768846408
 GameObject:
   m_ObjectHideFlags: 0
@@ -420,6 +424,9 @@ MonoBehaviour:
   bodySource: {fileID: 7510374058437504715}
   waveManager: {fileID: 0}
   wave: {fileID: 0}
+  useBoatWaterContext: 1
+  explicitWaterContext: {fileID: 0}
+  boatBodyAlwaysUsesOcean: 1
   sliceCount: 10
   lastTotalSubmersion: 0
   enabledFlag: 1
@@ -491,6 +498,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2235266839300801835}
     m_Modifications:
+    - target: {fileID: 649692223756647261, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5391915971216815558, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Name
       value: CompartmentInterior_Wooden
@@ -553,6 +564,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2235266839300801835}
     m_Modifications:
+    - target: {fileID: 649692223756647261, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5391915971216815558, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Name
       value: CompartmentInterior_Wooden
@@ -1183,6 +1198,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2235266839300801835}
     m_Modifications:
+    - target: {fileID: 649692223756647261, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5391915971216815558, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Name
       value: CompartmentInterior_Wooden

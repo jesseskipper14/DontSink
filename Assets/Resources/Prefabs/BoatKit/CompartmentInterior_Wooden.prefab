@@ -104,6 +104,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108afb6ff1b3a94429cb7f8b995ede9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sortingLayerName: BoatView
+  sortingOrder: 25
+  waterColor: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+  waterMaterial: {fileID: 0}
 --- !u!61 &2774696704284986295
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -181,7 +185,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 446f16bbff8c44d46a49584b14251005, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -199,9 +203,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
+  m_SortingOrder: 25
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &7595124413089840488
 MonoBehaviour:

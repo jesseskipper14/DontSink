@@ -294,6 +294,7 @@ MonoBehaviour:
   linkId: CompartmentLink
   boat: {fileID: 0}
   hatchRuntime: {fileID: 0}
+  doorRuntime: {fileID: 0}
   openingCollider: {fileID: 9084259175966858194}
   linkType: 2
   sampleOffset: 0.6

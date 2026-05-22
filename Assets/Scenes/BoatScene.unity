@@ -562,6 +562,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 34628028}
   m_CullTransparentMesh: 1
+--- !u!1 &35346107
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 35346108}
+  m_Layer: 17
+  m_Name: Feet
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &35346108
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 35346107}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 270512328}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &36704469 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6857695672335979136, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
@@ -716,6 +747,47 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: {fileID: 11400000, guid: 93d79923dcd9a4046b1b471f2dd967dc, type: 2}
   thicknessOverride: -1
+--- !u!21 &45240655
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &66339440
 GameObject:
   m_ObjectHideFlags: 0
@@ -1126,6 +1198,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108afb6ff1b3a94429cb7f8b995ede9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sortingLayerName: BoatView
+  sortingOrder: 25
+  waterColor: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+  waterMaterial: {fileID: 0}
 --- !u!23 &93457530
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1149,7 +1225,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 446f16bbff8c44d46a49584b14251005, type: 2}
+  - {fileID: 1645543149}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1167,9 +1243,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
+  m_SortingOrder: 25
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &93457531
 MeshFilter:
@@ -1633,6 +1709,9 @@ MonoBehaviour:
   bodySource: {fileID: 102983137}
   waveManager: {fileID: 0}
   wave: {fileID: 0}
+  useBoatWaterContext: 1
+  explicitWaterContext: {fileID: 0}
+  boatBodyAlwaysUsesOcean: 1
   sliceCount: 20
   lastTotalSubmersion: 0
   enabledFlag: 1
@@ -2353,6 +2432,47 @@ MonoBehaviour:
   stateText: {fileID: 1613185996}
   energyStateText: {fileID: 1787771489}
   debugText: {fileID: 0}
+--- !u!21 &200741134
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &203501833
 GameObject:
   m_ObjectHideFlags: 0
@@ -3157,6 +3277,7 @@ Transform:
   - {fileID: 963087593}
   - {fileID: 404701635}
   - {fileID: 99345742}
+  - {fileID: 35346108}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &270512329
@@ -3255,7 +3376,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   swimThreshold: 0.6
   dryEpsilon: 0.02
+  useContextualWater: 1
+  fallbackToProvidersWhenNoContext: 1
+  boardingState: {fileID: 0}
+  explicitWaterContext: {fileID: 0}
+  waveManager: {fileID: 0}
+  bottomPoint: {fileID: 35346108}
+  topPoint: {fileID: 1250223448}
+  localBottomOffset: {x: 0, y: -0.45}
+  localTopOffset: {x: 0, y: 0.55}
   logWhenStateChanges: 0
+  verboseWaterContext: 0
 --- !u!114 &270512332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3731,6 +3862,9 @@ MonoBehaviour:
   bodySource: {fileID: 270512349}
   waveManager: {fileID: 0}
   wave: {fileID: 0}
+  useBoatWaterContext: 1
+  explicitWaterContext: {fileID: 0}
+  boatBodyAlwaysUsesOcean: 1
   sliceCount: 10
   lastTotalSubmersion: 0
   enabledFlag: 1
@@ -5269,6 +5403,7 @@ GameObject:
   - component: {fileID: 405521343}
   - component: {fileID: 405521342}
   - component: {fileID: 405521341}
+  - component: {fileID: 405521346}
   m_Layer: 0
   m_Name: Controllers
   m_TagString: Untagged
@@ -5371,6 +5506,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &405521346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 405521340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 536e256439203664a8d4854f495e342c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundOceanRenderers:
+  - {fileID: 1395915515}
+  foregroundOceanRenderers:
+  - {fileID: 520158304}
+  showBackgroundInInterior: 1
+  showForegroundInInterior: 0
+  showBackgroundWhenBoardedExterior: 0
+  showForegroundWhenBoardedExterior: 1
+  showBackgroundWhenUnboarded: 0
+  showForegroundWhenUnboarded: 1
+  showBackgroundInTransition: 1
+  showForegroundInTransition: 1
+  verboseLogging: 0
 --- !u!1 &407928603
 GameObject:
   m_ObjectHideFlags: 0
@@ -6268,6 +6428,47 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
+--- !u!21 &469271114
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!4 &479988087 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
@@ -6468,7 +6669,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 496338813}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d82d239d4de4e0146ae2ea72f25f96b6, type: 3}
   m_Name: 
@@ -6482,7 +6683,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 496338813}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1cd12d36923ccb7478931247747a365c, type: 3}
   m_Name: 
@@ -6500,7 +6701,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 496338813}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -6706,7 +6907,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1395915512}
+  - {fileID: 520158301}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &504382178
@@ -6794,6 +6997,9 @@ MonoBehaviour:
   bodySource: {fileID: 504382186}
   waveManager: {fileID: 0}
   wave: {fileID: 0}
+  useBoatWaterContext: 1
+  explicitWaterContext: {fileID: 0}
+  boatBodyAlwaysUsesOcean: 1
   sliceCount: 10
   lastTotalSubmersion: 0
   enabledFlag: 1
@@ -7168,6 +7374,126 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
+--- !u!1 &520158300
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 520158301}
+  - component: {fileID: 520158305}
+  - component: {fileID: 520158304}
+  - component: {fileID: 520158303}
+  - component: {fileID: 520158302}
+  m_Layer: 4
+  m_Name: Ocean_Front
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &520158301
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520158300}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 496338822}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &520158302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520158300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d82d239d4de4e0146ae2ea72f25f96b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sortingLayerName: Foreground
+  sortingOrder: 0
+--- !u!114 &520158303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520158300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cd12d36923ccb7478931247747a365c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waveManager: {fileID: 0}
+  centerTarget: {fileID: 0}
+  points: 1000
+  bottomY: -500
+  textureWorldScale: 10
+  meshWidth: 240
+--- !u!23 &520158304
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520158300}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 4a4407028843f0a408b2ee53dedbd420, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &520158305
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520158300}
+  m_Mesh: {fileID: 0}
 --- !u!1 &522460808
 GameObject:
   m_ObjectHideFlags: 0
@@ -7822,6 +8148,47 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7862525510988073635, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
   m_PrefabInstance: {fileID: 1254215931}
   m_PrefabAsset: {fileID: 0}
+--- !u!21 &601123280
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &603278124
 GameObject:
   m_ObjectHideFlags: 0
@@ -7971,6 +8338,47 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: {fileID: 11400000, guid: 93d79923dcd9a4046b1b471f2dd967dc, type: 2}
   thicknessOverride: -1
+--- !u!21 &610834216
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!4 &616818473 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7862525510988073635, guid: aa1ea656570f4d74fb2daedbea264dbe, type: 3}
@@ -8479,6 +8887,47 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!21 &642660744
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &664193329
 GameObject:
   m_ObjectHideFlags: 0
@@ -9972,6 +10421,47 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 736938675}
   m_CullTransparentMesh: 1
+--- !u!21 &756263035
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1001 &757273327
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11797,6 +12287,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108afb6ff1b3a94429cb7f8b995ede9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sortingLayerName: BoatView
+  sortingOrder: 25
+  waterColor: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+  waterMaterial: {fileID: 0}
 --- !u!23 &861170786
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -11820,7 +12314,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 446f16bbff8c44d46a49584b14251005, type: 2}
+  - {fileID: 610834216}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -11838,9 +12332,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
+  m_SortingOrder: 25
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &861170787
 MeshFilter:
@@ -11897,6 +12391,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108afb6ff1b3a94429cb7f8b995ede9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sortingLayerName: BoatView
+  sortingOrder: 25
+  waterColor: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+  waterMaterial: {fileID: 0}
 --- !u!23 &866763787
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -11920,7 +12418,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 446f16bbff8c44d46a49584b14251005, type: 2}
+  - {fileID: 991376999}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -11938,9 +12436,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
+  m_SortingOrder: 25
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &866763788
 MeshFilter:
@@ -12165,6 +12663,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108afb6ff1b3a94429cb7f8b995ede9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sortingLayerName: BoatView
+  sortingOrder: 25
+  waterColor: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+  waterMaterial: {fileID: 0}
 --- !u!23 &881581661
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -12188,7 +12690,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 446f16bbff8c44d46a49584b14251005, type: 2}
+  - {fileID: 200741134}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -12206,9 +12708,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
+  m_SortingOrder: 25
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &881581662
 MeshFilter:
@@ -14208,8 +14710,13 @@ MonoBehaviour:
   air: {fileID: 963087601}
   waveManager: {fileID: 0}
   headPoint: {fileID: 1250223448}
+  useBoatWaterContext: 1
+  explicitWaterContext: {fileID: 0}
+  boardingState: {fileID: 0}
+  fallbackToOceanWhenNoContext: 1
   headClearance: 0.05
   hysteresis: 0.02
+  verboseLogging: 0
 --- !u!114 &963087605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14432,6 +14939,47 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 980160541}
   m_CullTransparentMesh: 1
+--- !u!21 &991376999
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &1003246066
 GameObject:
   m_ObjectHideFlags: 0
@@ -16204,6 +16752,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108afb6ff1b3a94429cb7f8b995ede9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sortingLayerName: BoatView
+  sortingOrder: 25
+  waterColor: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+  waterMaterial: {fileID: 0}
 --- !u!23 &1156550006
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -16227,7 +16779,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 446f16bbff8c44d46a49584b14251005, type: 2}
+  - {fileID: 756263035}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -16245,9 +16797,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
+  m_SortingOrder: 25
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1156550007
 MeshFilter:
@@ -16733,6 +17285,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108afb6ff1b3a94429cb7f8b995ede9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sortingLayerName: BoatView
+  sortingOrder: 25
+  waterColor: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+  waterMaterial: {fileID: 0}
 --- !u!23 &1196006168
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -16756,7 +17312,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 446f16bbff8c44d46a49584b14251005, type: 2}
+  - {fileID: 2105724102}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -16774,9 +17330,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
+  m_SortingOrder: 25
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1196006169
 MeshFilter:
@@ -19191,6 +19747,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108afb6ff1b3a94429cb7f8b995ede9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sortingLayerName: BoatView
+  sortingOrder: 25
+  waterColor: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+  waterMaterial: {fileID: 0}
 --- !u!23 &1291240928
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -19214,7 +19774,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 446f16bbff8c44d46a49584b14251005, type: 2}
+  - {fileID: 1915129511}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -19232,9 +19792,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
+  m_SortingOrder: 25
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1291240929
 MeshFilter:
@@ -19280,6 +19840,47 @@ MonoBehaviour:
     type: 1
     rate: 1
     IsActive: 0
+--- !u!21 &1296119834
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &1302044478
 GameObject:
   m_ObjectHideFlags: 0
@@ -20132,6 +20733,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108afb6ff1b3a94429cb7f8b995ede9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sortingLayerName: BoatView
+  sortingOrder: 25
+  waterColor: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+  waterMaterial: {fileID: 0}
 --- !u!23 &1359724592
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -20155,7 +20760,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 446f16bbff8c44d46a49584b14251005, type: 2}
+  - {fileID: 1748359330}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -20173,9 +20778,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
+  m_SortingOrder: 25
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1359724593
 MeshFilter:
@@ -20673,6 +21278,126 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1389007868}
   m_CullTransparentMesh: 1
+--- !u!1 &1395915511
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1395915512}
+  - component: {fileID: 1395915516}
+  - component: {fileID: 1395915515}
+  - component: {fileID: 1395915514}
+  - component: {fileID: 1395915513}
+  m_Layer: 4
+  m_Name: Ocean_Back
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1395915512
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1395915511}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 496338822}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1395915513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1395915511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d82d239d4de4e0146ae2ea72f25f96b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sortingLayerName: Water
+  sortingOrder: 0
+--- !u!114 &1395915514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1395915511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cd12d36923ccb7478931247747a365c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waveManager: {fileID: 0}
+  centerTarget: {fileID: 0}
+  points: 1000
+  bottomY: -500
+  textureWorldScale: 10
+  meshWidth: 240
+--- !u!23 &1395915515
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1395915511}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 4a4407028843f0a408b2ee53dedbd420, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1395915516
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1395915511}
+  m_Mesh: {fileID: 0}
 --- !u!1 &1397374131
 GameObject:
   m_ObjectHideFlags: 0
@@ -20861,6 +21586,47 @@ MonoBehaviour:
   maxWindSpeed: 0.3
   windDirection: {x: 1, y: 0}
   transitionDuration: 5
+--- !u!21 &1404981046
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &1412166367
 GameObject:
   m_ObjectHideFlags: 0
@@ -21898,6 +22664,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108afb6ff1b3a94429cb7f8b995ede9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sortingLayerName: BoatView
+  sortingOrder: 25
+  waterColor: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+  waterMaterial: {fileID: 0}
 --- !u!23 &1442342303
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -21921,7 +22691,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 446f16bbff8c44d46a49584b14251005, type: 2}
+  - {fileID: 1924981705}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -21939,9 +22709,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
+  m_SortingOrder: 25
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1442342304
 MeshFilter:
@@ -23063,6 +23833,47 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1514197028}
   m_CullTransparentMesh: 1
+--- !u!21 &1514437170
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &1516219386
 GameObject:
   m_ObjectHideFlags: 0
@@ -24224,6 +25035,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108afb6ff1b3a94429cb7f8b995ede9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sortingLayerName: BoatView
+  sortingOrder: 25
+  waterColor: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+  waterMaterial: {fileID: 0}
 --- !u!23 &1578702331
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -24247,7 +25062,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 446f16bbff8c44d46a49584b14251005, type: 2}
+  - {fileID: 642660744}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -24265,9 +25080,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
+  m_SortingOrder: 25
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1578702332
 MeshFilter:
@@ -24545,6 +25360,47 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1616315247}
   m_CullTransparentMesh: 1
+--- !u!21 &1645543149
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &1652246946
 GameObject:
   m_ObjectHideFlags: 0
@@ -25157,6 +26013,47 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9132691974338447282, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
   m_PrefabInstance: {fileID: 620326624}
   m_PrefabAsset: {fileID: 0}
+--- !u!21 &1748359330
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &1762813086
 GameObject:
   m_ObjectHideFlags: 0
@@ -27540,6 +28437,88 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!21 &1915129511
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!21 &1924981705
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &1937958089
 GameObject:
   m_ObjectHideFlags: 0
@@ -27851,6 +28830,9 @@ MonoBehaviour:
   bodySource: {fileID: 1950205775}
   waveManager: {fileID: 0}
   wave: {fileID: 0}
+  useBoatWaterContext: 1
+  explicitWaterContext: {fileID: 0}
+  boatBodyAlwaysUsesOcean: 1
   sliceCount: 10
   lastTotalSubmersion: 0
   enabledFlag: 1
@@ -28591,6 +29573,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108afb6ff1b3a94429cb7f8b995ede9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sortingLayerName: BoatView
+  sortingOrder: 25
+  waterColor: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+  waterMaterial: {fileID: 0}
 --- !u!23 &2018304704
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -28614,7 +29600,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 446f16bbff8c44d46a49584b14251005, type: 2}
+  - {fileID: 1296119834}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -28632,9 +29618,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 1
+  m_SortingOrder: 25
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &2018304705
 MeshFilter:
@@ -28716,6 +29702,47 @@ RectTransform:
   m_AnchoredPosition: {x: -5, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!21 &2030580619
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &2039232307
 GameObject:
   m_ObjectHideFlags: 0
@@ -29350,6 +30377,47 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2105421277}
   m_CullTransparentMesh: 1
+--- !u!21 &2105724102
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 0.1, g: 0.4, b: 0.9, a: 0.6}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &2116302082
 GameObject:
   m_ObjectHideFlags: 0
@@ -29519,6 +30587,9 @@ MonoBehaviour:
   bodySource: {fileID: 2123979990}
   waveManager: {fileID: 0}
   wave: {fileID: 0}
+  useBoatWaterContext: 1
+  explicitWaterContext: {fileID: 0}
+  boatBodyAlwaysUsesOcean: 1
   sliceCount: 20
   lastTotalSubmersion: 0
   enabledFlag: 1

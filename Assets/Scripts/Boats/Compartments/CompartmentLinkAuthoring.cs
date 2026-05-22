@@ -24,7 +24,8 @@ public sealed class CompartmentLinkAuthoring : MonoBehaviour
 
     [Header("References")]
     public Boat boat;
-    public HatchRuntime hatchRuntime;      // optional, mainly for closeable hatches/doors
+    public HatchRuntime hatchRuntime;      // optional, mainly for closeable hatches
+    public DoorRuntime doorRuntime;        // optional, mainly for closeable doors
     public BoxCollider2D openingCollider;  // defines opening rectangle
 
     [Header("Type")]
@@ -62,7 +63,12 @@ public sealed class CompartmentLinkAuthoring : MonoBehaviour
             if (!IsCloseable)
                 return true;
 
-            return hatchRuntime == null || hatchRuntime.IsOpen;
+            return linkType switch
+            {
+                CompartmentLinkType.Hatch => hatchRuntime == null || hatchRuntime.IsOpen,
+                CompartmentLinkType.Door => doorRuntime == null || doorRuntime.IsOpen,
+                _ => true
+            };
         }
     }
 
@@ -139,6 +145,9 @@ public sealed class CompartmentLinkAuthoring : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(linkId))
             linkId = gameObject.name;
+
+        if (doorRuntime == null)
+            doorRuntime = GetComponent<DoorRuntime>();
     }
 
     public ResolutionResult Resolve()

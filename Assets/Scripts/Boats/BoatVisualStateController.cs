@@ -22,6 +22,11 @@ public sealed class BoatVisualStateController : MonoBehaviour
     [SerializeField] private bool hideDeckWhenInterior = false;
     [SerializeField] private bool includeInactiveRenderers = true;
 
+    [Header("Water Presentation")]
+    [SerializeField] private OceanWaterPresentationController oceanWaterPresentation;
+    [SerializeField] private bool showCompartmentWaterInInterior = true;
+    [SerializeField] private bool showCompartmentWaterInTransition = true;
+
     [Header("Temporary Camera Layer Hiding")]
     [SerializeField] private Camera targetCamera;
     [SerializeField] private LayerMask hideByCameraMaskWhenInterior = 0;
@@ -34,11 +39,14 @@ public sealed class BoatVisualStateController : MonoBehaviour
     private Renderer[] _deckRenderers;
     private Renderer[] _hullRenderers;
     private Renderer[] _alwaysRenderers;
+    private Renderer[] _compartmentWaterRenderers;
 
     private BoatVisibilityMode _currentMode;
 
     private int _originalCameraCullingMask;
     private bool _cachedOriginalCameraMask;
+
+    public BoatVisibilityMode CurrentMode => _currentMode;
 
     [Header("Debug")]
     [SerializeField] private bool logVisibility = false;
@@ -256,6 +264,15 @@ public sealed class BoatVisualStateController : MonoBehaviour
         SetRenderersEnabled(_hullRenderers, hullVisible);
         SetRenderersEnabled(_alwaysRenderers, alwaysVisible);
 
+        bool compartmentWaterVisible =
+            (mode == BoatVisibilityMode.BoardedInterior && showCompartmentWaterInInterior) ||
+            (mode == BoatVisibilityMode.Transition && showCompartmentWaterInTransition);
+
+        SetRenderersEnabled(_compartmentWaterRenderers, compartmentWaterVisible);
+
+        if (oceanWaterPresentation != null)
+            oceanWaterPresentation.ApplyMode(mode);
+
         // After visibility group toggles, restore stateful hatch sprite presentation.
         RefreshAccessPresentationInRoot(exteriorRoot, exteriorVisible);
         RefreshAccessPresentationInRoot(exteriorDeckRoot, deckVisible);
@@ -351,6 +368,15 @@ public sealed class BoatVisualStateController : MonoBehaviour
 
         if (alwaysVisibleRoot == null)
             alwaysVisibleRoot = transform.Find("_AlwaysVisible") ?? transform.Find("AlwaysVisible");
+
+        if (oceanWaterPresentation == null)
+        {
+            oceanWaterPresentation =
+                GetComponentInChildren<OceanWaterPresentationController>(true);
+
+            if (oceanWaterPresentation == null)
+                oceanWaterPresentation = FindAnyObjectByType<OceanWaterPresentationController>();
+        }
     }
 
     [ContextMenu("Cache Renderers")]
@@ -361,6 +387,7 @@ public sealed class BoatVisualStateController : MonoBehaviour
         _deckRenderers = GetRenderers(exteriorDeckRoot);
         _hullRenderers = GetRenderers(hullRoot);
         _alwaysRenderers = GetRenderers(alwaysVisibleRoot);
+        _compartmentWaterRenderers = GetCompartmentWaterRenderers();
     }
 
     [ContextMenu("Preview Unboarded Exterior")]
@@ -406,6 +433,30 @@ public sealed class BoatVisualStateController : MonoBehaviour
             return System.Array.Empty<Renderer>();
 
         return root.GetComponentsInChildren<Renderer>(includeInactiveRenderers);
+    }
+
+    private Renderer[] GetCompartmentWaterRenderers()
+    {
+        CompartmentWaterRenderer[] waterRenderers =
+            GetComponentsInChildren<CompartmentWaterRenderer>(includeInactiveRenderers);
+
+        if (waterRenderers == null || waterRenderers.Length == 0)
+            return System.Array.Empty<Renderer>();
+
+        List<Renderer> result = new();
+
+        for (int i = 0; i < waterRenderers.Length; i++)
+        {
+            CompartmentWaterRenderer water = waterRenderers[i];
+            if (water == null)
+                continue;
+
+            Renderer r = water.GetComponent<Renderer>();
+            if (r != null)
+                result.Add(r);
+        }
+
+        return result.ToArray();
     }
 
     private static void SetRenderersEnabled(Renderer[] renderers, bool enabled)

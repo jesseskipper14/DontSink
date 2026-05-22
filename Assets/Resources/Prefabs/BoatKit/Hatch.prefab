@@ -96,11 +96,12 @@ MonoBehaviour:
   linkId: CompartmentLink
   boat: {fileID: 0}
   hatchRuntime: {fileID: -8442924910193302251}
+  doorRuntime: {fileID: 0}
   openingCollider: {fileID: 8340619996951885016}
   linkType: 0
   sampleOffset: 0.6
   autoResolveInEditor: 0
-  flowCoefficient: 1
+  flowCoefficient: 0.2
   externalSourceType: 2
   externalRate: 0.1
 --- !u!114 &5454265949810558242
@@ -117,6 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boat: {fileID: 0}
   hatchRuntime: {fileID: -8442924910193302251}
+  doorRuntime: {fileID: 0}
   linkAuthoring: {fileID: 6331073985993638668}
   logWarnings: 0
   logStateChanges: 0

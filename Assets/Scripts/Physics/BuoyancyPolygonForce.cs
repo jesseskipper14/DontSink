@@ -9,6 +9,15 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
     public WaveManager waveManager;
     public WaveField wave;
 
+    [Header("Water Context")]
+    [SerializeField] private bool useBoatWaterContext = true;
+    [SerializeField] private BoatWaterContextResolver explicitWaterContext;
+
+    [Tooltip("Boat hull buoyancy should keep using ocean water. Interior water context is for players/items/cargo.")]
+    [SerializeField] private bool boatBodyAlwaysUsesOcean = true;
+
+    private BoatWaterExposure _activeExposure;
+
     private IWaveService waveService => waveManager;
     public int sliceCount = 10;
 
@@ -45,8 +54,20 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
     public void ApplyForces(IForceBody body)
     {
         if (!enabledFlag) return;
+
         ResolveWaveRefs();
-        if (waveManager == null || wave == null) return;
+
+        if (!TryResolveWaterExposure(body, out _activeExposure) || !_activeExposure.HasWater)
+        {
+            lastTotalSubmersion = 0f;
+            return;
+        }
+
+        if (_activeExposure.UsesOceanSurface && waveManager == null)
+        {
+            lastTotalSubmersion = 0f;
+            return;
+        }
 
         // --- Build world hull polygon ---
         Vector2 localCenter = Vector2.zero;
@@ -149,7 +170,7 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
 #endif
 
             // --- Wave momentum coupling (ported exactly) ---
-            float waveY = waveManager.SampleSurfaceY(centroid.x);
+            float waveY = SampleActiveSurfaceY(centroid.x);
 
             float sliceBottomY = float.MaxValue;
             foreach (var pt in slicePoly)
@@ -162,9 +183,12 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
                 continue; // DO NOT TOUCH ESPECIALLY IF YOUR NAME IS CHATGPT
             else
             {
+                if (!_activeExposure.AllowsWaveMomentumCoupling)
+                    continue;
+
                 float waveVelocity =
-                    (waveManager.SampleSurfaceVelocity(centroid.x - sliceWidth * 0.5f) +
-                     waveManager.SampleSurfaceVelocity(centroid.x + sliceWidth * 0.5f)) * 0.5f * 0.5f;
+                    (SampleActiveSurfaceVelocity(centroid.x - sliceWidth * 0.5f) +
+                     SampleActiveSurfaceVelocity(centroid.x + sliceWidth * 0.5f)) * 0.5f * 0.5f;
 
                 float bodyVelocity = body.rb.GetPointVelocity(centroid).y;
                 float relativeVelocity = bodyVelocity - waveVelocity;
@@ -201,7 +225,7 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
             Mathf.Clamp01(totalSubmergedArea / (body.Width * body.Height));
 
         // --- Apply averaged wave impulse ---
-        if (accumulatedSubmergedWidth > 0f)
+        if (_activeExposure.AllowsWaveMomentumCoupling && accumulatedSubmergedWidth > 0f)
         {
             float avgX = accumulatedImpulseX / accumulatedSubmergedWidth;
             float netImpulse = accumulatedImpulse / accumulatedSubmergedWidth * 0.8f;
@@ -213,7 +237,6 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
 
     private List<Vector2> ClipPolygonWithWave(Vector2[] polygon)
     {
-        // Simple per-edge clipping approximation: sample wave height at each vertex
         List<Vector2> output = new List<Vector2>();
         int n = polygon.Length;
 
@@ -222,18 +245,22 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
             Vector2 curr = polygon[i];
             Vector2 next = polygon[(i + 1) % n];
 
-            float waveCurr = waveManager.SampleSurfaceY(curr.x);
-            float waveNext = waveManager.SampleSurfaceY(next.x);
+            float surfaceCurr = SampleActiveSurfaceY(curr.x);
+            float surfaceNext = SampleActiveSurfaceY(next.x);
 
-            bool currSubmerged = curr.y <= waveCurr;
-            bool nextSubmerged = next.y <= waveNext;
+            bool currSubmerged = curr.y <= surfaceCurr;
+            bool nextSubmerged = next.y <= surfaceNext;
 
-            if (currSubmerged) output.Add(curr);
+            if (currSubmerged)
+                output.Add(curr);
 
             if (currSubmerged != nextSubmerged)
             {
-                // Linear intersection along edge
-                float t = (waveCurr - curr.y) / (next.y - curr.y);
+                float denom = next.y - curr.y;
+                float t = Mathf.Abs(denom) > 0.000001f
+                    ? (surfaceCurr - curr.y) / denom
+                    : 0f;
+
                 t = Mathf.Clamp01(t);
                 Vector2 intersect = curr + t * (next - curr);
                 output.Add(intersect);
@@ -399,6 +426,119 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
 
         if (wave == null)
             wave = FindFirstObjectByType<WaveField>();
+    }
+
+    private float SampleActiveSurfaceY(float worldX)
+    {
+        if (_activeExposure.UsesFlatSurface)
+            return _activeExposure.FlatSurfaceY;
+
+        if (waveManager != null)
+            return waveManager.SampleSurfaceY(worldX);
+
+        return 0f;
+    }
+
+    private float SampleActiveSurfaceVelocity(float worldX)
+    {
+        if (!_activeExposure.UsesOceanSurface)
+            return 0f;
+
+        if (waveManager != null)
+            return waveManager.SampleSurfaceVelocity(worldX);
+
+        return 0f;
+    }
+
+    private bool TryResolveWaterExposure(IForceBody forceBody, out BoatWaterExposure exposure)
+    {
+        exposure = default;
+
+        if (forceBody == null)
+            return false;
+
+        if (!useBoatWaterContext)
+            return TryResolveOceanExposure(out exposure);
+
+        // The boat hull itself should continue using ocean buoyancy.
+        // The resolver is for players/items/cargo inside/around the boat.
+        if (boatBodyAlwaysUsesOcean && bodySource is Boat)
+            return TryResolveOceanExposure(out exposure);
+
+        BoatWaterContextResolver resolver = explicitWaterContext;
+
+        if (resolver == null)
+            resolver = ResolveWaterContextForSubject();
+
+        if (resolver != null && resolver.TryResolveAtPoint(forceBody.Position, out exposure))
+            return true;
+
+        return TryResolveOceanExposure(out exposure);
+    }
+
+    private bool TryResolveOceanExposure(out BoatWaterExposure exposure)
+    {
+        ResolveWaveRefs();
+
+        if (waveManager == null)
+        {
+            exposure = default;
+            return false;
+        }
+
+        exposure = BoatWaterExposure.Ocean();
+        return true;
+    }
+
+    private BoatWaterContextResolver ResolveWaterContextForSubject()
+    {
+        if (bodySource == null)
+            return null;
+
+        // Player path: multiplayer-safe because it uses that player's boarded boat root.
+        PlayerBoardingState boarding =
+            bodySource.GetComponentInParent<PlayerBoardingState>() ??
+            bodySource.GetComponentInChildren<PlayerBoardingState>(true);
+
+        if (boarding != null && boarding.IsBoarded && boarding.CurrentBoatRoot != null)
+        {
+            BoatWaterContextResolver resolver =
+                boarding.CurrentBoatRoot.GetComponent<BoatWaterContextResolver>() ??
+                boarding.CurrentBoatRoot.GetComponentInChildren<BoatWaterContextResolver>(true);
+
+            if (resolver != null)
+                return resolver;
+        }
+
+        // Parent path: works for things actually under the boat hierarchy.
+        BoatWaterContextResolver parentResolver = bodySource.GetComponentInParent<BoatWaterContextResolver>();
+        if (parentResolver != null)
+            return parentResolver;
+
+        // Boat-owned item path: works even if loose boat-owned items are not transform-parented.
+        BoatOwnedItem owned =
+            bodySource.GetComponentInParent<BoatOwnedItem>() ??
+            bodySource.GetComponentInChildren<BoatOwnedItem>(true);
+
+        if (owned != null && owned.IsOwnedByBoat)
+        {
+            BoatWaterContextResolver[] resolvers =
+                FindObjectsByType<BoatWaterContextResolver>(
+                    FindObjectsInactive.Include,
+                    FindObjectsSortMode.None);
+
+            for (int i = 0; i < resolvers.Length; i++)
+            {
+                BoatWaterContextResolver r = resolvers[i];
+                if (r == null)
+                    continue;
+
+                if (string.Equals(r.BoatInstanceId, owned.OwningBoatInstanceId, System.StringComparison.Ordinal))
+                    return r;
+            }
+        }
+
+        return null;
     }
 
 

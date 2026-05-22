@@ -1831,6 +1831,9 @@ MonoBehaviour:
   bodySource: {fileID: 7113268515021293772}
   waveManager: {fileID: 0}
   wave: {fileID: 0}
+  useBoatWaterContext: 1
+  explicitWaterContext: {fileID: 0}
+  boatBodyAlwaysUsesOcean: 1
   sliceCount: 10
   lastTotalSubmersion: 0
   enabledFlag: 1
@@ -1905,6 +1908,9 @@ MonoBehaviour:
   hideExteriorWhenInterior: 1
   hideDeckWhenInterior: 0
   includeInactiveRenderers: 1
+  oceanWaterPresentation: {fileID: 0}
+  showCompartmentWaterInInterior: 1
+  showCompartmentWaterInTransition: 1
   targetCamera: {fileID: 0}
   hideByCameraMaskWhenInterior:
     serializedVersion: 2
@@ -3018,6 +3024,10 @@ PrefabInstance:
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: localCorners.Array.data[3].y
       value: -1.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 649692223756647261, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 895882396756966778, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Size.x
@@ -4546,6 +4556,10 @@ PrefabInstance:
       propertyPath: localCorners.Array.data[3].y
       value: -1.875
       objectReference: {fileID: 0}
+    - target: {fileID: 649692223756647261, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 895882396756966778, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Size.x
       value: 7.5
@@ -4714,6 +4728,10 @@ PrefabInstance:
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: localCorners.Array.data[3].y
       value: -3.875
+      objectReference: {fileID: 0}
+    - target: {fileID: 649692223756647261, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 895882396756966778, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Size.x
@@ -5650,6 +5668,10 @@ PrefabInstance:
       propertyPath: externalWaterSources.Array.data[1].IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 649692223756647261, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 895882396756966778, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Size.x
       value: 16
@@ -5818,6 +5840,10 @@ PrefabInstance:
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: localCorners.Array.data[3].y
       value: -1.875
+      objectReference: {fileID: 0}
+    - target: {fileID: 649692223756647261, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 895882396756966778, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Size.x
@@ -6173,6 +6199,10 @@ PrefabInstance:
       propertyPath: localCorners.Array.data[3].y
       value: -1.75
       objectReference: {fileID: 0}
+    - target: {fileID: 649692223756647261, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 895882396756966778, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Size.x
       value: 5
@@ -6435,6 +6465,10 @@ PrefabInstance:
       propertyPath: localCorners.Array.data[3].y
       value: -1.875
       objectReference: {fileID: 0}
+    - target: {fileID: 649692223756647261, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 895882396756966778, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Size.x
       value: 5
@@ -6603,6 +6637,10 @@ PrefabInstance:
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: localCorners.Array.data[3].y
       value: -1.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 649692223756647261, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 895882396756966778, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Size.x

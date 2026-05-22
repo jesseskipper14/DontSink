@@ -1194,6 +1194,7 @@ GameObject:
   - component: {fileID: 4051133682530045941}
   - component: {fileID: 7159992767896418762}
   - component: {fileID: -8374035178730198702}
+  - component: {fileID: -4915605059941102792}
   m_Layer: 0
   m_Name: TestBoat_BoatBuilder_9_CargoZones
   m_TagString: PlayerBoat
@@ -1410,6 +1411,9 @@ MonoBehaviour:
   hideExteriorWhenInterior: 1
   hideDeckWhenInterior: 0
   includeInactiveRenderers: 1
+  oceanWaterPresentation: {fileID: 0}
+  showCompartmentWaterInInterior: 1
+  showCompartmentWaterInTransition: 1
   targetCamera: {fileID: 0}
   hideByCameraMaskWhenInterior:
     serializedVersion: 2
@@ -1431,6 +1435,9 @@ MonoBehaviour:
   bodySource: {fileID: 2709613433615012422}
   waveManager: {fileID: 0}
   wave: {fileID: 0}
+  useBoatWaterContext: 1
+  explicitWaterContext: {fileID: 0}
+  boatBodyAlwaysUsesOcean: 1
   sliceCount: 10
   lastTotalSubmersion: 0
   enabledFlag: 1
@@ -1544,6 +1551,25 @@ MonoBehaviour:
   boat: {fileID: 2709613433615012422}
   itemRegistry: {fileID: 3671056973743861915}
   itemCatalog: {fileID: 11400000, guid: d39434bc65a89584c811f84d322f558a, type: 2}
+  verboseLogging: 0
+--- !u!114 &-4915605059941102792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4844940557630194302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c967c7ddf7360945989e1710d4ed86d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boat: {fileID: 2709613433615012422}
+  dryWaterFractionEpsilon: 0.0025
+  fullCompartmentThreshold01: 0.999
+  treatFullyFloodedBoatAsOcean: 1
+  fullCompartmentSurfacePadding: 0.5
+  includeInactiveCompartments: 1
   verboseLogging: 0
 --- !u!1 &5038056310316381613
 GameObject:
@@ -3664,6 +3690,10 @@ PrefabInstance:
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: localCorners.Array.data[3].y
       value: -1.625
+      objectReference: {fileID: 0}
+    - target: {fileID: 649692223756647261, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 895882396756966778, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: m_Size.x

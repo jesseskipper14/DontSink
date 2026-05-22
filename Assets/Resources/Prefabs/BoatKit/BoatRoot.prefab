@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: -1492508034575852510}
   - component: {fileID: -1824022060306915919}
   - component: {fileID: -558263347977270280}
+  - component: {fileID: 5255386316628391027}
   - component: {fileID: 7296790530309691680}
   - component: {fileID: 3301175116528709572}
   - component: {fileID: 7185085591629101004}
@@ -279,6 +280,25 @@ MonoBehaviour:
     m_Bits: 66560
   autoFindMainCamera: 1
   logVisibility: 0
+--- !u!114 &5255386316628391027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c967c7ddf7360945989e1710d4ed86d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boat: {fileID: 6897017861151174155}
+  dryWaterFractionEpsilon: 0.0025
+  fullCompartmentThreshold01: 0.999
+  treatFullyFloodedBoatAsOcean: 1
+  fullCompartmentSurfacePadding: 0.5
+  includeInactiveCompartments: 1
+  verboseLogging: 0
 --- !u!114 &7296790530309691680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -294,6 +314,9 @@ MonoBehaviour:
   bodySource: {fileID: 6897017861151174155}
   waveManager: {fileID: 0}
   wave: {fileID: 0}
+  useBoatWaterContext: 1
+  explicitWaterContext: {fileID: 0}
+  boatBodyAlwaysUsesOcean: 1
   sliceCount: 10
   lastTotalSubmersion: 0
   enabledFlag: 1
