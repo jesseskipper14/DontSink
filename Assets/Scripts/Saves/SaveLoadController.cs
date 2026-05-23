@@ -18,6 +18,12 @@ public sealed class SaveLoadController : MonoBehaviour
     [SerializeField] private string nodeSceneName = "NodeScene";
     [SerializeField] private string mainMenuSceneName = "MainMenu";
 
+    [Header("Compatibility Diagnostics")]
+    [SerializeField] private BoatCatalog boatCatalog;
+    [SerializeField] private bool runCompatibilityDiagnostics = true;
+    [SerializeField] private bool blockSaveOnCompatibilityErrors = true;
+    [SerializeField] private bool blockLoadOnCompatibilityErrors = true;
+
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = true;
 
@@ -61,7 +67,9 @@ public sealed class SaveLoadController : MonoBehaviour
             finalSlot,
             profileId,
             finalDisplay,
-            nodeSceneName);
+            nodeSceneName,
+            runCompatibilityDiagnostics ? boatCatalog : null,
+            blockSaveOnCompatibilityErrors);
 
         LogResult($"SaveSlot('{finalSlot}')", result);
         return result;
@@ -74,7 +82,9 @@ public sealed class SaveLoadController : MonoBehaviour
         SaveGameResult result = SaveGameService.LoadSlot(
             finalSlot,
             profileId,
-            nodeSceneName);
+            nodeSceneName,
+            runCompatibilityDiagnostics ? boatCatalog : null,
+            blockLoadOnCompatibilityErrors);
 
         LogResult($"LoadSlot('{finalSlot}')", result);
         return result;
@@ -96,7 +106,9 @@ public sealed class SaveLoadController : MonoBehaviour
             profileId,
             displayName,
             nodeSceneName,
-            maxAutosaves);
+            maxAutosaves,
+            runCompatibilityDiagnostics ? boatCatalog : null,
+            blockSaveOnCompatibilityErrors);
 
         LogResult("SaveAutosave", result);
         return result;
@@ -182,5 +194,16 @@ public sealed class SaveLoadController : MonoBehaviour
         {
             Debug.LogWarning($"[SaveLoadController:{name}] {action} | {result}", this);
         }
+    }
+
+    [ContextMenu("DEBUG Validate Save Compatibility")]
+    private void DebugValidateSaveCompatibility()
+    {
+        SaveCompatibilityReport report =
+            SaveCompatibilityDiagnostics.ValidateCurrentGameStateForSave(
+                GameState.I,
+                boatCatalog);
+
+        report.LogUnity($"SaveLoadController:{name} Current Save Compatibility", this);
     }
 }

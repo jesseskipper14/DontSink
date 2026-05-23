@@ -20,6 +20,8 @@ public sealed class BoatCatalog : ScriptableObject
     [Header("Entries")]
     [SerializeField] private List<Entry> entries = new();
 
+    public IReadOnlyList<Entry> Entries => entries;
+
     private readonly Dictionary<string, GameObject> _map = new();
 
     private void OnEnable()
@@ -28,6 +30,16 @@ public sealed class BoatCatalog : ScriptableObject
     }
 
 #if UNITY_EDITOR
+
+    [ContextMenu("Validate Catalog Compatibility")]
+    private void ValidateCatalogCompatibilityContextMenu()
+    {
+        SaveCompatibilityReport report =
+            SaveCompatibilityDiagnostics.ValidateBoatCatalog(this);
+
+        report.LogUnity($"BoatCatalog:{name}", this);
+    }
+
     private void OnValidate()
     {
         SyncGuidsFromPrefabsInternal(markDirty: false, saveAssets: false, log: false);

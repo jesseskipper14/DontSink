@@ -37,7 +37,9 @@ public static class SaveGameService
         string slotId,
         string profileId,
         string displayName,
-        string nodeSceneName)
+        string nodeSceneName,
+        BoatCatalog boatCatalog = null,
+        bool blockOnCompatibilityErrors = true)
     {
         GameState gs = GameState.I;
         if (gs == null)
@@ -62,6 +64,30 @@ public static class SaveGameService
         }
 
         RefreshRuntimeStateBeforeSave(gs);
+
+        if (boatCatalog != null)
+        {
+            SaveCompatibilityReport compatibility =
+                SaveCompatibilityDiagnostics.ValidateCurrentGameStateForSave(gs, boatCatalog);
+
+            compatibility.LogUnity("SaveGameService.SaveSlot compatibility", gs);
+
+            if (blockOnCompatibilityErrors && compatibility.HasErrors)
+            {
+                string pathForFailure = GetSlotPath(slotId, profileId);
+
+                return new SaveGameResult(
+                    false,
+                    $"Save compatibility failed. {compatibility.Summary}. See Unity console for details.",
+                    pathForFailure);
+            }
+        }
+        else
+        {
+            Debug.LogWarning(
+                "[SaveGameService] Save compatibility diagnostics skipped because BoatCatalog was null. " +
+                "Assign BoatCatalog on SaveLoadController if you want GUID validation.");
+        }
 
         string path = GetSlotPath(slotId, profileId);
         string now = DateTime.UtcNow.ToString("O");
@@ -103,7 +129,9 @@ public static class SaveGameService
         string profileId,
         string displayName,
         string nodeSceneName,
-        int maxAutosaves = DefaultMaxAutosaves)
+        int maxAutosaves = DefaultMaxAutosaves,
+        BoatCatalog boatCatalog = null,
+        bool blockOnCompatibilityErrors = true)
     {
         string timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
         string slotId = AutosavePrefix + timestamp;
@@ -112,7 +140,9 @@ public static class SaveGameService
             slotId,
             profileId,
             string.IsNullOrWhiteSpace(displayName) ? "Autosave" : displayName,
-            nodeSceneName);
+            nodeSceneName,
+            boatCatalog,
+            blockOnCompatibilityErrors);
 
         if (result.success)
             PruneAutosaves(profileId, maxAutosaves);
@@ -159,7 +189,9 @@ public static class SaveGameService
     public static SaveGameResult LoadSlot(
         string slotId,
         string profileId,
-        string nodeSceneName)
+        string nodeSceneName,
+        BoatCatalog boatCatalog = null,
+        bool blockOnCompatibilityErrors = true)
     {
         string path = GetSlotPath(slotId, profileId);
 
@@ -181,6 +213,28 @@ public static class SaveGameService
         SaveGameResult validation = ValidateForLoad(file, nodeSceneName, path);
         if (!validation.success)
             return validation;
+
+        if (boatCatalog != null)
+        {
+            SaveCompatibilityReport compatibility =
+                SaveCompatibilityDiagnostics.ValidateSaveFileForLoad(file, boatCatalog);
+
+            compatibility.LogUnity("SaveGameService.LoadSlot compatibility", null);
+
+            if (blockOnCompatibilityErrors && compatibility.HasErrors)
+            {
+                return new SaveGameResult(
+                    false,
+                    $"Load compatibility failed. {compatibility.Summary}. See Unity console for details.",
+                    path);
+            }
+        }
+        else
+        {
+            Debug.LogWarning(
+                "[SaveGameService] Load compatibility diagnostics skipped because BoatCatalog was null. " +
+                "Assign BoatCatalog on SaveLoadController if you want GUID validation.");
+        }
 
         EnsureCoreSingletons();
 

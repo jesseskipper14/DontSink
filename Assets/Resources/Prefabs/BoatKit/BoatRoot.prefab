@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: -558263347977270280}
   - component: {fileID: 5255386316628391027}
   - component: {fileID: 7296790530309691680}
+  - component: {fileID: -5845635969384365991}
   - component: {fileID: 3301175116528709572}
   - component: {fileID: 7185085591629101004}
   - component: {fileID: 4829187434485389288}
@@ -274,6 +275,9 @@ MonoBehaviour:
   hideExteriorWhenInterior: 1
   hideDeckWhenInterior: 0
   includeInactiveRenderers: 1
+  oceanWaterPresentation: {fileID: 0}
+  showCompartmentWaterInInterior: 1
+  showCompartmentWaterInTransition: 1
   targetCamera: {fileID: 0}
   hideByCameraMaskWhenInterior:
     serializedVersion: 2
@@ -321,6 +325,53 @@ MonoBehaviour:
   lastTotalSubmersion: 0
   enabledFlag: 1
   priority: 50
+--- !u!114 &-5845635969384365991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d76596872cc40324b94fa4fb26ab7a93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boat: {fileID: 6897017861151174155}
+  boatRoot: {fileID: 9137842763216339877}
+  targetCamera: {fileID: 0}
+  active: 1
+  mode: 0
+  mouseButton: 0
+  shiftClickRemoves: 1
+  amount: 0.25
+  decreaseAmountKey: 44
+  increaseAmountKey: 46
+  amountSmallStep: 0.25
+  amountLargeStep: 2.5
+  amountPresets:
+  - 0.25
+  - 1
+  - 5
+  - 10
+  - 25
+  setFraction01: 0.5
+  toggleActiveKey: 292
+  addModeKey: 49
+  removeModeKey: 50
+  setModeKey: 51
+  emptyModeKey: 52
+  fillModeKey: 53
+  logMouseKey: 290
+  showOverlay: 1
+  overlayPosition: {x: 15, y: 200}
+  overlaySize: {x: 520, y: 170}
+  toggleOverlayKey: 291
+  overlayDraggable: 1
+  ignoreFloodClicksOverOverlay: 1
+  logClicks: 0
+  logMisses: 0
+  logMouseWhenPressed: 0
 --- !u!114 &3301175116528709572
 MonoBehaviour:
   m_ObjectHideFlags: 0

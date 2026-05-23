@@ -1249,6 +1249,10 @@ MonoBehaviour:
   maxAutosaves: 5
   nodeSceneName: NodeScene
   mainMenuSceneName: MainMenu
+  boatCatalog: {fileID: 11400000, guid: 974e3bc862860674a809b28872cfd053, type: 2}
+  runCompatibilityDiagnostics: 1
+  blockSaveOnCompatibilityErrors: 1
+  blockLoadOnCompatibilityErrors: 1
   verboseLogging: 0
 --- !u!114 &277718802
 MonoBehaviour:

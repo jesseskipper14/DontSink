@@ -1669,6 +1669,7 @@ GameObject:
   - component: {fileID: 1647087150382103909}
   - component: {fileID: 3994175581240845045}
   - component: {fileID: 4142843650906430854}
+  - component: {fileID: 6897800352757182041}
   - component: {fileID: 767502651244285427}
   - component: {fileID: 4879936882431343}
   - component: {fileID: 7440548619045851906}
@@ -1806,7 +1807,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boat: {fileID: 5943007106159419301}
+  validateIdsOnStart: 1
   warnForMissingIds: 1
+  warnForDuplicateIds: 1
+  warningsIgnoreVerboseLogging: 1
+  restoreByFractionWhenMaxAreaChanged: 1
+  maxAreaMismatchTolerance: 0.001
   verboseLogging: 0
 --- !u!114 &8729887695823119932
 MonoBehaviour:
@@ -1987,6 +1993,53 @@ MonoBehaviour:
   lastTotalSubmersion: 0
   enabledFlag: 1
   priority: 50
+--- !u!114 &6897800352757182041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928689026320414970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d76596872cc40324b94fa4fb26ab7a93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boat: {fileID: 5943007106159419301}
+  boatRoot: {fileID: 2735890325105630949}
+  targetCamera: {fileID: 0}
+  active: 1
+  mode: 0
+  mouseButton: 0
+  shiftClickRemoves: 1
+  amount: 5
+  decreaseAmountKey: 44
+  increaseAmountKey: 46
+  amountSmallStep: 0.5
+  amountLargeStep: 2.5
+  amountPresets:
+  - 0.25
+  - 1
+  - 5
+  - 10
+  - 25
+  setFraction01: 0.5
+  toggleActiveKey: 292
+  addModeKey: 49
+  removeModeKey: 50
+  setModeKey: 51
+  emptyModeKey: 52
+  fillModeKey: 53
+  logMouseKey: 290
+  showOverlay: 0
+  overlayPosition: {x: 12, y: 120}
+  overlaySize: {x: 520, y: 170}
+  toggleOverlayKey: 291
+  overlayDraggable: 1
+  ignoreFloodClicksOverOverlay: 1
+  logClicks: 0
+  logMisses: 0
+  logMouseWhenPressed: 0
 --- !u!114 &767502651244285427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2484,6 +2537,10 @@ PrefabInstance:
       value: -2.625
       objectReference: {fileID: 0}
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
+      propertyPath: compartmentId
+      value: compartment_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: localCorners.Array.data[0].x
       value: -4.75
       objectReference: {fileID: 0}
@@ -2903,6 +2960,10 @@ PrefabInstance:
       value: -2.625
       objectReference: {fileID: 0}
     - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
+      propertyPath: compartmentId
+      value: compartment_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 317825384462496607, guid: 4504f17fa99af124cadbebe4b7daf2ef, type: 3}
       propertyPath: localCorners.Array.data[0].x
       value: -4.75
       objectReference: {fileID: 0}
@@ -3113,7 +3174,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 531008800254972838, guid: 8c3c53a9936827d4997a5e4f9155b576, type: 3}
       propertyPath: m_Offset.y
-      value: 1.0500002
+      value: 1.0499992
       objectReference: {fileID: 0}
     - target: {fileID: 2765728857318232350, guid: 8c3c53a9936827d4997a5e4f9155b576, type: 3}
       propertyPath: m_Size.y

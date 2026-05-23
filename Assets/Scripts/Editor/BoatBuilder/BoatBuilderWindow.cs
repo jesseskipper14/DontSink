@@ -787,6 +787,10 @@ public class BoatBuilderWindow : EditorWindow
             {
                 BoatBuilderSceneTools.RebuildCompartmentsFromBoatRoot(root);
             }),
+            new ActionButtonDef("Generate Compartment IDs", () =>
+            {
+                BoatBuilderSceneTools.GenerateMissingCompartmentIdsUnderRoot(root);
+            }),
             new ActionButtonDef("Repair All Spans", () =>
             {
                 int floorCount = SpanRepairUtility.RepairAllSpansUnderRoot(root);

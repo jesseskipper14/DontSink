@@ -390,7 +390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e49df955b1f8df441989c381c35d95c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boatGuid: 69d8b1ab910349a3a1ba99b0cb04fd32
+  boatGuid: 6843ca38dd194e1aa3d5b3802cbfd0e9
 --- !u!1 &8028715666858182058
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,6 +11,7 @@ public sealed class InventoryDebugSpawner : MonoBehaviour
 
     [Header("Spawn Selection")]
     [SerializeField] private int selectedIndex = 0;
+
     [Min(1)]
     [SerializeField] private int spawnQuantity = 1;
 
@@ -38,6 +39,10 @@ public sealed class InventoryDebugSpawner : MonoBehaviour
     [SerializeField] private int fontSize = 12;
     [SerializeField] private bool showNeighborItems = true;
 
+    [Header("HUD Window")]
+    [SerializeField] private bool hudDraggable = true;
+    [SerializeField] private KeyCode resetHudPositionKey = KeyCode.None;
+
     [Header("Charge Override")]
     [SerializeField] private bool overrideSpawnCharges = false;
     [SerializeField] private int spawnCharges = 100;
@@ -54,6 +59,9 @@ public sealed class InventoryDebugSpawner : MonoBehaviour
     private GUIStyle _titleStyle;
     private GUIStyle _bodyStyle;
     private GUIStyle _hintStyle;
+
+    private Rect _hudRect;
+    private const int InventoryDebugHudWindowId = 918240;
 
     private void Awake()
     {
@@ -90,6 +98,11 @@ public sealed class InventoryDebugSpawner : MonoBehaviour
         if (Input.GetKeyDown(toggleHudKey))
             showHud = !showHud;
 
+        if (resetHudPositionKey != KeyCode.None && Input.GetKeyDown(resetHudPositionKey))
+        {
+            _hudRect = default;
+        }
+
         if (Input.GetKeyDown(printCatalogKey))
             PrintCatalog();
 
@@ -97,24 +110,16 @@ public sealed class InventoryDebugSpawner : MonoBehaviour
             SpawnSelected();
 
         if (Input.GetKeyDown(increaseQuantityKey))
-        {
             AdjustSpawnQuantity(+1);
-        }
 
         if (Input.GetKeyDown(decreaseQuantityKey))
-        {
             AdjustSpawnQuantity(-1);
-        }
 
         if (Input.GetKeyDown(increaseQuantityFastKey))
-        {
             AdjustSpawnQuantity(+10);
-        }
 
         if (Input.GetKeyDown(decreaseQuantityFastKey))
-        {
             AdjustSpawnQuantity(-10);
-        }
     }
 
     private void OnGUI()
@@ -124,13 +129,46 @@ public sealed class InventoryDebugSpawner : MonoBehaviour
 
         EnsureStyles();
 
+        float x = _hudRect.width > 0f ? _hudRect.x : hudPosition.x;
+
         float width = autoFitHudToScreen
-            ? Mathf.Min(hudWidth, Mathf.Max(260f, Screen.width - hudPosition.x - hudScreenMargin))
+            ? Mathf.Min(hudWidth, Mathf.Max(260f, Screen.width - x - hudScreenMargin))
             : hudWidth;
 
         float height = hudHeight;
 
-        Rect box = new Rect(hudPosition.x, hudPosition.y, width, height);
+        if (_hudRect.width <= 0f || _hudRect.height <= 0f)
+        {
+            _hudRect = new Rect(
+                hudPosition.x,
+                hudPosition.y,
+                width,
+                height);
+        }
+
+        _hudRect.width = width;
+        _hudRect.height = height;
+
+        _hudRect = RuntimeDebugOverlayGUI.DrawWindow(
+            InventoryDebugHudWindowId,
+            _hudRect,
+            "Inventory Spawner",
+            DrawHudContents,
+            hudDraggable);
+
+        hudPosition = _hudRect.position;
+    }
+
+    private void DrawHudContents()
+    {
+        EnsureStyles();
+
+        Rect box = new Rect(
+            0f,
+            20f,
+            Mathf.Max(260f, _hudRect.width),
+            Mathf.Max(80f, _hudRect.height - 20f));
+
         GUI.Box(box, GUIContent.none, _boxStyle);
 
         if (cachedItems.Count == 0)
@@ -166,10 +204,11 @@ public sealed class InventoryDebugSpawner : MonoBehaviour
 
         GUI.Label(
             new Rect(box.x + 12f, box.y + 8f, box.width - 24f, 24f),
-            $"F6 Spawn: [{selectedIndex + 1}/{cachedItems.Count}] {selected.DisplayName}",
+            $"{spawnSelectedKey} Spawn: [{selectedIndex + 1}/{cachedItems.Count}] {selected.DisplayName}",
             _titleStyle);
 
         string traits = BuildTraitText(selected);
+
         GUI.Label(
             new Rect(box.x + 12f, box.y + 34f, box.width - 24f, 22f),
             $"itemId: {selected.ItemId}   qty: {qty}   {traits}",

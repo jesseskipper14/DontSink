@@ -248,6 +248,13 @@ public static partial class BoatBuilderSceneTools
                 _ctx.ActiveTool == BoatBuilderWindow.Tool.CompartmentRect &&
                 boatRoot != null)
             {
+                InitializePlacedCompartmentStableIds(placed, boatRoot);
+            }
+
+            if (placed != null &&
+                _ctx.ActiveTool == BoatBuilderWindow.Tool.CompartmentRect &&
+                boatRoot != null)
+            {
                 InitializeCompartmentInteriorVisibilityZone(placed, boatRoot);
             }
 

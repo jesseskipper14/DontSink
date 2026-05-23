@@ -8,6 +8,176 @@ using UnityEngine;
 
 public static partial class BoatBuilderSceneTools
 {
+    private const string CompartmentIdPrefix = "compartment";
+
+    private static void InitializePlacedCompartmentStableIds(
+        GameObject placed,
+        Transform boatRoot)
+    {
+        if (placed == null)
+            return;
+
+        Compartment[] compartments =
+            placed.GetComponentsInChildren<Compartment>(true);
+
+        if (compartments == null || compartments.Length == 0)
+            return;
+
+        HashSet<string> usedIds = BuildUsedCompartmentIds(boatRoot);
+
+        for (int i = 0; i < compartments.Length; i++)
+        {
+            Compartment compartment = compartments[i];
+            if (compartment == null)
+                continue;
+
+            if (!string.IsNullOrWhiteSpace(compartment.CompartmentId))
+            {
+                usedIds.Add(compartment.CompartmentId);
+                continue;
+            }
+
+            string id = GenerateNextCompartmentId(usedIds, CompartmentIdPrefix);
+            SetCompartmentId(compartment, id);
+            usedIds.Add(id);
+
+            Debug.Log(
+                $"[BoatBuilder] Assigned stable CompartmentId='{id}' to '{compartment.name}'.",
+                compartment);
+        }
+
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+    }
+
+    public static int GenerateMissingCompartmentIdsUnderRoot(Transform boatRoot)
+    {
+        if (boatRoot == null)
+        {
+            Debug.LogWarning("[BoatBuilder] GenerateMissingCompartmentIdsUnderRoot failed: boatRoot is null.");
+            return 0;
+        }
+
+        Compartment[] compartments =
+            boatRoot.GetComponentsInChildren<Compartment>(true);
+
+        HashSet<string> usedIds = BuildUsedCompartmentIds(boatRoot);
+
+        int generated = 0;
+
+        for (int i = 0; i < compartments.Length; i++)
+        {
+            Compartment compartment = compartments[i];
+            if (compartment == null)
+                continue;
+
+            if (!string.IsNullOrWhiteSpace(compartment.CompartmentId))
+                continue;
+
+            string id = GenerateNextCompartmentId(usedIds, CompartmentIdPrefix);
+            SetCompartmentId(compartment, id);
+            usedIds.Add(id);
+            generated++;
+
+            Debug.Log(
+                $"[BoatBuilder] Assigned missing stable CompartmentId='{id}' to '{compartment.name}'.",
+                compartment);
+        }
+
+        if (generated > 0)
+            EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+
+        Debug.Log(
+            $"[BoatBuilder] Generate Missing Compartment IDs complete. Generated={generated}.",
+            boatRoot);
+
+        return generated;
+    }
+
+    private static HashSet<string> BuildUsedCompartmentIds(Transform boatRoot)
+    {
+        HashSet<string> used = new HashSet<string>();
+
+        if (boatRoot == null)
+            return used;
+
+        Compartment[] compartments =
+            boatRoot.GetComponentsInChildren<Compartment>(true);
+
+        for (int i = 0; i < compartments.Length; i++)
+        {
+            Compartment c = compartments[i];
+            if (c == null)
+                continue;
+
+            if (!string.IsNullOrWhiteSpace(c.CompartmentId))
+                used.Add(c.CompartmentId.Trim());
+        }
+
+        return used;
+    }
+
+    private static string GenerateNextCompartmentId(
+        HashSet<string> usedIds,
+        string prefix)
+    {
+        prefix = string.IsNullOrWhiteSpace(prefix)
+            ? CompartmentIdPrefix
+            : prefix.Trim();
+
+        usedIds ??= new HashSet<string>();
+
+        int index = 1;
+
+        while (true)
+        {
+            string id = $"{prefix}_{index:00}";
+
+            if (!usedIds.Contains(id))
+                return id;
+
+            index++;
+        }
+    }
+
+    private static void SetCompartmentId(
+        Compartment compartment,
+        string id)
+    {
+        if (compartment == null)
+            return;
+
+        Undo.RecordObject(compartment, "Assign Compartment Stable ID");
+
+        SerializedObject so = new SerializedObject(compartment);
+        SerializedProperty idProp = so.FindProperty("compartmentId");
+
+        if (idProp == null)
+        {
+            Debug.LogWarning(
+                $"[BoatBuilder] Could not find serialized property 'compartmentId' on '{compartment.name}'.",
+                compartment);
+            return;
+        }
+
+        idProp.stringValue = id;
+        so.ApplyModifiedPropertiesWithoutUndo();
+
+        EditorUtility.SetDirty(compartment);
+    }
+
+    [MenuItem("Tools/Boat Builder/Generate Missing Compartment IDs")]
+    private static void GenerateMissingCompartmentIdsMenu()
+    {
+        Transform root = PeekBestBoatRoot();
+
+        if (root == null)
+        {
+            Debug.LogWarning("[BoatBuilder] No boat root found for Generate Missing Compartment IDs.");
+            return;
+        }
+
+        GenerateMissingCompartmentIdsUnderRoot(root);
+    }
 
     private static void InitializePlacedCompartment(GameObject placed, Transform boatRoot)
         {
