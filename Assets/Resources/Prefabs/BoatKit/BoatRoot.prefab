@@ -144,7 +144,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boat: {fileID: 6897017861151174155}
+  validateIdsOnStart: 1
   warnForMissingIds: 1
+  warnForDuplicateIds: 1
+  warningsIgnoreVerboseLogging: 1
+  restoreByFractionWhenMaxAreaChanged: 1
+  maxAreaMismatchTolerance: 0.001
   verboseLogging: 0
 --- !u!114 &7097834975048569350
 MonoBehaviour:
@@ -185,7 +190,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boat: {fileID: 6897017861151174155}
   itemRegistry: {fileID: 0}
-  itemCatalog: {fileID: 0}
+  itemCatalog: {fileID: 11400000, guid: d39434bc65a89584c811f84d322f558a, type: 2}
   verboseLogging: 0
 --- !u!114 &3411208425902499903
 MonoBehaviour:
@@ -363,6 +368,9 @@ MonoBehaviour:
   emptyModeKey: 52
   fillModeKey: 53
   logMouseKey: 290
+  respectGameplayInputBlocker: 1
+  ignoreClicksWhenPointerOverUI: 0
+  clearHoverWhenInputBlocked: 1
   showOverlay: 1
   overlayPosition: {x: 15, y: 200}
   overlaySize: {x: 520, y: 170}

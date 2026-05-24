@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -24,28 +25,81 @@ public sealed class MainMenuController : MonoBehaviour
     [SerializeField] private SaveLoadController saveLoadController;
     [SerializeField] private SaveLoadPanelUI saveLoadPanel;
 
+    [Header("Load Button")]
+    [Tooltip("If true, Load Game is enabled only when at least one valid save exists. If false, any save file enables the panel, including invalid saves.")]
+    [SerializeField] private bool requireValidSaveForLoadButton = true;
+
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = true;
 
     private void Awake()
     {
+        ResolveRefs();
         WireButtons();
+        RefreshButtonStates();
+    }
 
-        // These exist as visual promises for now. Tiny lies, but organized ones.
-        if (loadGameButton != null && saveLoadController != null)
-            loadGameButton.interactable = saveLoadController.ManualSlotExists();
+    private void OnEnable()
+    {
+        ResolveRefs();
+        RefreshButtonStates();
+    }
+
+    private void ResolveRefs()
+    {
+        if (saveLoadController == null)
+            saveLoadController = FindAnyObjectByType<SaveLoadController>(FindObjectsInactive.Include);
+
+        if (saveLoadPanel == null)
+            saveLoadPanel = FindAnyObjectByType<SaveLoadPanelUI>(FindObjectsInactive.Include);
+    }
+
+    private void RefreshButtonStates()
+    {
+        if (loadGameButton != null)
+            loadGameButton.interactable = HasLoadableSave();
 
         if (profilesButton != null)
             profilesButton.interactable = false;
 
         if (settingsButton != null)
             settingsButton.interactable = false;
+    }
 
+    private bool HasLoadableSave()
+    {
         if (saveLoadController == null)
-            saveLoadController = FindAnyObjectByType<SaveLoadController>(FindObjectsInactive.Include);
+        {
+            Log("HasLoadableSave=false because SaveLoadController is null.");
+            return false;
+        }
 
-        if (saveLoadPanel == null)
-            saveLoadPanel = FindAnyObjectByType<SaveLoadPanelUI>(FindObjectsInactive.Include);
+        List<SaveSlotSummary> slots = saveLoadController.ListSlots();
+
+        if (slots == null || slots.Count == 0)
+        {
+            Log("HasLoadableSave=false because no save slots were found.");
+            return false;
+        }
+
+        if (!requireValidSaveForLoadButton)
+        {
+            Log($"HasLoadableSave=true because save files exist. count={slots.Count}");
+            return true;
+        }
+
+        for (int i = 0; i < slots.Count; i++)
+        {
+            SaveSlotSummary slot = slots[i];
+            if (slot != null && slot.isValid)
+            {
+                Log($"HasLoadableSave=true. First valid slot='{slot.slotId}'.");
+                return true;
+            }
+        }
+
+        Log($"HasLoadableSave=false. Save files exist but none are valid. count={slots.Count}");
+        return false;
     }
 
     private void WireButtons()
@@ -139,7 +193,6 @@ public sealed class MainMenuController : MonoBehaviour
                 ? "boat_001"
                 : defaultBoatInstanceId,
 
-            //cargo = new System.Collections.Generic.List<CargoManifest.Snapshot>(),
             looseItems = new BoatLooseItemManifest(),
             moduleStates = new BoatModuleStateManifest(),
             compartmentStates = new BoatCompartmentStateManifest(),
@@ -156,8 +209,7 @@ public sealed class MainMenuController : MonoBehaviour
 
     public void LoadGameStub()
     {
-        if (saveLoadPanel == null)
-            saveLoadPanel = FindAnyObjectByType<SaveLoadPanelUI>(FindObjectsInactive.Include);
+        ResolveRefs();
 
         if (saveLoadPanel == null)
         {
@@ -166,6 +218,9 @@ public sealed class MainMenuController : MonoBehaviour
         }
 
         saveLoadPanel.Open();
+
+        // Save files may have changed since entering the menu.
+        RefreshButtonStates();
     }
 
     public void ProfilesStub()
@@ -186,6 +241,15 @@ public sealed class MainMenuController : MonoBehaviour
         Application.Quit();
 #endif
     }
+
+#if UNITY_EDITOR
+    [ContextMenu("DEBUG Refresh Button States")]
+    private void DebugRefreshButtonStates()
+    {
+        ResolveRefs();
+        RefreshButtonStates();
+    }
+#endif
 
     private void Log(string msg)
     {

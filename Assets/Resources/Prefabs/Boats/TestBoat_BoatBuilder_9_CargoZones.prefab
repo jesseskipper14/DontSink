@@ -1318,7 +1318,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boat: {fileID: 2709613433615012422}
+  validateIdsOnStart: 1
   warnForMissingIds: 1
+  warnForDuplicateIds: 1
+  warningsIgnoreVerboseLogging: 1
+  restoreByFractionWhenMaxAreaChanged: 1
+  maxAreaMismatchTolerance: 0.001
   verboseLogging: 0
 --- !u!114 &6855916297579057826
 MonoBehaviour:

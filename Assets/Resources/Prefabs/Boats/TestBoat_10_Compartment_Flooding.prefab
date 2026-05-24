@@ -1853,7 +1853,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boat: {fileID: 5943007106159419301}
   itemRegistry: {fileID: 0}
-  itemCatalog: {fileID: 0}
+  itemCatalog: {fileID: 11400000, guid: d39434bc65a89584c811f84d322f558a, type: 2}
   verboseLogging: 0
 --- !u!114 &8907395421657070808
 MonoBehaviour:
@@ -2031,6 +2031,9 @@ MonoBehaviour:
   emptyModeKey: 52
   fillModeKey: 53
   logMouseKey: 290
+  respectGameplayInputBlocker: 1
+  ignoreClicksWhenPointerOverUI: 0
+  clearHoverWhenInputBlocked: 1
   showOverlay: 0
   overlayPosition: {x: 12, y: 120}
   overlaySize: {x: 520, y: 170}

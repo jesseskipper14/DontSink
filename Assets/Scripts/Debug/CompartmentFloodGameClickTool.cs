@@ -1,12 +1,12 @@
-#if UNITY_EDITOR
+using System.Collections.Generic;
 using System.Text;
-using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public sealed class CompartmentFloodClickToolWindow : EditorWindow
+[DisallowMultipleComponent]
+public sealed class CompartmentFloodGameClickTool : MonoBehaviour
 {
-    private enum FloodMode
+    public enum FloodMode
     {
         Add,
         Remove,
@@ -15,350 +15,448 @@ public sealed class CompartmentFloodClickToolWindow : EditorWindow
         Fill
     }
 
-    private FloodMode _mode = FloodMode.Add;
+    [Header("Refs")]
+    [SerializeField] private Boat boat;
+    [SerializeField] private Transform boatRoot;
+    [SerializeField] private Camera targetCamera;
 
-    private Transform _boatRoot;
-    private float _amount = 0.25f;
-    private float _fraction01 = 0.5f;
+    [Header("Controls")]
+    [SerializeField] private bool active = true;
+    [SerializeField] private FloodMode mode = FloodMode.Add;
 
-    private bool _active = true;
-    private bool _drawLabels = true;
-    private bool _drawPolygons = true;
-    private bool _drawClickTargets = true;
-    private bool _useSelectedBoatRoot = true;
+    [Tooltip("Left mouse button applies the selected mode.")]
+    [SerializeField] private int mouseButton = 0;
 
-    private float _clickTargetHandleScale = 0.18f;
+    [Tooltip("Holding Shift while clicking removes water regardless of selected mode.")]
+    [SerializeField] private bool shiftClickRemoves = true;
 
-    [Header("Debug")]
-    private bool _logMouseOnMove = false;
-    private double _nextMouseMoveLogTime;
-    private float _mouseMoveLogInterval = 0.35f;
+    [Header("Amounts")]
+    [Min(0f)]
+    [SerializeField] private float amount = 0.25f;
+
+    [Header("Amount Hotkeys")]
+    [SerializeField] private KeyCode decreaseAmountKey = KeyCode.Comma;
+    [SerializeField] private KeyCode increaseAmountKey = KeyCode.Period;
+
+    [SerializeField] private float amountSmallStep = 0.25f;
+    [SerializeField] private float amountLargeStep = 2.5f;
+
+    [SerializeField] private float[] amountPresets = { 0.25f, 1f, 5f, 10f, 25f };
+
+    [Range(0f, 1f)]
+    [SerializeField] private float setFraction01 = 0.5f;
+
+    [Header("Hotkeys")]
+    [SerializeField] private KeyCode toggleActiveKey = KeyCode.F11;
+    [SerializeField] private KeyCode addModeKey = KeyCode.Alpha1;
+    [SerializeField] private KeyCode removeModeKey = KeyCode.Alpha2;
+    [SerializeField] private KeyCode setModeKey = KeyCode.Alpha3;
+    [SerializeField] private KeyCode emptyModeKey = KeyCode.Alpha4;
+    [SerializeField] private KeyCode fillModeKey = KeyCode.Alpha5;
+    [SerializeField] private KeyCode logMouseKey = KeyCode.F9;
+
+    [Header("Input Blocking")]
+    [SerializeField] private bool respectGameplayInputBlocker = true;
+    [SerializeField] private bool ignoreClicksWhenPointerOverUI = true;
+    [SerializeField] private bool clearHoverWhenInputBlocked = true;
+
+    [Header("Debug Overlay")]
+    [SerializeField] private bool showOverlay = true;
+    [SerializeField] private Vector2 overlayPosition = new Vector2(12f, 120f);
+    [SerializeField] private Vector2 overlaySize = new Vector2(520f, 170f);
+
+    [SerializeField] private KeyCode toggleOverlayKey = KeyCode.F10;
+    [SerializeField] private bool overlayDraggable = true;
+    [SerializeField] private bool ignoreFloodClicksOverOverlay = true;
+
+    private Rect _overlayRect;
+    private const int OverlayWindowId = 782341;
+
+    [Header("Logging")]
+    [SerializeField] private bool logClicks = true;
+    [SerializeField] private bool logMisses = true;
+    [SerializeField] private bool logMouseWhenPressed = true;
+
+    private readonly List<Compartment> _compartments = new();
 
     private Compartment _hovered;
-    private Vector2 _lastGuiMouse;
-    private Vector2 _lastMouseWorldApprox;
-    private string _lastMouseDebug = "Move mouse over Scene View.";
+    private Vector2 _mouseWorld;
+    private string _lastMouseDebug = "No mouse sample yet.";
 
-    [MenuItem("Tools/Boat Builder/Flood Click Tool")]
-    public static void Open()
+    private void Awake()
     {
-        GetWindow<CompartmentFloodClickToolWindow>("Flood Click Tool").Show();
+        ResolveRefs();
+        RefreshCompartmentCache();
     }
 
     private void OnEnable()
     {
-        SceneView.duringSceneGui -= DuringSceneGUI;
-        SceneView.duringSceneGui += DuringSceneGUI;
+        ResolveRefs();
+        RefreshCompartmentCache();
     }
 
-    private void OnDisable()
+    private void Update()
     {
-        SceneView.duringSceneGui -= DuringSceneGUI;
-        SceneView.RepaintAll();
-    }
+        ResolveRefs();
 
-    private void OnGUI()
-    {
-        EditorGUILayout.Space(6);
+        if (Input.GetKeyDown(toggleActiveKey))
+            active = !active;
 
-        _active = EditorGUILayout.ToggleLeft("Active in Scene View", _active);
-        _useSelectedBoatRoot = EditorGUILayout.ToggleLeft("Use selected boat root when possible", _useSelectedBoatRoot);
+        if (Input.GetKeyDown(addModeKey)) mode = FloodMode.Add;
+        if (Input.GetKeyDown(removeModeKey)) mode = FloodMode.Remove;
+        if (Input.GetKeyDown(setModeKey)) mode = FloodMode.SetFraction;
+        if (Input.GetKeyDown(emptyModeKey)) mode = FloodMode.Empty;
+        if (Input.GetKeyDown(fillModeKey)) mode = FloodMode.Fill;
+        if (Input.GetKeyDown(toggleOverlayKey))
+            showOverlay = !showOverlay;
 
-        using (new EditorGUILayout.HorizontalScope())
-        {
-            _boatRoot = (Transform)EditorGUILayout.ObjectField(
-                "Boat Root",
-                _boatRoot,
-                typeof(Transform),
-                true);
-
-            if (GUILayout.Button("From Selection", GUILayout.Width(110)))
-                _boatRoot = ResolveBoatRootFromSelection();
-        }
-
-        Transform activeRoot = ResolveActiveRoot();
-        Compartment[] previewCompartments = ResolveCompartments(activeRoot);
-
-        EditorGUILayout.HelpBox(
-            $"Active Root: {(activeRoot != null ? activeRoot.name : "ALL SCENE")}\n" +
-            $"Compartments Found: {(previewCompartments != null ? previewCompartments.Length : 0)}\n" +
-            $"Hovered: {(_hovered != null ? _hovered.name : "none")}",
-            MessageType.Info);
-
-        EditorGUILayout.Space(6);
-
-        _mode = (FloodMode)EditorGUILayout.EnumPopup("Click Mode", _mode);
-        _amount = Mathf.Max(0f, EditorGUILayout.FloatField("Add/Remove Amount", _amount));
-        _fraction01 = EditorGUILayout.Slider("Set Fraction", _fraction01, 0f, 1f);
-
-        EditorGUILayout.Space(6);
-
-        _drawPolygons = EditorGUILayout.ToggleLeft("Draw compartment outlines", _drawPolygons);
-        _drawLabels = EditorGUILayout.ToggleLeft("Draw water % labels", _drawLabels);
-        _drawClickTargets = EditorGUILayout.ToggleLeft("Draw clickable compartment targets", _drawClickTargets);
-        _clickTargetHandleScale = EditorGUILayout.Slider("Click Target Size", _clickTargetHandleScale, 0.05f, 0.45f);
-
-        EditorGUILayout.Space(6);
-
-        using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
-        {
-            EditorGUILayout.LabelField("Mouse Debug", EditorStyles.boldLabel);
-
-            _logMouseOnMove = EditorGUILayout.ToggleLeft("Log mouse while moving", _logMouseOnMove);
-            _mouseMoveLogInterval = Mathf.Max(0.05f, EditorGUILayout.FloatField("Move Log Interval", _mouseMoveLogInterval));
-
-            if (GUILayout.Button("Log Mouse Now", GUILayout.Height(24)))
-            {
-                Debug.Log(_lastMouseDebug, this);
-            }
-
-            EditorGUILayout.TextArea(_lastMouseDebug, GUILayout.MinHeight(90));
-        }
-
-        EditorGUILayout.Space(8);
-
-        using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
-        {
-            EditorGUILayout.LabelField("Scene View Controls", EditorStyles.boldLabel);
-            EditorGUILayout.LabelField("Click compartment target: apply selected mode");
-            EditorGUILayout.LabelField("Shift + click target: remove water");
-            EditorGUILayout.LabelField("Polygon click also works if hover detection succeeds");
-            EditorGUILayout.LabelField("Alt/Cmd/Ctrl: ignored, so normal Scene View navigation still works");
-        }
-
-        if (_hovered != null)
-        {
-            EditorGUILayout.Space(6);
-            EditorGUILayout.LabelField("Hovered", EditorStyles.boldLabel);
-            EditorGUILayout.LabelField(_hovered.name);
-            EditorGUILayout.LabelField($"Water: {GetFraction(_hovered):P0}");
-        }
-    }
-
-    private void DuringSceneGUI(SceneView sceneView)
-    {
-        if (!_active)
+        if (!active)
             return;
 
-        Event e = Event.current;
-        if (e == null)
-            return;
+        RefreshCompartmentCacheIfEmpty();
 
-        int controlId = GUIUtility.GetControlID(FocusType.Passive);
+        bool hasMouseWorld = TryGetMouseWorld(out _mouseWorld);
+        _hovered = hasMouseWorld ? FindCompartmentAtPoint(_mouseWorld) : null;
 
-        if (e.type == EventType.Layout)
-            HandleUtility.AddDefaultControl(controlId);
+        _lastMouseDebug = BuildMouseDebug(hasMouseWorld, _mouseWorld, _hovered);
 
-        if (e.alt || e.command || e.control)
-            return;
+        if (Input.GetKeyDown(logMouseKey))
+            Debug.Log(_lastMouseDebug, this);
 
-        Transform root = ResolveActiveRoot();
-        Compartment[] compartments = ResolveCompartments(root);
+        if (logMouseWhenPressed && Input.GetMouseButtonDown(mouseButton))
+            Debug.Log(_lastMouseDebug, this);
 
-        _lastGuiMouse = e.mousePosition;
-        _lastMouseWorldApprox = GetMouseWorldOnZPlane(e.mousePosition, GetRootZ(root));
-
-        _hovered = FindCompartmentUnderMouse(
-            compartments,
-            e.mousePosition,
-            out string pickSummary);
-
-        _lastMouseDebug = BuildMouseDebug(
-            root,
-            compartments,
-            e.mousePosition,
-            _lastMouseWorldApprox,
-            _hovered,
-            pickSummary);
-
-        DrawSceneOverlay(compartments, _hovered);
-
-        if (_drawClickTargets)
-            DrawCompartmentClickTargets(compartments);
-
-        if (e.type == EventType.MouseMove)
+        if (Input.GetMouseButtonDown(mouseButton))
         {
-            Repaint();
-            sceneView.Repaint();
+            if (ShouldBlockFloodToolClick())
+                return;
 
-            if (_logMouseOnMove && EditorApplication.timeSinceStartup >= _nextMouseMoveLogTime)
+            if (_hovered == null)
             {
-                _nextMouseMoveLogTime = EditorApplication.timeSinceStartup + _mouseMoveLogInterval;
-                Debug.Log(_lastMouseDebug, this);
+                if (logMisses)
+                    Debug.Log(_lastMouseDebug, this);
+
+                return;
+            }
+
+            FloodMode appliedMode =
+                shiftClickRemoves && IsShiftHeld()
+                    ? FloodMode.Remove
+                    : mode;
+
+            ApplyMode(_hovered, appliedMode);
+        }
+
+        if (Input.GetKeyDown(decreaseAmountKey))
+            AdjustAmount(IsShiftHeld() ? -amountLargeStep : -amountSmallStep);
+
+        if (Input.GetKeyDown(increaseAmountKey))
+            AdjustAmount(IsShiftHeld() ? amountLargeStep : amountSmallStep);
+    }
+
+    private void AdjustAmount(float delta)
+    {
+        amount = Mathf.Max(0f, amount + delta);
+    }
+
+    [ContextMenu("Refresh Compartment Cache")]
+    public void RefreshCompartmentCache()
+    {
+        _compartments.Clear();
+
+        ResolveRefs();
+
+        if (boat != null && boat.Compartments != null)
+        {
+            for (int i = 0; i < boat.Compartments.Count; i++)
+            {
+                Compartment c = boat.Compartments[i];
+                if (c != null && !_compartments.Contains(c))
+                    _compartments.Add(c);
             }
         }
 
-        if (e.type == EventType.MouseDown && e.button == 0)
-        {
-            if (_hovered != null)
-            {
-                FloodMode mode = e.shift ? FloodMode.Remove : _mode;
-                ApplyMode(_hovered, mode);
+        Transform root = boatRoot != null ? boatRoot : transform;
 
-                e.Use();
-                Repaint();
-                SceneView.RepaintAll();
-            }
-            else
-            {
-                Debug.Log(_lastMouseDebug, this);
-            }
+        Compartment[] found = root.GetComponentsInChildren<Compartment>(true);
+        for (int i = 0; i < found.Length; i++)
+        {
+            Compartment c = found[i];
+            if (c != null && !_compartments.Contains(c))
+                _compartments.Add(c);
         }
     }
 
-    private Transform ResolveActiveRoot()
+    private void RefreshCompartmentCacheIfEmpty()
     {
-        if (_useSelectedBoatRoot)
-        {
-            Transform selectedRoot = ResolveBoatRootFromSelection();
-            if (selectedRoot != null)
-                return selectedRoot;
-        }
-
-        return _boatRoot;
+        if (_compartments.Count == 0)
+            RefreshCompartmentCache();
     }
 
-    private static Transform ResolveBoatRootFromSelection()
+    private void ResolveRefs()
     {
-        if (Selection.activeTransform == null)
-            return null;
+        if (boat == null)
+            boat = GetComponent<Boat>() ?? GetComponentInParent<Boat>();
 
-        Boat boat =
-            Selection.activeTransform.GetComponentInParent<Boat>() ??
-            Selection.activeTransform.GetComponentInChildren<Boat>(true);
+        if (boatRoot == null && boat != null)
+            boatRoot = boat.transform;
 
-        return boat != null ? boat.transform : null;
+        if (targetCamera == null)
+            targetCamera = Camera.main;
     }
 
-    private static Compartment[] ResolveCompartments(Transform root)
+    private bool TryGetMouseWorld(out Vector2 world)
     {
-        if (root != null)
-            return root.GetComponentsInChildren<Compartment>(true);
+        world = default;
 
-        return FindObjectsByType<Compartment>(
-            FindObjectsInactive.Include,
-            FindObjectsSortMode.None);
+        if (targetCamera == null)
+            return false;
+
+        float zPlane = boatRoot != null ? boatRoot.position.z : 0f;
+
+        Ray ray = targetCamera.ScreenPointToRay(Input.mousePosition);
+        Plane plane = new Plane(Vector3.forward, new Vector3(0f, 0f, zPlane));
+
+        if (!plane.Raycast(ray, out float enter))
+            return false;
+
+        Vector3 hit = ray.GetPoint(enter);
+        world = hit;
+        return true;
     }
 
-    private static float GetRootZ(Transform root)
+    private Compartment FindCompartmentAtPoint(Vector2 worldPoint)
     {
-        return root != null ? root.position.z : 0f;
-    }
-
-    private static Vector2 GetMouseWorldOnZPlane(Vector2 guiMousePosition, float zPlane)
-    {
-        Ray ray = HandleUtility.GUIPointToWorldRay(guiMousePosition);
-
-        if (Mathf.Abs(ray.direction.z) < 0.00001f)
-            return ray.origin;
-
-        float t = (zPlane - ray.origin.z) / ray.direction.z;
-        return ray.origin + ray.direction * t;
-    }
-
-    private static Compartment FindCompartmentUnderMouse(
-        Compartment[] compartments,
-        Vector2 guiMousePosition,
-        out string summary)
-    {
-        summary = "No compartments.";
-
-        if (compartments == null || compartments.Length == 0)
-            return null;
-
         Compartment best = null;
         float bestArea = float.PositiveInfinity;
 
-        StringBuilder sb = new();
-        sb.AppendLine("Pick scan:");
-
-        for (int i = 0; i < compartments.Length; i++)
+        for (int i = 0; i < _compartments.Count; i++)
         {
-            Compartment c = compartments[i];
+            Compartment c = _compartments[i];
 
             if (c == null || !c.isActiveAndEnabled)
-            {
-                sb.AppendLine($"  [{i}] null/inactive");
                 continue;
+
+            bool hit = false;
+            float area = float.PositiveInfinity;
+
+            Vector2[] poly = c.GetWorldCorners();
+            if (poly != null && poly.Length >= 3)
+            {
+                hit = ConvexPolygonUtil.PointInsideConvex(worldPoint, poly);
+                area = Mathf.Abs(SignedArea(poly));
             }
 
-            Vector2[] worldPoly = c.GetWorldCorners();
-            if (worldPoly == null || worldPoly.Length < 3)
+            if (!hit)
             {
-                sb.AppendLine($"  [{i}] {c.name}: no valid polygon");
-                continue;
+                BoxCollider2D box = c.GetComponent<BoxCollider2D>();
+                if (box != null)
+                    hit = box.bounds.Contains(new Vector3(worldPoint.x, worldPoint.y, c.transform.position.z));
             }
-
-            float z = c.transform.position.z;
-            Vector2 worldAtCompZ = GetMouseWorldOnZPlane(guiMousePosition, z);
-
-            bool worldInside =
-                ConvexPolygonUtil.PointInsideConvex(worldAtCompZ, worldPoly);
-
-            bool colliderInside = false;
-            BoxCollider2D box = c.GetComponent<BoxCollider2D>();
-            if (box != null)
-                colliderInside = box.bounds.Contains(new Vector3(worldAtCompZ.x, worldAtCompZ.y, z));
-
-            bool guiInside = PointInGuiPolygon(guiMousePosition, worldPoly, z, out float guiArea);
-
-            bool hit = guiInside || worldInside || colliderInside;
-
-            sb.AppendLine(
-                $"  [{i}] {c.name}: hit={hit} gui={guiInside} world={worldInside} box={colliderInside} " +
-                $"z={z:0.###} worldAtZ={worldAtCompZ} guiArea={guiArea:0.##}");
 
             if (!hit)
                 continue;
 
-            if (guiArea < bestArea)
+            if (area < bestArea)
             {
-                bestArea = guiArea;
+                bestArea = area;
                 best = c;
             }
         }
 
-        summary = sb.ToString();
         return best;
     }
 
-    private static bool PointInGuiPolygon(
-        Vector2 guiPoint,
-        Vector2[] worldPolygon,
-        float worldZ,
-        out float absArea)
+    private void ApplyMode(Compartment compartment, FloodMode appliedMode)
     {
-        absArea = 0f;
+        if (compartment == null)
+            return;
 
-        if (worldPolygon == null || worldPolygon.Length < 3)
+        switch (appliedMode)
+        {
+            case FloodMode.Add:
+                compartment.AcceptWater(amount);
+                break;
+
+            case FloodMode.Remove:
+                compartment.RemoveWater(amount);
+                break;
+
+            case FloodMode.SetFraction:
+                SetFraction(compartment, setFraction01);
+                break;
+
+            case FloodMode.Empty:
+                compartment.RemoveWater(float.MaxValue);
+                break;
+
+            case FloodMode.Fill:
+                SetFraction(compartment, 1f);
+                break;
+        }
+
+        compartment.RecomputeWaterSurface();
+
+        if (logClicks)
+        {
+            Debug.Log(
+                $"[CompartmentFloodGameClickTool] {appliedMode} '{compartment.name}' " +
+                $"water={GetFraction(compartment):P0} amount={amount:0.###} mouseWorld={_mouseWorld}",
+                compartment);
+        }
+    }
+
+    private static void SetFraction(Compartment compartment, float fraction01)
+    {
+        if (compartment == null)
+            return;
+
+        fraction01 = Mathf.Clamp01(fraction01);
+
+        float target = compartment.MaxWaterArea * fraction01;
+        float current = compartment.WaterArea;
+        float delta = target - current;
+
+        if (delta > 0f)
+            compartment.AcceptWater(delta);
+        else if (delta < 0f)
+            compartment.RemoveWater(-delta);
+    }
+
+    private string BuildMouseDebug(bool hasMouseWorld, Vector2 mouseWorld, Compartment hovered)
+    {
+        StringBuilder sb = new();
+
+        sb.AppendLine("[CompartmentFloodGameClickTool] Mouse Debug");
+        sb.AppendLine($"Active: {active}");
+        sb.AppendLine($"Mode: {mode}");
+        sb.AppendLine($"Camera: {(targetCamera != null ? targetCamera.name : "NULL")}");
+        sb.AppendLine($"Boat Root: {(boatRoot != null ? boatRoot.name : "NULL")}");
+        sb.AppendLine($"Compartments: {_compartments.Count}");
+        sb.AppendLine($"Screen Mouse: {Input.mousePosition}");
+        sb.AppendLine($"Has Mouse World: {hasMouseWorld}");
+        sb.AppendLine($"Mouse World: {mouseWorld}");
+        sb.AppendLine($"Hovered: {(hovered != null ? hovered.name : "none")}");
+
+        sb.AppendLine("Compartment scan:");
+
+        for (int i = 0; i < _compartments.Count; i++)
+        {
+            Compartment c = _compartments[i];
+
+            if (c == null)
+            {
+                sb.AppendLine($"  [{i}] NULL");
+                continue;
+            }
+
+            bool activeEnabled = c.isActiveAndEnabled;
+
+            Vector2[] poly = c.GetWorldCorners();
+            bool polyValid = poly != null && poly.Length >= 3;
+            bool polyHit = false;
+
+            if (polyValid)
+                polyHit = ConvexPolygonUtil.PointInsideConvex(mouseWorld, poly);
+
+            BoxCollider2D box = c.GetComponent<BoxCollider2D>();
+            bool boxHit = box != null &&
+                          box.bounds.Contains(new Vector3(mouseWorld.x, mouseWorld.y, c.transform.position.z));
+
+            sb.AppendLine(
+                $"  [{i}] {c.name}: active={activeEnabled} polyValid={polyValid} " +
+                $"polyHit={polyHit} boxHit={boxHit} water={GetFraction(c):P0}");
+        }
+
+        return sb.ToString();
+    }
+
+    private void OnGUI()
+    {
+        if (!showOverlay)
+            return;
+
+        if (_overlayRect.width <= 0f || _overlayRect.height <= 0f)
+        {
+            _overlayRect = new Rect(
+                overlayPosition.x,
+                overlayPosition.y,
+                overlaySize.x,
+                overlaySize.y);
+        }
+
+        _overlayRect = RuntimeDebugOverlayGUI.DrawWindow(
+            OverlayWindowId,
+            _overlayRect,
+            "Flood Tool",
+            () => DrawOverlayWindow(OverlayWindowId),
+            overlayDraggable);
+
+        overlayPosition = _overlayRect.position;
+    }
+
+    private void DrawOverlayWindow(int id)
+    {
+        GUILayout.Label($"Active: {active}   Toggle: {toggleActiveKey}");
+        GUILayout.Label($"Overlay: {toggleOverlayKey}");
+        GUILayout.Label($"Mode: {mode}   1 Add / 2 Remove / 3 Set / 4 Empty / 5 Fill");
+        GUILayout.Label($"Hovered: {(_hovered != null ? _hovered.name : "none")}");
+        GUILayout.Label($"Compartments: {_compartments.Count}");
+
+        GUILayout.Space(4);
+
+        GUILayout.Label($"Amount: {amount:0.###}   {decreaseAmountKey}/{increaseAmountKey}: -/+   Shift = large step");
+
+        using (new GUILayout.HorizontalScope())
+        {
+            if (GUILayout.Button("- Big")) AdjustAmount(-amountLargeStep);
+            if (GUILayout.Button("-")) AdjustAmount(-amountSmallStep);
+            if (GUILayout.Button("+")) AdjustAmount(amountSmallStep);
+            if (GUILayout.Button("+ Big")) AdjustAmount(amountLargeStep);
+        }
+
+        if (amountPresets != null && amountPresets.Length > 0)
+        {
+            using (new GUILayout.HorizontalScope())
+            {
+                for (int i = 0; i < amountPresets.Length; i++)
+                {
+                    float preset = Mathf.Max(0f, amountPresets[i]);
+                    if (GUILayout.Button(preset.ToString("0.##")))
+                        amount = preset;
+                }
+            }
+        }
+
+        GUILayout.Label($"Click: apply   Shift+Click: remove   Log: {logMouseKey}");
+
+        if (overlayDraggable)
+            GUI.DragWindow(new Rect(0f, 0f, 10000f, 22f));
+    }
+
+    private bool IsMouseOverOverlay()
+    {
+        if (!showOverlay)
             return false;
 
-        Vector2[] guiPoly = new Vector2[worldPolygon.Length];
+        Rect r = _overlayRect.width > 0f && _overlayRect.height > 0f
+            ? _overlayRect
+            : new Rect(overlayPosition.x, overlayPosition.y, overlaySize.x, overlaySize.y);
 
-        for (int i = 0; i < worldPolygon.Length; i++)
-        {
-            guiPoly[i] = HandleUtility.WorldToGUIPoint(
-                new Vector3(worldPolygon[i].x, worldPolygon[i].y, worldZ));
-        }
+        return RuntimeDebugOverlayGUI.IsScreenMouseOverGUIRect(r);
+    }
 
-        absArea = Mathf.Abs(SignedArea(guiPoly));
+    private static bool IsShiftHeld()
+    {
+        return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+    }
 
-        bool inside = false;
+    private static float GetFraction(Compartment c)
+    {
+        if (c == null || c.MaxWaterArea <= 0.0001f)
+            return 0f;
 
-        for (int i = 0, j = guiPoly.Length - 1; i < guiPoly.Length; j = i++)
-        {
-            Vector2 a = guiPoly[i];
-            Vector2 b = guiPoly[j];
-
-            bool crosses =
-                (a.y > guiPoint.y) != (b.y > guiPoint.y) &&
-                guiPoint.x < (b.x - a.x) * (guiPoint.y - a.y) / ((b.y - a.y) + 0.000001f) + a.x;
-
-            if (crosses)
-                inside = !inside;
-        }
-
-        return inside;
+        return Mathf.Clamp01(c.WaterArea / c.MaxWaterArea);
     }
 
     private static float SignedArea(Vector2[] poly)
@@ -379,250 +477,21 @@ public sealed class CompartmentFloodClickToolWindow : EditorWindow
         return area * 0.5f;
     }
 
-    private void DrawCompartmentClickTargets(Compartment[] compartments)
+    private bool ShouldBlockFloodToolClick()
     {
-        if (compartments == null)
-            return;
+        if (respectGameplayInputBlocker && GameplayInputBlocker.IsBlocked)
+            return true;
 
-        Handles.zTest = UnityEngine.Rendering.CompareFunction.Always;
+        if (ignoreFloodClicksOverOverlay && IsMouseOverOverlay())
+            return true;
 
-        for (int i = 0; i < compartments.Length; i++)
+        if (ignoreClicksWhenPointerOverUI &&
+            EventSystem.current != null &&
+            EventSystem.current.IsPointerOverGameObject())
         {
-            Compartment c = compartments[i];
-
-            if (c == null || !c.isActiveAndEnabled)
-                continue;
-
-            Vector2[] poly = c.GetWorldCorners();
-            if (poly == null || poly.Length < 3)
-                continue;
-
-            Bounds b = BoundsFromPolygon(poly, c.transform.position.z);
-            Vector3 pos = b.center;
-
-            float handleSize = HandleUtility.GetHandleSize(pos) * _clickTargetHandleScale;
-            float fraction = GetFraction(c);
-
-            Color oldColor = Handles.color;
-
-            Handles.color = c == _hovered
-                ? new Color(0.2f, 1f, 1f, 0.95f)
-                : new Color(0.1f, 0.65f, 1f, 0.85f);
-
-            if (Handles.Button(
-                    pos,
-                    Quaternion.identity,
-                    handleSize,
-                    handleSize * 1.8f,
-                    Handles.CircleHandleCap))
-            {
-                FloodMode mode = Event.current != null && Event.current.shift
-                    ? FloodMode.Remove
-                    : _mode;
-
-                ApplyMode(c, mode);
-
-                GUI.changed = true;
-                Repaint();
-                SceneView.RepaintAll();
-            }
-
-            Handles.color = oldColor;
-
-            GUIStyle style = new GUIStyle(EditorStyles.boldLabel)
-            {
-                alignment = TextAnchor.MiddleCenter
-            };
-
-            style.normal.textColor = Color.cyan;
-
-            Handles.Label(
-                pos + Vector3.up * handleSize * 1.8f,
-                $"{Mathf.RoundToInt(fraction * 100f)}%",
-                style);
-        }
-    }
-
-    private void ApplyMode(Compartment compartment, FloodMode mode)
-    {
-        if (compartment == null)
-            return;
-
-        Undo.RecordObject(compartment, $"Flood {mode} Compartment");
-
-        switch (mode)
-        {
-            case FloodMode.Add:
-                compartment.AcceptWater(_amount);
-                break;
-
-            case FloodMode.Remove:
-                compartment.RemoveWater(_amount);
-                break;
-
-            case FloodMode.SetFraction:
-                SetFraction(compartment, _fraction01);
-                break;
-
-            case FloodMode.Empty:
-                compartment.RemoveWater(float.MaxValue);
-                break;
-
-            case FloodMode.Fill:
-                SetFraction(compartment, 1f);
-                break;
+            return true;
         }
 
-        compartment.RecomputeWaterSurface();
-
-        EditorUtility.SetDirty(compartment);
-        EditorSceneManager.MarkSceneDirty(compartment.gameObject.scene);
-
-        Debug.Log(
-            $"[FloodClickTool] {mode} '{compartment.name}' water={GetFraction(compartment):P0}",
-            compartment);
-    }
-
-    private static void SetFraction(Compartment compartment, float fraction01)
-    {
-        if (compartment == null)
-            return;
-
-        fraction01 = Mathf.Clamp01(fraction01);
-
-        float target = compartment.MaxWaterArea * fraction01;
-        float current = compartment.WaterArea;
-        float delta = target - current;
-
-        if (delta > 0f)
-            compartment.AcceptWater(delta);
-        else if (delta < 0f)
-            compartment.RemoveWater(-delta);
-    }
-
-    private void DrawSceneOverlay(Compartment[] compartments, Compartment hovered)
-    {
-        if (compartments == null)
-            return;
-
-        Handles.zTest = UnityEngine.Rendering.CompareFunction.Always;
-
-        for (int i = 0; i < compartments.Length; i++)
-        {
-            Compartment c = compartments[i];
-
-            if (c == null)
-                continue;
-
-            Vector2[] poly = c.GetWorldCorners();
-            if (poly == null || poly.Length < 3)
-                continue;
-
-            bool isHovered = c == hovered;
-            float fraction = GetFraction(c);
-
-            if (_drawPolygons)
-                DrawCompartmentPolygon(poly, c.transform.position.z, isHovered, fraction);
-
-            if (_drawLabels)
-                DrawCompartmentLabel(c, poly, c.transform.position.z, fraction, isHovered);
-        }
-    }
-
-    private static void DrawCompartmentPolygon(Vector2[] poly, float z, bool hovered, float fraction)
-    {
-        Color fill = hovered
-            ? new Color(0.2f, 0.85f, 1f, 0.22f)
-            : new Color(0.2f, 0.55f, 1f, 0.07f);
-
-        Color wire = hovered
-            ? new Color(0.1f, 0.95f, 1f, 0.95f)
-            : new Color(0.2f, 0.55f, 1f, 0.45f);
-
-        Vector3[] verts = new Vector3[poly.Length];
-        for (int i = 0; i < poly.Length; i++)
-            verts[i] = new Vector3(poly[i].x, poly[i].y, z);
-
-        Handles.DrawSolidRectangleWithOutline(verts, fill, wire);
-
-        if (fraction > 0f)
-        {
-            Bounds b = BoundsFromPolygon(poly, z);
-            float y = Mathf.Lerp(b.min.y, b.max.y, fraction);
-
-            Handles.color = new Color(0.1f, 0.7f, 1f, 0.9f);
-            Handles.DrawLine(
-                new Vector3(b.min.x, y, z),
-                new Vector3(b.max.x, y, z),
-                2f);
-        }
-    }
-
-    private static void DrawCompartmentLabel(
-        Compartment compartment,
-        Vector2[] poly,
-        float z,
-        float fraction,
-        bool hovered)
-    {
-        Bounds b = BoundsFromPolygon(poly, z);
-        Vector3 pos = b.center;
-
-        GUIStyle style = new GUIStyle(EditorStyles.boldLabel)
-        {
-            alignment = TextAnchor.MiddleCenter
-        };
-
-        style.normal.textColor = hovered
-            ? Color.cyan
-            : new Color(0.75f, 0.95f, 1f, 0.9f);
-
-        Handles.Label(
-            pos,
-            $"{compartment.name}\n{Mathf.RoundToInt(fraction * 100f)}%",
-            style);
-    }
-
-    private static Bounds BoundsFromPolygon(Vector2[] poly, float z = 0f)
-    {
-        Bounds b = new Bounds(new Vector3(poly[0].x, poly[0].y, z), Vector3.zero);
-
-        for (int i = 1; i < poly.Length; i++)
-            b.Encapsulate(new Vector3(poly[i].x, poly[i].y, z));
-
-        return b;
-    }
-
-    private static float GetFraction(Compartment c)
-    {
-        if (c == null || c.MaxWaterArea <= 0.0001f)
-            return 0f;
-
-        return Mathf.Clamp01(c.WaterArea / c.MaxWaterArea);
-    }
-
-    private static string BuildMouseDebug(
-        Transform root,
-        Compartment[] compartments,
-        Vector2 guiMouse,
-        Vector2 mouseWorldApprox,
-        Compartment hovered,
-        string pickSummary)
-    {
-        StringBuilder sb = new();
-
-        sb.AppendLine("[FloodClickTool] Mouse Debug");
-        sb.AppendLine($"Root: {(root != null ? root.name : "ALL SCENE")}");
-        sb.AppendLine($"Compartments: {(compartments != null ? compartments.Length : 0)}");
-        sb.AppendLine($"Hovered: {(hovered != null ? hovered.name : "none")}");
-        sb.AppendLine($"GUI Mouse: {guiMouse}");
-        sb.AppendLine($"World Approx: {mouseWorldApprox}");
-        sb.AppendLine();
-
-        if (!string.IsNullOrWhiteSpace(pickSummary))
-            sb.AppendLine(pickSummary);
-
-        return sb.ToString();
+        return false;
     }
 }
-#endif
