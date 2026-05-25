@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using WorldMap.Player.StarMap;
 
 // DEPRECATED
-
+[Obsolete("Old UI map view - use cartridge view instead")]
 public class WorldMapHoverController : MonoBehaviour
 {
     [Header("Refs")]

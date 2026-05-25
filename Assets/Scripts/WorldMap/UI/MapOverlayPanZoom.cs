@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 
+[Obsolete("Old UI map view - use cartridge view instead")]
 public sealed class MapOverlayPanZoom : MonoBehaviour
 {
     [Header("Refs")]

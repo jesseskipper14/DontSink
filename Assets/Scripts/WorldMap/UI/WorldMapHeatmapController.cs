@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
+[Obsolete("Old UI map view - use cartridge view instead")]
 public class WorldMapHeatmapController : MonoBehaviour
 {
     public enum HeatmapMode

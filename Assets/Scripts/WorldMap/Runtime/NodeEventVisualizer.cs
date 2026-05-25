@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Obsolete("Old UI map view - use cartridge view instead")]
 public class NodeEventVisualizer : MonoBehaviour
 {
     [Header("Layout")]

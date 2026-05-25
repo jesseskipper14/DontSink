@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[Obsolete("Old UI map view - use cartridge view instead")]
 public sealed class WorldMapNodeMarkerOverlay : MonoBehaviour
 {
     [Header("Refs")]

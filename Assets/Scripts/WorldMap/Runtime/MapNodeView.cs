@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 // LIKELY DEPRECATED
+[Obsolete("Old UI map view - use cartridge view instead")]
 
 [RequireComponent(typeof(Collider2D))]
 public class MapNodeView : MonoBehaviour

@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+[Obsolete("Old UI map view - use cartridge view instead")]
 public sealed class MapNodeHoverTarget : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public int NodeId { get; set; }

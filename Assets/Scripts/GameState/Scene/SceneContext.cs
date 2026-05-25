@@ -12,7 +12,7 @@ public sealed class SceneContext : MonoBehaviour
 
     [Header("Node Scene / Map UI")]
     public WorldMapGraphGenerator mapGenerator;
-    public WorldMapHeatmapController heatmap;
+    //public WorldMapHeatmapController heatmap;
     public WorldMapRuntimeBinder runtimeBinder;
     public WorldMapTravelDebugController travelDebug;
     public NodeTravelController travelLauncher;
@@ -47,7 +47,7 @@ public sealed class SceneContext : MonoBehaviour
         // Optional: auto-wire if missing (safe)
         if (waveField == null) waveField = FindAnyObjectByType<WaveField>();
         if (mapGenerator == null) mapGenerator = FindAnyObjectByType<WorldMapGraphGenerator>();
-        if (heatmap == null) heatmap = FindAnyObjectByType<WorldMapHeatmapController>();
+        //if (heatmap == null) heatmap = FindAnyObjectByType<WorldMapHeatmapController>();
         if (runtimeBinder == null) runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
         if (travelDebug == null) travelDebug = FindAnyObjectByType<WorldMapTravelDebugController>();
         if (travelLauncher == null) travelLauncher = FindAnyObjectByType<NodeTravelController>();

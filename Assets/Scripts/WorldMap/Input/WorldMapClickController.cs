@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+[Obsolete("Old UI map view - use cartridge view instead")]
 public class WorldMapClickController : MonoBehaviour
 {
     [Header("References")]

@@ -18,6 +18,9 @@ public sealed class PlayerInventoryInput : MonoBehaviour
         if (inventory == null)
             return;
 
+        if (GameplayInputBlocker.IsBlocked)
+            return;
+
         HandleSelection();
         HandleDrop();
     }

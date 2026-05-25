@@ -1,4 +1,4 @@
-using System; // <-- add
+using System;
 using UnityEngine;
 
 namespace MiniGames
@@ -7,6 +7,9 @@ namespace MiniGames
     {
         [Header("Behavior")]
         public KeyCode exitKey = KeyCode.Escape;
+
+        [Header("Input Blocking")]
+        [SerializeField] private bool blockGameplayInputWhileOpen = true;
 
         [Header("State (debug)")]
         [SerializeField] private bool isOpen;
@@ -20,6 +23,8 @@ namespace MiniGames
         private MiniGameContext _context;
         private MiniGameResult _lastResult;
 
+        private bool _ownsGameplayInputBlock;
+
         public int EscapePriority => escapePriority;
         public bool IsEscapeOpen => isOpen;
         public bool IsOpen => isOpen;
@@ -27,23 +32,23 @@ namespace MiniGames
         public IOverlayDebugDrawable DebugDrawable { get; private set; }
         public IMiniGameCartridge ActiveCartridge => _cartridge;
 
-        // NEW: consumers (services, runners) can subscribe to effects from the active mini-game.
         public event Action<MiniGameEffect> EffectEmitted;
 
         public void Open(IMiniGameCartridge cartridge, MiniGameContext context)
         {
-            if (isOpen) CloseInternal(); // hard close previous
+            if (isOpen)
+                CloseInternal();
 
             _cartridge = cartridge;
             DebugDrawable = cartridge as IOverlayDebugDrawable;
 
             _context = context ?? new MiniGameContext();
-
-            // NEW: provide effect emitter hook to cartridge via context
             _context.emitEffect = EmitEffect;
 
             activeTargetId = _context.targetId;
             isOpen = true;
+
+            AcquireGameplayInputBlock();
 
             if (closeViaGlobalEscapeRouter)
             {
@@ -62,7 +67,8 @@ namespace MiniGames
 
         public MiniGameResult Close()
         {
-            if (!isOpen) return _lastResult;
+            if (!isOpen)
+                return _lastResult;
 
             _lastResult = _cartridge != null ? _cartridge.Cancel() : null;
             CloseInternal();
@@ -71,7 +77,8 @@ namespace MiniGames
 
         public MiniGameResult Interrupt(string reason)
         {
-            if (!isOpen) return _lastResult;
+            if (!isOpen)
+                return _lastResult;
 
             _lastResult = _cartridge != null ? _cartridge.Interrupt(reason) : null;
             CloseInternal();
@@ -80,7 +87,8 @@ namespace MiniGames
 
         private void Update()
         {
-            if (!isOpen) return;
+            if (!isOpen)
+                return;
 
             if (!closeViaGlobalEscapeRouter && Input.GetKeyDown(exitKey))
             {
@@ -93,11 +101,9 @@ namespace MiniGames
 
             if (result != null && result.outcome != MiniGameOutcome.None)
             {
-                // Ongoing mini-games (e.g., piloting) are allowed to emit outcomes without auto-closing.
-                // They only end when the player closes or the world interrupts.
                 if (_cartridge is IMiniGameLifecycleHints hints && hints.IsOngoing)
                 {
-                    _lastResult = result; // keep latest summary for debug/telemetry
+                    _lastResult = result;
                     return;
                 }
 
@@ -111,7 +117,6 @@ namespace MiniGames
             if (_cartridge != null)
                 _cartridge.End();
 
-            // NEW: clear emitter to avoid dangling delegate references
             if (_context != null)
                 _context.emitEffect = null;
 
@@ -121,10 +126,49 @@ namespace MiniGames
 
             isOpen = false;
 
+            ReleaseGameplayInputBlock();
+
             if (EscapeCloseRegistry.I != null)
                 EscapeCloseRegistry.I.Unregister(this);
 
             activeTargetId = null;
+        }
+
+        private void AcquireGameplayInputBlock()
+        {
+            if (!blockGameplayInputWhileOpen)
+                return;
+
+            if (_ownsGameplayInputBlock)
+                return;
+
+            GameplayInputBlocker.Push(this);
+            _ownsGameplayInputBlock = true;
+        }
+
+        private void ReleaseGameplayInputBlock()
+        {
+            if (!_ownsGameplayInputBlock)
+                return;
+
+            GameplayInputBlocker.Pop(this);
+            _ownsGameplayInputBlock = false;
+        }
+
+        private void OnDisable()
+        {
+            ReleaseGameplayInputBlock();
+
+            if (EscapeCloseRegistry.I != null)
+                EscapeCloseRegistry.I.Unregister(this);
+        }
+
+        private void OnDestroy()
+        {
+            ReleaseGameplayInputBlock();
+
+            if (EscapeCloseRegistry.I != null)
+                EscapeCloseRegistry.I.Unregister(this);
         }
 
         public bool CloseFromEscape()
@@ -137,5 +181,3 @@ namespace MiniGames
         }
     }
 }
-
-

@@ -8,7 +8,7 @@ public sealed class MapTableInteractable : MonoBehaviour, IInteractable, IIntera
     [SerializeField] private float maxUseDistance = 1.8f;
 
     [Header("Map")]
-    [SerializeField] private MapOverlayToggleService mapService;
+    [SerializeField] private WorldMapOverlayRunner mapRunner;
     [SerializeField] private bool toggle = true;
 
     [Header("Boat Access")]
@@ -35,22 +35,21 @@ public sealed class MapTableInteractable : MonoBehaviour, IInteractable, IIntera
     private void Reset()
     {
         CacheBoat();
+        AutoWire();
     }
 
     private void Awake()
     {
         CacheBoat();
+        AutoWire();
 
-        if (mapService == null)
-            mapService = FindAnyObjectByType<MapOverlayToggleService>();
-
-        if (mapService == null)
-            Debug.LogError($"{name}: Missing MapOverlayToggleService in scene.", this);
+        if (mapRunner == null)
+            Debug.LogError($"{name}: Missing WorldMapOverlayRunner in scene.", this);
     }
 
     public bool CanInteract(in InteractContext context)
     {
-        if (mapService == null)
+        if (mapRunner == null)
             return false;
 
         if (!IsInRange(context))
@@ -68,9 +67,15 @@ public sealed class MapTableInteractable : MonoBehaviour, IInteractable, IIntera
             return;
 
         if (toggle)
-            mapService.Toggle(transform);
+            mapRunner.ToggleWorldMap();
         else
-            mapService.Open(transform);
+            mapRunner.OpenWorldMap();
+    }
+
+    private void AutoWire()
+    {
+        if (mapRunner == null)
+            mapRunner = FindAnyObjectByType<WorldMapOverlayRunner>(FindObjectsInactive.Include);
     }
 
     private bool IsInRange(in InteractContext context)

@@ -9,6 +9,10 @@ public class WorldMapEventManager : MonoBehaviour
     [SerializeField] private TimeOfDayManager timeOfDay;
     [SerializeField] private WorldMapRuntimeBinder runtimeBinder;
 
+    [Header("Catalog")]
+    [SerializeField] private WorldMapEffectCatalog effectCatalog;
+    public WorldMapEffectCatalog EffectCatalog => effectCatalog;
+
     [Header("Ticking")]
     [Min(0.05f)] public float tickSeconds = 0.25f;
     [Min(0f)] public float simSpeed = 1f;
@@ -46,6 +50,103 @@ public class WorldMapEventManager : MonoBehaviour
     {
         var inst = def.CreateInstance(sourceNodeId, seed);
         active.Add(inst);
+    }
+
+    public bool TryAddEventById(string eventId, int sourceNodeId, int seed)
+    {
+        if (effectCatalog == null)
+        {
+            Debug.LogWarning("[WorldMapEventManager] Cannot add event by id: missing WorldMapEffectCatalog.", this);
+            return false;
+        }
+
+        if (!effectCatalog.TryGetEvent(eventId, out var def) || def == null)
+        {
+            Debug.LogWarning($"[WorldMapEventManager] Cannot add event: unknown eventId '{eventId}'.", this);
+            return false;
+        }
+
+        AddEvent(def, sourceNodeId, seed);
+        return true;
+    }
+
+    public bool TryApplyOutcomeToNode(int nodeIndex, EventOutcome outcome)
+    {
+        if (outcome == null)
+            return false;
+
+        if (runtimeBinder == null || !runtimeBinder.IsBuilt)
+        {
+            Debug.LogWarning("[WorldMapEventManager] Cannot apply outcome: runtime binder missing or not built.", this);
+            return false;
+        }
+
+        if (!runtimeBinder.Registry.TryGetByIndex(nodeIndex, out var rt) || rt == null)
+        {
+            Debug.LogWarning($"[WorldMapEventManager] Cannot apply outcome: no runtime node #{nodeIndex}.", this);
+            return false;
+        }
+
+        rt.ApplyOutcome(outcome);
+        return true;
+    }
+
+    public bool TryApplyOutcomeByIdToNode(string outcomeId, int nodeIndex)
+    {
+        if (effectCatalog == null)
+        {
+            Debug.LogWarning("[WorldMapEventManager] Cannot apply outcome by id: missing WorldMapEffectCatalog.", this);
+            return false;
+        }
+
+        if (!effectCatalog.TryGetOutcome(outcomeId, out var outcome) || outcome == null)
+        {
+            Debug.LogWarning($"[WorldMapEventManager] Cannot apply outcome: unknown outcomeId '{outcomeId}'.", this);
+            return false;
+        }
+
+        return TryApplyOutcomeToNode(nodeIndex, outcome);
+    }
+
+    public bool TryInjectBuffToNode(int nodeIndex, NodeBuff buff, float durationHours, int stacks)
+    {
+        if (buff == null)
+            return false;
+
+        if (runtimeBinder == null || !runtimeBinder.IsBuilt)
+        {
+            Debug.LogWarning("[WorldMapEventManager] Cannot inject buff: runtime binder missing or not built.", this);
+            return false;
+        }
+
+        if (!runtimeBinder.Registry.TryGetByIndex(nodeIndex, out var rt) || rt == null || rt.State == null)
+        {
+            Debug.LogWarning($"[WorldMapEventManager] Cannot inject buff: no runtime node #{nodeIndex}.", this);
+            return false;
+        }
+
+        float duration = Mathf.Max(0.1f, durationHours);
+        int stackCount = Mathf.Max(1, stacks);
+
+        rt.State.ActiveBuffsMutable.Add(new TimedBuffInstance(buff, duration, stackCount));
+        return true;
+    }
+
+    public bool TryInjectBuffByIdToNode(string buffId, int nodeIndex, float durationHours, int stacks)
+    {
+        if (effectCatalog == null)
+        {
+            Debug.LogWarning("[WorldMapEventManager] Cannot inject buff by id: missing WorldMapEffectCatalog.", this);
+            return false;
+        }
+
+        if (!effectCatalog.TryGetBuff(buffId, out var buff) || buff == null)
+        {
+            Debug.LogWarning($"[WorldMapEventManager] Cannot inject buff: unknown buffId '{buffId}'.", this);
+            return false;
+        }
+
+        return TryInjectBuffToNode(nodeIndex, buff, durationHours, stacks);
     }
 
     private void Tick(float dtHours)

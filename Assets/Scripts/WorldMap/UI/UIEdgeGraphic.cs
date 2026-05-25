@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+[Obsolete("Old UI map view - use cartridge view instead")]
 [RequireComponent(typeof(CanvasRenderer))]
 public sealed class UIEdgeGraphic : Graphic
 {

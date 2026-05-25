@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using WorldMap.Player.StarMap;
 
+[Obsolete("Old UI map view - use cartridge view instead")]
 public sealed class WorldMapRouteOverlay : MonoBehaviour
 {
     [Header("References")]

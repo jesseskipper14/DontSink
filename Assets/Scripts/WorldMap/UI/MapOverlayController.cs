@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[Obsolete("Old UI map view - use cartridge view instead")]
 public sealed class MapOverlayController : MonoBehaviour, IEscapeClosable
 {
     [Header("Refs")]
@@ -729,7 +730,7 @@ public sealed class MapOverlayController : MonoBehaviour, IEscapeClosable
         if (ctx == null) return;
 
         if (generator == null) generator = ctx.mapGenerator;
-        if (heatmap == null) heatmap = ctx.heatmap;
+        //if (heatmap == null) heatmap = ctx.heatmap;
         if (runtimeBinder == null) runtimeBinder = ctx.runtimeBinder;
         if (travelDebug == null) travelDebug = ctx.travelDebug;
         // travelLauncher too

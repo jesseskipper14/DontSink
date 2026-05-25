@@ -3,7 +3,7 @@ using UnityEngine;
 public sealed class MapOverlayToggleService : MonoBehaviour
 {
     [Header("Refs")]
-    [SerializeField] private MapOverlayController overlay;
+    [SerializeField] private WorldMapOverlayRunner mapRunner;
     [SerializeField] private Transform player; // optional, only for auto-close
 
     [Header("Debug")]
@@ -18,27 +18,24 @@ public sealed class MapOverlayToggleService : MonoBehaviour
 
     private void Awake()
     {
-        if (overlay == null)
-            overlay = FindAnyObjectByType<MapOverlayController>();
-
-        if (player == null)
-        {
-            GameObject p = GameObject.FindGameObjectWithTag("Player");
-            if (p != null)
-                player = p.transform;
-        }
+        AutoWire();
     }
 
     private void Update()
     {
+        AutoWire();
+
+        bool mapOpen = mapRunner != null && mapRunner.IsWorldMapOpen;
         bool inputBlocked = respectGameplayInputBlocker && GameplayInputBlocker.IsBlocked;
 
-        if (!inputBlocked && allowHotkeyM && Input.GetKeyDown(KeyCode.M))
+        // Allow M to close the map even while gameplay input is blocked by the overlay.
+        // Otherwise the debug toggle becomes "open only", because naturally UI loves tiny betrayals.
+        if (allowHotkeyM && Input.GetKeyDown(KeyCode.M) && (mapOpen || !inputBlocked))
             Toggle(null);
 
         if (autoCloseWhenFar &&
-            overlay != null &&
-            overlay.IsVisible &&
+            mapRunner != null &&
+            mapRunner.IsWorldMapOpen &&
             _openSource != null &&
             player != null)
         {
@@ -50,10 +47,12 @@ public sealed class MapOverlayToggleService : MonoBehaviour
 
     public void Toggle(Transform source)
     {
-        if (overlay == null)
+        AutoWire();
+
+        if (mapRunner == null)
             return;
 
-        if (overlay.IsVisible)
+        if (mapRunner.IsWorldMapOpen)
             Close();
         else
             Open(source);
@@ -61,19 +60,42 @@ public sealed class MapOverlayToggleService : MonoBehaviour
 
     public void Open(Transform source)
     {
-        if (overlay == null)
+        AutoWire();
+
+        if (mapRunner == null)
+        {
+            Debug.LogError("[MapOverlayToggleService] Missing WorldMapOverlayRunner.", this);
             return;
+        }
 
         _openSource = source;
-        overlay.SetVisible(true);
+
+        bool opened = mapRunner.OpenWorldMap();
+        if (!opened)
+            _openSource = null;
     }
 
     public void Close()
     {
-        if (overlay == null)
+        AutoWire();
+
+        if (mapRunner == null)
             return;
 
-        overlay.SetVisible(false);
+        mapRunner.CloseWorldMap();
         _openSource = null;
+    }
+
+    private void AutoWire()
+    {
+        if (mapRunner == null)
+            mapRunner = FindAnyObjectByType<WorldMapOverlayRunner>(FindObjectsInactive.Include);
+
+        if (player == null)
+        {
+            GameObject p = GameObject.FindGameObjectWithTag("Player");
+            if (p != null)
+                player = p.transform;
+        }
     }
 }

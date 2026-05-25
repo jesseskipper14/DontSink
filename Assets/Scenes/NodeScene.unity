@@ -2069,7 +2069,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1543242049}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MapOverlayHeatmapController, Assembly-CSharp
         m_MethodName: SetModeFoodBalance
         m_Mode: 1
@@ -2283,6 +2283,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   exitKey: 27
+  blockGameplayInputWhileOpen: 1
   isOpen: 0
   activeTargetId: 
   closeViaGlobalEscapeRouter: 1
@@ -3028,7 +3029,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1543242049}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MapOverlayHeatmapController, Assembly-CSharp
         m_MethodName: SetModeStability
         m_Mode: 1
@@ -4617,12 +4618,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 464559646}
-  - component: {fileID: 464559645}
-  - component: {fileID: 464559648}
   - component: {fileID: 464559649}
   - component: {fileID: 464559650}
   - component: {fileID: 464559651}
   - component: {fileID: 464559652}
+  - component: {fileID: 464559653}
   m_Layer: 0
   m_Name: Controllers
   m_TagString: Untagged
@@ -4630,23 +4630,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &464559645
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 464559644}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be1efe9ef364aba4a9d6ff8a7ad8f3ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cam: {fileID: 639652871}
-  selection: {fileID: 795679328}
-  clickableLayers:
-    serializedVersion: 2
-    m_Bits: 512
 --- !u!4 &464559646
 Transform:
   m_ObjectHideFlags: 0
@@ -4662,30 +4645,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &464559648
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 464559644}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6d06f95f0d797c43934c2a788d9b0ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cam: {fileID: 639652871}
-  tooltip: {fileID: 1543242045}
-  runtimeBinder: {fileID: 1068224605}
-  generator: {fileID: 795679325}
-  playerRef: {fileID: 2032528624}
-  travelDebug: {fileID: 464559649}
-  travelRules: {fileID: 11400000, guid: f2203f4f2d874584d86af2d9da433bd4, type: 2}
-  resourceCatalog: {fileID: 11400000, guid: 2077c5a54ff1b2440a8f306ea0defd5c, type: 2}
-  hoverLayers:
-    serializedVersion: 2
-    m_Bits: 512
-  eventManager: {fileID: 299019576}
 --- !u!114 &464559649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4740,7 +4699,7 @@ MonoBehaviour:
   runtimeBinder: {fileID: 1068224605}
   generator: {fileID: 795679325}
   travelDebug: {fileID: 464559649}
-  travelRules: {fileID: 0}
+  travelRules: {fileID: 11400000, guid: f2203f4f2d874584d86af2d9da433bd4, type: 2}
   playerLoadoutPersistence: {fileID: 2032528626}
   seedOverride: 0
   allowLaunchWithoutValidation: 0
@@ -4769,6 +4728,24 @@ MonoBehaviour:
   showBackgroundInTransition: 1
   showForegroundInTransition: 1
   verboseLogging: 0
+--- !u!114 &464559653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464559644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e040ccdb70d474545a837952cf250857, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapRunner: {fileID: 643752057}
+  player: {fileID: 1220945561}
+  allowHotkeyM: 1
+  respectGameplayInputBlocker: 1
+  autoCloseWhenFar: 0
+  autoCloseDistance: 3.5
 --- !u!1 &471237869
 GameObject:
   m_ObjectHideFlags: 0
@@ -4903,7 +4880,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1543242049}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MapOverlayHeatmapController, Assembly-CSharp
         m_MethodName: SetModeNone
         m_Mode: 1
@@ -6807,6 +6784,7 @@ GameObject:
   - component: {fileID: 643752054}
   - component: {fileID: 643752055}
   - component: {fileID: 643752056}
+  - component: {fileID: 643752057}
   m_Layer: 0
   m_Name: Runners
   m_TagString: Untagged
@@ -6907,6 +6885,28 @@ MonoBehaviour:
   secureQualityAtPerfect: 1
   fastenRestoreAtPerfect: 0.7
   verboseLogging: 0
+--- !u!114 &643752057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 643752051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4098d54ab19635e40885fe17b871802d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  overlay: {fileID: 297186289}
+  generator: {fileID: 795679325}
+  runtimeBinder: {fileID: 1068224605}
+  player: {fileID: 2032528624}
+  travelRules: {fileID: 11400000, guid: f2203f4f2d874584d86af2d9da433bd4, type: 2}
+  travelDebug: {fileID: 464559649}
+  travelLauncher: {fileID: 464559651}
+  eventManager: {fileID: 0}
+  debugOpenWithKey: 0
+  debugOpenKey: 109
 --- !u!1 &661279031
 GameObject:
   m_ObjectHideFlags: 0
@@ -7517,7 +7517,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1939670371}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MapOverlayController, Assembly-CSharp
         m_MethodName: ClearLock
         m_Mode: 1
@@ -8704,7 +8704,6 @@ GameObject:
   m_Component:
   - component: {fileID: 795679326}
   - component: {fileID: 795679325}
-  - component: {fileID: 795679327}
   - component: {fileID: 795679328}
   m_Layer: 0
   m_Name: WorldGenerationRoot
@@ -9882,23 +9881,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &795679327
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 795679324}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1215e7f0c490be4d95164b25be769e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  generator: {fileID: 795679325}
-  selection: {fileID: 795679328}
-  container: {fileID: 795679326}
-  nodeRadiusWorld: 0.25
-  spawnOnStart: 1
 --- !u!114 &795679328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10462,7 +10444,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1543242049}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MapOverlayHeatmapController, Assembly-CSharp
         m_MethodName: SetModePopulation
         m_Mode: 1
@@ -14899,7 +14881,7 @@ MonoBehaviour:
   decreaseQuantityKey: 45
   increaseQuantityFastKey: 93
   decreaseQuantityFastKey: 91
-  showHud: 1
+  showHud: 0
   hudPosition: {x: 16, y: 16}
   autoFitHudToScreen: 1
   hudWidth: 640
@@ -16145,7 +16127,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1543242049}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MapOverlayHeatmapController, Assembly-CSharp
         m_MethodName: SetModeProsperity
         m_Mode: 1
@@ -16205,7 +16187,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1387679115}
   - component: {fileID: 1387679117}
-  - component: {fileID: 1387679118}
   - component: {fileID: 1387679119}
   m_Layer: 5
   m_Name: MapPanel
@@ -16244,32 +16225,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1387679114}
   m_CullTransparentMesh: 1
---- !u!114 &1387679118
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1387679114}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4207a22397098c24ca34a6f11f2047eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  overlayRoot: {fileID: 1651577127}
-  mapViewport: {fileID: 1387679115}
-  content: {fileID: 835492387}
-  panMouseButton: 1
-  dragPanSpeed: 1.8
-  requirePointerOverViewport: 1
-  enableKeyboardPan: 1
-  panSpeed: 2000
-  fastMultiplier: 2.5
-  enableZoom: 1
-  zoomSpeed: 0.2
-  minScale: 0.3
-  maxScale: 10
-  clampToViewport: 1
 --- !u!114 &1387679119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18481,35 +18436,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1543242046}
-  - component: {fileID: 1543242045}
-  - component: {fileID: 1543242048}
   - component: {fileID: 1543242047}
-  - component: {fileID: 1543242049}
   m_Layer: 0
-  m_Name: WorldMapUI
+  m_Name: WorldMapUI (DEPRECATED)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1543242045
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1543242044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c98fe709c8eb3740a71a956c46acf1a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canvas: {fileID: 0}
-  panel: {fileID: 0}
-  label: {fileID: 0}
-  screenOffset: {x: 50, y: 50}
-  fontSize: 16
-  padding: {x: 10, y: 8}
 --- !u!4 &1543242046
 Transform:
   m_ObjectHideFlags: 0
@@ -18541,75 +18475,6 @@ MonoBehaviour:
   upwardOnly: 0
   logStats: 1
   logBuildings: 1
---- !u!114 &1543242048
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1543242044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de8a71d4d065c0f49814b2de3cd4ddc1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  autoRefresh: 1
-  refreshIntervalSeconds: 1
-  spawner: {fileID: 795679327}
-  runtimeBinder: {fileID: 1068224605}
-  modeLabel: {fileID: 1910126464}
-  lowColor: {r: 1, g: 0.25, b: 0.25, a: 1}
-  highColor: {r: 0.25, g: 1, b: 0.35, a: 1}
-  unknownColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
-  minValue: 0
-  maxValue: 4
-  populationMin: 0
-  populationMax: 5000
-  populationLow: {r: 0.15, g: 0.15, b: 0.35, a: 1}
-  populationHigh: {r: 0.55, g: 0.75, b: 1, a: 1}
-  foodMin: -4
-  foodMax: 4
-  foodNegative: {r: 1, g: 0.25, b: 0.25, a: 1}
-  foodNeutral: {r: 0.75, g: 0.75, b: 0.75, a: 1}
-  foodPositive: {r: 0.25, g: 1, b: 0.35, a: 1}
-  mode: 0
-  overlayRoot: {fileID: 1651577127}
---- !u!114 &1543242049
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1543242044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6219c385b5484c345930432ae0e57877, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  overlayRoot: {fileID: 1651577127}
-  runtimeBinder: {fileID: 1068224605}
-  generator: {fileID: 795679325}
-  nodeContainer: {fileID: 797762517}
-  modeLabel: {fileID: 1910126464}
-  autoRefresh: 1
-  refreshIntervalSeconds: 1
-  lowColor: {r: 1, g: 0.25, b: 0.25, a: 1}
-  highColor: {r: 0.25, g: 1, b: 0.35, a: 1}
-  unknownColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
-  minValue: 0
-  maxValue: 4
-  populationMin: 0
-  populationMax: 300
-  populationLow: {r: 0.15, g: 0.15, b: 0.35, a: 1}
-  populationHigh: {r: 0.55, g: 0.75, b: 1, a: 1}
-  foodMin: -4
-  foodMax: 4
-  foodNegative: {r: 1, g: 0.25, b: 0.25, a: 1}
-  foodNeutral: {r: 0.75, g: 0.75, b: 0.75, a: 1}
-  foodPositive: {r: 0.25, g: 1, b: 0.35, a: 1}
-  mode: 0
-  preservePrimaryYellow: 1
-  primaryColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1 &1546770263
 GameObject:
   m_ObjectHideFlags: 0
@@ -19285,7 +19150,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1543242049}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MapOverlayHeatmapController, Assembly-CSharp
         m_MethodName: SetModeSecurity
         m_Mode: 1
@@ -19699,12 +19564,12 @@ GameObject:
   - component: {fileID: 1651577127}
   - component: {fileID: 1651577129}
   m_Layer: 5
-  m_Name: MapOverlayRoot
+  m_Name: MapOverlayRoot (DEPRECATED)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1651577126
 RectTransform:
   m_ObjectHideFlags: 0
@@ -20985,126 +20850,126 @@ EdgeCollider2D:
   - {x: 117.48954, y: 0}
   - {x: 118.49373, y: 0}
   - {x: 119.49791, y: 0}
-  - {x: 120.5021, y: -0.0032209523}
-  - {x: 121.50628, y: -0.028811535}
-  - {x: 122.51046, y: -0.07932787}
-  - {x: 123.51465, y: -0.15482159}
-  - {x: 124.51883, y: -0.25481445}
-  - {x: 125.52302, y: -0.37607837}
-  - {x: 126.5272, y: -0.5254133}
-  - {x: 127.53139, y: -0.6942265}
-  - {x: 128.53557, y: -0.8994789}
-  - {x: 129.53975, y: -1.1097172}
-  - {x: 130.54393, y: -1.393603}
-  - {x: 131.54813, y: -1.6392076}
-  - {x: 132.5523, y: -1.9310405}
-  - {x: 133.55649, y: -2.1301653}
-  - {x: 134.56067, y: -2.3816888}
-  - {x: 135.56485, y: -2.6997883}
-  - {x: 136.56905, y: -3.1773367}
-  - {x: 137.57323, y: -3.4777098}
-  - {x: 138.57741, y: -3.7026486}
-  - {x: 139.58159, y: -4.2140117}
-  - {x: 140.58578, y: -4.5665126}
-  - {x: 141.58997, y: -5.061809}
-  - {x: 142.59415, y: -5.664326}
-  - {x: 143.59833, y: -6.1622696}
-  - {x: 144.60251, y: -6.6773562}
-  - {x: 145.6067, y: -6.96297}
-  - {x: 146.61089, y: -7.5182843}
-  - {x: 147.61507, y: -7.780369}
-  - {x: 148.61925, y: -8.580278}
-  - {x: 149.62343, y: -9.117209}
-  - {x: 150.62762, y: -9.353994}
-  - {x: 151.6318, y: -10.143376}
-  - {x: 152.63599, y: -10.684366}
-  - {x: 153.64017, y: -11.241669}
-  - {x: 154.64435, y: -11.942675}
-  - {x: 155.64854, y: -12.483444}
-  - {x: 156.65273, y: -12.960542}
-  - {x: 157.6569, y: -13.670633}
-  - {x: 158.66109, y: -14.30127}
-  - {x: 159.66528, y: -14.916404}
-  - {x: 160.66946, y: -15.316786}
-  - {x: 161.67365, y: -16.020256}
-  - {x: 162.67783, y: -16.676023}
-  - {x: 163.682, y: -17.155146}
-  - {x: 164.6862, y: -17.827042}
-  - {x: 165.69038, y: -18.396072}
-  - {x: 166.69456, y: -19.152515}
-  - {x: 167.69875, y: -19.864132}
-  - {x: 168.70293, y: -20.56308}
-  - {x: 169.70712, y: -21.347067}
-  - {x: 170.7113, y: -21.858534}
-  - {x: 171.71548, y: -22.38304}
-  - {x: 172.71967, y: -22.979687}
-  - {x: 173.72385, y: -23.59296}
-  - {x: 174.72804, y: -24.359804}
-  - {x: 175.73222, y: -24.897741}
-  - {x: 176.7364, y: -25.641302}
-  - {x: 177.74059, y: -26.320993}
-  - {x: 178.74478, y: -26.991608}
-  - {x: 179.74896, y: -27.61565}
-  - {x: 180.75314, y: -28.011978}
-  - {x: 181.75732, y: -28.496117}
-  - {x: 182.7615, y: -29.19472}
-  - {x: 183.7657, y: -29.884853}
-  - {x: 184.76988, y: -30.472574}
-  - {x: 185.77406, y: -30.957745}
-  - {x: 186.77824, y: -31.657158}
-  - {x: 187.78242, y: -32.089474}
-  - {x: 188.78662, y: -32.709457}
-  - {x: 189.7908, y: -33.20148}
-  - {x: 190.79498, y: -33.818142}
-  - {x: 191.79916, y: -34.286015}
-  - {x: 192.80334, y: -34.75392}
-  - {x: 193.80754, y: -35.07053}
-  - {x: 194.81172, y: -35.71551}
-  - {x: 195.8159, y: -36.16455}
-  - {x: 196.82008, y: -36.64287}
-  - {x: 197.82428, y: -37.146473}
-  - {x: 198.82846, y: -37.6593}
-  - {x: 199.83264, y: -38.08849}
-  - {x: 200.83682, y: -38.322746}
-  - {x: 201.841, y: -38.59215}
-  - {x: 202.8452, y: -39.02052}
-  - {x: 203.84938, y: -39.22168}
-  - {x: 204.85356, y: -39.565323}
-  - {x: 205.85774, y: -39.99009}
-  - {x: 206.86192, y: -40.248104}
-  - {x: 207.86612, y: -40.53042}
-  - {x: 208.8703, y: -40.773598}
-  - {x: 209.87448, y: -41.01388}
-  - {x: 210.87866, y: -41.20451}
-  - {x: 211.88286, y: -41.39012}
-  - {x: 212.88704, y: -41.571136}
-  - {x: 213.89122, y: -41.71053}
-  - {x: 214.8954, y: -41.824436}
-  - {x: 215.89958, y: -41.91693}
-  - {x: 216.90378, y: -41.98677}
-  - {x: 217.90796, y: -42.03237}
-  - {x: 218.91214, y: -42.05268}
-  - {x: 219.91632, y: -42.80442}
-  - {x: 220.9205, y: -42.708363}
-  - {x: 221.9247, y: -42.505226}
-  - {x: 222.92888, y: -42.412712}
-  - {x: 223.93306, y: -42.51028}
-  - {x: 224.93724, y: -42.431183}
-  - {x: 225.94142, y: -42.126377}
-  - {x: 226.94562, y: -42.08088}
-  - {x: 227.9498, y: -42.03154}
-  - {x: 228.95398, y: -41.70957}
-  - {x: 229.95816, y: -41.871666}
-  - {x: 230.96236, y: -42.047886}
-  - {x: 231.96654, y: -41.98288}
-  - {x: 232.97072, y: -42.10412}
-  - {x: 233.9749, y: -42.15211}
-  - {x: 234.97908, y: -42.07202}
-  - {x: 235.98328, y: -42.008926}
-  - {x: 236.98746, y: -42.0145}
-  - {x: 237.99164, y: -42.18299}
-  - {x: 238.99582, y: -42.279316}
-  - {x: 240, y: -42.22963}
+  - {x: 120.5021, y: -0.0034056292}
+  - {x: 121.50628, y: -0.030454442}
+  - {x: 122.51046, y: -0.084193505}
+  - {x: 123.51465, y: -0.16410357}
+  - {x: 124.51883, y: -0.26892778}
+  - {x: 125.52302, y: -0.40095353}
+  - {x: 126.5272, y: -0.5575733}
+  - {x: 127.53139, y: -0.7248015}
+  - {x: 128.53557, y: -0.94163924}
+  - {x: 129.53975, y: -1.1487521}
+  - {x: 130.54393, y: -1.356194}
+  - {x: 131.54813, y: -1.6237929}
+  - {x: 132.5523, y: -1.9443176}
+  - {x: 133.55649, y: -2.1699045}
+  - {x: 134.56067, y: -2.4776511}
+  - {x: 135.56485, y: -2.840103}
+  - {x: 136.56905, y: -3.1092472}
+  - {x: 137.57323, y: -3.521977}
+  - {x: 138.57741, y: -4.0532126}
+  - {x: 139.58159, y: -4.3545594}
+  - {x: 140.58578, y: -4.7069964}
+  - {x: 141.58997, y: -5.379439}
+  - {x: 142.59415, y: -5.964654}
+  - {x: 143.59833, y: -6.3047247}
+  - {x: 144.60251, y: -6.720829}
+  - {x: 145.6067, y: -7.238039}
+  - {x: 146.61089, y: -7.6710987}
+  - {x: 147.61507, y: -8.2523775}
+  - {x: 148.61925, y: -9.10828}
+  - {x: 149.62343, y: -9.538979}
+  - {x: 150.62762, y: -9.969326}
+  - {x: 151.6318, y: -10.67527}
+  - {x: 152.63599, y: -11.142328}
+  - {x: 153.64017, y: -11.720185}
+  - {x: 154.64435, y: -12.474548}
+  - {x: 155.64854, y: -13.006944}
+  - {x: 156.65273, y: -13.742132}
+  - {x: 157.6569, y: -14.255948}
+  - {x: 158.66109, y: -14.8737135}
+  - {x: 159.66528, y: -15.3935585}
+  - {x: 160.66946, y: -16.079138}
+  - {x: 161.67365, y: -17.009434}
+  - {x: 162.67783, y: -17.819735}
+  - {x: 163.682, y: -18.382572}
+  - {x: 164.6862, y: -18.89824}
+  - {x: 165.69038, y: -19.751148}
+  - {x: 166.69456, y: -20.307364}
+  - {x: 167.69875, y: -20.774242}
+  - {x: 168.70293, y: -21.498116}
+  - {x: 169.70712, y: -22.168982}
+  - {x: 170.7113, y: -22.76084}
+  - {x: 171.71548, y: -23.568163}
+  - {x: 172.71967, y: -24.230515}
+  - {x: 173.72385, y: -24.971638}
+  - {x: 174.72804, y: -25.633467}
+  - {x: 175.73222, y: -26.223131}
+  - {x: 176.7364, y: -26.809351}
+  - {x: 177.74059, y: -27.709827}
+  - {x: 178.74478, y: -28.498451}
+  - {x: 179.74896, y: -29.038103}
+  - {x: 180.75314, y: -29.634995}
+  - {x: 181.75732, y: -30.30445}
+  - {x: 182.7615, y: -30.767807}
+  - {x: 183.7657, y: -31.523546}
+  - {x: 184.76988, y: -32.048878}
+  - {x: 185.77406, y: -32.653004}
+  - {x: 186.77824, y: -33.202797}
+  - {x: 187.78242, y: -33.69627}
+  - {x: 188.78662, y: -34.3381}
+  - {x: 189.7908, y: -34.743713}
+  - {x: 190.79498, y: -35.14449}
+  - {x: 191.79916, y: -35.779068}
+  - {x: 192.80334, y: -36.32916}
+  - {x: 193.80754, y: -36.757927}
+  - {x: 194.81172, y: -37.133614}
+  - {x: 195.8159, y: -37.614742}
+  - {x: 196.82008, y: -38.549427}
+  - {x: 197.82428, y: -38.923107}
+  - {x: 198.82846, y: -39.44095}
+  - {x: 199.83264, y: -39.84637}
+  - {x: 200.83682, y: -40.18806}
+  - {x: 201.841, y: -40.41148}
+  - {x: 202.8452, y: -40.718704}
+  - {x: 203.84938, y: -41.133747}
+  - {x: 204.85356, y: -41.59618}
+  - {x: 205.85774, y: -41.866848}
+  - {x: 206.86192, y: -42.036236}
+  - {x: 207.86612, y: -42.28544}
+  - {x: 208.8703, y: -42.5653}
+  - {x: 209.87448, y: -42.76505}
+  - {x: 210.87866, y: -42.96559}
+  - {x: 211.88286, y: -43.139782}
+  - {x: 212.88704, y: -43.28771}
+  - {x: 213.89122, y: -43.41661}
+  - {x: 214.8954, y: -43.51784}
+  - {x: 215.89958, y: -43.59491}
+  - {x: 216.90378, y: -43.646175}
+  - {x: 217.90796, y: -43.67068}
+  - {x: 218.91214, y: -43.250748}
+  - {x: 219.91632, y: -43.23567}
+  - {x: 220.9205, y: -43.366}
+  - {x: 221.9247, y: -43.542355}
+  - {x: 222.92888, y: -43.609314}
+  - {x: 223.93306, y: -43.75838}
+  - {x: 224.93724, y: -44.185436}
+  - {x: 225.94142, y: -44.369495}
+  - {x: 226.94562, y: -43.8592}
+  - {x: 227.9498, y: -43.769188}
+  - {x: 228.95398, y: -43.68447}
+  - {x: 229.95816, y: -43.746555}
+  - {x: 230.96236, y: -43.79538}
+  - {x: 231.96654, y: -44.185013}
+  - {x: 232.97072, y: -44.196438}
+  - {x: 233.9749, y: -44.170784}
+  - {x: 234.97908, y: -44.077896}
+  - {x: 235.98328, y: -43.985718}
+  - {x: 236.98746, y: -44.108593}
+  - {x: 237.99164, y: -44.07187}
+  - {x: 238.99582, y: -44.065426}
+  - {x: 240, y: -43.884697}
   m_AdjacentStartPoint: {x: 0, y: 0}
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
@@ -21148,7 +21013,7 @@ MonoBehaviour:
   regenerateOnValidate: 1
   randomizeSeedOnGenerate: 1
   slopeRandomizationRange: 3
-  seed: 715403458
+  seed: -1585615151
 --- !u!1 &1878638439
 GameObject:
   m_ObjectHideFlags: 0
@@ -21584,7 +21449,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1543242049}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MapOverlayHeatmapController, Assembly-CSharp
         m_MethodName: SetModeDock
         m_Mode: 1
@@ -21851,10 +21716,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1939670372}
-  - component: {fileID: 1939670371}
-  - component: {fileID: 1939670370}
-  - component: {fileID: 1939670369}
-  - component: {fileID: 1939670373}
   m_Layer: 0
   m_Name: UIOverlayRoot
   m_TagString: Untagged
@@ -21862,105 +21723,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1939670369
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1939670368}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5781375b388b4f34d96609a313ce36cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  generator: {fileID: 795679325}
-  runtimeBinder: {fileID: 1068224605}
-  player: {fileID: 2032528624}
-  mapOverlay: {fileID: 1939670371}
-  selection: {fileID: 795679328}
-  showLockedRoutes: 1
-  rebuildOnGraphGenerated: 1
-  uiEdges: {fileID: 1226565582}
-  uiMapPanel: {fileID: 1387679115}
-  uiNodeContainer: {fileID: 797762517}
-  uiThicknessPx: 3
-  lineMaterial: {fileID: 0}
-  baseWidth: 0.06
-  zOffset: -0.5
-  hoverController: {fileID: 464559648}
---- !u!114 &1939670370
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1939670368}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b2d1ca7a477bd1489af2c43fba307f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  generator: {fileID: 795679325}
-  runtimeBinder: {fileID: 1068224605}
-  eventManager: {fileID: 299019576}
-  nodeContainer: {fileID: 797762517}
-  markerContainer: {fileID: 941921985}
-  buffIconPrefab: {fileID: 7386058899179963916, guid: 6632e8a42ecb1354889541aabfe8376e, type: 3}
-  eventIconPrefab: {fileID: 7386058899179963916, guid: 6632e8a42ecb1354889541aabfe8376e, type: 3}
-  buffMaxPerRow: 4
-  buffMaxShown: 12
-  buffIconSizePx: 10
-  buffXSpacingPx: 12
-  buffYSpacingPx: 12
-  buffPadFromNodePx: 6
-  eventMaxPerRow: 4
-  eventMaxShown: 8
-  eventIconSizePx: 10
-  eventXSpacingPx: 12
-  eventYSpacingPx: 12
-  eventPadFromNodePx: 6
-  autoRefresh: 1
-  refreshIntervalSeconds: 0.25
---- !u!114 &1939670371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1939670368}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07d707a7261c86f4994df65f7f38ea7b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  generator: {fileID: 795679325}
-  overlayRoot: {fileID: 1651577127}
-  mapPanel: {fileID: 1387679115}
-  nodeContainer: {fileID: 797762517}
-  edgeGraphic: {fileID: 1226565582}
-  heatmap: {fileID: 1543242048}
-  runtimeBinder: {fileID: 1068224605}
-  player: {fileID: 0}
-  travelRules: {fileID: 11400000, guid: f2203f4f2d874584d86af2d9da433bd4, type: 2}
-  travelDebug: {fileID: 464559649}
-  lockedDestinationNodeId: 
-  lockedSourceNodeId: 
-  nodeButtonPrefab: {fileID: 8100504934490931534, guid: 6632e8a42ecb1354889541aabfe8376e, type: 3}
-  nodeSize: 14
-  selectedLabel: {fileID: 0}
-  lockButton: {fileID: 676255580}
-  travelButton: {fileID: 1309952986}
-  travelLauncher: {fileID: 0}
-  closeViaGlobalEscapeRouter: 1
-  escapePriority: 250
-  selectedNodeIndex: -1
-  lockedNodeIndex: -1
-  lockedStableId: 
-  nodeSizePercent: 0.025
-  selectedScale: 1.35
-  normalScale: 1
-  drawAllEdges: 0
 --- !u!4 &1939670372
 Transform:
   m_ObjectHideFlags: 0
@@ -21977,24 +21739,6 @@ Transform:
   - {fileID: 1253171147}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1939670373
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1939670368}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e040ccdb70d474545a837952cf250857, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  overlay: {fileID: 1939670371}
-  player: {fileID: 1220945561}
-  allowHotkeyM: 1
-  respectGameplayInputBlocker: 1
-  autoCloseWhenFar: 0
-  autoCloseDistance: 3.5
 --- !u!1 &1950138316
 GameObject:
   m_ObjectHideFlags: 0
@@ -23072,7 +22816,6 @@ MonoBehaviour:
   rainSourceMono: {fileID: 1797001525}
   playerSpawn: {fileID: 900502743}
   mapGenerator: {fileID: 795679325}
-  heatmap: {fileID: 1543242048}
   runtimeBinder: {fileID: 1068224605}
   travelDebug: {fileID: 464559649}
   travelLauncher: {fileID: 0}
@@ -23562,7 +23305,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1543242049}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MapOverlayHeatmapController, Assembly-CSharp
         m_MethodName: SetModeTrade
         m_Mode: 1
