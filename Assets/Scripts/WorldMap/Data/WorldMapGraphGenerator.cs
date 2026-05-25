@@ -103,6 +103,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
                 int nodeId = graph.AddNode(new MapNode
                 {
                     id = graph.nodes.Count,
+                    localStableId = $"cluster_{c:00}_node_{i:00}",
                     clusterId = c,
                     position = pos,
                     kind = NodeKind.Island,
@@ -467,6 +468,9 @@ public class MapNode
     public int clusterId;
     public Vector2 position;
     public NodeKind kind;
+
+    [Header("Stable Identity")]
+    public string localStableId;
 
     [Header("Identity")]
     public string displayName;

@@ -67,7 +67,7 @@ public class WorldMapRuntimeBinder : MonoBehaviour
         for (int i = 0; i < generator.graph.nodes.Count; i++)
         {
             var n = generator.graph.nodes[i];
-            string stableId = $"{generator.seed}:{n.id}";
+            string stableId = WorldMapStableIdUtility.BuildNodeStableId(generator.seed, n);
 
             MapNodeRuntime rt;
 

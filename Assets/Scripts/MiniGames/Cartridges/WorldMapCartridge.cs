@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using MiniGames;
 using UnityEngine;
@@ -275,6 +275,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
 
         DrawViewportGrid(localRect);
         DrawRoutes(localRect);
+        DrawActiveTravelRoute(localRect);
         DrawNodes(localRect);
 
         GUI.EndGroup();
@@ -1297,6 +1298,77 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         }
     }
 
+    private void DrawActiveTravelRoute(Rect localRect)
+    {
+        if (!TryGetActiveTravelEndpointRuntimes(out var fromRt, out var toRt))
+            return;
+
+        var g = _generator != null ? _generator.graph : null;
+        if (g == null || g.nodes == null)
+            return;
+
+        if (fromRt.NodeIndex < 0 || fromRt.NodeIndex >= g.nodes.Count)
+            return;
+
+        if (toRt.NodeIndex < 0 || toRt.NodeIndex >= g.nodes.Count)
+            return;
+
+        Vector2 a = GraphToLocal(g.nodes[fromRt.NodeIndex].position, localRect);
+        Vector2 b = GraphToLocal(g.nodes[toRt.NodeIndex].position, localRect);
+
+        DrawDashedLine(
+            a,
+            b,
+            new Color(0.15f, 1f, 0.45f, 0.22f),
+            width: 8f,
+            dashLength: 18f,
+            gapLength: 8f
+        );
+
+        DrawDashedLine(
+            a,
+            b,
+            new Color(0.25f, 1f, 0.35f, 0.95f),
+            width: 3f,
+            dashLength: 18f,
+            gapLength: 8f
+        );
+    }
+
+    private static void DrawDashedLine(
+    Vector2 a,
+    Vector2 b,
+    Color color,
+    float width,
+    float dashLength,
+    float gapLength)
+    {
+        Vector2 delta = b - a;
+        float length = delta.magnitude;
+
+        if (length <= 0.001f)
+            return;
+
+        Vector2 dir = delta / length;
+
+        dashLength = Mathf.Max(1f, dashLength);
+        gapLength = Mathf.Max(0f, gapLength);
+
+        float step = dashLength + gapLength;
+        if (step <= 0.001f)
+            step = dashLength;
+
+        for (float d = 0f; d < length; d += step)
+        {
+            float end = Mathf.Min(d + dashLength, length);
+
+            Vector2 p0 = a + dir * d;
+            Vector2 p1 = a + dir * end;
+
+            DrawLine(p0, p1, color, width);
+        }
+    }
+
     private void DrawNodes(Rect localRect)
     {
         var g = _generator.graph;
@@ -2022,6 +2094,13 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         if (_player == null || _player.State == null)
             return "Player map state missing.";
 
+        if (TryGetActiveTravelEndpointRuntimes(out var activeFromRt, out var activeToRt))
+        {
+            return
+                "Active travel:\n" +
+                $"{activeFromRt.DisplayName} → {activeToRt.DisplayName}";
+        }
+
         if (!TryGetSelectedRuntime(out var selectedRt))
             return "No selected route.";
 
@@ -2070,6 +2149,32 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
             return $"Route length: {routeLen:0.00}\nLock unavailable: {lockReason}";
 
         return $"Route length: {routeLen:0.00}\nRoute available.";
+    }
+
+    private bool TryGetActiveTravelEndpointRuntimes(
+    out MapNodeRuntime fromRt,
+    out MapNodeRuntime toRt)
+    {
+        fromRt = null;
+        toRt = null;
+
+        TravelPayload travel = GameState.I != null ? GameState.I.activeTravel : null;
+        if (travel == null)
+            return false;
+
+        if (string.IsNullOrWhiteSpace(travel.fromNodeStableId))
+            return false;
+
+        if (string.IsNullOrWhiteSpace(travel.toNodeStableId))
+            return false;
+
+        if (_runtimeBinder == null || !_runtimeBinder.IsBuilt)
+            return false;
+
+        bool hasFrom = _runtimeBinder.Registry.TryGetByStableId(travel.fromNodeStableId, out fromRt);
+        bool hasTo = _runtimeBinder.Registry.TryGetByStableId(travel.toNodeStableId, out toRt);
+
+        return hasFrom && fromRt != null && hasTo && toRt != null;
     }
 
     #endregion

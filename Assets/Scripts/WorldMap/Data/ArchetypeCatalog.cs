@@ -68,7 +68,7 @@ public sealed class ArchetypeCatalog : ScriptableObject
         {
             var n = graph.nodes[i];
             int clusterId = n.clusterId;
-            string stableId = $"{worldSeed}:{n.id}";
+            string stableId = WorldMapStableIdUtility.BuildNodeStableId(worldSeed, n);
 
             nodeKeys.Add(new NodeKey(stableId, clusterId));
 
