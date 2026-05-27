@@ -32,6 +32,8 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour, IExertionRead
     [SerializeField] private CharacterMotor2D motor; // optional
 
     private ICharacterIntentSource _intent;
+    private float _externalExertionCeiling01;
+    private float _externalExertionApproachRate;
 
     // -----------------------------
     // Exertion model (0..1)
@@ -237,6 +239,17 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour, IExertionRead
             }
         }
 
+        // External activity sources can raise the target ceiling without owning the whole model.
+        // Example: ladder climbing.
+        if (_externalExertionCeiling01 > 0f)
+        {
+            if (_externalExertionCeiling01 > ceiling)
+                ceiling = _externalExertionCeiling01;
+
+            if (_externalExertionApproachRate > k)
+                k = _externalExertionApproachRate;
+        }
+
         // First-order response toward ceiling:
         // alpha = 1 - exp(-k*dt) gives nice "time constant" behavior.
         float alpha = 1f - Mathf.Exp(-k * dt);
@@ -296,6 +309,9 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour, IExertionRead
         // -----------------------------
         CurrentState = ComputeState(exertion01);
         CurrentEnergyState = ComputeEnergyState(Energy01);
+
+        _externalExertionCeiling01 = 0f;
+        _externalExertionApproachRate = 0f;
     }
 
     private float EvaluateAuthority(float e01)
@@ -335,6 +351,23 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour, IExertionRead
     {
         if (amount01 <= 0f) return;
         exertion01 = Mathf.Clamp01(exertion01 + amount01);
+    }
+
+    public void AddExternalExertionDemand(float ceiling01, float approachRate)
+    {
+        ceiling01 = Mathf.Clamp01(ceiling01);
+        approachRate = Mathf.Max(0f, approachRate);
+
+        if (ceiling01 <= 0f || approachRate <= 0f)
+            return;
+
+        // Multiple systems can request exertion in the same tick.
+        // Highest ceiling wins, strongest approach rate wins.
+        if (ceiling01 > _externalExertionCeiling01)
+            _externalExertionCeiling01 = ceiling01;
+
+        if (approachRate > _externalExertionApproachRate)
+            _externalExertionApproachRate = approachRate;
     }
 
     public void ResetState()

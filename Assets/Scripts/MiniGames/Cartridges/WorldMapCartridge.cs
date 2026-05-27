@@ -21,6 +21,12 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
     private readonly WorldMapEventManager _eventManager;
     private readonly List<WorldMapEventInstance> _tmpEvents = new();
 
+    private readonly WorldMapTopographyDebugSource _topographyDebugSource;
+    private bool _showTopographyDebug = true;
+    private bool _showTopographyContours = true;
+    private bool _showTopographyClassification;
+    private bool _showTopographyBiomes;
+
     private bool _showInjectionTools;
     private bool _injectionToolsRectInitialized;
     private Rect _injectionToolsRect;
@@ -56,7 +62,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
 
     private static Texture2D _whiteTex;
 
-    private const float MinZoom = 4f;
+    private const float MinZoom = 1f;
     private const float MaxZoom = 240f;
     private const float NodeRadiusPx = 7f;
     private const float NodeHitRadiusPx = 12f;
@@ -73,7 +79,8 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         WorldMapTravelDebugController travelDebug,
         NodeTravelController travelLauncher,
         WorldMapEventManager eventManager,
-        WorldMapEffectCatalog effectCatalog)
+        WorldMapEffectCatalog effectCatalog,
+        WorldMapTopographyDebugSource topographyDebugSource)
     {
         _generator = generator;
         _runtimeBinder = runtimeBinder;
@@ -83,6 +90,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         _travelLauncher = travelLauncher;
         _eventManager = eventManager;
         _effectCatalog = effectCatalog;
+        _topographyDebugSource = topographyDebugSource;
     }
 
     #endregion
@@ -273,6 +281,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         GUI.BeginGroup(rect);
         Rect localRect = new Rect(0f, 0f, rect.width, rect.height);
 
+        DrawTopographyDebugLayer(localRect);
         DrawViewportGrid(localRect);
         DrawRoutes(localRect);
         DrawActiveTravelRoute(localRect);
@@ -494,11 +503,76 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         float y = rect.y + 10f;
         float w = rect.width - 20f;
 
+        if (_topographyDebugSource != null && _topographyDebugSource.HasBaseTexture)
+        {
+            _showTopographyDebug = GUI.Toggle(
+                new Rect(x, y, w, 22f),
+                _showTopographyDebug,
+                "Show Topography"
+            );
+
+            y += 14f;
+
+            GUI.enabled = _showTopographyDebug && _topographyDebugSource.HasClassificationTexture;
+
+            _showTopographyClassification = GUI.Toggle(
+                new Rect(x, y, w, 22f),
+                _showTopographyClassification,
+                "Show Classes"
+            );
+
+            y += 14f;
+
+            GUI.enabled = _showTopographyDebug && _topographyDebugSource.HasBiomeTexture;
+
+            _showTopographyBiomes = GUI.Toggle(
+                new Rect(x, y, w, 22f),
+                _showTopographyBiomes,
+                "Show Biomes 🍌"
+            );
+
+            GUI.enabled = true;
+            y += 14f;
+
+            GUI.enabled = _showTopographyDebug && _topographyDebugSource.HasContourTexture;
+
+            _showTopographyContours = GUI.Toggle(
+                new Rect(x, y, w, 22f),
+                _showTopographyContours,
+                "Show Contours"
+            );
+
+            GUI.enabled = true;
+            y += 14f;
+
+            WorldMapTopographyStats stats = _topographyDebugSource.Stats;
+
+            GUI.Label(
+                new Rect(x, y, w, 68f),
+                $"Sea: {_topographyDebugSource.EffectiveSeaLevel01:0.000}\n" +
+                $"Water: {stats.Water01:P0} Land: {stats.Land01:P0}\n" +
+                $"Deep: {stats.DeepOcean01:P0} Open: {stats.OpenOcean01:P0}\n" +
+                $"Shelf: {stats.ShelfWater01:P0} Shallow: {stats.ShallowWater01:P0}"
+            );
+
+            y += 64f;
+
+            if (GUI.Button(new Rect(x, y, w, 24f), "Regenerate Topography"))
+                _topographyDebugSource.Generate();
+
+            y += 30f;
+        }
+        else
+        {
+            GUI.Label(new Rect(x, y, w, 34f), "Topography:\n(no source)");
+            y += 30f;
+        }
+
         GUI.Label(new Rect(x, y, w, 22f), "Heatmap");
-        y += 28f;
+        y += 14f;
 
         GUI.Label(new Rect(x, y, w, 22f), $"Active: {_heatmapMode}");
-        y += 30f;
+        y += 24f;
 
         float buttonH = 26f;
         float gap = 6f;
@@ -534,10 +608,10 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         if (GUI.Button(new Rect(x, y, w, buttonH), "Food Balance"))
             _heatmapMode = HeatmapMode.FoodBalance;
 
-        y += 14f;
+        y += 30f;
 
         GUI.Label(new Rect(x, y, w, 22f), "Debug");
-        y += 26f;
+        y += 24f;
 
         string injectionButtonText = _showInjectionTools
             ? "Close Injection Tools"
@@ -1254,6 +1328,64 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
             : _statusLine;
 
         GUI.Label(rect, text);
+    }
+
+    private void DrawTopographyDebugLayer(Rect localRect)
+    {
+        if (!_showTopographyDebug)
+            return;
+
+        if (_topographyDebugSource == null || !_topographyDebugSource.HasBaseTexture)
+            return;
+
+        WorldMapTopographyField field = _topographyDebugSource.Field;
+        Texture2D baseTex = _topographyDebugSource.BaseTexture;
+        Texture2D contourTex = _topographyDebugSource.ContourTexture;
+
+        if (field == null || baseTex == null)
+            return;
+
+        Rect drawRect = GetTopographyDrawRect(field, localRect);
+
+        Color old = GUI.color;
+
+        GUI.color = Color.white;
+        GUI.DrawTexture(drawRect, baseTex, ScaleMode.StretchToFill);
+
+        if (_showTopographyClassification && _topographyDebugSource.HasClassificationTexture)
+        {
+            GUI.color = Color.white;
+            GUI.DrawTexture(drawRect, _topographyDebugSource.ClassificationTexture, ScaleMode.StretchToFill);
+        }
+
+        if (_showTopographyBiomes && _topographyDebugSource.HasBiomeTexture)
+        {
+            GUI.color = Color.white;
+            GUI.DrawTexture(drawRect, _topographyDebugSource.BiomeTexture, ScaleMode.StretchToFill);
+        }
+
+        if (_showTopographyContours && contourTex != null)
+        {
+            GUI.color = Color.white;
+            GUI.DrawTexture(drawRect, contourTex, ScaleMode.StretchToFill);
+        }
+
+        GUI.color = old;
+    }
+
+    private Rect GetTopographyDrawRect(WorldMapTopographyField field, Rect localRect)
+    {
+        Rect bounds = field.WorldBounds;
+
+        Vector2 topLeft = GraphToLocal(new Vector2(bounds.xMin, bounds.yMax), localRect);
+        Vector2 bottomRight = GraphToLocal(new Vector2(bounds.xMax, bounds.yMin), localRect);
+
+        return Rect.MinMaxRect(
+            Mathf.Min(topLeft.x, bottomRight.x),
+            Mathf.Min(topLeft.y, bottomRight.y),
+            Mathf.Max(topLeft.x, bottomRight.x),
+            Mathf.Max(topLeft.y, bottomRight.y)
+        );
     }
 
     private void DrawViewportGrid(Rect localRect)

@@ -1215,6 +1215,7 @@ MonoBehaviour:
   clearPlayerSceneContextOnNewGame: 1
   saveLoadController: {fileID: 277718801}
   saveLoadPanel: {fileID: 0}
+  requireValidSaveForLoadButton: 1
   verboseLogging: 0
 --- !u!4 &277718800
 Transform:

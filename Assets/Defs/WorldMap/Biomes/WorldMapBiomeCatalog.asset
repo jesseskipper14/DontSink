@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29c81fd2e881a834da94e0153a4ab30f, type: 3}
+  m_Name: WorldMapBiomeCatalog
+  m_EditorClassIdentifier: 
+  biomes:
+  - {fileID: 11400000, guid: 5578ecc6eec8eee46bda8b44f5523af4, type: 2}
+  - {fileID: 11400000, guid: e46fcfcee7589134ba673814f9871881, type: 2}
+  - {fileID: 11400000, guid: d27376268502a0a4a8e75e4abd2754f7, type: 2}
+  - {fileID: 11400000, guid: b21a2e6a8c51d8e408e9fe00eb81f9dd, type: 2}
+  fallbackBiome: {fileID: 11400000, guid: bc3decdca39ade04db950e322d498057, type: 2}

@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4310358ee3e44ce439a5f2dc0dbf0113, type: 3}
+  m_Name: ClusterAffinity_IndustrialRemnant
+  m_EditorClassIdentifier: 
+  affinityId: industrial_remnant
+  displayName: Industrial Remnant
+  archetypeWeights:
+  - archetype: {fileID: 11400000, guid: 5d13f5f4c33143c47929dc4c5396cca3, type: 2}
+    weight: 0
+  - archetype: {fileID: 11400000, guid: 256338602ded2804e95cf80ffcb9b93f, type: 2}
+    weight: 0
+  - archetype: {fileID: 11400000, guid: 98efea4dbf4bb744fb6b654c2dfb9831, type: 2}
+    weight: 2
+  - archetype: {fileID: 11400000, guid: 9d0fcc0f963bbc54a94f05960dd251af, type: 2}
+    weight: 4
+  - archetype: {fileID: 11400000, guid: 55176c86ff18d1a41a5bb18891f68132, type: 2}
+    weight: 1
+  - archetype: {fileID: 11400000, guid: 984a7643a75e523459d56aa2cacb9504, type: 2}
+    weight: 2
+  - archetype: {fileID: 11400000, guid: c84811ada3bd8a243bea17977f60afb1, type: 2}
+    weight: 4
+  - archetype: {fileID: 11400000, guid: 2f150393dc62b54409fc368193cd095b, type: 2}
+    weight: 0
+  - archetype: {fileID: 11400000, guid: 63ee80bccd0ba0f46a8b1097725d2c2a, type: 2}
+    weight: 2
+  - archetype: {fileID: 11400000, guid: ad391484706e90a4389560818f7cdeeb, type: 2}
+    weight: 0
+  exoticLean01: 0
+  volumeMultiplier: 1.2

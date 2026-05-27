@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a730905bed3c3ec4c8b7d82b2d215512, type: 3}
+  m_Name: Biome_TemperateIslandChain
+  m_EditorClassIdentifier: 
+  biomeId: temperate_island_chain
+  displayName: Temperate Island Chain
+  debugColor: {r: 0, g: 1, b: 0.1417911, a: 1}
+  baseScore: 0.2
+  deepOceanWeight: -0.75
+  openOceanWeight: -0.2
+  shelfWaterWeight: 0.45
+  shallowWaterWeight: 0.3
+  beachWeight: 0.75
+  lowlandWeight: 1.15
+  highlandWeight: 0.55
+  mountainWeight: 0.05
+  preferredLand01: 0.28
+  landTolerance01: 0.2
+  landPreferenceWeight: 0.85
+  preferredShallowShelf01: 0.3
+  shallowShelfTolerance01: 0.3
+  shallowShelfPreferenceWeight: 0.25
+  preferredDeepOpen01: 0.35
+  deepOpenTolerance01: 0.45
+  deepOpenPreferenceWeight: 0.1
+  preferredCoastPresence01: 0.6
+  coastTolerance01: 0.32
+  coastPreferenceWeight: 0.45
+  preferredRuggedness01: 0.38
+  ruggednessTolerance01: 0.32
+  ruggednessPreferenceWeight: 0.25

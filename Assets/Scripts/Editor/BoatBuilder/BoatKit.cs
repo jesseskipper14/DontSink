@@ -25,6 +25,7 @@ public class BoatKit : ScriptableObject
 
     [Header("Gameplay Pieces (Builder Supported)")]
     public GameObject BoatBoardObject;
+    public GameObject DeckBoardZone;
     public GameObject MapTable;
     public GameObject PlayerSpawnPoint;
     public GameObject BoardedVolume;

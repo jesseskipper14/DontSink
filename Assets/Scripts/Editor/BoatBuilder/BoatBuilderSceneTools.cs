@@ -498,6 +498,7 @@ public static partial class BoatBuilderSceneTools
             BoatBuilderWindow.Tool.Stairs => kit.Stairs,
             BoatBuilderWindow.Tool.Ledge => kit.Ledge,
             BoatBuilderWindow.Tool.BoatBoardObject => kit.BoatBoardObject,
+            BoatBuilderWindow.Tool.DeckBoardZone => kit.DeckBoardZone,
             BoatBuilderWindow.Tool.MapTable => kit.MapTable,
             BoatBuilderWindow.Tool.PlayerSpawnPoint => kit.PlayerSpawnPoint,
             BoatBuilderWindow.Tool.BoardedVolume => kit.BoardedVolume,

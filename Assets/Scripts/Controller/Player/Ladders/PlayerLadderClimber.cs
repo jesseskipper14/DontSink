@@ -8,6 +8,7 @@ public sealed class PlayerLadderClimber : MonoBehaviour
     [Header("Refs")]
     [SerializeField] private LocalCharacterIntentSource localCharacterIntentSource;
     [SerializeField] private CharacterMotor2D motor;
+    [SerializeField] private PlayerExertionEnergyState exertionEnergy;
 
     [Header("Detection")]
     [SerializeField] private LayerMask ladderMask = ~0;
@@ -22,6 +23,37 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
     [SerializeField, Min(0f)]
     private float horizontalClimbSpeed = 2.25f;
+
+    [Header("Exertion / Energy")]
+    [SerializeField] private bool useLadderExertion = true;
+
+    [Tooltip("Exertion target while hanging/paused on a ladder. Mild but not totally free.")]
+    [SerializeField, Range(0f, 1f)]
+    private float idleOnLadderExertionCeiling = 0.16f;
+
+    [Tooltip("Exertion target while climbing upward. Keep above PlayerExertionEnergyState.drainThreshold if climbing should drain energy.")]
+    [SerializeField, Range(0f, 1f)]
+    private float climbUpExertionCeiling = 0.92f;
+
+    [Tooltip("Exertion target while climbing downward.")]
+    [SerializeField, Range(0f, 1f)]
+    private float climbDownExertionCeiling = 0.38f;
+
+    [Tooltip("Exertion target while shimmying sideways on a ladder.")]
+    [SerializeField, Range(0f, 1f)]
+    private float horizontalClimbExertionCeiling = 0.48f;
+
+    [SerializeField, Min(0f)]
+    private float ladderExertionApproachRate = 1.4f;
+
+    [Header("Climb Authority From Energy")]
+    [SerializeField] private bool scaleUpwardClimbByEnergy = true;
+    [SerializeField] private bool scaleHorizontalClimbByEnergy = true;
+    [SerializeField] private bool scaleDownwardClimbByEnergy = false;
+
+    [Tooltip("Minimum climb authority even at zero energy. Set to 0 if exhaustion should fully stop climbing.")]
+    [SerializeField, Range(0f, 1f)]
+    private float minClimbAuthorityWhenExhausted = 0.25f;
 
     [Tooltip("How far sideways from the ladder center the player may drift while still attached.")]
     [SerializeField, Min(0.01f)]
@@ -127,6 +159,9 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         if (motor == null)
             motor = GetComponent<CharacterMotor2D>();
 
+        if (exertionEnergy == null)
+            exertionEnergy = GetComponent<PlayerExertionEnergyState>();
+
         _climbCastHits = new RaycastHit2D[Mathf.Max(1, climbCastMaxHits)];
         _playerColliders = GetComponentsInChildren<Collider2D>(true);
         _hatchLedgeOverlapBuffer = new Collider2D[24];
@@ -183,14 +218,19 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         float vertical = GetVerticalIntent(intent);
         float horizontal = intent.MoveX;
 
+        RequestLadderExertion(vertical, horizontal);
+
+        float verticalAuthority = GetVerticalClimbAuthority(vertical);
+        float horizontalAuthority = GetHorizontalClimbAuthority(horizontal);
+
         Transform ladderFrame = _activeLadder.transform;
         Vector3 proposedLocalPos = _ladderLocalClimbPosition;
 
         float centerLocalX = GetClimbCenterLocalX(ladderFrame);
 
-        proposedLocalPos.y += vertical * _activeLadder.ClimbSpeed * Time.fixedDeltaTime;
+        proposedLocalPos.y += vertical * _activeLadder.ClimbSpeed * verticalAuthority * Time.fixedDeltaTime;
 
-        ApplyHorizontalLadderMovement(ref proposedLocalPos, centerLocalX, horizontal);
+        ApplyHorizontalLadderMovement(ref proposedLocalPos, centerLocalX, horizontal, horizontalAuthority);
 
         float localXDistanceFromCenter = Mathf.Abs(proposedLocalPos.x - centerLocalX);
         if (allowHorizontalMovementWhileClimbing && localXDistanceFromCenter > maxAttachedLocalXDistance)
@@ -334,7 +374,11 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         TryBeginClimb(best);
     }
 
-    private void ApplyHorizontalLadderMovement(ref Vector3 localPos, float centerLocalX, float horizontal)
+    private void ApplyHorizontalLadderMovement(
+    ref Vector3 localPos,
+    float centerLocalX,
+    float horizontal,
+    float horizontalAuthority)
     {
         if (!allowHorizontalMovementWhileClimbing)
         {
@@ -348,7 +392,7 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
         if (Mathf.Abs(horizontal) > 0.01f)
         {
-            localPos.x += horizontal * horizontalClimbSpeed * Time.fixedDeltaTime;
+            localPos.x += horizontal * horizontalClimbSpeed * horizontalAuthority * Time.fixedDeltaTime;
             return;
         }
 
@@ -610,6 +654,66 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         float up = intent.ClimbUpHeld ? 1f : 0f;
         float down = intent.ClimbDownHeld ? 1f : 0f;
         return up - down;
+    }
+
+    private void RequestLadderExertion(float vertical, float horizontal)
+    {
+        if (!useLadderExertion)
+            return;
+
+        if (exertionEnergy == null)
+            return;
+
+        float ceiling = idleOnLadderExertionCeiling;
+
+        if (vertical > 0.01f)
+        {
+            ceiling = Mathf.Max(ceiling, climbUpExertionCeiling);
+        }
+        else if (vertical < -0.01f)
+        {
+            ceiling = Mathf.Max(ceiling, climbDownExertionCeiling);
+        }
+
+        if (Mathf.Abs(horizontal) > 0.01f)
+            ceiling = Mathf.Max(ceiling, horizontalClimbExertionCeiling);
+
+        exertionEnergy.AddExternalExertionDemand(ceiling, ladderExertionApproachRate);
+    }
+
+    private float GetVerticalClimbAuthority(float vertical)
+    {
+        if (exertionEnergy == null)
+            return 1f;
+
+        if (vertical > 0.01f && scaleUpwardClimbByEnergy)
+            return GetEnergyAuthority();
+
+        if (vertical < -0.01f && scaleDownwardClimbByEnergy)
+            return GetEnergyAuthority();
+
+        return 1f;
+    }
+
+    private float GetHorizontalClimbAuthority(float horizontal)
+    {
+        if (exertionEnergy == null)
+            return 1f;
+
+        if (Mathf.Abs(horizontal) > 0.01f && scaleHorizontalClimbByEnergy)
+            return GetEnergyAuthority();
+
+        return 1f;
+    }
+
+    private float GetEnergyAuthority()
+    {
+        if (exertionEnergy == null)
+            return 1f;
+
+        return Mathf.Clamp01(Mathf.Max(
+            minClimbAuthorityWhenExhausted,
+            exertionEnergy.MoveAuthority));
     }
 
     private void BeginIgnoringHatchLedgeLayer()

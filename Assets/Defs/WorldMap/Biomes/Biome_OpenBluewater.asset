@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a730905bed3c3ec4c8b7d82b2d215512, type: 3}
+  m_Name: Biome_OpenBluewater
+  m_EditorClassIdentifier: 
+  biomeId: open_bluewater
+  displayName: Open Bluewater
+  debugColor: {r: 0, g: 0.3359375, b: 1, a: 1}
+  baseScore: 0
+  deepOceanWeight: 1.5
+  openOceanWeight: 1.2
+  shelfWaterWeight: -0.35
+  shallowWaterWeight: -0.85
+  beachWeight: -1.2
+  lowlandWeight: -1.4
+  highlandWeight: -1.5
+  mountainWeight: -1.7
+  preferredLand01: 0
+  landTolerance01: 0.04
+  landPreferenceWeight: 0.25
+  preferredShallowShelf01: 0.15
+  shallowShelfTolerance01: 0.3
+  shallowShelfPreferenceWeight: 0.45
+  preferredDeepOpen01: 0.9
+  deepOpenTolerance01: 0.4
+  deepOpenPreferenceWeight: 0.95
+  preferredCoastPresence01: 0
+  coastTolerance01: 0.1
+  coastPreferenceWeight: 0.1
+  preferredRuggedness01: 0.18
+  ruggednessTolerance01: 0.25
+  ruggednessPreferenceWeight: 0.1

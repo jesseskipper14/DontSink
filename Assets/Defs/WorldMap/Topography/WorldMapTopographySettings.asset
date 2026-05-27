@@ -1,0 +1,120 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3ac70890287e7347922971f8d10afbc, type: 3}
+  m_Name: WorldMapTopographySettings
+  m_EditorClassIdentifier: 
+  worldSize: {x: 720, y: 450}
+  heightResolution: 512
+  seedSalt: 817263
+  baseNoiseScale: 0.025
+  octaves: 1
+  persistence: 0.201
+  lacunarity: 1.1
+  useStructuredOceanFloor: 1
+  islandChainCount: 9
+  chainLengthMin: 50
+  chainLengthMax: 100
+  chainCurveStrength: 50
+  chainRidgeWidth: 20
+  chainRidgeStrength: 0.15
+  chainShelfWidth: 80
+  chainShelfStrength: 0.02
+  chainSampleSteps: 8
+  enforceChainCenterSpacing: 1
+  chainCenterMinDistance: 300
+  chainPlacementAttempts: 40
+  volcanicPeaksPerChainMin: 4
+  volcanicPeaksPerChainMax: 8
+  volcanicPeakRadiusMin: 3.5
+  volcanicPeakRadiusMax: 9
+  volcanicPeakStrengthMin: 0.3
+  volcanicPeakStrengthMax: 0.53
+  volcanicPeakLateralJitter: 10
+  volcanicPeakTangentJitter01: 0.0563
+  volcanicPeakStretchMax: 3
+  volcanicPeakEdgeWarpStrength: 0.077
+  volcanicPeakEdgeWarpFrequency: 2.09
+  volcanicPeakInteriorRoughness: 0
+  volcanicPeakInteriorNoiseScale: 0.075
+  basinCount: 10
+  basinRadiusMin: 45
+  basinRadiusMax: 110
+  basinStretchMax: 2.2
+  basinStrengthMin: 0.16
+  basinStrengthMax: 0.36
+  trenchCount: 10
+  trenchLengthMin: 120
+  trenchLengthMax: 220
+  trenchCurveStrength: 80
+  trenchWidth: 30
+  trenchStrengthMin: 0.5
+  trenchStrengthMax: 0.9
+  trenchSampleSteps: 8
+  featureEdgeInset01: 0.12
+  useOceanBorderFalloff: 1
+  oceanBorderMargin01: 0.16
+  oceanBorderStrength: 0.55
+  oceanBorderPower: 2.4
+  fadeRaisedFeaturesNearEdge: 1
+  raisedFeatureEdgeFadeMargin01: 0.18
+  useRadialFalloff: 1
+  radialFalloffStrength: 0.55
+  radialFalloffPower: 1.9
+  contrast: 1.15
+  bias: 0
+  seaLevel01: 0.81
+  shallowDepth01: 0.09
+  beachHeight01: 0.035
+  deepWaterColor: {r: 0.015, g: 0.045, b: 0.12, a: 1}
+  shelfWaterColor: {r: 0.05, g: 0.36, b: 0.55, a: 1}
+  shallowWaterColor: {r: 0.16, g: 0.62, b: 0.72, a: 1}
+  beachColor: {r: 0.72, g: 0.63, b: 0.42, a: 1}
+  lowlandColor: {r: 0.2, g: 0.42, b: 0.24, a: 1}
+  highlandColor: {r: 0.34, g: 0.35, b: 0.28, a: 1}
+  mountainColor: {r: 0.78, g: 0.74, b: 0.66, a: 1}
+  seaLevelLineColor: {r: 0.8962264, g: 0.87857556, b: 0.70598966, a: 0.95}
+  seaLevelLineThickness: 0.008
+  autoAdjustSeaLevelToTargetWater: 0
+  targetWaterPercent: 0.82
+  seaLevelSolveIterations: 24
+  openOceanDepth01: 0.22
+  lowlandHeight01: 0.18
+  highlandHeight01: 0.38
+  classificationOverlayAlpha: 0.72
+  classDeepOceanColor: {r: 0.02, g: 0.04, b: 0.16, a: 1}
+  classOpenOceanColor: {r: 0.02, g: 0.14, b: 0.36, a: 1}
+  classShelfWaterColor: {r: 0.04, g: 0.42, b: 0.62, a: 1}
+  classShallowWaterColor: {r: 0.18, g: 0.78, b: 0.82, a: 1}
+  classBeachColor: {r: 0.86, g: 0.72, b: 0.44, a: 1}
+  classLowlandColor: {r: 0.22, g: 0.58, b: 0.24, a: 1}
+  classHighlandColor: {r: 0.46, g: 0.42, b: 0.28, a: 1}
+  classMountainColor: {r: 0.82, g: 0.8, b: 0.72, a: 1}
+  generateBiomeLayer: 1
+  biomeGridWidth: 256
+  biomeGridHeight: 160
+  biomeSampleRadiusWorld: 18
+  biomeSampleGrid: 6
+  biomeScoreNoise: 0.15
+  biomeSmoothingIterations: 2
+  biomeOverlayAlpha: 0.65
+  textureResolution: 2048
+  textureFilterMode: 1
+  lowColor: {r: 0.03, g: 0.09, b: 0.18, a: 1}
+  midColor: {r: 0.22, g: 0.34, b: 0.28, a: 1}
+  highColor: {r: 0.78, g: 0.74, b: 0.62, a: 1}
+  drawContours: 1
+  drawContoursIntoBaseTexture: 0
+  contourCount: 100
+  contourThickness: 0.06
+  contourColor: {r: 0, g: 0, b: 0, a: 0.4117647}
+  majorContourColor: {r: 0, g: 0, b: 0, a: 0.85}
+  majorContourEvery: 5

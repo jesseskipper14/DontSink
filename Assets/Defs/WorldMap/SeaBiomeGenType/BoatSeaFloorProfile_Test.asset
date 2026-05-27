@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf1ec5c24fc1c80428866a5bc231d2d9, type: 3}
+  m_Name: BoatSeaFloorProfile_Test
+  m_EditorClassIdentifier: 
+  leftPlateauLength: 0
+  rightPlateauLength: 0
+  leftSlopeLength: 200
+  rightSlopeLength: 200
+  baseSeaFloorDepth: 120
+  depthDriftAmplitude: 16
+  depthDriftScale: 0.01
+  macroAmplitude: 1
+  macroScale: 0.03
+  macroOctaves: 2
+  microAmplitude: 1
+  microScale: 0.1
+  microOctaves: 3
+  octavePersistence: 0.5
+  octaveLacunarity: 2
+  slopeDeformationAmplitude: 0.8
+  slopeDeformationScale: 0.08
+  slopeDeformationOctaves: 2
+  slopeDeformationEdgeFade: 0.15
+  ravineCountMin: 1
+  ravineCountMax: 1
+  ravineWidthMin: 200
+  ravineWidthMax: 300
+  ravineDepthMin: 200
+  ravineDepthMax: 300
+  ravinesUseFlatFloor: 1
+  ravineFloorFlatness: 0.169
+  ravineEdgeSoftness: 20
+  cliffCountMin: 0
+  cliffCountMax: 0
+  cliffTopLengthMin: 100
+  cliffTopLengthMax: 150
+  cliffSlopeLengthMin: 200
+  cliffSlopeLengthMax: 210
+  cliffBottomLengthMin: 100
+  cliffBottomLengthMax: 150
+  cliffHeightMin: 150
+  cliffHeightMax: 200
+  cliffNoiseAmplitude: 0.75
+  cliffNoiseScale: 0.08
+  minDockClearDepth: 50
+  maxAbsoluteDepth: 500

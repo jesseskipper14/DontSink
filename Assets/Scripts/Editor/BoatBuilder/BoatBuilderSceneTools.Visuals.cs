@@ -112,6 +112,9 @@ public static partial class BoatBuilderSceneTools
                 BoatBuilderWindow.Tool.BoatBoardObject =>
                     GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Gameplay),
 
+                BoatBuilderWindow.Tool.DeckBoardZone =>
+                    GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Gameplay),
+
                 BoatBuilderWindow.Tool.MapTable =>
                     GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Gameplay),
 

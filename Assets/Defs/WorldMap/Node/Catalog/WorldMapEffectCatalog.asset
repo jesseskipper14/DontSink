@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 268a504337018fa43a44fd1b6dbf8f37, type: 3}
+  m_Name: WorldMapEffectCatalog
+  m_EditorClassIdentifier: 
+  events:
+  - {fileID: 11400000, guid: 11628f1374ba4bf4699908ec34438153, type: 2}
+  outcomes:
+  - {fileID: 11400000, guid: 33d3998b9e4af7d4e99a8a1df10caa70, type: 2}
+  - {fileID: 11400000, guid: 0dd61e10e7eb5c149ab100324564074c, type: 2}
+  - {fileID: 11400000, guid: 0cd55c17d9981564bbc01adde238a88c, type: 2}
+  - {fileID: 11400000, guid: dd0a7d0d8cbefa1459b68c51b36a15cc, type: 2}
+  - {fileID: 11400000, guid: 5993ca2a0ac85e74385ce3a39934b427, type: 2}
+  buffs:
+  - {fileID: 11400000, guid: 2039773c56aec7e44b82c8f1b48638e4, type: 2}
+  - {fileID: 11400000, guid: 8fed9e3011bca914d950c7cba6ee5b9f, type: 2}
+  - {fileID: 11400000, guid: 597de3f7546487a41b56700146f57bd5, type: 2}
+  - {fileID: 11400000, guid: dfc66ea70797e784e8d9f1fe60651a51, type: 2}
+  - {fileID: 11400000, guid: 197e58fed1db0914987db0f76bc554d8, type: 2}
+  - {fileID: 11400000, guid: 92376164f23eae646ada5401734aea28, type: 2}
+  - {fileID: 11400000, guid: 6e50d3ea4c851c845b07a273396052a8, type: 2}

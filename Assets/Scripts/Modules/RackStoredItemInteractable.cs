@@ -19,12 +19,32 @@ public sealed class RackStoredItemInteractable :
     [SerializeField] private float pickupHoldDuration = 0.35f;
     [SerializeField] private float maxPickupDistance = 1.5f;
 
+    [Header("Hover Highlight")]
+    [SerializeField] private bool enableHoverHighlight = true;
+
+    [Tooltip("Sprite tint while hovered.")]
+    [SerializeField] private Color hoverTint = new Color(1f, 0.92f, 0.45f, 1f);
+
+    [Tooltip("How much larger the visual becomes while hovered.")]
+    [SerializeField, Min(1f)] private float hoverScaleMultiplier = 1.12f;
+
+    [Tooltip("How quickly hover tint/scale blend.")]
+    [SerializeField, Min(0.01f)] private float hoverLerpSpeed = 16f;
+
+    [Tooltip("If true, highlight only when the item is still valid/pickup-able at a basic slot level.")]
+    [SerializeField] private bool requireValidStoredItemForHover = true;
+
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = false;
 
     public int PickupPriority => pickupPriority;
     public PickupInteractionMode PickupMode => pickupMode;
     public float PickupHoldDuration => Mathf.Max(0.05f, pickupHoldDuration);
+
+    private SpriteRenderer _spriteRenderer;
+    private Vector3 _baseScale;
+    private Color _baseColor = Color.white;
+    private bool _hovered;
 
     public void Initialize(StorageModule module, int index)
     {
@@ -33,12 +53,49 @@ public sealed class RackStoredItemInteractable :
 
         if (promptAnchor == null)
             promptAnchor = transform;
+
+        CacheVisualRefs();
     }
 
     private void Awake()
     {
         if (promptAnchor == null)
             promptAnchor = transform;
+
+        CacheVisualRefs();
+    }
+
+    private void OnEnable()
+    {
+        CacheVisualRefs();
+        SnapHoverVisualState();
+    }
+
+    private void OnDisable()
+    {
+        _hovered = false;
+        RestoreBaseVisuals();
+    }
+
+    private void Update()
+    {
+        UpdateHoverVisuals();
+    }
+
+    private void OnMouseEnter()
+    {
+        if (!enableHoverHighlight)
+            return;
+
+        if (requireValidStoredItemForHover && !HasValidStoredItem())
+            return;
+
+        _hovered = true;
+    }
+
+    private void OnMouseExit()
+    {
+        _hovered = false;
     }
 
     public bool CanPickup(in InteractContext context)
@@ -123,6 +180,80 @@ public sealed class RackStoredItemInteractable :
     public Transform GetPromptAnchor()
     {
         return promptAnchor != null ? promptAnchor : transform;
+    }
+
+    private void CacheVisualRefs()
+    {
+        if (_spriteRenderer == null)
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+
+        _baseScale = transform.localScale;
+
+        if (_spriteRenderer != null)
+            _baseColor = _spriteRenderer.color;
+    }
+
+    private void UpdateHoverVisuals()
+    {
+        if (!enableHoverHighlight)
+            return;
+
+        if (_spriteRenderer == null)
+            CacheVisualRefs();
+
+        bool effectiveHover = _hovered;
+
+        if (effectiveHover && requireValidStoredItemForHover && !HasValidStoredItem())
+            effectiveHover = false;
+
+        Vector3 targetScale = effectiveHover
+            ? _baseScale * hoverScaleMultiplier
+            : _baseScale;
+
+        transform.localScale = Vector3.Lerp(
+            transform.localScale,
+            targetScale,
+            1f - Mathf.Exp(-hoverLerpSpeed * Time.deltaTime));
+
+        if (_spriteRenderer != null)
+        {
+            Color targetColor = effectiveHover ? hoverTint : _baseColor;
+
+            _spriteRenderer.color = Color.Lerp(
+                _spriteRenderer.color,
+                targetColor,
+                1f - Mathf.Exp(-hoverLerpSpeed * Time.deltaTime));
+        }
+    }
+
+    private void SnapHoverVisualState()
+    {
+        if (_spriteRenderer == null)
+            CacheVisualRefs();
+
+        transform.localScale = _baseScale;
+
+        if (_spriteRenderer != null)
+            _spriteRenderer.color = _baseColor;
+    }
+
+    private void RestoreBaseVisuals()
+    {
+        transform.localScale = _baseScale;
+
+        if (_spriteRenderer != null)
+            _spriteRenderer.color = _baseColor;
+    }
+
+    private bool HasValidStoredItem()
+    {
+        if (!TryGetSlot(out InventorySlot slot))
+            return false;
+
+        return slot != null &&
+               !slot.IsEmpty &&
+               slot.Instance != null &&
+               slot.Instance.Definition != null;
     }
 
     private bool TryGetSlot(out InventorySlot slot)

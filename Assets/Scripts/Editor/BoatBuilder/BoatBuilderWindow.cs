@@ -49,6 +49,7 @@ public class BoatBuilderWindow : EditorWindow
         BoatVisibilityZone = 17,
         CargoZoneFloor = 18,
         BoatCleat = 19,
+        DeckBoardZone = 20,
     }
 
     private struct ActionButtonDef
@@ -479,13 +480,14 @@ public class BoatBuilderWindow : EditorWindow
             Tool.Door,
             Tool.Ledge,
             Tool.Ladder,
-            Tool.Stairs
+            Tool.Stairs,
+            Tool.BoatBoardObject,
+            Tool.DeckBoardZone
         });
 
         DrawToolGroup("Gameplay", new[]
         {
             Tool.PilotChair,
-            Tool.BoatBoardObject,
             Tool.MapTable,
             Tool.PlayerSpawnPoint,
             Tool.BoardedVolume,
@@ -570,6 +572,7 @@ public class BoatBuilderWindow : EditorWindow
             Tool.Stairs => "Stairs",
             Tool.Ledge => "Ledge",
             Tool.BoatBoardObject => "Board",
+            Tool.DeckBoardZone => "Deck Board",
             Tool.MapTable => "Map",
             Tool.PlayerSpawnPoint => "Spawn",
             Tool.BoardedVolume => "Volume",
@@ -1030,6 +1033,18 @@ public class BoatBuilderWindow : EditorWindow
                 _visibilityZonePriority = selectedZone.Priority;
                 _visibilityZoneUseDefaultPriority =
                     _visibilityZonePriority == BoatVisibilityZone.GetDefaultPriority(_visibilityZoneMode);
+                changed = true;
+            }
+
+            return changed;
+        }
+
+        DeckBoardZone selectedDeckBoardZone = FindSelectedComponentInParents<DeckBoardZone>();
+        if (selectedDeckBoardZone != null)
+        {
+            if (_tool != Tool.DeckBoardZone)
+            {
+                _tool = Tool.DeckBoardZone;
                 changed = true;
             }
 

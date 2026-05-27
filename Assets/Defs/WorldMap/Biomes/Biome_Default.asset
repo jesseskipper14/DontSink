@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a730905bed3c3ec4c8b7d82b2d215512, type: 3}
+  m_Name: Biome_Default
+  m_EditorClassIdentifier: 
+  biomeId: default
+  displayName: Default
+  debugColor: {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 1}
+  baseScore: 0
+  deepOceanWeight: 0
+  openOceanWeight: 0
+  shelfWaterWeight: 0
+  shallowWaterWeight: 0
+  beachWeight: 0
+  lowlandWeight: 0
+  highlandWeight: 0
+  mountainWeight: 0
+  preferredLand01: 0.1
+  landTolerance01: 0.2
+  landPreferenceWeight: 0
+  preferredShallowShelf01: 0.5
+  shallowShelfTolerance01: 0.25
+  shallowShelfPreferenceWeight: 0
+  preferredDeepOpen01: 0.75
+  deepOpenTolerance01: 0.25
+  deepOpenPreferenceWeight: 0
+  preferredCoastPresence01: 0.5
+  coastTolerance01: 0.3
+  coastPreferenceWeight: 0
+  preferredRuggedness01: 0.35
+  ruggednessTolerance01: 0.3
+  ruggednessPreferenceWeight: 0

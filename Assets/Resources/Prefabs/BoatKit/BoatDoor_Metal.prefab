@@ -307,7 +307,7 @@ MonoBehaviour:
   deniedVibrationDuration: 0.3
   deniedVibrationDistance: 0.1
   deniedVibrationFrequency: 36
-  logDeniedClose: 1
+  logDeniedClose: 0
 --- !u!1 &4927448670964701828
 GameObject:
   m_ObjectHideFlags: 0

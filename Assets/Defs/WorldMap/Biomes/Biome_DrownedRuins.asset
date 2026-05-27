@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a730905bed3c3ec4c8b7d82b2d215512, type: 3}
+  m_Name: Biome_DrownedRuins
+  m_EditorClassIdentifier: 
+  biomeId: drowned_ruins
+  displayName: Drowned Ruins
+  debugColor: {r: 1, g: 0.7128713, b: 0, a: 1}
+  baseScore: -0.2
+  deepOceanWeight: -0.3
+  openOceanWeight: 0.05
+  shelfWaterWeight: 1.05
+  shallowWaterWeight: 0.85
+  beachWeight: 0.35
+  lowlandWeight: 0.15
+  highlandWeight: 0.35
+  mountainWeight: 0.25
+  preferredLand01: 0.12
+  landTolerance01: 0.18
+  landPreferenceWeight: 0.45
+  preferredShallowShelf01: 0.4
+  shallowShelfTolerance01: 0.28
+  shallowShelfPreferenceWeight: 0.45
+  preferredDeepOpen01: 0.38
+  deepOpenTolerance01: 0.35
+  deepOpenPreferenceWeight: 0.15
+  preferredCoastPresence01: 0.55
+  coastTolerance01: 0.35
+  coastPreferenceWeight: 0.35
+  preferredRuggedness01: 0.55
+  ruggednessTolerance01: 0.28
+  ruggednessPreferenceWeight: 0.65
