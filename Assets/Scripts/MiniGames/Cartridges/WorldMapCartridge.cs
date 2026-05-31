@@ -27,6 +27,10 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
     private bool _showTopographyClassification;
     private bool _showTopographyBiomes;
 
+    private WorldMapPOISource _poiSource;
+    private bool _showNodes = true;
+    private bool _showPOIs = true;
+
     private bool _showInjectionTools;
     private bool _injectionToolsRectInitialized;
     private Rect _injectionToolsRect;
@@ -80,7 +84,8 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         NodeTravelController travelLauncher,
         WorldMapEventManager eventManager,
         WorldMapEffectCatalog effectCatalog,
-        WorldMapTopographyDebugSource topographyDebugSource)
+        WorldMapTopographyDebugSource topographyDebugSource,
+        WorldMapPOISource poiSource = null)
     {
         _generator = generator;
         _runtimeBinder = runtimeBinder;
@@ -91,6 +96,8 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         _eventManager = eventManager;
         _effectCatalog = effectCatalog;
         _topographyDebugSource = topographyDebugSource;
+        _poiSource = poiSource;
+        AutoWirePOISource();
     }
 
     #endregion
@@ -108,6 +115,10 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         SelectCurrentNodeOrDefault();
 
         ClampInjectionIndices();
+
+        AutoWirePOISource();
+        if (_poiSource != null)
+            _poiSource.EnsureGenerated();
 
         _debugBuffDurationHours = 12f;
         _debugBuffStacks = 1;
@@ -285,6 +296,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         DrawViewportGrid(localRect);
         DrawRoutes(localRect);
         DrawActiveTravelRoute(localRect);
+        DrawPOIs(localRect);
         DrawNodes(localRect);
 
         GUI.EndGroup();
@@ -566,6 +578,47 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         {
             GUI.Label(new Rect(x, y, w, 34f), "Topography:\n(no source)");
             y += 30f;
+        }
+
+        GUI.Label(new Rect(x, y, w, 22f), "Layers");
+        y += 24f;
+
+        _showNodes = GUI.Toggle(
+            new Rect(x, y, w, 22f),
+            _showNodes,
+            "Show Nodes"
+        );
+        y += 22f;
+
+        AutoWirePOISource();
+
+        GUI.enabled = _poiSource != null && _poiSource.HasLayer;
+        _showPOIs = GUI.Toggle(
+            new Rect(x, y, w, 22f),
+            _showPOIs,
+            "Show POIs"
+        );
+        GUI.enabled = true;
+        y += 22f;
+
+        if (_poiSource != null)
+        {
+            int poiCount = _poiSource.Layer != null && _poiSource.Layer.pois != null
+                ? _poiSource.Layer.pois.Count
+                : 0;
+
+            GUI.Label(new Rect(x, y, w, 22f), $"POIs: {poiCount}");
+            y += 22f;
+
+            if (GUI.Button(new Rect(x, y, w, 24f), "Regenerate POIs"))
+                _poiSource.Generate();
+
+            y += 30f;
+        }
+        else
+        {
+            GUI.Label(new Rect(x, y, w, 22f), "POIs: no source");
+            y += 26f;
         }
 
         GUI.Label(new Rect(x, y, w, 22f), "Heatmap");
@@ -1501,8 +1554,82 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         }
     }
 
+    private void DrawPOIs(Rect localRect)
+    {
+        if (!_showPOIs)
+            return;
+
+        AutoWirePOISource();
+
+        if (_poiSource == null || !_poiSource.HasLayer)
+            return;
+
+        var layer = _poiSource.Layer;
+        if (layer == null || layer.pois == null)
+            return;
+
+        Rect padded = new Rect(
+            localRect.xMin - 24f,
+            localRect.yMin - 24f,
+            localRect.width + 48f,
+            localRect.height + 48f
+        );
+
+        for (int i = 0; i < layer.pois.Count; i++)
+        {
+            WorldMapPOIInstance poi = layer.pois[i];
+            if (poi == null)
+                continue;
+
+            Vector2 p = GraphToLocal(poi.position, localRect);
+
+            if (!padded.Contains(p))
+                continue;
+
+            WorldMapPOIDef def = _poiSource != null ? _poiSource.GetDefinition(poi) : null;
+            Color c = GetPOIColor(def);
+
+            DrawPOIDiamond(p, 6f, c, 2f);
+
+            if (poi.discovered)
+                DrawNodeRing(p, 9f, new Color(1f, 1f, 1f, 0.65f), 1f);
+        }
+    }
+
+    private void AutoWirePOISource()
+    {
+        if (_poiSource != null)
+            return;
+
+        _poiSource = UnityEngine.Object.FindAnyObjectByType<WorldMapPOISource>(FindObjectsInactive.Include);
+    }
+
+    private static Color GetPOIColor(WorldMapPOIDef def)
+    {
+        if (def != null)
+            return def.mapColor;
+
+        return new Color(1f, 1f, 1f, 0.85f);
+    }
+
+    private static void DrawPOIDiamond(Vector2 center, float radius, Color color, float width)
+    {
+        Vector2 top = center + new Vector2(0f, -radius);
+        Vector2 right = center + new Vector2(radius, 0f);
+        Vector2 bottom = center + new Vector2(0f, radius);
+        Vector2 left = center + new Vector2(-radius, 0f);
+
+        DrawLine(top, right, color, width);
+        DrawLine(right, bottom, color, width);
+        DrawLine(bottom, left, color, width);
+        DrawLine(left, top, color, width);
+    }
+
     private void DrawNodes(Rect localRect)
     {
+        if (!_showNodes)
+            return;
+
         var g = _generator.graph;
 
         for (int i = 0; i < g.nodes.Count; i++)

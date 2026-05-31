@@ -1,7 +1,12 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class WorldItem : MonoBehaviour, IPickupInteractable, IInteractPromptProvider
+public sealed class WorldItem :
+    MonoBehaviour,
+    IPickupInteractable,
+    IInteractPromptProvider,
+    IPickupPromptProvider,
+    IInteractionLabelProvider
 {
     [SerializeReference] private ItemInstance itemInstance;
     [SerializeField] private int interactionPriority = 10;
@@ -266,6 +271,44 @@ public sealed class WorldItem : MonoBehaviour, IPickupInteractable, IInteractPro
             return resolver;
 
         return actor.GetComponentInParent<ItemAcquisitionResolver>();
+    }
+
+    public string GetInteractionLabel(in InteractContext context)
+    {
+        if (itemInstance != null &&
+            itemInstance.Definition != null &&
+            !string.IsNullOrWhiteSpace(itemInstance.Definition.DisplayName))
+        {
+            return itemInstance.Definition.DisplayName;
+        }
+
+        return CleanObjectName(name);
+    }
+
+    public string GetPickupPromptVerb(in InteractContext context)
+    {
+        if (!CanAccessByBoatContext(context))
+            return "Board Boat";
+
+        if (itemInstance != null &&
+            itemInstance.Definition != null &&
+            !string.IsNullOrWhiteSpace(itemInstance.Definition.DisplayName))
+        {
+            return $"Pick Up {itemInstance.Definition.DisplayName}";
+        }
+
+        return "Pick Up";
+    }
+
+    private static string CleanObjectName(string raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw))
+            return "Item";
+
+        return raw
+            .Replace("(Clone)", "")
+            .Replace("_", " ")
+            .Trim();
     }
 
     private void Log(string msg)

@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 
+[Obsolete("Deprecated. Use WorldMapTopographyGenerator / WorldMapTopographyDebugSource instead. This WorldGen Lab pipeline is shelved and should not be used.", false)]
 public static class WorldGenerationPreviewTextureBuilder
 {
     public static Texture2D Build(

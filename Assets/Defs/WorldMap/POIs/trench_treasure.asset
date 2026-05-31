@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50058958402379b4d92c068f01f5d40d, type: 3}
+  m_Name: trench_treasure
+  m_EditorClassIdentifier: 
+  poiId: trench_treasure
+  displayName: Trench Treasure
+  generatedNames:
+  - Drowned Bell
+  - Old Spire
+  - Sunken Court
+  - Salt Chapel
+  - Broken Plaza
+  mapColor: {r: 1, g: 0.99862754, b: 0, a: 0.95}
+  mapGlyph: "\u25C6"
+  targetCount: 12
+  minScore: 0.25
+  minSameTypeSpacing: 24
+  mustBeUnderwater: 1
+  minDepth01: 0.005
+  maxDepth01: 1
+  baseScore: 0
+  deepOceanWeight: 1.45
+  openOceanWeight: 0.85
+  shelfWaterWeight: -0.65
+  shallowWaterWeight: -1.2
+  beachNearbyWeight: -0.8
+  lowlandNearbyWeight: -0.7
+  highlandNearbyWeight: -0.4
+  mountainNearbyWeight: -0.2
+  waterWeight: 0.35
+  landNearbyWeight: -0.9
+  shallowShelfWeight: -0.85
+  deepOpenWeight: 1.2
+  coastPresenceWeight: -0.7
+  ruggednessWeight: 0.55
+  localLowWeight: 0.65
+  localHighWeight: -0.15
+  farFromLandWeight: 1.1
+  isolationWeight: 0.9
+  preferredDepth01: 0.32
+  depthTolerance01: 0.22
+  depthPreferenceWeight: 1.1

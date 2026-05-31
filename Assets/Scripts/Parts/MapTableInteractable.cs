@@ -1,7 +1,11 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class MapTableInteractable : MonoBehaviour, IInteractable, IInteractPromptProvider
+public sealed class MapTableInteractable :
+    MonoBehaviour,
+    IInteractable,
+    IInteractPromptProvider,
+    IInteractionLabelProvider
 {
     [Header("Interaction")]
     [SerializeField] private int priority = 40;
@@ -137,6 +141,11 @@ public sealed class MapTableInteractable : MonoBehaviour, IInteractable, IIntera
         }
 
         return null;
+    }
+
+    public string GetInteractionLabel(in InteractContext context)
+    {
+        return "Map Table";
     }
 
     private void CacheBoat()

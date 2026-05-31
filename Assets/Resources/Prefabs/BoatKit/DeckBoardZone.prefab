@@ -114,7 +114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1965f95747d8e4644a45db542fbe4140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  priority: 60
+  priority: 1
   holdSeconds: 0.5
   primaryHoldKey: 101
   allowSecondaryHoldKey: 0

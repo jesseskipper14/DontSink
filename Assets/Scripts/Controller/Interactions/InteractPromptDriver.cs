@@ -1,12 +1,12 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 [DisallowMultipleComponent]
 public sealed class InteractPromptDriver : MonoBehaviour
 {
+    [Header("Refs")]
     [SerializeField] private Interactor2D interactor;
     [SerializeField] private InteractPromptUI promptUI;
-    private readonly List<PromptAction> _promptActions = new();
 
     [Header("Multiplayer (Optional)")]
     [Tooltip("If set, prompts will only show when this returns IsLocal=true. Leave null for singleplayer.")]
@@ -15,14 +15,15 @@ public sealed class InteractPromptDriver : MonoBehaviour
     [Header("Fallback")]
     [SerializeField] private string defaultVerb = "Interact";
 
-    private ILocalPlayerAuthority _localAuth;
+    [Header("Debug")]
+    [SerializeField] private bool debugPromptTargets = false;
+    [SerializeField, Min(1)] private int debugPromptEveryNFrames = 15;
 
-    // Interactables we interacted with recently; prompt stays hidden until we leave range.
+    private readonly List<PromptAction> _promptActions = new();
     private readonly HashSet<IInteractable> _suppressedInteract = new();
-
-    // Pickup targets we picked up recently; highlight stays hidden until we leave range.
     private readonly HashSet<IPickupInteractable> _suppressedPickup = new();
 
+    private ILocalPlayerAuthority _localAuth;
     private WorldItem _highlightedWorldItem;
 
     private void Reset()
@@ -33,24 +34,28 @@ public sealed class InteractPromptDriver : MonoBehaviour
 
     private void Awake()
     {
-        if (interactor == null) interactor = GetComponent<Interactor2D>();
-        if (promptUI == null) promptUI = FindAnyObjectByType<InteractPromptUI>(FindObjectsInactive.Include);
+        if (interactor == null)
+            interactor = GetComponent<Interactor2D>();
+
+        if (promptUI == null)
+            promptUI = FindAnyObjectByType<InteractPromptUI>(FindObjectsInactive.Include);
 
         _localAuth = localAuthoritySource as ILocalPlayerAuthority;
 
         if (localAuthoritySource != null && _localAuth == null)
             Debug.LogError($"{name}: localAuthoritySource must implement ILocalPlayerAuthority.", this);
 
-        if (promptUI != null) promptUI.Hide();
+        if (promptUI != null)
+            promptUI.Hide();
     }
 
     private void OnEnable()
     {
-        if (interactor != null)
-        {
-            interactor.OnInteracted += HandleInteracted;
-            interactor.OnPickedUp += HandlePickedUp;
-        }
+        if (interactor == null)
+            return;
+
+        interactor.OnInteracted += HandleInteracted;
+        interactor.OnPickedUp += HandlePickedUp;
     }
 
     private void OnDisable()
@@ -65,6 +70,38 @@ public sealed class InteractPromptDriver : MonoBehaviour
 
         if (promptUI != null)
             promptUI.Hide();
+    }
+
+    private void LateUpdate()
+    {
+        if (promptUI == null || interactor == null)
+            return;
+
+        if (!HasLocalPromptAuthority())
+        {
+            HidePromptAndHighlight();
+            return;
+        }
+
+        PruneSuppressedTargets();
+
+        if (!TryResolveVisibleHoverTarget(out InteractionHoverTarget target, out InteractContext ctx))
+        {
+            HidePromptAndHighlight();
+            return;
+        }
+
+        BuildPromptActions(target, ctx);
+        UpdateWorldItemHighlight(target);
+
+        if (_promptActions.Count == 0)
+        {
+            promptUI.Hide();
+            return;
+        }
+
+        _promptActions.Sort((a, b) => b.Priority.CompareTo(a.Priority));
+        promptUI.Show(ResolvePromptPosition(target), _promptActions);
     }
 
     private void HandleInteracted(IInteractable target)
@@ -84,148 +121,216 @@ public sealed class InteractPromptDriver : MonoBehaviour
         ClearWorldItemHighlight();
     }
 
-    private void LateUpdate()
+    private bool HasLocalPromptAuthority()
     {
-        if (promptUI == null || interactor == null)
-            return;
+        return _localAuth == null || _localAuth.IsLocal;
+    }
 
-        if (_localAuth != null && !_localAuth.IsLocal)
-        {
-            ClearWorldItemHighlight();
-            promptUI.Hide();
-            return;
-        }
-
+    private void PruneSuppressedTargets()
+    {
         if (_suppressedInteract.Count > 0)
             _suppressedInteract.RemoveWhere(t => t == null || !interactor.IsCandidatePresent(t));
 
         if (_suppressedPickup.Count > 0)
             _suppressedPickup.RemoveWhere(t => t == null || !interactor.IsPickupCandidatePresent(t));
+    }
 
-        bool hasInteract = interactor.TryGetBestTarget(out var interactTarget, out var interactCtx) && interactTarget != null;
-        bool hasPickup = interactor.TryGetBestPickupTarget(out var pickupTarget, out var pickupCtx) && pickupTarget != null;
+    private bool TryResolveVisibleHoverTarget(out InteractionHoverTarget target, out InteractContext ctx)
+    {
+        target = default;
+        ctx = default;
 
-        bool pickupVisible = hasPickup && !_suppressedPickup.Contains(pickupTarget);
-        bool interactVisible = hasInteract;
+        if (!interactor.TryGetMouseHoverTarget(out target, out ctx))
+            return false;
 
-        if (pickupVisible && interactVisible && !ArePromptTargetsRelated(interactTarget, pickupTarget))
+        if (!target.IsValid)
+            return false;
+
+        if (!interactor.IsWithinHoverNameRange(target, ctx))
+            return false;
+
+        DebugPrompt(
+            $"hover owner={DescribePromptTarget(target.Owner)} " +
+            $"interact={target.Interact != null} pickup={target.Pickup != null} " +
+            $"actionRange={interactor.IsWithinActionRange(target, ctx)}");
+
+        return true;
+    }
+
+    private void BuildPromptActions(in InteractionHoverTarget target, in InteractContext ctx)
+    {
+        _promptActions.Clear();
+
+        string label = ResolveInteractionLabel(target, ctx);
+        if (!string.IsNullOrWhiteSpace(label))
+            _promptActions.Add(new PromptAction(label, priority: 200));
+
+        if (!interactor.IsWithinActionRange(target, ctx))
+            return;
+
+        AddInteractActions(target, ctx);
+        AddPickupActions(target, ctx);
+        AddToggleActions(target, ctx);
+    }
+
+    private Vector3 ResolvePromptPosition(in InteractionHoverTarget target)
+    {
+        if (target.PromptProvider != null)
         {
-            // Avoid mixed prompts like:
-            // E = Door, F = nearby module remove.
-            //
-            // If two objects overlap, prefer the E/interact target for the displayed prompt.
-            pickupVisible = false;
+            Transform anchor = target.PromptProvider.GetPromptAnchor();
+            if (anchor != null)
+                return anchor.position;
         }
 
-        if (pickupVisible && pickupTarget is WorldItem worldItem)
-            SetWorldItemHighlight(worldItem);
-        else
-            ClearWorldItemHighlight();
-
-        if (!pickupVisible && !interactVisible)
+        if (target.PickupPromptProvider is IInteractPromptProvider pickupAsInteractPrompt)
         {
-            promptUI.Hide();
+            Transform anchor = pickupAsInteractPrompt.GetPromptAnchor();
+            if (anchor != null)
+                return anchor.position;
+        }
+
+        if (target.SourceCollider != null)
+            return target.SourceCollider.bounds.center;
+
+        if (target.Owner != null)
+            return target.Owner.transform.position;
+
+        return transform.position;
+    }
+
+    private string ResolveInteractionLabel(in InteractionHoverTarget target, in InteractContext ctx)
+    {
+        if (target.Owner is IInteractionPromptDisplayPolicyProvider displayPolicy &&
+            !displayPolicy.ShouldShowHoverLabel(ctx))
+        {
+            return string.Empty;
+        }
+
+        if (target.LabelProvider != null)
+        {
+            string label = target.LabelProvider.GetInteractionLabel(ctx);
+            if (!string.IsNullOrWhiteSpace(label))
+                return label;
+        }
+
+        if (target.Owner != null)
+            return CleanObjectName(target.Owner.name);
+
+        if (target.SourceCollider != null)
+            return CleanObjectName(target.SourceCollider.name);
+
+        return string.Empty;
+    }
+
+    private void AddInteractActions(in InteractionHoverTarget target, in InteractContext ctx)
+    {
+        if (target.Interact == null)
+            return;
+
+        if (_suppressedInteract.Contains(target.Interact))
+            return;
+
+        if (!target.Interact.CanInteract(ctx))
+            return;
+
+        if (target.ActionProvider != null)
+        {
+            target.ActionProvider.GetPromptActions(ctx, _promptActions);
             return;
         }
 
-        Vector3 promptPos = transform.position;
+        string interactVerb = defaultVerb;
 
-        if (interactVisible && interactTarget is IInteractPromptProvider interactProvider)
+        if (string.IsNullOrWhiteSpace(interactVerb))
+            interactVerb = "Interact";
+
+        if (target.PromptProvider != null)
         {
-            Transform anchor = interactProvider.GetPromptAnchor();
-            if (anchor != null)
-                promptPos = anchor.position;
-        }
-        else if (pickupVisible && pickupTarget is IInteractPromptProvider pickupProvider)
-        {
-            Transform anchor = pickupProvider.GetPromptAnchor();
-            if (anchor != null)
-                promptPos = anchor.position;
-        }
-        else if (interactVisible && interactTarget is MonoBehaviour interactMb)
-        {
-            promptPos = interactMb.transform.position;
-        }
-        else if (pickupVisible && pickupTarget is MonoBehaviour pickupMb)
-        {
-            promptPos = pickupMb.transform.position;
+            string providedVerb = target.PromptProvider.GetPromptVerb(ctx);
+            if (!string.IsNullOrWhiteSpace(providedVerb))
+                interactVerb = providedVerb;
         }
 
-        _promptActions.Clear();
+        _promptActions.Add(new PromptAction($"Press E to {interactVerb}", priority: 100));
+    }
 
-        if (interactVisible)
+    private void AddPickupActions(in InteractionHoverTarget target, in InteractContext ctx)
+    {
+        if (target.Pickup == null)
+            return;
+
+        if (_suppressedPickup.Contains(target.Pickup))
+            return;
+
+        if (!target.Pickup.CanPickup(ctx))
+            return;
+
+        string pickupVerb = ResolvePickupVerb(target, ctx);
+        bool isHoldPickup = target.Pickup.PickupMode == PickupInteractionMode.Hold;
+        float progress = 0f;
+
+        if (isHoldPickup && ReferenceEquals(interactor.ActiveHoldPickupTarget, target.Pickup))
+            progress = interactor.ActiveHoldPickupProgress;
+
+        _promptActions.Add(new PromptAction(
+            isHoldPickup ? $"Hold F to {pickupVerb}" : $"Press F to {pickupVerb}",
+            priority: 90,
+            showProgress: isHoldPickup,
+            progress01: progress));
+    }
+
+    private string ResolvePickupVerb(in InteractionHoverTarget target, in InteractContext ctx)
+    {
+        if (target.PickupPromptProvider != null)
         {
-            if (interactTarget is IInteractPromptActionProvider actionProvider)
-            {
-                actionProvider.GetPromptActions(interactCtx, _promptActions);
-            }
-            else
-            {
-                string interactVerb = string.IsNullOrWhiteSpace(defaultVerb)
-                    ? "Interact"
-                    : defaultVerb;
-
-                if (interactTarget is IInteractPromptProvider interactPromptProvider)
-                {
-                    string v = interactPromptProvider.GetPromptVerb(interactCtx);
-                    if (!string.IsNullOrWhiteSpace(v))
-                        interactVerb = v;
-                }
-
-                _promptActions.Add(new PromptAction($"Press E to {interactVerb}", priority: 100));
-            }
+            string verb = target.PickupPromptProvider.GetPickupPromptVerb(ctx);
+            if (!string.IsNullOrWhiteSpace(verb))
+                return verb;
         }
 
-        if (pickupVisible)
+        if (target.PromptProvider != null)
         {
-            string pickupVerb = "Pick up";
-
-            if (pickupTarget is IPickupPromptProvider pickupPromptProvider)
-            {
-                string v = pickupPromptProvider.GetPickupPromptVerb(pickupCtx);
-                if (!string.IsNullOrWhiteSpace(v))
-                    pickupVerb = v;
-            }
-            else if (pickupTarget is IInteractPromptProvider fallbackPromptProvider)
-            {
-                string v = fallbackPromptProvider.GetPromptVerb(pickupCtx);
-                if (!string.IsNullOrWhiteSpace(v))
-                    pickupVerb = v;
-            }
-
-            bool isHoldPickup = pickupTarget.PickupMode == PickupInteractionMode.Hold;
-            float progress = 0f;
-
-            if (isHoldPickup && ReferenceEquals(interactor.ActiveHoldPickupTarget, pickupTarget))
-                progress = interactor.ActiveHoldPickupProgress;
-
-            _promptActions.Add(new PromptAction(
-                isHoldPickup ? $"Hold F to {pickupVerb}" : $"Press F to {pickupVerb}",
-                priority: 90,
-                showProgress: isHoldPickup,
-                progress01: progress));
+            string verb = target.PromptProvider.GetPromptVerb(ctx);
+            if (!string.IsNullOrWhiteSpace(verb))
+                return verb;
         }
 
-        if (interactVisible && interactTarget is HardpointInteractable hardpointInteractable)
+        return "Pick up";
+    }
+
+    private void AddToggleActions(in InteractionHoverTarget target, in InteractContext ctx)
+    {
+        if (target.Interact is not HardpointInteractable hardpointInteractable)
+            return;
+
+        if (!hardpointInteractable.CanInteract(ctx))
+            return;
+
+        if (!hardpointInteractable.TryGetInstalledToggleState(out bool isOn, out string label))
+            return;
+
+        string stateLabel = string.IsNullOrWhiteSpace(label) ? "Module" : label;
+
+        _promptActions.Add(new PromptAction(
+            isOn ? $"{stateLabel}: ON" : $"{stateLabel}: OFF",
+            priority: 80,
+            textColor: isOn ? Color.green : Color.red,
+            pulse: isOn));
+
+        _promptActions.Add(new PromptAction(
+            isOn ? "Press T to Turn Off" : "Press T to Turn On",
+            priority: 85));
+    }
+
+    private void UpdateWorldItemHighlight(in InteractionHoverTarget target)
+    {
+        if (target.Pickup is WorldItem worldItem)
         {
-            if (hardpointInteractable.TryGetInstalledToggleState(out bool isOn, out string label))
-            {
-                string stateLabel = string.IsNullOrWhiteSpace(label) ? "Module" : label;
-
-                _promptActions.Add(new PromptAction(
-                    isOn ? $"{stateLabel}: ON" : $"{stateLabel}: OFF",
-                    priority: 80,
-                    textColor: isOn ? Color.green : Color.red,
-                    pulse: isOn));
-
-                _promptActions.Add(new PromptAction(
-                    isOn ? "Press T to Turn Off" : "Press T to Turn On",
-                    priority: 85));
-            }
+            SetWorldItemHighlight(worldItem);
+            return;
         }
 
-        _promptActions.Sort((a, b) => b.Priority.CompareTo(a.Priority));
-        promptUI.Show(promptPos, _promptActions);
+        ClearWorldItemHighlight();
     }
 
     private void SetWorldItemHighlight(WorldItem item)
@@ -243,37 +348,58 @@ public sealed class InteractPromptDriver : MonoBehaviour
 
     private void ClearWorldItemHighlight()
     {
-        if (_highlightedWorldItem != null)
-        {
-            _highlightedWorldItem.SetHighlighted(false);
-            _highlightedWorldItem = null;
-        }
+        if (_highlightedWorldItem == null)
+            return;
+
+        _highlightedWorldItem.SetHighlighted(false);
+        _highlightedWorldItem = null;
     }
 
-    private static bool ArePromptTargetsRelated(IInteractable interactTarget, IPickupInteractable pickupTarget)
+    private void HidePromptAndHighlight()
     {
-        if (interactTarget == null || pickupTarget == null)
-            return false;
+        ClearWorldItemHighlight();
+        promptUI.Hide();
+    }
 
-        if (ReferenceEquals(interactTarget, pickupTarget))
-            return true;
+    private static string CleanObjectName(string raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw))
+            return string.Empty;
 
-        MonoBehaviour interactMb = interactTarget as MonoBehaviour;
-        MonoBehaviour pickupMb = pickupTarget as MonoBehaviour;
+        string s = raw.Trim();
+        s = s.Replace("(Clone)", "");
+        s = s.Replace("_", " ");
 
-        if (interactMb == null || pickupMb == null)
-            return false;
+        if (s.StartsWith("RackVisual Item ", System.StringComparison.OrdinalIgnoreCase))
+        {
+            int lastSpace = s.LastIndexOf(' ');
+            if (lastSpace >= 0 && lastSpace < s.Length - 1)
+                s = s.Substring(lastSpace + 1);
+        }
 
-        if (interactMb.gameObject == pickupMb.gameObject)
-            return true;
+        return s.Trim();
+    }
 
-        // Covers cases where one component is on a child and one is on a parent.
-        if (interactMb.transform.IsChildOf(pickupMb.transform))
-            return true;
+    private void DebugPrompt(string message)
+    {
+        if (!debugPromptTargets)
+            return;
 
-        if (pickupMb.transform.IsChildOf(interactMb.transform))
-            return true;
+        if (debugPromptEveryNFrames > 1 &&
+            Time.frameCount % debugPromptEveryNFrames != 0)
+            return;
 
-        return false;
+        Debug.Log($"[InteractPromptDriver:{name}] {message}", this);
+    }
+
+    private static string DescribePromptTarget(object target)
+    {
+        if (target == null)
+            return "null";
+
+        if (target is MonoBehaviour mb)
+            return $"{target.GetType().Name}('{mb.name}')";
+
+        return target.GetType().Name;
     }
 }

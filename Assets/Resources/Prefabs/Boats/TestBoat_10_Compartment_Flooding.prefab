@@ -2503,7 +2503,6 @@ MonoBehaviour:
   logMouseKey: 290
   respectGameplayInputBlocker: 1
   ignoreClicksWhenPointerOverUI: 0
-  clearHoverWhenInputBlocked: 1
   showOverlay: 0
   overlayPosition: {x: 12, y: 120}
   overlaySize: {x: 520, y: 170}

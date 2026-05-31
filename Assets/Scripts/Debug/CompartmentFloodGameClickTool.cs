@@ -58,7 +58,6 @@ public sealed class CompartmentFloodGameClickTool : MonoBehaviour
     [Header("Input Blocking")]
     [SerializeField] private bool respectGameplayInputBlocker = true;
     [SerializeField] private bool ignoreClicksWhenPointerOverUI = true;
-    [SerializeField] private bool clearHoverWhenInputBlocked = true;
 
     [Header("Debug Overlay")]
     [SerializeField] private bool showOverlay = true;

@@ -3,7 +3,12 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
-public sealed class DeckBoardZone : MonoBehaviour, IInteractable, IInteractPromptProvider
+public sealed class DeckBoardZone :
+    MonoBehaviour,
+    IInteractable,
+    IInteractPromptProvider,
+    IInteractPromptActionProvider,
+    IInteractionPromptDisplayPolicyProvider
 {
     [Header("Interaction")]
     [SerializeField] private int priority = 60;
@@ -412,6 +417,30 @@ public sealed class DeckBoardZone : MonoBehaviour, IInteractable, IInteractPromp
         }
 
         return null;
+    }
+
+    public bool ShouldShowHoverLabel(in InteractContext context)
+    {
+        return false;
+    }
+
+    public void GetPromptActions(in InteractContext context, List<PromptAction> actions)
+    {
+        if (!CanInteract(context))
+            return;
+
+        PlayerBoardingState boarding = FindBoardingState(context);
+        if (boarding == null)
+            return;
+
+        string keyText = GetKeyPromptText();
+        float progress = Mathf.Clamp01(GetHoldTimer(boarding) / Mathf.Max(0.01f, holdSeconds));
+
+        actions.Add(new PromptAction(
+            $"Hold {keyText} to {promptText}",
+            priority: 100,
+            showProgress: includeProgressInPrompt,
+            progress01: progress));
     }
 
     private void CacheBoat()

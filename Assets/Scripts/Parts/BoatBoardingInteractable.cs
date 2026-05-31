@@ -2,7 +2,12 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
-public sealed class BoatBoardingInteractable : MonoBehaviour, IInteractable, IInteractPromptProvider
+public sealed class BoatBoardingInteractable :
+    MonoBehaviour,
+    IInteractable,
+    IInteractPromptProvider,
+    IInteractPromptActionProvider,
+    IInteractionLabelProvider
 {
     private enum HoldAction
     {
@@ -88,26 +93,7 @@ public sealed class BoatBoardingInteractable : MonoBehaviour, IInteractable, IIn
             boarding.IsBoarded &&
             boarding.CurrentBoatRoot == boatRoot)
         {
-            if (!requireHoldToUnboard)
-                return "Leave Boat";
-
-            if (!showUnboardHoldProgressInPrompt)
-                return $"Hold {unboardHoldKey} - Leave Boat";
-
-            float progress = GetPromptProgress(boarding, HoldAction.Unboard, unboardHoldSeconds);
-            return $"Hold {unboardHoldKey} - Leave Boat ({Mathf.RoundToInt(progress * 100f)}%)";
-        }
-
-        if (boarding != null && !boarding.IsBoarded)
-        {
-            if (!requireHoldToBoard)
-                return "Board";
-
-            if (!showBoardHoldProgressInPrompt)
-                return $"Hold {boardHoldKey} - Board";
-
-            float progress = GetPromptProgress(boarding, HoldAction.Board, boardHoldSeconds);
-            return $"Hold {boardHoldKey} - Board ({Mathf.RoundToInt(progress * 100f)}%)";
+            return "Leave Boat";
         }
 
         return "Board";
@@ -488,6 +474,54 @@ public sealed class BoatBoardingInteractable : MonoBehaviour, IInteractable, IIn
             Color c = sr.color;
             c.a = alpha;
             sr.color = c;
+        }
+    }
+
+    public string GetInteractionLabel(in InteractContext context)
+    {
+        return "Boarding Door";
+    }
+
+    public void GetPromptActions(in InteractContext context, System.Collections.Generic.List<PromptAction> actions)
+    {
+        PlayerBoardingState boarding = FindBoardingState(context);
+        if (boarding == null)
+            return;
+
+        if (boarding.IsBoarded && boarding.CurrentBoatRoot == boatRoot)
+        {
+            if (!requireHoldToUnboard)
+            {
+                actions.Add(new PromptAction("Press E to Leave Boat", priority: 100));
+                return;
+            }
+
+            float progress = GetPromptProgress(boarding, HoldAction.Unboard, unboardHoldSeconds);
+
+            actions.Add(new PromptAction(
+                $"Hold {unboardHoldKey} to Leave Boat",
+                priority: 100,
+                showProgress: showUnboardHoldProgressInPrompt,
+                progress01: showUnboardHoldProgressInPrompt ? progress : 0f));
+
+            return;
+        }
+
+        if (!boarding.IsBoarded)
+        {
+            if (!requireHoldToBoard)
+            {
+                actions.Add(new PromptAction("Press E to Board", priority: 100));
+                return;
+            }
+
+            float progress = GetPromptProgress(boarding, HoldAction.Board, boardHoldSeconds);
+
+            actions.Add(new PromptAction(
+                $"Hold {boardHoldKey} to Board",
+                priority: 100,
+                showProgress: showBoardHoldProgressInPrompt,
+                progress01: showBoardHoldProgressInPrompt ? progress : 0f));
         }
     }
 }

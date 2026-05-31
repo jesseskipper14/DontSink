@@ -22,6 +22,9 @@ public sealed class WorldMapOverlayRunner : MonoBehaviour
     [Header("Topography")]
     [SerializeField] private WorldMapTopographyDebugSource topographyDebugSource;
 
+    [Header("POIs")]
+    [SerializeField] private WorldMapPOISource poiSource;
+
     [Header("Debug Open")]
     [SerializeField] private bool debugOpenWithKey = false;
     [SerializeField] private KeyCode debugOpenKey = KeyCode.M;
@@ -94,7 +97,8 @@ public sealed class WorldMapOverlayRunner : MonoBehaviour
             travelLauncher,
             eventManager,
             effectCatalog,
-            topographyDebugSource
+            topographyDebugSource,
+            poiSource
         );
 
         var ctx = new MiniGameContext
@@ -153,5 +157,8 @@ public sealed class WorldMapOverlayRunner : MonoBehaviour
 
         if (topographyDebugSource == null)
             topographyDebugSource = FindAnyObjectByType<WorldMapTopographyDebugSource>(FindObjectsInactive.Include);
+
+        if (poiSource == null)
+            poiSource = FindAnyObjectByType<WorldMapPOISource>(FindObjectsInactive.Include);
     }
 }

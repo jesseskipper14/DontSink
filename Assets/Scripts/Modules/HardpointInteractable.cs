@@ -7,7 +7,8 @@ public sealed class HardpointInteractable :
     IPickupInteractable,
     IInteractPromptProvider,
     IPickupPromptProvider,
-    IToggleInteractable
+    IToggleInteractable,
+    IInteractionLabelProvider
 {
     [Header("Refs")]
     [SerializeField] private Hardpoint hardpoint;
@@ -594,5 +595,22 @@ public sealed class HardpointInteractable :
         }
 
         return false;
+    }
+
+    public string GetInteractionLabel(in InteractContext context)
+    {
+        if (hardpoint == null)
+            return "Hardpoint";
+
+        if (hardpoint.HasInstalledModule && hardpoint.InstalledModule != null)
+        {
+            ModuleDefinition def = hardpoint.InstalledModule.Definition;
+            if (def != null && !string.IsNullOrWhiteSpace(def.DisplayName))
+                return def.DisplayName;
+
+            return "Installed Module";
+        }
+
+        return "Empty Hardpoint";
     }
 }

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f18f78a6eae1af0489d6c4fe59b1526d, type: 3}
+  m_Name: WorldMapPOICatalog
+  m_EditorClassIdentifier: 
+  poiDefs:
+  - {fileID: 11400000, guid: 835893d9fe937df4481f3e7e668e817b, type: 2}
+  - {fileID: 11400000, guid: 5e887c819263826478cb630127e8e976, type: 2}
+  - {fileID: 11400000, guid: d0485a9ccf753394691de1786ce75621, type: 2}
+  - {fileID: 11400000, guid: 83220eead339c3f42ab157389b4180cf, type: 2}
+  - {fileID: 11400000, guid: ad03a61c9147f2d419a45ffe2fffc9db, type: 2}
+  - {fileID: 11400000, guid: 1a6da8f46dfa95a4e81d2b9ecab0e065, type: 2}
+  fallbackDef: {fileID: 11400000, guid: d0485a9ccf753394691de1786ce75621, type: 2}

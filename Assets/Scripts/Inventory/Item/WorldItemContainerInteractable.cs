@@ -1,7 +1,11 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class WorldItemContainerInteractable : MonoBehaviour, IInteractable, IInteractPromptProvider
+public sealed class WorldItemContainerInteractable :
+    MonoBehaviour,
+    IInteractable,
+    IInteractPromptProvider,
+    IInteractionLabelProvider
 {
     [SerializeField] private WorldItem worldItem;
     [SerializeField] private float maxDistance = 1.5f;
@@ -230,6 +234,18 @@ public sealed class WorldItemContainerInteractable : MonoBehaviour, IInteractabl
         }
 
         return null;
+    }
+
+    public string GetInteractionLabel(in InteractContext context)
+    {
+        if (worldItem != null &&
+            worldItem.Item != null &&
+            !string.IsNullOrWhiteSpace(worldItem.Item.DisplayName))
+        {
+            return worldItem.Item.DisplayName;
+        }
+
+        return "Container";
     }
 
     private void CacheBoatContext()

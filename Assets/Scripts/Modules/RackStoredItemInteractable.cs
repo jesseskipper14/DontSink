@@ -4,7 +4,8 @@ using UnityEngine;
 public sealed class RackStoredItemInteractable :
     MonoBehaviour,
     IPickupInteractable,
-    IPickupPromptProvider
+    IPickupPromptProvider,
+    IInteractionLabelProvider
 {
     [Header("Refs")]
     [SerializeField] private StorageModule storageModule;
@@ -17,7 +18,10 @@ public sealed class RackStoredItemInteractable :
     [SerializeField] private int pickupPriority = 35;
     [SerializeField] private PickupInteractionMode pickupMode = PickupInteractionMode.Hold;
     [SerializeField] private float pickupHoldDuration = 0.35f;
-    [SerializeField] private float maxPickupDistance = 1.5f;
+    [SerializeField] private float maxPickupDistance = 2.0f;
+
+    [Header("Prompt / Hover")]
+    [SerializeField] private bool allowPromptOutOfPickupRange = true;
 
     [Header("Hover Highlight")]
     [SerializeField] private bool enableHoverHighlight = true;
@@ -309,5 +313,33 @@ public sealed class RackStoredItemInteractable :
             return;
 
         Debug.Log($"[RackStoredItemInteractable:{name}] {msg}", this);
+    }
+
+    public bool CanShowPickupPrompt(in InteractContext context)
+    {
+        if (!TryGetSlot(out InventorySlot slot))
+            return false;
+
+        if (slot.IsEmpty || slot.Instance == null)
+            return false;
+
+        if (!allowPromptOutOfPickupRange && !IsInRange(context))
+            return false;
+
+        return true;
+    }
+
+    public string GetInteractionLabel(in InteractContext context)
+    {
+        if (TryGetSlot(out InventorySlot slot) &&
+            slot != null &&
+            !slot.IsEmpty &&
+            slot.Instance != null &&
+            slot.Instance.Definition != null)
+        {
+            return slot.Instance.Definition.DisplayName;
+        }
+
+        return "Stored Item";
     }
 }

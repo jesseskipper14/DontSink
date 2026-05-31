@@ -180,7 +180,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemInstance:
     rid: -2
-  interactionPriority: 10
+  interactionPriority: 994
   maxPickupDistance: 1.5
   promptAnchor: {fileID: 2348831984384540980}
   highlightObject: {fileID: 0}

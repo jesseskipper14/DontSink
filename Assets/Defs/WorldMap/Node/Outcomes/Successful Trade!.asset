@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffd50cab283e63745bad7fed00e56c44, type: 3}
   m_Name: Successful Trade!
   m_EditorClassIdentifier: 
-  outcomeId: 1
+  outcomeId: 4
   displayName: Big Trade!
   buffs:
   - buff: {fileID: 11400000, guid: 92376164f23eae646ada5401734aea28, type: 2}

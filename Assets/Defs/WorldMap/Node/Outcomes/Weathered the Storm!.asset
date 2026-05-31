@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffd50cab283e63745bad7fed00e56c44, type: 3}
   m_Name: Weathered the Storm!
   m_EditorClassIdentifier: 
-  outcomeId: 10
+  outcomeId: 5
   displayName: Weathered the Storm!
   buffs:
   - buff: {fileID: 11400000, guid: 6e50d3ea4c851c845b07a273396052a8, type: 2}

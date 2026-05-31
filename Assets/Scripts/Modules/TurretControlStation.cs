@@ -1,7 +1,12 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class TurretControlStation : MonoBehaviour, IInteractable, IInteractPromptProvider
+public sealed class TurretControlStation :
+    MonoBehaviour,
+    IInteractable,
+    IInteractPromptProvider,
+    IInteractionLabelProvider,
+    IInteractionRangeProvider
 {
     [Header("Refs")]
     [SerializeField] private Hardpoint hardpoint;
@@ -266,6 +271,34 @@ public sealed class TurretControlStation : MonoBehaviour, IInteractable, IIntera
         }
 
         return null;
+    }
+
+    public string GetInteractionLabel(in InteractContext context)
+    {
+        if (TryResolveTurret(out TurretModule turret))
+        {
+            InstalledModule installed = turret.GetComponent<InstalledModule>();
+            ModuleDefinition def = installed != null ? installed.Definition : null;
+
+            if (def != null && !string.IsNullOrWhiteSpace(def.DisplayName))
+                return $"{def.DisplayName} Control";
+
+            return "Turret Control";
+        }
+
+        return "Turret Control Station";
+    }
+
+    public bool TryGetHoverNameRange(out float range)
+    {
+        range = 0f;
+        return false; // use Interactor2D default hover/name range
+    }
+
+    public bool TryGetActionRange(out float range)
+    {
+        range = maxDistance;
+        return true; // keep prompt action range matched to this station's actual usable distance
     }
 
     private void CacheBoat()

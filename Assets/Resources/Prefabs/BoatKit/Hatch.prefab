@@ -762,7 +762,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hatchRuntime: {fileID: -8442924910193302251}
   promptAnchor: {fileID: 9153136879467095405}
-  interactionPriority: 20
+  interactionPriority: 30
   allowInteractWhenOpen: 1
   allowInteractWhenClosed: 1
   requireMatchingBoatBoardingContext: 1

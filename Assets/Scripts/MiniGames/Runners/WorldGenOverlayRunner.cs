@@ -1,6 +1,8 @@
 using MiniGames;
+using System;
 using UnityEngine;
 
+[Obsolete("Deprecated. Use WorldMapTopographyGenerator / WorldMapTopographyDebugSource instead. This WorldGen Lab pipeline is shelved and should not be used.", false)]
 [DisallowMultipleComponent]
 public sealed class WorldGenOverlayRunner : MonoBehaviour
 {

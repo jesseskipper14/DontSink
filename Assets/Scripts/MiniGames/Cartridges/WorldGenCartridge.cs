@@ -1,7 +1,9 @@
-using System.Collections.Generic;
 using MiniGames;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
+[Obsolete("Deprecated. Use WorldMapTopographyGenerator / WorldMapTopographyDebugSource instead. This WorldGen Lab pipeline is shelved and should not be used.", false)]
 public sealed class WorldGenCartridge : IMiniGameCartridge, IOverlayRenderable
 {
     private readonly WorldGenerationPipelineRunner _runner;
@@ -149,7 +151,7 @@ public sealed class WorldGenCartridge : IMiniGameCartridge, IOverlayRenderable
 
         y += 34f;
 
-        if (GUI.Button(new Rect(x, y, w, 28f), "2. Generate Ocean Features"))
+        if (GUI.Button(new Rect(x, y, w, 28f), "2. Generate Ocean Macro"))
             _runner.GenerateOceanFeatures();
 
         y += 34f;
@@ -167,12 +169,24 @@ public sealed class WorldGenCartridge : IMiniGameCartridge, IOverlayRenderable
         GUI.Label(new Rect(x, y, w, 22f), "Preview");
         y += 24f;
 
+        bool showContours = _runner != null && _runner.PreviewDrawContours;
+        bool nextShowContours = GUI.Toggle(
+            new Rect(x, y, w, 22f),
+            showContours,
+            "Show Contours"
+        );
+
+        if (_runner != null && nextShowContours != showContours)
+            _runner.SetPreviewDrawContours(nextShowContours);
+
+        y += 28f;
+
         if (GUI.Button(new Rect(x, y, w, 26f), "Preview Base Ocean"))
             _runner.PreviewBaseOcean();
 
         y += 30f;
 
-        if (GUI.Button(new Rect(x, y, w, 26f), "Preview Ocean Features"))
+        if (GUI.Button(new Rect(x, y, w, 26f), "Preview Ocean Macro"))
             _runner.PreviewOceanFeatures();
 
         y += 30f;
@@ -196,7 +210,7 @@ public sealed class WorldGenCartridge : IMiniGameCartridge, IOverlayRenderable
         GUI.Label(
             new Rect(x, y, w, 170f),
             "✓ Smooth base ocean\n" +
-            "✓ Ocean features\n" +
+            "✓ Ocean macro\n" +
             "□ Island mass\n" +
             "□ Island detail\n" +
             "□ Sea/classification\n" +

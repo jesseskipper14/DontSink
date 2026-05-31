@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 
+[Obsolete("Deprecated. Use WorldMapTopographyGenerator / WorldMapTopographyDebugSource instead. This WorldGen Lab pipeline is shelved and should not be used.")]
 public enum WorldGenerationPreviewLayer
 {
     BaseOcean,
@@ -9,6 +11,7 @@ public enum WorldGenerationPreviewLayer
     FinalHeight
 }
 
+[Obsolete("Deprecated. Use WorldMapTopographyGenerator / WorldMapTopographyDebugSource instead. This WorldGen Lab pipeline is shelved and should not be used.")]
 public enum WorldGenerationPhase
 {
     Idle,
@@ -23,6 +26,7 @@ public enum WorldGenerationPhase
     Failed
 }
 
+[Obsolete("Deprecated. Use WorldMapTopographyGenerator / WorldMapTopographyDebugSource instead. This WorldGen Lab pipeline is shelved and should not be used.")]
 public sealed class WorldGenerationWorkingSet
 {
     public int seed;
@@ -88,15 +92,7 @@ public sealed class WorldGenerationWorkingSet
 
     public float[] CopyLayer01(WorldGenerationPreviewLayer layer)
     {
-        float[] src = layer switch
-        {
-            WorldGenerationPreviewLayer.BaseOcean => baseOceanHeight,
-            WorldGenerationPreviewLayer.OceanFeatures => oceanFeatureDelta,
-            WorldGenerationPreviewLayer.IslandMass => islandMassDelta,
-            WorldGenerationPreviewLayer.IslandDetail => islandDetailDelta,
-            WorldGenerationPreviewLayer.FinalHeight => finalHeight01,
-            _ => finalHeight01
-        };
+        float[] src = GetLayerArray(layer);
 
         if (src == null)
             return null;
@@ -149,6 +145,25 @@ public sealed class WorldGenerationWorkingSet
             0f,
             1f
         );
+    }
+
+    private float[] GetLayerArray(WorldGenerationPreviewLayer layer)
+    {
+        switch (layer)
+        {
+            case WorldGenerationPreviewLayer.BaseOcean:
+                return baseOceanHeight;
+            case WorldGenerationPreviewLayer.OceanFeatures:
+                return oceanFeatureDelta;
+            case WorldGenerationPreviewLayer.IslandMass:
+                return islandMassDelta;
+            case WorldGenerationPreviewLayer.IslandDetail:
+                return islandDetailDelta;
+            case WorldGenerationPreviewLayer.FinalHeight:
+                return finalHeight01;
+            default:
+                return finalHeight01;
+        }
     }
 
     private static void NormalizeArrayTo01(float[] src, float[] dst)
