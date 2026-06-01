@@ -34,6 +34,13 @@ public class WorldMapGraphGenerator : MonoBehaviour
     [Tooltip("If true, calls LoadOrGenerate on the topography source when the field is missing.")]
     public bool loadOrGenerateTopographyIfMissing = true;
 
+    [Header("Node Layer Startup")]
+    [Tooltip("Cheap v1 behavior: generate the node graph automatically during Awake so the graph exists before runtime binding/map UI.")]
+    public bool generateNodeLayerOnAwake = true;
+
+    [Tooltip("If false, Awake generation only runs when graph is missing or empty. Leave false until persistence owns locked node placement.")]
+    public bool regenerateNodeLayerOnAwakeEvenIfGraphExists = false;
+
     [Header("Topography Node Candidates")]
     [Tooltip("If 0, derives target node count from clusterCount * average legacy nodes-per-cluster.")]
     [Min(0)] public int topographyTargetNodeCount = 0;
@@ -209,6 +216,28 @@ public class WorldMapGraphGenerator : MonoBehaviour
         topographySource = FindAnyObjectByType<WorldMapTopographyDebugSource>();
     }
 
+    private void Awake()
+    {
+        if (topographySource == null)
+            topographySource = FindAnyObjectByType<WorldMapTopographyDebugSource>(FindObjectsInactive.Include);
+
+        if (generateNodeLayerOnAwake)
+            EnsureGenerated();
+    }
+
+    public bool HasGeneratedGraph =>
+        graph != null &&
+        graph.nodes != null &&
+        graph.nodes.Count > 0;
+
+    public void EnsureGenerated()
+    {
+        if (HasGeneratedGraph && !regenerateNodeLayerOnAwakeEvenIfGraphExists)
+            return;
+
+        Generate();
+    }
+
     private void OnValidate()
     {
         nodesPerClusterMin = Mathf.Max(1, nodesPerClusterMin);
@@ -231,6 +260,12 @@ public class WorldMapGraphGenerator : MonoBehaviour
     private static float Jitter(System.Random rng, float magnitude)
     {
         return ((float)rng.NextDouble() * 2f - 1f) * magnitude;
+    }
+
+    [ContextMenu("Ensure Generated Map Graph")]
+    private void ContextEnsureGenerated()
+    {
+        EnsureGenerated();
     }
 
     [ContextMenu("Generate Map Graph")]
