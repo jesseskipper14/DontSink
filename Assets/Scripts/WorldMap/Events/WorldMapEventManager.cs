@@ -23,6 +23,7 @@ public class WorldMapEventManager : MonoBehaviour
     [NonSerialized] public readonly List<WorldMapEventInstance> active = new();
 
     private float _accum;
+    private bool _restoredFromSave;
 
     private void Reset()
     {
@@ -33,6 +34,9 @@ public class WorldMapEventManager : MonoBehaviour
 
     private void Update()
     {
+        if (!_restoredFromSave)
+            TryRestorePersistedEffects();
+
         if (generator == null || generator.graph == null) return;
         if (timeOfDay == null) return;
 
@@ -44,6 +48,93 @@ public class WorldMapEventManager : MonoBehaviour
             float dtHours = (24f / Mathf.Max(0.0001f, timeOfDay.DayLength)) * tickSeconds;
             Tick(dtHours);
         }
+    }
+
+    private void TryRestorePersistedEffects()
+    {
+        if (runtimeBinder == null || !runtimeBinder.IsBuilt)
+            return;
+
+        _restoredFromSave = true;
+        WorldMapSaveRestorer.TryRestoreEffectsToEventManager(this, runtimeBinder, generator);
+    }
+
+    public bool TryRestoreFromSnapshot(
+        WorldMapEffectStateSaveSnapshot snapshot,
+        WorldMapRuntimeBinder binder,
+        WorldMapGraphGenerator graphGenerator)
+    {
+        if (snapshot == null || effectCatalog == null || binder == null || !binder.IsBuilt)
+            return false;
+
+        active.Clear();
+
+        if (snapshot.events != null)
+        {
+            for (int i = 0; i < snapshot.events.Count; i++)
+            {
+                WorldMapEventSaveSnapshot saved = snapshot.events[i];
+                if (saved == null || string.IsNullOrWhiteSpace(saved.eventId))
+                    continue;
+
+                if (!effectCatalog.TryGetEvent(saved.eventId, out WorldMapEventDefinition def) || def == null)
+                    continue;
+
+                int sourceIndex = WorldMapSaveRestorer.ResolveRuntimeNodeIndex(binder, saved.sourceNodeStableId);
+                if (sourceIndex < 0)
+                    continue;
+
+                active.Add(new WorldMapEventInstance
+                {
+                    def = def,
+                    sourceNodeId = sourceIndex,
+                    seed = saved.seed,
+                    elapsedHours = saved.elapsedHours,
+                    durationHours = saved.durationHours > 0f ? saved.durationHours : saved.remainingHours,
+                    isResolved = saved.isResolved,
+                    stateJson = saved.stateJson
+                });
+            }
+        }
+
+        if (snapshot.buffs != null)
+        {
+            for (int i = 0; i < snapshot.buffs.Count; i++)
+            {
+                WorldMapBuffSaveSnapshot saved = snapshot.buffs[i];
+                if (saved == null || string.IsNullOrWhiteSpace(saved.buffId))
+                    continue;
+
+                if (!effectCatalog.TryGetBuff(saved.buffId, out NodeBuff buff) || buff == null)
+                    continue;
+
+                if (!binder.Registry.TryGetByStableId(saved.nodeStableId, out MapNodeRuntime rt) ||
+                    rt == null ||
+                    rt.State == null)
+                {
+                    continue;
+                }
+
+                var inst = new TimedBuffInstance(
+                    buff,
+                    saved.durationHours > 0f ? saved.durationHours : saved.remainingHours,
+                    Mathf.Max(1, saved.stacks)
+                )
+                {
+                    elapsedHours = Mathf.Max(0f, saved.elapsedHours)
+                };
+
+                rt.State.ActiveBuffsMutable.Add(inst);
+            }
+        }
+
+        Debug.Log(
+            $"[WorldMapEventManager] Restored persisted effects. " +
+            $"Events={active.Count}, Buffs={(snapshot.buffs != null ? snapshot.buffs.Count : 0)}",
+            this
+        );
+
+        return true;
     }
 
     public void AddEvent(WorldMapEventDefinition def, int sourceNodeId, int seed)

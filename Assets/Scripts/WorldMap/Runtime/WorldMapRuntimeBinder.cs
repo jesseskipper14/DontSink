@@ -62,6 +62,12 @@ public class WorldMapRuntimeBinder : MonoBehaviour
         if (gs.worldMap == null)
             gs.worldMap = new WorldMapSimState();
 
+        if (gs.worldMap.byNodeStableId == null || gs.worldMap.byNodeStableId.Count == 0)
+        {
+            if (WorldMapSaveRestorer.HasUsableSnapshot(gs))
+                WorldMapSaveRestorer.RestoreNodeRuntimeStateToGameState(gs);
+        }
+
         var stateStore = gs.worldMap.byNodeStableId;
 
         for (int i = 0; i < generator.graph.nodes.Count; i++)
@@ -120,6 +126,14 @@ public class WorldMapRuntimeBinder : MonoBehaviour
             {
                 // Reattach persistent state
                 rt.AttachExistingState(state);
+
+                if (WorldMapSaveRestorer.TryGetRuntimeIdentity(
+                    stableId,
+                    out string savedAffinityId,
+                    out string savedArchetypeId))
+                {
+                    rt.SetArchetypeIdentity(savedAffinityId, savedArchetypeId);
+                }
             }
 
             Registry.Add(i, stableId, rt);
@@ -139,8 +153,25 @@ public class WorldMapRuntimeBinder : MonoBehaviour
         var p = gs.player;
         if (p == null) return;
 
+        // If the player already points at a valid runtime node, keep it.
         if (!string.IsNullOrEmpty(p.currentNodeId))
-            return;
+        {
+            if (Registry.TryGetByStableId(p.currentNodeId, out var existing) && existing != null)
+                return;
+
+            Debug.LogWarning(
+                $"[Binder] Player currentNodeId '{p.currentNodeId}' does not resolve in the current graph. " +
+                "Falling back to StartDock/first node and clearing locked travel refs.",
+                this
+            );
+
+            p.currentNodeId = null;
+        }
+
+        // Any locked route based on the stale current node is invalid now. Clear it so the map UI
+        // doesn't keep trying to launch ancient node IDs like a tiny haunted railway.
+        p.lockedSourceNodeId = null;
+        p.lockedDestinationNodeId = null;
 
         var g = generator?.graph;
         if (g != null && g.nodes != null)

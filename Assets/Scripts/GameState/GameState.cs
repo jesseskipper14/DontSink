@@ -12,6 +12,9 @@ public sealed class GameState : MonoBehaviour
     public WorldMapPlayerState player = new WorldMapPlayerState();
     public WorldMapSimState worldMap = new WorldMapSimState();
 
+    [Header("World Map Persistence")]
+    public WorldMapSaveSnapshot worldMapSnapshot = new WorldMapSaveSnapshot();
+
     [Header("Active Travel (null when not traveling)")]
     public TravelPayload activeTravel;
 
@@ -48,6 +51,7 @@ public sealed class GameState : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         EnsureBoatStateDefaults();
+        EnsureWorldMapSnapshotDefaults();
 
         Log("Awake accepted as singleton.");
         LogState("Awake BEFORE registry check");
@@ -185,6 +189,38 @@ public sealed class GameState : MonoBehaviour
             this);
     }
 
+    private void EnsureWorldMapSnapshotDefaults()
+    {
+        if (worldMapSnapshot == null)
+            worldMapSnapshot = new WorldMapSaveSnapshot();
+
+        worldMapSnapshot.EnsureDefaults();
+    }
+
+    public void SetWorldMapSnapshot(WorldMapSaveSnapshot snapshot, string reason = "")
+    {
+        worldMapSnapshot = snapshot ?? new WorldMapSaveSnapshot();
+        EnsureWorldMapSnapshotDefaults();
+
+        if (verboseLogging)
+        {
+            int nodeCount =
+                worldMapSnapshot.graph != null && worldMapSnapshot.graph.nodes != null
+                    ? worldMapSnapshot.graph.nodes.Count
+                    : -1;
+
+            int poiCount =
+                worldMapSnapshot.pois != null && worldMapSnapshot.pois.pois != null
+                    ? worldMapSnapshot.pois.pois.Count
+                    : -1;
+
+            Debug.Log(
+                $"[GameState:{name}] SetWorldMapSnapshot reason='{reason}' " +
+                $"nodes={nodeCount} pois={poiCount}",
+                this);
+        }
+    }
+
     private void EnsureBoatStateDefaults()
     {
         if (boat == null)
@@ -228,7 +264,7 @@ public sealed class GameState : MonoBehaviour
             $"routeLength={payload.routeLength}, " +
             $"boatInstanceId='{payload.boatInstanceId}', " +
             $"boatPrefabGuid='{payload.boatPrefabGuid}'";
-            //$"cargoCount={(payload.cargoManifest != null ? payload.cargoManifest.Count : -1)}";
+        //$"cargoCount={(payload.cargoManifest != null ? payload.cargoManifest.Count : -1)}";
     }
 
     private string DescribeBoat(BoatSaveState state)
@@ -363,7 +399,7 @@ public sealed class TravelPayload
         float len,
         string boatInstanceId,
         string boatPrefabGuid)
-        //List<CargoManifest.Snapshot> cargoManifest)
+    //List<CargoManifest.Snapshot> cargoManifest)
     {
         fromNodeStableId = from;
         toNodeStableId = to;

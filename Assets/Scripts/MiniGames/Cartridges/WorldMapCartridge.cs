@@ -28,8 +28,15 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
     private bool _showTopographyBiomes;
 
     private WorldMapPOISource _poiSource;
+    private WorldMapKnowledgeSource _knowledgeSource;
+
     private bool _showNodes = true;
     private bool _showPOIs = true;
+    private bool _showSurfaceShroud = true;
+    private bool _showUnderwaterSurveyShroud = true;
+    private bool _hideUnsurveyedPOIs = true;
+
+    private bool _heatmapPickerOpen;
 
     private bool _showInjectionTools;
     private bool _injectionToolsRectInitialized;
@@ -98,6 +105,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         _topographyDebugSource = topographyDebugSource;
         _poiSource = poiSource;
         AutoWirePOISource();
+        AutoWireKnowledgeSource();
     }
 
     #endregion
@@ -119,6 +127,13 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         AutoWirePOISource();
         if (_poiSource != null)
             _poiSource.EnsureGenerated();
+
+        AutoWireKnowledgeSource();
+        if (_knowledgeSource != null)
+        {
+            _knowledgeSource.EnsureInitialized();
+            _knowledgeSource.RevealSurfaceAroundCurrentNode();
+        }
 
         _debugBuffDurationHours = 12f;
         _debugBuffStacks = 1;
@@ -294,10 +309,12 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
 
         DrawTopographyDebugLayer(localRect);
         DrawViewportGrid(localRect);
+        DrawUnderwaterSurveyShroud(localRect);
         DrawRoutes(localRect);
         DrawActiveTravelRoute(localRect);
         DrawPOIs(localRect);
         DrawNodes(localRect);
+        DrawSurfaceShroud(localRect);
 
         GUI.EndGroup();
 
@@ -621,47 +638,83 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
             y += 26f;
         }
 
-        GUI.Label(new Rect(x, y, w, 22f), "Heatmap");
-        y += 14f;
+        AutoWireKnowledgeSource();
 
-        GUI.Label(new Rect(x, y, w, 22f), $"Active: {_heatmapMode}");
-        y += 24f;
+        GUI.Label(new Rect(x, y, w, 22f), "Map Knowledge");
+        y += 22f;
 
-        float buttonH = 26f;
-        float gap = 6f;
+        GUI.enabled = _knowledgeSource != null && _knowledgeSource.HasState;
 
-        if (GUI.Button(new Rect(x, y, w, buttonH), "None"))
-            _heatmapMode = HeatmapMode.None;
-        y += buttonH + gap;
+        _showSurfaceShroud = GUI.Toggle(
+            new Rect(x, y, w, 22f),
+            _showSurfaceShroud,
+            "Show Surface Shroud"
+        );
+        y += 20f;
 
-        if (GUI.Button(new Rect(x, y, w, buttonH), "Prosperity"))
-            _heatmapMode = HeatmapMode.Prosperity;
-        y += buttonH + gap;
+        _showUnderwaterSurveyShroud = GUI.Toggle(
+            new Rect(x, y, w, 22f),
+            _showUnderwaterSurveyShroud,
+            "Show Survey Shroud"
+        );
+        y += 20f;
 
-        if (GUI.Button(new Rect(x, y, w, buttonH), "Stability"))
-            _heatmapMode = HeatmapMode.Stability;
-        y += buttonH + gap;
+        _hideUnsurveyedPOIs = GUI.Toggle(
+            new Rect(x, y, w, 22f),
+            _hideUnsurveyedPOIs,
+            "Hide Unsurveyed POIs"
+        );
+        y += 20f;
 
-        if (GUI.Button(new Rect(x, y, w, buttonH), "Security"))
-            _heatmapMode = HeatmapMode.Security;
-        y += buttonH + gap;
+        if (_knowledgeSource != null)
+        {
+            GUI.Label(
+                new Rect(x, y, w, 38f),
+                $"Surface: {_knowledgeSource.SurfaceReveal01:P0}\nUnderwater: {_knowledgeSource.UnderwaterSurvey01:P0}"
+            );
+            y += 40f;
 
-        if (GUI.Button(new Rect(x, y, w, buttonH), "Dock Rating"))
-            _heatmapMode = HeatmapMode.DockRating;
-        y += buttonH + gap;
+            float halfW = (w - 6f) * 0.5f;
 
-        if (GUI.Button(new Rect(x, y, w, buttonH), "Trade Rating"))
-            _heatmapMode = HeatmapMode.TradeRating;
-        y += buttonH + gap;
+            if (GUI.Button(new Rect(x, y, halfW, 22f), "Reveal Node"))
+                _knowledgeSource.RevealSurfaceAroundCurrentNode();
 
-        if (GUI.Button(new Rect(x, y, w, buttonH), "Population"))
-            _heatmapMode = HeatmapMode.Population;
-        y += buttonH + gap;
+            if (GUI.Button(new Rect(x + halfW + 6f, y, halfW, 22f), "Survey Node"))
+                _knowledgeSource.SurveyUnderwaterAroundCurrentNode();
 
-        if (GUI.Button(new Rect(x, y, w, buttonH), "Food Balance"))
-            _heatmapMode = HeatmapMode.FoodBalance;
+            y += 26f;
 
-        y += 30f;
+            if (GUI.Button(new Rect(x, y, halfW, 22f), "Reveal All"))
+                _knowledgeSource.RevealAllSurface();
+
+            if (GUI.Button(new Rect(x + halfW + 6f, y, halfW, 22f), "Survey All"))
+                _knowledgeSource.RevealAllUnderwater();
+
+            y += 26f;
+
+            if (GUI.Button(new Rect(x, y, halfW, 22f), "Clear Fog"))
+                _knowledgeSource.ClearAll();
+
+            GUI.enabled = _travelDebug != null;
+            if (GUI.Button(new Rect(x + halfW + 6f, y, halfW, 22f), "Finish Travel"))
+            {
+                _travelDebug.DebugInstantCompleteTravel();
+                _knowledgeSource.RevealSurfaceAroundCurrentNode();
+            }
+            GUI.enabled = true;
+
+            y += 30f;
+        }
+        else
+        {
+            GUI.Label(new Rect(x, y, w, 22f), "Knowledge: no source");
+            y += 26f;
+        }
+
+        GUI.enabled = true;
+
+        DrawHeatmapDropdown(ref y, x, w);
+        y += 10f;
 
         GUI.Label(new Rect(x, y, w, 22f), "Debug");
         y += 24f;
@@ -690,6 +743,59 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
                 new Rect(x, y, w, 52f),
                 $"Effects catalog:\nE:{_effectCatalog.Events.Count}  O:{_effectCatalog.Outcomes.Count}  B:{_effectCatalog.Buffs.Count}"
             );
+        }
+    }
+
+    private void DrawHeatmapDropdown(ref float y, float x, float w)
+    {
+        GUI.Label(new Rect(x, y, w, 22f), "Heatmap");
+        y += 22f;
+
+        if (GUI.Button(new Rect(x, y, w, 24f), GetHeatmapLabel(_heatmapMode)))
+            _heatmapPickerOpen = !_heatmapPickerOpen;
+
+        y += 26f;
+
+        if (!_heatmapPickerOpen)
+            return;
+
+        DrawHeatmapOption(ref y, x, w, HeatmapMode.None);
+        DrawHeatmapOption(ref y, x, w, HeatmapMode.Prosperity);
+        DrawHeatmapOption(ref y, x, w, HeatmapMode.Stability);
+        DrawHeatmapOption(ref y, x, w, HeatmapMode.Security);
+        DrawHeatmapOption(ref y, x, w, HeatmapMode.DockRating);
+        DrawHeatmapOption(ref y, x, w, HeatmapMode.TradeRating);
+        DrawHeatmapOption(ref y, x, w, HeatmapMode.Population);
+        DrawHeatmapOption(ref y, x, w, HeatmapMode.FoodBalance);
+    }
+
+    private void DrawHeatmapOption(ref float y, float x, float w, HeatmapMode mode)
+    {
+        string label = mode == _heatmapMode
+            ? $"✓ {GetHeatmapLabel(mode)}"
+            : GetHeatmapLabel(mode);
+
+        if (GUI.Button(new Rect(x + 8f, y, w - 8f, 22f), label))
+        {
+            _heatmapMode = mode;
+            _heatmapPickerOpen = false;
+        }
+
+        y += 23f;
+    }
+
+    private static string GetHeatmapLabel(HeatmapMode mode)
+    {
+        switch (mode)
+        {
+            case HeatmapMode.Prosperity: return "Prosperity";
+            case HeatmapMode.Stability: return "Stability";
+            case HeatmapMode.Security: return "Security";
+            case HeatmapMode.DockRating: return "Dock Rating";
+            case HeatmapMode.TradeRating: return "Trade Rating";
+            case HeatmapMode.Population: return "Population";
+            case HeatmapMode.FoodBalance: return "Food Balance";
+            default: return "None";
         }
     }
 
@@ -1388,7 +1494,12 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         if (!_showTopographyDebug)
             return;
 
-        if (_topographyDebugSource == null || !_topographyDebugSource.HasBaseTexture)
+        if (_topographyDebugSource == null)
+            return;
+
+        _topographyDebugSource.EnsureBaseTexture();
+
+        if (!_topographyDebugSource.HasBaseTexture)
             return;
 
         WorldMapTopographyField field = _topographyDebugSource.Field;
@@ -1407,20 +1518,36 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
 
         if (_showTopographyClassification && _topographyDebugSource.HasClassificationTexture)
         {
-            GUI.color = Color.white;
-            GUI.DrawTexture(drawRect, _topographyDebugSource.ClassificationTexture, ScaleMode.StretchToFill);
+            _topographyDebugSource.EnsureClassificationTexture();
+
+            if (_topographyDebugSource.ClassificationTexture != null)
+            {
+                GUI.color = Color.white;
+                GUI.DrawTexture(drawRect, _topographyDebugSource.ClassificationTexture, ScaleMode.StretchToFill);
+            }
         }
 
         if (_showTopographyBiomes && _topographyDebugSource.HasBiomeTexture)
         {
-            GUI.color = Color.white;
-            GUI.DrawTexture(drawRect, _topographyDebugSource.BiomeTexture, ScaleMode.StretchToFill);
+            _topographyDebugSource.EnsureBiomeTexture();
+
+            if (_topographyDebugSource.BiomeTexture != null)
+            {
+                GUI.color = Color.white;
+                GUI.DrawTexture(drawRect, _topographyDebugSource.BiomeTexture, ScaleMode.StretchToFill);
+            }
         }
 
-        if (_showTopographyContours && contourTex != null)
+        if (_showTopographyContours && _topographyDebugSource.HasContourTexture)
         {
-            GUI.color = Color.white;
-            GUI.DrawTexture(drawRect, contourTex, ScaleMode.StretchToFill);
+            _topographyDebugSource.EnsureContourTexture();
+            contourTex = _topographyDebugSource.ContourTexture;
+
+            if (contourTex != null)
+            {
+                GUI.color = Color.white;
+                GUI.DrawTexture(drawRect, contourTex, ScaleMode.StretchToFill);
+            }
         }
 
         GUI.color = old;
@@ -1581,6 +1708,11 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
             if (poi == null)
                 continue;
 
+            AutoWireKnowledgeSource();
+
+            if (_knowledgeSource != null && _hideUnsurveyedPOIs && !_knowledgeSource.IsPOIVisible(poi))
+                continue;
+
             Vector2 p = GraphToLocal(poi.position, localRect);
 
             if (!padded.Contains(p))
@@ -1602,6 +1734,122 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
             return;
 
         _poiSource = UnityEngine.Object.FindAnyObjectByType<WorldMapPOISource>(FindObjectsInactive.Include);
+    }
+
+    private void AutoWireKnowledgeSource()
+    {
+        if (_knowledgeSource != null)
+            return;
+
+        _knowledgeSource = UnityEngine.Object.FindAnyObjectByType<WorldMapKnowledgeSource>(FindObjectsInactive.Include);
+    }
+
+    private void DrawSurfaceShroud(Rect localRect)
+    {
+        if (!_showSurfaceShroud)
+            return;
+
+        AutoWireKnowledgeSource();
+
+        if (_knowledgeSource == null || !_knowledgeSource.HasState)
+            return;
+
+        DrawKnowledgeShroudLayer(
+            localRect,
+            WorldMapKnowledgeLayer.Surface,
+            new Color(0.72f, 0.78f, 0.82f, 1f),
+            onlyWhereSurfaceRevealed: false
+        );
+    }
+
+    private void DrawUnderwaterSurveyShroud(Rect localRect)
+    {
+        if (!_showUnderwaterSurveyShroud)
+            return;
+
+        AutoWireKnowledgeSource();
+
+        if (_knowledgeSource == null || !_knowledgeSource.HasState)
+            return;
+
+        DrawKnowledgeShroudLayer(
+            localRect,
+            WorldMapKnowledgeLayer.UnderwaterSurvey,
+            new Color(0.02f, 0.12f, 0.24f, 0.16f),
+            onlyWhereSurfaceRevealed: true
+        );
+    }
+
+    private void DrawKnowledgeShroudLayer(
+        Rect localRect,
+        WorldMapKnowledgeLayer layer,
+        Color hiddenColor,
+        bool onlyWhereSurfaceRevealed)
+    {
+        WorldMapKnowledgeState state = _knowledgeSource.State;
+        if (state == null || !state.IsValid)
+            return;
+
+        Rect bounds = state.WorldBounds;
+
+        float invZoom = 1f / Mathf.Max(0.0001f, _zoomPxPerGraphUnit);
+
+        float visibleMinX = _viewCenterGraph.x - localRect.width * 0.5f * invZoom;
+        float visibleMaxX = _viewCenterGraph.x + localRect.width * 0.5f * invZoom;
+        float visibleMinY = _viewCenterGraph.y - localRect.height * 0.5f * invZoom;
+        float visibleMaxY = _viewCenterGraph.y + localRect.height * 0.5f * invZoom;
+
+        int minX = Mathf.Clamp(Mathf.FloorToInt(Mathf.InverseLerp(bounds.xMin, bounds.xMax, visibleMinX) * state.Width), 0, state.Width - 1);
+        int maxX = Mathf.Clamp(Mathf.FloorToInt(Mathf.InverseLerp(bounds.xMin, bounds.xMax, visibleMaxX) * state.Width), 0, state.Width - 1);
+        int minY = Mathf.Clamp(Mathf.FloorToInt(Mathf.InverseLerp(bounds.yMin, bounds.yMax, visibleMinY) * state.Height), 0, state.Height - 1);
+        int maxY = Mathf.Clamp(Mathf.FloorToInt(Mathf.InverseLerp(bounds.yMin, bounds.yMax, visibleMaxY) * state.Height), 0, state.Height - 1);
+
+        if (minX > maxX)
+            (minX, maxX) = (maxX, minX);
+
+        if (minY > maxY)
+            (minY, maxY) = (maxY, minY);
+
+        Color old = GUI.color;
+        GUI.color = hiddenColor;
+
+        for (int y = minY; y <= maxY; y++)
+        {
+            for (int x = minX; x <= maxX; x++)
+            {
+                bool surfaceRevealed = state.IsCellRevealed(WorldMapKnowledgeLayer.Surface, x, y);
+
+                if (onlyWhereSurfaceRevealed && !surfaceRevealed)
+                    continue;
+
+                bool revealed = state.IsCellRevealed(layer, x, y);
+                if (revealed)
+                    continue;
+
+                Rect worldCell = state.CellWorldRect(x, y);
+
+                Vector2 topLeft = GraphToLocal(
+                    new Vector2(worldCell.xMin, worldCell.yMax),
+                    localRect
+                );
+
+                Vector2 bottomRight = GraphToLocal(
+                    new Vector2(worldCell.xMax, worldCell.yMin),
+                    localRect
+                );
+
+                Rect r = Rect.MinMaxRect(
+                    Mathf.Min(topLeft.x, bottomRight.x),
+                    Mathf.Min(topLeft.y, bottomRight.y),
+                    Mathf.Max(topLeft.x, bottomRight.x) + 1f,
+                    Mathf.Max(topLeft.y, bottomRight.y) + 1f
+                );
+
+                GUI.DrawTexture(r, _whiteTex);
+            }
+        }
+
+        GUI.color = old;
     }
 
     private static Color GetPOIColor(WorldMapPOIDef def)

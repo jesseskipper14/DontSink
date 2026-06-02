@@ -115,6 +115,15 @@ public static class SaveGameService
         try
         {
             string json = JsonUtility.ToJson(file, prettyPrint: true);
+
+            long jsonBytes = System.Text.Encoding.UTF8.GetByteCount(json);
+            Debug.Log(
+                $"[SaveGameService] Save JSON size: {WorldMapSaveDebugUtility.FormatBytes(jsonBytes)}. " +
+                $"WorldMap: nodes={file.payload?.worldMapSnapshot?.graph?.nodes?.Count ?? 0}, " +
+                $"pois={file.payload?.worldMapSnapshot?.pois?.pois?.Count ?? 0}, " +
+                $"topo={file.payload?.worldMapSnapshot?.topography?.width ?? 0}x{file.payload?.worldMapSnapshot?.topography?.height ?? 0}"
+            );
+
             WriteAllTextAtomic(path, json);
 
             return new SaveGameResult(true, "Saved game.", path);
@@ -363,6 +372,8 @@ public static class SaveGameService
                 return summary;
             }
 
+            PopulateWorldMapSummary(summary, file.payload.worldMapSnapshot);
+
             summary.isValid = true;
             return summary;
         }
@@ -398,8 +409,11 @@ public static class SaveGameService
             transition.SaveCurrentPlayerLoadout();
             CapturePlayerSceneContext(gs, "SaveGameService.SaveSlot");
             transition.SaveCurrentBoatState("SaveGameService.SaveSlot");
+            WorldMapSaveBuilder.CaptureCurrentWorldMapIntoGameState("SaveGameService.SaveSlot");
             return;
         }
+
+        WorldMapSaveBuilder.CaptureCurrentWorldMapIntoGameState("SaveGameService.SaveSlot without SceneTransitionController");
 
         Debug.LogWarning(
             "[SaveGameService] SceneTransitionController.I is null. " +
@@ -414,6 +428,7 @@ public static class SaveGameService
             currentSceneName = currentScene,
             player = gs.player,
             worldMap = gs.worldMap,
+            worldMapSnapshot = gs.worldMapSnapshot,
             activeTravel = null,
             playerLoadout = gs.playerLoadout,
             playerSceneContext = gs.playerSceneContext,
@@ -480,6 +495,7 @@ public static class SaveGameService
     {
         gs.player = payload.player ?? new WorldMapPlayerState();
         gs.worldMap = payload.worldMap ?? new WorldMapSimState();
+        gs.SetWorldMapSnapshot(payload.worldMapSnapshot, "SaveGameService.LoadSlot");
 
         // v1 load always starts from NodeScene.
         gs.activeTravel = null;
@@ -627,6 +643,43 @@ public static class SaveGameService
             raw = raw.Replace(c, '_');
 
         return raw.Trim();
+    }
+
+    private static void PopulateWorldMapSummary(
+        SaveSlotSummary summary,
+        WorldMapSaveSnapshot worldMapSnapshot)
+    {
+        if (summary == null || worldMapSnapshot == null)
+            return;
+
+        worldMapSnapshot.EnsureDefaults();
+
+        summary.hasWorldMapSnapshot = true;
+
+        summary.worldMapNodeCount =
+            worldMapSnapshot.graph != null && worldMapSnapshot.graph.nodes != null
+                ? worldMapSnapshot.graph.nodes.Count
+                : 0;
+
+        summary.worldMapEdgeCount =
+            worldMapSnapshot.graph != null && worldMapSnapshot.graph.edges != null
+                ? worldMapSnapshot.graph.edges.Count
+                : 0;
+
+        summary.worldMapPOICount =
+            worldMapSnapshot.pois != null && worldMapSnapshot.pois.pois != null
+                ? worldMapSnapshot.pois.pois.Count
+                : 0;
+
+        summary.worldMapEventCount =
+            worldMapSnapshot.effects != null && worldMapSnapshot.effects.events != null
+                ? worldMapSnapshot.effects.events.Count
+                : 0;
+
+        summary.worldMapBuffCount =
+            worldMapSnapshot.effects != null && worldMapSnapshot.effects.buffs != null
+                ? worldMapSnapshot.effects.buffs.Count
+                : 0;
     }
 
     private static bool HasMeaningfulActiveTravel(TravelPayload travel)

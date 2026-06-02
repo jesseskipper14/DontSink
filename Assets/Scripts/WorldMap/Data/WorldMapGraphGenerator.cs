@@ -222,7 +222,10 @@ public class WorldMapGraphGenerator : MonoBehaviour
             topographySource = FindAnyObjectByType<WorldMapTopographyDebugSource>(FindObjectsInactive.Include);
 
         if (generateNodeLayerOnAwake)
-            EnsureGenerated();
+        {
+            if (!WorldMapSaveRestorer.TryRestoreGraphToGenerator(this))
+                EnsureGenerated();
+        }
     }
 
     public bool HasGeneratedGraph =>
@@ -236,6 +239,30 @@ public class WorldMapGraphGenerator : MonoBehaviour
             return;
 
         Generate();
+    }
+
+    public void UseRestoredGraph(MapGraph restoredGraph, string reason = "")
+    {
+        if (restoredGraph == null)
+        {
+            Debug.LogWarning($"[WorldMapGraphGenerator] UseRestoredGraph ignored null graph. reason='{reason}'", this);
+            return;
+        }
+
+        graph = restoredGraph;
+        graph.RebuildEdgeSet();
+
+        Debug.Log(
+            $"[WorldMapGraphGenerator] Restored persisted graph. " +
+            $"Nodes={graph.nodes.Count}, Edges={graph.edges.Count}, reason='{reason}'",
+            this
+        );
+
+        OnGraphGenerated?.Invoke();
+
+#if UNITY_EDITOR
+        UnityEditor.EditorUtility.SetDirty(this);
+#endif
     }
 
     private void OnValidate()

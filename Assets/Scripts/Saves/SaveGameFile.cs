@@ -25,6 +25,8 @@ public sealed class SaveGamePayload
     public WorldMapPlayerState player;
     public WorldMapSimState worldMap;
 
+    public WorldMapSaveSnapshot worldMapSnapshot;
+
     // v1 is NodeScene-only, so activeTravel should normally be null.
     // Kept here deliberately so the schema has an obvious home for later migrations.
     public TravelPayload activeTravel;

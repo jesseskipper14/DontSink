@@ -22,6 +22,26 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
     [Tooltip("If true, falls back to runtime generation when no matching baked asset exists.")]
     [SerializeField] private bool generateIfBakeMissingOrStale = true;
 
+    [Header("Runtime Cache")]
+    [Tooltip("If true, this source first tries to use the persistent runtime world-map cache. This keeps NodeScene and BoatScene in sync.")]
+    [SerializeField] private bool preferRuntimeCache = true;
+
+    [Tooltip("If true, any loaded/generated/restored topography is published to the persistent runtime cache.")]
+    [SerializeField] private bool publishToRuntimeCache = true;
+
+    [Header("Bake Texture Cache")]
+    [Tooltip("Bake the player-facing base texture into the asset for fast map display. Recommended ON.")]
+    [SerializeField] private bool bakeBaseTexture = true;
+
+    [Tooltip("Bake contour overlay texture into the asset. Usually OFF; it can be rebuilt lazily.")]
+    [SerializeField] private bool bakeContourTexture = false;
+
+    [Tooltip("Bake legacy debug texture with contours into the asset. Usually OFF; it is redundant and large.")]
+    [SerializeField] private bool bakeDebugTexture = false;
+
+    [Tooltip("Bake classification overlay texture into the asset. Usually OFF; it can be rebuilt lazily.")]
+    [SerializeField] private bool bakeClassificationTexture = false;
+
     [Header("Generation")]
     [SerializeField] private bool generateOnAwake = true;
     [SerializeField] private int fallbackSeed = 12345;
@@ -36,7 +56,11 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
     [SerializeField] private Texture2D classificationTexture;
     [SerializeField] private Texture2D biomeTexture;
 
-    private bool _ownsRuntimeTextures;
+    private bool _ownsBaseTexture;
+    private bool _ownsContourTexture;
+    private bool _ownsDebugTexture;
+    private bool _ownsClassificationTexture;
+    private bool _ownsBiomeTexture;
 
     public WorldMapTopographySettings Settings => settings;
     public WorldMapTopographyField Field { get; private set; }
@@ -48,12 +72,17 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
 
     public WorldMapBiomeLayer BiomeLayer { get; private set; }
     public Texture2D BiomeTexture => biomeTexture;
-    public bool HasBiomeTexture => biomeTexture != null && BiomeLayer != null && BiomeLayer.IsValid;
+
+    private bool CanBuildDerivedTextures => Field != null && Field.IsValid && settings != null;
+    private bool CanBuildBiomeTexture => CanBuildDerivedTextures && biomeCatalog != null && settings.generateBiomeLayer;
+
+    public bool HasBiomeTexture =>
+        (biomeTexture != null && BiomeLayer != null && BiomeLayer.IsValid) || CanBuildBiomeTexture;
 
     public bool HasBaseTexture => BaseTexture != null && Field != null && Field.IsValid;
-    public bool HasContourTexture => contourTexture != null && Field != null && Field.IsValid;
-    public bool HasDebugTexture => debugTexture != null && Field != null && Field.IsValid;
-    public bool HasClassificationTexture => classificationTexture != null && Field != null && Field.IsValid;
+    public bool HasContourTexture => (contourTexture != null || CanBuildDerivedTextures) && Field != null && Field.IsValid;
+    public bool HasDebugTexture => (debugTexture != null || CanBuildDerivedTextures) && Field != null && Field.IsValid;
+    public bool HasClassificationTexture => (classificationTexture != null || CanBuildDerivedTextures) && Field != null && Field.IsValid;
 
     // Backward compatibility for older cartridge checks.
     public bool HasTexture => HasBaseTexture;
@@ -74,12 +103,21 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
             graphGenerator = FindAnyObjectByType<WorldMapGraphGenerator>();
 
         if (generateOnAwake)
-            LoadOrGenerate();
+        {
+            if (preferRuntimeCache && TryUseRuntimeCache("Awake"))
+                return;
+
+            if (!WorldMapSaveRestorer.TryRestoreTopographyToSource(this))
+                LoadOrGenerate();
+        }
     }
 
     [ContextMenu("Load Or Generate")]
     public void LoadOrGenerate()
     {
+        if (preferRuntimeCache && TryUseRuntimeCache("LoadOrGenerate"))
+            return;
+
         int seed = GetSeed();
 
         if (preferBakedAsset && TryLoadBaked(seed))
@@ -200,19 +238,26 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
 
         try
         {
-            nextBase = WorldMapTopographyDebugTextureBuilder.BuildBaseTexture(field, resolvedSettings);
-            nextContour = WorldMapTopographyDebugTextureBuilder.BuildContourTexture(field, resolvedSettings);
-            nextDebug = WorldMapTopographyDebugTextureBuilder.BuildDebugTexture(field, resolvedSettings);
-            nextClass = WorldMapTopographyClassificationTextureBuilder.BuildTexture(field, resolvedSettings);
+            if (bakeBaseTexture)
+                nextBase = WorldMapTopographyDebugTextureBuilder.BuildBaseTexture(field, resolvedSettings);
+
+            if (bakeContourTexture)
+                nextContour = WorldMapTopographyDebugTextureBuilder.BuildContourTexture(field, resolvedSettings);
+
+            if (bakeDebugTexture)
+                nextDebug = WorldMapTopographyDebugTextureBuilder.BuildDebugTexture(field, resolvedSettings);
+
+            if (bakeClassificationTexture)
+                nextClass = WorldMapTopographyClassificationTextureBuilder.BuildTexture(field, resolvedSettings);
         }
         finally
         {
             DestroyResolvedSettings(resolvedSettings);
         }
 
-        if (nextBase == null)
+        if (bakeBaseTexture && nextBase == null)
         {
-            Debug.LogError("[WorldMapTopographyDebugSource] Bake failed: base texture was null.", this);
+            Debug.LogError("[WorldMapTopographyDebugSource] Bake failed: base texture was requested but null.", this);
 
             DestroyTexture(nextContour);
             DestroyTexture(nextDebug);
@@ -238,8 +283,11 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
 
         DestroyExistingTextureSubAssets(asset);
 
-        nextBase.name = $"TopographyBaseTexture_{seed}";
-        AssetDatabase.AddObjectToAsset(nextBase, asset);
+        if (nextBase != null)
+        {
+            nextBase.name = $"TopographyBaseTexture_{seed}";
+            AssetDatabase.AddObjectToAsset(nextBase, asset);
+        }
 
         if (nextContour != null)
         {
@@ -283,7 +331,8 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
             $"[WorldMapTopographyDebugSource] Baked topography asset '{asset.name}'. " +
             $"Seed={seed}, Res={field.Width}x{field.Height}, " +
             $"Sea={EffectiveSeaLevel01:0.000}, Water={Stats.Water01:P0}, Land={Stats.Land01:P0}, " +
-            $"Texture={nextBase.width}x{nextBase.height}",
+            $"BaseTexture={(nextBase != null ? nextBase.width + "x" + nextBase.height : "not baked")}, " +
+            $"ContourBaked={(nextContour != null)}, DebugBaked={(nextDebug != null)}, ClassBaked={(nextClass != null)}",
             asset
         );
     }
@@ -337,6 +386,82 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
     }
 #endif
 
+    public bool TryUseRuntimeCache(string reason = "")
+    {
+        WorldMapRuntimeCache cache = WorldMapRuntimeCache.I;
+
+        if (cache == null || !cache.HasTopography)
+            return false;
+
+        DestroyOwnedRuntimeTextures();
+        DestroyBiomeTexture();
+
+        Field = cache.Field;
+        EffectiveSeaLevel01 = cache.EffectiveSeaLevel01;
+        Stats = cache.Stats;
+
+        baseTexture = cache.BaseTexture;
+        contourTexture = cache.ContourTexture;
+        debugTexture = cache.DebugTexture;
+        classificationTexture = cache.ClassificationTexture;
+
+        BiomeLayer = cache.BiomeLayer;
+        biomeTexture = cache.BiomeTexture;
+
+        _ownsBaseTexture = false;
+        _ownsContourTexture = false;
+        _ownsDebugTexture = false;
+        _ownsClassificationTexture = false;
+        _ownsBiomeTexture = false;
+
+        Debug.Log(
+            $"[WorldMapTopographyDebugSource] Using persistent runtime cache. " +
+            $"Reason='{reason}', CacheSource='{cache.SourceReason}', " +
+            $"Seed={Field.Seed}, Res={Field.Width}x{Field.Height}, Sea={EffectiveSeaLevel01:0.000}",
+            this
+        );
+
+        return true;
+    }
+
+    private void PushCurrentToRuntimeCache(string reason)
+    {
+        if (!publishToRuntimeCache)
+            return;
+
+        if (Field == null || !Field.IsValid)
+            return;
+
+        WorldMapRuntimeCache cache = WorldMapRuntimeCache.Ensure();
+
+        cache.StoreTopography(
+            Field,
+            EffectiveSeaLevel01,
+            Stats,
+            baseTexture,
+            _ownsBaseTexture,
+            contourTexture,
+            _ownsContourTexture,
+            debugTexture,
+            _ownsDebugTexture,
+            classificationTexture,
+            _ownsClassificationTexture,
+            BiomeLayer,
+            biomeTexture,
+            _ownsBiomeTexture,
+            reason
+        );
+
+        // Ownership transfers to the persistent cache. This prevents scene unload from destroying
+        // textures that BoatScene/NodeScene should continue sharing. Unity made object lifetime a
+        // scavenger hunt, because apparently that was necessary.
+        _ownsBaseTexture = false;
+        _ownsContourTexture = false;
+        _ownsDebugTexture = false;
+        _ownsClassificationTexture = false;
+        _ownsBiomeTexture = false;
+    }
+
     private bool TryLoadBaked(int seed)
     {
         if (bakedAsset == null)
@@ -365,12 +490,105 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
         return true;
     }
 
+    public bool TryRestoreFromSnapshot(WorldMapTopographySaveSnapshot snapshot)
+    {
+        if (snapshot == null || !snapshot.HasRawHeightData)
+            return false;
+
+        if (settings == null)
+        {
+            Debug.LogWarning("[WorldMapTopographyDebugSource] Cannot restore topography snapshot: missing settings.", this);
+            return false;
+        }
+
+        float[] heights = snapshot.CopyHeight01();
+        if (heights == null || heights.Length != snapshot.width * snapshot.height)
+        {
+            Debug.LogWarning("[WorldMapTopographyDebugSource] Cannot restore topography snapshot: height payload missing or invalid.", this);
+            return false;
+        }
+
+        var field = new WorldMapTopographyField(
+            snapshot.seed,
+            snapshot.width,
+            snapshot.height,
+            snapshot.ToWorldBounds(),
+            heights,
+            snapshot.minRaw,
+            snapshot.maxRaw
+        );
+
+        if (!field.IsValid)
+        {
+            Debug.LogWarning("[WorldMapTopographyDebugSource] Cannot restore topography snapshot: invalid restored field.", this);
+            return false;
+        }
+
+        WorldMapTopographySettings resolvedSettings =
+            CreateSettingsForRestoredSnapshot(snapshot);
+
+        Texture2D nextBase = null;
+
+        try
+        {
+            nextBase = WorldMapTopographyDebugTextureBuilder.BuildBaseTexture(field, resolvedSettings);
+        }
+        finally
+        {
+            DestroyResolvedSettings(resolvedSettings);
+        }
+
+        if (nextBase == null)
+            return false;
+
+        WorldMapTopographyStats restoredStats;
+        WorldMapTopographySettings analysisSettings = CreateSettingsForRestoredSnapshot(snapshot);
+
+        try
+        {
+            restoredStats = WorldMapTopographyAnalysis.Analyze(field, analysisSettings);
+        }
+        finally
+        {
+            DestroyResolvedSettings(analysisSettings);
+        }
+
+        UseRuntimeGenerated(
+            field,
+            snapshot.effectiveSeaLevel01,
+            restoredStats,
+            nextBase,
+            null,
+            null,
+            null
+        );
+
+        Debug.Log(
+            $"[WorldMapTopographyDebugSource] Restored persisted topography. " +
+            $"Seed={field.Seed}, Res={field.Width}x{field.Height}, Sea={EffectiveSeaLevel01:0.000}",
+            this
+        );
+
+        return true;
+    }
+
+    private WorldMapTopographySettings CreateSettingsForRestoredSnapshot(WorldMapTopographySaveSnapshot snapshot)
+    {
+        WorldMapTopographySettings resolved = UnityEngine.Object.Instantiate(settings);
+
+        resolved.seaLevel01 = snapshot != null ? snapshot.effectiveSeaLevel01 : settings.seaLevel01;
+        resolved.autoAdjustSeaLevelToTargetWater = false;
+
+        return resolved;
+    }
+
     private void UseBaked(WorldMapTopographyBakeAsset asset)
     {
         if (asset == null)
             return;
 
         DestroyOwnedRuntimeTextures();
+        DestroyBiomeTexture();
 
         Field = asset.ToField();
         EffectiveSeaLevel01 = asset.effectiveSeaLevel01;
@@ -381,9 +599,15 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
         debugTexture = asset.DebugTexture;
         classificationTexture = asset.ClassificationTexture;
 
-        _ownsRuntimeTextures = false;
+        _ownsBaseTexture = false;
+        _ownsContourTexture = false;
+        _ownsDebugTexture = false;
+        _ownsClassificationTexture = false;
 
-        RebuildBiomeLayerAndTexture();
+        // Keep normal map display fast even when the bake asset only stores packed height data.
+        EnsureBaseTexture();
+
+        PushCurrentToRuntimeCache("UseBaked");
     }
 
     private void UseRuntimeGenerated(
@@ -406,13 +630,150 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
         debugTexture = nextDebug;
         classificationTexture = nextClassification;
 
-        _ownsRuntimeTextures =
-            nextBase != null ||
-            nextContour != null ||
-            nextDebug != null ||
-            nextClassification != null;
+        _ownsBaseTexture = nextBase != null;
+        _ownsContourTexture = nextContour != null;
+        _ownsDebugTexture = nextDebug != null;
+        _ownsClassificationTexture = nextClassification != null;
+
+        DestroyBiomeTexture();
+
+        PushCurrentToRuntimeCache("UseRuntimeGenerated");
+    }
+
+    public bool EnsureBaseTexture()
+    {
+        if (BaseTexture != null)
+            return true;
+
+        if (!CanBuildDerivedTextures)
+            return false;
+
+        WorldMapTopographySettings resolved = CreateSettingsForCurrentInterpretation();
+
+        try
+        {
+            Texture2D built = WorldMapTopographyDebugTextureBuilder.BuildBaseTexture(Field, resolved);
+            if (built == null)
+                return false;
+
+            if (_ownsBaseTexture)
+                DestroyTexture(baseTexture);
+
+            baseTexture = built;
+            _ownsBaseTexture = true;
+            PushCurrentToRuntimeCache("EnsureBaseTexture");
+            return true;
+        }
+        finally
+        {
+            DestroyResolvedSettings(resolved);
+        }
+    }
+
+    public bool EnsureContourTexture()
+    {
+        if (contourTexture != null)
+            return true;
+
+        if (!CanBuildDerivedTextures)
+            return false;
+
+        WorldMapTopographySettings resolved = CreateSettingsForCurrentInterpretation();
+
+        try
+        {
+            Texture2D built = WorldMapTopographyDebugTextureBuilder.BuildContourTexture(Field, resolved);
+            if (built == null)
+                return false;
+
+            if (_ownsContourTexture)
+                DestroyTexture(contourTexture);
+
+            contourTexture = built;
+            _ownsContourTexture = true;
+            PushCurrentToRuntimeCache("EnsureContourTexture");
+            return true;
+        }
+        finally
+        {
+            DestroyResolvedSettings(resolved);
+        }
+    }
+
+    public bool EnsureDebugTexture()
+    {
+        if (debugTexture != null)
+            return true;
+
+        if (!CanBuildDerivedTextures)
+            return false;
+
+        WorldMapTopographySettings resolved = CreateSettingsForCurrentInterpretation();
+
+        try
+        {
+            Texture2D built = WorldMapTopographyDebugTextureBuilder.BuildDebugTexture(Field, resolved);
+            if (built == null)
+                return false;
+
+            if (_ownsDebugTexture)
+                DestroyTexture(debugTexture);
+
+            debugTexture = built;
+            _ownsDebugTexture = true;
+            PushCurrentToRuntimeCache("EnsureDebugTexture");
+            return true;
+        }
+        finally
+        {
+            DestroyResolvedSettings(resolved);
+        }
+    }
+
+    public bool EnsureClassificationTexture()
+    {
+        if (classificationTexture != null)
+            return true;
+
+        if (!CanBuildDerivedTextures)
+            return false;
+
+        WorldMapTopographySettings resolved = CreateSettingsForCurrentInterpretation();
+
+        try
+        {
+            Texture2D built = WorldMapTopographyClassificationTextureBuilder.BuildTexture(Field, resolved);
+            if (built == null)
+                return false;
+
+            if (_ownsClassificationTexture)
+                DestroyTexture(classificationTexture);
+
+            classificationTexture = built;
+            _ownsClassificationTexture = true;
+            PushCurrentToRuntimeCache("EnsureClassificationTexture");
+            return true;
+        }
+        finally
+        {
+            DestroyResolvedSettings(resolved);
+        }
+    }
+
+    public bool EnsureBiomeTexture()
+    {
+        if (biomeTexture != null && BiomeLayer != null && BiomeLayer.IsValid)
+            return true;
+
+        if (!CanBuildBiomeTexture)
+            return false;
 
         RebuildBiomeLayerAndTexture();
+
+        if (biomeTexture != null && BiomeLayer != null && BiomeLayer.IsValid)
+            PushCurrentToRuntimeCache("EnsureBiomeTexture");
+
+        return biomeTexture != null && BiomeLayer != null && BiomeLayer.IsValid;
     }
 
     private void RebuildBiomeLayerAndTexture()
@@ -433,6 +794,7 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
         {
             BiomeLayer = WorldMapBiomeGenerator.Generate(Field, resolved, biomeCatalog);
             biomeTexture = WorldMapBiomeTextureBuilder.BuildTexture(BiomeLayer, resolved);
+            _ownsBiomeTexture = biomeTexture != null;
         }
         finally
         {
@@ -453,7 +815,7 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
 
     private void DestroyBiomeTexture()
     {
-        if (biomeTexture != null)
+        if (biomeTexture != null && _ownsBiomeTexture)
         {
             if (Application.isPlaying)
                 UnityEngine.Object.Destroy(biomeTexture);
@@ -462,6 +824,7 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
         }
 
         biomeTexture = null;
+        _ownsBiomeTexture = false;
     }
 
     private WorldMapTopographySettings CreateResolvedSettings(
@@ -506,20 +869,27 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
 
     private void DestroyOwnedRuntimeTextures()
     {
-        if (!_ownsRuntimeTextures)
-            return;
+        if (_ownsBaseTexture)
+            DestroyTexture(baseTexture);
 
-        DestroyTexture(baseTexture);
-        DestroyTexture(contourTexture);
-        DestroyTexture(debugTexture);
-        DestroyTexture(classificationTexture);
+        if (_ownsContourTexture)
+            DestroyTexture(contourTexture);
+
+        if (_ownsDebugTexture)
+            DestroyTexture(debugTexture);
+
+        if (_ownsClassificationTexture)
+            DestroyTexture(classificationTexture);
 
         baseTexture = null;
         contourTexture = null;
         debugTexture = null;
         classificationTexture = null;
 
-        _ownsRuntimeTextures = false;
+        _ownsBaseTexture = false;
+        _ownsContourTexture = false;
+        _ownsDebugTexture = false;
+        _ownsClassificationTexture = false;
     }
 
     private static void DestroyTexture(Texture2D tex)
@@ -536,6 +906,7 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
     private void OnDestroy()
     {
         DestroyOwnedRuntimeTextures();
+        DestroyBiomeTexture();
 
         Field = null;
         EffectiveSeaLevel01 = 0f;

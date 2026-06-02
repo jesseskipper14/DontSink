@@ -31,7 +31,10 @@ public sealed class WorldMapPOISource : MonoBehaviour
         AutoWire();
 
         if (generateOnAwake)
-            EnsureGenerated();
+        {
+            if (!WorldMapSaveRestorer.TryRestorePOIsToSource(this))
+                EnsureGenerated();
+        }
     }
 
     public void EnsureGenerated()
@@ -95,6 +98,47 @@ public sealed class WorldMapPOISource : MonoBehaviour
                 this
             );
         }
+    }
+
+    public bool TryRestoreFromSnapshot(WorldMapPOISetSaveSnapshot snapshot)
+    {
+        if (snapshot == null || snapshot.pois == null)
+            return false;
+
+        Layer = new WorldMapPOILayer
+        {
+            seed = snapshot.version,
+            worldBounds = topographySource != null && topographySource.Field != null
+                ? topographySource.Field.WorldBounds
+                : default,
+            pois = new System.Collections.Generic.List<WorldMapPOIInstance>()
+        };
+
+        for (int i = 0; i < snapshot.pois.Count; i++)
+        {
+            WorldMapPOISaveSnapshot saved = snapshot.pois[i];
+            if (saved == null)
+                continue;
+
+            Layer.pois.Add(new WorldMapPOIInstance
+            {
+                stableId = saved.stableId,
+                poiDefId = saved.poiDefId,
+                displayName = saved.displayName,
+                position = saved.Position,
+                height01 = saved.height01,
+                depth01 = saved.depth01,
+                score = saved.score,
+                discovered = saved.discovered,
+                surveyed = saved.surveyed,
+                depleted = saved.depleted
+            });
+        }
+
+        hasGenerated = true;
+
+        Debug.Log($"[WorldMapPOISource] Restored persisted POI layer. POIs={Layer.pois.Count}", this);
+        return true;
     }
 
     [ContextMenu("Clear POIs")]

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9e4aeeb3741fb34698e88868afe3145, type: 3}
   m_Name: WorldMapTravelRulesConfig
   m_EditorClassIdentifier: 
-  maxRouteLength: 40
+  maxRouteLength: 200
