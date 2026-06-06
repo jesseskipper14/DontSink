@@ -27,6 +27,7 @@ public sealed class InventorySlotUI : MonoBehaviour,
     [SerializeField] private Color invalidTargetColor = new Color(1f, 0.45f, 0.45f, 1f);
     [SerializeField] private TMPro.TMP_Text cargoLabelText;
     [SerializeField] private int cargoLabelMaxCharacters = 10;
+    [SerializeField] private ItemChargeBarUI chargeBar;
 
     private bool _dragBeganThisPress;
 
@@ -86,6 +87,9 @@ public sealed class InventorySlotUI : MonoBehaviour,
     {
         ItemInstance instance = GetInstance();
         bool hasItem = instance != null && instance.Definition != null;
+
+        if (chargeBar != null)
+            chargeBar.Bind(hasItem ? instance : null);
 
         bool isCargo = CargoLabelFormatter.IsCargo(instance);
 

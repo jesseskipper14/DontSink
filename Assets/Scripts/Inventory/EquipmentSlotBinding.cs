@@ -39,6 +39,8 @@ public sealed class EquipmentSlotBinding : IInventorySlotBinding
         {
             if (current.TryInsertIntoContainer(incoming, out ItemInstance remainder))
             {
+                equipment.NotifyChanged();
+
                 if (remainder == null || remainder.IsDepleted())
                     return true;
 

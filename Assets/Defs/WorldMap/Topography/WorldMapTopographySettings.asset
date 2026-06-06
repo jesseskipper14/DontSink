@@ -114,7 +114,7 @@ MonoBehaviour:
   drawContours: 1
   drawContoursIntoBaseTexture: 0
   contourCount: 100
-  contourThickness: 0.06
+  contourThickness: 0.08
   contourColor: {r: 0, g: 0, b: 0, a: 0.4117647}
   majorContourColor: {r: 0, g: 0, b: 0, a: 0.85}
   majorContourEvery: 5

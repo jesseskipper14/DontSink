@@ -16,7 +16,11 @@ MonoBehaviour:
   displayName: Gun
   icon: {fileID: 4812920025455557956, guid: 4e0e7f4cbd6767044807b33aa96f674a, type: 3}
   itemCategories: 4
+  toolCapabilities:
+  - {fileID: 11400000, guid: 87bdba1b5c8a1664ab1a487b45122023, type: 2}
   maxStack: 1
+  hasCharges: 0
+  maxCharges: 1
   stowableInInventory: 1
   droppable: 1
   tradable: 1
@@ -27,5 +31,9 @@ MonoBehaviour:
   containerSlotCount: 1
   containerColumnCount: 1
   allowedContainerCategories: 8
-  isMajorCarryContainer: 0
+  containerTier: 0
+  pickupMode: 0
+  pickupHoldDuration: 0.4
+  isModule: 0
+  moduleDefinition: {fileID: 0}
   worldPrefab: {fileID: 61859146187821167, guid: 2528b76264c27bc4baa86a7b854b3cf0, type: 3}

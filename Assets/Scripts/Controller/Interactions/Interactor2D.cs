@@ -31,6 +31,12 @@ public class Interactor2D : MonoBehaviour
     [Tooltip("If true, only targets under/near the mouse resolve. Disables fallback player-radius/raycast target soup.")]
     [SerializeField] private bool mouseOnlyTargeting = true;
 
+    [Header("Mouse Harvest")]
+    [SerializeField] private bool allowMouseHarvest = true;
+
+    [Tooltip("0 = left mouse button, 1 = right mouse button, 2 = middle mouse button.")]
+    [SerializeField, Range(0, 2)] private int mouseHarvestButton = 0;
+
     [Header("Prompt Range Bands")]
     [SerializeField, Min(0f)] private float defaultHoverNameRange = 4.0f;
     [SerializeField, Min(0f)] private float defaultActionRange = 1.75f;
@@ -682,9 +688,49 @@ public class Interactor2D : MonoBehaviour
             return;
         }
 
+        bool keyboardPressed = intent.PickupPressed;
+        bool keyboardHeld = intent.PickupHeld;
+        bool keyboardReleased = intent.PickupReleased;
+
+        bool mousePressed = false;
+        bool mouseHeld = false;
+        bool mouseReleased = false;
+
+        if (allowMouseHarvest && pickupTarget is IMouseHarvestInteractable)
+        {
+            mousePressed = Input.GetMouseButtonDown(mouseHarvestButton);
+            mouseHeld = Input.GetMouseButton(mouseHarvestButton);
+            mouseReleased = Input.GetMouseButtonUp(mouseHarvestButton);
+        }
+
+        bool pressed = keyboardPressed || mousePressed;
+        bool held = keyboardHeld || mouseHeld;
+        bool released = keyboardReleased || mouseReleased;
+
+        HandlePickupLikeInput(
+            pickupTarget,
+            ctx,
+            pressed,
+            held,
+            released);
+    }
+
+    private void HandlePickupLikeInput(
+        IPickupInteractable pickupTarget,
+        in InteractContext ctx,
+        bool pressed,
+        bool held,
+        bool released)
+    {
+        if (pickupTarget == null)
+        {
+            ResetHoldPickup();
+            return;
+        }
+
         if (pickupTarget.PickupMode == PickupInteractionMode.Instant)
         {
-            if (intent.PickupPressed && pickupTarget.CanPickup(ctx))
+            if (pressed && pickupTarget.CanPickup(ctx))
             {
                 pickupTarget.Pickup(ctx);
                 OnPickedUp?.Invoke(pickupTarget);
@@ -694,7 +740,7 @@ public class Interactor2D : MonoBehaviour
             return;
         }
 
-        if (!intent.PickupHeld)
+        if (!held)
         {
             ResetHoldPickup();
             return;
@@ -716,6 +762,13 @@ public class Interactor2D : MonoBehaviour
             return;
         }
 
+        if (pickupTarget is IHoldPickupTickReceiver tickReceiver &&
+            !tickReceiver.TickHoldPickup(ctx, Time.deltaTime))
+        {
+            ResetHoldPickup();
+            return;
+        }
+
         _activeHoldPickupElapsed += Time.deltaTime;
 
         if (_activeHoldPickupElapsed >= pickupTarget.PickupHoldDuration)
@@ -724,9 +777,10 @@ public class Interactor2D : MonoBehaviour
             OnPickedUp?.Invoke(pickupTarget);
             _holdPickupTriggered = true;
             ResetHoldPickup();
+            return;
         }
 
-        if (intent.PickupReleased)
+        if (released)
             ResetHoldPickup();
     }
 

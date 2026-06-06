@@ -2478,7 +2478,7 @@ MonoBehaviour:
   boat: {fileID: 5943007106159419301}
   boatRoot: {fileID: 2735890325105630949}
   targetCamera: {fileID: 0}
-  active: 1
+  active: 0
   mode: 0
   mouseButton: 0
   shiftClickRemoves: 1

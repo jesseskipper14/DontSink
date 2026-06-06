@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
+  m_Name: item_simple_drill
+  m_EditorClassIdentifier: 
+  itemId: item_simple_drill
+  displayName: Simple Drill
+  icon: {fileID: -6700999853380496098, guid: 59d3b69fe018f96449819223bf0882e4, type: 3}
+  itemCategories: 2
+  toolCapabilities:
+  - {fileID: 11400000, guid: d4fbd93a7ed2146488dcedde6ed03040, type: 2}
+  consumesContainedChargesWhileUsed: 1
+  chargeSourceCategories: 1024
+  chargeUsePerSecond: 1
+  minimumChargeToUse: 1
+  maxStack: 1
+  hasCharges: 0
+  maxCharges: 1
+  stowableInInventory: 1
+  droppable: 1
+  tradable: 1
+  disallowedParentSlots: 
+  preferredDisplacedDestination: 1
+  equipSlot: 1
+  isContainer: 1
+  containerSlotCount: 1
+  containerColumnCount: 1
+  allowedContainerCategories: 1024
+  containerTier: 0
+  pickupMode: 0
+  pickupHoldDuration: 0.4
+  isModule: 0
+  moduleDefinition: {fileID: 0}
+  worldPrefab: {fileID: 61859146187821167, guid: 01bd21d0485e6684c8d1d2d390218872, type: 3}

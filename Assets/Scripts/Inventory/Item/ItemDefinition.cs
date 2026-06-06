@@ -44,6 +44,44 @@ public sealed class ItemDefinition : ScriptableObject
     [Header("Classification")]
     [SerializeField] private ItemCategoryFlags itemCategories = ItemCategoryFlags.General;
 
+    [Header("Tool Capabilities")]
+    [SerializeField] private List<ToolCapabilityDefinition> toolCapabilities = new();
+
+    [Header("Tool Use Consumption")]
+    [SerializeField] private bool consumesContainedChargesWhileUsed;
+
+    [Tooltip("The contained item category used as the charge source. Drill = Utility battery, gun = Ammo, welder = Fuel, etc.")]
+    [SerializeField] private ItemCategoryFlags chargeSourceCategories = ItemCategoryFlags.Utility;
+
+    [Tooltip("How many charge units this tool consumes per second while actively used.")]
+    [Min(0f)]
+    [SerializeField] private float chargeUsePerSecond = 1f;
+
+    [Tooltip("Minimum contained charge required before the tool is allowed to start/continue use.")]
+    [Min(0)]
+    [SerializeField] private int minimumChargeToUse = 1;
+
+    public bool ConsumesContainedChargesWhileUsed => consumesContainedChargesWhileUsed;
+    public ItemCategoryFlags ChargeSourceCategories => chargeSourceCategories;
+    public float ChargeUsePerSecond => Mathf.Max(0f, chargeUsePerSecond);
+    public int MinimumChargeToUse => Mathf.Max(0, minimumChargeToUse);
+
+    public IReadOnlyList<ToolCapabilityDefinition> ToolCapabilities => toolCapabilities;
+
+    public bool HasToolCapability(ToolCapabilityDefinition capability)
+    {
+        if (capability == null || toolCapabilities == null)
+            return false;
+
+        for (int i = 0; i < toolCapabilities.Count; i++)
+        {
+            if (toolCapabilities[i] == capability)
+                return true;
+        }
+
+        return false;
+    }
+
     [Header("Stacking")]
     [Min(1)]
     [SerializeField] private int maxStack = 1;
@@ -156,6 +194,14 @@ public sealed class ItemDefinition : ScriptableObject
         containerSlotCount = Mathf.Max(0, containerSlotCount);
         containerColumnCount = Mathf.Max(1, containerColumnCount);
         pickupHoldDuration = Mathf.Max(0.05f, pickupHoldDuration);
+
+        chargeUsePerSecond = Mathf.Max(0f, chargeUsePerSecond);
+        minimumChargeToUse = Mathf.Max(0, minimumChargeToUse);
+
+        if (!consumesContainedChargesWhileUsed)
+        {
+            chargeUsePerSecond = 0f;
+        }
 
         if (IsContainer)
             maxStack = 1;

@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f270d96d09e85e48b6b4fe2946fb2ac, type: 3}
+  m_Name: seaweed
+  m_EditorClassIdentifier: 
+  stableId: seaweed
+  displayName: Seaweed
+  category: 0
+  requiredTool: 0
+  harvestSeconds: 0
+  charges: 1
+  baselineWeight: 5
+  minDepth: 0.5
+  maxDepth: 40
+  alignToGeneratedGround: 1
+  groundClearance: 0.12
+  verticalJitter: 0.05
+  maxGroundSlopeDegrees: 70
+  spawnTags:
+  - algae
+  - reef
+  - shallow
+  yields:
+  - itemDefinition: {fileID: 11400000, guid: c4b55c014375d6148bfa9ed1c579b188, type: 2}
+    minQuantity: 1
+    maxQuantity: 3
+  scenePrefab: {fileID: 7571194650393018128, guid: 3df15898ba14c864b90d7a8a87ca2e0b, type: 3}
+  fallbackSprite: {fileID: 1417598497437579791, guid: 5918dfa0d31fe144cbda4aa64ac54ed5, type: 3}

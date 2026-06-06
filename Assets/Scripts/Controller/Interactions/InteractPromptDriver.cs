@@ -272,8 +272,25 @@ public sealed class InteractPromptDriver : MonoBehaviour
         if (isHoldPickup && ReferenceEquals(interactor.ActiveHoldPickupTarget, target.Pickup))
             progress = interactor.ActiveHoldPickupProgress;
 
+        bool supportsMouseHarvest = target.Pickup is IMouseHarvestInteractable;
+
+        string actionText;
+
+        if (supportsMouseHarvest)
+        {
+            actionText = isHoldPickup
+                ? $"Hold Click or F to {pickupVerb}"
+                : $"Click or Press F to {pickupVerb}";
+        }
+        else
+        {
+            actionText = isHoldPickup
+                ? $"Hold F to {pickupVerb}"
+                : $"Press F to {pickupVerb}";
+        }
+
         _promptActions.Add(new PromptAction(
-            isHoldPickup ? $"Hold F to {pickupVerb}" : $"Press F to {pickupVerb}",
+            actionText,
             priority: 90,
             showProgress: isHoldPickup,
             progress01: progress));
