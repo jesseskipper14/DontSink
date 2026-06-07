@@ -8,7 +8,8 @@ public sealed class HardpointInteractable :
     IInteractPromptProvider,
     IPickupPromptProvider,
     IToggleInteractable,
-    IInteractionLabelProvider
+    IInteractionLabelProvider,
+    IInteractionPromptDisplayPolicyProvider
 {
     [Header("Refs")]
     [SerializeField] private Hardpoint hardpoint;
@@ -18,6 +19,8 @@ public sealed class HardpointInteractable :
     [SerializeField] private int interactionPriority = 20;
     [SerializeField] private int pickupPriority = 20;
     [SerializeField] private float maxDistance = 1.75f;
+    [Tooltip("If true, the hardpoint/module hover label is hidden unless the player is in valid access context and action range.")]
+    [SerializeField] private bool hideHoverLabelWhenNotActionable = true;
 
     [Header("Boat Access")]
     [Tooltip("If true, hardpoints/modules that belong to a Boat can only be used by players boarded on that same boat.")]
@@ -471,8 +474,31 @@ public sealed class HardpointInteractable :
 
     private void CacheBoat()
     {
+        if (_cachedBoat != null)
+            return;
+
+        if (hardpoint != null)
+            _cachedBoat = hardpoint.GetComponentInParent<Boat>(true);
+
         if (_cachedBoat == null)
-            _cachedBoat = GetComponentInParent<Boat>();
+            _cachedBoat = GetComponentInParent<Boat>(true);
+
+        if (_cachedBoat == null &&
+            hardpoint != null &&
+            hardpoint.HasInstalledModule &&
+            hardpoint.InstalledModule != null)
+        {
+            _cachedBoat = hardpoint.InstalledModule.GetComponentInParent<Boat>(true);
+        }
+
+        if (_cachedBoat == null &&
+            hardpoint != null &&
+            hardpoint.InstalledModule != null)
+        {
+            InstalledModule installed = hardpoint.InstalledModule;
+            if (installed.OwnerHardpoint != null)
+                _cachedBoat = installed.OwnerHardpoint.GetComponentInParent<Boat>(true);
+        }
     }
 
     private bool TryFindCompatiblePlayerModule(
@@ -612,5 +638,19 @@ public sealed class HardpointInteractable :
         }
 
         return "Empty Hardpoint";
+    }
+
+    public bool ShouldShowHoverLabel(in InteractContext context)
+    {
+        if (hardpoint == null)
+            return false;
+
+        if (!CanAccessHardpointByContext(context))
+            return false;
+
+        if (hideHoverLabelWhenNotActionable && !IsInRange(context))
+            return false;
+
+        return true;
     }
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3098711120750990785}
   - component: {fileID: 531008800254972838}
   - component: {fileID: 432116699034757445}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: CargoBayZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 513247259861382933}
   - component: {fileID: 2765728857318232350}
   - component: {fileID: 6016124917748498837}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: CargoBayFloor
   m_TagString: Untagged
   m_Icon: {fileID: 0}

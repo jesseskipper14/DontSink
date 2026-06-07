@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8297719758377153881}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: Seat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8206234326069386777}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: WaterEjectLevel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,7 +75,7 @@ GameObject:
   - component: {fileID: 4536818575339096957}
   - component: {fileID: 7121616924174319418}
   - component: {fileID: 7587246361707318811}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: PilotChair_Metal
   m_TagString: Untagged
   m_Icon: {fileID: 0}

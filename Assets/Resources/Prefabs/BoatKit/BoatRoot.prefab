@@ -286,7 +286,7 @@ MonoBehaviour:
   targetCamera: {fileID: 0}
   hideByCameraMaskWhenInterior:
     serializedVersion: 2
-    m_Bits: 66560
+    m_Bits: 2163712
   autoFindMainCamera: 1
   logVisibility: 0
 --- !u!114 &5255386316628391027
@@ -370,7 +370,6 @@ MonoBehaviour:
   logMouseKey: 290
   respectGameplayInputBlocker: 1
   ignoreClicksWhenPointerOverUI: 0
-  clearHoverWhenInputBlocked: 1
   showOverlay: 1
   overlayPosition: {x: 15, y: 200}
   overlaySize: {x: 520, y: 170}

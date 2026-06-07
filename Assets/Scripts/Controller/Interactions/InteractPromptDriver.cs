@@ -149,11 +149,87 @@ public sealed class InteractPromptDriver : MonoBehaviour
         if (!interactor.IsWithinHoverNameRange(target, ctx))
             return false;
 
+        if (!ShouldShowPromptForTarget(target, ctx))
+            return false;
+
         DebugPrompt(
             $"hover owner={DescribePromptTarget(target.Owner)} " +
             $"interact={target.Interact != null} pickup={target.Pickup != null} " +
             $"actionRange={interactor.IsWithinActionRange(target, ctx)}");
 
+        return true;
+    }
+
+    private bool ShouldShowPromptForTarget(in InteractionHoverTarget target, in InteractContext ctx)
+    {
+        if (!target.IsValid)
+            return false;
+
+        // First: explicit display policy wins.
+        // RackStoredItemInteractable can use this to hide labels/prompts when boat context is wrong.
+        if (target.Owner is IInteractionPromptDisplayPolicyProvider displayPolicy &&
+            !displayPolicy.ShouldShowHoverLabel(ctx))
+        {
+            return false;
+        }
+
+        bool hasInteract = target.Interact != null;
+        bool hasPickup = target.Pickup != null;
+        bool hasUnsecure = target.Unsecure != null;
+        bool hasToggle = target.Toggle != null;
+
+        // Interact-only targets, like doors/hatches, should not show even a label
+        // if their own CanInteract denies access by boat/context.
+        if (hasInteract && !hasPickup && !hasUnsecure && !hasToggle)
+        {
+            if (_suppressedInteract.Contains(target.Interact))
+                return false;
+
+            return target.Interact.CanInteract(ctx);
+        }
+
+        // Pickup-only targets are a little trickier because some pickup CanPickup methods
+        // include action range checks. Keep hover labels unless a display policy denied them.
+        // Actual pickup action rows still require CanPickup later.
+        if (hasPickup && !hasInteract && !hasUnsecure && !hasToggle)
+        {
+            if (_suppressedPickup.Contains(target.Pickup))
+                return false;
+
+            if (interactor.IsWithinActionRange(target, ctx))
+                return target.Pickup.CanPickup(ctx);
+
+            return true;
+        }
+
+        // Mixed targets: show prompt if any channel is currently valid.
+        // This avoids label-only ghosts when all usable paths deny access.
+        if (interactor.IsWithinActionRange(target, ctx))
+        {
+            if (hasInteract &&
+                !_suppressedInteract.Contains(target.Interact) &&
+                target.Interact.CanInteract(ctx))
+            {
+                return true;
+            }
+
+            if (hasPickup &&
+                !_suppressedPickup.Contains(target.Pickup) &&
+                target.Pickup.CanPickup(ctx))
+            {
+                return true;
+            }
+
+            if (hasUnsecure && target.Unsecure.CanUnsecure(ctx))
+                return true;
+
+            if (hasToggle && target.Toggle.CanToggle(ctx))
+                return true;
+
+            return false;
+        }
+
+        // Outside action range, allow hover labels unless an explicit display policy denied it.
         return true;
     }
 

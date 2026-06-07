@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5496461614950899123}
   - component: {fileID: 4892191519125441641}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TurretChairVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 4551296292196612299}
   - component: {fileID: 7943230744849766587}
   - component: {fileID: 8608758824562094734}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TurretControllerChair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -136,7 +136,11 @@ MonoBehaviour:
   hardpoint: {fileID: 0}
   interactionPriority: 25
   maxDistance: 1.75
+  seatPoint: {fileID: 0}
   promptAnchor: {fileID: 0}
+  pinOccupantToSeat: 1
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
 --- !u!61 &8608758824562094734
 BoxCollider2D:
   m_ObjectHideFlags: 0

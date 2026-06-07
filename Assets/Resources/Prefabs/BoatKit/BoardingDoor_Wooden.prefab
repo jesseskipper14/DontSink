@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3133705925025852908}
   - component: {fileID: 6657326918736697652}
   - component: {fileID: -3439110668371042689}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: BoardingDoor_Wooden
   m_TagString: BoardingArea
   m_Icon: {fileID: 0}
@@ -154,11 +154,24 @@ MonoBehaviour:
   unboardPoint: {fileID: 0}
   parentPlayerToBoat: 1
   postSnapNudge: {x: 0, y: 0}
+  requireHoldToBoard: 1
+  boardHoldKey: 101
+  boardHoldSeconds: 0.35
+  showBoardHoldProgressInPrompt: 1
+  suppressInstantBoardInteract: 1
+  requireHoldToUnboard: 1
+  unboardHoldKey: 101
+  unboardHoldSeconds: 0.65
+  showUnboardHoldProgressInPrompt: 1
+  suppressInstantUnboardInteract: 1
   fadeWhenPlayerFar: 1
   fadeRenderers:
   - {fileID: 3133705925025852908}
+  fadeOnlyWhenBoardedInterior: 1
+  visualStateController: {fileID: 0}
   fadeNearDistance: 1.2
   nearAlpha: 1
   farAlpha: 0.1
   fadeSpeed: 12
   useInteractDistanceForFade: 1
+  debugHold: 0

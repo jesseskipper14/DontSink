@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7417819322103270064}
   - component: {fileID: 4537425213390722422}
   - component: {fileID: 1911913638962317752}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DeckBoardZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}

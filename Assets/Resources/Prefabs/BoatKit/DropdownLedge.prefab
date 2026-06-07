@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5721170950589711661}
   - component: {fileID: 7433592863250400779}
   - component: {fileID: 6924750630641131329}
-  m_Layer: 3
+  m_Layer: 19
   m_Name: DropdownLedge
   m_TagString: Ledge
   m_Icon: {fileID: 0}
@@ -211,7 +211,7 @@ GameObject:
   - component: {fileID: 9084259175966858194}
   - component: {fileID: 774380087656931930}
   - component: {fileID: 5715291895088997131}
-  m_Layer: 3
+  m_Layer: 19
   m_Name: CompartmentLink
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -2419,7 +2419,7 @@ MonoBehaviour:
   targetCamera: {fileID: 0}
   hideByCameraMaskWhenInterior:
     serializedVersion: 2
-    m_Bits: 66560
+    m_Bits: 2163712
   autoFindMainCamera: 1
   logVisibility: 0
 --- !u!114 &3994175581240845045
@@ -3327,6 +3327,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DeckBoardZone
       objectReference: {fileID: 0}
+    - target: {fileID: 6379678496337631592, guid: 110a6d4825b4f4c4387091219c49a202, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 7417819322103270064, guid: 110a6d4825b4f4c4387091219c49a202, type: 3}
       propertyPath: m_Size.x
       value: 20
@@ -3724,7 +3728,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 531008800254972838, guid: 8c3c53a9936827d4997a5e4f9155b576, type: 3}
       propertyPath: m_Offset.y
-      value: 1.0500002
+      value: 1.0499992
       objectReference: {fileID: 0}
     - target: {fileID: 2765728857318232350, guid: 8c3c53a9936827d4997a5e4f9155b576, type: 3}
       propertyPath: m_Size.y

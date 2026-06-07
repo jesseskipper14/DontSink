@@ -5,11 +5,20 @@ public sealed class RackStoredItemInteractable :
     MonoBehaviour,
     IPickupInteractable,
     IPickupPromptProvider,
-    IInteractionLabelProvider
+    IInteractionLabelProvider,
+    IInteractionPromptDisplayPolicyProvider
 {
     [Header("Refs")]
     [SerializeField] private StorageModule storageModule;
     [SerializeField] private Transform promptAnchor;
+
+    [Header("Boat Access")]
+    [SerializeField] private bool requireMatchingBoatBoardingContext = true;
+
+    [Tooltip("If true, local OnMouseEnter highlight is disabled. Prefer Interactor2D-driven highlight later.")]
+    [SerializeField] private bool disableLocalMouseHoverHighlight = true;
+
+    private Boat _cachedBoat;
 
     [Header("Slot")]
     [SerializeField] private int slotIndex = -1;
@@ -59,6 +68,7 @@ public sealed class RackStoredItemInteractable :
             promptAnchor = transform;
 
         CacheVisualRefs();
+        CacheBoat();
     }
 
     private void Awake()
@@ -67,6 +77,7 @@ public sealed class RackStoredItemInteractable :
             promptAnchor = transform;
 
         CacheVisualRefs();
+        CacheBoat();
     }
 
     private void OnEnable()
@@ -88,6 +99,9 @@ public sealed class RackStoredItemInteractable :
 
     private void OnMouseEnter()
     {
+        if (disableLocalMouseHoverHighlight)
+            return;
+
         if (!enableHoverHighlight)
             return;
 
@@ -104,6 +118,9 @@ public sealed class RackStoredItemInteractable :
 
     public bool CanPickup(in InteractContext context)
     {
+        if (!CanAccessByBoatContext(context))
+            return false;
+
         if (!IsInRange(context))
             return false;
 
@@ -117,9 +134,6 @@ public sealed class RackStoredItemInteractable :
         if (inventory == null)
             return false;
 
-        // PlayerInventory does not currently expose a clean "CanAutoInsert"
-        // preview for its full auto-insert path. The real pickup path below
-        // uses TryAutoInsert and rolls back safely if it fails.
         return true;
     }
 
@@ -317,6 +331,9 @@ public sealed class RackStoredItemInteractable :
 
     public bool CanShowPickupPrompt(in InteractContext context)
     {
+        if (!CanAccessByBoatContext(context))
+            return false;
+
         if (!TryGetSlot(out InventorySlot slot))
             return false;
 
@@ -327,6 +344,11 @@ public sealed class RackStoredItemInteractable :
             return false;
 
         return true;
+    }
+
+    public bool ShouldShowHoverLabel(in InteractContext context)
+    {
+        return CanShowPickupPrompt(context);
     }
 
     public string GetInteractionLabel(in InteractContext context)
@@ -341,5 +363,61 @@ public sealed class RackStoredItemInteractable :
         }
 
         return "Stored Item";
+    }
+
+    private bool CanAccessByBoatContext(in InteractContext context)
+    {
+        if (!requireMatchingBoatBoardingContext)
+            return true;
+
+        CacheBoat();
+
+        // If this rack item is not part of a boat, allow normal use.
+        if (_cachedBoat == null)
+            return true;
+
+        PlayerBoardingState boarding = FindBoardingState(context);
+        if (boarding == null)
+            return false;
+
+        if (!boarding.IsBoarded)
+            return false;
+
+        return boarding.CurrentBoatRoot == _cachedBoat.transform;
+    }
+
+    private PlayerBoardingState FindBoardingState(in InteractContext context)
+    {
+        if (context.InteractorGO != null)
+        {
+            PlayerBoardingState fromGO =
+                context.InteractorGO.GetComponentInParent<PlayerBoardingState>();
+
+            if (fromGO != null)
+                return fromGO;
+        }
+
+        if (context.InteractorTransform != null)
+        {
+            PlayerBoardingState fromTransform =
+                context.InteractorTransform.GetComponentInParent<PlayerBoardingState>();
+
+            if (fromTransform != null)
+                return fromTransform;
+        }
+
+        return null;
+    }
+
+    private void CacheBoat()
+    {
+        if (_cachedBoat != null)
+            return;
+
+        if (storageModule != null)
+            _cachedBoat = storageModule.GetComponentInParent<Boat>();
+
+        if (_cachedBoat == null)
+            _cachedBoat = GetComponentInParent<Boat>();
     }
 }

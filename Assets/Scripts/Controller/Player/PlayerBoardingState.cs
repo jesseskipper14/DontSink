@@ -11,7 +11,11 @@ public sealed class PlayerBoardingState : MonoBehaviour
     [SerializeField] private string hatchLedgeLayerName = "HatchLedge";
     [SerializeField] private string groundLayerName = "Ground";
     [SerializeField] private string nodeGroundLayerName = "NodeGround";
-    [SerializeField] private string nodeDockLayerName = "NodeDock";
+    [SerializeField] private string worldLedgeLayerName = "WorldLedge";
+
+    [Header("Legacy / Migration")]
+    [Tooltip("Optional old dock layer. Leave blank once all docks have moved to WorldLedge.")]
+    [SerializeField] private string legacyNodeDockLayerName = "";
 
     [Header("Sprite Sorting")]
     [SerializeField] private string boardedSortingLayerName = "BoatPlayer";
@@ -19,6 +23,9 @@ public sealed class PlayerBoardingState : MonoBehaviour
 
     [Tooltip("If true, stores the player's original sprite sorting layers on Awake and restores them when unboarding.")]
     [SerializeField] private bool restoreOriginalSortingLayersOnUnboard = true;
+
+    [Header("Debug")]
+    [SerializeField] private bool logMaskChanges = false;
 
     public bool IsBoarded { get; private set; }
     public Transform CurrentBoatRoot { get; private set; }
@@ -31,15 +38,21 @@ public sealed class PlayerBoardingState : MonoBehaviour
     private int _hatchLedgeLayer;
     private int _groundLayer;
     private int _nodeGroundLayer;
-    private int _nodeDockLayer;
-
-    private LayerMask _boardedGroundMask;
-    private LayerMask _unboardedGroundMask;
+    private int _worldLedgeLayer;
+    private int _legacyNodeDockLayer;
 
     private int _hullBit;
     private int _hullItemBit;
     private int _hatchLedgeBit;
+    private int _groundBit;
+    private int _nodeGroundBit;
+    private int _worldLedgeBit;
+    private int _legacyNodeDockBit;
+
     private int _nonBoatWorldBits;
+
+    private LayerMask _boardedGroundMask;
+    private LayerMask _unboardedGroundMask;
 
     private SpriteRenderer[] _spriteRenderers;
     private string[] _originalSortingLayerNames;
@@ -51,32 +64,8 @@ public sealed class PlayerBoardingState : MonoBehaviour
         _motor = GetComponent<CharacterMotor2D>();
 
         CacheSpriteRenderers();
-
-        _hullLayer = LayerMask.NameToLayer(hullLayerName);
-        _hullItemLayer = LayerMask.NameToLayer(hullItemLayerName);
-        _hatchLedgeLayer = LayerMask.NameToLayer(hatchLedgeLayerName);
-        _groundLayer = LayerMask.NameToLayer(groundLayerName);
-        _nodeGroundLayer = LayerMask.NameToLayer(nodeGroundLayerName);
-        _nodeDockLayer = LayerMask.NameToLayer(nodeDockLayerName);
-
-        if (_hullLayer < 0) Debug.LogError($"Layer '{hullLayerName}' not found.", this);
-        if (_hullItemLayer < 0) Debug.LogError($"Layer '{hullItemLayerName}' not found.", this);
-        if (_hatchLedgeLayer < 0) Debug.LogError($"Layer '{hatchLedgeLayerName}' not found.", this);
-        if (_groundLayer < 0) Debug.LogError($"Layer '{groundLayerName}' not found.", this);
-        if (_nodeGroundLayer < 0) Debug.LogError($"Layer '{nodeGroundLayerName}' not found.", this);
-        if (_nodeDockLayer < 0) Debug.LogError($"Layer '{nodeDockLayerName}' not found.", this);
-
-        _hullBit = LayerBitOrZero(_hullLayer);
-        _hullItemBit = LayerBitOrZero(_hullItemLayer);
-        _hatchLedgeBit = LayerBitOrZero(_hatchLedgeLayer);
-
-        _nonBoatWorldBits =
-            LayerBitOrZero(_groundLayer) |
-            LayerBitOrZero(_nodeGroundLayer) |
-            LayerBitOrZero(_nodeDockLayer);
-
-        _boardedGroundMask = _hullBit | _hatchLedgeBit;
-        _unboardedGroundMask = _nonBoatWorldBits;
+        CacheLayers();
+        BuildMasks();
 
         ApplyMask();
         ApplySpriteSorting();
@@ -114,8 +103,70 @@ public sealed class PlayerBoardingState : MonoBehaviour
         }
     }
 
+    [ContextMenu("Reapply Collision Mask")]
+    public void ReapplyCollisionMask()
+    {
+        CacheLayers();
+        BuildMasks();
+        ApplyMask();
+    }
+
+    private void CacheLayers()
+    {
+        _hullLayer = LayerMask.NameToLayer(hullLayerName);
+        _hullItemLayer = LayerMask.NameToLayer(hullItemLayerName);
+        _hatchLedgeLayer = LayerMask.NameToLayer(hatchLedgeLayerName);
+        _groundLayer = LayerMask.NameToLayer(groundLayerName);
+        _nodeGroundLayer = LayerMask.NameToLayer(nodeGroundLayerName);
+        _worldLedgeLayer = LayerMask.NameToLayer(worldLedgeLayerName);
+
+        _legacyNodeDockLayer = string.IsNullOrWhiteSpace(legacyNodeDockLayerName)
+            ? -1
+            : LayerMask.NameToLayer(legacyNodeDockLayerName);
+
+        if (_hullLayer < 0) Debug.LogError($"Layer '{hullLayerName}' not found.", this);
+        if (_hullItemLayer < 0) Debug.LogError($"Layer '{hullItemLayerName}' not found.", this);
+        if (_hatchLedgeLayer < 0) Debug.LogError($"Layer '{hatchLedgeLayerName}' not found.", this);
+        if (_groundLayer < 0) Debug.LogError($"Layer '{groundLayerName}' not found.", this);
+        if (_nodeGroundLayer < 0) Debug.LogError($"Layer '{nodeGroundLayerName}' not found.", this);
+        if (_worldLedgeLayer < 0) Debug.LogError($"Layer '{worldLedgeLayerName}' not found.", this);
+
+        if (!string.IsNullOrWhiteSpace(legacyNodeDockLayerName) && _legacyNodeDockLayer < 0)
+            Debug.LogWarning($"Legacy layer '{legacyNodeDockLayerName}' not found. Ignoring.", this);
+
+        _hullBit = LayerBitOrZero(_hullLayer);
+        _hullItemBit = LayerBitOrZero(_hullItemLayer);
+        _hatchLedgeBit = LayerBitOrZero(_hatchLedgeLayer);
+        _groundBit = LayerBitOrZero(_groundLayer);
+        _nodeGroundBit = LayerBitOrZero(_nodeGroundLayer);
+        _worldLedgeBit = LayerBitOrZero(_worldLedgeLayer);
+        _legacyNodeDockBit = LayerBitOrZero(_legacyNodeDockLayer);
+    }
+
+    private void BuildMasks()
+    {
+        _nonBoatWorldBits =
+            _groundBit |
+            _nodeGroundBit |
+            _worldLedgeBit |
+            _legacyNodeDockBit;
+
+        _boardedGroundMask =
+            _hullBit |
+            _hatchLedgeBit;
+
+        _unboardedGroundMask =
+            _groundBit |
+            _nodeGroundBit |
+            _worldLedgeBit |
+            _legacyNodeDockBit;
+    }
+
     private void ApplyMask()
     {
+        if (_rb == null || _motor == null)
+            return;
+
         int mask = _rb.excludeLayers;
 
         // Player should never collide with loose boat-owned visual/context items.
@@ -124,26 +175,42 @@ public sealed class PlayerBoardingState : MonoBehaviour
 
         if (IsBoarded)
         {
-            // Boarded player collides with boat hull...
+            // Boarded player collides with boat hull and hatch ledges.
             mask &= ~_hullBit;
+            mask &= ~_hatchLedgeBit;
 
-            // ...but ignores non-boat world geometry like docks and node ground.
-            mask |= _nonBoatWorldBits;
+            // Boarded player ignores world ground and world ledges/docks.
+            mask |= _groundBit;
+            mask |= _nodeGroundBit;
+            mask |= _worldLedgeBit;
+            mask |= _legacyNodeDockBit;
 
             _motor.groundMask = _boardedGroundMask;
         }
         else
         {
-            // Unboarded player ignores boat hull...
+            // Unboarded player ignores boat hull and boat hatch ledges.
             mask |= _hullBit;
+            mask |= _hatchLedgeBit;
 
-            // ...but collides with normal world ground/docks.
-            mask &= ~_nonBoatWorldBits;
+            // Unboarded player collides with world ground and world one-way ledges.
+            mask &= ~_groundBit;
+            mask &= ~_nodeGroundBit;
+            mask &= ~_worldLedgeBit;
+            mask &= ~_legacyNodeDockBit;
 
             _motor.groundMask = _unboardedGroundMask;
         }
 
         _rb.excludeLayers = mask;
+
+        if (logMaskChanges)
+        {
+            Debug.Log(
+                $"[PlayerBoardingState:{name}] ApplyMask IsBoarded={IsBoarded} " +
+                $"excludeLayers={_rb.excludeLayers.value} groundMask={_motor.groundMask.value}",
+                this);
+        }
     }
 
     private void CacheSpriteRenderers()

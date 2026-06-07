@@ -421,7 +421,7 @@ public sealed class DeckBoardZone :
 
     public bool ShouldShowHoverLabel(in InteractContext context)
     {
-        return false;
+        return CanInteract(context);
     }
 
     public void GetPromptActions(in InteractContext context, List<PromptAction> actions)

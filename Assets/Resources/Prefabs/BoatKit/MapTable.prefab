@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3736039036697952612}
   - component: {fileID: 3584350135759358106}
   - component: {fileID: 3245004221028788987}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MapTable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,8 +103,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   priority: 40
   maxUseDistance: 2
-  mapService: {fileID: 0}
+  mapRunner: {fileID: 0}
   toggle: 1
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
 --- !u!61 &3245004221028788987
 BoxCollider2D:
   m_ObjectHideFlags: 0
