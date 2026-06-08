@@ -7,15 +7,10 @@ public sealed class PlayerBoardingState : MonoBehaviour
 {
     [Header("Layer Names")]
     [SerializeField] private string hullLayerName = "Hull";
-    [SerializeField] private string hullItemLayerName = "HullItem";
+    [SerializeField] private string boatItemLayerName = "BoatItem";
     [SerializeField] private string hatchLedgeLayerName = "HatchLedge";
     [SerializeField] private string groundLayerName = "Ground";
-    [SerializeField] private string nodeGroundLayerName = "NodeGround";
     [SerializeField] private string worldLedgeLayerName = "WorldLedge";
-
-    [Header("Legacy / Migration")]
-    [Tooltip("Optional old dock layer. Leave blank once all docks have moved to WorldLedge.")]
-    [SerializeField] private string legacyNodeDockLayerName = "";
 
     [Header("Sprite Sorting")]
     [SerializeField] private string boardedSortingLayerName = "BoatPlayer";
@@ -34,20 +29,16 @@ public sealed class PlayerBoardingState : MonoBehaviour
     private CharacterMotor2D _motor;
 
     private int _hullLayer;
-    private int _hullItemLayer;
+    private int _boatItemLayer;
     private int _hatchLedgeLayer;
     private int _groundLayer;
-    private int _nodeGroundLayer;
     private int _worldLedgeLayer;
-    private int _legacyNodeDockLayer;
 
     private int _hullBit;
-    private int _hullItemBit;
+    private int _boatItemBit;
     private int _hatchLedgeBit;
     private int _groundBit;
-    private int _nodeGroundBit;
     private int _worldLedgeBit;
-    private int _legacyNodeDockBit;
 
     private int _nonBoatWorldBits;
 
@@ -114,42 +105,45 @@ public sealed class PlayerBoardingState : MonoBehaviour
     private void CacheLayers()
     {
         _hullLayer = LayerMask.NameToLayer(hullLayerName);
-        _hullItemLayer = LayerMask.NameToLayer(hullItemLayerName);
+        _boatItemLayer = string.IsNullOrWhiteSpace(boatItemLayerName)
+            ? -1
+            : LayerMask.NameToLayer(boatItemLayerName);
         _hatchLedgeLayer = LayerMask.NameToLayer(hatchLedgeLayerName);
         _groundLayer = LayerMask.NameToLayer(groundLayerName);
-        _nodeGroundLayer = LayerMask.NameToLayer(nodeGroundLayerName);
         _worldLedgeLayer = LayerMask.NameToLayer(worldLedgeLayerName);
 
-        _legacyNodeDockLayer = string.IsNullOrWhiteSpace(legacyNodeDockLayerName)
-            ? -1
-            : LayerMask.NameToLayer(legacyNodeDockLayerName);
+        if (_hullLayer < 0)
+            Debug.LogError($"Layer '{hullLayerName}' not found.", this);
 
-        if (_hullLayer < 0) Debug.LogError($"Layer '{hullLayerName}' not found.", this);
-        if (_hullItemLayer < 0) Debug.LogError($"Layer '{hullItemLayerName}' not found.", this);
-        if (_hatchLedgeLayer < 0) Debug.LogError($"Layer '{hatchLedgeLayerName}' not found.", this);
-        if (_groundLayer < 0) Debug.LogError($"Layer '{groundLayerName}' not found.", this);
-        if (_nodeGroundLayer < 0) Debug.LogError($"Layer '{nodeGroundLayerName}' not found.", this);
-        if (_worldLedgeLayer < 0) Debug.LogError($"Layer '{worldLedgeLayerName}' not found.", this);
+        if (!string.IsNullOrWhiteSpace(boatItemLayerName) && _boatItemLayer < 0)
+        {
+            Debug.LogWarning(
+                $"[PlayerBoardingState:{name}] Optional layer '{boatItemLayerName}' not found. " +
+                "BoatItem exclusion will be skipped.",
+                this);
+        }
 
-        if (!string.IsNullOrWhiteSpace(legacyNodeDockLayerName) && _legacyNodeDockLayer < 0)
-            Debug.LogWarning($"Legacy layer '{legacyNodeDockLayerName}' not found. Ignoring.", this);
+        if (_hatchLedgeLayer < 0)
+            Debug.LogError($"Layer '{hatchLedgeLayerName}' not found.", this);
+
+        if (_groundLayer < 0)
+            Debug.LogError($"Layer '{groundLayerName}' not found.", this);
+
+        if (_worldLedgeLayer < 0)
+            Debug.LogError($"Layer '{worldLedgeLayerName}' not found.", this);
 
         _hullBit = LayerBitOrZero(_hullLayer);
-        _hullItemBit = LayerBitOrZero(_hullItemLayer);
+        _boatItemBit = LayerBitOrZero(_boatItemLayer);
         _hatchLedgeBit = LayerBitOrZero(_hatchLedgeLayer);
         _groundBit = LayerBitOrZero(_groundLayer);
-        _nodeGroundBit = LayerBitOrZero(_nodeGroundLayer);
         _worldLedgeBit = LayerBitOrZero(_worldLedgeLayer);
-        _legacyNodeDockBit = LayerBitOrZero(_legacyNodeDockLayer);
     }
 
     private void BuildMasks()
     {
         _nonBoatWorldBits =
             _groundBit |
-            _nodeGroundBit |
-            _worldLedgeBit |
-            _legacyNodeDockBit;
+            _worldLedgeBit;
 
         _boardedGroundMask =
             _hullBit |
@@ -157,9 +151,7 @@ public sealed class PlayerBoardingState : MonoBehaviour
 
         _unboardedGroundMask =
             _groundBit |
-            _nodeGroundBit |
-            _worldLedgeBit |
-            _legacyNodeDockBit;
+            _worldLedgeBit;
     }
 
     private void ApplyMask()
@@ -169,21 +161,18 @@ public sealed class PlayerBoardingState : MonoBehaviour
 
         int mask = _rb.excludeLayers;
 
-        // Player should never collide with loose boat-owned visual/context items.
-        // HullItem is for visibility/context, not physical blocking.
-        mask |= _hullItemBit;
+        // BoatItem is for loose boat-owned items/cargo, not player body blocking.
+        // Optional because early layer cleanup may not have populated/created it yet.
+        mask |= _boatItemBit;
 
         if (IsBoarded)
         {
-            // Boarded player collides with boat hull and hatch ledges.
+            // Boarded player collides with boat hull and boat hatch ledges.
             mask &= ~_hullBit;
             mask &= ~_hatchLedgeBit;
 
             // Boarded player ignores world ground and world ledges/docks.
-            mask |= _groundBit;
-            mask |= _nodeGroundBit;
-            mask |= _worldLedgeBit;
-            mask |= _legacyNodeDockBit;
+            mask |= _nonBoatWorldBits;
 
             _motor.groundMask = _boardedGroundMask;
         }
@@ -194,10 +183,7 @@ public sealed class PlayerBoardingState : MonoBehaviour
             mask |= _hatchLedgeBit;
 
             // Unboarded player collides with world ground and world one-way ledges.
-            mask &= ~_groundBit;
-            mask &= ~_nodeGroundBit;
-            mask &= ~_worldLedgeBit;
-            mask &= ~_legacyNodeDockBit;
+            mask &= ~_nonBoatWorldBits;
 
             _motor.groundMask = _unboardedGroundMask;
         }

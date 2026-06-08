@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2714531349868757175}
   - component: {fileID: 5219555745839060234}
   - component: {fileID: 2222744749705866886}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BoardedVolume
   m_TagString: PlayerBoat
   m_Icon: {fileID: 0}

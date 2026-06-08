@@ -222,8 +222,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   hullLayerName: Hull
   groundLayerName: Ground
-  nodeGroundLayerName: NodeGround
-  nodeDockLayerName: NodeDock
+  worldLedgeLayerName: WorldLedge
   verboseLogging: 0
 --- !u!114 &1874386490665889988
 MonoBehaviour:
@@ -393,6 +392,7 @@ MonoBehaviour:
   cargoLabelFontSize: 3
   cargoLabelMaxCharacters: 14
   cargoLabelSortingOrderOffset: 2
+  generatedInteractableLayerName: Interactable
   verboseLogging: 0
 --- !u!114 &7390012328992299111
 MonoBehaviour:
@@ -2040,8 +2040,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   hullLayerName: Hull
   groundLayerName: Ground
-  nodeGroundLayerName: NodeGround
-  nodeDockLayerName: NodeDock
+  worldLedgeLayerName: WorldLedge
   verboseLogging: 0
 --- !u!114 &9058010027773856072
 MonoBehaviour:

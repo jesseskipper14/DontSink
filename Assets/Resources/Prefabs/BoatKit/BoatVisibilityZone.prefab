@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 298977615062361242}
   - component: {fileID: 3828344198402984753}
   - component: {fileID: -3999036889601661715}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BoatVisibilityZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -160,8 +160,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   hullLayerName: Hull
   groundLayerName: Ground
-  nodeGroundLayerName: NodeGround
-  nodeDockLayerName: NodeDock
+  worldLedgeLayerName: WorldLedge
   verboseLogging: 0
 --- !u!114 &7045026607427306955
 MonoBehaviour:
@@ -331,6 +330,7 @@ MonoBehaviour:
   cargoLabelFontSize: 3
   cargoLabelMaxCharacters: 14
   cargoLabelSortingOrderOffset: 2
+  generatedInteractableLayerName: Interactable
   verboseLogging: 0
 --- !u!114 &1446531243483172515
 MonoBehaviour:
@@ -2145,7 +2145,7 @@ GameObject:
   - component: {fileID: 7440548619045851906}
   - component: {fileID: 1614986500716848677}
   - component: {fileID: 211516773896945278}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: TestBoat_10_Compartment_Flooding
   m_TagString: PlayerBoat
   m_Icon: {fileID: 0}
@@ -2419,7 +2419,7 @@ MonoBehaviour:
   targetCamera: {fileID: 0}
   hideByCameraMaskWhenInterior:
     serializedVersion: 2
-    m_Bits: 2163712
+    m_Bits: 2098176
   autoFindMainCamera: 1
   logVisibility: 0
 --- !u!114 &3994175581240845045

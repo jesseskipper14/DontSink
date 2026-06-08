@@ -34,6 +34,9 @@ public sealed class StorageRackVisualSlots : MonoBehaviour, IInstalledModuleLife
     [SerializeField] private int cargoLabelMaxCharacters = 14;
     [SerializeField] private int cargoLabelSortingOrderOffset = 2;
 
+    [Header("Generated Interaction Layer")]
+    [SerializeField] private string generatedInteractableLayerName = "Interactable";
+
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = false;
 
@@ -250,6 +253,10 @@ public sealed class StorageRackVisualSlots : MonoBehaviour, IInstalledModuleLife
             sprite,
             anchor);
 
+        int interactableLayer = LayerMask.NameToLayer(generatedInteractableLayerName);
+        if (interactableLayer >= 0)
+            SetLayerRecursive(visual, interactableLayer);
+
         if (showCargoLabels && CargoLabelFormatter.IsCargo(item))
             AddCargoLabelToVisual(visual, item);
 
@@ -266,6 +273,18 @@ public sealed class StorageRackVisualSlots : MonoBehaviour, IInstalledModuleLife
         interactable.Initialize(storageModule, slotIndex);
 
         return visual;
+    }
+
+    private static void SetLayerRecursive(GameObject root, int layer)
+    {
+        if (root == null || layer < 0)
+            return;
+
+        root.layer = layer;
+
+        Transform t = root.transform;
+        for (int i = 0; i < t.childCount; i++)
+            SetLayerRecursive(t.GetChild(i).gameObject, layer);
     }
 
     private void AddCargoLabelToVisual(GameObject visual, ItemInstance item)

@@ -554,7 +554,7 @@ MonoBehaviour:
   includeInactiveRenderers: 1
   boatOwnedSortingLayer: BoatItem
   boatOwnedSortingOrder: 0
-  boatOwnedGameObjectLayer: HullItem
+  boatOwnedGameObjectLayer: BoatItem
   applyGameObjectLayerToChildren: 1
   restoreOriginalSortingOnUnowned: 1
   restoreOriginalGameObjectLayerOnUnowned: 1

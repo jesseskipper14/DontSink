@@ -18,19 +18,19 @@ TagManager:
   - Hull
   - Water
   - UI
-  - Internal
+  - InternalSensor
   - Ocean
   - Interactable
   - MapNodes
-  - NodeCargo
-  - NodePlayer
-  - NodeGround
+  - WorldItem
+  - 
+  - 
   - Ground
-  - NodeWater
-  - NodeBuildings
-  - NodeDock
+  - 
+  - 
+  - 
   - Player
-  - HullItem
+  - BoatItem
   - HatchLedge
   - UnderwaterResource
   - WorldLedge

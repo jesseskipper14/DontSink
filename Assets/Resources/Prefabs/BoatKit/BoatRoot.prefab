@@ -30,7 +30,7 @@ GameObject:
   - component: {fileID: 4829187434485389288}
   - component: {fileID: 2425872415087118993}
   - component: {fileID: 4658135062933648623}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BoatRoot
   m_TagString: PlayerBoat
   m_Icon: {fileID: 0}
@@ -286,7 +286,7 @@ MonoBehaviour:
   targetCamera: {fileID: 0}
   hideByCameraMaskWhenInterior:
     serializedVersion: 2
-    m_Bits: 2163712
+    m_Bits: 2098176
   autoFindMainCamera: 1
   logVisibility: 0
 --- !u!114 &5255386316628391027

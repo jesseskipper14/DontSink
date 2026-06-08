@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4338973575201875102}
   - component: {fileID: 9498296997860634}
   - component: {fileID: 5374762630698178172}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BoatShell_Wooden
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126,7 +126,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3630452685040909368}
   - component: {fileID: 7856283110679533368}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BoatShell_Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

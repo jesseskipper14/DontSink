@@ -10,16 +10,14 @@ public sealed class BoatOwnedItemLayerPolicy : MonoBehaviour
     [Header("Layer Names")]
     [SerializeField] private string hullLayerName = "Hull";
     [SerializeField] private string groundLayerName = "Ground";
-    [SerializeField] private string nodeGroundLayerName = "NodeGround";
-    [SerializeField] private string nodeDockLayerName = "NodeDock";
+    [SerializeField] private string worldLedgeLayerName = "WorldLedge";
 
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = false;
 
     private int _hullLayer;
     private int _groundLayer;
-    private int _nodeGroundLayer;
-    private int _nodeDockLayer;
+    private int _worldLedgeLayer;
 
     private int _hullBit;
     private int _nonBoatWorldBits;
@@ -52,6 +50,7 @@ public sealed class BoatOwnedItemLayerPolicy : MonoBehaviour
         ApplyNow();
     }
 
+    [ContextMenu("Apply Layer Policy Now")]
     public void ApplyNow()
     {
         Initialize();
@@ -69,14 +68,14 @@ public sealed class BoatOwnedItemLayerPolicy : MonoBehaviour
         if (boatOwned)
         {
             // Boat-owned item behaves like boarded player:
-            // collide with boat hull, ignore node/world/dock geometry.
+            // collide with boat hull, ignore world ground / docks / ledges.
             mask &= ~_hullBit;
             mask |= _nonBoatWorldBits;
         }
         else
         {
             // World/unowned item behaves like unboarded player:
-            // ignore boat hull, collide with normal world/dock geometry.
+            // ignore boat hull, collide with world ground / docks / ledges.
             mask |= _hullBit;
             mask &= ~_nonBoatWorldBits;
         }
@@ -102,20 +101,22 @@ public sealed class BoatOwnedItemLayerPolicy : MonoBehaviour
 
         _hullLayer = LayerMask.NameToLayer(hullLayerName);
         _groundLayer = LayerMask.NameToLayer(groundLayerName);
-        _nodeGroundLayer = LayerMask.NameToLayer(nodeGroundLayerName);
-        _nodeDockLayer = LayerMask.NameToLayer(nodeDockLayerName);
+        _worldLedgeLayer = LayerMask.NameToLayer(worldLedgeLayerName);
 
-        if (_hullLayer < 0) Debug.LogError($"[BoatOwnedItemLayerPolicy:{name}] Layer '{hullLayerName}' not found.", this);
-        if (_groundLayer < 0) Debug.LogError($"[BoatOwnedItemLayerPolicy:{name}] Layer '{groundLayerName}' not found.", this);
-        if (_nodeGroundLayer < 0) Debug.LogError($"[BoatOwnedItemLayerPolicy:{name}] Layer '{nodeGroundLayerName}' not found.", this);
-        if (_nodeDockLayer < 0) Debug.LogError($"[BoatOwnedItemLayerPolicy:{name}] Layer '{nodeDockLayerName}' not found.", this);
+        if (_hullLayer < 0)
+            Debug.LogError($"[BoatOwnedItemLayerPolicy:{name}] Layer '{hullLayerName}' not found.", this);
+
+        if (_groundLayer < 0)
+            Debug.LogError($"[BoatOwnedItemLayerPolicy:{name}] Layer '{groundLayerName}' not found.", this);
+
+        if (_worldLedgeLayer < 0)
+            Debug.LogError($"[BoatOwnedItemLayerPolicy:{name}] Layer '{worldLedgeLayerName}' not found.", this);
 
         _hullBit = LayerBitOrZero(_hullLayer);
 
         _nonBoatWorldBits =
             LayerBitOrZero(_groundLayer) |
-            LayerBitOrZero(_nodeGroundLayer) |
-            LayerBitOrZero(_nodeDockLayer);
+            LayerBitOrZero(_worldLedgeLayer);
 
         _initialized = true;
     }
