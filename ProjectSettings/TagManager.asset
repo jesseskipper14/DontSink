@@ -48,14 +48,20 @@ TagManager:
   - name: Background
     uniqueID: 3125439503
     locked: 0
-  - name: Water
+  - name: BackWater
     uniqueID: 2980690125
     locked: 0
-  - name: IslandView
+  - name: WorldBackdrop
     uniqueID: 2059896495
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Ground
+    uniqueID: 3622943555
+    locked: 0
+  - name: WorldBuildings
+    uniqueID: 3915772453
     locked: 0
   - name: BoatView
     uniqueID: 2424407429
@@ -69,32 +75,29 @@ TagManager:
   - name: BoatItem
     uniqueID: 2258519049
     locked: 0
-  - name: BoatHeldCargo
-    uniqueID: 4162945355
-    locked: 0
   - name: BoatForehull
     uniqueID: 2159502531
+    locked: 0
+  - name: WorldDock
+    uniqueID: 939679711
+    locked: 0
+  - name: WorldCargo
+    uniqueID: 2500368693
+    locked: 0
+  - name: WorldPlayer
+    uniqueID: 1514476325
+    locked: 0
+  - name: WorldItem
+    uniqueID: 3129457621
+    locked: 0
+  - name: UnderwaterResource
+    uniqueID: 1261396243
     locked: 0
   - name: Foreground
     uniqueID: 4003967691
     locked: 0
-  - name: NodeBuildings
-    uniqueID: 3915772453
-    locked: 0
-  - name: NodeCargo
-    uniqueID: 2500368693
-    locked: 0
-  - name: NodePlayer
-    uniqueID: 1514476325
-    locked: 0
-  - name: NodeHeldCargo
-    uniqueID: 1939965397
-    locked: 0
-  - name: NodeWater
+  - name: FrontWater
     uniqueID: 629402113
-    locked: 0
-  - name: NodeGround
-    uniqueID: 3312340479
     locked: 0
   m_RenderingLayers:
   - Default

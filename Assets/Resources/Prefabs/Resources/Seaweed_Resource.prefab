@@ -76,7 +76,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1939965397
+  m_SortingLayerID: 1261396243
   m_SortingLayer: 11
   m_SortingOrder: 0
   m_Sprite: {fileID: 1417598497437579791, guid: 5918dfa0d31fe144cbda4aa64ac54ed5, type: 3}
@@ -148,8 +148,12 @@ MonoBehaviour:
     remainingCharges: 0
     discovered: 0
     depleted: 0
-  useBuiltInDebugInput: 1
-  debugInteractKey: 101
+  promptAnchor: {fileID: 0}
+  hoverNameRange: 5
+  actionRange: 2
+  interactionPriority: 60
+  pickupPriority: 70
+  debugHarvest: 1
 --- !u!1 &9130302141471108845
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,7 +227,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1939965397
+  m_SortingLayerID: 1261396243
   m_SortingLayer: 11
   m_SortingOrder: -1
   m_Sprite: {fileID: 1417598497437579791, guid: 5918dfa0d31fe144cbda4aa64ac54ed5, type: 3}

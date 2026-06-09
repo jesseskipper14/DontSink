@@ -172,7 +172,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.3, y: 1.2}
+  m_Size: {x: 1.4, y: 1.4}
   m_EdgeRadius: 0
 --- !u!114 &7741308300009120460
 MonoBehaviour:
@@ -227,11 +227,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ownedItem: {fileID: -4944119643132668274}
-  rb: {fileID: 0}
+  rb: {fileID: -9075577080980057753}
   hullLayerName: Hull
   groundLayerName: Ground
-  nodeGroundLayerName: NodeGround
-  nodeDockLayerName: NodeDock
+  worldLedgeLayerName: WorldLedge
   verboseLogging: 0
 --- !u!114 &-1145900039046892594
 MonoBehaviour:
@@ -247,12 +246,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ownedItem: {fileID: -4944119643132668274}
   includeInactiveRenderers: 1
-  boatOwnedSortingLayer: BoatItem
+  boatOwnedSortingLayer: BoatCargo
   boatOwnedSortingOrder: 0
-  boatOwnedGameObjectLayer: HullItem
+  boatOwnedGameObjectLayer: BoatItem
   applyGameObjectLayerToChildren: 0
-  restoreOriginalSortingOnUnowned: 1
-  restoreOriginalGameObjectLayerOnUnowned: 1
+  restoreOriginalSortingOnUnowned: 0
+  restoreOriginalGameObjectLayerOnUnowned: 0
   verboseLogging: 0
 --- !u!114 &-3808767628955649266
 MonoBehaviour:
@@ -300,6 +299,9 @@ MonoBehaviour:
   bodySource: {fileID: 5505755446079400409}
   waveManager: {fileID: 0}
   wave: {fileID: 0}
+  useBoatWaterContext: 1
+  explicitWaterContext: {fileID: 0}
+  boatBodyAlwaysUsesOcean: 1
   sliceCount: 10
   lastTotalSubmersion: 0
   enabledFlag: 1
@@ -319,9 +321,6 @@ MonoBehaviour:
   worldItem: {fileID: 7741308300009120460}
   label: {fileID: 1022857463530563690}
   sortingSource: {fileID: 0}
-  stripCrateOfPrefix: 1
-  stripCargoPrefix: 1
-  stripCrateSuffix: 1
   maxCharacters: 14
   syncSortingEveryFrame: 1
   sortingOrderOffset: 2

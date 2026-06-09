@@ -106,7 +106,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1870559867
-  m_SortingLayer: 1
+  m_SortingLayer: 3
   m_SortingOrder: 10
   m_Sprite: {fileID: -9217080715858001475, guid: fea0a2ee825067540a7288d2a67d731b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -255,8 +255,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1939965397
-  m_SortingLayer: 11
+  m_SortingLayerID: -1165509675
+  m_SortingLayer: 10
   m_SortingOrder: -1
   m_Sprite: {fileID: 6599434632670861906, guid: c313ebc5092a7844ea5c0db2902c43c9, type: 3}
   m_Color: {r: 0.49381453, g: 0.59341216, b: 0.764151, a: 1}
@@ -354,8 +354,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1870559867
-  m_SortingLayer: 1
+  m_SortingLayerID: -1165509675
+  m_SortingLayer: 10
   m_SortingOrder: 0
   m_Sprite: {fileID: 6599434632670861906, guid: c313ebc5092a7844ea5c0db2902c43c9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -535,8 +535,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   hullLayerName: Hull
   groundLayerName: Ground
-  nodeGroundLayerName: NodeGround
-  nodeDockLayerName: NodeDock
+  worldLedgeLayerName: WorldLedge
   verboseLogging: 0
 --- !u!114 &-1987137170849868778
 MonoBehaviour:
