@@ -11,6 +11,9 @@ public sealed class DoorAuthoring : MonoBehaviour
     [Tooltip("Collider that blocks passage while the door is closed.")]
     [SerializeField] private Collider2D blockingCollider;
 
+    [Tooltip("Trigger volume that keeps the player from grinding into the closed door blocker.")]
+    [SerializeField] private Collider2D playerSeparatorCollider;
+
     [Header("Opening")]
     [Tooltip("Fallback opening height if no blocking collider can provide one.")]
     [Min(0.1f)]
@@ -33,6 +36,8 @@ public sealed class DoorAuthoring : MonoBehaviour
     public SpriteRenderer OpenRenderer => openRenderer;
     public Collider2D BlockingCollider => blockingCollider;
     public bool StartsOpen => startsOpen;
+
+    public Collider2D PlayerSeparatorCollider => playerSeparatorCollider;
 
     public float OpeningHeight => Mathf.Max(0.1f, openingHeight);
     public float BuilderOpeningClearance => Mathf.Max(0f, builderOpeningClearance);
@@ -84,6 +89,19 @@ public sealed class DoorAuthoring : MonoBehaviour
 
         if (blockingCollider is BoxCollider2D box)
             openingHeight = Mathf.Max(0.1f, Mathf.Abs(box.size.y * box.transform.lossyScale.y));
+
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
+
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            string n = colliders[i].name.ToLowerInvariant();
+
+            if (playerSeparatorCollider == null &&
+                (n.Contains("separator") || n.Contains("playerstop") || n.Contains("player_stop")))
+            {
+                playerSeparatorCollider = colliders[i];
+            }
+        }
     }
 
     private void OnValidate()

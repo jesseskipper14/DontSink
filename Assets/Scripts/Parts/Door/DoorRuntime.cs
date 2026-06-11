@@ -163,6 +163,9 @@ public sealed class DoorRuntime : MonoBehaviour
 
         if (authoring.BlockingCollider != null)
             authoring.BlockingCollider.enabled = !isOpen;
+
+        if (authoring.PlayerSeparatorCollider != null)
+            authoring.PlayerSeparatorCollider.enabled = !isOpen;
     }
 
     private bool CanClose(out Collider2D blocker, out string reason)

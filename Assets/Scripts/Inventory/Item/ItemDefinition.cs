@@ -105,6 +105,13 @@ public sealed class ItemDefinition : ScriptableObject
     [Header("Equip")]
     [SerializeField] private BottomBarSlotType equipSlot = BottomBarSlotType.None;
 
+    [Tooltip("Extra equipment slots this item occupies while equipped. If empty, the item only occupies its Equip Slot.")]
+    [SerializeField] private BottomBarSlotType[] occupiedEquipSlots;
+
+    [Header("Wearable Visual")]
+    [Tooltip("Temporary v1 wearable overlay sprite. Later this can become a segmented visual definition.")]
+    [SerializeField] private Sprite wearableVisualSprite;
+
     [Header("Container")]
     [SerializeField] private bool isContainer;
     [Min(0)]
@@ -146,6 +153,35 @@ public sealed class ItemDefinition : ScriptableObject
     public bool IsInstallableModule => isModule && moduleDefinition != null;
     public BottomBarSlotType EquipSlot => equipSlot;
     public bool IsEquippable => equipSlot != BottomBarSlotType.None;
+
+    public IReadOnlyList<BottomBarSlotType> OccupiedEquipSlots => occupiedEquipSlots;
+    public Sprite WearableVisualSprite => wearableVisualSprite;
+    public bool HasWearableVisual => wearableVisualSprite != null;
+
+    public bool HasOccupiedEquipSlotOverrides =>
+        occupiedEquipSlots != null && occupiedEquipSlots.Length > 0;
+
+    public bool OccupiesEquipSlot(BottomBarSlotType anchorSlot, BottomBarSlotType queriedSlot)
+    {
+        if (queriedSlot == BottomBarSlotType.None)
+            return false;
+
+        // The anchor slot is always occupied, even if the override list forgets it.
+        if (queriedSlot == anchorSlot)
+            return true;
+
+        if (occupiedEquipSlots == null || occupiedEquipSlots.Length == 0)
+            return false;
+
+        for (int i = 0; i < occupiedEquipSlots.Length; i++)
+        {
+            if (occupiedEquipSlots[i] == queriedSlot)
+                return true;
+        }
+
+        return false;
+    }
+
     public bool IsContainer => isContainer && containerSlotCount > 0;
     public int ContainerSlotCount => IsContainer ? Mathf.Max(1, containerSlotCount) : 0;
     public int ContainerColumnCount => Mathf.Max(1, containerColumnCount);

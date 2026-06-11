@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
+  m_Name: item_diving_suit
+  m_EditorClassIdentifier: 
+  itemId: item_diving_suit
+  displayName: Diving Suit
+  icon: {fileID: 8759556981933542177, guid: f02be88a735f0e7499dd9f75fbb0830d, type: 3}
+  itemCategories: 1168
+  toolCapabilities: []
+  consumesContainedChargesWhileUsed: 0
+  chargeSourceCategories: 1024
+  chargeUsePerSecond: 0
+  minimumChargeToUse: 1
+  maxStack: 1
+  hasCharges: 0
+  maxCharges: 1
+  stowableInInventory: 1
+  droppable: 1
+  tradable: 1
+  disallowedParentSlots: 040000000500000006000000070000000800000009000000
+  preferredDisplacedDestination: 1
+  equipSlot: 14
+  occupiedEquipSlots: 02000000
+  wearableVisualSprite: {fileID: 8759556981933542177, guid: f02be88a735f0e7499dd9f75fbb0830d, type: 3}
+  isContainer: 0
+  containerSlotCount: 1
+  containerColumnCount: 1
+  allowedContainerCategories: 0
+  containerTier: 0
+  pickupMode: 1
+  pickupHoldDuration: 0.4
+  isModule: 0
+  moduleDefinition: {fileID: 0}
+  worldPrefab: {fileID: 61859146187821167, guid: f8e9876fc3e794f46bdb2f9ff08a6cc0, type: 3}
