@@ -22,8 +22,8 @@ MonoBehaviour:
   chargeUsePerSecond: 0
   minimumChargeToUse: 1
   maxStack: 1
-  hasCharges: 0
-  maxCharges: 1
+  hasCharges: 1
+  maxCharges: 100
   stowableInInventory: 1
   droppable: 1
   tradable: 1
@@ -32,6 +32,14 @@ MonoBehaviour:
   equipSlot: 14
   occupiedEquipSlots: 02000000
   wearableVisualSprite: {fileID: 8759556981933542177, guid: f02be88a735f0e7499dd9f75fbb0830d, type: 3}
+  equippedBuffs:
+  - {fileID: 11400000, guid: 18688fdb3a7154245ab36b62ce294914, type: 2}
+  - {fileID: 11400000, guid: 163880183e3a10c4089dd1058c2dc5cf, type: 2}
+  - {fileID: 11400000, guid: de2474d40daa41f4194571145e41a667, type: 2}
+  providesExternalAir: 1
+  externalAirSupplyPerSecond: 10
+  externalAirChargeUsePerSecond: 1
+  externalAirMaxAirBonus: 0
   isContainer: 0
   containerSlotCount: 1
   containerColumnCount: 1

@@ -1,5 +1,6 @@
-using UnityEngine;
+using Survival.Attributes;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Survival.Vitals
 {
@@ -14,6 +15,9 @@ namespace Survival.Vitals
             BadQuality,
             CriticalQuality
         }
+
+        [Header("Attributes")]
+        [SerializeField] private PlayerAttributeState attributes;
 
         [Header("Air Capacity (Units)")]
         [Min(0.1f)] public float baseMaxAir = 100f;
@@ -76,6 +80,9 @@ namespace Survival.Vitals
 
         void Awake()
         {
+            if (!attributes)
+                attributes = GetComponent<PlayerAttributeState>();
+
             if (!exertion) exertion = GetComponent<PlayerExertionEnergyState>();
 
             RebuildSources();
@@ -121,7 +128,11 @@ namespace Survival.Vitals
             {
                 // Recover lung gas quality toward environment/source quality
                 float target = Mathf.Clamp01(OxygenQuality01);
-                lungGasQuality01 = MoveTowardExp(lungGasQuality01, target, lungQualityRecoverPerSecond, dt);
+                float recoverPerSecond = attributes != null
+                    ? attributes.GetFloat(PlayerAttributeId.LungQualityRecoverPerSecond, lungQualityRecoverPerSecond)
+                    : lungQualityRecoverPerSecond;
+
+                lungGasQuality01 = MoveTowardExp(lungGasQuality01, target, recoverPerSecond, dt);
 
                 // For now, lung volume stays full when oxygenating
                 airCurrent = MaxAir;
@@ -132,7 +143,15 @@ namespace Survival.Vitals
                 var tier = exertion != null ? exertion.CurrentState : PlayerExertionEnergyState.ExertionState.Calm;
                 float demandMul = Mathf.Max(0f, demandByExertion.Get(tier));
 
-                float consume = baseQualityConsumePerSecond * demandMul;
+                float baseConsume = attributes != null
+                    ? attributes.GetFloat(PlayerAttributeId.AirQualityConsumePerSecond, baseQualityConsumePerSecond)
+                    : baseQualityConsumePerSecond;
+
+                float airUseMultiplier = attributes != null
+                    ? attributes.GetMultiplier(PlayerAttributeId.AirConsumptionMultiplier)
+                    : 1f;
+
+                float consume = baseConsume * demandMul * Mathf.Max(0.01f, airUseMultiplier);
                 lungGasQuality01 = Mathf.Max(lungQualityMin, lungGasQuality01 - consume * dt);
 
                 // Volume intentionally unchanged while holding breath
@@ -147,7 +166,10 @@ namespace Survival.Vitals
 
         private void RecomputeMaxAir()
         {
-            float max = baseMaxAir;
+            float max = attributes != null
+                ? attributes.GetFloat(PlayerAttributeId.MaxAir, baseMaxAir)
+                : baseMaxAir;
+
             for (int i = 0; i < _sources.Count; i++)
                 max += Mathf.Max(0f, _sources[i].MaxAirBonus);
 

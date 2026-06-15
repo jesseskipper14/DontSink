@@ -42,8 +42,8 @@ Material:
     m_Ints: []
     m_Floats:
     - _EnableExternalAlpha: 0
-    - _Radius: 0.24410832
-    - _Softness: 0.86685
+    - _Radius: 0.048969496
+    - _Softness: 0.9732894
     - _ZWrite: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

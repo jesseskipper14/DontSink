@@ -1,3 +1,4 @@
+using Survival.Attributes;
 using UnityEngine;
 
 /// <summary>
@@ -14,6 +15,9 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
 
     [SerializeField] private bool enabledFlag = true;
     [SerializeField] private int priority = 100;
+
+    [Header("Attributes")]
+    [SerializeField] private PlayerAttributeState attributes;
 
     [Header("Movement Fallover Penalty")]
     [Tooltip("At this angle from upright (deg), movement reaches crawl speed.")]
@@ -78,6 +82,9 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
             enabled = false;
             return;
         }
+
+        if (attributes == null)
+            attributes = GetComponent<PlayerAttributeState>();
     }
 
     public void ApplyForces(IForceBody body)
@@ -236,7 +243,11 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
                 if (v.y < 0f) v.y = 0f;
                 body.rb.linearVelocity = v;
 
-                body.AddForce(Vector2.up * ((motor.jumpImpulse * jumpAuth) * body.Mass / dt));
+                float jumpImpulse = attributes != null
+                    ? attributes.GetFloat(PlayerAttributeId.JumpImpulse, motor.jumpImpulse)
+                    : motor.jumpImpulse;
+
+                body.AddForce(Vector2.up * ((jumpImpulse * jumpAuth) * body.Mass / dt));
 
                 if (debugJumpDecisions)
                 {
@@ -264,8 +275,16 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
         float targetX = intent.MoveX;
 
         // Scale both speed cap and force so it *feels* like crawling, not ice-skating.
-        float scaledMaxSpeed = motor.maxSpeed * moveScale;
-        float scaledMoveForce = motor.moveForce * moveScale;
+        float walkMaxSpeed = attributes != null
+            ? attributes.GetFloat(PlayerAttributeId.WalkMaxSpeed, motor.maxSpeed)
+            : motor.maxSpeed;
+
+        float walkMoveForce = attributes != null
+            ? attributes.GetFloat(PlayerAttributeId.WalkMoveForce, motor.moveForce)
+            : motor.moveForce;
+
+        float scaledMaxSpeed = walkMaxSpeed * moveScale;
+        float scaledMoveForce = walkMoveForce * moveScale;
 
         var sub = GetComponent<PlayerSubmersionState>();
         if (sub != null && sub.InWater && !sub.SubmergedEnoughToSwim)
@@ -291,8 +310,16 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
         {
             // Authority scales "how much sprint you actually get"
             float sprintLerp = sprintAuth; // 1 = full sprint, 0.3 = weak sprint
-            scaledMaxSpeed *= Mathf.Lerp(1f, sprintSpeedMultiplier, sprintLerp);
-            scaledMoveForce *= Mathf.Lerp(1f, sprintForceMultiplier, sprintLerp);
+            float runSpeedMultiplier = attributes != null
+                ? attributes.GetFloat(PlayerAttributeId.RunSpeedMultiplier, sprintSpeedMultiplier)
+                : sprintSpeedMultiplier;
+
+            float runForceMultiplier = attributes != null
+                ? attributes.GetFloat(PlayerAttributeId.RunForceMultiplier, sprintForceMultiplier)
+                : sprintForceMultiplier;
+
+            scaledMaxSpeed *= Mathf.Lerp(1f, runSpeedMultiplier, sprintLerp);
+            scaledMoveForce *= Mathf.Lerp(1f, runForceMultiplier, sprintLerp);
         }
         else
         {

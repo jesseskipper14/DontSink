@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaec4fe174ee0ce46a4cad1d85953eb9, type: 3}
+  m_Name: ExertedBuff
+  m_EditorClassIdentifier: 
+  stableId: buff.exertion.exerted
+  displayName: Exerted
+  description: You are very exerted.
+  icon: {fileID: -2004465828975364965, guid: 9457d0b2f7349e84888942d9baebf9ae, type: 3}
+  polarity: 2
+  modifiers:
+  - attribute: 2
+    mode: 1
+    value: 1.1
+  - attribute: 0
+    mode: 1
+    value: 1.1
+  - attribute: 4
+    mode: 1
+    value: 1.1
+  - attribute: 20
+    mode: 1
+    value: 1.1
+  - attribute: 21
+    mode: 1
+    value: 1.1
+  - attribute: 22
+    mode: 1
+    value: 1.1
+  - attribute: 23
+    mode: 1
+    value: 1.1
+  - attribute: 24
+    mode: 1
+    value: 1.1
+  - attribute: 180
+    mode: 1
+    value: 0.8
+  - attribute: 24
+    mode: 1
+    value: 0.8
+  - attribute: 24
+    mode: 1
+    value: 0.8
+  - attribute: 24
+    mode: 1
+    value: 0.8
+  - attribute: 24
+    mode: 1
+    value: 0.8

@@ -1,0 +1,137 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 822d4371393b8954685cbe53027cc3cc, type: 3}
+  m_Name: PlayerAttributeProfile
+  m_EditorClassIdentifier: 
+  baseValues:
+  - attribute: 0
+    value: 5.5
+  - attribute: 1
+    value: 50
+  - attribute: 2
+    value: 2
+  - attribute: 3
+    value: 1.35
+  - attribute: 4
+    value: 6.5
+  - attribute: 20
+    value: 2.2
+  - attribute: 21
+    value: 25
+  - attribute: 22
+    value: 18
+  - attribute: 23
+    value: 22
+  - attribute: 24
+    value: 3
+  - attribute: 40
+    value: 100
+  - attribute: 41
+    value: 0.05
+  - attribute: 42
+    value: 1
+  - attribute: 43
+    value: 1.25
+  - attribute: 100
+    value: 1
+  - attribute: 101
+    value: 1
+  - attribute: 140
+    value: 1
+  - attribute: 141
+    value: 1
+  - attribute: 180
+    value: 1
+  - attribute: 60
+    value: 100
+  - attribute: 61
+    value: 0.08
+  - attribute: 62
+    value: 0.45
+  - attribute: 63
+    value: 0.98
+  - attribute: 64
+    value: 0.75
+  - attribute: 65
+    value: 1
+  - attribute: 66
+    value: 0.08
+  - attribute: 70
+    value: 2
+  - attribute: 71
+    value: 0.8
+  - attribute: 72
+    value: 1.2
+  - attribute: 73
+    value: 1
+  - attribute: 74
+    value: 1.6
+  - attribute: 75
+    value: 1
+  - attribute: 80
+    value: 0.7
+  - attribute: 81
+    value: 4
+  - attribute: 82
+    value: 2
+  - attribute: 83
+    value: 3
+  - attribute: 84
+    value: 0.4
+  - attribute: 85
+    value: 2
+  - attribute: 86
+    value: 1
+  - attribute: 90
+    value: 0.2
+  - attribute: 91
+    value: 0.65
+  - attribute: 92
+    value: 0.3
+  - attribute: 102
+    value: 0
+  - attribute: 142
+    value: 0
+  - attribute: 181
+    value: 0
+  - attribute: 182
+    value: 0
+  - attribute: 183
+    value: 0
+  - attribute: 184
+    value: 0
+  - attribute: 110
+    value: 0
+  - attribute: 111
+    value: 75
+  - attribute: 112
+    value: 14
+  - attribute: 113
+    value: 250
+  - attribute: 114
+    value: 0
+  - attribute: 115
+    value: 0
+  - attribute: 116
+    value: 10
+  - attribute: 117
+    value: 1.35
+  - attribute: 118
+    value: 0.35
+  - attribute: 119
+    value: 2.5
+  - attribute: 120
+    value: 0.65
+  - attribute: 121
+    value: 0.15
+  - attribute: 122
+    value: 1.5

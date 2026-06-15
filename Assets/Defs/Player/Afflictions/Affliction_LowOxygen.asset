@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stableId: aff.low_oxygen
   displayName: Low Oxygen
-  description: You are becoming hypoxic
-  icon: {fileID: 7343345947316701978, guid: fb68a83c98301874ba8bafb82ca35f84, type: 3}
+  description: You are hypoxic
+  icon: {fileID: 21300000, guid: 6865f1b97efc900409a8d5f72909de64, type: 3}
   tiers:
   - minSeverity: 0.1
     label: Mild

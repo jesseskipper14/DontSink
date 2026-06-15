@@ -10,12 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17875c459fdbf164f8226054c73a8ac1, type: 3}
-  m_Name: Affliction_Unconscious
+  m_Name: Affliction_CriticalOxygen
   m_EditorClassIdentifier: 
-  stableId: aff.unconscious
-  displayName: Unconscious
-  description: "You have lost consciousness\t"
-  icon: {fileID: 7343345947316701978, guid: fb68a83c98301874ba8bafb82ca35f84, type: 3}
+  stableId: aff.critical_oxygen
+  displayName: Critical Oxygen
+  description: You are critically hypoxic
+  icon: {fileID: 21300000, guid: 8759d419b11790a4ea25226b882d7174, type: 3}
   tiers:
   - minSeverity: 0
+    label: Critical
+  - minSeverity: 0.1
+    label: Critical
+  - minSeverity: 0.2
     label: Critical

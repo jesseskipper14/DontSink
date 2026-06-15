@@ -86,6 +86,24 @@ public sealed class PlayerDrowningForce : MonoBehaviour, IOrderedForceProvider
     private float _tugTimer;
     private float _tugTotalDuration;
 
+    // -----------------------------
+    // Public read state
+    // -----------------------------
+    /// <summary>True while the player is eligible for drowning tug pressure this tick.</summary>
+    public bool IsDrowning { get; private set; }
+
+    /// <summary>True only during the active downward tug portion of the drowning episode.</summary>
+    public bool IsTugging => _tugTimer > 0f;
+
+    /// <summary>0..1 drowning severity suitable for affliction display.</summary>
+    public float DrowningSeverity01 => IsDrowning ? Escalation01 : 0f;
+
+    /// <summary>Raw 0..1 escalation based on continuous zero-energy water time.</summary>
+    public float DrowningEscalation01 => Escalation01;
+
+    /// <summary>Seconds continuously spent eligible for drowning escalation.</summary>
+    public float ZeroEnergySeconds => _zeroEnergySeconds;
+
     void Awake()
     {
         if (!energy) energy = GetComponent<PlayerExertionEnergyState>();
@@ -95,8 +113,15 @@ public sealed class PlayerDrowningForce : MonoBehaviour, IOrderedForceProvider
         ResetEpisodeOnly();
     }
 
+    private void OnDisable()
+    {
+        ResetAll();
+    }
+
     public void ApplyForces(IForceBody body)
     {
+        IsDrowning = false;
+
         if (!enabledFlag) return;
         if (energy == null || submersion == null) return;
 
@@ -132,6 +157,8 @@ public sealed class PlayerDrowningForce : MonoBehaviour, IOrderedForceProvider
             ResetAll();
             return;
         }
+
+        IsDrowning = true;
 
         float dt = Time.fixedDeltaTime;
 
@@ -201,6 +228,7 @@ public sealed class PlayerDrowningForce : MonoBehaviour, IOrderedForceProvider
     // Resets both episode timers AND escalation.
     private void ResetAll()
     {
+        IsDrowning = false;
         _zeroEnergySeconds = 0f;
         ResetEpisodeOnly();
     }

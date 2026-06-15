@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaec4fe174ee0ce46a4cad1d85953eb9, type: 3}
+  m_Name: WindedBuff
+  m_EditorClassIdentifier: 
+  stableId: buff.exertion.winded
+  displayName: Winded
+  description: You are winded
+  icon: {fileID: 6416577080291455318, guid: aadfc2b9861d1324aad66d54df49640a, type: 3}
+  polarity: 0
+  modifiers:
+  - attribute: 2
+    mode: 1
+    value: 1.1
+  - attribute: 0
+    mode: 1
+    value: 1
+  - attribute: 4
+    mode: 1
+    value: 1
+  - attribute: 20
+    mode: 1
+    value: 1
+  - attribute: 21
+    mode: 1
+    value: 1
+  - attribute: 22
+    mode: 1
+    value: 1
+  - attribute: 23
+    mode: 1
+    value: 1
+  - attribute: 24
+    mode: 1
+    value: 1

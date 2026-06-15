@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17875c459fdbf164f8226054c73a8ac1, type: 3}
+  m_Name: Affliction_Drowning
+  m_EditorClassIdentifier: 
+  stableId: aff.drowning
+  displayName: Drowning
+  description: You are struggling to keep your head above the water due to exhaustion
+  icon: {fileID: 1930112592436524154, guid: 8e38081374f82b84a9d167a2354e928e, type: 3}
+  tiers:
+  - minSeverity: 0.1
+    label: Mild
+  - minSeverity: 0.35
+    label: Moderate
+  - minSeverity: 0.7
+    label: Severe

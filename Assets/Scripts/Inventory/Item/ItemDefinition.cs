@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Survival.Buffs;
 
 [System.Flags]
 public enum ItemCategoryFlags
@@ -112,6 +113,24 @@ public sealed class ItemDefinition : ScriptableObject
     [Tooltip("Temporary v1 wearable overlay sprite. Later this can become a segmented visual definition.")]
     [SerializeField] private Sprite wearableVisualSprite;
 
+    [Header("Equipped Buffs")]
+    [SerializeField] private PlayerBuffDefinition[] equippedBuffs;
+
+    [Header("External Air Source")]
+    [SerializeField] private bool providesExternalAir;
+
+    [Tooltip("Air units supplied per second while underwater and this item has charges.")]
+    [Min(0f)]
+    [SerializeField] private float externalAirSupplyPerSecond = 10f;
+
+    [Tooltip("Item charge units consumed per second while this air source is active.")]
+    [Min(0f)]
+    [SerializeField] private float externalAirChargeUsePerSecond = 1f;
+
+    [Tooltip("Optional extra max air capacity while equipped.")]
+    [Min(0f)]
+    [SerializeField] private float externalAirMaxAirBonus = 0f;
+
     [Header("Container")]
     [SerializeField] private bool isContainer;
     [Min(0)]
@@ -157,6 +176,12 @@ public sealed class ItemDefinition : ScriptableObject
     public IReadOnlyList<BottomBarSlotType> OccupiedEquipSlots => occupiedEquipSlots;
     public Sprite WearableVisualSprite => wearableVisualSprite;
     public bool HasWearableVisual => wearableVisualSprite != null;
+    public IReadOnlyList<PlayerBuffDefinition> EquippedBuffs => equippedBuffs;
+
+    public bool ProvidesExternalAir => providesExternalAir;
+    public float ExternalAirSupplyPerSecond => Mathf.Max(0f, externalAirSupplyPerSecond);
+    public float ExternalAirChargeUsePerSecond => Mathf.Max(0f, externalAirChargeUsePerSecond);
+    public float ExternalAirMaxAirBonus => Mathf.Max(0f, externalAirMaxAirBonus);
 
     public bool HasOccupiedEquipSlotOverrides =>
         occupiedEquipSlots != null && occupiedEquipSlots.Length > 0;
@@ -252,6 +277,17 @@ public sealed class ItemDefinition : ScriptableObject
 
         if (!hasCharges)
             maxCharges = 1;
+
+        externalAirSupplyPerSecond = Mathf.Max(0f, externalAirSupplyPerSecond);
+        externalAirChargeUsePerSecond = Mathf.Max(0f, externalAirChargeUsePerSecond);
+        externalAirMaxAirBonus = Mathf.Max(0f, externalAirMaxAirBonus);
+
+        if (!providesExternalAir)
+        {
+            externalAirSupplyPerSecond = 0f;
+            externalAirChargeUsePerSecond = 0f;
+            externalAirMaxAirBonus = 0f;
+        }
     }
 #endif
 }

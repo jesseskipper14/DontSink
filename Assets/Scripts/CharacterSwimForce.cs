@@ -1,3 +1,4 @@
+using Survival.Attributes;
 using UnityEngine;
 
 /// <summary>
@@ -13,6 +14,9 @@ public sealed class
 
     [SerializeField] private bool enabledFlag = true;
     [SerializeField] private int priority = 40;
+
+    [Header("Attributes")]
+    [SerializeField] private PlayerAttributeState attributes;
 
     [Header("Tuning")]
     [Min(0f)] public float swimMaxSpeedX = 2.2f;
@@ -77,6 +81,8 @@ public sealed class
             enabled = false;
             return;
         }
+        if (attributes == null)
+            attributes = GetComponent<PlayerAttributeState>();
 
         //_origDrag = _body.rb.linearDamping;
         //_origAngularDrag = _body.rb.angularDamping;
@@ -129,13 +135,33 @@ public sealed class
         float accelMultX = sprint ? Mathf.Lerp(1f, swimSprintAccelMultiplier, sprintLerp) : 1f;
         float vertMult = sprint ? Mathf.Lerp(1f, swimSprintVerticalMultiplier, sprintLerp) : 1f;
 
-        float maxSpeedX = swimMaxSpeedX * speedMultX;
-        float accelX = swimAccelX * accelMultX;
+        float baseSwimMaxSpeedX = attributes != null
+            ? attributes.GetFloat(PlayerAttributeId.SwimMaxSpeedX, swimMaxSpeedX)
+            : swimMaxSpeedX;
 
-        float upAccel = swimUpAccel * vertMult;
-        float downAccel = diveAccel * vertMult;
+        float baseSwimAccelX = attributes != null
+            ? attributes.GetFloat(PlayerAttributeId.SwimAccelX, swimAccelX)
+            : swimAccelX;
 
-        float maxSpeedY = swimMaxSpeedY * (sprint ? speedMultX : 1f);
+        float baseSwimUpAccel = attributes != null
+            ? attributes.GetFloat(PlayerAttributeId.SwimUpAccel, swimUpAccel)
+            : swimUpAccel;
+
+        float baseDiveAccel = attributes != null
+            ? attributes.GetFloat(PlayerAttributeId.DiveAccel, diveAccel)
+            : diveAccel;
+
+        float baseSwimMaxSpeedY = attributes != null
+            ? attributes.GetFloat(PlayerAttributeId.SwimMaxSpeedY, swimMaxSpeedY)
+            : swimMaxSpeedY;
+
+        float maxSpeedX = baseSwimMaxSpeedX * speedMultX;
+        float accelX = baseSwimAccelX * accelMultX;
+
+        float upAccel = baseSwimUpAccel * vertMult;
+        float downAccel = baseDiveAccel * vertMult;
+
+        float maxSpeedY = baseSwimMaxSpeedY * (sprint ? speedMultX : 1f);
 
         // Apply MOVE authority to horizontal capability (this is what you were missing)
         maxSpeedX *= moveAuth;

@@ -1,4 +1,5 @@
-﻿using Survival.Vitals;
+﻿using Survival.Attributes;
+using Survival.Vitals;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -29,7 +30,8 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour, IExertionRead
     [Header("Refs")]
     [SerializeField] private MonoBehaviour intentSourceBehaviour; // must implement ICharacterIntentSource
     [SerializeField] private PlayerSubmersionState submersion;    // optional but recommended
-    [SerializeField] private CharacterMotor2D motor; // optional
+    [SerializeField] private CharacterMotor2D motor;              // optional
+    [SerializeField] private PlayerAttributeState attributes;     // optional, falls back to local values if missing
 
     private ICharacterIntentSource _intent;
     private float _externalExertionCeiling01;
@@ -68,16 +70,27 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour, IExertionRead
 
     [Tooltip("Factor of exertion of regular treading needed to tread underwater")]
     [Min(0f)] public float underwaterTreadFactor = 0.2f;
+
     public float Exertion01 => exertion01;
 
     // -----------------------------
     // Energy model (0..1)
     // -----------------------------
     [Header("Energy (Discrete)")]
+    [Tooltip("Fallback max energy if PlayerAttributeState/profile is missing the ExertionEnergyMax attribute.")]
     [Min(0f)] public float energyMax = 100f;
+
     [Min(0f)] public float energyCurrent = 100f;
 
-    public float Energy01 => (energyMax <= 0.0001f) ? 0f : Mathf.Clamp01(energyCurrent / energyMax);
+    [Header("Effective Energy (read-only)")]
+    [SerializeField] private float _effectiveEnergyMax = 100f;
+
+    public float EffectiveEnergyMax => Mathf.Max(0.0001f, _effectiveEnergyMax);
+
+    public float Energy01 => (EffectiveEnergyMax <= 0.0001f)
+        ? 0f
+        : Mathf.Clamp01(energyCurrent / EffectiveEnergyMax);
+
     public bool CanSprint => energyCurrent > 0.0001f;
 
     [Tooltip("Exertion above this begins draining energy.")]
@@ -136,9 +149,21 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour, IExertionRead
 
     public ExertionState CurrentState { get; private set; } = ExertionState.Calm;
 
-    void Awake()
+    private void Awake()
     {
-        if (!submersion) submersion = GetComponent<PlayerSubmersionState>();
+        if (!submersion)
+            submersion = GetComponent<PlayerSubmersionState>();
+
+        if (!motor)
+            motor = GetComponent<CharacterMotor2D>();
+
+        if (!attributes)
+        {
+            attributes =
+                GetComponent<PlayerAttributeState>() ??
+                GetComponentInParent<PlayerAttributeState>() ??
+                GetComponentInChildren<PlayerAttributeState>(true);
+        }
 
         if (intentSourceBehaviour == null)
             intentSourceBehaviour = GetComponent<MonoBehaviour>(); // best effort
@@ -148,17 +173,20 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour, IExertionRead
             _intent = GetComponent<ICharacterIntentSource>();
 
         if (_intent == null)
-            Debug.LogError("PlayerExertionEnergyState requires an ICharacterIntentSource.");
+            Debug.LogError("PlayerExertionEnergyState requires an ICharacterIntentSource.", this);
 
-        if (!motor) motor = GetComponent<CharacterMotor2D>();
+        RefreshEffectiveEnergyMax();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        if (_intent == null) return;
+        if (_intent == null)
+            return;
 
         float dt = Time.fixedDeltaTime;
-        var intent = _intent.Current;
+        RefreshEffectiveEnergyMax();
+
+        CharacterIntent intent = _intent.Current;
 
         bool inSwim = (submersion != null) && submersion.SubmergedEnoughToSwim;
         bool inWater = (submersion != null) && submersion.InWater;
@@ -166,16 +194,40 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour, IExertionRead
         bool hasMoveInput = Mathf.Abs(intent.MoveX) > 0.01f;
         bool isSprinting = intent.SprintHeld && hasMoveInput;
 
+        // Resolve effective attribute values once per tick.
+        // Local inspector values remain fallback defaults so old prefabs/scenes do not explode. Sadly, explosions are bad here.
+        float effRestCeiling = Attr01(PlayerAttributeId.ExertionRestCeiling, restCeiling);
+        float effWalkCeiling = Attr01(PlayerAttributeId.ExertionWalkCeiling, walkCeiling);
+        float effSprintCeiling = Attr01(PlayerAttributeId.ExertionSprintCeiling, sprintCeiling);
+        float effSwimCeiling = Attr01(PlayerAttributeId.ExertionSwimCeiling, swimCeiling);
+        float effSprintSwimCeiling = Attr01(PlayerAttributeId.ExertionSprintSwimCeiling, sprintSwimCeiling);
+        float effDiveCeilingBonus = Attr01(PlayerAttributeId.ExertionDiveCeilingBonus, diveCeilingBonus);
+
+        float effRestApproachRate = AttrMin(PlayerAttributeId.ExertionRestApproachRate, restApproachRate, 0f);
+        float effActivityApproachRate = AttrMin(PlayerAttributeId.ExertionActivityApproachRate, activityApproachRate, 0f);
+        float effSprintApproachRate = AttrMin(PlayerAttributeId.ExertionSprintApproachRate, sprintApproachRate, 0f);
+        float effSwimApproachRate = AttrMin(PlayerAttributeId.ExertionSwimApproachRate, swimApproachRate, 0f);
+        float effSprintSwimApproachRate = AttrMin(PlayerAttributeId.ExertionSprintSwimApproachRate, sprintSwimApproachRate, 0f);
+        float effTreadApproachRate = AttrMin(PlayerAttributeId.ExertionTreadApproachRate, treadApproachRate, 0f);
+
+        float effDrainThreshold = Attr01(PlayerAttributeId.ExertionDrainThreshold, drainThreshold);
+        float effBaseDrainPerSecond = AttrMin(PlayerAttributeId.ExertionBaseDrainPerSecond, baseDrainPerSecond, 0f);
+        float effDrainPower = AttrMin(PlayerAttributeId.ExertionDrainPower, drainPower, 1f);
+        float effRegenPerSecond = AttrMin(PlayerAttributeId.ExertionRegenPerSecond, regenPerSecond, 0f);
+        float effRegenThreshold = Attr01(PlayerAttributeId.ExertionRegenThreshold, regenThreshold);
+        float effRestingRegenBonus = AttrMin(PlayerAttributeId.ExertionRestingRegenBonus, restingRegenBonus, 0f);
+        float effLandRegenBonus = AttrMin(PlayerAttributeId.ExertionLandRegenBonus, landRegenBonus, 0f);
+
         // -----------------------------
         // Exertion as "pressure toward ceiling"
         // -----------------------------
-
         float ceiling;
         float k; // approach rate
 
         if (motor != null)
             motor.UpdateGrounded();
-        bool grounded = (motor != null) ? motor.IsGrounded : false;
+
+        bool grounded = (motor != null) && motor.IsGrounded;
 
         // "Treading water" = in water, not grounded, and not actively trying to swim up/dive/move.
         // Goal: exertion sits just above regen threshold so energy can't regen by idling in water.
@@ -193,49 +245,49 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour, IExertionRead
         {
             if (fullySubmerged)
             {
-                // Underwater neutral float = can recover energy
-                ceiling = regenThreshold * underwaterTreadFactor; // below regen threshold
-                k = treadApproachRate;
+                // Underwater neutral float = can recover energy.
+                ceiling = Mathf.Clamp01(effRegenThreshold * underwaterTreadFactor);
+                k = effTreadApproachRate;
             }
             else
             {
-                // Surface tread = just above regen threshold
-                ceiling = Mathf.Clamp01(regenThreshold + treadAboveRegen);
-                k = treadApproachRate;
+                // Surface tread = just above regen threshold.
+                ceiling = Mathf.Clamp01(effRegenThreshold + treadAboveRegen);
+                k = effTreadApproachRate;
             }
         }
         else if (!hasMoveInput && !intent.SwimUpHeld && !intent.DiveHeld)
         {
-            ceiling = restCeiling;
-            k = restApproachRate;
+            ceiling = effRestCeiling;
+            k = effRestApproachRate;
         }
         else if (inSwim)
         {
             if (isSprinting)
             {
-                ceiling = sprintSwimCeiling;
-                k = sprintSwimApproachRate;
+                ceiling = effSprintSwimCeiling;
+                k = effSprintSwimApproachRate;
             }
             else
             {
-                ceiling = swimCeiling;
-                k = swimApproachRate;
+                ceiling = effSwimCeiling;
+                k = effSwimApproachRate;
             }
 
             if (intent.DiveHeld)
-                ceiling = Mathf.Clamp01(ceiling + diveCeilingBonus);
+                ceiling = Mathf.Clamp01(ceiling + effDiveCeilingBonus);
         }
         else
         {
             if (isSprinting)
             {
-                ceiling = sprintCeiling;
-                k = sprintApproachRate;
+                ceiling = effSprintCeiling;
+                k = effSprintApproachRate;
             }
             else
             {
-                ceiling = walkCeiling;
-                k = activityApproachRate;
+                ceiling = effWalkCeiling;
+                k = effActivityApproachRate;
             }
         }
 
@@ -252,28 +304,29 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour, IExertionRead
 
         // First-order response toward ceiling:
         // alpha = 1 - exp(-k*dt) gives nice "time constant" behavior.
-        float alpha = 1f - Mathf.Exp(-k * dt);
-        exertion01 = Mathf.Lerp(exertion01, ceiling, alpha);
+        float alpha = 1f - Mathf.Exp(-Mathf.Max(0f, k) * dt);
+        exertion01 = Mathf.Lerp(exertion01, Mathf.Clamp01(ceiling), alpha);
         exertion01 = Mathf.Clamp01(exertion01);
 
         // -----------------------------
         // Energy drain / regen
         // -----------------------------
         float drainUnits = 0f;
-        if (exertion01 > drainThreshold)
+        if (exertion01 > effDrainThreshold)
         {
-            float t = Mathf.InverseLerp(drainThreshold, 1f, exertion01);
-            float scaled = Mathf.Pow(t, drainPower);
-            drainUnits = baseDrainPerSecond * scaled;
+            float t = Mathf.InverseLerp(effDrainThreshold, 1f, exertion01);
+            float scaled = Mathf.Pow(t, effDrainPower);
+            drainUnits = effBaseDrainPerSecond * scaled;
         }
 
         float regenUnits = 0f;
-        if (exertion01 < regenThreshold)
+        if (exertion01 < effRegenThreshold)
         {
-            regenUnits = regenPerSecond;
+            regenUnits = effRegenPerSecond;
 
             bool resting = !hasMoveInput && !intent.SwimUpHeld && !intent.DiveHeld;
-            if (resting) regenUnits += restingRegenBonus;
+            if (resting)
+                regenUnits += effRestingRegenBonus;
 
             // Rule: prevent energy regen while floating at the surface (treading),
             // but allow regen when fully submerged (underwater neutral float).
@@ -286,12 +339,12 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour, IExertionRead
             else
             {
                 // "Land bonus" applies when grounded OR when fully submerged (your "recover underwater" rule).
-                regenUnits += landRegenBonus;
+                regenUnits += effLandRegenBonus;
             }
         }
 
         energyCurrent += (regenUnits - drainUnits) * dt;
-        energyCurrent = Mathf.Clamp(energyCurrent, 0f, energyMax);
+        energyCurrent = Mathf.Clamp(energyCurrent, 0f, EffectiveEnergyMax);
 
         // -----------------------------
         // Authority scales
@@ -319,11 +372,29 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour, IExertionRead
         if (useAuthorityCurve && authorityCurve != null)
             return Mathf.Clamp01(authorityCurve.Evaluate(Mathf.Clamp01(e01)));
 
-        if (e01 >= lowEnergyThreshold) return 1f;
+        float effLowEnergyThreshold = Attr01(
+            PlayerAttributeId.ExertionLowEnergyThreshold,
+            lowEnergyThreshold);
 
-        // Map [0..lowThreshold] to [authorityAtZero..authorityAtLowThreshold]
-        float t = (lowEnergyThreshold <= 0.0001f) ? 1f : (e01 / lowEnergyThreshold);
-        return Mathf.Lerp(authorityAtZero, authorityAtLowThreshold, Mathf.Clamp01(t));
+        float effAuthorityAtLowThreshold = Attr01(
+            PlayerAttributeId.ExertionAuthorityAtLowThreshold,
+            authorityAtLowThreshold);
+
+        float effAuthorityAtZero = Attr01(
+            PlayerAttributeId.ExertionAuthorityAtZero,
+            authorityAtZero);
+
+        if (e01 >= effLowEnergyThreshold)
+            return 1f;
+
+        float t = (effLowEnergyThreshold <= 0.0001f)
+            ? 1f
+            : (e01 / effLowEnergyThreshold);
+
+        return Mathf.Lerp(
+            effAuthorityAtZero,
+            effAuthorityAtLowThreshold,
+            Mathf.Clamp01(t));
     }
 
     private ExertionState ComputeState(float e01)
@@ -349,7 +420,9 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour, IExertionRead
 
     public void AddExertionImpulse01(float amount01)
     {
-        if (amount01 <= 0f) return;
+        if (amount01 <= 0f)
+            return;
+
         exertion01 = Mathf.Clamp01(exertion01 + amount01);
     }
 
@@ -372,15 +445,71 @@ public sealed class PlayerExertionEnergyState : MonoBehaviour, IExertionRead
 
     public void ResetState()
     {
-        // TODO: replace field names to match your class
-        // Examples based on the design we discussed previously.
+        RefreshEffectiveEnergyMax();
 
-        // Energy back to full
-        energyCurrent = energyMax;          // or Energy01 = 1f
+        // Energy back to full.
+        energyCurrent = EffectiveEnergyMax;
         CurrentEnergyState = EnergyState.Full;
 
-        // Exertion back to resting
+        // Exertion back to resting.
         exertion01 = 0f;
         CurrentState = ExertionState.Resting;
+
+        _moveAuthority = 1f;
+        _sprintAuthority = 1f;
+        _swimUpAuthority = 1f;
+
+        _externalExertionCeiling01 = 0f;
+        _externalExertionApproachRate = 0f;
     }
+
+    private void RefreshEffectiveEnergyMax()
+    {
+        _effectiveEnergyMax = Mathf.Max(
+            0.0001f,
+            Attr(PlayerAttributeId.ExertionEnergyMax, energyMax));
+
+        if (energyCurrent > _effectiveEnergyMax)
+            energyCurrent = _effectiveEnergyMax;
+    }
+
+    private float Attr(PlayerAttributeId id, float fallback)
+    {
+        return attributes != null
+            ? attributes.GetFloat(id, fallback)
+            : fallback;
+    }
+
+    private float AttrMin(PlayerAttributeId id, float fallback, float min)
+    {
+        return Mathf.Max(min, Attr(id, fallback));
+    }
+
+    private float Attr01(PlayerAttributeId id, float fallback)
+    {
+        return Mathf.Clamp01(Attr(id, fallback));
+    }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        energyMax = Mathf.Max(0f, energyMax);
+        energyCurrent = Mathf.Max(0f, energyCurrent);
+        _effectiveEnergyMax = Mathf.Max(0.0001f, _effectiveEnergyMax);
+
+        restApproachRate = Mathf.Max(0f, restApproachRate);
+        activityApproachRate = Mathf.Max(0f, activityApproachRate);
+        sprintApproachRate = Mathf.Max(0f, sprintApproachRate);
+        swimApproachRate = Mathf.Max(0f, swimApproachRate);
+        sprintSwimApproachRate = Mathf.Max(0f, sprintSwimApproachRate);
+        treadApproachRate = Mathf.Max(0f, treadApproachRate);
+
+        baseDrainPerSecond = Mathf.Max(0f, baseDrainPerSecond);
+        drainPower = Mathf.Max(1f, drainPower);
+        regenPerSecond = Mathf.Max(0f, regenPerSecond);
+        restingRegenBonus = Mathf.Max(0f, restingRegenBonus);
+        landRegenBonus = Mathf.Max(0f, landRegenBonus);
+        underwaterTreadFactor = Mathf.Max(0f, underwaterTreadFactor);
+    }
+#endif
 }
