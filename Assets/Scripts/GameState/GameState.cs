@@ -24,6 +24,10 @@ public sealed class GameState : MonoBehaviour
     [Header("Boat Registry")]
     public BoatRegistry boatRegistry;
 
+    [Header("Money")]
+    public MoneyChestTreasurySnapshot moneyChestTreasuryState = new MoneyChestTreasurySnapshot();
+    public MoneyChestTreasuryService moneyChestTreasury;
+
     [Header("Player Scene Context")]
     public PlayerSceneContextSnapshot playerSceneContext;
 
@@ -52,6 +56,7 @@ public sealed class GameState : MonoBehaviour
 
         EnsureBoatStateDefaults();
         EnsureWorldMapSnapshotDefaults();
+        EnsureMoneyChestTreasuryDefaults();
 
         Log("Awake accepted as singleton.");
         LogState("Awake BEFORE registry check");
@@ -64,6 +69,25 @@ public sealed class GameState : MonoBehaviour
         else
         {
             Log($"BoatRegistry already assigned: {boatRegistry.name}");
+        }
+
+        if (moneyChestTreasury == null)
+        {
+            moneyChestTreasury = GetComponent<MoneyChestTreasuryService>();
+
+            if (moneyChestTreasury == null)
+            {
+                moneyChestTreasury = gameObject.AddComponent<MoneyChestTreasuryService>();
+                Log("MoneyChestTreasuryService was NULL. Added MoneyChestTreasuryService component to GameState.");
+            }
+            else
+            {
+                Log($"MoneyChestTreasuryService found on GameState: {moneyChestTreasury.name}");
+            }
+        }
+        else
+        {
+            Log($"MoneyChestTreasuryService already assigned: {moneyChestTreasury.name}");
         }
 
         LogState("Awake END");
@@ -185,7 +209,9 @@ public sealed class GameState : MonoBehaviour
             $"  activeTravel={DescribeTravel(activeTravel)}\n" +
             $"  boat={DescribeBoat(boat)}\n" +
             $"  playerLoadout={(playerLoadout != null ? "OK" : "NULL")}\n" +
-            $"  boatRegistry={(boatRegistry != null ? boatRegistry.name : "NULL")}",
+            $"  boatRegistry={(boatRegistry != null ? boatRegistry.name : "NULL")}\n" +
+            $"  moneyChestTreasury={(moneyChestTreasury != null ? moneyChestTreasury.name : "NULL")}\n" +
+            $"  moneyChestState={(moneyChestTreasuryState != null ? $"active='{moneyChestTreasuryState.activeChestInstanceId}', count={(moneyChestTreasuryState.chests != null ? moneyChestTreasuryState.chests.Count : -1)}" : "NULL")}",
             this);
     }
 
@@ -331,6 +357,14 @@ public sealed class GameState : MonoBehaviour
         boat.compartmentStates = manifest ?? new BoatCompartmentStateManifest();
 
         LogState($"SetBoatCompartmentStates reason='{reason}'");
+    }
+
+    private void EnsureMoneyChestTreasuryDefaults()
+    {
+        if (moneyChestTreasuryState == null)
+            moneyChestTreasuryState = new MoneyChestTreasurySnapshot();
+
+        moneyChestTreasuryState.EnsureDefaults();
     }
 
     public void SetBoatPowerSnapshot(BoatPowerSnapshot snapshot, string reason = "")

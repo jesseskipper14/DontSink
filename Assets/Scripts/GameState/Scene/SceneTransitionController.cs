@@ -48,7 +48,11 @@ public sealed class SceneTransitionController : MonoBehaviour
 
         // Capture current boat state before leaving NodeScene.
         // This matters if loose items/cargo exist on the boat while docked.
-        SaveCurrentBoatState("StartTravelToBoatScene before loading BoatScene");
+        SaveCurrentBoatState(
+            "StartTravelToBoatScene before loading BoatScene",
+            fromNodeStableId,
+            toNodeStableId,
+            MoneyChestLossContext.Node);
 
         //System.Collections.Generic.List<CargoManifest.Snapshot> payloadCargo =
         //    cargoManifest ?? gs.boat?.cargo;
@@ -90,7 +94,11 @@ public sealed class SceneTransitionController : MonoBehaviour
 
         SaveCurrentPlayerLoadout();
         CapturePlayerSceneContext(gs, "CompleteTravelToDestination");
-        SaveCurrentBoatState("CompleteTravelToDestination before loading NodeScene");
+        SaveCurrentBoatState(
+            "CompleteTravelToDestination before loading NodeScene",
+            payload.fromNodeStableId,
+            payload.toNodeStableId,
+            MoneyChestLossContext.Route);
 
         gs.player.currentNodeId = payload.toNodeStableId;
         gs.ClearTravel();
@@ -117,7 +125,11 @@ public sealed class SceneTransitionController : MonoBehaviour
 
         SaveCurrentPlayerLoadout();
         CapturePlayerSceneContext(gs, "AbortTravelToSource");
-        SaveCurrentBoatState("AbortTravelToSource before loading NodeScene");
+        SaveCurrentBoatState(
+            "AbortTravelToSource before loading NodeScene",
+            payload.fromNodeStableId,
+            payload.toNodeStableId,
+            MoneyChestLossContext.Route);
 
         gs.player.currentNodeId = payload.fromNodeStableId;
         gs.ClearTravel();
@@ -172,7 +184,11 @@ public sealed class SceneTransitionController : MonoBehaviour
         return true;
     }
 
-    public bool SaveCurrentBoatState(string reason = "")
+    public bool SaveCurrentBoatState(
+        string reason = "",
+        string routeFromNodeHint = null,
+        string routeToNodeHint = null,
+        MoneyChestLossContext moneyChestLossContext = MoneyChestLossContext.Auto)
     {
         GameState gs = GameState.I;
         if (gs == null)
@@ -218,11 +234,25 @@ public sealed class SceneTransitionController : MonoBehaviour
         }
 
         //CaptureCargo(gs, boatRoot);
+
+        // Before loose item capture, make sure a physically-on-boat active money chest
+        // is registered as boat-owned so BoatLooseItemPersistence can capture it.
+        gs.moneyChestTreasury?.PrepareActiveChestForBoatCapture(boat);
+
         CaptureLooseItems(gs, boat);
         CaptureModulesAndPower(gs, boat);
         CaptureCompartments(gs, boat);
         CaptureAccessStates(gs, boat);
         CaptureBoatTransform(gs, boat);
+
+        // After normal persistence snapshots exist, decide whether the active chest
+        // was actually carried forward. If not found in player loadout or boat loose items,
+        // it becomes Lost.
+        gs.moneyChestTreasury?.CaptureAfterScenePersistence(
+            reason,
+            routeFromNodeHint,
+            routeToNodeHint,
+            moneyChestLossContext);
 
         gs.LogState($"SaveCurrentBoatState reason='{reason}'");
         return true;
@@ -446,6 +476,55 @@ public sealed class SceneTransitionController : MonoBehaviour
             $"CapturePlayerSceneContext | reason='{reason}' " +
             $"wasBoarded={snapshot.wasBoarded} boatInstanceId='{snapshot.boatInstanceId}'");
     }
+
+#if UNITY_EDITOR
+    [Header("Debug Travel Controls")]
+    [SerializeField] private bool enableDebugTravelHotkeys = true;
+    [SerializeField] private KeyCode debugCompleteTravelKey = KeyCode.F1;
+    [SerializeField] private KeyCode debugAbortTravelKey = KeyCode.F2;
+
+    private void Update()
+    {
+        if (!enableDebugTravelHotkeys)
+            return;
+
+        if (Input.GetKeyDown(debugCompleteTravelKey))
+        {
+            DebugCompleteTravelToDestination();
+            return;
+        }
+
+        if (Input.GetKeyDown(debugAbortTravelKey))
+        {
+            DebugAbortTravelToSource();
+            return;
+        }
+    }
+
+    [ContextMenu("DEBUG Complete Travel To Destination")]
+    private void DebugCompleteTravelToDestination()
+    {
+        if (!Application.isPlaying)
+        {
+            Debug.LogWarning("[SceneTransitionController] Cannot complete travel while not playing.", this);
+            return;
+        }
+
+        CompleteTravelToDestination();
+    }
+
+    [ContextMenu("DEBUG Abort Travel To Source")]
+    private void DebugAbortTravelToSource()
+    {
+        if (!Application.isPlaying)
+        {
+            Debug.LogWarning("[SceneTransitionController] Cannot abort travel while not playing.", this);
+            return;
+        }
+
+        AbortTravelToSource();
+    }
+#endif
 
     private void Log(string msg)
     {

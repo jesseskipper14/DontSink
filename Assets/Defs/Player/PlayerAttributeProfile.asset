@@ -112,21 +112,21 @@ MonoBehaviour:
   - attribute: 110
     value: 0
   - attribute: 111
-    value: 75
+    value: 40
   - attribute: 112
-    value: 14
+    value: 8
   - attribute: 113
-    value: 250
+    value: 20
   - attribute: 114
     value: 0
   - attribute: 115
-    value: 0
+    value: 6
   - attribute: 116
     value: 10
   - attribute: 117
-    value: 1.35
+    value: 2
   - attribute: 118
-    value: 0.35
+    value: 1
   - attribute: 119
     value: 2.5
   - attribute: 120

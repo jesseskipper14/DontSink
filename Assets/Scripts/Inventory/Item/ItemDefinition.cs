@@ -18,7 +18,8 @@ public enum ItemCategoryFlags
     Medical = 1 << 9,
     Utility = 1 << 10,
     Module = 1 << 11,
-    Cargo = 1 << 12
+    Cargo = 1 << 12,
+    Sacred = 1 << 13
 }
 
 public enum PickupInteractionMode
@@ -161,6 +162,7 @@ public sealed class ItemDefinition : ScriptableObject
     public string DisplayName => string.IsNullOrWhiteSpace(displayName) ? name : displayName;
     public Sprite Icon => icon;
     public ItemCategoryFlags ItemCategories => itemCategories;
+    public bool IsSacred => (itemCategories & ItemCategoryFlags.Sacred) != 0;
     public int MaxStack => Mathf.Max(1, maxStack);
 
     public bool HasCharges => hasCharges;
