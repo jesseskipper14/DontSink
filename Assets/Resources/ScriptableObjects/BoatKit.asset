@@ -24,6 +24,7 @@ MonoBehaviour:
   BoatBoardObject: {fileID: 5720850196063633090, guid: 08302fb73e6642849bc0f4ca5bbe8167, type: 3}
   DeckBoardZone: {fileID: 6379678496337631592, guid: 110a6d4825b4f4c4387091219c49a202, type: 3}
   MapTable: {fileID: 6138649040144273514, guid: 5b7b85a844cc11c4eb46be1e5183f040, type: 3}
+  MoneyChestSlot: {fileID: 1016809369594643809, guid: 0601355f2d5744941b60475e41aea32e, type: 3}
   PlayerSpawnPoint: {fileID: 8692631207410310795, guid: 05b658ca6a731104fa011b3e44cc26fe, type: 3}
   BoardedVolume: {fileID: 8631960592563685139, guid: 90c38b1b858a3a14490a9c242c60bfba, type: 3}
   Ladder: {fileID: 2802821447643478481, guid: 88f78031fedb2f044a8354e7d5318b4c, type: 3}

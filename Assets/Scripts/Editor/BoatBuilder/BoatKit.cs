@@ -27,6 +27,7 @@ public class BoatKit : ScriptableObject
     public GameObject BoatBoardObject;
     public GameObject DeckBoardZone;
     public GameObject MapTable;
+    public GameObject MoneyChestSlot;
     public GameObject PlayerSpawnPoint;
     public GameObject BoardedVolume;
     public GameObject Ladder;

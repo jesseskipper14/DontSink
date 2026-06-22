@@ -164,7 +164,7 @@ public sealed class TradeWorldMapRunner : MonoBehaviour
                 out var receipt,
                 out var failNote))
         {
-            Debug.Log($"[Trade] OK node={receipt.nodeId} Δcredits={receipt.creditsDelta} fees={receipt.totalFeesPaid}");
+            Debug.Log($"[Trade] OK node={receipt.nodeId} Δmoney={receipt.creditsDelta} fees={receipt.totalFeesPaid} chestBalance={MoneyService.Balance}");
             ApplySellToNodePressureFeedback(receipt);
         }
         else

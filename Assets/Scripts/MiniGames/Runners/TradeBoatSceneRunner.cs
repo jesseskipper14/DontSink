@@ -157,7 +157,7 @@ public sealed class TradeBoatSceneRunner : MonoBehaviour
             out var receipt,
             out var failNote))
         {
-            Debug.Log($"[TradeBoatScene] OK node={receipt.nodeId} Δcredits={receipt.creditsDelta} fees={receipt.totalFeesPaid}");
+            Debug.Log($"[TradeBoatScene] OK node={receipt.nodeId} Δmoney={receipt.creditsDelta} fees={receipt.totalFeesPaid} chestBalance={MoneyService.Balance}");
         }
         else
         {

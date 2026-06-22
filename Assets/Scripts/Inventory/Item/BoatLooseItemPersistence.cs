@@ -54,6 +54,16 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
             );
 
             BoatSecuredItem secured = worldItem.GetComponent<BoatSecuredItem>();
+            MoneyChestSlotSecuredItem moneySlotSecured = worldItem.GetComponent<MoneyChestSlotSecuredItem>();
+
+            bool isMoneySlotSecured =
+                moneySlotSecured != null &&
+                moneySlotSecured.IsSecured;
+
+            bool isCargoSecured =
+                !isMoneySlotSecured &&
+                secured != null &&
+                secured.IsSecured;
 
             manifest.looseItems.Add(new BoatLooseItemSnapshot
             {
@@ -63,15 +73,37 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
                 localPosition = localPos,
                 localRotationZ = localRotZ,
 
-                isSecured = secured != null && secured.IsSecured,
-                secureZoneStableId = secured != null ? secured.SecureZoneStableId : null,
-                secureSlotIndex = secured != null ? secured.SecureSlotIndex : -1,
-                secureQualityMax01 = secured != null ? secured.SecureQualityMax01 : 0f,
-                secureQualityCurrent01 = secured != null ? secured.SecureQualityCurrent01 : 0f,
-                securedLocalPosition = secured != null ? secured.SecuredLocalPosition : Vector2.zero,
-                securedLocalRotationZ = secured != null ? secured.SecuredLocalRotationZ : 0f,
-                usedRope = secured != null && secured.UsedRope,
-                ropeBonus01 = secured != null ? secured.RopeBonus01 : 0f
+                isSecured = isMoneySlotSecured || isCargoSecured,
+
+                secureZoneStableId = isMoneySlotSecured
+                    ? moneySlotSecured.SlotStableId
+                    : secured != null ? secured.SecureZoneStableId : null,
+
+                secureSlotIndex = isMoneySlotSecured
+                    ? -1
+                    : secured != null ? secured.SecureSlotIndex : -1,
+
+                secureQualityMax01 = isMoneySlotSecured
+                    ? 1f
+                    : secured != null ? secured.SecureQualityMax01 : 0f,
+
+                secureQualityCurrent01 = isMoneySlotSecured
+                    ? 1f
+                    : secured != null ? secured.SecureQualityCurrent01 : 0f,
+
+                securedLocalPosition = isMoneySlotSecured
+                    ? moneySlotSecured.SecuredLocalPosition
+                    : secured != null ? secured.SecuredLocalPosition : Vector2.zero,
+
+                securedLocalRotationZ = isMoneySlotSecured
+                    ? moneySlotSecured.SecuredLocalRotationZ
+                    : secured != null ? secured.SecuredLocalRotationZ : 0f,
+
+                usedRope = !isMoneySlotSecured && secured != null && secured.UsedRope,
+
+                ropeBonus01 = isMoneySlotSecured
+                    ? 0f
+                    : secured != null ? secured.RopeBonus01 : 0f
             });
         }
 
@@ -137,28 +169,88 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
 
         if (snapshot.isSecured)
         {
-            BoatSecuredItem secured = spawned.GetComponent<BoatSecuredItem>();
-            if (secured == null)
-                secured = spawned.gameObject.AddComponent<BoatSecuredItem>();
+            if (!TryRestoreMoneyChestSlotSecured(spawned, snapshot))
+            {
+                BoatSecuredItem secured = spawned.GetComponent<BoatSecuredItem>();
+                if (secured == null)
+                    secured = spawned.gameObject.AddComponent<BoatSecuredItem>();
 
-            BoatSecureZone zone = FindSecureZone(snapshot.secureZoneStableId);
+                BoatSecureZone zone = FindSecureZone(snapshot.secureZoneStableId);
 
-            secured.RestoreSecuredState(
-                boat,
-                zone,
-                snapshot.secureSlotIndex,
-                snapshot.secureQualityMax01,
-                snapshot.secureQualityCurrent01,
-                snapshot.securedLocalPosition,
-                snapshot.securedLocalRotationZ,
-                snapshot.usedRope,
-                snapshot.ropeBonus01);
+                secured.RestoreSecuredState(
+                    boat,
+                    zone,
+                    snapshot.secureSlotIndex,
+                    snapshot.secureQualityMax01,
+                    snapshot.secureQualityCurrent01,
+                    snapshot.securedLocalPosition,
+                    snapshot.securedLocalRotationZ,
+                    snapshot.usedRope,
+                    snapshot.ropeBonus01);
+            }
         }
 
         Log(
             $"Restored loose item | itemId='{snapshot.item.itemId}' " +
             $"instanceId='{snapshot.item.instanceId}' " +
             $"boatId='{boat.BoatInstanceId}' pos={worldPos}");
+    }
+
+    private bool TryRestoreMoneyChestSlotSecured(
+    WorldItem spawned,
+    BoatLooseItemSnapshot snapshot)
+    {
+        if (spawned == null || snapshot == null)
+            return false;
+
+        MoneyChestState chest =
+            spawned.GetComponent<MoneyChestState>() ??
+            spawned.GetComponentInChildren<MoneyChestState>(true);
+
+        if (chest == null)
+            return false;
+
+        MoneyChestSecureSlot slot =
+            MoneyChestSecureSlot.FindByStableId(snapshot.secureZoneStableId);
+
+        if (slot == null)
+        {
+            MoneyChestSecureSlot[] slots =
+                boat != null
+                    ? boat.GetComponentsInChildren<MoneyChestSecureSlot>(true)
+                    : FindObjectsByType<MoneyChestSecureSlot>(
+                        FindObjectsInactive.Include,
+                        FindObjectsSortMode.None);
+
+            if (slots != null && slots.Length > 0)
+                slot = slots[0];
+        }
+
+        MoneyChestSlotSecuredItem marker = spawned.GetComponent<MoneyChestSlotSecuredItem>();
+        if (marker == null)
+            marker = spawned.gameObject.AddComponent<MoneyChestSlotSecuredItem>();
+
+        marker.RestoreSecuredState(
+            boat,
+            slot,
+            !string.IsNullOrWhiteSpace(snapshot.secureZoneStableId)
+                ? snapshot.secureZoneStableId
+                : slot != null ? slot.StableId : "money_chest_slot_01",
+            snapshot.securedLocalPosition,
+            snapshot.securedLocalRotationZ);
+
+        if (slot != null)
+            slot.AdoptRestoredChest(chest);
+
+        Rigidbody2D rb = spawned.GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.bodyType = RigidbodyType2D.Kinematic;
+        }
+
+        return true;
     }
 
     private BoatSecureZone FindSecureZone(string stableId)

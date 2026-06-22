@@ -10,49 +10,88 @@ public static partial class BoatBuilderSceneTools
 {
 
     public static void GetRequiredPiecesStatus(
-            Transform boatRoot,
-            out bool hasBoatBoardObject,
-            out bool hasMapTable,
-            out int spawnPointCount,
-            out bool hasBoardedVolume)
+        Transform boatRoot,
+        out bool hasBoatBoardObject,
+        out bool hasMapTable,
+        out bool hasMoneyChestSlot,
+        out int spawnPointCount,
+        out bool hasBoardedVolume)
+    {
+        hasBoatBoardObject = false;
+        hasMapTable = false;
+        hasMoneyChestSlot = false;
+        hasBoardedVolume = false;
+        spawnPointCount = 0;
+
+        if (boatRoot == null)
+            return;
+
+        hasBoatBoardObject = boatRoot.GetComponentsInChildren<BoatBoardingInteractable>(true).Any();
+        hasMapTable = boatRoot.GetComponentsInChildren<MapTableInteractable>(true).Any();
+        hasMoneyChestSlot = boatRoot.GetComponentsInChildren<MoneyChestSecureSlot>(true).Any();
+        hasBoardedVolume = boatRoot.GetComponentsInChildren<BoatBoardedVolume>(true).Any();
+
+        Transform[] trs = boatRoot.GetComponentsInChildren<Transform>(true);
+        for (int i = 0; i < trs.Length; i++)
         {
-            hasBoatBoardObject = false;
-            hasMapTable = false;
-            hasBoardedVolume = false;
-            spawnPointCount = 0;
-
-            if (boatRoot == null) return;
-
-            hasBoatBoardObject = boatRoot.GetComponentsInChildren<BoatBoardingInteractable>(true).Any();
-            hasMapTable = boatRoot.GetComponentsInChildren<MapTableInteractable>(true).Any();
-            hasBoardedVolume = boatRoot.GetComponentsInChildren<BoatBoardedVolume>(true).Any();
-
-            var trs = boatRoot.GetComponentsInChildren<Transform>(true);
-            for (int i = 0; i < trs.Length; i++)
+            string n = trs[i].name;
+            if (string.Equals(n, "PlayerSpawnPoint", StringComparison.OrdinalIgnoreCase) ||
+                n.StartsWith("PlayerSpawnPoint", StringComparison.OrdinalIgnoreCase))
             {
-                var n = trs[i].name;
-                if (string.Equals(n, "PlayerSpawnPoint", StringComparison.OrdinalIgnoreCase) ||
-                    n.StartsWith("PlayerSpawnPoint", StringComparison.OrdinalIgnoreCase))
-                {
-                    spawnPointCount++;
-                }
+                spawnPointCount++;
             }
         }
+    }
 
-    public static bool TryGetFirstMissingRequiredTool(Transform boatRoot, out BoatBuilderWindow.Tool tool)
-        {
-            tool = default;
-            if (boatRoot == null) return false;
+    public static bool TryGetFirstMissingRequiredTool(
+        Transform boatRoot,
+        out BoatBuilderWindow.Tool tool)
+    {
+        tool = default;
 
-            GetRequiredPiecesStatus(boatRoot, out var hasBoard, out var hasMap, out var spawnCount, out var hasVol);
-
-            if (!hasVol) { tool = BoatBuilderWindow.Tool.BoardedVolume; return true; }
-            if (spawnCount < Mathf.Max(1, _ctx.RequiredPlayerSpawnPoints)) { tool = BoatBuilderWindow.Tool.PlayerSpawnPoint; return true; }
-            if (!hasBoard) { tool = BoatBuilderWindow.Tool.BoatBoardObject; return true; }
-            if (!hasMap) { tool = BoatBuilderWindow.Tool.MapTable; return true; }
-
+        if (boatRoot == null)
             return false;
+
+        GetRequiredPiecesStatus(
+            boatRoot,
+            out bool hasBoard,
+            out bool hasMap,
+            out bool hasMoneyChestSlot,
+            out int spawnCount,
+            out bool hasVol);
+
+        if (!hasVol)
+        {
+            tool = BoatBuilderWindow.Tool.BoardedVolume;
+            return true;
         }
+
+        if (spawnCount < Mathf.Max(1, _ctx.RequiredPlayerSpawnPoints))
+        {
+            tool = BoatBuilderWindow.Tool.PlayerSpawnPoint;
+            return true;
+        }
+
+        if (!hasBoard)
+        {
+            tool = BoatBuilderWindow.Tool.BoatBoardObject;
+            return true;
+        }
+
+        if (!hasMap)
+        {
+            tool = BoatBuilderWindow.Tool.MapTable;
+            return true;
+        }
+
+        if (!hasMoneyChestSlot)
+        {
+            tool = BoatBuilderWindow.Tool.MoneyChestSlot;
+            return true;
+        }
+
+        return false;
+    }
 
     private static bool HandleRequiredDuplicateBlock(Transform boatRoot, BoatBuilderWindow.Tool tool)
         {
@@ -104,7 +143,22 @@ public static partial class BoatBuilderSceneTools
                         }
                         break;
                     }
-            }
+                case BoatBuilderWindow.Tool.MoneyChestSlot:
+                    {
+                        MoneyChestSecureSlot existing =
+                            boatRoot.GetComponentInChildren<MoneyChestSecureSlot>(true);
+
+                        if (existing != null)
+                        {
+                            Selection.activeObject = existing.gameObject;
+                            EditorGUIUtility.PingObject(existing.gameObject);
+                            Debug.LogWarning("[BoatBuilder] MoneyChestSlot already exists under boat root. Selecting existing instead.");
+                            return true;
+                        }
+
+                        break;
+                    }
+        }
 
             return false;
         }

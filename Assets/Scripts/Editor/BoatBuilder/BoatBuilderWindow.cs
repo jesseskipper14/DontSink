@@ -50,6 +50,7 @@ public class BoatBuilderWindow : EditorWindow
         CargoZoneFloor = 18,
         BoatCleat = 19,
         DeckBoardZone = 20,
+        MoneyChestSlot = 21,
     }
 
     private struct ActionButtonDef
@@ -489,6 +490,7 @@ public class BoatBuilderWindow : EditorWindow
         {
             Tool.PilotChair,
             Tool.MapTable,
+            Tool.MoneyChestSlot,
             Tool.PlayerSpawnPoint,
             Tool.BoardedVolume,
             Tool.BoatVisibilityZone,
@@ -574,6 +576,7 @@ public class BoatBuilderWindow : EditorWindow
             Tool.BoatBoardObject => "Board",
             Tool.DeckBoardZone => "Deck Board",
             Tool.MapTable => "Map",
+            Tool.MoneyChestSlot => "Money Slot",
             Tool.PlayerSpawnPoint => "Spawn",
             Tool.BoardedVolume => "Volume",
             Tool.BoatVisibilityZone => "Visibility Zone",
@@ -738,10 +741,17 @@ public class BoatBuilderWindow : EditorWindow
                 return;
             }
 
-            BoatBuilderSceneTools.GetRequiredPiecesStatus(root, out var hasBoard, out var hasMap, out var spawnCount, out var hasVolume);
+            BoatBuilderSceneTools.GetRequiredPiecesStatus(
+                root,
+                out var hasBoard,
+                out var hasMap,
+                out var hasMoneyChestSlot,
+                out var spawnCount,
+                out var hasVolume);
 
             DrawCheck("BoatBoardObject", hasBoard);
             DrawCheck("MapTable", hasMap);
+            DrawCheck("MoneyChestSlot", hasMoneyChestSlot);
             DrawCheck($"PlayerSpawnPoint x4 (found {spawnCount})", spawnCount >= 4);
             DrawCheck("BoardedVolume", hasVolume);
 
@@ -1033,6 +1043,18 @@ public class BoatBuilderWindow : EditorWindow
                 _visibilityZonePriority = selectedZone.Priority;
                 _visibilityZoneUseDefaultPriority =
                     _visibilityZonePriority == BoatVisibilityZone.GetDefaultPriority(_visibilityZoneMode);
+                changed = true;
+            }
+
+            return changed;
+        }
+
+        MoneyChestSecureSlot selectedMoneyChestSlot = FindSelectedComponentInParents<MoneyChestSecureSlot>();
+        if (selectedMoneyChestSlot != null)
+        {
+            if (_tool != Tool.MoneyChestSlot)
+            {
+                _tool = Tool.MoneyChestSlot;
                 changed = true;
             }
 

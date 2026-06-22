@@ -281,4 +281,12 @@ public sealed class ItemInstance
         remainder = incoming;
         return false;
     }
+
+    public void ForceSetInstanceIdForRestore(string newInstanceId)
+    {
+        if (string.IsNullOrWhiteSpace(newInstanceId))
+            return;
+
+        instanceId = newInstanceId;
+    }
 }

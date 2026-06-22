@@ -309,6 +309,13 @@ public static partial class BoatBuilderSceneTools
                     placed = null;
             }
 
+            if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.MoneyChestSlot)
+            {
+                InitializePlacedMoneyChestSlot(
+                    placed,
+                    boatRoot != null ? boatRoot : placed.transform.parent);
+            }
+
             if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.CargoZoneFloor)
             {
                 InitializePlacedCargoZoneFloor(placed);
@@ -500,6 +507,7 @@ public static partial class BoatBuilderSceneTools
             BoatBuilderWindow.Tool.BoatBoardObject => kit.BoatBoardObject,
             BoatBuilderWindow.Tool.DeckBoardZone => kit.DeckBoardZone,
             BoatBuilderWindow.Tool.MapTable => kit.MapTable,
+            BoatBuilderWindow.Tool.MoneyChestSlot => kit.MoneyChestSlot,
             BoatBuilderWindow.Tool.PlayerSpawnPoint => kit.PlayerSpawnPoint,
             BoatBuilderWindow.Tool.BoardedVolume => kit.BoardedVolume,
             BoatBuilderWindow.Tool.BoatVisibilityZone => kit.BoatVisibilityZone,

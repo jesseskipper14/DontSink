@@ -11,6 +11,7 @@ public sealed class MoneyChestInteractable :
     [Header("Refs")]
     [SerializeField] private MoneyChestState chest;
     [SerializeField] private Transform promptAnchor;
+    [SerializeField] private MoneyChestOverlayOpener overlayOpener;
 
     [Header("Interaction")]
     [SerializeField] private int interactionPriority = 35;
@@ -34,6 +35,9 @@ public sealed class MoneyChestInteractable :
 
         if (promptAnchor == null)
             promptAnchor = transform;
+
+        if (overlayOpener == null)
+            overlayOpener = GetComponent<MoneyChestOverlayOpener>();
     }
 
     private void Awake()
@@ -46,6 +50,17 @@ public sealed class MoneyChestInteractable :
 
         if (promptAnchor == null)
             promptAnchor = transform;
+
+        if (overlayOpener == null)
+            overlayOpener = GetComponent<MoneyChestOverlayOpener>();
+
+        if (overlayOpener == null)
+            overlayOpener = GetComponentInParent<MoneyChestOverlayOpener>();
+
+        if (overlayOpener == null)
+            overlayOpener = GetComponentInChildren<MoneyChestOverlayOpener>(true);
+
+        RebindRuntimeRefs();
     }
 
     public bool CanInteract(in InteractContext context)
@@ -87,7 +102,7 @@ public sealed class MoneyChestInteractable :
 
         if (chest.IsActive)
         {
-            OpenActiveChestPlaceholder();
+            OpenActiveChest();
             return;
         }
     }
@@ -235,33 +250,86 @@ public sealed class MoneyChestInteractable :
             Destroy(gameObject);
     }
 
-    private void OpenActiveChestPlaceholder()
+    public void RebindRuntimeRefs(MoneyChestState explicitChest = null)
     {
-        MoneyChestTreasuryService treasury = MoneyChestTreasuryService.Instance;
+        if (explicitChest != null)
+            chest = explicitChest;
 
-        int shownBalance =
-            treasury != null && treasury.ActiveChest == chest
-                ? treasury.ActiveBalance
-                : chest.Balance;
+        if (chest == null)
+            chest = GetComponent<MoneyChestState>();
+
+        if (chest == null)
+            chest = GetComponentInParent<MoneyChestState>();
+
+        if (chest == null)
+            chest = GetComponentInChildren<MoneyChestState>(true);
+
+        if (promptAnchor == null)
+            promptAnchor = transform;
+    }
+
+    private void OpenActiveChest()
+    {
+        if (chest == null)
+            return;
+
+        if (!chest.IsActive || chest.IsRetired)
+        {
+            if (logDebugMessages)
+            {
+                Debug.Log(
+                    $"Cannot open money chest because it is not Active. " +
+                    $"ChestId='{chest.ChestInstanceId}', State={chest.LifecycleState}",
+                    this);
+            }
+
+            return;
+        }
+
+        if (overlayOpener == null)
+            overlayOpener = GetComponent<MoneyChestOverlayOpener>();
+
+        if (overlayOpener == null)
+            overlayOpener = GetComponentInParent<MoneyChestOverlayOpener>();
+
+        if (overlayOpener == null)
+            overlayOpener = GetComponentInChildren<MoneyChestOverlayOpener>(true);
+
+        if (overlayOpener == null)
+            overlayOpener = gameObject.AddComponent<MoneyChestOverlayOpener>();
+
+        bool opened = overlayOpener.Open(chest);
+
+        if (!opened)
+        {
+            MoneyChestTreasuryService treasury = MoneyChestTreasuryService.Instance;
+
+            int shownBalance =
+                treasury != null && treasury.ActiveChest == chest
+                    ? treasury.ActiveBalance
+                    : chest.Balance;
+
+            Debug.LogWarning(
+                $"Failed to open money chest overlay. " +
+                $"ChestId='{chest.ChestInstanceId}', Balance={shownBalance}",
+                this);
+
+            return;
+        }
 
         if (logDebugMessages)
         {
             Debug.Log(
-                $"Open Money Chest placeholder. ChestId='{chest.ChestInstanceId}', Balance={shownBalance}",
+                $"Opened money chest overlay. ChestId='{chest.ChestInstanceId}', Balance={chest.Balance}",
                 this);
         }
-
-        // Next slice:
-        // MiniGameOverlayHost opens MoneyChestOverlayRunner here.
-        // For now, this proves interaction routing without dragging the shiny coin theater
-        // into the sacred plumbing, because we have suffered enough.
     }
 
 #if UNITY_EDITOR
-    [ContextMenu("Debug/Open Active Chest Placeholder")]
-    private void DebugOpenActiveChestPlaceholder()
+    [ContextMenu("Debug/Open Active Chest Overlay")]
+    private void DebugOpenActiveChestOverlay()
     {
-        OpenActiveChestPlaceholder();
+        OpenActiveChest();
     }
 
     [ContextMenu("Debug/Recover Lost Chest Without Context")]

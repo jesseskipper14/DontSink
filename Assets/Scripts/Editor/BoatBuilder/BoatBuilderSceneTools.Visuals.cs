@@ -118,6 +118,9 @@ public static partial class BoatBuilderSceneTools
                 BoatBuilderWindow.Tool.MapTable =>
                     GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Gameplay),
 
+                BoatBuilderWindow.Tool.MoneyChestSlot =>
+                    GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Gameplay),
+
                 BoatBuilderWindow.Tool.Hardpoint =>
                     GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Gameplay),
 

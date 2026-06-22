@@ -15,7 +15,7 @@ public sealed class MoneyChestTreasuryService : MonoBehaviour
     public static MoneyChestTreasuryService Instance { get; private set; }
 
     [Header("Debug")]
-    [SerializeField] private bool logDebugMessages = true;
+    [SerializeField] private bool logDebugMessages = false;
 
     private readonly Dictionary<string, MoneyChestState> liveChestsById = new();
 
@@ -521,28 +521,44 @@ public sealed class MoneyChestTreasuryService : MonoBehaviour
 
         MoneyChestSnapshot activeSnapshot = GetActiveSnapshot();
 
+        // Snapshot is authoritative for lost chest money.
+        // The live object can be stale/zero after spawn/reload/registration weirdness.
+        int recoveredFunds = Mathf.Max(0, lostSnapshot.balance);
+
+        // Fallback only if snapshot is empty but live chest still has money.
+        // This preserves older cases where the live chest was the only source.
+        if (recoveredFunds <= 0 && lostChest.Balance > 0)
+            recoveredFunds = lostChest.Balance;
+
         if (activeSnapshot == null || !activeSnapshot.IsActive)
         {
             state.activeChestInstanceId = lostChest.ChestInstanceId;
 
             lostSnapshot.lifecycleState = MoneyChestLifecycleState.Active;
-            lostSnapshot.balance = lostChest.Balance;
+            lostSnapshot.balance = recoveredFunds;
 
-            lostChest.MarkActive();
+            lostChest.RestoreState(
+                lostChest.ChestInstanceId,
+                recoveredFunds,
+                MoneyChestLifecycleState.Active);
+
+            liveChestsById[lostChest.ChestInstanceId] = lostChest;
+            lostChest.Changed -= HandleChestChanged;
+            lostChest.Changed += HandleChestChanged;
 
             if (logDebugMessages)
             {
                 Debug.Log(
-                    $"Recovered lost money chest as new active chest. id='{lostChest.ChestInstanceId}', balance={lostChest.Balance}",
+                    $"Recovered lost money chest as new active chest. " +
+                    $"id='{lostChest.ChestInstanceId}', recoveredFunds={recoveredFunds}",
                     lostChest);
             }
 
             return true;
         }
 
-        int recoveredFunds = lostChest.Balance;
-
         MoneyChestState activeLiveChest = ActiveChest;
+
         if (activeLiveChest != null && activeLiveChest.IsActive && !activeLiveChest.IsRetired)
         {
             activeLiveChest.AddMoney(recoveredFunds);
@@ -584,65 +600,53 @@ public sealed class MoneyChestTreasuryService : MonoBehaviour
         if (activeChest == null || !activeChest.IsActive || activeChest.IsRetired)
             return;
 
-        BoatBoardedVolume volume = boat.GetComponentInChildren<BoatBoardedVolume>(true);
-        if (volume == null)
-        {
-            if (logDebugMessages)
-                Debug.LogWarning($"Cannot prepare money chest for boat capture. Boat '{boat.name}' has no BoatBoardedVolume.", boat);
-
-            return;
-        }
-
-        WorldItem worldItem = activeChest.GetComponent<WorldItem>();
-        if (worldItem == null)
-            worldItem = activeChest.GetComponentInParent<WorldItem>();
-
+        WorldItem worldItem = ResolveWorldItem(activeChest);
         if (worldItem == null)
         {
-            Debug.LogWarning(
-                $"Active money chest '{activeChest.ChestInstanceId}' has no WorldItem. " +
-                "BoatLooseItemPersistence cannot capture it.",
-                activeChest);
-
-            return;
-        }
-
-        bool insideBoatVolume = volume.ContainsWorldPoint(activeChest.transform.position);
-
-        if (!insideBoatVolume)
-        {
-            ClearMoneyChestBoatOwnershipIfOwnedBy(worldItem, boat);
-
             if (logDebugMessages)
             {
-                Debug.Log(
-                    $"Active money chest is NOT inside BoatBoardedVolume. " +
-                    $"Cleared boat ownership so loose item capture will not falsely save it. " +
-                    $"id='{activeChest.ChestInstanceId}', boat='{boat.BoatInstanceId}', pos={activeChest.transform.position}",
+                Debug.LogWarning(
+                    $"Active money chest '{activeChest.ChestInstanceId}' has no WorldItem. " +
+                    "BoatLooseItemPersistence cannot capture it as a loose boat item.",
                     activeChest);
             }
 
             return;
         }
 
-        BoatOwnedItem owned = worldItem.GetComponent<BoatOwnedItem>();
-        if (owned == null)
-            owned = worldItem.gameObject.AddComponent<BoatOwnedItem>();
+        bool isSlotSecured = IsMoneyChestSlotSecuredOnBoat(worldItem, boat);
+        bool isAlreadyBoatOwned = IsWorldItemOwnedByBoat(worldItem, boat);
 
-        BoatOwnedItemLayerPolicy layerPolicy = worldItem.GetComponent<BoatOwnedItemLayerPolicy>();
-        if (layerPolicy == null)
-            layerPolicy = worldItem.gameObject.AddComponent<BoatOwnedItemLayerPolicy>();
+        if (!isSlotSecured && !isAlreadyBoatOwned)
+        {
+            // Important:
+            // Do NOT promote the chest into boat ownership just because it overlaps BoatBoardedVolume.
+            // If it is not in hands, not already boat-owned, and not in the money chest slot,
+            // the post-capture pass should mark it Lost.
+            ClearMoneyChestBoatOwnershipIfOwnedBy(worldItem, boat);
 
-        BoatOwnedItemVisualPolicy visualPolicy = worldItem.GetComponent<BoatOwnedItemVisualPolicy>();
-        if (visualPolicy == null)
-            visualPolicy = worldItem.gameObject.AddComponent<BoatOwnedItemVisualPolicy>();
+            if (logDebugMessages)
+            {
+                Debug.Log(
+                    $"Active money chest is NOT explicitly aboard. " +
+                    $"It will be Lost if not found in player loadout. " +
+                    $"id='{activeChest.ChestInstanceId}', boat='{boat.BoatInstanceId}', " +
+                    $"slotSecured={isSlotSecured}, alreadyBoatOwned={isAlreadyBoatOwned}, " +
+                    $"pos={worldItem.transform.position}",
+                    activeChest);
+            }
 
-        owned.AssignToBoat(boat);
+            return;
+        }
+
+        EnsureWorldItemBoatCapturePolicies(worldItem, boat);
 
         if (logDebugMessages)
         {
             Debug.Log(
-                $"Prepared active money chest for boat capture. id='{activeChest.ChestInstanceId}', boat='{boat.BoatInstanceId}'",
+                $"Prepared active money chest for boat capture. " +
+                $"id='{activeChest.ChestInstanceId}', boat='{boat.BoatInstanceId}', " +
+                $"slotSecured={isSlotSecured}, alreadyBoatOwned={isAlreadyBoatOwned}",
                 activeChest);
         }
     }
@@ -722,6 +726,252 @@ public sealed class MoneyChestTreasuryService : MonoBehaviour
     {
         MoneyChestTreasurySnapshot state = TreasuryState;
         return state != null ? state.chests : null;
+    }
+
+    public bool HasLostChestSnapshots
+    {
+        get
+        {
+            MoneyChestTreasurySnapshot state = TreasuryState;
+            if (state == null || state.chests == null)
+                return false;
+
+            for (int i = 0; i < state.chests.Count; i++)
+            {
+                MoneyChestSnapshot snapshot = state.chests[i];
+                if (snapshot != null && snapshot.IsLost)
+                    return true;
+            }
+
+            return false;
+        }
+    }
+
+    public bool RegisterReplacementChest(MoneyChestState replacementChest)
+    {
+        if (replacementChest == null)
+            return false;
+
+        if (!ShouldOfferReplacementChest)
+        {
+            if (logDebugMessages)
+            {
+                Debug.Log(
+                    $"Replacement money chest rejected. HasActiveChest={HasActiveChest}, " +
+                    $"LostCount={LostChestSnapshotCount}",
+                    replacementChest);
+            }
+
+            return false;
+        }
+
+        replacementChest.SyncInstanceIdFromWorldItem();
+        replacementChest.EnsureInstanceId();
+
+        string chestId = replacementChest.ChestInstanceId;
+        if (string.IsNullOrWhiteSpace(chestId))
+            return false;
+
+        MoneyChestTreasurySnapshot state = TreasuryState;
+        if (state == null)
+            return false;
+
+        MoneyChestSnapshot snapshot = FindSnapshot(chestId);
+
+        if (snapshot == null)
+        {
+            snapshot = new MoneyChestSnapshot
+            {
+                version = 1,
+                chestInstanceId = chestId,
+                itemId = replacementChest.GetItemId(),
+                balance = 0,
+                lifecycleState = MoneyChestLifecycleState.Active,
+                isReplacement = true,
+                lastWorldPosition = replacementChest.transform.position
+            };
+
+            AddSnapshot(snapshot);
+        }
+
+        snapshot.chestInstanceId = chestId;
+        snapshot.itemId = replacementChest.GetItemId();
+        snapshot.balance = 0;
+        snapshot.lifecycleState = MoneyChestLifecycleState.Active;
+        snapshot.isReplacement = true;
+
+        RecordCurrentLocation(snapshot, replacementChest);
+
+        replacementChest.RestoreState(
+            chestId,
+            0,
+            MoneyChestLifecycleState.Active);
+
+        liveChestsById[chestId] = replacementChest;
+
+        replacementChest.Changed -= HandleChestChanged;
+        replacementChest.Changed += HandleChestChanged;
+
+        state.activeChestInstanceId = chestId;
+
+        if (logDebugMessages)
+        {
+            Debug.Log(
+                $"Replacement money chest registered as active. " +
+                $"id='{chestId}', LostCount={LostChestSnapshotCount}",
+                replacementChest);
+        }
+
+        return true;
+    }
+
+    public int LostChestSnapshotCount
+    {
+        get
+        {
+            MoneyChestTreasurySnapshot state = TreasuryState;
+            if (state == null || state.chests == null)
+                return 0;
+
+            int count = 0;
+
+            for (int i = 0; i < state.chests.Count; i++)
+            {
+                MoneyChestSnapshot snapshot = state.chests[i];
+                if (snapshot != null && snapshot.IsLost)
+                    count++;
+            }
+
+            return count;
+        }
+    }
+
+    public bool ShouldOfferReplacementChest
+    {
+        get
+        {
+            return !HasActiveChest && HasLostChestSnapshots;
+        }
+    }
+
+    public bool IsReplacementChest(MoneyChestState chest)
+    {
+        if (chest == null)
+            return false;
+
+        chest.SyncInstanceIdFromWorldItem();
+        chest.EnsureInstanceId();
+
+        MoneyChestSnapshot snapshot = FindSnapshot(chest.ChestInstanceId);
+        return snapshot != null && snapshot.isReplacement;
+    }
+
+    public bool TryFindReusableReplacementSnapshotForCurrentNode(out MoneyChestSnapshot replacementSnapshot)
+    {
+        replacementSnapshot = null;
+
+        MoneyChestTreasurySnapshot state = TreasuryState;
+        if (state == null || state.chests == null)
+            return false;
+
+        string currentNodeId =
+            GameState.I != null && GameState.I.player != null
+                ? GameState.I.player.currentNodeId
+                : null;
+
+        for (int i = 0; i < state.chests.Count; i++)
+        {
+            MoneyChestSnapshot snapshot = state.chests[i];
+            if (snapshot == null)
+                continue;
+
+            if (!snapshot.isReplacement)
+                continue;
+
+            if (snapshot.IsRetired)
+                continue;
+
+            if (snapshot.balance != 0)
+                continue;
+
+            // Keep replacement chests node-local when possible.
+            // If your MoneyChestSnapshot somehow does not have nodeStableId yet,
+            // add: public string nodeStableId;
+            if (!string.IsNullOrWhiteSpace(currentNodeId) &&
+                !string.IsNullOrWhiteSpace(snapshot.nodeStableId) &&
+                !string.Equals(snapshot.nodeStableId, currentNodeId, System.StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            replacementSnapshot = snapshot;
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool RegisterReplacementChest(
+        MoneyChestState replacementChest,
+        string preferredInstanceId = null)
+    {
+        if (replacementChest == null)
+            return false;
+
+        if (!ShouldOfferReplacementChest)
+        {
+            if (logDebugMessages)
+            {
+                Debug.Log(
+                    $"Replacement money chest rejected. HasActiveChest={HasActiveChest}, " +
+                    $"LostCount={LostChestSnapshotCount}",
+                    replacementChest);
+            }
+
+            return false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(preferredInstanceId))
+        {
+            replacementChest.RestoreState(
+                preferredInstanceId,
+                0,
+                MoneyChestLifecycleState.Active);
+        }
+        else
+        {
+            replacementChest.SyncInstanceIdFromWorldItem();
+            replacementChest.EnsureInstanceId();
+
+            replacementChest.RestoreState(
+                replacementChest.ChestInstanceId,
+                0,
+                MoneyChestLifecycleState.Active);
+        }
+
+        RegisterChest(replacementChest);
+        SetActiveChest(replacementChest);
+
+        MoneyChestSnapshot snapshot = GetOrCreateSnapshot(replacementChest);
+        if (snapshot != null)
+        {
+            snapshot.balance = 0;
+            snapshot.lifecycleState = MoneyChestLifecycleState.Active;
+            snapshot.isReplacement = true;
+            snapshot.itemId = replacementChest.GetItemId();
+
+            RecordCurrentLocation(snapshot, replacementChest);
+        }
+
+        if (logDebugMessages)
+        {
+            Debug.Log(
+                $"Replacement money chest registered as active. " +
+                $"id='{replacementChest.ChestInstanceId}', LostCount={LostChestSnapshotCount}",
+                replacementChest);
+        }
+
+        return true;
     }
 
     // ---------------------------------------------------------------------
@@ -1143,6 +1393,81 @@ public sealed class MoneyChestTreasuryService : MonoBehaviour
         }
 
         return false;
+    }
+
+    private static WorldItem ResolveWorldItem(MoneyChestState chest)
+    {
+        if (chest == null)
+            return null;
+
+        WorldItem worldItem =
+            chest.GetComponent<WorldItem>() ??
+            chest.GetComponentInParent<WorldItem>() ??
+            chest.GetComponentInChildren<WorldItem>(true);
+
+        return worldItem;
+    }
+
+    private static bool IsWorldItemOwnedByBoat(WorldItem worldItem, Boat boat)
+    {
+        if (worldItem == null || boat == null)
+            return false;
+
+        BoatOwnedItem owned = worldItem.GetComponent<BoatOwnedItem>();
+        if (owned == null || !owned.IsOwnedByBoat)
+            return false;
+
+        return string.Equals(
+            owned.OwningBoatInstanceId,
+            boat.BoatInstanceId,
+            System.StringComparison.Ordinal);
+    }
+
+    private static bool IsMoneyChestSlotSecuredOnBoat(WorldItem worldItem, Boat boat)
+    {
+        if (worldItem == null || boat == null)
+            return false;
+
+        MoneyChestSlotSecuredItem marker = worldItem.GetComponent<MoneyChestSlotSecuredItem>();
+        if (marker == null || !marker.IsSecured)
+            return false;
+
+        MoneyChestSecureSlot slot = MoneyChestSecureSlot.FindByStableId(marker.SlotStableId);
+        if (slot == null)
+            return false;
+
+        Boat slotBoat =
+            slot.GetComponentInParent<Boat>() ??
+            slot.GetComponentInChildren<Boat>(true);
+
+        if (slotBoat == null)
+            return false;
+
+        return string.Equals(
+            slotBoat.BoatInstanceId,
+            boat.BoatInstanceId,
+            System.StringComparison.Ordinal);
+    }
+
+    private static void EnsureWorldItemBoatCapturePolicies(WorldItem worldItem, Boat boat)
+    {
+        if (worldItem == null || boat == null)
+            return;
+
+        BoatOwnedItem owned = worldItem.GetComponent<BoatOwnedItem>();
+        if (owned == null)
+            owned = worldItem.gameObject.AddComponent<BoatOwnedItem>();
+
+        BoatOwnedItemLayerPolicy layerPolicy = worldItem.GetComponent<BoatOwnedItemLayerPolicy>();
+        if (layerPolicy == null)
+            worldItem.gameObject.AddComponent<BoatOwnedItemLayerPolicy>();
+
+        BoatOwnedItemVisualPolicy visualPolicy = worldItem.GetComponent<BoatOwnedItemVisualPolicy>();
+        if (visualPolicy == null)
+            worldItem.gameObject.AddComponent<BoatOwnedItemVisualPolicy>();
+
+        // This re-registers with BoatItemRegistry if needed.
+        owned.AssignToBoat(boat);
     }
 
 #if UNITY_EDITOR

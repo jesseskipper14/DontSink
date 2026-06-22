@@ -191,7 +191,7 @@ namespace MiniGames
 
             GUI.Label(
                 new Rect(panel.x + pad, panel.y + 32, panel.width - pad * 2f, 22),
-                $"Credits: {_player.credits}");
+                GetTradeMoneyLabel());
 
             float closeX = panel.xMax - 34;
             float closeY = panel.y + 8;
@@ -290,13 +290,19 @@ namespace MiniGames
 
             GUI.Label(
                 new Rect(panel.x + pad, panel.yMax - 70, panel.width - pad * 2f, 22),
-                $"Preview: Δcredits {signFinal}{Mathf.Abs(preview.finalDelta)} → {preview.creditsAfter}");
+                $"Preview: Δmoney {signFinal}${Mathf.Abs(preview.finalDelta):n0} → ${preview.moneyAfter:n0}");
 
-            if (preview.insufficientCredits)
+            if (preview.missingActiveChest)
             {
                 GUI.Label(
                     new Rect(panel.x + pad, panel.yMax - 58, panel.width - pad * 2f, 22),
-                    "Not enough credits.");
+                    "No active money chest.");
+            }
+            else if (preview.insufficientMoney)
+            {
+                GUI.Label(
+                    new Rect(panel.x + pad, panel.yMax - 58, panel.width - pad * 2f, 22),
+                    "Not enough money in chest.");
             }
 
             Rect btnRow = new Rect(panel.x + pad, panel.yMax - 48, panel.width - pad * 2f, 34);
@@ -308,7 +314,7 @@ namespace MiniGames
             if (GUI.Button(new Rect(btnRow.xMax - buttonWidth * 2f - 10f, btnRow.y, buttonWidth, btnRow.height), "Preview"))
                 _uiState.lastUiNote = BuildPreviewString();
 
-            GUI.enabled = !preview.insufficientCredits;
+            GUI.enabled = !preview.Blocked;
 
             if (GUI.Button(new Rect(btnRow.xMax - buttonWidth, btnRow.y, buttonWidth, btnRow.height), "Confirm"))
                 ConfirmTransaction();
@@ -532,35 +538,36 @@ namespace MiniGames
 
         private string BuildPreviewString()
         {
-            int creditsDelta = 0;
+            TradePreview preview = ComputePreview();
 
-            foreach (NodeMarketOffer offer in _offers)
-            {
-                if (offer == null)
-                    continue;
+            if (preview.missingActiveChest)
+                return "No active money chest.";
 
-                int qty = GetQty(offer.offerId);
-                if (qty <= 0)
-                    continue;
+            if (preview.insufficientMoney)
+                return $"Not enough money in chest. Need ${Mathf.Abs(preview.finalDelta):n0}, have ${GetTradeMoneyBalance():n0}.";
 
-                qty = Mathf.Min(qty, GetMaxQtyForOffer(offer));
-                if (qty <= 0)
-                    continue;
-
-                int total = offer.unitPrice * qty;
-
-                if (offer.kind == MarketOfferKind.SellToPlayer)
-                    creditsDelta -= total;
-                else
-                    creditsDelta += total;
-            }
-
-            string sign = creditsDelta >= 0 ? "+" : "-";
-            return $"Preview Δcredits {sign}{Mathf.Abs(creditsDelta)} (after: {_player.credits + creditsDelta})";
+            string sign = preview.finalDelta >= 0 ? "+" : "-";
+            return $"Preview Δmoney {sign}${Mathf.Abs(preview.finalDelta):n0} (after: ${preview.moneyAfter:n0})";
         }
 
         private void ConfirmTransaction()
         {
+            TradePreview preview = ComputePreview();
+            if (preview.Blocked)
+            {
+                if (_uiState == null)
+                    _uiState = GetOrCreateUiState();
+
+                if (preview.missingActiveChest)
+                    _uiState.lastUiNote = "No active money chest";
+                else if (preview.insufficientMoney)
+                    _uiState.lastUiNote = "Not enough money in chest";
+                else
+                    _uiState.lastUiNote = "Trade blocked";
+
+                return;
+            }
+
             TradeTransactionDraft draft = new TradeTransactionDraft
             {
                 nodeId = _nodeId,
@@ -654,8 +661,11 @@ namespace MiniGames
             public int tradeBalance;
             public int fee;
             public int finalDelta;
-            public int creditsAfter;
-            public bool insufficientCredits;
+            public int moneyAfter;
+            public bool missingActiveChest;
+            public bool insufficientMoney;
+
+            public bool Blocked => missingActiveChest || insufficientMoney;
         }
 
         private TradePreview ComputePreview()
@@ -702,15 +712,27 @@ namespace MiniGames
                 fee = Mathf.Max(0, _feePreview.ComputeFeeTotal(_nodeState, _tmpLines, _timeBucket));
 
             int finalDelta = tradeBalance - fee;
-            int after = _player.credits + finalDelta;
+
+            bool hasSelectedLines = _tmpLines.Count > 0;
+            bool hasActiveChest = HasActiveMoneyChest();
+
+            int before = hasActiveChest ? GetTradeMoneyBalance() : 0;
+            int after = before + finalDelta;
+
+            bool missingActiveChest = hasSelectedLines && !hasActiveChest;
+            bool insufficientMoney =
+                !missingActiveChest &&
+                finalDelta < 0 &&
+                !MoneyService.CanSpend(-finalDelta);
 
             return new TradePreview
             {
                 tradeBalance = tradeBalance,
                 fee = fee,
                 finalDelta = finalDelta,
-                creditsAfter = after,
-                insufficientCredits = after < 0
+                moneyAfter = Mathf.Max(0, after),
+                missingActiveChest = missingActiveChest,
+                insufficientMoney = insufficientMoney
             };
         }
 
@@ -829,6 +851,25 @@ namespace MiniGames
             }
 
             return set;
+        }
+
+        private bool HasActiveMoneyChest()
+        {
+            MoneyChestTreasuryService treasury = MoneyChestTreasuryService.Instance;
+            return treasury != null && treasury.HasActiveChest;
+        }
+
+        private int GetTradeMoneyBalance()
+        {
+            return Mathf.Max(0, MoneyService.Balance);
+        }
+
+        private string GetTradeMoneyLabel()
+        {
+            if (!HasActiveMoneyChest())
+                return "Money Chest: NONE";
+
+            return $"Money Chest: ${GetTradeMoneyBalance():n0}";
         }
     }
 }

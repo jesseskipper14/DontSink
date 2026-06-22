@@ -18,6 +18,12 @@ GameObject:
   - component: {fileID: -9011886402141120778}
   - component: {fileID: 3024619308643295648}
   - component: {fileID: 4052075250394461262}
+  - component: {fileID: 2349066153842751969}
+  - component: {fileID: 3969873422270577743}
+  - component: {fileID: 8799078945557772287}
+  - component: {fileID: 3498296292108176967}
+  - component: {fileID: 6094469857348522159}
+  - component: {fileID: 6682532121877033045}
   m_Layer: 10
   m_Name: MoneyChest
   m_TagString: Untagged
@@ -261,8 +267,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chestInstanceId: 
-  balance: 120
-  lifecycleState: 1
+  balance: 0
+  lifecycleState: 0
+  preferWorldItemInstanceId: 1
 --- !u!114 &4052075250394461262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,13 +284,192 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chest: {fileID: 3024619308643295648}
   promptAnchor: {fileID: 6415755432460154699}
+  overlayOpener: {fileID: 2349066153842751969}
   interactionPriority: 10
   hoverNameRange: 4
   actionRange: 1.75
   requireBoardedPlayerForLostRecovery: 1
   requireChestInsideBoatBoardedVolume: 1
   destroyRetiredRecoveredChest: 1
-  logDebugMessages: 1
+  logDebugMessages: 0
+--- !u!114 &2349066153842751969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571194650393018128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a06bc059bea4f341a3e6d5e8b39039f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  overlay: {fileID: 0}
+  visualSettings:
+    chestInteriorSprite: {fileID: -2481555141679236069, guid: 5d8260a738e64cd439730c7808cb6b9e, type: 3}
+    coinVisuals:
+    - sprite: {fileID: 6066908679539909013, guid: 3b440bf87102b5b4a971ea06e3ea9c40, type: 3}
+      value: 1
+      useForExactCounting: 1
+      useForRepresentativePile: 1
+      representativeMinBalance: 0
+      representativeWeight: 50
+    - sprite: {fileID: -8558739134900499066, guid: 3b440bf87102b5b4a971ea06e3ea9c40, type: 3}
+      value: 5
+      useForExactCounting: 1
+      useForRepresentativePile: 1
+      representativeMinBalance: 0
+      representativeWeight: 30
+    - sprite: {fileID: -4284381697712114436, guid: 3b440bf87102b5b4a971ea06e3ea9c40, type: 3}
+      value: 10
+      useForExactCounting: 1
+      useForRepresentativePile: 1
+      representativeMinBalance: 100
+      representativeWeight: 20
+    - sprite: {fileID: -5966924195325405688, guid: 3b440bf87102b5b4a971ea06e3ea9c40, type: 3}
+      value: 20
+      useForExactCounting: 1
+      useForRepresentativePile: 1
+      representativeMinBalance: 250
+      representativeWeight: 10
+    - sprite: {fileID: 729145872299050663, guid: 3b440bf87102b5b4a971ea06e3ea9c40, type: 3}
+      value: 50
+      useForExactCounting: 1
+      useForRepresentativePile: 1
+      representativeMinBalance: 1000
+      representativeWeight: 5
+    - sprite: {fileID: 8020967132586300786, guid: 3b440bf87102b5b4a971ea06e3ea9c40, type: 3}
+      value: 100
+      useForExactCounting: 1
+      useForRepresentativePile: 1
+      representativeMinBalance: 5000
+      representativeWeight: 4
+    - sprite: {fileID: 2608099752476250595, guid: 3b440bf87102b5b4a971ea06e3ea9c40, type: 3}
+      value: 1000
+      useForExactCounting: 0
+      useForRepresentativePile: 1
+      representativeMinBalance: 20000
+      representativeWeight: 3
+    - sprite: {fileID: 3833191782871004079, guid: 3b440bf87102b5b4a971ea06e3ea9c40, type: 3}
+      value: 5000
+      useForExactCounting: 0
+      useForRepresentativePile: 1
+      representativeMinBalance: 100000
+      representativeWeight: 2
+    - sprite: {fileID: -7293112764872938805, guid: 3b440bf87102b5b4a971ea06e3ea9c40, type: 3}
+      value: 10000
+      useForExactCounting: 1
+      useForRepresentativePile: 1
+      representativeMinBalance: 500000
+      representativeWeight: 1
+    coinArea01:
+      serializedVersion: 2
+      x: 0.05
+      y: 0.1
+      width: 0.9
+      height: 0.79
+    exactVisualAccountingMaxBalance: 1000
+    exactTargetCoinsAtMaxBalance: 200
+    maxExactVisualCoins: 200
+    emptyChestCoinCount: 0
+    poorChestCoinCount: 6
+    fullChestCoinCount: 300
+    balanceForFullChest: 10000
+    balanceForDisgustingRichChest: 100000
+    coinSpriteScale: 2.4
+    fallbackCoinSizePx: 16
+    representativeTransitionBlendRange: 2000
+    representativeUnlockFadeRange: 3000
+    rebuildWhenBalanceChanges: 1
+    showDebugInfo: 0
+  logDebugMessages: 0
+--- !u!114 &3969873422270577743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571194650393018128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06d0a205c2a3920439c097f31fd0b2d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bodySource: {fileID: 3498296292108176967}
+  waveManager: {fileID: 0}
+  wave: {fileID: 0}
+  useBoatWaterContext: 1
+  explicitWaterContext: {fileID: 0}
+  boatBodyAlwaysUsesOcean: 1
+  sliceCount: 10
+  lastTotalSubmersion: 0
+  enabledFlag: 1
+  priority: 50
+--- !u!114 &8799078945557772287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571194650393018128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5e906a068d9b1d43b275115706b31d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  submersionSource: {fileID: 3969873422270577743}
+  enabledFlag: 1
+  priority: 100
+--- !u!114 &3498296292108176967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571194650393018128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5cc12ff57ca8414b9993d63ebb70291, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  width: 2
+  height: 0.7
+--- !u!114 &6094469857348522159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571194650393018128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d25d72d0396500e4c803080c99afb5b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6682532121877033045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571194650393018128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7088c3bf9b8725043aa3f19f7c441ebc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chest: {fileID: 3024619308643295648}
+  rb: {fileID: 5263012356571068860}
+  emptyMass: 0.5
+  massPerMoneyUnit: 0.0018
+  maxMass: 72
+  referenceSinkBalance: 500
+  adjustCenterOfMass: 0
+  emptyCenterOfMass: {x: 0, y: 0}
+  loadedCenterOfMass: {x: 0, y: -0.08}
+  balanceForLoadedCenterOfMass: 10000
+  logMassChanges: 0
+  logMinMassDelta: 0.05
 --- !u!1 &9130302141471108845
 GameObject:
   m_ObjectHideFlags: 0
