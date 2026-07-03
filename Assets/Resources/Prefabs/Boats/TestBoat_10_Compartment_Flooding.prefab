@@ -2420,7 +2420,7 @@ MonoBehaviour:
   targetCamera: {fileID: 0}
   hideByCameraMaskWhenInterior:
     serializedVersion: 2
-    m_Bits: 2098176
+    m_Bits: 2100224
   autoFindMainCamera: 1
   logVisibility: 0
 --- !u!114 &3994175581240845045

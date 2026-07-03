@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a28b7821dd287474da11be9ad37d6d80, type: 3}
+  m_Name: behavior_market_vendor
+  m_EditorClassIdentifier: 
+  id: behavior_market_vendor
+  brain: {fileID: 11400000, guid: d3cc838d8d3f38c4f815995705de6110, type: 2}
+  movement: {fileID: 11400000, guid: 28900ef6577238f4398098cd07b24788, type: 2}
+  interaction: {fileID: 11400000, guid: 365171fbcd290a343b0bf2ed4a11c15b, type: 2}

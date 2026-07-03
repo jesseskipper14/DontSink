@@ -98,6 +98,17 @@ public sealed class ItemDefinition : ScriptableObject
     [SerializeField] private bool droppable = true;
     [SerializeField] private bool tradable = true;
 
+    [Header("Economy")]
+    [SerializeField, Min(0)] private int basePrice = 10;
+
+    [SerializeField] private bool canBeSoldByItemVendors = true;
+    [SerializeField] private bool canBeBoughtByItemVendors = true;
+
+    [SerializeField, Range(0f, 2f)]
+    private float defaultVendorBuyMultiplier = 0.25f;
+
+    [SerializeField] private ItemVendorAvailabilityRule vendorAvailability = new ItemVendorAvailabilityRule();
+
     [Header("Parent Slot Rules")]
     [SerializeField] private BottomBarSlotType[] disallowedParentSlots;
 
@@ -171,6 +182,23 @@ public sealed class ItemDefinition : ScriptableObject
     public bool StowableInInventory => stowableInInventory;
     public bool Droppable => droppable;
     public bool Tradable => tradable;
+
+    public int BasePrice => Mathf.Max(0, basePrice);
+
+    public bool CanBeSoldByItemVendors =>
+        canBeSoldByItemVendors &&
+        tradable &&
+        !IsSacred;
+
+    public bool CanBeBoughtByItemVendors =>
+        canBeBoughtByItemVendors &&
+        tradable &&
+        !IsSacred;
+
+    public float DefaultVendorBuyMultiplier =>
+        Mathf.Clamp(defaultVendorBuyMultiplier, 0f, 2f);
+
+    public ItemVendorAvailabilityRule VendorAvailability => vendorAvailability;
     public bool IsInstallableModule => isModule && moduleDefinition != null;
     public BottomBarSlotType EquipSlot => equipSlot;
     public bool IsEquippable => equipSlot != BottomBarSlotType.None;
