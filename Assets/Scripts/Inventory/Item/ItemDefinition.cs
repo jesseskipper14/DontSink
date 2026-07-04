@@ -163,8 +163,13 @@ public sealed class ItemDefinition : ScriptableObject
     [SerializeField] private bool isModule;
     [SerializeField] private ModuleDefinition moduleDefinition;
 
+    [Header("Boat Vendor")]
+    [Tooltip("If true, this module item can appear in boat vendor module stock.")]
+    [SerializeField] private bool soldByBoatVendors;
+
     public bool IsModule => isModule;
     public ModuleDefinition ModuleDefinition => moduleDefinition;
+    public bool SoldByBoatVendors => soldByBoatVendors;
 
     [Header("World")]
     [SerializeField] private WorldItem worldPrefab;

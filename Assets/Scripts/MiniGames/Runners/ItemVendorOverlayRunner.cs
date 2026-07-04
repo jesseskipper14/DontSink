@@ -9,6 +9,7 @@ public sealed class ItemVendorOverlayRunner : MonoBehaviour
     [SerializeField] private MiniGameOverlayHost overlay;
     [SerializeField] private ItemDefinitionCatalog itemCatalog;
     [SerializeField] private ItemVendorPurchaseService purchaseService;
+    [SerializeField] private ItemVendorSellService sellService;
 
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = true;
@@ -22,10 +23,14 @@ public sealed class ItemVendorOverlayRunner : MonoBehaviour
 
     private List<ItemVendorSellOffer> activeSellOffers = new();
 
+    private readonly List<ItemVendorSellSource> activePlayerSellSources = new();
+    private readonly List<ItemVendorSellSource> activeBoatSellSources = new();
+
     private void Reset()
     {
         overlay = FindFirstObjectByType<MiniGameOverlayHost>();
         purchaseService = FindFirstObjectByType<ItemVendorPurchaseService>();
+        sellService = FindFirstObjectByType<ItemVendorSellService>();
     }
 
     private void Awake()
@@ -35,6 +40,9 @@ public sealed class ItemVendorOverlayRunner : MonoBehaviour
 
         if (purchaseService == null)
             purchaseService = FindFirstObjectByType<ItemVendorPurchaseService>();
+
+        if (sellService == null)
+            sellService = FindFirstObjectByType<ItemVendorSellService>();
     }
 
     private void OnDisable()
@@ -44,7 +52,10 @@ public sealed class ItemVendorOverlayRunner : MonoBehaviour
         activeVendor = null;
         activeCartridge = null;
         activeSessionId = null;
+
         activeSellOffers.Clear();
+        activePlayerSellSources.Clear();
+        activeBoatSellSources.Clear();
     }
 
     public bool Open(ItemVendorServiceDefinition vendor, AgentServiceContext context)
@@ -61,6 +72,9 @@ public sealed class ItemVendorOverlayRunner : MonoBehaviour
         if (purchaseService == null)
             purchaseService = FindFirstObjectByType<ItemVendorPurchaseService>();
 
+        if (sellService == null)
+            sellService = FindFirstObjectByType<ItemVendorSellService>();
+
         if (overlay == null)
         {
             Debug.LogError("[ItemVendorOverlayRunner] Missing MiniGameOverlayHost.", this);
@@ -70,6 +84,12 @@ public sealed class ItemVendorOverlayRunner : MonoBehaviour
         if (purchaseService == null)
         {
             Debug.LogError("[ItemVendorOverlayRunner] Missing ItemVendorPurchaseService.", this);
+            return false;
+        }
+
+        if (sellService == null)
+        {
+            Debug.LogError("[ItemVendorOverlayRunner] Missing ItemVendorSellService.", this);
             return false;
         }
 
@@ -90,9 +110,14 @@ public sealed class ItemVendorOverlayRunner : MonoBehaviour
             itemCatalog,
             availabilityContext);
 
+        RebuildSellSources();
+
         Log(
             $"Opening vendor '{vendor.ServiceId}' " +
-            $"session='{activeSessionId}' generatedOffers={activeSellOffers.Count}");
+            $"session='{activeSessionId}' " +
+            $"generatedOffers={activeSellOffers.Count} " +
+            $"playerSellSources={activePlayerSellSources.Count} " +
+            $"boatSellSources={activeBoatSellSources.Count}");
 
         Subscribe();
 
@@ -108,12 +133,29 @@ public sealed class ItemVendorOverlayRunner : MonoBehaviour
             activeSessionId,
             vendor,
             activeSellOffers,
+            activePlayerSellSources,
+            activeBoatSellSources,
             itemCatalog,
             purchaseService,
+            sellService,
             context);
 
         overlay.Open(activeCartridge, miniGameContext);
         return true;
+    }
+
+    private void RebuildSellSources()
+    {
+        activePlayerSellSources.Clear();
+        activeBoatSellSources.Clear();
+
+        ItemVendorSellSourceCollector.CollectPlayerSources(
+            activeAgentContext,
+            activePlayerSellSources);
+
+        ItemVendorSellSourceCollector.CollectBoatSources(
+            activeAgentContext,
+            activeBoatSellSources);
     }
 
     private void Subscribe()
@@ -139,12 +181,24 @@ public sealed class ItemVendorOverlayRunner : MonoBehaviour
         if (effect.kind != MiniGameEffectKind.Transaction)
             return;
 
-        if (effect.system != "ItemVendor")
-            return;
-
         if (effect.targetId != activeSessionId)
             return;
 
+        if (effect.system == "ItemVendor")
+        {
+            ApplyBuyEffect(effect);
+            return;
+        }
+
+        if (effect.system == "ItemVendorSell")
+        {
+            ApplySellEffect(effect);
+            return;
+        }
+    }
+
+    private void ApplyBuyEffect(MiniGameEffect effect)
+    {
         if (string.IsNullOrWhiteSpace(effect.payloadJson))
         {
             activeCartridge?.NotifyPurchaseApplied(-1, false, "Missing purchase payload.");
@@ -195,9 +249,100 @@ public sealed class ItemVendorOverlayRunner : MonoBehaviour
         activeCartridge?.NotifyPurchaseApplied(draft.offerIndex, ok, message);
 
         if (ok)
+        {
+            RebuildSellSources();
+            activeCartridge?.NotifySellSourcesChanged();
             Log($"Purchase OK: {message}");
+        }
         else
+        {
             Debug.LogWarning($"[ItemVendorOverlayRunner] Purchase failed: {message}", this);
+        }
+    }
+
+    private void ApplySellEffect(MiniGameEffect effect)
+    {
+        if (string.IsNullOrWhiteSpace(effect.payloadJson))
+        {
+            activeCartridge?.NotifySellApplied(false, "Missing sell payload.");
+            return;
+        }
+
+        ItemVendorSellDraft draft =
+            JsonUtility.FromJson<ItemVendorSellDraft>(effect.payloadJson);
+
+        if (draft == null)
+        {
+            activeCartridge?.NotifySellApplied(false, "Invalid sell payload.");
+            return;
+        }
+
+        List<ItemVendorSellSource> sources =
+            draft.area == ItemVendorSellArea.Boat
+                ? activeBoatSellSources
+                : activePlayerSellSources;
+
+        if (sources == null || sources.Count == 0)
+        {
+            activeCartridge?.NotifySellApplied(false, "No sellable sources.");
+            return;
+        }
+
+        if (draft.sourceIndex < 0 || draft.sourceIndex >= sources.Count)
+        {
+            activeCartridge?.NotifySellApplied(false, "Invalid sell source.");
+            return;
+        }
+
+        ItemVendorSellSource source = sources[draft.sourceIndex];
+
+        if (source == null)
+        {
+            activeCartridge?.NotifySellApplied(false, "Missing sell source.");
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(draft.sourceKey) &&
+            draft.sourceKey != source.SourceKey)
+        {
+            activeCartridge?.NotifySellApplied(false, "Sell source changed. Try again.");
+            RebuildSellSources();
+            activeCartridge?.NotifySellSourcesChanged();
+            return;
+        }
+
+        ItemInstance item = source.Item;
+        if (item == null || item.Definition == null)
+        {
+            activeCartridge?.NotifySellApplied(false, "Item no longer exists.");
+            RebuildSellSources();
+            activeCartridge?.NotifySellSourcesChanged();
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(draft.expectedInstanceId) &&
+            draft.expectedInstanceId != item.InstanceId)
+        {
+            activeCartridge?.NotifySellApplied(false, "Item changed before sale. Try again.");
+            RebuildSellSources();
+            activeCartridge?.NotifySellSourcesChanged();
+            return;
+        }
+
+        bool ok = sellService.TrySell(
+            activeVendor,
+            source,
+            Mathf.Max(1, draft.quantity),
+            out string message);
+
+        RebuildSellSources();
+        activeCartridge?.NotifySellSourcesChanged();
+        activeCartridge?.NotifySellApplied(ok, message);
+
+        if (ok)
+            Log($"Sell OK: {message}");
+        else
+            Debug.LogWarning($"[ItemVendorOverlayRunner] Sell failed: {message}", this);
     }
 
     private static string BuildSessionId(

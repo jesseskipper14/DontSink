@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b35ea3680d03de47bb066e90022690a, type: 3}
+  m_Name: BoatVendorService
+  m_EditorClassIdentifier: 
+  serviceId: service_boat_vendor
+  promptLabel: Browse Boats
+  boatsPlaceholderMessage: Boat sales are pending development. Catalog entries are
+    shown for planning only.
+  moduleSellPriceMultiplier: 1
+  moduleBuyFromPlayerMultiplier: 1
+  defaultModuleStock: -1
+  builderPlaceholderMessage: Runtime boat builder is pending development. Later this
+    will open the boat customization/build/edit flow.

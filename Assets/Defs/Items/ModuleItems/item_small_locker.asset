@@ -27,7 +27,7 @@ MonoBehaviour:
   stowableInInventory: 1
   droppable: 1
   tradable: 1
-  basePrice: 10
+  basePrice: 100
   canBeSoldByItemVendors: 0
   canBeBoughtByItemVendors: 0
   defaultVendorBuyMultiplier: 0.25
@@ -58,4 +58,5 @@ MonoBehaviour:
   pickupHoldDuration: 3
   isModule: 1
   moduleDefinition: {fileID: 11400000, guid: 74201bafb45ac2a4cb28ff77bf69cece, type: 2}
+  soldByBoatVendors: 1
   worldPrefab: {fileID: 4363263784485809776, guid: 7d48581cd525a46498ae23761fdf7dc3, type: 3}
