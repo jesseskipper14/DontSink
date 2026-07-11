@@ -1470,6 +1470,28 @@ public sealed class MoneyChestTreasuryService : MonoBehaviour
         owned.AssignToBoat(boat);
     }
 
+    public void CaptureToGameState(string reason = "")
+    {
+        MoneyChestTreasurySnapshot state = TreasuryState;
+        if (state == null)
+            return;
+
+        state.EnsureDefaults();
+
+        SyncAllLiveSnapshots();
+        AdoptFirstActiveChestIfNeeded();
+
+        if (logDebugMessages)
+        {
+            Debug.Log(
+                $"[MoneyChestTreasuryService] CaptureToGameState reason='{reason}' " +
+                $"active='{state.activeChestInstanceId}' " +
+                $"count={(state.chests != null ? state.chests.Count : -1)} " +
+                $"balance={ActiveBalance}",
+                this);
+        }
+    }
+
 #if UNITY_EDITOR
     [ContextMenu("Debug/Register Existing Scene Chests")]
     private void DebugRegisterExistingSceneChests()

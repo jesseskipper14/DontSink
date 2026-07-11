@@ -4,6 +4,22 @@ using UnityEngine;
 
 public static class WorldMapSaveRestorer
 {
+
+    private static readonly bool LogSuccessfulRestores = false;
+
+    private static void LogRestoreSuccess(string message, UnityEngine.Object context)
+    {
+        if (!LogSuccessfulRestores)
+            return;
+
+        Debug.Log(message, context);
+    }
+
+    private static void LogRestoreFailure(string message, UnityEngine.Object context)
+    {
+        Debug.LogWarning(message, context);
+    }
+
     public static bool HasUsableSnapshot(GameState gs = null)
     {
         gs ??= GameState.I;
@@ -66,7 +82,7 @@ public static class WorldMapSaveRestorer
             gs.worldMap.byNodeStableId[snap.stableId] = state;
         }
 
-        Debug.Log(
+        LogRestoreSuccess(
             $"[WorldMapSaveRestorer] Restored node runtime state store. Nodes={gs.worldMap.byNodeStableId.Count}.",
             gs
         );
@@ -89,7 +105,7 @@ public static class WorldMapSaveRestorer
 
         generator.UseRestoredGraph(graph, "WorldMapSaveRestorer");
 
-        Debug.Log(
+        LogRestoreSuccess(
             $"[WorldMapSaveRestorer] Restored graph. Nodes={graph.nodes?.Count ?? 0}, Edges={graph.edges?.Count ?? 0}.",
             generator
         );
@@ -110,11 +126,14 @@ public static class WorldMapSaveRestorer
 
         bool ok = source.TryRestoreFromSnapshot(snapshot.knowledge);
 
-        Debug.Log(
+        string message =
             $"[WorldMapSaveRestorer] Restore knowledge {(ok ? "OK" : "FAILED")}. " +
-            $"Surface={snapshot.knowledge.surfaceRevealedCount}, Underwater={snapshot.knowledge.underwaterSurveyedCount}.",
-            source
-        );
+            $"Surface={snapshot.knowledge.surfaceRevealedCount}, Underwater={snapshot.knowledge.underwaterSurveyedCount}.";
+
+        if (ok)
+            LogRestoreSuccess(message, source);
+        else
+            LogRestoreFailure(message, source);
 
         return ok;
     }
@@ -132,10 +151,13 @@ public static class WorldMapSaveRestorer
 
         bool ok = source.TryRestoreFromSnapshot(snapshot.pois);
 
-        Debug.Log(
-            $"[WorldMapSaveRestorer] Restore POIs {(ok ? "OK" : "FAILED")}. Count={snapshot.pois.pois?.Count ?? 0}.",
-            source
-        );
+        string message =
+            $"[WorldMapSaveRestorer] Restore POIs {(ok ? "OK" : "FAILED")}. Count={snapshot.pois.pois?.Count ?? 0}.";
+
+        if (ok)
+            LogRestoreSuccess(message, source);
+        else
+            LogRestoreFailure(message, source);
 
         return ok;
     }
@@ -150,11 +172,14 @@ public static class WorldMapSaveRestorer
 
         bool ok = source.TryRestoreFromSnapshot(snapshot.topography);
 
-        Debug.Log(
+        string message =
             $"[WorldMapSaveRestorer] Restore topography {(ok ? "OK" : "FAILED")}. " +
-            $"Res={snapshot.topography.width}x{snapshot.topography.height}.",
-            source
-        );
+            $"Res={snapshot.topography.width}x{snapshot.topography.height}.";
+
+        if (ok)
+            LogRestoreSuccess(message, source);
+        else
+            LogRestoreFailure(message, source);
 
         return ok;
     }
@@ -176,11 +201,14 @@ public static class WorldMapSaveRestorer
 
         bool ok = eventManager.TryRestoreFromSnapshot(snapshot.effects, runtimeBinder, generator);
 
-        Debug.Log(
+        string message =
             $"[WorldMapSaveRestorer] Restore effects {(ok ? "OK" : "FAILED")}. " +
-            $"Events={snapshot.effects.events?.Count ?? 0}, Buffs={snapshot.effects.buffs?.Count ?? 0}.",
-            eventManager
-        );
+            $"Events={snapshot.effects.events?.Count ?? 0}, Buffs={snapshot.effects.buffs?.Count ?? 0}.";
+
+        if (ok)
+            LogRestoreSuccess(message, eventManager);
+        else
+            LogRestoreFailure(message, eventManager);
 
         return ok;
     }

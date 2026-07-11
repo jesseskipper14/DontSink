@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f509f3c945b6844b94a39e40e1eb7f0, type: 3}
+  m_Name: StayBelowWaterSurfaceMovementModule
+  m_EditorClassIdentifier: 
+  explicitWaveField: {fileID: 0}
+  useWrappedSampling: 1
+  desiredDepthBelowSurface: 0.45
+  surfaceBuffer: 0.25
+  downwardSpeed: 8
+  emergencyDownwardSpeedBoost: 12
+  nearSurfaceWeight: 0.5
+  aboveSurfaceWeight: 1
+  suppressLowerPriorityWhenAboveSurface: 1
+  overrideMotorLimits: 1
+  maxSpeedOverride: 10
+  accelerationOverride: 80
+  logMissingWaveField: 0

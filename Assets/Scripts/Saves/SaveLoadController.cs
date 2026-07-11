@@ -25,7 +25,7 @@ public sealed class SaveLoadController : MonoBehaviour
     [SerializeField] private bool blockLoadOnCompatibilityErrors = true;
 
     [Header("Debug")]
-    [SerializeField] private bool verboseLogging = true;
+    [SerializeField] private bool verboseLogging = false;
 
     public string ProfileId => profileId;
     public string DefaultSlotId => defaultSlotId;

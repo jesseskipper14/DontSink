@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dd1ac41bc78ae14f8455173d91f0614, type: 3}
+  m_Name: CompositeMovement_SmallFish_1
+  m_EditorClassIdentifier: 
+  maxSpeed: 3.5
+  acceleration: 8
+  stopWhenNoIntent: 1
+  noIntentDeceleration: 4
+  flipVisualOnXMovement: 1
+  explicitVisualRoot: {fileID: 0}
+  modules:
+  - enabled: 1
+    module: {fileID: 11400000, guid: 31abacf72bfda624fbda7e7c55ed69a2, type: 2}
+    priority: 100
+    strength: 1
+  - enabled: 1
+    module: {fileID: 11400000, guid: d1447240ab9ff8d42bf101628a318674, type: 2}
+    priority: 95
+    strength: 1
+  - enabled: 1
+    module: {fileID: 11400000, guid: 449f2654367d3664b860862d5833801c, type: 2}
+    priority: 80
+    strength: 1
+  - enabled: 1
+    module: {fileID: 11400000, guid: 2ad365fc5cc15294b84c0e465f4c52e6, type: 2}
+    priority: 40
+    strength: 0.85
+  - enabled: 1
+    module: {fileID: 11400000, guid: 280913ae4104dfa4eb65306cf2162934, type: 2}
+    priority: 10
+    strength: 0.35
+  verboseLogging: 0

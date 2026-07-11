@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: behavior_small_fish
   brain: {fileID: 11400000, guid: 31caaecc432532842ad44de630822874, type: 2}
-  movement: {fileID: 11400000, guid: f2a5626a936bfd14187b8fc1ec102ee0, type: 2}
+  movement: {fileID: 11400000, guid: eda14f1b26e9d204a83686ecf0c88590, type: 2}
   interaction: {fileID: 11400000, guid: 59c2539c634aa704084b91836a3e5fab, type: 2}

@@ -63,6 +63,9 @@ public sealed class UnderwaterResourceSceneSpawner : MonoBehaviour
 
     [SerializeField] private bool spawnOnStart = true;
 
+    [Header("Debug")]
+    [SerializeField] private bool logSpawnSummary = false;
+
     private readonly List<GameObject> spawnedObjects = new();
     private readonly List<UnderwaterResourceDefinition> categoryScratch = new();
 
@@ -188,10 +191,13 @@ public sealed class UnderwaterResourceSceneSpawner : MonoBehaviour
         SpawnCategory(UnderwaterResourceCategory.Extractable, GetBudget(UnderwaterResourceCategory.Extractable), rng);
         SpawnCategory(UnderwaterResourceCategory.Craneable, GetBudget(UnderwaterResourceCategory.Craneable), rng);
 
-        Debug.Log(
-            $"[UnderwaterResourceSceneSpawner] Spawned {spawnedObjects.Count} underwater resources. " +
-            $"Route={routeStableId}, VisitSalt={sceneVisitSalt}",
-            this);
+        if (logSpawnSummary)
+        {
+            Debug.Log(
+                $"[UnderwaterResourceSceneSpawner] Spawned {spawnedObjects.Count} underwater resources. " +
+                $"Route={routeStableId}, VisitSalt={sceneVisitSalt}",
+                this);
+        }
     }
 
     [ContextMenu("Clear Underwater Resources")]

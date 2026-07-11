@@ -12,6 +12,9 @@ public static class SaveGameService
     private const string AutosavePrefix = "autosave_";
     private const int DefaultMaxAutosaves = 5;
 
+    private static readonly bool LogSuccessfulCompatibilityReports = false;
+    private static readonly bool LogSaveJsonSize = false;
+
     public static string SaveRoot =>
         Path.Combine(Application.persistentDataPath, SavesFolderName);
 
@@ -70,7 +73,8 @@ public static class SaveGameService
             SaveCompatibilityReport compatibility =
                 SaveCompatibilityDiagnostics.ValidateCurrentGameStateForSave(gs, boatCatalog);
 
-            compatibility.LogUnity("SaveGameService.SaveSlot compatibility", gs);
+            if (compatibility.HasErrors || LogSuccessfulCompatibilityReports)
+                compatibility.LogUnity("SaveGameService.SaveSlot compatibility", gs);
 
             if (blockOnCompatibilityErrors && compatibility.HasErrors)
             {
@@ -116,13 +120,17 @@ public static class SaveGameService
         {
             string json = JsonUtility.ToJson(file, prettyPrint: true);
 
-            long jsonBytes = System.Text.Encoding.UTF8.GetByteCount(json);
-            Debug.Log(
-                $"[SaveGameService] Save JSON size: {WorldMapSaveDebugUtility.FormatBytes(jsonBytes)}. " +
-                $"WorldMap: nodes={file.payload?.worldMapSnapshot?.graph?.nodes?.Count ?? 0}, " +
-                $"pois={file.payload?.worldMapSnapshot?.pois?.pois?.Count ?? 0}, " +
-                $"topo={file.payload?.worldMapSnapshot?.topography?.width ?? 0}x{file.payload?.worldMapSnapshot?.topography?.height ?? 0}"
-            );
+            if (LogSaveJsonSize)
+            {
+                long jsonBytes = System.Text.Encoding.UTF8.GetByteCount(json);
+
+                Debug.Log(
+                    $"[SaveGameService] Save JSON size: {WorldMapSaveDebugUtility.FormatBytes(jsonBytes)}. " +
+                    $"WorldMap: nodes={file.payload?.worldMapSnapshot?.graph?.nodes?.Count ?? 0}, " +
+                    $"pois={file.payload?.worldMapSnapshot?.pois?.pois?.Count ?? 0}, " +
+                    $"topo={file.payload?.worldMapSnapshot?.topography?.width ?? 0}x{file.payload?.worldMapSnapshot?.topography?.height ?? 0}"
+                );
+            }
 
             WriteAllTextAtomic(path, json);
 
@@ -228,7 +236,8 @@ public static class SaveGameService
             SaveCompatibilityReport compatibility =
                 SaveCompatibilityDiagnostics.ValidateSaveFileForLoad(file, boatCatalog);
 
-            compatibility.LogUnity("SaveGameService.LoadSlot compatibility", null);
+            if (compatibility.HasErrors || LogSuccessfulCompatibilityReports)
+                compatibility.LogUnity("SaveGameService.LoadSlot compatibility", null);
 
             if (blockOnCompatibilityErrors && compatibility.HasErrors)
             {
@@ -409,10 +418,12 @@ public static class SaveGameService
             transition.SaveCurrentPlayerLoadout();
             CapturePlayerSceneContext(gs, "SaveGameService.SaveSlot");
             transition.SaveCurrentBoatState("SaveGameService.SaveSlot");
+            CaptureMoneyChestTreasury(gs, "SaveGameService.SaveSlot");
             WorldMapSaveBuilder.CaptureCurrentWorldMapIntoGameState("SaveGameService.SaveSlot");
             return;
         }
 
+        CaptureMoneyChestTreasury(gs, "SaveGameService.SaveSlot without SceneTransitionController");
         WorldMapSaveBuilder.CaptureCurrentWorldMapIntoGameState("SaveGameService.SaveSlot without SceneTransitionController");
 
         Debug.LogWarning(
@@ -423,6 +434,11 @@ public static class SaveGameService
 
     private static SaveGamePayload BuildPayload(GameState gs, string currentScene)
     {
+        if (gs.moneyChestTreasuryState == null)
+            gs.moneyChestTreasuryState = new MoneyChestTreasurySnapshot();
+
+        gs.moneyChestTreasuryState.EnsureDefaults();
+
         return new SaveGamePayload
         {
             currentSceneName = currentScene,
@@ -432,7 +448,8 @@ public static class SaveGameService
             activeTravel = null,
             playerLoadout = gs.playerLoadout,
             playerSceneContext = gs.playerSceneContext,
-            boat = gs.boat
+            boat = gs.boat,
+            moneyChestTreasury = gs.moneyChestTreasuryState
         };
     }
 
@@ -502,6 +519,10 @@ public static class SaveGameService
 
         gs.playerLoadout = payload.playerLoadout;
         gs.playerSceneContext = payload.playerSceneContext;
+
+        gs.SetMoneyChestTreasuryState(
+            payload.moneyChestTreasury,
+            "SaveGameService.LoadSlot");
 
         gs.SetBoatSaveState(payload.boat, "SaveGameService.LoadSlot");
         gs.LogState("SaveGameService.ApplyPayloadToGameState");
@@ -577,6 +598,34 @@ public static class SaveGameService
             wasBoarded = boarding.IsBoarded,
             boatInstanceId = boatInstanceId
         }, reason);
+    }
+
+    private static void CaptureMoneyChestTreasury(GameState gs, string reason)
+    {
+        if (gs == null)
+            return;
+
+        MoneyChestTreasuryService treasury =
+            gs.moneyChestTreasury != null
+                ? gs.moneyChestTreasury
+                : MoneyChestTreasuryService.Instance;
+
+        if (treasury == null)
+        {
+            treasury = gs.GetComponent<MoneyChestTreasuryService>();
+
+            if (treasury == null)
+                treasury = gs.gameObject.AddComponent<MoneyChestTreasuryService>();
+
+            gs.moneyChestTreasury = treasury;
+        }
+
+        treasury.CaptureToGameState(reason);
+
+        if (gs.moneyChestTreasuryState == null)
+            gs.moneyChestTreasuryState = new MoneyChestTreasurySnapshot();
+
+        gs.moneyChestTreasuryState.EnsureDefaults();
     }
 
     private static void WriteAllTextAtomic(string path, string contents)

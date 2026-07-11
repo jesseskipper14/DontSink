@@ -11,7 +11,7 @@ public sealed class SceneTransitionController : MonoBehaviour
     [SerializeField] private string boatSceneName = "BoatScene";
 
     [Header("Debug")]
-    [SerializeField] private bool verboseLogging = true;
+    [SerializeField] private bool verboseLogging = false;
 
     private void Awake()
     {

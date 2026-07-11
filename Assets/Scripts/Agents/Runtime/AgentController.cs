@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class AgentController : MonoBehaviour
+public class AgentController : MonoBehaviour, ISimulationLodTarget
 {
     [Header("Definition")]
     [SerializeField] private AgentDefinition definition;
@@ -10,12 +10,42 @@ public class AgentController : MonoBehaviour
     [SerializeField] private string stableId;
     [SerializeField] private string nodeId;
 
+    [Header("Runtime Identity Logging")]
+    [SerializeField] private bool warnWhenGeneratingTemporaryStableId = false;
+    [SerializeField] private bool logGeneratedTemporaryStableId = false;
+
+    [Header("Simulation LOD")]
+    [SerializeField] private bool allowSimulationLod = true;
+    [SerializeField] private SimulationLodState currentLodState = SimulationLodState.Full;
+
+    [SerializeField, Min(0.02f)]
+    private float reducedTickInterval = 0.25f;
+
+    private float nextReducedTickTime;
+
     [Header("Optional Runtime Bounds")]
     [SerializeField] private AgentHomeBounds homeBounds;
 
     private IAgentBrainRuntime brainRuntime;
     private IAgentMovementRuntime movementRuntime;
     private IAgentInteractionRuntime interactionRuntime;
+
+    public IAgentBrainRuntime BrainRuntime => brainRuntime;
+    public IAgentMovementRuntime MovementRuntime => movementRuntime;
+    public IAgentInteractionRuntime InteractionRuntime => interactionRuntime;
+
+    public bool TryGetMovementDiagnostics(out AgentMovementDiagnosticsSnapshot snapshot)
+    {
+        snapshot = null;
+
+        if (movementRuntime is IAgentMovementDiagnosticsProvider provider)
+        {
+            snapshot = provider.GetMovementDiagnosticsSnapshot();
+            return snapshot != null;
+        }
+
+        return false;
+    }
 
     private bool initialized;
 
@@ -36,14 +66,47 @@ public class AgentController : MonoBehaviour
         }
     }
 
+    public SimulationLodState CurrentLodState => currentLodState;
+    public bool AllowSimulationLod => allowSimulationLod;
+    public float ReducedTickInterval => reducedTickInterval;
+
+    public void SetSimulationLodState(
+        SimulationLodState state,
+        SimulationLodAuthorityMode authorityMode)
+    {
+        if (!allowSimulationLod)
+            state = SimulationLodState.Full;
+
+        if (currentLodState == state)
+            return;
+
+        currentLodState = state;
+
+        if (currentLodState == SimulationLodState.Frozen)
+        {
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            if (rb != null)
+                rb.linearVelocity = Vector2.zero;
+        }
+
+        nextReducedTickTime = 0f;
+    }
+
     private void Awake()
     {
-        InitializeIfNeeded();
+        // Intentionally do not initialize here.
+        //
+        // Runtime-spawned agents are configured immediately after Instantiate,
+        // but Awake runs during Instantiate before the spawner gets control back.
+        //
+        // Scene-placed agents can safely initialize in Start.
     }
 
     private void OnEnable()
     {
-        InitializeIfNeeded();
+        // Do not initialize here either.
+        // OnEnable also runs before runtime spawners can call Initialize(...).
+
         AgentRegistry.Register(this);
     }
 
@@ -52,15 +115,55 @@ public class AgentController : MonoBehaviour
         AgentRegistry.Unregister(this);
     }
 
-    private void Update()
+    private void Start()
     {
         if (!initialized)
             InitializeIfNeeded();
+    }
 
-        float dt = Time.deltaTime;
+    private void Update()
+    {
+        // Still allow pre-placed agents or delayed runtime assignment to initialize
+        // once a definition becomes available.
+        if (!initialized && definition != null)
+            InitializeIfNeeded();
+
+        if (!initialized)
+            return;
+
+        if (initialized && movementRuntime == null && HasMovementDefinition)
+            ReinitializeRuntime();
+
+        if (!ShouldTickThisFrame(out float dt))
+            return;
 
         brainRuntime?.Tick(this, dt);
         movementRuntime?.Tick(this, dt);
+    }
+
+    private bool ShouldTickThisFrame(out float dt)
+    {
+        dt = Time.deltaTime;
+
+        switch (currentLodState)
+        {
+            case SimulationLodState.Full:
+                return true;
+
+            case SimulationLodState.Reduced:
+                if (Time.time < nextReducedTickTime)
+                    return false;
+
+                dt = Mathf.Max(Time.deltaTime, reducedTickInterval);
+                nextReducedTickTime = Time.time + reducedTickInterval;
+                return true;
+
+            case SimulationLodState.Frozen:
+                return false;
+
+            default:
+                return true;
+        }
     }
 
     public void Initialize(AgentDefinition newDefinition, string newStableId, string newNodeId, AgentHomeBounds newHomeBounds)
@@ -79,14 +182,13 @@ public class AgentController : MonoBehaviour
         if (initialized)
             return;
 
-        EnsureStableId();
-
         if (definition == null)
         {
-            Debug.LogWarning($"AgentController '{name}' has no AgentDefinition.", this);
-            initialized = true;
+            initialized = false;
             return;
         }
+
+        EnsureStableId();
 
         AgentBehaviorSetDefinition behaviorSet = definition.BehaviorSet;
 
@@ -191,6 +293,40 @@ public class AgentController : MonoBehaviour
             return;
 
         stableId = $"{gameObject.scene.name}:{name}:{GetInstanceID()}";
-        Debug.LogWarning($"Generated temporary Agent stableId for '{name}': {stableId}. Use AgentSpawnPoint stable IDs for save-safe agents.", this);
+
+        string message =
+            $"Generated temporary Agent stableId for '{name}': {stableId}. " +
+            "This is acceptable for transient runtime agents like fish. " +
+            "Use AgentSpawnPoint stable IDs for save-safe agents.";
+
+        if (warnWhenGeneratingTemporaryStableId)
+        {
+            Debug.LogWarning(message, this);
+        }
+        else if (logGeneratedTemporaryStableId)
+        {
+            Debug.Log($"[AgentController] {message}", this);
+        }
+    }
+
+    [ContextMenu("Reinitialize Agent Runtime")]
+    public void ReinitializeRuntime()
+    {
+        brainRuntime = null;
+        movementRuntime = null;
+        interactionRuntime = null;
+
+        initialized = false;
+        InitializeIfNeeded();
+    }
+
+    public bool HasMovementDefinition
+    {
+        get
+        {
+            return definition != null &&
+                   definition.BehaviorSet != null &&
+                   definition.BehaviorSet.Movement != null;
+        }
     }
 }

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0222d4fe6deed894abca3ffcd95a9853, type: 3}
+  m_Name: SmallFishSpawnGroup
+  m_EditorClassIdentifier: 
+  enabled: 1
+  priority: 0
+  displayName: SmallFishSpawnGroup
+  creaturePrefab: {fileID: 3377680571654660244, guid: c787c2dc62630af4d8d7aedb1073c449, type: 3}
+  schoolProfile: {fileID: 11400000, guid: 0f11ad71467516c45b7d733031c1c6fc, type: 2}
+  domain: 5
+  requiredZoneTags:
+  - ShallowWater
+  requireAllTags: 1
+  minGroups: 2
+  maxGroups: 5
+  minCountPerGroup: 2
+  maxCountPerGroup: 9
+  groupMode: 1
+  createSchoolController: 1
+  chooseZonePerGroup: 1
+  minGroupAnchorDistance: 3
+  groupAnchorPlacementAttempts: 12
+  verboseLogging: 0

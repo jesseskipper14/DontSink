@@ -35,6 +35,8 @@ public sealed class SaveGamePayload
     public PlayerSceneContextSnapshot playerSceneContext;
 
     public BoatSaveState boat;
+
+    public MoneyChestTreasurySnapshot moneyChestTreasury;
 }
 
 public readonly struct SaveGameResult

@@ -6,7 +6,16 @@ public sealed class GameState : MonoBehaviour
     public static GameState I { get; private set; }
 
     [Header("Debug")]
-    [SerializeField] private bool verboseLogging = true;
+    [SerializeField] private bool verboseLogging = false;
+
+    [Tooltip("Logs major singleton/bootstrap lifecycle events.")]
+    [SerializeField] private bool logSingletonLifecycle = false;
+
+    [Tooltip("Logs full multi-line GameState snapshots. Very noisy.")]
+    [SerializeField] private bool logStateSnapshots = false;
+
+    [Tooltip("Warn when scene-authored duplicate GameState destroys itself. Usually expected after loading from menu.")]
+    [SerializeField] private bool warnOnDuplicateSingleton = false;
 
     [Header("Authoritative State")]
     public WorldMapPlayerState player = new WorldMapPlayerState();
@@ -43,9 +52,14 @@ public sealed class GameState : MonoBehaviour
     {
         if (I != null && I != this)
         {
-            LogWarning(
+            string msg =
                 "Duplicate GameState detected. Destroying this instance. " +
-                $"Existing={I.name}, Duplicate={name}");
+                $"Existing={I.name}, Duplicate={name}";
+
+            if (warnOnDuplicateSingleton)
+                Debug.LogWarning($"[GameState:{name}] {msg}", this);
+            else
+                LogLifecycle(msg);
 
             Destroy(gameObject);
             return;
@@ -58,17 +72,17 @@ public sealed class GameState : MonoBehaviour
         EnsureWorldMapSnapshotDefaults();
         EnsureMoneyChestTreasuryDefaults();
 
-        Log("Awake accepted as singleton.");
+        LogLifecycle("Awake accepted as singleton.");
         LogState("Awake BEFORE registry check");
 
         if (boatRegistry == null)
         {
             boatRegistry = gameObject.AddComponent<BoatRegistry>();
-            Log("BoatRegistry was NULL. Added BoatRegistry component to GameState.");
+            LogLifecycle("BoatRegistry was NULL. Added BoatRegistry component to GameState.");
         }
         else
         {
-            Log($"BoatRegistry already assigned: {boatRegistry.name}");
+            LogLifecycle($"BoatRegistry already assigned: {boatRegistry.name}");
         }
 
         if (moneyChestTreasury == null)
@@ -78,16 +92,16 @@ public sealed class GameState : MonoBehaviour
             if (moneyChestTreasury == null)
             {
                 moneyChestTreasury = gameObject.AddComponent<MoneyChestTreasuryService>();
-                Log("MoneyChestTreasuryService was NULL. Added MoneyChestTreasuryService component to GameState.");
+                LogLifecycle("MoneyChestTreasuryService was NULL. Added MoneyChestTreasuryService component to GameState.");
             }
             else
             {
-                Log($"MoneyChestTreasuryService found on GameState: {moneyChestTreasury.name}");
+                LogLifecycle($"MoneyChestTreasuryService found on GameState: {moneyChestTreasury.name}");
             }
         }
         else
         {
-            Log($"MoneyChestTreasuryService already assigned: {moneyChestTreasury.name}");
+            LogLifecycle($"MoneyChestTreasuryService already assigned: {moneyChestTreasury.name}");
         }
 
         LogState("Awake END");
@@ -199,9 +213,26 @@ public sealed class GameState : MonoBehaviour
         LogState($"SetBoatAccessStates reason='{reason}'");
     }
 
+    public void SetMoneyChestTreasuryState(
+    MoneyChestTreasurySnapshot snapshot,
+    string reason = "")
+    {
+        moneyChestTreasuryState = snapshot ?? new MoneyChestTreasurySnapshot();
+        moneyChestTreasuryState.EnsureDefaults();
+
+        if (verboseLogging)
+        {
+            Debug.Log(
+                $"[GameState:{name}] SetMoneyChestTreasuryState reason='{reason}' " +
+                $"active='{moneyChestTreasuryState.activeChestInstanceId}' " +
+                $"count={(moneyChestTreasuryState.chests != null ? moneyChestTreasuryState.chests.Count : -1)}",
+                this);
+        }
+    }
+
     public void LogState(string label)
     {
-        if (!verboseLogging)
+        if (!logStateSnapshots)
             return;
 
         Debug.Log(
@@ -321,11 +352,18 @@ public sealed class GameState : MonoBehaviour
         Debug.Log($"[GameState:{name}] {msg}", this);
     }
 
-    private void LogWarning(string msg)
+    private void LogLifecycle(string msg)
     {
-        if (!verboseLogging)
+        if (!verboseLogging && !logSingletonLifecycle)
             return;
 
+        Debug.Log($"[GameState:{name}] {msg}", this);
+    }
+
+    private void LogWarning(string msg)
+    {
+        // Real warnings should stay loud. A warning hidden behind verboseLogging
+        // is not a warning, it is a diary entry.
         Debug.LogWarning($"[GameState:{name}] {msg}", this);
     }
 
