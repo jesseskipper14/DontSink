@@ -409,6 +409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d25d72d0396500e4c803080c99afb5b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  verboseDiagnostics: 1
 --- !u!114 &4462543996364673205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -477,6 +478,8 @@ MonoBehaviour:
   maxForce: 500
   boat: {fileID: 0}
   multiplyForceByActiveEngineCount: 0
+  verboseDiagnostics: 1
+  diagnosticInterval: 0.5
 --- !u!114 &-6039137831043528685
 MonoBehaviour:
   m_ObjectHideFlags: 0

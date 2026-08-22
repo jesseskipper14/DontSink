@@ -2,8 +2,24 @@ using UnityEngine;
 
 public struct BoatControlIntent
 {
-    public float Throttle;     // [-1..1]
-    public bool ExitPressed;   // rising edge
+    /// <summary>
+    /// Requested throttle-lever movement this frame.
+    /// -1 = reduce throttle, 0 = leave it alone, +1 = increase throttle.
+    /// This is intent, NOT the persistent throttle position.
+    /// </summary>
+    public float ThrottleAdjust;
+
+    /// <summary>
+    /// Requested rudder/helm movement this frame.
+    /// -1 = port, 0 = leave it alone, +1 = starboard.
+    /// This is intent, NOT the persistent rudder angle.
+    /// </summary>
+    public float RudderAdjust;
+
+    /// <summary>Rising edge request to leave the helm.</summary>
+    public bool ExitPressed;
+
+    public static BoatControlIntent Neutral => default;
 }
 
 public interface IBoatControlIntentSource
@@ -11,40 +27,38 @@ public interface IBoatControlIntentSource
     BoatControlIntent Current { get; }
 }
 
+[DisallowMultipleComponent]
 public class LocalBoatControlIntentSource : MonoBehaviour, IBoatControlIntentSource
 {
-    [Header("Bindings (legacy input manager)")]
+    [Header("Bindings (local input only)")]
     [SerializeField] private KeyCode throttleUp = KeyCode.W;
     [SerializeField] private KeyCode throttleDown = KeyCode.S;
+    [SerializeField] private KeyCode rudderPort = KeyCode.A;
+    [SerializeField] private KeyCode rudderStarboard = KeyCode.D;
     [SerializeField] private KeyCode exitKey = KeyCode.Escape;
-
-    [Header("Tuning")]
-    [SerializeField] private float throttleRampPerSecond = 3f; // how fast it ramps
-    [SerializeField] private float throttleReturnPerSecond = 4f; // how fast it returns to 0 when no input
 
     public BoatControlIntent Current { get; private set; }
 
-    private float throttle;
-
-    void Update()
+    private void Update()
     {
-        float target =
-            (Input.GetKey(throttleUp) ? 1f : 0f) +
-            (Input.GetKey(throttleDown) ? -1f : 0f);
+        float throttleAdjust =
+            (Input.GetKey(throttleUp) ? 1f : 0f) -
+            (Input.GetKey(throttleDown) ? 1f : 0f);
 
-        if (Mathf.Abs(target) > 0.001f)
-        {
-            throttle = Mathf.MoveTowards(throttle, target, throttleRampPerSecond * Time.deltaTime);
-        }
-        else
-        {
-            throttle = Mathf.MoveTowards(throttle, 0f, throttleReturnPerSecond * Time.deltaTime);
-        }
+        float rudderAdjust =
+            (Input.GetKey(rudderStarboard) ? 1f : 0f) -
+            (Input.GetKey(rudderPort) ? 1f : 0f);
 
         Current = new BoatControlIntent
         {
-            Throttle = throttle,
+            ThrottleAdjust = Mathf.Clamp(throttleAdjust, -1f, 1f),
+            RudderAdjust = Mathf.Clamp(rudderAdjust, -1f, 1f),
             ExitPressed = Input.GetKeyDown(exitKey)
         };
+    }
+
+    private void OnDisable()
+    {
+        Current = BoatControlIntent.Neutral;
     }
 }

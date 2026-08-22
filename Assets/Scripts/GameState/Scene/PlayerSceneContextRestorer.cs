@@ -174,6 +174,12 @@ public sealed class PlayerSceneContextRestorer : MonoBehaviour
             transform.position = boat.transform.TransformPoint(boardedFallbackLocalOffset);
         }
 
+        // Match normal manual boarding: the player must be physically parented
+        // to the boat as well as logically marked boarded.
+        transform.SetParent(
+            boat.transform,
+            worldPositionStays: true);
+
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null)
         {
@@ -183,7 +189,11 @@ public sealed class PlayerSceneContextRestorer : MonoBehaviour
 
         boardingState.Board(boat.transform);
 
-        Log($"Restored boarded state on boat='{boat.name}' id='{boat.BoatInstanceId}' pos={transform.position}");
+        Log(
+            $"Restored boarded state on boat='{boat.name}' " +
+            $"id='{boat.BoatInstanceId}' " +
+            $"parent='{(transform.parent != null ? transform.parent.name : "NULL")}' " +
+            $"worldPos={transform.position} localPos={transform.localPosition}");
     }
 
     private void ForceUnboard()
@@ -191,10 +201,17 @@ public sealed class PlayerSceneContextRestorer : MonoBehaviour
         if (boardingState == null)
             return;
 
+        // Match normal manual unboarding and defensively clear any stale boat parent.
+        transform.SetParent(
+            null,
+            worldPositionStays: true);
+
         if (boardingState.IsBoarded)
             boardingState.Unboard();
 
-        Log("Restored unboarded state.");
+        Log(
+            $"Restored unboarded state. " +
+            $"parent='{(transform.parent != null ? transform.parent.name : "NULL")}'");
     }
 
     private Transform FindBoatPlayerSpawnPoint(Transform boatRoot)

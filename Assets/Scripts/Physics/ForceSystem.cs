@@ -4,41 +4,95 @@ using System.Linq;
 
 public class ForceSystem : MonoBehaviour
 {
+    [Header("Diagnostics")]
+    [SerializeField] private bool verboseDiagnostics = true;
+
     private IForceBody body;
 
-    private List<IForceProvider> allProviders = new();
-    private List<IForceProvider> orderedProviders = new();
+    private readonly List<IForceProvider> allProviders = new();
+    private readonly List<IForceProvider> orderedProviders = new();
 
-    void Awake()
+    private void Awake()
     {
+        // Preserve existing behavior for now, but make the ambiguity visible.
         body = GetComponent<IForceBody>();
 
-        allProviders.AddRange(GetComponents<IForceProvider>());
+        allProviders.Clear();
+        allProviders.AddRange(
+            GetComponents<IForceProvider>());
 
-        // Cache ordered providers once
-        orderedProviders = allProviders
-            .OfType<IOrderedForceProvider>()
-            .OrderBy(p => p.Priority)
-            .Cast<IForceProvider>()
-            .ToList();
+        orderedProviders.Clear();
+        orderedProviders.AddRange(
+            allProviders
+                .OfType<IOrderedForceProvider>()
+                .OrderBy(p => p.Priority)
+                .Cast<IForceProvider>());
+
+        if (verboseDiagnostics)
+            LogConfiguration();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        // 1️⃣ Ordered forces first
-        foreach (var provider in orderedProviders)
+        foreach (IForceProvider provider in orderedProviders)
         {
-            var ordered = (IOrderedForceProvider)provider;
-            if (!ordered.Enabled) continue;
+            IOrderedForceProvider ordered =
+                (IOrderedForceProvider)provider;
+
+            if (!ordered.Enabled)
+                continue;
 
             provider.ApplyForces(body);
         }
 
-        // 2️⃣ Unordered forces (legacy / simple)
-        foreach (var provider in allProviders)
+        foreach (IForceProvider provider in allProviders)
         {
-            if (provider is IOrderedForceProvider) continue;
+            if (provider is IOrderedForceProvider)
+                continue;
+
             provider.ApplyForces(body);
         }
+    }
+
+    private void LogConfiguration()
+    {
+        IForceBody[] candidates =
+            GetComponents<MonoBehaviour>()
+                .OfType<IForceBody>()
+                .ToArray();
+
+        string candidateText =
+            candidates.Length > 0
+                ? string.Join(
+                    ", ",
+                    candidates.Select(
+                        c => c.GetType().Name))
+                : "(none)";
+
+        string providerText =
+            allProviders.Count > 0
+                ? string.Join(
+                    ", ",
+                    allProviders.Select(
+                        p =>
+                        {
+                            if (p is IOrderedForceProvider ordered)
+                            {
+                                return
+                                    $"{p.GetType().Name}" +
+                                    $"(ordered priority={ordered.Priority}, enabled={ordered.Enabled})";
+                            }
+
+                            return
+                                $"{p.GetType().Name}(unordered)";
+                        }))
+                : "(none)";
+
+        Debug.Log(
+            $"[ForceSystem] DIAG selectedBody=" +
+            $"{(body != null ? body.GetType().Name : "NULL")} | " +
+            $"IForceBody candidates=[{candidateText}] | " +
+            $"providers=[{providerText}]",
+            this);
     }
 }

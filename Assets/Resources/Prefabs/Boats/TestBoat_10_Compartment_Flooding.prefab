@@ -887,8 +887,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isOn: 0
   fuelContainerDefinition: {fileID: 11400000, guid: d756ee9f3d518f54f8ed69a09a0155c8, type: 2}
-  fuelBurnRatePerSecond: 0.5
-  maxThrottleBurnMultiplier: 5
+  fuelBurnRatePerSecond: 0.1
+  maxThrottleBurnMultiplier: 2.5
   allowBoatPowerFallback: 1
   idlePowerDemandPerSecond: 0.5
   maxThrottlePowerDemandMultiplier: 2
@@ -993,7 +993,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7587204754368133551}
   - component: {fileID: 2572867193173591188}
-  - component: {fileID: 3418604731132923811}
   - component: {fileID: 8421490416079647745}
   - component: {fileID: 4326582180362785636}
   - component: {fileID: 7888762812180093673}
@@ -1067,33 +1066,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.82, y: 1.225}
   m_EdgeRadius: 0
---- !u!50 &3418604731132923811
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3926428598540236617}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 1
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 0
 --- !u!114 &8421490416079647745
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1691,7 +1663,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5551908274911112363}
   - component: {fileID: 4534464332955165485}
-  - component: {fileID: 7773777643220467191}
   - component: {fileID: 1730310455611880919}
   - component: {fileID: 7095062626420299938}
   - component: {fileID: 1156928170449251985}
@@ -1765,33 +1736,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 4.5250015, y: 0.8}
   m_EdgeRadius: 0
---- !u!50 &7773777643220467191
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6793947827770315973}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 1
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 0
 --- !u!114 &1730310455611880919
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1877,7 +1821,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7083163557841942042}
   - component: {fileID: 7852903120130470503}
-  - component: {fileID: 233765118711300024}
   - component: {fileID: 4109735427349419540}
   - component: {fileID: 4307877965441451217}
   - component: {fileID: 404762134440974101}
@@ -1951,33 +1894,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.82, y: 3.5149999}
   m_EdgeRadius: 0
---- !u!50 &233765118711300024
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6804572821620445609}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 1
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 0
 --- !u!114 &4109735427349419540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2133,6 +2049,9 @@ GameObject:
   - component: {fileID: 4730458558129074977}
   - component: {fileID: 1315059988575644325}
   - component: {fileID: 8907395421657070808}
+  - component: {fileID: 7948303828288062960}
+  - component: {fileID: 6791066308934636789}
+  - component: {fileID: 8770378431793843376}
   - component: {fileID: 6907894860896254170}
   - component: {fileID: 5845037766701883814}
   - component: {fileID: 6215015270143879183}
@@ -2198,7 +2117,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
@@ -2342,6 +2261,72 @@ MonoBehaviour:
   itemCatalog: {fileID: 11400000, guid: d39434bc65a89584c811f84d322f558a, type: 2}
   moduleDefinitions: []
   verboseLogging: 0
+--- !u!114 &7948303828288062960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928689026320414970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b5daba39a904804cae5bbcf5080785f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boat: {fileID: 5943007106159419301}
+  logBodyInventoryOnStart: 0
+  logContacts: 0
+  interval: 0.5
+  maxContactsPerBody: 12
+--- !u!114 &6791066308934636789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928689026320414970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4b99c3aa56e32342a1b51f0e4af6453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: {fileID: 8770378431793843376}
+  boat: {fileID: 0}
+  throttleForce: {fileID: 211516773896945278}
+  sceneForwardAxis: {x: 1, y: 0}
+  throttleTravelPerSecond: 0.45
+  maxRudderDegrees: 35
+  rudderTravelDegreesPerSecond: 55
+  rudderAngularAcceleration: 34
+  angularWaterDrag: 1.9
+  maxAngularVelocityDegrees: 42
+  fullRudderAuthoritySpeed: 2.5
+  routePrototypeSeed: 17357
+  routePointSpacing: 10
+  routeMaxHeadingDegrees: 15
+  routeProgressCorridor: 45
+  routeAdherencePathWidth: 15
+  recentCourseQualityDistance: 40
+  courseNeutralQuality: 0.65
+  routeCoverageAhead: 1200
+--- !u!114 &8770378431793843376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928689026320414970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6d14f0465d1f684598e438814a21d31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  throttle01: 0
+  rudderDegrees: 0
+  navigationPosition: {x: 0, y: 0}
+  navigationVelocity: {x: 0, y: 0}
+  headingDegrees: 0
+  angularVelocityDegrees: 0
 --- !u!114 &6907894860896254170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2554,6 +2539,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d25d72d0396500e4c803080c99afb5b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  verboseDiagnostics: 1
 --- !u!114 &1614986500716848677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2582,9 +2568,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enabledFlag: 1
   priority: 250
-  maxForce: 500
+  maxForce: 60
   boat: {fileID: 0}
   multiplyForceByActiveEngineCount: 0
+  verboseDiagnostics: 0
+  diagnosticInterval: 0.5
 --- !u!1 &8371508035326515018
 GameObject:
   m_ObjectHideFlags: 0
@@ -2715,7 +2703,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2642404901680326181}
   - component: {fileID: 2752897466932528085}
-  - component: {fileID: 6516325208649625382}
   - component: {fileID: 1316965654491692159}
   - component: {fileID: 3352415041491952542}
   - component: {fileID: 4847375869277496504}
@@ -2789,33 +2776,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 14.525002, y: 0.8}
   m_EdgeRadius: 0
---- !u!50 &6516325208649625382
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8897443464865196491}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 1
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 0
 --- !u!114 &1316965654491692159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2959,7 +2919,8 @@ PrefabInstance:
       propertyPath: m_Size.y
       value: 7
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -8826840778958376421, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -3258,7 +3219,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -5455943145966643297, guid: 62761b5b005790d4ea953d632106f11d, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -4923,7 +4885,8 @@ PrefabInstance:
       propertyPath: m_Size.y
       value: 7
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -8826840778958376421, guid: 1b763ae269b53ad479c6bd33a8c34911, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
