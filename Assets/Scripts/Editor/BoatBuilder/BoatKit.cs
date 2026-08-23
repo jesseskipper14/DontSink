@@ -47,6 +47,9 @@ public class BoatKit : ScriptableObject
     public GameObject HardpointWeapon;
     public GameObject HardpointElectronics;
     public GameObject HardpointHelm;
+    public GameObject HardpointRudder;
+    public GameObject HardpointKeel;
+    public GameObject HardpointAnchor;
 
     [Header("Visibility")]
     public GameObject BoatVisibilityZone;

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -7303112162547176585}
   - component: {fileID: 484301100798610016}
   - component: {fileID: -6001213580712153411}
+  - component: {fileID: -6881705682677625259}
   - component: {fileID: 7097834975048569350}
   - component: {fileID: -8660866960567562250}
   - component: {fileID: -2375970012441519120}
@@ -153,6 +154,22 @@ MonoBehaviour:
   restoreByFractionWhenMaxAreaChanged: 1
   maxAreaMismatchTolerance: 0.001
   verboseLogging: 0
+--- !u!114 &-6881705682677625259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4fac659eba60524692f95707a7cf928, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boat: {fileID: 6897017861151174155}
+  currentProfile:
+    maxTurnAngle: 0
+    turnEfficiency: 0
 --- !u!114 &7097834975048569350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,9 +242,9 @@ MonoBehaviour:
   state: {fileID: -1052176336710423377}
   boat: {fileID: 6897017861151174155}
   throttleForce: {fileID: 4658135062933648623}
+  handlingAggregator: {fileID: 0}
   sceneForwardAxis: {x: 1, y: 0}
   throttleTravelPerSecond: 0.45
-  maxRudderDegrees: 35
   rudderTravelDegreesPerSecond: 55
   rudderAngularAcceleration: 34
   angularWaterDrag: 1.9
@@ -500,8 +517,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enabledFlag: 1
   priority: 250
-  maxForce: 50
   boat: {fileID: 0}
-  multiplyForceByActiveEngineCount: 0
   verboseDiagnostics: 0
   diagnosticInterval: 0.5

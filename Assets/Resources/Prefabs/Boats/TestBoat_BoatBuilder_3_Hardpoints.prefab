@@ -271,9 +271,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enabledFlag: 1
   priority: 250
-  maxForce: 500
   boat: {fileID: 0}
-  multiplyForceByActiveEngineCount: 0
   verboseDiagnostics: 1
   diagnosticInterval: 0.5
 --- !u!114 &2345803647939879379

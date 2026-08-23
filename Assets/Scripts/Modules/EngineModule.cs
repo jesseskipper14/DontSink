@@ -12,6 +12,10 @@ public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule, IModuleT
     [Header("State")]
     [SerializeField] private bool isOn;
 
+    [Header("Propulsion")]
+    [Tooltip("Maximum propulsion force this engine contributes at full throttle while it can run.")]
+    [SerializeField, Min(0f)] private float thrust = 25f;
+
     [Header("Fuel")]
     [SerializeField] private ItemDefinition fuelContainerDefinition;
     [SerializeField] private float fuelBurnRatePerSecond = 0.1f;
@@ -37,6 +41,7 @@ public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule, IModuleT
     private EngineRunMode currentRunMode = EngineRunMode.None;
 
     public bool IsOn => isOn;
+    public float Thrust => Mathf.Max(0f, thrust);
     public ItemInstance FuelContainerItem => fuelContainerItem;
     public float FuelBurnRatePerSecond => Mathf.Max(0f, fuelBurnRatePerSecond);
     public float MaxThrottleBurnMultiplier => Mathf.Max(1f, maxThrottleBurnMultiplier);
@@ -117,7 +122,7 @@ public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule, IModuleT
 
     public bool CanProduceThrust()
     {
-        return isOn && CanRun();
+        return Thrust > 0f && isOn && CanRun();
     }
 
     public bool CanRun()

@@ -1126,6 +1126,9 @@ public class BoatBuilderWindow : EditorWindow
             HardpointType.Weapon => "weapon",
             HardpointType.Electronics => "electronics",
             HardpointType.Helm => "helm",
+            HardpointType.Rudder => "rudder",
+            HardpointType.Keel => "keel",
+            HardpointType.Anchor => "anchor",
             _ => "hardpoint"
         };
     }

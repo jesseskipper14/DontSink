@@ -18,6 +18,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     [SerializeField] private BoatPilotingState state;
     [SerializeField] private Boat boat;
     [SerializeField] private ThrottleForce throttleForce;
+    [SerializeField] private BoatHandlingAggregator handlingAggregator;
 
     [Header("Physical Scene Axis")]
     [Tooltip("The side-view BoatScene travel axis. Current BoatScenes use world +X as forward.")]
@@ -26,9 +27,6 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     [Header("Control Travel")]
     [Tooltip("How quickly W/S physically moves the signed throttle lever through reverse, neutral, and forward.")]
     [SerializeField, Min(0f)] private float throttleTravelPerSecond = 0.45f;
-
-    [Tooltip("Maximum rudder angle in either direction.")]
-    [SerializeField, Min(0.1f)] private float maxRudderDegrees = 35f;
 
     [Tooltip("How quickly A/D physically moves the rudder. Releasing the key leaves it where it is.")]
     [SerializeField, Min(0f)] private float rudderTravelDegreesPerSecond = 55f;
@@ -74,6 +72,8 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     private int _installedPropulsionSources;
     private int _activePropulsionSources;
 
+    private BoatHandlingProfile _handlingProfile;
+
     private float _physicalForwardSpeed;
     private float _physicalTravelDelta;
 
@@ -87,7 +87,8 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     public BoatControlIntent CurrentIntent => _currentIntent;
 
     public bool HasControlOwner => _controlOwner != null;
-    public float MaxRudderDegrees => maxRudderDegrees;
+    public BoatHandlingProfile HandlingProfile => _handlingProfile;
+    public float MaxRudderDegrees => _handlingProfile.MaxTurnAngle;
 
     public int InstalledPropulsionSources => _installedPropulsionSources;
     public int ActivePropulsionSources => _activePropulsionSources;
@@ -113,6 +114,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     private void Awake()
     {
         ResolveRefs();
+        RefreshHandlingProfile();
         ResetPhysicalPositionSample();
         InitializeRouteGuidanceIfNeeded();
 
@@ -122,6 +124,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
 
     private void OnEnable()
     {
+        RefreshHandlingProfile();
         ResetPhysicalPositionSample();
         InitializeRouteGuidanceIfNeeded();
     }
@@ -129,7 +132,6 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     private void OnValidate()
     {
         throttleTravelPerSecond = Mathf.Max(0f, throttleTravelPerSecond);
-        maxRudderDegrees = Mathf.Max(0.1f, maxRudderDegrees);
         rudderTravelDegreesPerSecond = Mathf.Max(0f, rudderTravelDegreesPerSecond);
 
         rudderAngularAcceleration = Mathf.Max(0f, rudderAngularAcceleration);
@@ -204,6 +206,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
         if (dt <= 0f)
             return;
 
+        RefreshHandlingProfile();
         AdvancePhysicalControls(dt);
 
         if (throttleForce != null)
@@ -297,11 +300,21 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
             rudderTravelDegreesPerSecond *
             dt;
 
-        rudder =
-            Mathf.Clamp(
-                rudder,
-                -maxRudderDegrees,
-                maxRudderDegrees);
+        float maxRudderDegrees =
+            _handlingProfile.MaxTurnAngle;
+
+        if (maxRudderDegrees <= 0.0001f)
+        {
+            rudder = 0f;
+        }
+        else
+        {
+            rudder =
+                Mathf.Clamp(
+                    rudder,
+                    -maxRudderDegrees,
+                    maxRudderDegrees);
+        }
 
         state.SetControlPositions(
             throttle,
@@ -371,12 +384,17 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
             Mathf.Abs(
                 physicalForwardSpeed);
 
+        float maxRudderDegrees =
+            _handlingProfile.MaxTurnAngle;
+
         float rudderNormalized =
-            Mathf.Clamp(
-                state.RudderDegrees /
-                maxRudderDegrees,
-                -1f,
-                1f);
+            maxRudderDegrees > 0.0001f
+                ? Mathf.Clamp(
+                    state.RudderDegrees /
+                    maxRudderDegrees,
+                    -1f,
+                    1f)
+                : 0f;
 
         float rudderAuthority01 =
             Mathf.Clamp01(
@@ -396,6 +414,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
         float angularAcceleration =
             rudderNormalized *
             rudderAngularAcceleration *
+            _handlingProfile.TurnEfficiency *
             rudderAuthority01 *
             travelSign;
 
@@ -438,6 +457,16 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
             navigationVelocity,
             heading,
             angularVelocity);
+    }
+
+    private void RefreshHandlingProfile()
+    {
+        ResolveRefs();
+
+        _handlingProfile =
+            handlingAggregator != null
+                ? handlingAggregator.RefreshProfile()
+                : BoatHandlingProfile.Empty;
     }
 
     private void ResetPhysicalPositionSample()
@@ -492,6 +521,23 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
                 throttleForce =
                     GetComponent<ThrottleForce>() ??
                     GetComponentInChildren<ThrottleForce>(true);
+            }
+        }
+
+        if (handlingAggregator == null)
+        {
+            if (boat != null)
+            {
+                handlingAggregator =
+                    boat.GetComponent<BoatHandlingAggregator>() ??
+                    boat.GetComponentInChildren<BoatHandlingAggregator>(true);
+            }
+
+            if (handlingAggregator == null)
+            {
+                handlingAggregator =
+                    GetComponent<BoatHandlingAggregator>() ??
+                    GetComponentInChildren<BoatHandlingAggregator>(true);
             }
         }
     }

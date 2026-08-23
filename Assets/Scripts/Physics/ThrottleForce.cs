@@ -7,17 +7,15 @@ public class ThrottleForce : MonoBehaviour, IOrderedForceProvider, IThrottleRece
     public int Priority => priority;
 
     public float CurrentThrottle => throttle01;
-    public float MaxForce => maxForce;
     public Vector2 LastAppliedForce => lastAppliedForce;
     public int LastActiveEngineCount => lastActiveEngineCount;
+    public float LastActiveThrust => lastActiveThrust;
 
     [SerializeField] private bool enabledFlag = true;
     [SerializeField] private int priority = 250;
-    [SerializeField] private float maxForce = 25f;
 
-    [Header("Engine Gating")]
+    [Header("Engine Sources")]
     [SerializeField] private Boat boat;
-    [SerializeField] private bool multiplyForceByActiveEngineCount = false;
 
     [Header("Diagnostics")]
     [SerializeField] private bool verboseDiagnostics = true;
@@ -28,6 +26,7 @@ public class ThrottleForce : MonoBehaviour, IOrderedForceProvider, IThrottleRece
 
     private Vector2 lastAppliedForce;
     private int lastActiveEngineCount;
+    private float lastActiveThrust;
     private float _nextDiagnosticTime;
 
     private void Awake()
@@ -87,6 +86,7 @@ public class ThrottleForce : MonoBehaviour, IOrderedForceProvider, IThrottleRece
     {
         lastAppliedForce = Vector2.zero;
         lastActiveEngineCount = 0;
+        lastActiveThrust = 0f;
 
         if (!enabledFlag)
         {
@@ -113,6 +113,7 @@ public class ThrottleForce : MonoBehaviour, IOrderedForceProvider, IThrottleRece
             Mathf.Abs(throttle01);
 
         int activeEngineCount = 0;
+        float totalActiveThrust = 0f;
 
         for (int i = 0; i < engines.Count; i++)
         {
@@ -125,11 +126,17 @@ public class ThrottleForce : MonoBehaviour, IOrderedForceProvider, IThrottleRece
                 absThrottle);
 
             if (engine.CanProduceThrust())
+            {
                 activeEngineCount++;
+                totalActiveThrust += engine.Thrust;
+            }
         }
 
         lastActiveEngineCount =
             activeEngineCount;
+
+        lastActiveThrust =
+            totalActiveThrust;
 
         if (activeEngineCount <= 0)
         {
@@ -142,16 +149,10 @@ public class ThrottleForce : MonoBehaviour, IOrderedForceProvider, IThrottleRece
         Vector2 dir =
             (Vector2)transform.right;
 
-        float engineMultiplier =
-            multiplyForceByActiveEngineCount
-                ? activeEngineCount
-                : 1f;
-
         Vector2 f =
             dir *
             (throttle01 *
-             maxForce *
-             engineMultiplier);
+             totalActiveThrust);
 
         lastAppliedForce = f;
 
@@ -204,9 +205,8 @@ public class ThrottleForce : MonoBehaviour, IOrderedForceProvider, IThrottleRece
             $"[ThrottleForce] DIAG status={status} " +
             $"bodyType={(body != null ? body.GetType().Name : "NULL")} " +
             $"throttle={throttle01:+0.000;-0.000;0.000} " +
-            $"maxForce={maxForce:0.###} " +
             $"engines={activeEngineCountText()}/{engines.Count} " +
-            $"multiplyByCount={multiplyForceByActiveEngineCount} | " +
+            $"activeThrust={lastActiveThrust:0.###} | " +
             $"force=({lastAppliedForce.x:+0.00;-0.00;0.00}," +
                     $"{lastAppliedForce.y:+0.00;-0.00;0.00}) " +
             $"forceMag={lastAppliedForce.magnitude:0.00} " +

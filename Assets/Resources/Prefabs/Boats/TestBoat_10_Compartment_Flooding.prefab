@@ -886,6 +886,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOn: 0
+  thrust: 25
   fuelContainerDefinition: {fileID: 11400000, guid: d756ee9f3d518f54f8ed69a09a0155c8, type: 2}
   fuelBurnRatePerSecond: 0.1
   maxThrottleBurnMultiplier: 2.5
@@ -2293,9 +2294,9 @@ MonoBehaviour:
   state: {fileID: 8770378431793843376}
   boat: {fileID: 0}
   throttleForce: {fileID: 211516773896945278}
+  handlingAggregator: {fileID: 0}
   sceneForwardAxis: {x: 1, y: 0}
   throttleTravelPerSecond: 0.45
-  maxRudderDegrees: 35
   rudderTravelDegreesPerSecond: 55
   rudderAngularAcceleration: 34
   angularWaterDrag: 1.9
@@ -2568,9 +2569,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enabledFlag: 1
   priority: 250
-  maxForce: 60
   boat: {fileID: 0}
-  multiplyForceByActiveEngineCount: 0
   verboseDiagnostics: 0
   diagnosticInterval: 0.5
 --- !u!1 &8371508035326515018

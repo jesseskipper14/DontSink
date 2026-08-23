@@ -540,6 +540,20 @@ public static partial class BoatBuilderSceneTools
             HardpointType.Weapon => kit.HardpointWeapon,
             HardpointType.Electronics => kit.HardpointElectronics,
             HardpointType.Helm => kit.HardpointHelm,
+
+            // These may use dedicated authoring prefabs later. Utility is a safe
+            // invisible/generic fallback because the placed Hardpoint is immediately
+            // configured to the selected runtime type by InitializePlacedHardpoint.
+            HardpointType.Rudder => kit.HardpointRudder != null
+                ? kit.HardpointRudder
+                : kit.HardpointUtility,
+            HardpointType.Keel => kit.HardpointKeel != null
+                ? kit.HardpointKeel
+                : kit.HardpointUtility,
+            HardpointType.Anchor => kit.HardpointAnchor != null
+                ? kit.HardpointAnchor
+                : kit.HardpointUtility,
+
             _ => null
         };
     }

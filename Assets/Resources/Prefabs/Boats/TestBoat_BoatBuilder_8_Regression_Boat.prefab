@@ -1592,9 +1592,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enabledFlag: 1
   priority: 250
-  maxForce: 500
   boat: {fileID: 0}
-  multiplyForceByActiveEngineCount: 0
   verboseDiagnostics: 1
   diagnosticInterval: 0.5
 --- !u!114 &8680093159086686366
@@ -2408,6 +2406,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOn: 0
+  thrust: 25
   fuelContainerDefinition: {fileID: 11400000, guid: d756ee9f3d518f54f8ed69a09a0155c8, type: 2}
   fuelBurnRatePerSecond: 0.5
   maxThrottleBurnMultiplier: 5
