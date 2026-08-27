@@ -129,7 +129,8 @@ public sealed class PilotingOverlayRunner : MonoBehaviour
                 visibleWorldHeight,
                 lockZoom,
                 troughFlatFraction,
-                waveTextureRefreshHz);
+                waveTextureRefreshHz,
+                helm);
 
         overlay.Open(
             _activeCartridge,

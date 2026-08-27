@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 [DisallowMultipleComponent]
 public sealed class HardpointInteractable :
@@ -8,6 +9,7 @@ public sealed class HardpointInteractable :
     IInteractPromptProvider,
     IPickupPromptProvider,
     IToggleInteractable,
+    ILinkInteractable,
     IInteractionLabelProvider,
     IInteractionPromptDisplayPolicyProvider
 {
@@ -29,6 +31,10 @@ public sealed class HardpointInteractable :
     [Tooltip("If true, hardpoints not under a Boat remain usable. This keeps future dock/ruin/world modules possible until they get their own access context.")]
     [SerializeField] private bool allowAccessWhenNotPartOfBoat = true;
 
+    [Tooltip("Marks this hardpoint/module as exterior. Exterior modules are serviced while unboarded, follow exterior visibility, and do not consume internal cargo/module footprint space.")]
+    [FormerlySerializedAs("allowExternalAccessWhenUnboarded")]
+    [SerializeField] private bool exteriorModule = false;
+
     [Header("Removal")]
     [SerializeField] private PickupInteractionMode pickupMode = PickupInteractionMode.Hold;
     [SerializeField] private float pickupHoldDuration = 0.5f;
@@ -37,6 +43,8 @@ public sealed class HardpointInteractable :
     public int PickupPriority => pickupPriority;
     public PickupInteractionMode PickupMode => pickupMode;
     public float PickupHoldDuration => pickupHoldDuration;
+    public bool ExteriorModule => exteriorModule;
+    public Hardpoint TargetHardpoint => hardpoint;
 
     private Boat _cachedBoat;
 
@@ -188,13 +196,94 @@ public sealed class HardpointInteractable :
         toggleable.Toggle();
     }
 
+    public bool CanLink(
+        in InteractContext context)
+    {
+        if (hardpoint == null ||
+            !IsInRange(context) ||
+            !CanAccessHardpointByContext(context))
+        {
+            return false;
+        }
+
+        HelmLinkSession existing =
+            HelmLinkSession.Get(
+                context.InteractorGO);
+
+        // Let the player cancel a selected Helm even if its installed module
+        // disappeared after selection.
+        if (existing != null &&
+            existing.PendingHelmHardpoint == hardpoint)
+        {
+            return true;
+        }
+
+        if (!hardpoint.HasInstalledModule ||
+            hardpoint.InstalledModule == null)
+        {
+            return false;
+        }
+
+        return hardpoint.InstalledModule
+            .GetComponent<HelmModule>() != null;
+    }
+
+    public string GetLinkPromptVerb(
+        in InteractContext context)
+    {
+        HelmLinkSession session =
+            HelmLinkSession.Get(
+                context.InteractorGO);
+
+        if (session != null &&
+            session.PendingHelmHardpoint == hardpoint)
+        {
+            return "Cancel Helm Link";
+        }
+
+        return "Select Helm for Linking";
+    }
+
+    public void Link(
+        in InteractContext context)
+    {
+        if (!CanLink(context))
+            return;
+
+        HelmLinkSession session =
+            HelmLinkSession.GetOrCreate(
+                context.InteractorGO);
+
+        if (session == null)
+            return;
+
+        if (session.PendingHelmHardpoint == hardpoint)
+        {
+            session.Cancel();
+
+            Debug.Log(
+                $"[HelmLink] Cancelled helm link selection for '{hardpoint.HardpointId}'.",
+                this);
+
+            return;
+        }
+
+        session.Begin(
+            hardpoint);
+
+        Debug.Log(
+            $"[HelmLink] Selected helm hardpoint '{hardpoint.HardpointId}'. " +
+            "Hover a Pilot Chair and press L to complete the link.",
+            this);
+    }
+
     public string GetPromptVerb(in InteractContext context)
     {
         if (hardpoint == null)
             return "Use Hardpoint";
 
         if (!CanAccessHardpointByContext(context))
-            return "Board Boat";
+            return GetAccessDeniedPrompt(context);
 
         if (!hardpoint.HasInstalledModule)
         {
@@ -212,13 +301,19 @@ public sealed class HardpointInteractable :
             return "Install Module";
         }
 
+        if (hardpoint.InstalledModule != null &&
+            hardpoint.InstalledModule.GetComponent<HelmModule>() != null)
+        {
+            return "Open Helm";
+        }
+
         return "Open Module";
     }
 
     public string GetPickupPromptVerb(in InteractContext context)
     {
         if (!CanAccessHardpointByContext(context))
-            return "Board Boat";
+            return GetAccessDeniedPrompt(context);
 
         if (hardpoint != null && hardpoint.HasInstalledModule)
         {
@@ -374,6 +469,28 @@ public sealed class HardpointInteractable :
         if (hardpoint != null &&
             hardpoint.HasInstalledModule &&
             hardpoint.InstalledModule != null &&
+            hardpoint.InstalledModule.GetComponent<HelmModule>() != null)
+        {
+            HelmOverlayRunner helmRunner =
+                FindFirstObjectByType<HelmOverlayRunner>();
+
+            if (helmRunner == null)
+            {
+                Debug.LogWarning(
+                    "[HardpointInteractable] No HelmOverlayRunner found.",
+                    this);
+                return;
+            }
+
+            helmRunner.OpenForHardpoint(
+                hardpoint);
+
+            return;
+        }
+
+        if (hardpoint != null &&
+            hardpoint.HasInstalledModule &&
+            hardpoint.InstalledModule != null &&
             hardpoint.InstalledModule.TryGetComponent(out StorageModule storage))
         {
             storage.EnsureContainer();
@@ -421,10 +538,8 @@ public sealed class HardpointInteractable :
 
         CacheBoat();
 
-        // Future-friendly behavior:
-        // Boat modules require matching boat boarding.
-        // Non-boat hardpoints are allowed for now, so dock/ruin/world modules don't get blocked
-        // before we have a broader access-domain system.
+        // Non-boat hardpoints keep their existing access behavior so future dock,
+        // ruin, or world modules can define their own context later.
         if (_cachedBoat == null)
             return allowAccessWhenNotPartOfBoat;
 
@@ -432,10 +547,33 @@ public sealed class HardpointInteractable :
         if (boarding == null)
             return false;
 
-        if (!boarding.IsBoarded)
-            return false;
+        // Some boat hardpoints are physically serviced from outside the boat.
+        // This is configured per hardpoint rather than inferred from HardpointType.
+        if (exteriorModule)
+            return !boarding.IsBoarded;
 
-        return boarding.CurrentBoatRoot == _cachedBoat.transform;
+        return boarding.IsBoarded &&
+               boarding.CurrentBoatRoot == _cachedBoat.transform;
+    }
+
+    private string GetAccessDeniedPrompt(in InteractContext context)
+    {
+        if (!requireMatchingBoatBoardingContext)
+            return "Use Hardpoint";
+
+        CacheBoat();
+
+        if (_cachedBoat == null)
+            return "Use Hardpoint";
+
+        if (exteriorModule)
+        {
+            PlayerBoardingState boarding = FindBoardingState(context);
+            if (boarding != null && boarding.IsBoarded)
+                return "Access From Outside";
+        }
+
+        return "Board Boat";
     }
 
     private PlayerBoardingState FindBoardingState(in InteractContext context)

@@ -11,6 +11,7 @@ public sealed class BoatOwnedItemLayerPolicy : MonoBehaviour
     [SerializeField] private string hullLayerName = "Hull";
     [SerializeField] private string groundLayerName = "Ground";
     [SerializeField] private string worldLedgeLayerName = "WorldLedge";
+    [SerializeField] private string ghostCollisionLayerName = "GhostCollision";
 
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = false;
@@ -18,8 +19,10 @@ public sealed class BoatOwnedItemLayerPolicy : MonoBehaviour
     private int _hullLayer;
     private int _groundLayer;
     private int _worldLedgeLayer;
+    private int _ghostCollisionLayer;
 
     private int _hullBit;
+    private int _ghostCollisionBit;
     private int _nonBoatWorldBits;
 
     private bool _initialized;
@@ -36,6 +39,9 @@ public sealed class BoatOwnedItemLayerPolicy : MonoBehaviour
         if (ownedItem != null)
             ownedItem.OwnershipChanged += OnOwnershipChanged;
 
+        GhostCollisionProxy.ActiveProxySetChanged +=
+            OnGhostProxySetChanged;
+
         ApplyNow();
     }
 
@@ -43,9 +49,17 @@ public sealed class BoatOwnedItemLayerPolicy : MonoBehaviour
     {
         if (ownedItem != null)
             ownedItem.OwnershipChanged -= OnOwnershipChanged;
+
+        GhostCollisionProxy.ActiveProxySetChanged -=
+            OnGhostProxySetChanged;
     }
 
     private void OnOwnershipChanged(BoatOwnedItem item)
+    {
+        ApplyNow();
+    }
+
+    private void OnGhostProxySetChanged()
     {
         ApplyNow();
     }
@@ -61,31 +75,116 @@ public sealed class BoatOwnedItemLayerPolicy : MonoBehaviour
             return;
         }
 
-        int mask = rb.excludeLayers;
+        bool boatOwned =
+            ownedItem != null &&
+            ownedItem.IsOwnedByBoat;
 
-        bool boatOwned = ownedItem != null && ownedItem.IsOwnedByBoat;
+        GhostCollisionProxy ownerGhost =
+            ResolveOwningGhostProxy();
 
-        if (boatOwned)
+        bool useGhost =
+            boatOwned &&
+            ownerGhost != null &&
+            ownerGhost.IsBuilt;
+
+        int mask =
+            rb.excludeLayers;
+
+        if (useGhost)
         {
-            // Boat-owned item behaves like boarded player:
-            // collide with boat hull, ignore world ground / docks / ledges.
+            // Ghost mode:
+            // - ignore the real boat hull
+            // - allow the GhostCollision layer
+            // - continue ignoring normal world geometry while aboard
+            mask |= _hullBit;
+            mask &= ~_ghostCollisionBit;
+            mask |= _nonBoatWorldBits;
+        }
+        else if (boatOwned)
+        {
+            // Safe fallback if a boat does not have a working GhostCollisionProxy.
+            // Preserve the old behavior rather than letting cargo fall through.
             mask &= ~_hullBit;
+            mask |= _ghostCollisionBit;
             mask |= _nonBoatWorldBits;
         }
         else
         {
-            // World/unowned item behaves like unboarded player:
-            // ignore boat hull, collide with world ground / docks / ledges.
+            // Normal unowned world item:
+            // ignore real boat hull AND every ghost shell,
+            // collide with normal world geometry.
             mask |= _hullBit;
+            mask |= _ghostCollisionBit;
             mask &= ~_nonBoatWorldBits;
         }
 
-        rb.excludeLayers = mask;
+        rb.excludeLayers =
+            mask;
+
+        ApplyGhostCollisionPairs(
+            useGhost
+                ? ownerGhost
+                : null);
 
         Log(
             $"ApplyNow | boatOwned={boatOwned} " +
+            $"| ghost={(useGhost ? ownerGhost.name : "NONE/FALLBACK")} " +
             $"| owningBoatId='{(ownedItem != null ? ownedItem.OwningBoatInstanceId : "NULL")}' " +
             $"| excludeLayers={rb.excludeLayers}");
+    }
+
+    private GhostCollisionProxy ResolveOwningGhostProxy()
+    {
+        if (ownedItem == null ||
+            ownedItem.OwningBoat == null)
+        {
+            return null;
+        }
+
+        return ownedItem.OwningBoat
+            .GetComponent<GhostCollisionProxy>();
+    }
+
+    private void ApplyGhostCollisionPairs(
+        GhostCollisionProxy allowedProxy)
+    {
+        if (rb == null)
+            return;
+
+        Collider2D[] all =
+            GetComponentsInChildren<Collider2D>(
+                true);
+
+        if (all == null ||
+            all.Length == 0)
+        {
+            return;
+        }
+
+        System.Collections.Generic.List<Collider2D> solids =
+            new System.Collections.Generic.List<Collider2D>();
+
+        for (int i = 0;
+             i < all.Length;
+             i++)
+        {
+            Collider2D collider =
+                all[i];
+
+            if (collider == null ||
+                collider.isTrigger ||
+                collider.attachedRigidbody != rb)
+            {
+                continue;
+            }
+
+            solids.Add(
+                collider);
+        }
+
+        GhostCollisionProxy.ConfigureExclusiveCollisions(
+            solids,
+            allowedProxy);
     }
 
     private void Initialize()
@@ -102,6 +201,7 @@ public sealed class BoatOwnedItemLayerPolicy : MonoBehaviour
         _hullLayer = LayerMask.NameToLayer(hullLayerName);
         _groundLayer = LayerMask.NameToLayer(groundLayerName);
         _worldLedgeLayer = LayerMask.NameToLayer(worldLedgeLayerName);
+        _ghostCollisionLayer = LayerMask.NameToLayer(ghostCollisionLayerName);
 
         if (_hullLayer < 0)
             Debug.LogError($"[BoatOwnedItemLayerPolicy:{name}] Layer '{hullLayerName}' not found.", this);
@@ -112,7 +212,11 @@ public sealed class BoatOwnedItemLayerPolicy : MonoBehaviour
         if (_worldLedgeLayer < 0)
             Debug.LogError($"[BoatOwnedItemLayerPolicy:{name}] Layer '{worldLedgeLayerName}' not found.", this);
 
+        if (_ghostCollisionLayer < 0)
+            Debug.LogError($"[BoatOwnedItemLayerPolicy:{name}] Layer '{ghostCollisionLayerName}' not found.", this);
+
         _hullBit = LayerBitOrZero(_hullLayer);
+        _ghostCollisionBit = LayerBitOrZero(_ghostCollisionLayer);
 
         _nonBoatWorldBits =
             LayerBitOrZero(_groundLayer) |

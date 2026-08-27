@@ -9,9 +9,24 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
 {
     public enum SnapAnchor
     {
-        Bottom,
-        Top,
-        Center
+        // Existing numeric values are intentionally preserved for Unity serialization.
+        Bottom = 0,
+        Top = 1,
+        Center = 2,
+
+        // Added for side-mounted parts such as rudders.
+        Left = 3,
+        Right = 4
+    }
+
+    public enum SnapTargetEdge
+    {
+        // Top is zero so existing components get the old behavior when this new field
+        // is absent from serialized data.
+        Top = 0,
+        Bottom = 1,
+        Left = 2,
+        Right = 3
     }
 
     public enum SnapBoundsSource
@@ -24,10 +39,14 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
     [Header("Builder Snap")]
     [SerializeField] private bool snapOnBuilderPlace = true;
 
-    [Tooltip("Which vertical point on this object should align to the target surface top.")]
+    [Tooltip("Which edge/point on this object should align to the selected target edge.")]
     [SerializeField] private SnapAnchor anchor = SnapAnchor.Bottom;
 
-    [Tooltip("What bounds should be used to find this object's top/bottom/center.")]
+    [Tooltip("Which edge of the target surface this object should attach to. " +
+             "Top preserves the original floor/deck snapping behavior.")]
+    [SerializeField] private SnapTargetEdge targetEdge = SnapTargetEdge.Top;
+
+    [Tooltip("What bounds should be used to find this object's edges.")]
     [SerializeField] private SnapBoundsSource boundsSource = SnapBoundsSource.RendererBounds;
 
     [Tooltip("Optional explicit renderers used for bounds. If empty, child renderers are auto-discovered.")]
@@ -36,19 +55,30 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
     [Tooltip("Optional explicit colliders used for bounds. If empty, child colliders are auto-discovered.")]
     [SerializeField] private Collider2D[] anchorColliders;
 
-    [Tooltip("Final object anchor Y = surface top Y + this offset. Use this for sprite weirdness.")]
+    [Tooltip("Vertical offset from the selected target Top/Bottom edge. Kept under the old serialized field name so existing snap authoring does not lose its offset.")]
     [SerializeField] private float yOffsetFromSurfaceTop = 0f;
 
+    [Tooltip("Horizontal offset from the selected target Left/Right edge.")]
+    [SerializeField] private float xOffsetFromSurfaceEdge = 0f;
+
     [Header("Surface Search")]
-    [Tooltip("Surface colliders must be within this vertical distance of the current object anchor.")]
+    [Tooltip("Maximum vertical distance when snapping to a Top/Bottom edge.")]
     [Min(0.01f)]
     [SerializeField] private float maxVerticalSnapDistance = 1.5f;
 
-    [Tooltip("How much to shrink this object's horizontal bounds before checking overlap with floor/deck colliders.")]
+    [Tooltip("Maximum horizontal distance when snapping to a Left/Right edge.")]
+    [Min(0.01f)]
+    [SerializeField] private float maxHorizontalSnapDistance = 1.5f;
+
+    [Tooltip("How much to shrink this object's horizontal bounds before checking overlap for vertical snapping.")]
     [Min(0f)]
     [SerializeField] private float horizontalInset = 0.03f;
 
-    [Tooltip("Layers considered valid snap surfaces.")]
+    [Tooltip("How much to shrink this object's vertical bounds before checking overlap for horizontal snapping.")]
+    [Min(0f)]
+    [SerializeField] private float verticalInset = 0.03f;
+
+    [Tooltip("Layers considered valid snap surfaces. A zero mask keeps the legacy behavior of allowing all layers.")]
     [SerializeField] private LayerMask surfaceLayerMask = ~0;
 
     [Tooltip("Usually false. Trigger volumes like visibility zones and secure zones should not become floors, because apparently we have to say that now.")]
@@ -61,6 +91,8 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
     [SerializeField] private bool verboseLogging = false;
 
     public bool SnapOnBuilderPlace => snapOnBuilderPlace;
+    public SnapAnchor Anchor => anchor;
+    public SnapTargetEdge TargetEdge => targetEdge;
 
 #if UNITY_EDITOR
     [ContextMenu("Snap To Boat Surface Now")]
@@ -87,23 +119,30 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
             return false;
         }
 
-        float currentAnchorY = GetAnchorY(objectBounds);
+        bool horizontalSnap = IsHorizontalTarget(targetEdge);
+        float currentAnchorCoordinate =
+            GetObjectAnchorCoordinate(objectBounds, horizontalSnap);
 
-        if (!TryFindBestSurfaceTop(
+        if (!TryFindBestSurfaceEdge(
                 boatRoot,
                 objectBounds,
-                currentAnchorY,
-                out float surfaceTopY,
+                currentAnchorCoordinate,
+                horizontalSnap,
+                out float targetCoordinate,
                 out Collider2D surfaceCollider))
         {
-            Log("No valid snap surface found.");
+            Log("No valid target surface edge found.");
             return false;
         }
 
-        float desiredAnchorY = surfaceTopY + yOffsetFromSurfaceTop;
-        float deltaY = desiredAnchorY - currentAnchorY;
+        float offset = horizontalSnap
+            ? xOffsetFromSurfaceEdge
+            : yOffsetFromSurfaceTop;
 
-        if (Mathf.Abs(deltaY) <= 0.0001f)
+        float desiredAnchorCoordinate = targetCoordinate + offset;
+        float delta = desiredAnchorCoordinate - currentAnchorCoordinate;
+
+        if (Mathf.Abs(delta) <= 0.0001f)
         {
             Log($"Already snapped to '{surfaceCollider.name}'.");
             return true;
@@ -112,14 +151,20 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
         Undo.RecordObject(transform, "Snap to Boat Surface");
 
         Vector3 p = transform.position;
-        p.y += deltaY;
+
+        if (horizontalSnap)
+            p.x += delta;
+        else
+            p.y += delta;
+
         transform.position = p;
 
         EditorUtility.SetDirty(transform);
 
         Log(
-            $"Snapped anchor={anchor} to surface='{surfaceCollider.name}' " +
-            $"surfaceTop={surfaceTopY:0.###} offset={yOffsetFromSurfaceTop:0.###} deltaY={deltaY:0.###}");
+            $"Snapped objectAnchor={anchor} to targetEdge={targetEdge} " +
+            $"surface='{surfaceCollider.name}' target={targetCoordinate:0.###} " +
+            $"offset={offset:0.###} delta={delta:0.###}");
 
         return true;
     }
@@ -153,7 +198,10 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
         return hasBounds;
     }
 
-    private static void AddRendererBounds(Renderer[] renderers, ref Bounds bounds, ref bool hasBounds)
+    private static void AddRendererBounds(
+        Renderer[] renderers,
+        ref Bounds bounds,
+        ref bool hasBounds)
     {
         if (renderers == null)
             return;
@@ -176,7 +224,10 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
         }
     }
 
-    private static void AddColliderBounds(Collider2D[] colliders, ref Bounds bounds, ref bool hasBounds)
+    private static void AddColliderBounds(
+        Collider2D[] colliders,
+        ref Bounds bounds,
+        ref bool hasBounds)
     {
         if (colliders == null)
             return;
@@ -199,25 +250,44 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
         }
     }
 
-    private float GetAnchorY(Bounds bounds)
+    private float GetObjectAnchorCoordinate(
+        Bounds bounds,
+        bool horizontalSnap)
     {
+        if (horizontalSnap)
+        {
+            return anchor switch
+            {
+                SnapAnchor.Left => bounds.min.x,
+                SnapAnchor.Right => bounds.max.x,
+                SnapAnchor.Center => bounds.center.x,
+
+                // A vertical anchor has no meaningful X edge. Center is the least
+                // surprising fallback and keeps malformed authoring from exploding.
+                _ => bounds.center.x
+            };
+        }
+
         return anchor switch
         {
             SnapAnchor.Bottom => bounds.min.y,
             SnapAnchor.Top => bounds.max.y,
             SnapAnchor.Center => bounds.center.y,
-            _ => bounds.min.y
+
+            // Same fallback for side anchors used with a vertical target.
+            _ => bounds.center.y
         };
     }
 
-    private bool TryFindBestSurfaceTop(
+    private bool TryFindBestSurfaceEdge(
         Transform boatRoot,
         Bounds objectBounds,
-        float currentAnchorY,
-        out float surfaceTopY,
+        float currentAnchorCoordinate,
+        bool horizontalSnap,
+        out float targetCoordinate,
         out Collider2D surfaceCollider)
     {
-        surfaceTopY = 0f;
+        targetCoordinate = 0f;
         surfaceCollider = null;
 
         if (boatRoot == null)
@@ -225,7 +295,9 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
 
         Collider2D[] candidates = boatRoot != null
             ? boatRoot.GetComponentsInChildren<Collider2D>(true)
-            : FindObjectsByType<Collider2D>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            : FindObjectsByType<Collider2D>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
 
         float bestScore = float.PositiveInfinity;
 
@@ -253,30 +325,81 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
 
             Bounds cb = c.bounds;
 
-            if (!HasHorizontalOverlap(objectBounds, cb, horizontalInset))
-                continue;
+            float overlap;
+            float candidateCoordinate;
 
-            float candidateTopY = cb.max.y;
-            float desiredAnchorY = candidateTopY + yOffsetFromSurfaceTop;
-            float verticalDistance = Mathf.Abs(desiredAnchorY - currentAnchorY);
+            if (horizontalSnap)
+            {
+                if (!HasVerticalOverlap(objectBounds, cb, verticalInset))
+                    continue;
 
-            if (verticalDistance > maxVerticalSnapDistance)
-                continue;
+                overlap = VerticalOverlapHeight(objectBounds, cb);
+                candidateCoordinate = GetTargetCoordinate(cb, targetEdge);
 
-            float overlapWidth = HorizontalOverlapWidth(objectBounds, cb);
+                float desiredAnchor =
+                    candidateCoordinate + xOffsetFromSurfaceEdge;
 
-            // Prefer closest vertical match, then slightly prefer wider overlap.
-            float score = verticalDistance - overlapWidth * 0.001f;
+                float distance =
+                    Mathf.Abs(desiredAnchor - currentAnchorCoordinate);
 
-            if (score >= bestScore)
-                continue;
+                if (distance > maxHorizontalSnapDistance)
+                    continue;
 
-            bestScore = score;
-            surfaceTopY = candidateTopY;
+                float score = distance - overlap * 0.001f;
+                if (score >= bestScore)
+                    continue;
+
+                bestScore = score;
+            }
+            else
+            {
+                if (!HasHorizontalOverlap(objectBounds, cb, horizontalInset))
+                    continue;
+
+                overlap = HorizontalOverlapWidth(objectBounds, cb);
+                candidateCoordinate = GetTargetCoordinate(cb, targetEdge);
+
+                float desiredAnchor =
+                    candidateCoordinate + yOffsetFromSurfaceTop;
+
+                float distance =
+                    Mathf.Abs(desiredAnchor - currentAnchorCoordinate);
+
+                if (distance > maxVerticalSnapDistance)
+                    continue;
+
+                float score = distance - overlap * 0.001f;
+                if (score >= bestScore)
+                    continue;
+
+                bestScore = score;
+            }
+
+            targetCoordinate = candidateCoordinate;
             surfaceCollider = c;
         }
 
         return surfaceCollider != null;
+    }
+
+    private static bool IsHorizontalTarget(SnapTargetEdge edge)
+    {
+        return edge == SnapTargetEdge.Left ||
+               edge == SnapTargetEdge.Right;
+    }
+
+    private static float GetTargetCoordinate(
+        Bounds bounds,
+        SnapTargetEdge edge)
+    {
+        return edge switch
+        {
+            SnapTargetEdge.Top => bounds.max.y,
+            SnapTargetEdge.Bottom => bounds.min.y,
+            SnapTargetEdge.Left => bounds.min.x,
+            SnapTargetEdge.Right => bounds.max.x,
+            _ => bounds.max.y
+        };
     }
 
     private bool LayerAllowed(int layer)
@@ -288,7 +411,10 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
         return (mask & (1 << layer)) != 0;
     }
 
-    private static bool HasHorizontalOverlap(Bounds a, Bounds b, float inset)
+    private static bool HasHorizontalOverlap(
+        Bounds a,
+        Bounds b,
+        float inset)
     {
         float aMin = a.min.x + inset;
         float aMax = a.max.x - inset;
@@ -300,13 +426,44 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
             aMax = center;
         }
 
-        return aMax >= b.min.x && aMin <= b.max.x;
+        return aMax >= b.min.x &&
+               aMin <= b.max.x;
     }
 
-    private static float HorizontalOverlapWidth(Bounds a, Bounds b)
+    private static bool HasVerticalOverlap(
+        Bounds a,
+        Bounds b,
+        float inset)
+    {
+        float aMin = a.min.y + inset;
+        float aMax = a.max.y - inset;
+
+        if (aMax < aMin)
+        {
+            float center = a.center.y;
+            aMin = center;
+            aMax = center;
+        }
+
+        return aMax >= b.min.y &&
+               aMin <= b.max.y;
+    }
+
+    private static float HorizontalOverlapWidth(
+        Bounds a,
+        Bounds b)
     {
         float min = Mathf.Max(a.min.x, b.min.x);
         float max = Mathf.Min(a.max.x, b.max.x);
+        return Mathf.Max(0f, max - min);
+    }
+
+    private static float VerticalOverlapHeight(
+        Bounds a,
+        Bounds b)
+    {
+        float min = Mathf.Max(a.min.y, b.min.y);
+        float max = Mathf.Min(a.max.y, b.max.y);
         return Mathf.Max(0f, max - min);
     }
 
@@ -324,6 +481,8 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
         if (!verboseLogging)
             return;
 
-        Debug.Log($"[BoatBuilderSurfaceSnap:{name}] {msg}", this);
+        Debug.Log(
+            $"[BoatBuilderSurfaceSnap:{name}] {msg}",
+            this);
     }
 }

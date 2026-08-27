@@ -46,6 +46,8 @@ public sealed class BoatVisualStateController : MonoBehaviour
     private int _originalCameraCullingMask;
     private bool _cachedOriginalCameraMask;
 
+    private readonly List<IgnoredColliderPair> _ignoredExteriorModulePlayerPairs = new();
+
     public BoatVisibilityMode CurrentMode => _currentMode;
 
     [Header("Debug")]
@@ -264,6 +266,14 @@ public sealed class BoatVisualStateController : MonoBehaviour
         SetRenderersEnabled(_hullRenderers, hullVisible);
         SetRenderersEnabled(_alwaysRenderers, alwaysVisible);
 
+        // Hardpoints explicitly authored as exterior may live under _Gameplay,
+        // but their renderers should follow exterior visibility.
+        ApplyExternalHardpointVisibility(exteriorVisible);
+
+        // Exterior hardware should not become an invisible wall inside the boat.
+        // Ignore only player <-> exterior-module solid collider pairs while interior.
+        ApplyExteriorModulePlayerCollisionPolicy(mode);
+
         bool compartmentWaterVisible =
             (mode == BoatVisibilityMode.BoardedInterior && showCompartmentWaterInInterior) ||
             (mode == BoatVisibilityMode.Transition && showCompartmentWaterInTransition);
@@ -283,6 +293,206 @@ public sealed class BoatVisualStateController : MonoBehaviour
         ApplyTemporaryCameraLayerVisibility(mode);
 
         LogRendererCounts();
+    }
+
+    private void ApplyExternalHardpointVisibility(bool exteriorVisible)
+    {
+        HardpointInteractable[] hardpointInteractables =
+            GetComponentsInChildren<HardpointInteractable>(true);
+
+        if (hardpointInteractables == null || hardpointInteractables.Length == 0)
+            return;
+
+        for (int i = 0; i < hardpointInteractables.Length; i++)
+        {
+            HardpointInteractable interactable = hardpointInteractables[i];
+            if (interactable == null ||
+                !interactable.ExteriorModule)
+            {
+                continue;
+            }
+
+            // Exterior visibility owns the INSTALLED HARDWARE only.
+            // The SpriteRenderer directly on the Hardpoint is a contextual
+            // placement marker and is owned by HardpointVisibilityController.
+            Hardpoint hardpoint =
+                interactable.TargetHardpoint;
+
+            InstalledModule installed =
+                hardpoint != null
+                    ? hardpoint.InstalledModule
+                    : null;
+
+            if (installed == null)
+                continue;
+
+            Renderer[] renderers =
+                installed.GetComponentsInChildren<Renderer>(
+                    includeInactiveRenderers);
+
+            SetRenderersEnabled(
+                renderers,
+                exteriorVisible);
+        }
+    }
+
+    private void ApplyExteriorModulePlayerCollisionPolicy(BoatVisibilityMode mode)
+    {
+        if (mode != BoatVisibilityMode.BoardedInterior)
+        {
+            RestoreExteriorModulePlayerCollisions(false);
+            return;
+        }
+
+        PlayerBoardingState[] players =
+            FindObjectsByType<PlayerBoardingState>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+
+        if (players == null || players.Length == 0)
+            return;
+
+        Collider2D[] exteriorModuleColliders = GetExteriorModuleSolidColliders();
+        if (exteriorModuleColliders.Length == 0)
+            return;
+
+        for (int p = 0; p < players.Length; p++)
+        {
+            PlayerBoardingState player = players[p];
+            if (!IsPlayerOnThisBoat(player))
+                continue;
+
+            Collider2D[] playerColliders =
+                player.GetComponentsInChildren<Collider2D>(true);
+
+            for (int i = 0; i < playerColliders.Length; i++)
+            {
+                Collider2D playerCollider = playerColliders[i];
+                if (!IsUsableSolidCollider(playerCollider))
+                    continue;
+
+                for (int j = 0; j < exteriorModuleColliders.Length; j++)
+                {
+                    Collider2D moduleCollider = exteriorModuleColliders[j];
+                    if (!IsUsableSolidCollider(moduleCollider))
+                        continue;
+
+                    if (playerCollider == moduleCollider)
+                        continue;
+
+                    // Another system may already own this ignored pair.
+                    // Only record and later restore pairs changed here.
+                    if (Physics2D.GetIgnoreCollision(playerCollider, moduleCollider))
+                        continue;
+
+                    Physics2D.IgnoreCollision(playerCollider, moduleCollider, true);
+
+                    _ignoredExteriorModulePlayerPairs.Add(
+                        new IgnoredColliderPair(playerCollider, moduleCollider));
+                }
+            }
+        }
+    }
+
+    private Collider2D[] GetExteriorModuleSolidColliders()
+    {
+        HardpointInteractable[] hardpointInteractables =
+            GetComponentsInChildren<HardpointInteractable>(true);
+
+        if (hardpointInteractables == null || hardpointInteractables.Length == 0)
+            return System.Array.Empty<Collider2D>();
+
+        List<Collider2D> result = new();
+
+        for (int i = 0; i < hardpointInteractables.Length; i++)
+        {
+            HardpointInteractable interactable = hardpointInteractables[i];
+            if (interactable == null || !interactable.ExteriorModule)
+                continue;
+
+            Collider2D[] colliders =
+                interactable.GetComponentsInChildren<Collider2D>(true);
+
+            for (int j = 0; j < colliders.Length; j++)
+            {
+                Collider2D collider = colliders[j];
+                if (!IsUsableSolidCollider(collider))
+                    continue;
+
+                if (!result.Contains(collider))
+                    result.Add(collider);
+            }
+        }
+
+        return result.ToArray();
+    }
+
+    private static bool IsUsableSolidCollider(Collider2D collider)
+    {
+        return collider != null &&
+               collider.enabled &&
+               !collider.isTrigger;
+    }
+
+    private void RestoreExteriorModulePlayerCollisions(bool force)
+    {
+        for (int i = _ignoredExteriorModulePlayerPairs.Count - 1; i >= 0; i--)
+        {
+            IgnoredColliderPair pair = _ignoredExteriorModulePlayerPairs[i];
+
+            if (pair.PlayerCollider == null ||
+                pair.ModuleCollider == null)
+            {
+                _ignoredExteriorModulePlayerPairs.RemoveAt(i);
+                continue;
+            }
+
+            if (!force)
+            {
+                ColliderDistance2D distance =
+                    pair.PlayerCollider.Distance(pair.ModuleCollider);
+
+                if (distance.isOverlapped)
+                    continue;
+            }
+
+            Physics2D.IgnoreCollision(
+                pair.PlayerCollider,
+                pair.ModuleCollider,
+                false);
+
+            _ignoredExteriorModulePlayerPairs.RemoveAt(i);
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (_currentMode == BoatVisibilityMode.BoardedInterior)
+            return;
+
+        if (_ignoredExteriorModulePlayerPairs.Count == 0)
+            return;
+
+        RestoreExteriorModulePlayerCollisions(false);
+    }
+
+    private void OnDisable()
+    {
+        RestoreExteriorModulePlayerCollisions(true);
+    }
+
+    private readonly struct IgnoredColliderPair
+    {
+        public readonly Collider2D PlayerCollider;
+        public readonly Collider2D ModuleCollider;
+
+        public IgnoredColliderPair(
+            Collider2D playerCollider,
+            Collider2D moduleCollider)
+        {
+            PlayerCollider = playerCollider;
+            ModuleCollider = moduleCollider;
+        }
     }
 
     private void ResolveCameraIfNeeded()

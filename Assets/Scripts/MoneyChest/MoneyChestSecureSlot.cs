@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [DisallowMultipleComponent]
-[RequireComponent(typeof(Collider2D))]
 public sealed class MoneyChestSecureSlot :
     MonoBehaviour,
     IInteractable,
@@ -15,6 +14,9 @@ public sealed class MoneyChestSecureSlot :
 
     [Header("Refs")]
     [SerializeField] private Transform chestAnchor;
+
+    [Tooltip("Interaction/slot collider. May live on this object or any child. Auto-resolved when unassigned.")]
+    [SerializeField] private Collider2D interactionCollider;
 
     [Tooltip("Assign item_money_chest. Required for securing the chest from the player's hands.")]
     [SerializeField] private ItemDefinition moneyChestItemDefinition;
@@ -51,9 +53,8 @@ public sealed class MoneyChestSecureSlot :
         if (chestAnchor == null)
             chestAnchor = transform;
 
-        Collider2D col = GetComponent<Collider2D>();
-        if (col != null)
-            col.isTrigger = true;
+        ResolveInteractionCollider();
+        EnsureInteractionColliderIsTrigger();
     }
 
     private void Awake()
@@ -61,9 +62,8 @@ public sealed class MoneyChestSecureSlot :
         if (chestAnchor == null)
             chestAnchor = transform;
 
-        Collider2D col = GetComponent<Collider2D>();
-        if (col != null)
-            col.isTrigger = true;
+        ResolveInteractionCollider();
+        EnsureInteractionColliderIsTrigger();
 
         RefreshSecuredChestFromScene();
     }
@@ -73,12 +73,29 @@ public sealed class MoneyChestSecureSlot :
         if (chestAnchor == null)
             chestAnchor = transform;
 
-        Collider2D col = GetComponent<Collider2D>();
-        if (col != null)
-            col.isTrigger = true;
+        ResolveInteractionCollider();
+        EnsureInteractionColliderIsTrigger();
 
         if (string.IsNullOrWhiteSpace(stableId))
             stableId = "money_chest_slot_01";
+    }
+
+    private void ResolveInteractionCollider()
+    {
+        if (interactionCollider != null)
+            return;
+
+        interactionCollider =
+            GetComponent<Collider2D>() ??
+            GetComponentInChildren<Collider2D>(true);
+    }
+
+    private void EnsureInteractionColliderIsTrigger()
+    {
+        if (interactionCollider == null)
+            return;
+
+        interactionCollider.isTrigger = true;
     }
 
     public static MoneyChestSecureSlot FindByStableId(string id)

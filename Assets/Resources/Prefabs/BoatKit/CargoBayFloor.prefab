@@ -317,12 +317,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   snapOnBuilderPlace: 1
   anchor: 1
+  targetEdge: 0
   boundsSource: 0
   anchorRenderers: []
   anchorColliders: []
   yOffsetFromSurfaceTop: 0.18
+  xOffsetFromSurfaceEdge: 0
   maxVerticalSnapDistance: 1.5
+  maxHorizontalSnapDistance: 1.5
   horizontalInset: 0.03
+  verticalInset: 0.03
   surfaceLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class BoatOwnedItem : MonoBehaviour
+public sealed class BoatOwnedItem : MonoBehaviour, IMassContribution
 {
     public event Action<BoatOwnedItem> OwnershipChanged;
 
@@ -10,10 +10,52 @@ public sealed class BoatOwnedItem : MonoBehaviour
     [SerializeField] private bool registered;
 
     private BoatItemRegistry _registry;
+    private Boat _owningBoat;
+    private Boat _massContributionBoat;
+    private Rigidbody2D _rb;
 
     public bool IsRegistered => registered;
     public string OwningBoatInstanceId => owningBoatInstanceId;
     public bool IsOwnedByBoat => !string.IsNullOrWhiteSpace(owningBoatInstanceId);
+    public Boat OwningBoat => _owningBoat;
+
+    /// <summary>
+    /// Boat load contribution for any physical boat-owned world item.
+    ///
+    /// Collision is handled by GhostCollisionProxy; weight is handled explicitly
+    /// here. That keeps "how heavy is this thing?" separate from whatever contact
+    /// impulses Box2D happens to generate.
+    /// </summary>
+    public float MassContribution
+    {
+        get
+        {
+            ResolveRigidbody();
+
+            return IsOwnedByBoat &&
+                   _owningBoat != null &&
+                   _rb != null
+                ? Mathf.Max(0f, _rb.mass)
+                : 0f;
+        }
+    }
+
+    public Vector2 WorldCenterOfMass
+    {
+        get
+        {
+            ResolveRigidbody();
+
+            return _rb != null
+                ? _rb.worldCenterOfMass
+                : (Vector2)transform.position;
+        }
+    }
+
+    private void Awake()
+    {
+        ResolveRigidbody();
+    }
 
     public void AssignToBoat(Boat boat)
     {
@@ -26,7 +68,12 @@ public sealed class BoatOwnedItem : MonoBehaviour
         if (_registry != null)
             _registry.Unregister(this);
 
+        UnregisterMassContribution();
+
         owningBoatInstanceId = boat.BoatInstanceId;
+        _owningBoat = boat;
+
+        RegisterMassContribution(boat);
 
         _registry = boat.GetComponent<BoatItemRegistry>();
         if (_registry != null)
@@ -47,7 +94,10 @@ public sealed class BoatOwnedItem : MonoBehaviour
     {
         if (boat == null)
         {
+            UnregisterMassContribution();
+
             owningBoatInstanceId = restoredBoatInstanceId;
+            _owningBoat = null;
             registered = false;
             NotifyOwnershipChanged();
             return;
@@ -62,10 +112,56 @@ public sealed class BoatOwnedItem : MonoBehaviour
             _registry.Unregister(this);
 
         _registry = null;
+
+        UnregisterMassContribution();
+
+        _owningBoat = null;
         owningBoatInstanceId = null;
         registered = false;
 
         NotifyOwnershipChanged();
+    }
+
+    private void ResolveRigidbody()
+    {
+        if (_rb == null)
+            _rb = GetComponent<Rigidbody2D>();
+    }
+
+    private void RegisterMassContribution(Boat boat)
+    {
+        if (boat == null)
+            return;
+
+        ResolveRigidbody();
+
+        // Non-physical BoatOwnedItems are allowed, but contribute no mass.
+        if (_rb == null)
+            return;
+
+        if (ReferenceEquals(_massContributionBoat, boat))
+            return;
+
+        UnregisterMassContribution();
+
+        _massContributionBoat = boat;
+
+        if (!_massContributionBoat.massContributions.Contains(this))
+            _massContributionBoat.RegisterMassContribution(this);
+
+        _massContributionBoat.RecomputeMassAndCOM();
+    }
+
+    private void UnregisterMassContribution()
+    {
+        if (_massContributionBoat == null)
+            return;
+
+        Boat oldBoat = _massContributionBoat;
+        _massContributionBoat = null;
+
+        oldBoat.UnregisterMassContribution(this);
+        oldBoat.RecomputeMassAndCOM();
     }
 
     private void NotifyOwnershipChanged()
@@ -87,6 +183,8 @@ public sealed class BoatOwnedItem : MonoBehaviour
     {
         if (_registry != null)
             _registry.Unregister(this);
+
+        UnregisterMassContribution();
 
         OwnershipChanged = null;
     }

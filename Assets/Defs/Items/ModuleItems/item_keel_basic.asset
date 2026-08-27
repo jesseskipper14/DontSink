@@ -49,10 +49,10 @@ MonoBehaviour:
   externalAirSupplyPerSecond: 0
   externalAirChargeUsePerSecond: 0
   externalAirMaxAirBonus: 0
-  isContainer: 1
+  isContainer: 0
   containerSlotCount: 1
   containerColumnCount: 1
-  allowedContainerCategories: 256
+  allowedContainerCategories: 0
   containerTier: 0
   pickupMode: 1
   pickupHoldDuration: 3

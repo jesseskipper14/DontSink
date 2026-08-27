@@ -163,6 +163,7 @@ GameObject:
   - component: {fileID: 4852340979861053125}
   - component: {fileID: -788460587395443}
   - component: {fileID: 4174918693384909282}
+  - component: {fileID: 3592821839624725825}
   m_Layer: 3
   m_Name: BasicAnchor_Installed
   m_TagString: Untagged
@@ -230,9 +231,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1870559867
-  m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingLayerID: -2135464765
+  m_SortingLayer: 7
+  m_SortingOrder: 110
   m_Sprite: {fileID: 8097277784629573537, guid: 85e537cabc1629149b1ca8582d5e799f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -282,7 +283,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.6, y: 0.63}
+    oldSize: {x: 2.4, y: 2.52}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -310,7 +311,7 @@ MonoBehaviour:
   highlightObject: {fileID: 7170654101832386509}
   requireMatchingBoatBoardingContext: 1
   allowAccessWhenNotPartOfBoat: 1
-  verboseLogging: 1
+  verboseLogging: 0
   references:
     version: 2
     RefIds:
@@ -343,6 +344,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moduleAnchor: {fileID: 8851162932041584786}
+--- !u!114 &3592821839624725825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8130874790704986176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57e4622be7f7aa342803917674b8461f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  category: 0
 --- !u!1 &8721630635941789182
 GameObject:
   m_ObjectHideFlags: 0

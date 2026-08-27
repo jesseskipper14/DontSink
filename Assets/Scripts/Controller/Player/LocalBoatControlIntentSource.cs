@@ -16,6 +16,9 @@ public struct BoatControlIntent
     /// </summary>
     public float RudderAdjust;
 
+    /// <summary>Rising edge request to set the engine order/throttle exactly to Stop (0).</summary>
+    public bool ThrottleStopPressed;
+
     /// <summary>Rising edge request to leave the helm.</summary>
     public bool ExitPressed;
 
@@ -35,6 +38,7 @@ public class LocalBoatControlIntentSource : MonoBehaviour, IBoatControlIntentSou
     [SerializeField] private KeyCode throttleDown = KeyCode.S;
     [SerializeField] private KeyCode rudderPort = KeyCode.A;
     [SerializeField] private KeyCode rudderStarboard = KeyCode.D;
+    [SerializeField] private KeyCode throttleStop = KeyCode.X;
     [SerializeField] private KeyCode exitKey = KeyCode.Escape;
 
     public BoatControlIntent Current { get; private set; }
@@ -53,6 +57,7 @@ public class LocalBoatControlIntentSource : MonoBehaviour, IBoatControlIntentSou
         {
             ThrottleAdjust = Mathf.Clamp(throttleAdjust, -1f, 1f),
             RudderAdjust = Mathf.Clamp(rudderAdjust, -1f, 1f),
+            ThrottleStopPressed = Input.GetKeyDown(throttleStop),
             ExitPressed = Input.GetKeyDown(exitKey)
         };
     }

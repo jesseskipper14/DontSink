@@ -102,6 +102,23 @@ public class Interactor2D : MonoBehaviour
                 toggleInteractable.Toggle(ctx);
         }
 
+        if (intent.LinkPressed)
+        {
+            IInteractable linkTarget = null;
+
+            if (TryResolveBest(ctx, out linkTarget))
+            {
+                ILinkInteractable linkInteractable =
+                    linkTarget as ILinkInteractable;
+
+                if (linkInteractable != null &&
+                    linkInteractable.CanLink(ctx))
+                {
+                    linkInteractable.Link(ctx);
+                }
+            }
+        }
+
         HandlePickupIntent(intent, ctx);
     }
 
@@ -397,6 +414,14 @@ public class Interactor2D : MonoBehaviour
             if (!TryBuildMouseHoverTarget(col, out InteractionHoverTarget candidate))
                 continue;
 
+            // A collider can be physically under the mouse but still belong to an
+            // interaction target that is intentionally hidden/inaccessible in the
+            // current context (for example an exterior hardpoint while boarded
+            // inside the boat). Skip it here so valid targets behind it still get
+            // a chance to resolve.
+            if (!PassesHoverSelectionPolicy(candidate, ctx))
+                continue;
+
             float score = ScoreMouseHoverCandidate(candidate, col, ctx.AimWorld);
             if (score > bestScore)
             {
@@ -406,6 +431,40 @@ public class Interactor2D : MonoBehaviour
         }
 
         return best.IsValid;
+    }
+
+    private static bool PassesHoverSelectionPolicy(
+        in InteractionHoverTarget target,
+        in InteractContext ctx)
+    {
+        if (!target.IsValid)
+            return false;
+
+        // Explicit owner policy remains authoritative.
+        if (target.Owner is IInteractionPromptDisplayPolicyProvider displayPolicy &&
+            !displayPolicy.ShouldShowHoverLabel(ctx))
+        {
+            return false;
+        }
+
+        bool hasInteract = target.Interact != null;
+        bool hasPickup = target.Pickup != null;
+        bool hasUnsecure = target.Unsecure != null;
+        bool hasToggle = target.Toggle != null;
+
+        // Interact-only targets are already hidden by InteractPromptDriver when
+        // CanInteract is false. Do the same filtering BEFORE hover scoring so a
+        // dead/inaccessible trigger cannot steal the mouse from a valid target
+        // behind it.
+        //
+        // This is especially important for LadderZone:
+        // - a world/dock ladder while the player is boarded is inaccessible;
+        // - a ladder with requireInteractToClimb == false is not an E-action;
+        // either case should not monopolize mouse hover targeting.
+        if (hasInteract && !hasPickup && !hasUnsecure && !hasToggle)
+            return target.Interact.CanInteract(ctx);
+
+        return true;
     }
 
     private bool TryBuildMouseHoverTarget(Collider2D col, out InteractionHoverTarget target)

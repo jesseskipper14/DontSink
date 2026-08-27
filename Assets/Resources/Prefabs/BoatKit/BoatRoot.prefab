@@ -31,6 +31,8 @@ GameObject:
   - component: {fileID: 3301175116528709572}
   - component: {fileID: 7185085591629101004}
   - component: {fileID: 4829187434485389288}
+  - component: {fileID: 2420544858002852228}
+  - component: {fileID: -8454815432132111074}
   - component: {fileID: 2425872415087118993}
   - component: {fileID: 4658135062933648623}
   m_Layer: 3
@@ -244,8 +246,9 @@ MonoBehaviour:
   throttleForce: {fileID: 4658135062933648623}
   handlingAggregator: {fileID: 0}
   sceneForwardAxis: {x: 1, y: 0}
-  throttleTravelPerSecond: 0.45
-  rudderTravelDegreesPerSecond: 55
+  throttleTravelPerSecond: 0.1
+  referenceRudderAngleDegrees: 35
+  rudderTravelDegreesPerSecond: 10
   rudderAngularAcceleration: 34
   angularWaterDrag: 1.9
   maxAngularVelocityDegrees: 42
@@ -489,6 +492,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   verboseDiagnostics: 1
+--- !u!114 &2420544858002852228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 957b43476e9e8354eb590b025d002db0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  followBody: {fileID: 134015770593356340}
+  sourceRoots: []
+  ghostLayerName: GhostCollision
+  overrideMaterial: {fileID: 0}
+  syncSourceChanges: 1
+  showRuntimeProxyInHierarchy: 1
+  verboseLogging: 0
+--- !u!114 &-8454815432132111074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4971407836783578528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f82047cd102aa5f44b7841bc2f278f64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boat: {fileID: 6897017861151174155}
+  playerInventory: {fileID: 0}
+  playerEquipment: {fileID: 0}
+  revealAll: 0
+  compatibleColor: {r: 0, g: 1, b: 0, a: 1}
+  incompatibleColor: {r: 1, g: 0, b: 0, a: 1}
+  activeSortingOrder: 32000
+  overrideActiveSortingLayer: 0
+  activeSortingLayerName: 
+  pulseVisibleMarkers: 1
+  pulseCyclesPerSecond: 1.5
+  pulseMinAlpha: 0.55
+  pulseMaxAlpha: 1
+  logRefresh: 0
 --- !u!114 &2425872415087118993
 MonoBehaviour:
   m_ObjectHideFlags: 0

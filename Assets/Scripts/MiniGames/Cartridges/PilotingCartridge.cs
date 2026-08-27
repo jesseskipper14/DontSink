@@ -14,6 +14,7 @@ public sealed class PilotingCartridge :
 {
     private readonly BoatPilotingState _state;
     private readonly BoatPilotingSimulation _simulation;
+    private readonly PilotChairInteractable _sourceStation;
 
     private readonly PilotingWaveRenderer _waveRenderer;
     private readonly PilotingRouteRenderer _routeRenderer;
@@ -113,13 +114,17 @@ public sealed class PilotingCartridge :
         float visibleWorldHeight,
         bool zoomLocked,
         float troughFlatFraction,
-        float waveTextureRefreshHz)
+        float waveTextureRefreshHz,
+        PilotChairInteractable sourceStation = null)
     {
         _state =
             state;
 
         _simulation =
             simulation;
+
+        _sourceStation =
+            sourceStation;
 
         _visibleWorldHeight =
             Mathf.Max(
@@ -274,24 +279,10 @@ public sealed class PilotingCartridge :
         GUI.Label(
             new Rect(
                 panel.x + pad,
-                panel.y + 10f,
+                panel.y + 8f,
                 panel.width - 80f,
                 24f),
-            "PILOTING - AUTHORITATIVE STATE PROTOTYPE");
-
-        if (GUI.Button(
-                new Rect(
-                    panel.xMax - 92f,
-                    panel.y + 8f,
-                    44f,
-                    24f),
-                _debugMenuOpen
-                    ? "DBG*"
-                    : "DBG"))
-        {
-            _debugMenuOpen =
-                !_debugMenuOpen;
-        }
+            "PILOTING");
 
         if (GUI.Button(
                 new Rect(
@@ -307,13 +298,35 @@ public sealed class PilotingCartridge :
             return;
         }
 
+        bool renderPilotingView =
+            DrawHelmStatusLine(
+                panel,
+                pad);
+
+        if (!renderPilotingView)
+            return;
+
+        if (GUI.Button(
+                new Rect(
+                    panel.xMax - 92f,
+                    panel.y + 8f,
+                    44f,
+                    24f),
+                _debugMenuOpen
+                    ? "DBG*"
+                    : "DBG"))
+        {
+            _debugMenuOpen =
+                !_debugMenuOpen;
+        }
+
         if (_state == null ||
             _simulation == null)
         {
             GUI.Label(
                 new Rect(
                     panel.x + pad,
-                    panel.y + 44f,
+                    panel.y + 64f,
                     panel.width - pad * 2f,
                     24f),
                 "Piloting state unavailable.");
@@ -324,9 +337,9 @@ public sealed class PilotingCartridge :
         Rect playArea =
             new Rect(
                 panel.x + pad,
-                panel.y + 42f,
+                panel.y + 66f,
                 panel.width - pad * 2f,
-                panel.height - 162f);
+                panel.height - 186f);
 
         GUI.Box(
             playArea,
@@ -360,6 +373,79 @@ public sealed class PilotingCartridge :
             _waveRenderer,
             _zoomLocked,
             _debugMenuOpen);
+    }
+
+    /// <summary>
+    /// Returns false only for an explicitly linked-but-offline helm. In that
+    /// state the cartridge intentionally renders no piloting world/HUD below
+    /// the red OFFLINE status line.
+    /// </summary>
+    private bool DrawHelmStatusLine(
+        Rect panel,
+        float pad)
+    {
+        if (_sourceStation == null)
+            return true;
+
+        PilotChairInteractable.PilotingHelmStatus status =
+            _sourceStation.CurrentPilotingHelmStatus;
+
+        bool hasControl =
+            _sourceStation.HasPilotControlAuthority;
+
+        string text;
+        Color previous =
+            GUI.color;
+
+        switch (status)
+        {
+            case PilotChairInteractable.PilotingHelmStatus.Online:
+                text = hasControl
+                    ? "STATUS: ONLINE"
+                    : "STATUS: ONLINE - NO CONTROL";
+                break;
+
+            case PilotChairInteractable.PilotingHelmStatus.Damaged:
+                text = hasControl
+                    ? "STATUS: DAMAGED"
+                    : "STATUS: DAMAGED - NO CONTROL";
+
+                GUI.color =
+                    new Color(
+                        1f,
+                        0.72f,
+                        0.2f,
+                        1f);
+                break;
+
+            case PilotChairInteractable.PilotingHelmStatus.Offline:
+                text =
+                    "STATUS: OFFLINE";
+
+                GUI.color =
+                    Color.red;
+                break;
+
+            default:
+                // An unlinked chair should never have opened this cartridge.
+                text =
+                    "STATUS: UNLINKED";
+                break;
+        }
+
+        GUI.Label(
+            new Rect(
+                panel.x + pad,
+                panel.y + 34f,
+                panel.width - pad * 2f,
+                24f),
+            text);
+
+        GUI.color =
+            previous;
+
+        return status !=
+               PilotChairInteractable.PilotingHelmStatus.Offline;
     }
 
     private void UpdateCamera(

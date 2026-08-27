@@ -13,6 +13,8 @@ public struct InteractionIntent
 
     public bool UnsecurePressed;
 
+    public bool LinkPressed;
+
     public Vector2 AimWorld;
     public bool HasAimWorld;
 }

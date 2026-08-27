@@ -8,7 +8,8 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
     [SerializeField] private Boat boat;
     [SerializeField] private ItemDefinitionCatalog itemCatalog;
 
-    [Tooltip("Temporary/simple module lookup for save/load. Add every ModuleDefinition that can be installed on this boat.")]
+    [Tooltip("Optional explicit/fallback module lookup for save/load. " +
+             "Normal inventory-linked modules are also discovered automatically through ItemDefinitionCatalog.")]
     [SerializeField] private ModuleDefinition[] moduleDefinitions;
 
     [Header("Debug")]
@@ -81,7 +82,13 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
             manifest.modules.Add(snap);
         }
 
-        Log($"Captured module state manifest. count={manifest.modules.Count}");
+        CaptureHelmLinks(
+            manifest);
+
+        Log(
+            $"Captured module state manifest. modules={manifest.modules.Count}, " +
+            $"helmLinks={(manifest.helmLinks != null ? manifest.helmLinks.Count : 0)}");
+
         return manifest;
     }
 
@@ -244,6 +251,10 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
                 Log($"Restored StorageModule contents/cargo rack on '{snap.hardpointId}'.");
             }
         }
+
+        RestoreHelmLinks(
+            manifest,
+            hardpoints);
     }
 
     public void RestoreAll(BoatModuleStateManifest moduleManifest, BoatPowerSnapshot powerSnapshot)
@@ -251,6 +262,311 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
         // Power first so engines/turrets using boat power can turn back on successfully.
         RestorePowerSnapshot(powerSnapshot);
         RestoreModuleManifest(moduleManifest);
+    }
+
+    private void CaptureHelmLinks(
+        BoatModuleStateManifest manifest)
+    {
+        if (manifest == null)
+            return;
+
+        manifest.version = 2;
+
+        if (manifest.helmLinks == null)
+        {
+            manifest.helmLinks =
+                new List<BoatHelmLinkSnapshot>();
+        }
+        else
+        {
+            manifest.helmLinks.Clear();
+        }
+
+        PilotChairInteractable[] chairs =
+            GetComponentsInChildren<PilotChairInteractable>(
+                true);
+
+        for (int i = 0;
+             i < chairs.Length;
+             i++)
+        {
+            PilotChairInteractable chair =
+                chairs[i];
+
+            if (chair == null ||
+                chair.LinkedHelmHardpoint == null)
+            {
+                continue;
+            }
+
+            Hardpoint helmHardpoint =
+                chair.LinkedHelmHardpoint;
+
+            string stationId =
+                chair.PersistenceStationId;
+
+            if (string.IsNullOrWhiteSpace(
+                    stationId) ||
+                string.IsNullOrWhiteSpace(
+                    helmHardpoint.HardpointId))
+            {
+                LogWarning(
+                    $"Skipping Helm link capture for chair '{chair.name}': " +
+                    "missing station or hardpoint persistence ID.");
+                continue;
+            }
+
+            int order =
+                GetPilotControllerOrder(
+                    helmHardpoint,
+                    chair);
+
+            if (order < 0)
+            {
+                LogWarning(
+                    $"Skipping Helm link capture for chair '{chair.name}': " +
+                    $"Helm hardpoint '{helmHardpoint.HardpointId}' does not list it as a controller.");
+                continue;
+            }
+
+            manifest.helmLinks.Add(
+                new BoatHelmLinkSnapshot
+                {
+                    version = 1,
+                    pilotStationId =
+                        stationId,
+                    helmHardpointId =
+                        helmHardpoint.HardpointId,
+                    controllerOrder =
+                        order
+                });
+        }
+    }
+
+    private void RestoreHelmLinks(
+        BoatModuleStateManifest manifest,
+        Hardpoint[] hardpoints)
+    {
+        if (manifest == null)
+            return;
+
+        // Backward compatibility:
+        // v1 saves predate runtime Helm wiring. Preserve whatever authored
+        // links exist on the boat prefab rather than treating absence as an
+        // authoritative "disconnect everything."
+        if (manifest.version < 2)
+        {
+            Log(
+                $"Skipping Helm link restore for legacy module manifest v{manifest.version}.");
+
+            return;
+        }
+
+        PilotChairInteractable[] chairs =
+            GetComponentsInChildren<PilotChairInteractable>(
+                true);
+
+        // v2+ list is authoritative, including an intentionally empty list.
+        for (int i = 0;
+             i < chairs.Length;
+             i++)
+        {
+            if (chairs[i] != null &&
+                chairs[i].LinkedHelmHardpoint != null)
+            {
+                chairs[i].UnlinkHelm();
+            }
+        }
+
+        if (manifest.helmLinks == null ||
+            manifest.helmLinks.Count == 0)
+        {
+            Log(
+                "Restored Helm links. Saved wiring is empty.");
+
+            return;
+        }
+
+        List<BoatHelmLinkSnapshot> links =
+            new List<BoatHelmLinkSnapshot>();
+
+        for (int i = 0;
+             i < manifest.helmLinks.Count;
+             i++)
+        {
+            BoatHelmLinkSnapshot link =
+                manifest.helmLinks[i];
+
+            if (link != null)
+                links.Add(link);
+        }
+
+        links.Sort(
+            CompareHelmLinksForRestore);
+
+        int restored =
+            0;
+
+        for (int i = 0;
+             i < links.Count;
+             i++)
+        {
+            BoatHelmLinkSnapshot link =
+                links[i];
+
+            if (string.IsNullOrWhiteSpace(
+                    link.pilotStationId) ||
+                string.IsNullOrWhiteSpace(
+                    link.helmHardpointId))
+            {
+                continue;
+            }
+
+            PilotChairInteractable chair =
+                FindPilotChairByPersistenceId(
+                    chairs,
+                    link.pilotStationId);
+
+            if (chair == null)
+            {
+                LogWarning(
+                    $"No PilotChair found for saved station id='{link.pilotStationId}'. " +
+                    "Skipping Helm link.");
+                continue;
+            }
+
+            Hardpoint helmHardpoint =
+                FindHardpointById(
+                    hardpoints,
+                    link.helmHardpointId);
+
+            if (helmHardpoint == null)
+            {
+                LogWarning(
+                    $"No Hardpoint found for saved Helm id='{link.helmHardpointId}'. " +
+                    $"Skipping station '{link.pilotStationId}'.");
+                continue;
+            }
+
+            if (!chair.TryLinkToHelm(
+                    helmHardpoint))
+            {
+                LogWarning(
+                    $"Failed to restore station '{link.pilotStationId}' -> " +
+                    $"Helm '{link.helmHardpointId}'.");
+                continue;
+            }
+
+            restored++;
+        }
+
+        Log(
+            $"Restored Helm links. restored={restored}, saved={links.Count}");
+    }
+
+    private static int GetPilotControllerOrder(
+        Hardpoint hardpoint,
+        PilotChairInteractable chair)
+    {
+        if (hardpoint == null ||
+            chair == null ||
+            hardpoint.Controllers == null)
+        {
+            return -1;
+        }
+
+        int pilotOrder =
+            0;
+
+        IReadOnlyList<MonoBehaviour> controllers =
+            hardpoint.Controllers;
+
+        for (int i = 0;
+             i < controllers.Count;
+             i++)
+        {
+            if (controllers[i] is not PilotChairInteractable candidate)
+                continue;
+
+            if (ReferenceEquals(
+                    candidate,
+                    chair))
+            {
+                return pilotOrder;
+            }
+
+            pilotOrder++;
+        }
+
+        return -1;
+    }
+
+    private static int CompareHelmLinksForRestore(
+        BoatHelmLinkSnapshot a,
+        BoatHelmLinkSnapshot b)
+    {
+        if (ReferenceEquals(a, b))
+            return 0;
+
+        if (a == null)
+            return 1;
+
+        if (b == null)
+            return -1;
+
+        int helmCompare =
+            string.Compare(
+                a.helmHardpointId,
+                b.helmHardpointId,
+                System.StringComparison.Ordinal);
+
+        if (helmCompare != 0)
+            return helmCompare;
+
+        int orderCompare =
+            a.controllerOrder.CompareTo(
+                b.controllerOrder);
+
+        if (orderCompare != 0)
+            return orderCompare;
+
+        return string.Compare(
+            a.pilotStationId,
+            b.pilotStationId,
+            System.StringComparison.Ordinal);
+    }
+
+    private static PilotChairInteractable FindPilotChairByPersistenceId(
+        PilotChairInteractable[] chairs,
+        string stationId)
+    {
+        if (chairs == null ||
+            string.IsNullOrWhiteSpace(
+                stationId))
+        {
+            return null;
+        }
+
+        for (int i = 0;
+             i < chairs.Length;
+             i++)
+        {
+            PilotChairInteractable chair =
+                chairs[i];
+
+            if (chair == null)
+                continue;
+
+            if (string.Equals(
+                    chair.PersistenceStationId,
+                    stationId,
+                    System.StringComparison.Ordinal))
+            {
+                return chair;
+            }
+        }
+
+        return null;
     }
 
     private void EnsureSavedModuleInstalled(Hardpoint hp, BoatModuleStateSnapshot snap)
@@ -285,7 +601,7 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
         {
             LogWarning(
                 $"Could not resolve ModuleDefinition for moduleId='{snap.moduleId}'. " +
-                "Add it to BoatModuleStatePersistence.moduleDefinitions on the boat prefab.");
+                "Ensure its ItemDefinition is in ItemDefinitionCatalog, or add the ModuleDefinition to the explicit fallback list.");
             return;
         }
 
@@ -313,17 +629,45 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
         if (string.IsNullOrWhiteSpace(moduleId))
             return null;
 
-        if (moduleDefinitions == null)
-            return null;
-
-        for (int i = 0; i < moduleDefinitions.Length; i++)
+        // Keep the old explicit list as an override/fallback for unusual modules that
+        // are not represented by an inventory ItemDefinition.
+        if (moduleDefinitions != null)
         {
-            ModuleDefinition def = moduleDefinitions[i];
-            if (def == null)
-                continue;
+            for (int i = 0; i < moduleDefinitions.Length; i++)
+            {
+                ModuleDefinition def = moduleDefinitions[i];
+                if (def == null)
+                    continue;
 
-            if (string.Equals(def.ModuleId, moduleId, System.StringComparison.Ordinal))
-                return def;
+                if (string.Equals(def.ModuleId, moduleId, System.StringComparison.Ordinal))
+                    return def;
+            }
+        }
+
+        // Normal installable modules already have ItemDefinitions and those items live
+        // in the ItemDefinitionCatalog. Use that as the authoritative general lookup so
+        // adding a new rudder/keel/anchor does not also require maintaining a second
+        // inspector array just for persistence.
+        if (itemCatalog != null)
+        {
+            IReadOnlyList<ItemDefinition> items = itemCatalog.GetAllItems();
+
+            if (items != null)
+            {
+                for (int i = 0; i < items.Count; i++)
+                {
+                    ItemDefinition item = items[i];
+                    if (item == null || !item.IsModule)
+                        continue;
+
+                    ModuleDefinition def = item.ModuleDefinition;
+                    if (def == null)
+                        continue;
+
+                    if (string.Equals(def.ModuleId, moduleId, System.StringComparison.Ordinal))
+                        return def;
+                }
+            }
         }
 
         return null;

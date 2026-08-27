@@ -20,7 +20,6 @@ public sealed class InteractPromptDriver : MonoBehaviour
     [SerializeField, Min(1)] private int debugPromptEveryNFrames = 15;
 
     private readonly List<PromptAction> _promptActions = new();
-    private readonly HashSet<IInteractable> _suppressedInteract = new();
     private readonly HashSet<IPickupInteractable> _suppressedPickup = new();
 
     private ILocalPlayerAuthority _localAuth;
@@ -106,11 +105,9 @@ public sealed class InteractPromptDriver : MonoBehaviour
 
     private void HandleInteracted(IInteractable target)
     {
-        if (target != null)
-            _suppressedInteract.Add(target);
-
-        if (promptUI != null)
-            promptUI.Hide();
+        // Do not suppress normal interactions after use.
+        // LateUpdate will immediately rebuild the available prompt actions from
+        // the interactable's new state (Open -> Close, On -> Off, etc.).
     }
 
     private void HandlePickedUp(IPickupInteractable target)
@@ -128,9 +125,6 @@ public sealed class InteractPromptDriver : MonoBehaviour
 
     private void PruneSuppressedTargets()
     {
-        if (_suppressedInteract.Count > 0)
-            _suppressedInteract.RemoveWhere(t => t == null || !interactor.IsCandidatePresent(t));
-
         if (_suppressedPickup.Count > 0)
             _suppressedPickup.RemoveWhere(t => t == null || !interactor.IsPickupCandidatePresent(t));
     }
@@ -182,9 +176,6 @@ public sealed class InteractPromptDriver : MonoBehaviour
         // if their own CanInteract denies access by boat/context.
         if (hasInteract && !hasPickup && !hasUnsecure && !hasToggle)
         {
-            if (_suppressedInteract.Contains(target.Interact))
-                return false;
-
             return target.Interact.CanInteract(ctx);
         }
 
@@ -207,7 +198,6 @@ public sealed class InteractPromptDriver : MonoBehaviour
         if (interactor.IsWithinActionRange(target, ctx))
         {
             if (hasInteract &&
-                !_suppressedInteract.Contains(target.Interact) &&
                 target.Interact.CanInteract(ctx))
             {
                 return true;
@@ -247,6 +237,7 @@ public sealed class InteractPromptDriver : MonoBehaviour
         AddInteractActions(target, ctx);
         AddPickupActions(target, ctx);
         AddToggleActions(target, ctx);
+        AddLinkActions(target, ctx);
     }
 
     private Vector3 ResolvePromptPosition(in InteractionHoverTarget target)
@@ -301,9 +292,6 @@ public sealed class InteractPromptDriver : MonoBehaviour
     private void AddInteractActions(in InteractionHoverTarget target, in InteractContext ctx)
     {
         if (target.Interact == null)
-            return;
-
-        if (_suppressedInteract.Contains(target.Interact))
             return;
 
         if (!target.Interact.CanInteract(ctx))
@@ -413,6 +401,38 @@ public sealed class InteractPromptDriver : MonoBehaviour
         _promptActions.Add(new PromptAction(
             isOn ? "Press T to Turn Off" : "Press T to Turn On",
             priority: 85));
+    }
+
+    private void AddLinkActions(
+        in InteractionHoverTarget target,
+        in InteractContext ctx)
+    {
+        ILinkInteractable link =
+            target.Interact as ILinkInteractable;
+
+        if (link == null &&
+            target.Owner is ILinkInteractable ownerLink)
+        {
+            link =
+                ownerLink;
+        }
+
+        if (link == null ||
+            !link.CanLink(ctx))
+        {
+            return;
+        }
+
+        string verb =
+            link.GetLinkPromptVerb(ctx);
+
+        if (string.IsNullOrWhiteSpace(verb))
+            verb = "Link";
+
+        _promptActions.Add(
+            new PromptAction(
+                $"Press L to {verb}",
+                priority: 88));
     }
 
     private void UpdateWorldItemHighlight(in InteractionHoverTarget target)

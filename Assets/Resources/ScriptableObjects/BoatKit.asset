@@ -40,4 +40,7 @@ MonoBehaviour:
   HardpointWeapon: {fileID: 3363453043375993549, guid: a3300753d048b7442a40aacf57587b00, type: 3}
   HardpointElectronics: {fileID: 3363453043375993549, guid: b197f07aba96f6f40b4dd5ec2c3ae6ed, type: 3}
   HardpointHelm: {fileID: 3363453043375993549, guid: 6146a680691f8e44ab9f2ce73e8772c7, type: 3}
+  HardpointRudder: {fileID: 3363453043375993549, guid: 0a20a366b93b6304482c0eed57273ff4, type: 3}
+  HardpointKeel: {fileID: 3363453043375993549, guid: bad6f9c80edfc0d4a86ae4a05da4a405, type: 3}
+  HardpointAnchor: {fileID: 3363453043375993549, guid: 19413a15f86016641997bae68bffcd01, type: 3}
   BoatVisibilityZone: {fileID: 5848625884918575200, guid: a7e7abe4b3c39b64697381881a96965a, type: 3}

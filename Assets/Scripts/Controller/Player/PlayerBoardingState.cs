@@ -3,7 +3,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CharacterMotor2D))]
-public sealed class PlayerBoardingState : MonoBehaviour
+public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
 {
     [Header("Layer Names")]
     [SerializeField] private string hullLayerName = "Hull";
@@ -11,6 +11,7 @@ public sealed class PlayerBoardingState : MonoBehaviour
     [SerializeField] private string hatchLedgeLayerName = "HatchLedge";
     [SerializeField] private string groundLayerName = "Ground";
     [SerializeField] private string worldLedgeLayerName = "WorldLedge";
+    [SerializeField] private string ghostCollisionLayerName = "GhostCollision";
 
     [Header("Sprite Sorting")]
     [SerializeField] private string boardedSortingLayerName = "BoatPlayer";
@@ -25,20 +26,36 @@ public sealed class PlayerBoardingState : MonoBehaviour
     public bool IsBoarded { get; private set; }
     public Transform CurrentBoatRoot { get; private set; }
 
+    // While boarded, Steve contributes his Rigidbody mass at his actual world
+    // center of mass to the Boat's explicit mass/COM model. This preserves boat
+    // listing/sink response after physical Hull reaction impulses are removed.
+    public float MassContribution =>
+        IsBoarded && _rb != null
+            ? Mathf.Max(0f, _rb.mass)
+            : 0f;
+
+    public Vector2 WorldCenterOfMass =>
+        _rb != null
+            ? _rb.worldCenterOfMass
+            : (Vector2)transform.position;
+
     private Rigidbody2D _rb;
     private CharacterMotor2D _motor;
+    private Boat _massContributionBoat;
 
     private int _hullLayer;
     private int _boatItemLayer;
     private int _hatchLedgeLayer;
     private int _groundLayer;
     private int _worldLedgeLayer;
+    private int _ghostCollisionLayer;
 
     private int _hullBit;
     private int _boatItemBit;
     private int _hatchLedgeBit;
     private int _groundBit;
     private int _worldLedgeBit;
+    private int _ghostCollisionBit;
 
     private int _nonBoatWorldBits;
 
@@ -62,11 +79,36 @@ public sealed class PlayerBoardingState : MonoBehaviour
         ApplySpriteSorting();
     }
 
+    private void OnEnable()
+    {
+        GhostCollisionProxy.ActiveProxySetChanged +=
+            HandleGhostProxySetChanged;
+
+        if (IsBoarded)
+        {
+            RegisterMassContributionForCurrentBoat();
+            ApplyMask();
+        }
+    }
+
+    private void OnDisable()
+    {
+        GhostCollisionProxy.ActiveProxySetChanged -=
+            HandleGhostProxySetChanged;
+
+        ClearGhostCollisionPairs();
+        UnregisterMassContribution();
+    }
+
     public void Board(Transform boatRoot)
     {
+        // Defensive against a direct boat-to-boat reassignment.
+        UnregisterMassContribution();
+
         IsBoarded = true;
         CurrentBoatRoot = boatRoot;
 
+        RegisterMassContributionForCurrentBoat();
         ApplyMask();
         ApplySpriteSorting();
 
@@ -80,6 +122,8 @@ public sealed class PlayerBoardingState : MonoBehaviour
     public void Unboard()
     {
         Transform oldBoatRoot = CurrentBoatRoot;
+
+        UnregisterMassContribution();
 
         IsBoarded = false;
         CurrentBoatRoot = null;
@@ -111,6 +155,7 @@ public sealed class PlayerBoardingState : MonoBehaviour
         _hatchLedgeLayer = LayerMask.NameToLayer(hatchLedgeLayerName);
         _groundLayer = LayerMask.NameToLayer(groundLayerName);
         _worldLedgeLayer = LayerMask.NameToLayer(worldLedgeLayerName);
+        _ghostCollisionLayer = LayerMask.NameToLayer(ghostCollisionLayerName);
 
         if (_hullLayer < 0)
             Debug.LogError($"Layer '{hullLayerName}' not found.", this);
@@ -132,11 +177,15 @@ public sealed class PlayerBoardingState : MonoBehaviour
         if (_worldLedgeLayer < 0)
             Debug.LogError($"Layer '{worldLedgeLayerName}' not found.", this);
 
+        if (_ghostCollisionLayer < 0)
+            Debug.LogError($"Layer '{ghostCollisionLayerName}' not found.", this);
+
         _hullBit = LayerBitOrZero(_hullLayer);
         _boatItemBit = LayerBitOrZero(_boatItemLayer);
         _hatchLedgeBit = LayerBitOrZero(_hatchLedgeLayer);
         _groundBit = LayerBitOrZero(_groundLayer);
         _worldLedgeBit = LayerBitOrZero(_worldLedgeLayer);
+        _ghostCollisionBit = LayerBitOrZero(_ghostCollisionLayer);
     }
 
     private void BuildMasks()
@@ -159,7 +208,16 @@ public sealed class PlayerBoardingState : MonoBehaviour
         if (_rb == null || _motor == null)
             return;
 
-        int mask = _rb.excludeLayers;
+        GhostCollisionProxy ownerGhost =
+            ResolveCurrentGhostProxy();
+
+        bool useGhost =
+            IsBoarded &&
+            ownerGhost != null &&
+            ownerGhost.IsBuilt;
+
+        int mask =
+            _rb.excludeLayers;
 
         // BoatItem is for loose boat-owned items/cargo, not player body blocking.
         // Optional because early layer cleanup may not have populated/created it yet.
@@ -167,36 +225,182 @@ public sealed class PlayerBoardingState : MonoBehaviour
 
         if (IsBoarded)
         {
-            // Boarded player collides with boat hull and boat hatch ledges.
-            mask &= ~_hullBit;
-            mask &= ~_hatchLedgeBit;
-
             // Boarded player ignores world ground and world ledges/docks.
             mask |= _nonBoatWorldBits;
 
-            _motor.groundMask = _boardedGroundMask;
+            // Existing hatch-ledge behavior remains available. If a particular
+            // hatch collider is also one of Ghost Boat's source colliders, the
+            // per-collider ghost handoff below suppresses the real copy.
+            mask &= ~_hatchLedgeBit;
+
+            if (useGhost)
+            {
+                // One-way interior physics:
+                // player ignores real Hull, collides with owning Ghost.
+                mask |= _hullBit;
+                mask &= ~_ghostCollisionBit;
+
+                _motor.groundMask =
+                    _ghostCollisionBit |
+                    _hatchLedgeBit;
+            }
+            else
+            {
+                // Safe fallback: preserve the pre-Ghost boarding behavior.
+                mask &= ~_hullBit;
+                mask |= _ghostCollisionBit;
+
+                _motor.groundMask =
+                    _boardedGroundMask;
+            }
         }
         else
         {
-            // Unboarded player ignores boat hull and boat hatch ledges.
+            // Unboarded player ignores boat hull, hatch ledges, and ALL ghosts.
             mask |= _hullBit;
             mask |= _hatchLedgeBit;
+            mask |= _ghostCollisionBit;
 
             // Unboarded player collides with world ground and world one-way ledges.
             mask &= ~_nonBoatWorldBits;
 
-            _motor.groundMask = _unboardedGroundMask;
+            _motor.groundMask =
+                _unboardedGroundMask;
         }
 
-        _rb.excludeLayers = mask;
+        _rb.excludeLayers =
+            mask;
+
+        ApplyGhostCollisionPairs(
+            useGhost
+                ? ownerGhost
+                : null);
 
         if (logMaskChanges)
         {
             Debug.Log(
-                $"[PlayerBoardingState:{name}] ApplyMask IsBoarded={IsBoarded} " +
-                $"excludeLayers={_rb.excludeLayers.value} groundMask={_motor.groundMask.value}",
+                $"[PlayerBoardingState:{name}] ApplyMask " +
+                $"IsBoarded={IsBoarded} useGhost={useGhost} " +
+                $"ghost={(ownerGhost != null ? ownerGhost.name : "NONE")} " +
+                $"excludeLayers={_rb.excludeLayers.value} " +
+                $"groundMask={_motor.groundMask.value}",
                 this);
         }
+    }
+
+    private GhostCollisionProxy ResolveCurrentGhostProxy()
+    {
+        if (!IsBoarded ||
+            CurrentBoatRoot == null)
+        {
+            return null;
+        }
+
+        return CurrentBoatRoot
+            .GetComponent<GhostCollisionProxy>();
+    }
+
+    private void ApplyGhostCollisionPairs(
+        GhostCollisionProxy allowedProxy)
+    {
+        if (_rb == null)
+            return;
+
+        Collider2D[] all =
+            GetComponentsInChildren<Collider2D>(
+                true);
+
+        if (all == null ||
+            all.Length == 0)
+        {
+            return;
+        }
+
+        System.Collections.Generic.List<Collider2D> solids =
+            new System.Collections.Generic.List<Collider2D>();
+
+        for (int i = 0;
+             i < all.Length;
+             i++)
+        {
+            Collider2D collider =
+                all[i];
+
+            if (collider == null ||
+                collider.isTrigger ||
+                collider.attachedRigidbody != _rb)
+            {
+                continue;
+            }
+
+            solids.Add(
+                collider);
+        }
+
+        GhostCollisionProxy.ConfigureExclusiveCollisions(
+            solids,
+            allowedProxy);
+    }
+
+    private void ClearGhostCollisionPairs()
+    {
+        ApplyGhostCollisionPairs(
+            null);
+    }
+
+    private void HandleGhostProxySetChanged()
+    {
+        ApplyMask();
+    }
+
+    private void RegisterMassContributionForCurrentBoat()
+    {
+        if (!IsBoarded ||
+            CurrentBoatRoot == null)
+        {
+            return;
+        }
+
+        if (!CurrentBoatRoot.TryGetComponent(
+                out Boat boat) ||
+            boat == null)
+        {
+            return;
+        }
+
+        if (ReferenceEquals(
+                _massContributionBoat,
+                boat))
+        {
+            return;
+        }
+
+        UnregisterMassContribution();
+
+        _massContributionBoat =
+            boat;
+
+        _massContributionBoat.RegisterMassContribution(
+            this);
+
+        _massContributionBoat.RecomputeMassAndCOM();
+    }
+
+    private void UnregisterMassContribution()
+    {
+        if (_massContributionBoat == null)
+            return;
+
+        Boat oldBoat =
+            _massContributionBoat;
+
+        _massContributionBoat =
+            null;
+
+        oldBoat.UnregisterMassContribution(
+            this);
+
+        oldBoat.RecomputeMassAndCOM();
     }
 
     private void CacheSpriteRenderers()

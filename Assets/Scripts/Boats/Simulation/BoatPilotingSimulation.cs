@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// Authoritative scene-level piloting simulation.
@@ -27,6 +28,10 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     [Header("Control Travel")]
     [Tooltip("How quickly W/S physically moves the signed throttle lever through reverse, neutral, and forward.")]
     [SerializeField, Min(0f)] private float throttleTravelPerSecond = 0.45f;
+
+    [Tooltip("Reference angle used to convert physical rudder angle into steering authority. Actual maximum rudder travel comes from installed RudderModule contributors.")]
+    [FormerlySerializedAs("maxRudderDegrees")]
+    [SerializeField, Min(0.01f)] private float referenceRudderAngleDegrees = 35f;
 
     [Tooltip("How quickly A/D physically moves the rudder. Releasing the key leaves it where it is.")]
     [SerializeField, Min(0f)] private float rudderTravelDegreesPerSecond = 55f;
@@ -86,8 +91,15 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     public BoatPilotingRouteState RouteGuidance => _routeGuidance;
     public BoatControlIntent CurrentIntent => _currentIntent;
 
+    /// <summary>
+    /// Read-only current control authority. UI/diagnostics may inspect this,
+    /// but ownership changes still go through TryClaimControl/ReleaseControl.
+    /// </summary>
+    public object ControlOwner => _controlOwner;
     public bool HasControlOwner => _controlOwner != null;
+
     public BoatHandlingProfile HandlingProfile => _handlingProfile;
+    public bool HasSteering => _handlingProfile.HasSteering;
     public float MaxRudderDegrees => _handlingProfile.MaxTurnAngle;
 
     public int InstalledPropulsionSources => _installedPropulsionSources;
@@ -132,6 +144,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     private void OnValidate()
     {
         throttleTravelPerSecond = Mathf.Max(0f, throttleTravelPerSecond);
+        referenceRudderAngleDegrees = Mathf.Max(0.01f, referenceRudderAngleDegrees);
         rudderTravelDegreesPerSecond = Mathf.Max(0f, rudderTravelDegreesPerSecond);
 
         rudderAngularAcceleration = Mathf.Max(0f, rudderAngularAcceleration);
@@ -195,6 +208,176 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
         return owner != null && ReferenceEquals(_controlOwner, owner);
     }
 
+    /// <summary>
+    /// Applies a discrete persistent throttle order through the same authority
+    /// boundary used by live control. This is for consoles/automation, not a
+    /// second propulsion model.
+    /// </summary>
+    public bool TrySetThrottleOrder(
+        object owner,
+        float throttle,
+        out float appliedThrottle)
+    {
+        appliedThrottle =
+            state != null
+                ? state.Throttle
+                : 0f;
+
+        if (!HasControlAuthority(owner) ||
+            state == null)
+        {
+            return false;
+        }
+
+        appliedThrottle =
+            Mathf.Clamp(
+                throttle,
+                -1f,
+                1f);
+
+        state.SetControlPositions(
+            appliedThrottle,
+            state.RudderDegrees);
+
+        if (throttleForce != null)
+            throttleForce.SetThrottle(appliedThrottle);
+
+        return true;
+    }
+
+    /// <summary>
+    /// Applies a discrete persistent rudder order. Installed steering hardware
+    /// remains authoritative for whether the order is possible and for the
+    /// allowed angle.
+    /// </summary>
+    public bool TrySetRudderOrder(
+        object owner,
+        float rudderDegrees,
+        out float appliedRudderDegrees)
+    {
+        appliedRudderDegrees =
+            state != null
+                ? state.RudderDegrees
+                : 0f;
+
+        if (!HasControlAuthority(owner) ||
+            state == null)
+        {
+            return false;
+        }
+
+        RefreshHandlingProfile();
+
+        if (!_handlingProfile.HasSteering ||
+            _handlingProfile.MaxTurnAngle <= 0.0001f)
+        {
+            state.SetControlPositions(
+                state.Throttle,
+                0f);
+
+            appliedRudderDegrees = 0f;
+            return false;
+        }
+
+        appliedRudderDegrees =
+            Mathf.Clamp(
+                rudderDegrees,
+                -_handlingProfile.MaxTurnAngle,
+                _handlingProfile.MaxTurnAngle);
+
+        state.SetControlPositions(
+            state.Throttle,
+            appliedRudderDegrees);
+
+        return true;
+    }
+
+    /// <summary>
+    /// Starts or stops all currently installed EngineModule instances.
+    /// The simulation is the command authority; individual engines still decide
+    /// whether they can actually start based on fuel/power/module state.
+    /// </summary>
+    public bool TrySetEnginesRunning(
+        object owner,
+        bool running,
+        out int installedEngineCount,
+        out int successfulEngineCount)
+    {
+        installedEngineCount = 0;
+        successfulEngineCount = 0;
+
+        if (!HasControlAuthority(owner))
+            return false;
+
+        ResolveRefs();
+
+        if (boat == null)
+            return true;
+
+        Hardpoint[] hardpoints =
+            boat.GetComponentsInChildren<Hardpoint>(
+                true);
+
+        for (int i = 0;
+             i < hardpoints.Length;
+             i++)
+        {
+            Hardpoint hardpoint =
+                hardpoints[i];
+
+            if (hardpoint == null ||
+                !hardpoint.HasInstalledModule ||
+                hardpoint.InstalledModule == null)
+            {
+                continue;
+            }
+
+            EngineModule engine =
+                hardpoint.InstalledModule
+                    .GetComponent<EngineModule>();
+
+            if (engine == null)
+                continue;
+
+            installedEngineCount++;
+
+            bool accepted =
+                engine.SetOn(running);
+
+            if (running)
+            {
+                if (accepted &&
+                    engine.IsOn)
+                {
+                    successfulEngineCount++;
+                }
+            }
+            else if (!engine.IsOn)
+            {
+                successfulEngineCount++;
+            }
+        }
+
+        if (throttleForce != null)
+        {
+            if (state != null)
+                throttleForce.SetThrottle(state.Throttle);
+
+            throttleForce.GetPropulsionStatus(
+                out _installedPropulsionSources,
+                out _activePropulsionSources);
+        }
+        else
+        {
+            _installedPropulsionSources =
+                installedEngineCount;
+
+            _activePropulsionSources = 0;
+        }
+
+        return true;
+    }
+
     private void FixedUpdate()
     {
         ResolveRefs();
@@ -237,6 +420,19 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
 
     private void InitializeRouteGuidanceIfNeeded()
     {
+        TravelPayload activeTravel =
+            GameState.I != null
+                ? GameState.I.activeTravel
+                : null;
+
+        // Route guidance belongs to an active voyage. A docked boat, or a boat
+        // with only a locked destination, intentionally has no generated route.
+        if (activeTravel == null)
+        {
+            _routeGuidance = null;
+            return;
+        }
+
         if (_routeGuidance != null &&
             _routeGuidance.IsInitialized)
         {
@@ -251,9 +447,14 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
         _routeGuidance =
             new BoatPilotingRouteState();
 
+        int routeSeed =
+            activeTravel.seed != 0
+                ? activeTravel.seed
+                : routePrototypeSeed;
+
         _routeGuidance.Initialize(
             state.NavigationPosition,
-            routePrototypeSeed,
+            routeSeed,
             routePointSpacing,
             routeMaxHeadingDegrees,
             routeProgressCorridor,
@@ -292,7 +493,11 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
             throttleTravelPerSecond *
             dt;
 
-        throttle = Mathf.Clamp(throttle, -1f, 1f);
+        throttle =
+            Mathf.Clamp(
+                throttle,
+                -1f,
+                1f);
 
         float rudder =
             state.RudderDegrees +
@@ -303,7 +508,10 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
         float maxRudderDegrees =
             _handlingProfile.MaxTurnAngle;
 
-        if (maxRudderDegrees <= 0.0001f)
+        // No functional steering contributor means there is physically no
+        // rudder position to command. Clear any stale saved/previous angle.
+        if (!_handlingProfile.HasSteering ||
+            maxRudderDegrees <= 0.0001f)
         {
             rudder = 0f;
         }
@@ -384,16 +592,10 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
             Mathf.Abs(
                 physicalForwardSpeed);
 
-        float maxRudderDegrees =
-            _handlingProfile.MaxTurnAngle;
-
-        float rudderNormalized =
-            maxRudderDegrees > 0.0001f
-                ? Mathf.Clamp(
-                    state.RudderDegrees /
-                    maxRudderDegrees,
-                    -1f,
-                    1f)
+        float rudderAngleAuthority =
+            referenceRudderAngleDegrees > 0.0001f
+                ? state.RudderDegrees /
+                  referenceRudderAngleDegrees
                 : 0f;
 
         float rudderAuthority01 =
@@ -412,7 +614,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
             state.AngularVelocityDegrees;
 
         float angularAcceleration =
-            rudderNormalized *
+            rudderAngleAuthority *
             rudderAngularAcceleration *
             _handlingProfile.TurnEfficiency *
             rudderAuthority01 *

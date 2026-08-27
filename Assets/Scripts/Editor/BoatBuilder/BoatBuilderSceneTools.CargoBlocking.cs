@@ -51,6 +51,9 @@ public static partial class BoatBuilderSceneTools
         if (placed == null || boatRoot == null)
             return true;
 
+        if (IsExternallyServicedHardpoint(placed.transform))
+            return true;
+
         HardpointReservedFootprint footprint =
             placed.GetComponent<HardpointReservedFootprint>() ??
             placed.GetComponentInChildren<HardpointReservedFootprint>(true);
@@ -96,6 +99,9 @@ public static partial class BoatBuilderSceneTools
         if (hardpoint == null)
             return true;
 
+        if (IsExternallyServicedHardpoint(hardpoint.transform))
+            return true;
+
         HardpointReservedFootprint footprint =
             hardpoint.GetComponent<HardpointReservedFootprint>() ??
             hardpoint.GetComponentInChildren<HardpointReservedFootprint>(true);
@@ -136,6 +142,9 @@ public static partial class BoatBuilderSceneTools
             HardpointReservedFootprint footprint = footprints[i];
 
             if (footprint == null || !footprint.EnabledForBuilderBlocking)
+                continue;
+
+            if (IsExternallyServicedHardpoint(footprint.transform))
                 continue;
 
             if (ignoreRoot != null && footprint.transform.IsChildOf(ignoreRoot))
@@ -194,6 +203,26 @@ public static partial class BoatBuilderSceneTools
         }
 
         return false;
+    }
+
+    private static bool IsExternallyServicedHardpoint(Transform source)
+    {
+        if (source == null)
+            return false;
+
+        Hardpoint hardpoint = source.GetComponentInParent<Hardpoint>(true);
+        if (hardpoint == null)
+            hardpoint = source.GetComponentInChildren<Hardpoint>(true);
+
+        if (hardpoint == null)
+            return false;
+
+        HardpointInteractable interactable =
+            hardpoint.GetComponent<HardpointInteractable>() ??
+            hardpoint.GetComponentInChildren<HardpointInteractable>(true);
+
+        return interactable != null &&
+               interactable.ExteriorModule;
     }
 
     private static bool TryGetSecureZoneBlockingBounds(

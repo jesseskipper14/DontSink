@@ -111,6 +111,7 @@ public class BoatBuilderWindow : EditorWindow
 
         _hardpointType = (HardpointType)EditorPrefs.GetInt(Prefs_HardpointType, (int)HardpointType.Engine);
         _hardpointIdPrefix = EditorPrefs.GetString(Prefs_HardpointIdPrefix, "hardpoint");
+        NormalizeKnownHardpointPrefixForType();
         _hardpointAutoCreateMountPoint = EditorPrefs.GetBool(Prefs_HardpointAutoMount, true);
         _hardpointRenameObjectToId = EditorPrefs.GetBool(Prefs_HardpointRenameObject, true);
         _stairAscendRight = EditorPrefs.GetBool(Prefs_StairAscendRight, true);
@@ -626,9 +627,17 @@ public class BoatBuilderWindow : EditorWindow
             EditorGUILayout.Space(8);
             EditorGUILayout.LabelField("Hardpoint Authoring", EditorStyles.boldLabel);
 
+            HardpointType previousHardpointType = _hardpointType;
+
             _hardpointType = (HardpointType)EditorGUILayout.EnumPopup(
                 new GUIContent("Hardpoint Type", "Sets the placed hardpoint's runtime type"),
                 _hardpointType);
+
+            // The prefix is normally the selected hardpoint type. Previously a stale custom
+            // value such as "locker" survived type changes and every newly placed hardpoint
+            // inherited that name family.
+            if (_hardpointType != previousHardpointType)
+                _hardpointIdPrefix = GetDefaultHardpointPrefix(_hardpointType);
 
             _hardpointStartingModuleDefinition = DrawCompatibleModuleDefinitionPopup(
                 "Starting Module",
@@ -812,6 +821,25 @@ public class BoatBuilderWindow : EditorWindow
                 Debug.Log(
                     $"[BoatBuilder] Repair All complete. Floor spans repaired={floorCount}, wall spans repaired={wallCount}.",
                     root);
+            })
+        );
+
+        EditorGUILayout.Space(3);
+
+        EditorGUILayout.LabelField("Helm Connections", EditorStyles.miniBoldLabel);
+        EditorGUILayout.HelpBox(
+            "To wire a pilot station: multi-select ONE Helm hardpoint and ONE Pilot Chair in the Hierarchy, " +
+            "then click 'Link Selected Helm ↔ Chair'. Controller array order determines station capacity priority.",
+            MessageType.Info);
+
+        DrawWrappedActionButtons(
+            new ActionButtonDef("Link Selected Helm ↔ Chair", () =>
+            {
+                BoatBuilderSceneTools.LinkSelectedHelmWithPilotChair();
+            }),
+            new ActionButtonDef("Unlink Selected Chair", () =>
+            {
+                BoatBuilderSceneTools.UnlinkSelectedPilotChairFromHelm();
             })
         );
 
@@ -1117,7 +1145,12 @@ public class BoatBuilderWindow : EditorWindow
             }
         }
 
-        return fallbackType switch
+        return GetDefaultHardpointPrefix(fallbackType);
+    }
+
+    private static string GetDefaultHardpointPrefix(HardpointType type)
+    {
+        return type switch
         {
             HardpointType.Engine => "engine",
             HardpointType.Pump => "pump",
@@ -1131,6 +1164,44 @@ public class BoatBuilderWindow : EditorWindow
             HardpointType.Anchor => "anchor",
             _ => "hardpoint"
         };
+    }
+
+    private void NormalizeKnownHardpointPrefixForType()
+    {
+        string current = string.IsNullOrWhiteSpace(_hardpointIdPrefix)
+            ? "hardpoint"
+            : _hardpointIdPrefix.Trim().ToLowerInvariant();
+
+        string expected = GetDefaultHardpointPrefix(_hardpointType);
+
+        if (current == expected)
+            return;
+
+        // Preserve genuinely custom prefixes, but repair stale prefixes left behind
+        // by switching between standard hardpoint categories. "locker" is included
+        // as a legacy storage prefix because that is exactly the sort of tiny editor
+        // fossil that otherwise survives forever.
+        if (IsKnownHardpointPrefix(current))
+            _hardpointIdPrefix = expected;
+    }
+
+    private static bool IsKnownHardpointPrefix(string prefix)
+    {
+        if (string.IsNullOrWhiteSpace(prefix))
+            return true;
+
+        return prefix == "hardpoint" ||
+               prefix == "engine" ||
+               prefix == "pump" ||
+               prefix == "utility" ||
+               prefix == "storage" ||
+               prefix == "locker" ||
+               prefix == "weapon" ||
+               prefix == "electronics" ||
+               prefix == "helm" ||
+               prefix == "rudder" ||
+               prefix == "keel" ||
+               prefix == "anchor";
     }
 
     private void ApplyShellVisibilityToCurrentRoot()

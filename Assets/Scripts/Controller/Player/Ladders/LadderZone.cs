@@ -4,6 +4,16 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 public sealed class LadderZone : MonoBehaviour, IInteractable, IInteractionPointProvider
 {
+    public enum BoatAccessMode
+    {
+        // If the ladder belongs to a boat, classify it from the BoatBoardedVolume:
+        // climb center inside = interior, outside = exterior.
+        Auto = 0,
+        InteriorOnly = 1,
+        ExteriorOnly = 2,
+        Any = 3
+    }
+
     [Header("Climb")]
     [SerializeField] private float climbSpeed = 3.25f;
     [SerializeField] private float snapToCenterSpeed = 18f;
@@ -25,6 +35,11 @@ public sealed class LadderZone : MonoBehaviour, IInteractable, IInteractionPoint
     [Header("Centering")]
     [SerializeField] private Transform climbCenter;
 
+    [Header("Boat Access")]
+    [Tooltip("Auto classifies a boat ladder by whether its climb center is inside the BoatBoardedVolume. " +
+             "Use InteriorOnly/ExteriorOnly to override unusual ladder geometry.")]
+    [SerializeField] private BoatAccessMode boatAccessMode = BoatAccessMode.Auto;
+
     [Header("Debug")]
     [SerializeField] private bool debugLogs = false;
 
@@ -42,6 +57,7 @@ public sealed class LadderZone : MonoBehaviour, IInteractable, IInteractionPoint
     public Transform TopExitPoint => topExitPoint;
     public Transform BottomExitPoint => bottomExitPoint;
     public Transform ClimbCenter => climbCenter != null ? climbCenter : transform;
+    public BoatAccessMode AccessMode => boatAccessMode;
 
     private void Awake()
     {

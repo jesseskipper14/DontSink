@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -104,6 +105,9 @@ public sealed class PlayerLadderClimber : MonoBehaviour
     [SerializeField, Min(1)] private int climbCastMaxHits = 8;
     [SerializeField] private bool debugClimbBlock = false;
 
+    [Tooltip("While climbing an exterior ladder on a boat from outside, temporarily ignore collisions between the player and that boat's solid colliders.")]
+    [SerializeField] private bool ignoreBoatCollisionsWhileExternallyClimbing = true;
+
     [Header("Hatch Ledge Collision Safety")]
     [SerializeField] private bool ignoreHatchLedgeLayerWhileClimbing = true;
 
@@ -142,6 +146,17 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
     private Collider2D[] _playerColliders;
     private Collider2D[] _hatchLedgeOverlapBuffer;
+
+    private readonly List<IgnoredBoatCollisionPair> _ignoredExternalBoatCollisions = new();
+    private Coroutine _restoreExternalBoatCollisionsRoutine;
+    private Boat _externalClimbBoat;
+    private Rigidbody2D _externalClimbBoatBody;
+
+    private struct IgnoredBoatCollisionPair
+    {
+        public Collider2D PlayerCollider;
+        public Collider2D BoatCollider;
+    }
 
     // Position tracked in ladder-local space while climbing.
     private Vector3 _ladderLocalClimbPosition;
@@ -291,6 +306,7 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
         _activeLadder = ladder;
         BeginIgnoringHatchLedgeLayer();
+        BeginIgnoringExternalBoatCollisionsIfNeeded();
 
         _originalGravityScale = _rb.gravityScale;
 
@@ -340,6 +356,7 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         Log($"End climb on ladder={_activeLadder.name}, keepVelocity={keepVelocity}");
 
         _activeLadder = null;
+        ScheduleRestoreExternalBoatCollisions();
 
         if (disableGravityWhileClimbing)
             _rb.gravityScale = _originalGravityScale;
@@ -483,16 +500,67 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         if (ladder == null)
             return false;
 
-        Boat ladderBoat = ladder.GetComponentInParent<Boat>();
-        if (ladderBoat == null)
-            return true;
-
         PlayerBoardingState boardingState = GetComponent<PlayerBoardingState>();
-        if (boardingState == null)
-            return false;
+        bool isBoarded = boardingState != null && boardingState.IsBoarded;
 
-        return boardingState.IsBoarded &&
-               boardingState.CurrentBoatRoot == ladderBoat.transform;
+        Boat ladderBoat = ResolveBoatForLadder(ladder);
+
+        // World/dock ladders do not belong to the boat the player is currently inside.
+        // While boarded, do not let proximity through the hull make them interactable.
+        if (ladderBoat == null)
+            return !isBoarded;
+
+        LadderZone.BoatAccessMode resolvedMode =
+            ResolveLadderBoatAccessMode(ladder, ladderBoat);
+
+        if (resolvedMode == LadderZone.BoatAccessMode.Any)
+            return !isBoarded ||
+                   boardingState.CurrentBoatRoot == ladderBoat.transform;
+
+        if (resolvedMode == LadderZone.BoatAccessMode.InteriorOnly)
+        {
+            return isBoarded &&
+                   boardingState.CurrentBoatRoot == ladderBoat.transform;
+        }
+
+        // Exterior ladders are service/access geometry used while physically outside.
+        // This deliberately prevents a boarded player from grabbing an exterior ladder
+        // through a wall just because its trigger happens to be close.
+        if (resolvedMode == LadderZone.BoatAccessMode.ExteriorOnly)
+            return !isBoarded;
+
+        return false;
+    }
+
+    private static LadderZone.BoatAccessMode ResolveLadderBoatAccessMode(
+        LadderZone ladder,
+        Boat ladderBoat)
+    {
+        if (ladder == null)
+            return LadderZone.BoatAccessMode.ExteriorOnly;
+
+        if (ladder.AccessMode != LadderZone.BoatAccessMode.Auto)
+            return ladder.AccessMode;
+
+        if (ladderBoat == null)
+            return LadderZone.BoatAccessMode.ExteriorOnly;
+
+        BoatBoardedVolume boardedVolume =
+            ladderBoat.GetComponentInChildren<BoatBoardedVolume>(true);
+
+        if (boardedVolume == null)
+        {
+            // Preserve the old safe assumption when a boat has no authored volume.
+            return LadderZone.BoatAccessMode.InteriorOnly;
+        }
+
+        bool inside =
+            boardedVolume.ContainsWorldPoint(
+                ladder.ClimbCenter.position);
+
+        return inside
+            ? LadderZone.BoatAccessMode.InteriorOnly
+            : LadderZone.BoatAccessMode.ExteriorOnly;
     }
 
     private void HandleAutoExit(float vertical, float horizontal)
@@ -552,8 +620,17 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             ? climbBlockMask
             : motor != null ? motor.groundMask : ~0;
 
+        // The climb safety cast must respect the player's actual Rigidbody2D
+        // collision policy. For example, while unboarded PlayerBoardingState
+        // excludes Hull/HatchLedge, so those layers must not independently
+        // block ladder-local movement just because climbBlockMask contains them.
+        mask.value &= ~_rb.excludeLayers.value;
+
         if (ignoreHatchLedgeLayerWhileClimbing && _hatchLedgeBit != 0)
             mask &= ~_hatchLedgeBit;
+
+        if (mask.value == 0)
+            return false;
 
         ContactFilter2D filter = new ContactFilter2D
         {
@@ -594,6 +671,9 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             if (ladder != null && ReferenceEquals(ladder, _activeLadder))
                 continue;
 
+            if (ShouldIgnoreBoatColliderForExternalClimb(hit.collider))
+                continue;
+
             if (debugClimbBlock)
             {
                 Debug.Log(
@@ -606,6 +686,293 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void BeginIgnoringExternalBoatCollisionsIfNeeded()
+    {
+        if (!ignoreBoatCollisionsWhileExternallyClimbing ||
+            _activeLadder == null)
+        {
+            return;
+        }
+
+        Boat ladderBoat =
+            ResolveBoatForLadder(_activeLadder);
+
+        if (ladderBoat == null)
+            return;
+
+        PlayerBoardingState boardingState =
+            GetComponent<PlayerBoardingState>();
+
+        if (boardingState != null && boardingState.IsBoarded)
+            return;
+
+        LadderZone.BoatAccessMode resolvedMode =
+            ResolveLadderBoatAccessMode(
+                _activeLadder,
+                ladderBoat);
+
+        if (resolvedMode != LadderZone.BoatAccessMode.ExteriorOnly)
+            return;
+
+        if (_restoreExternalBoatCollisionsRoutine != null)
+        {
+            StopCoroutine(_restoreExternalBoatCollisionsRoutine);
+            _restoreExternalBoatCollisionsRoutine = null;
+        }
+
+        RestoreExternalBoatCollisionsImmediately();
+
+        _externalClimbBoat = ladderBoat;
+        _externalClimbBoatBody = ResolveBoatRigidbody(ladderBoat);
+
+        if (_playerColliders == null || _playerColliders.Length == 0)
+            _playerColliders = GetComponentsInChildren<Collider2D>(true);
+
+        List<Collider2D> boatColliders = CollectExternalClimbBoatColliders(
+            ladderBoat,
+            _externalClimbBoatBody);
+
+        for (int p = 0; p < _playerColliders.Length; p++)
+        {
+            Collider2D playerCollider = _playerColliders[p];
+            if (playerCollider == null ||
+                !playerCollider.enabled ||
+                playerCollider.isTrigger)
+            {
+                continue;
+            }
+
+            for (int b = 0; b < boatColliders.Count; b++)
+            {
+                Collider2D boatCollider = boatColliders[b];
+                if (boatCollider == null ||
+                    !boatCollider.enabled ||
+                    boatCollider.isTrigger)
+                {
+                    continue;
+                }
+
+                if (boatCollider.attachedRigidbody == _rb)
+                    continue;
+
+                if (Physics2D.GetIgnoreCollision(playerCollider, boatCollider))
+                    continue;
+
+                Physics2D.IgnoreCollision(
+                    playerCollider,
+                    boatCollider,
+                    true);
+
+                _ignoredExternalBoatCollisions.Add(
+                    new IgnoredBoatCollisionPair
+                    {
+                        PlayerCollider = playerCollider,
+                        BoatCollider = boatCollider
+                    });
+            }
+        }
+
+        Log(
+            $"Ignoring {_ignoredExternalBoatCollisions.Count} player/boat collider pairs " +
+            $"while externally climbing boat '{ladderBoat.name}'. " +
+            $"boatBody='{(_externalClimbBoatBody != null ? _externalClimbBoatBody.name : "NULL")}', " +
+            $"candidateBoatColliders={boatColliders.Count}.");
+
+        if (_ignoredExternalBoatCollisions.Count == 0)
+        {
+            Debug.LogWarning(
+                $"[PlayerLadderClimber:{name}] Exterior ladder climb resolved boat '{ladderBoat.name}', " +
+                "but zero player/boat collider pairs were ignored. If climbing is still blocked, " +
+                "enable Debug Climb Block and inspect the reported blocker.",
+                this);
+        }
+
+        Physics2D.SyncTransforms();
+    }
+
+    private bool ShouldIgnoreBoatColliderForExternalClimb(Collider2D collider)
+    {
+        if (collider == null ||
+            _externalClimbBoat == null ||
+            _activeLadder == null)
+        {
+            return false;
+        }
+
+        // Primary authority: all normal boat structure should be attached to the
+        // boat's single shared Rigidbody2D, regardless of child hierarchy.
+        if (_externalClimbBoatBody != null &&
+            collider.attachedRigidbody == _externalClimbBoatBody)
+        {
+            return true;
+        }
+
+        // Fallbacks protect authored/generated colliders that are under the boat
+        // hierarchy but do not currently resolve an attached Rigidbody2D.
+        if (collider.transform == _externalClimbBoat.transform ||
+            collider.transform.IsChildOf(_externalClimbBoat.transform))
+        {
+            return true;
+        }
+
+        Boat hitBoat = collider.GetComponentInParent<Boat>();
+        return hitBoat == _externalClimbBoat;
+    }
+
+    private static Boat ResolveBoatForLadder(LadderZone ladder)
+    {
+        if (ladder == null)
+            return null;
+
+        Boat boat = ladder.GetComponentInParent<Boat>();
+        if (boat != null)
+            return boat;
+
+        // Fallback through the ladder collider's attached body. This catches
+        // generated/atypical hierarchy layouts while still requiring a real Boat.
+        Collider2D[] ladderColliders =
+            ladder.GetComponentsInChildren<Collider2D>(true);
+
+        for (int i = 0; i < ladderColliders.Length; i++)
+        {
+            Collider2D ladderCollider = ladderColliders[i];
+            if (ladderCollider == null || ladderCollider.attachedRigidbody == null)
+                continue;
+
+            Rigidbody2D attachedBody = ladderCollider.attachedRigidbody;
+
+            boat =
+                attachedBody.GetComponent<Boat>() ??
+                attachedBody.GetComponentInParent<Boat>();
+
+            if (boat != null)
+                return boat;
+        }
+
+        return null;
+    }
+
+    private static Rigidbody2D ResolveBoatRigidbody(Boat boat)
+    {
+        if (boat == null)
+            return null;
+
+        Rigidbody2D body = boat.GetComponent<Rigidbody2D>();
+        if (body != null)
+            return body;
+
+        return boat.GetComponentInParent<Rigidbody2D>();
+    }
+
+    private static List<Collider2D> CollectExternalClimbBoatColliders(
+        Boat boat,
+        Rigidbody2D boatBody)
+    {
+        List<Collider2D> result = new();
+
+        if (boatBody != null)
+        {
+            // This is the authoritative set for the one-Rigidbody boat architecture.
+            boatBody.GetAttachedColliders(result);
+        }
+
+        if (boat != null)
+        {
+            Collider2D[] hierarchyColliders =
+                boat.GetComponentsInChildren<Collider2D>(true);
+
+            for (int i = 0; i < hierarchyColliders.Length; i++)
+            {
+                Collider2D collider = hierarchyColliders[i];
+                if (collider == null || result.Contains(collider))
+                    continue;
+
+                result.Add(collider);
+            }
+        }
+
+        return result;
+    }
+
+    private void ScheduleRestoreExternalBoatCollisions()
+    {
+        if (_ignoredExternalBoatCollisions.Count == 0)
+        {
+            _externalClimbBoat = null;
+            _externalClimbBoatBody = null;
+            return;
+        }
+
+        if (_restoreExternalBoatCollisionsRoutine != null)
+            StopCoroutine(_restoreExternalBoatCollisionsRoutine);
+
+        _restoreExternalBoatCollisionsRoutine =
+            StartCoroutine(RestoreExternalBoatCollisionsWhenSafe());
+    }
+
+    private IEnumerator RestoreExternalBoatCollisionsWhenSafe()
+    {
+        // Give an authored ladder exit point one physics step to move the player clear.
+        yield return new WaitForFixedUpdate();
+
+        while (AnyIgnoredBoatPairStillOverlapping())
+            yield return new WaitForFixedUpdate();
+
+        RestoreExternalBoatCollisionsImmediately();
+        _restoreExternalBoatCollisionsRoutine = null;
+    }
+
+    private bool AnyIgnoredBoatPairStillOverlapping()
+    {
+        for (int i = 0; i < _ignoredExternalBoatCollisions.Count; i++)
+        {
+            IgnoredBoatCollisionPair pair =
+                _ignoredExternalBoatCollisions[i];
+
+            if (pair.PlayerCollider == null ||
+                pair.BoatCollider == null ||
+                !pair.PlayerCollider.enabled ||
+                !pair.BoatCollider.enabled)
+            {
+                continue;
+            }
+
+            ColliderDistance2D distance =
+                Physics2D.Distance(
+                    pair.PlayerCollider,
+                    pair.BoatCollider);
+
+            if (distance.isOverlapped)
+                return true;
+        }
+
+        return false;
+    }
+
+    private void RestoreExternalBoatCollisionsImmediately()
+    {
+        for (int i = 0; i < _ignoredExternalBoatCollisions.Count; i++)
+        {
+            IgnoredBoatCollisionPair pair =
+                _ignoredExternalBoatCollisions[i];
+
+            if (pair.PlayerCollider == null ||
+                pair.BoatCollider == null)
+            {
+                continue;
+            }
+
+            Physics2D.IgnoreCollision(
+                pair.PlayerCollider,
+                pair.BoatCollider,
+                false);
+        }
+
+        _ignoredExternalBoatCollisions.Clear();
+        _externalClimbBoat = null;
+        _externalClimbBoatBody = null;
     }
 
     private void AlignRotationToLadder(Transform ladderFrame)
@@ -859,6 +1226,14 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
     private void OnDisable()
     {
+        if (_restoreExternalBoatCollisionsRoutine != null)
+        {
+            StopCoroutine(_restoreExternalBoatCollisionsRoutine);
+            _restoreExternalBoatCollisionsRoutine = null;
+        }
+
+        RestoreExternalBoatCollisionsImmediately();
+
         if (_restoreHatchLedgeLayerRoutine != null)
         {
             StopCoroutine(_restoreHatchLedgeLayerRoutine);

@@ -76,7 +76,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -2135464765
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 200
   m_Sprite: {fileID: -3941940476993573489, guid: 9913a3ec66199ed4581af732051dc174, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3ef2da17a1a7684ba0777d031277d5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  priority: 60
+  priority: 30
   maxUseDistance: 3
   boatRoot: {fileID: 0}
   boardPoint: {fileID: 6794253249594855704}

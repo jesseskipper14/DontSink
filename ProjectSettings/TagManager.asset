@@ -24,7 +24,7 @@ TagManager:
   - MapNodes
   - WorldItem
   - Agent
-  - 
+  - GhostCollision
   - Ground
   - 
   - 

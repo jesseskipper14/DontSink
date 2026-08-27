@@ -112,10 +112,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1870559867
-  m_SortingLayer: 1
-  m_SortingOrder: -50
-  m_Sprite: {fileID: 3818041681052141067, guid: d28d6d3699e975d44aa6703b06e820aa, type: 3}
+  m_SortingLayerID: -2135464765
+  m_SortingLayer: 7
+  m_SortingOrder: 105
+  m_Sprite: {fileID: -3820247418873712436, guid: 2d75610d4b2bfdb438a7d6cee9c96868, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -143,6 +143,7 @@ MonoBehaviour:
   additionalAcceptedTypes: 
   mountPoint: {fileID: 9141116475110502253}
   moduleAnchor: {fileID: 0}
+  placementMarkerRenderer: {fileID: 0}
   controllers: []
   startingModuleDefinition: {fileID: 0}
   installStartingModuleOnAwake: 1
@@ -164,8 +165,10 @@ MonoBehaviour:
   interactionPriority: 20
   pickupPriority: 20
   maxDistance: 2
+  hideHoverLabelWhenNotActionable: 1
   requireMatchingBoatBoardingContext: 1
   allowAccessWhenNotPartOfBoat: 1
+  exteriorModule: 0
   pickupMode: 1
   pickupHoldDuration: 2
 --- !u!58 &2625696029987183493
@@ -234,12 +237,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   snapOnBuilderPlace: 1
   anchor: 0
+  targetEdge: 0
   boundsSource: 0
   anchorRenderers: []
   anchorColliders: []
   yOffsetFromSurfaceTop: 0
+  xOffsetFromSurfaceEdge: 0
   maxVerticalSnapDistance: 5
+  maxHorizontalSnapDistance: 1.5
   horizontalInset: 0.03
+  verticalInset: 0.03
   surfaceLayerMask:
     serializedVersion: 2
     m_Bits: 8

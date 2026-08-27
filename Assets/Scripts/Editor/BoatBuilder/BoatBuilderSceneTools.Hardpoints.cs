@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -229,8 +229,11 @@ public static partial class BoatBuilderSceneTools
 
         for (int i = 0; i < accepted.Length; i++)
         {
-            if (accepted[i] == HardpointType.Weapon)
+            if (accepted[i] == HardpointType.Weapon ||
+                accepted[i] == HardpointType.Helm)
+            {
                 return true;
+            }
         }
 
         return false;
@@ -485,6 +488,284 @@ public static partial class BoatBuilderSceneTools
         Debug.Log($"[BoatBuilder] Linked controller '{station.name}' to hardpoint '{hardpoint.HardpointId}'.", hardpoint);
     }
 
+    private static void EnsurePilotStationIdForHelmLink(
+        PilotChairInteractable chair)
+    {
+        if (chair == null ||
+            !string.IsNullOrWhiteSpace(
+                chair.PilotStationId))
+        {
+            return;
+        }
+
+        Boat boat =
+            chair.GetComponentInParent<Boat>();
+
+        Transform root =
+            boat != null
+                ? boat.transform
+                : chair.transform.root;
+
+        HashSet<string> used =
+            new HashSet<string>(
+                StringComparer.Ordinal);
+
+        if (root != null)
+        {
+            PilotChairInteractable[] chairs =
+                root.GetComponentsInChildren<PilotChairInteractable>(
+                    true);
+
+            for (int i = 0;
+                 i < chairs.Length;
+                 i++)
+            {
+                PilotChairInteractable existing =
+                    chairs[i];
+
+                if (existing == null ||
+                    string.IsNullOrWhiteSpace(
+                        existing.PilotStationId))
+                {
+                    continue;
+                }
+
+                used.Add(
+                    existing.PilotStationId.Trim());
+            }
+        }
+
+        int index =
+            1;
+
+        string candidate;
+
+        do
+        {
+            candidate =
+                $"pilot_station_{index:00}";
+
+            index++;
+        }
+        while (used.Contains(candidate));
+
+        Undo.RecordObject(
+            chair,
+            "Assign Pilot Station Stable ID");
+
+        chair.EditorSetPilotStationId(
+            candidate);
+
+        EditorUtility.SetDirty(
+            chair);
+
+        Debug.Log(
+            $"[BoatBuilder] Assigned Pilot Station ID '{candidate}' to '{chair.name}'.",
+            chair);
+    }
+
+    public static void LinkSelectedHelmWithPilotChair()
+    {
+        Hardpoint hardpoint = null;
+        PilotChairInteractable chair = null;
+
+        UnityEngine.Object[] selected = Selection.objects;
+
+        if (selected == null || selected.Length == 0)
+        {
+            Debug.LogWarning(
+                "[BoatBuilder] Select both a Helm Hardpoint and a Pilot Chair, then click Link Selected Helm ↔ Chair.");
+            return;
+        }
+
+        for (int i = 0; i < selected.Length; i++)
+        {
+            if (selected[i] is GameObject go)
+            {
+                if (hardpoint == null)
+                    hardpoint = go.GetComponentInParent<Hardpoint>();
+
+                if (chair == null)
+                    chair = go.GetComponentInParent<PilotChairInteractable>();
+            }
+            else if (selected[i] is Component c)
+            {
+                if (hardpoint == null)
+                    hardpoint = c.GetComponentInParent<Hardpoint>();
+
+                if (chair == null)
+                    chair = c.GetComponentInParent<PilotChairInteractable>();
+            }
+        }
+
+        if (hardpoint == null || chair == null)
+        {
+            Debug.LogWarning(
+                "[BoatBuilder] Select both a Helm Hardpoint and a Pilot Chair, then click Link Selected Helm ↔ Chair.");
+            return;
+        }
+
+        bool acceptsHelm = false;
+        HardpointType[] accepted = hardpoint.GetAcceptedTypes();
+
+        for (int i = 0; i < accepted.Length; i++)
+        {
+            if (accepted[i] == HardpointType.Helm)
+            {
+                acceptsHelm = true;
+                break;
+            }
+        }
+
+        if (!acceptsHelm)
+        {
+            Debug.LogWarning(
+                $"[BoatBuilder] Hardpoint '{hardpoint.HardpointId}' does not accept Helm modules.",
+                hardpoint);
+            return;
+        }
+
+        Boat hardpointBoat = hardpoint.GetComponentInParent<Boat>();
+        Boat chairBoat = chair.GetComponentInParent<Boat>();
+
+        if (hardpointBoat != null &&
+            chairBoat != null &&
+            hardpointBoat != chairBoat)
+        {
+            Debug.LogWarning(
+                "[BoatBuilder] Cannot link a Pilot Chair to a Helm Hardpoint on a different boat.",
+                chair);
+            return;
+        }
+
+        EnsurePilotStationIdForHelmLink(
+            chair);
+
+        Hardpoint previousHelm =
+            chair.LinkedHelmHardpoint;
+
+        Undo.RecordObject(
+            hardpoint,
+            "Link Pilot Chair To Helm Hardpoint");
+
+        Undo.RecordObject(
+            chair,
+            "Link Pilot Chair To Helm Hardpoint");
+
+        if (previousHelm != null &&
+            previousHelm != hardpoint)
+        {
+            Undo.RecordObject(
+                previousHelm,
+                "Link Pilot Chair To Helm Hardpoint");
+        }
+
+        if (!chair.TryLinkToHelm(hardpoint))
+        {
+            Debug.LogWarning(
+                $"[BoatBuilder] Failed to link pilot chair '{chair.name}' to helm hardpoint " +
+                $"'{hardpoint.HardpointId}'.",
+                chair);
+            return;
+        }
+
+        EditorUtility.SetDirty(hardpoint);
+        EditorUtility.SetDirty(chair);
+
+        if (previousHelm != null)
+            EditorUtility.SetDirty(previousHelm);
+
+        EditorSceneManager.MarkSceneDirty(
+            EditorSceneManager.GetActiveScene());
+
+        string capacityText = "no installed HelmModule";
+
+        if (hardpoint.TryGetInstalledModuleComponent(
+                out HelmModule helm))
+        {
+            capacityText =
+                $"capacity {helm.StationConnectionCapacity}";
+        }
+
+        Debug.Log(
+            $"[BoatBuilder] Linked pilot chair '{chair.name}' to helm hardpoint " +
+            $"'{hardpoint.HardpointId}' ({capacityText}).",
+            hardpoint);
+
+        SceneView.RepaintAll();
+    }
+
+    public static void UnlinkSelectedPilotChairFromHelm()
+    {
+        PilotChairInteractable chair = null;
+
+        UnityEngine.Object[] selected =
+            Selection.objects;
+
+        if (selected != null)
+        {
+            for (int i = 0; i < selected.Length; i++)
+            {
+                if (selected[i] is GameObject go)
+                    chair = go.GetComponentInParent<PilotChairInteractable>();
+                else if (selected[i] is Component c)
+                    chair = c.GetComponentInParent<PilotChairInteractable>();
+
+                if (chair != null)
+                    break;
+            }
+        }
+
+        if (chair == null)
+        {
+            Debug.LogWarning(
+                "[BoatBuilder] Select a Pilot Chair to unlink it from its Helm.");
+            return;
+        }
+
+        Hardpoint previousHelm =
+            chair.LinkedHelmHardpoint;
+
+        if (previousHelm == null)
+        {
+            Debug.Log(
+                $"[BoatBuilder] Pilot chair '{chair.name}' is already unlinked.",
+                chair);
+            return;
+        }
+
+        Undo.RecordObject(
+            chair,
+            "Unlink Pilot Chair From Helm");
+
+        Undo.RecordObject(
+            previousHelm,
+            "Unlink Pilot Chair From Helm");
+
+        string oldId =
+            previousHelm.HardpointId;
+
+        if (!chair.UnlinkHelm())
+        {
+            Debug.LogWarning(
+                $"[BoatBuilder] Failed to unlink pilot chair '{chair.name}' from helm hardpoint '{oldId}'.",
+                chair);
+            return;
+        }
+
+        EditorUtility.SetDirty(chair);
+        EditorUtility.SetDirty(previousHelm);
+
+        EditorSceneManager.MarkSceneDirty(
+            EditorSceneManager.GetActiveScene());
+
+        Debug.Log(
+            $"[BoatBuilder] Unlinked pilot chair '{chair.name}' from helm hardpoint '{oldId}'.",
+            chair);
+
+        SceneView.RepaintAll();
+    }
+
     public static void ApplyStartingModuleToSelectedHardpoints()
     {
         Hardpoint[] hardpoints = GetSelectedHardpointsIncludingChildren();
@@ -546,16 +827,19 @@ public static partial class BoatBuilderSceneTools
         {
             Hardpoint hp = null;
             TurretControlStation station = null;
+            PilotChairInteractable pilotChair = null;
 
             if (selected[i] is GameObject go)
             {
                 hp = go.GetComponentInParent<Hardpoint>();
                 station = go.GetComponentInParent<TurretControlStation>();
+                pilotChair = go.GetComponentInParent<PilotChairInteractable>();
             }
             else if (selected[i] is Component c)
             {
                 hp = c.GetComponentInParent<Hardpoint>();
                 station = c.GetComponentInParent<TurretControlStation>();
+                pilotChair = c.GetComponentInParent<PilotChairInteractable>();
             }
 
             if (hp != null)
@@ -563,6 +847,9 @@ public static partial class BoatBuilderSceneTools
 
             if (station != null)
                 DrawControllerLinkForStation(station);
+
+            if (pilotChair != null)
+                DrawControllerLinkForPilotChair(pilotChair);
         }
     }
 
@@ -576,7 +863,13 @@ public static partial class BoatBuilderSceneTools
         for (int i = 0; i < controllers.Count; i++)
         {
             if (controllers[i] is TurretControlStation station)
+            {
                 DrawHardpointControllerLine(hardpoint, station);
+                continue;
+            }
+
+            if (controllers[i] is PilotChairInteractable pilotChair)
+                DrawHelmControllerLine(hardpoint, pilotChair);
         }
     }
 
@@ -586,6 +879,92 @@ public static partial class BoatBuilderSceneTools
             return;
 
         DrawHardpointControllerLine(station.LinkedHardpoint, station);
+    }
+
+    private static void DrawControllerLinkForPilotChair(
+        PilotChairInteractable chair)
+    {
+        if (chair == null ||
+            chair.LinkedHelmHardpoint == null)
+        {
+            return;
+        }
+
+        DrawHelmControllerLine(
+            chair.LinkedHelmHardpoint,
+            chair);
+    }
+
+    private static void DrawHelmControllerLine(
+        Hardpoint hardpoint,
+        PilotChairInteractable chair)
+    {
+        if (hardpoint == null || chair == null)
+            return;
+
+        Transform hardpointAnchor =
+            hardpoint.ModuleAnchor != null
+                ? hardpoint.ModuleAnchor
+                : hardpoint.MountPoint != null
+                    ? hardpoint.MountPoint
+                    : hardpoint.transform;
+
+        Transform chairAnchor =
+            chair.GetPromptAnchor();
+
+        if (chairAnchor == null)
+            chairAnchor = chair.transform;
+
+        Vector3 a =
+            hardpointAnchor.position;
+
+        Vector3 b =
+            chairAnchor.position;
+
+        Color oldColor =
+            Handles.color;
+
+        Handles.color =
+            new Color(
+                0.3f,
+                1f,
+                0.55f,
+                0.95f);
+
+        Handles.DrawAAPolyLine(
+            4f,
+            a,
+            b);
+
+        Handles.color =
+            new Color(
+                0.3f,
+                1f,
+                0.55f,
+                0.35f);
+
+        Handles.DrawSolidDisc(
+            a,
+            Vector3.forward,
+            0.08f);
+
+        Handles.DrawSolidDisc(
+            b,
+            Vector3.forward,
+            0.08f);
+
+        Handles.color =
+            oldColor;
+
+        Vector3 labelPos =
+            Vector3.Lerp(
+                a,
+                b,
+                0.5f);
+
+        Handles.Label(
+            labelPos,
+            "Helm Link");
     }
 
     private static void DrawHardpointControllerLine(Hardpoint hardpoint, TurretControlStation station)

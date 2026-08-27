@@ -10,6 +10,7 @@ public class LocalInteractionIntentSource : MonoBehaviour, IInteractionIntentSou
     [SerializeField] private KeyCode pickupKey = KeyCode.F;
     [SerializeField] private KeyCode toggleKey = KeyCode.T;
     [SerializeField] private KeyCode unsecureKey = KeyCode.X;
+    [SerializeField] private KeyCode linkKey = KeyCode.L;
 
     [Header("Mouse Interact")]
     [SerializeField] private bool enableDoubleClickInteract = true;
@@ -77,6 +78,7 @@ public class LocalInteractionIntentSource : MonoBehaviour, IInteractionIntentSou
 
             TogglePressed = Input.GetKeyDown(toggleKey),
             UnsecurePressed = Input.GetKeyDown(unsecureKey),
+            LinkPressed = Input.GetKeyDown(linkKey),
 
             AimWorld = aimWorld,
             HasAimWorld = hasAimWorld

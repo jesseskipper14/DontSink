@@ -76,7 +76,6 @@ GameObject:
   - component: {fileID: 9203517043623545370}
   - component: {fileID: 2625696029987183493}
   - component: {fileID: -1727379228223738854}
-  - component: {fileID: -2669414983559856104}
   m_Layer: 3
   m_Name: HardpointHelm
   m_TagString: Untagged
@@ -143,10 +142,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1870559867
-  m_SortingLayer: 1
-  m_SortingOrder: -50
-  m_Sprite: {fileID: 3818041681052141067, guid: d28d6d3699e975d44aa6703b06e820aa, type: 3}
+  m_SortingLayerID: -2135464765
+  m_SortingLayer: 7
+  m_SortingOrder: 105
+  m_Sprite: {fileID: -3820247418873712436, guid: 2d75610d4b2bfdb438a7d6cee9c96868, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -174,6 +173,7 @@ MonoBehaviour:
   additionalAcceptedTypes: 
   mountPoint: {fileID: 9141116475110502253}
   moduleAnchor: {fileID: 0}
+  placementMarkerRenderer: {fileID: 0}
   controllers: []
   startingModuleDefinition: {fileID: 0}
   installStartingModuleOnAwake: 1
@@ -195,8 +195,10 @@ MonoBehaviour:
   interactionPriority: 20
   pickupPriority: 20
   maxDistance: 2
+  hideHoverLabelWhenNotActionable: 1
   requireMatchingBoatBoardingContext: 1
   allowAccessWhenNotPartOfBoat: 1
+  exteriorModule: 0
   pickupMode: 1
   pickupHoldDuration: 2
 --- !u!58 &2625696029987183493
@@ -248,35 +250,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enabledForBuilderBlocking: 1
-  size: {x: 3, y: 3}
-  localOffset: {x: 0, y: 1}
+  size: {x: 2, y: 2}
+  localOffset: {x: 0, y: 0}
   drawGizmo: 1
---- !u!114 &-2669414983559856104
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3363453043375993549}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d2ed2a1414d7da4c9aa64f7537e64a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  snapOnBuilderPlace: 1
-  anchor: 0
-  boundsSource: 0
-  anchorRenderers: []
-  anchorColliders: []
-  yOffsetFromSurfaceTop: 0
-  maxVerticalSnapDistance: 5
-  horizontalInset: 0.03
-  surfaceLayerMask:
-    serializedVersion: 2
-    m_Bits: 8
-  includeTriggerSurfaces: 0
-  requireBoatRootChild: 1
-  verboseLogging: 0
 --- !u!1 &6787353940955455982
 GameObject:
   m_ObjectHideFlags: 0

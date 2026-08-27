@@ -24,6 +24,10 @@ public sealed class AgentInteractable :
     [SerializeField] private string fallbackVerb = "Talk";
     [SerializeField] private bool useAgentDisplayNameAsLabel = true;
 
+    [Header("Boarding Context")]
+    [Tooltip("If true, world/NPC interaction must match the player's boarding context. Unboarded agents cannot be talked to from inside a boat; agents parented under a Boat require the player to be boarded on that same boat.")]
+    [SerializeField] private bool requireMatchingBoatBoardingContext = true;
+
     public int InteractionPriority => priority;
 
     private void Reset()
@@ -53,6 +57,9 @@ public sealed class AgentInteractable :
                 return false;
         }
 
+        if (!PassesBoardingContext(context))
+            return false;
+
         return agent.CanInteract(context);
     }
 
@@ -61,7 +68,80 @@ public sealed class AgentInteractable :
         if (agent == null)
             return;
 
+        if (!PassesBoardingContext(context))
+            return;
+
         agent.TryInteract(context);
+    }
+
+    private bool PassesBoardingContext(
+        in InteractContext context)
+    {
+        if (!requireMatchingBoatBoardingContext)
+            return true;
+
+        PlayerBoardingState boarding =
+            FindBoardingState(context);
+
+        // Preserve non-player/future callers that do not carry player boarding state.
+        if (boarding == null)
+            return true;
+
+        Boat agentBoat =
+            GetComponentInParent<Boat>();
+
+        if (agentBoat == null &&
+            agent != null)
+        {
+            agentBoat =
+                agent.GetComponentInParent<Boat>();
+        }
+
+        if (agentBoat == null)
+        {
+            // World/dock NPC. A boarded player is in a different interaction
+            // context even if the cursor and distance happen to overlap.
+            return !boarding.IsBoarded;
+        }
+
+        // Boat-owned NPC. Require the player to be aboard that same boat.
+        return boarding.IsBoarded &&
+               boarding.CurrentBoatRoot ==
+               agentBoat.transform;
+    }
+
+    private static PlayerBoardingState FindBoardingState(
+        in InteractContext context)
+    {
+        if (context.InteractorGO != null)
+        {
+            PlayerBoardingState boarding =
+                context.InteractorGO
+                    .GetComponentInParent<PlayerBoardingState>();
+
+            if (boarding != null)
+                return boarding;
+
+            boarding =
+                context.InteractorGO
+                    .GetComponentInChildren<PlayerBoardingState>(
+                        true);
+
+            if (boarding != null)
+                return boarding;
+        }
+
+        if (context.InteractorTransform != null)
+        {
+            PlayerBoardingState boarding =
+                context.InteractorTransform
+                    .GetComponentInParent<PlayerBoardingState>();
+
+            if (boarding != null)
+                return boarding;
+        }
+
+        return null;
     }
 
     public string GetPromptVerb(in InteractContext context)

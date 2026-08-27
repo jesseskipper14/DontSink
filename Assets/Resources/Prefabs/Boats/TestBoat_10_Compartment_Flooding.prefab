@@ -161,6 +161,7 @@ MonoBehaviour:
   hullLayerName: Hull
   groundLayerName: Ground
   worldLedgeLayerName: WorldLedge
+  ghostCollisionLayerName: GhostCollision
   verboseLogging: 0
 --- !u!114 &7045026607427306955
 MonoBehaviour:
@@ -2046,6 +2047,7 @@ GameObject:
   - component: {fileID: 8145549145166330489}
   - component: {fileID: 9128270058636621062}
   - component: {fileID: 1557482454930770226}
+  - component: {fileID: 1614638978257213062}
   - component: {fileID: 8729887695823119932}
   - component: {fileID: 4730458558129074977}
   - component: {fileID: 1315059988575644325}
@@ -2205,6 +2207,22 @@ MonoBehaviour:
   restoreByFractionWhenMaxAreaChanged: 1
   maxAreaMismatchTolerance: 0.001
   verboseLogging: 0
+--- !u!114 &1614638978257213062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928689026320414970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4fac659eba60524692f95707a7cf928, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boat: {fileID: 5943007106159419301}
+  currentProfile:
+    maxTurnAngle: 0
+    turnEfficiency: 0
 --- !u!114 &8729887695823119932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2297,6 +2315,7 @@ MonoBehaviour:
   handlingAggregator: {fileID: 0}
   sceneForwardAxis: {x: 1, y: 0}
   throttleTravelPerSecond: 0.45
+  referenceRudderAngleDegrees: 35
   rudderTravelDegreesPerSecond: 55
   rudderAngularAcceleration: 34
   angularWaterDrag: 1.9

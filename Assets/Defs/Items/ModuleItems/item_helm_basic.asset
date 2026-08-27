@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
+  m_Name: item_helm_basic
+  m_EditorClassIdentifier: 
+  itemId: item_helm_basic
+  displayName: Basic Helm
+  icon: {fileID: -8920938291487533384, guid: 4e41c51ae4dd8c64e8dd0a145fb9382c, type: 3}
+  itemCategories: 2048
+  toolCapabilities: []
+  consumesContainedChargesWhileUsed: 0
+  chargeSourceCategories: 1024
+  chargeUsePerSecond: 0
+  minimumChargeToUse: 1
+  maxStack: 1
+  hasCharges: 0
+  maxCharges: 1
+  stowableInInventory: 1
+  droppable: 1
+  tradable: 1
+  basePrice: 100
+  canBeSoldByItemVendors: 0
+  canBeBoughtByItemVendors: 0
+  defaultVendorBuyMultiplier: 0.25
+  vendorAvailability:
+    useNodeRestrictions: 0
+    allowedNodeArchetypes: []
+    blockedNodeArchetypes: []
+    minProsperity: 0
+    minTradeRating: 0
+    minSecurity: 0
+    minStability: 0
+  disallowedParentSlots: 040000000500000006000000070000000800000009000000
+  preferredDisplacedDestination: 1
+  equipSlot: 1
+  occupiedEquipSlots: 
+  wearableVisualSprite: {fileID: 0}
+  equippedBuffs: []
+  providesExternalAir: 0
+  externalAirSupplyPerSecond: 0
+  externalAirChargeUsePerSecond: 0
+  externalAirMaxAirBonus: 0
+  isContainer: 0
+  containerSlotCount: 1
+  containerColumnCount: 1
+  allowedContainerCategories: 0
+  containerTier: 0
+  pickupMode: 1
+  pickupHoldDuration: 3
+  isModule: 1
+  moduleDefinition: {fileID: 11400000, guid: c97bb906375997f4085a093b5dc02cfa, type: 2}
+  soldByBoatVendors: 1
+  worldPrefab: {fileID: 4852340979861053125, guid: 57fe81467d8a41b4eb1796ed5e5312f7, type: 3}

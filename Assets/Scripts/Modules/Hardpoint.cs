@@ -19,6 +19,10 @@ public sealed class Hardpoint : MonoBehaviour
     [Tooltip("Anchor point used to align installed module visuals. If null, MountPoint is used.")]
     [SerializeField] private Transform moduleAnchor;
 
+    [Header("Placement Marker")]
+    [Tooltip("Contextual 'a module can mount here' sprite. This should be the SpriteRenderer directly on the Hardpoint object, not an installed-module renderer or permanent mounting-rail art.")]
+    [SerializeField] private SpriteRenderer placementMarkerRenderer;
+
     [Header("Controllers")]
     [Tooltip("Optional controller components that can operate the installed module. Priority is array order.")]
     [SerializeField] private MonoBehaviour[] controllers;
@@ -39,11 +43,29 @@ public sealed class Hardpoint : MonoBehaviour
     public InstalledModule InstalledModule => installedModule;
     public bool HasInstalledModule => installedModule != null;
 
+    public SpriteRenderer PlacementMarkerRenderer
+    {
+        get
+        {
+            ResolvePlacementMarkerRenderer();
+            return placementMarkerRenderer;
+        }
+    }
+
+    public event System.Action<Hardpoint> StateChanged;
+
     public IReadOnlyList<MonoBehaviour> Controllers => controllers;
     public ModuleDefinition StartingModuleDefinition => startingModuleDefinition;
 
+    private void Reset()
+    {
+        ResolvePlacementMarkerRenderer();
+    }
+
     private void Awake()
     {
+        ResolvePlacementMarkerRenderer();
+
         if (installStartingModuleOnAwake && !HasInstalledModule && startingModuleDefinition != null)
         {
             TryInstall(startingModuleDefinition, out _);
@@ -107,6 +129,118 @@ public sealed class Hardpoint : MonoBehaviour
             s += ", " + accepted[i];
 
         return s;
+    }
+
+    public bool HasController(
+        MonoBehaviour controller)
+    {
+        if (controller == null ||
+            controllers == null)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < controllers.Length; i++)
+        {
+            if (ReferenceEquals(
+                    controllers[i],
+                    controller))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Runtime-safe controller wiring. Array order remains authoritative for
+    /// systems such as Helm station capacity.
+    /// </summary>
+    public bool TryAddController(
+        MonoBehaviour controller)
+    {
+        if (controller == null)
+            return false;
+
+        if (HasController(controller))
+            return true;
+
+        int oldCount =
+            controllers != null
+                ? controllers.Length
+                : 0;
+
+        MonoBehaviour[] next =
+            new MonoBehaviour[oldCount + 1];
+
+        for (int i = 0; i < oldCount; i++)
+            next[i] = controllers[i];
+
+        next[oldCount] =
+            controller;
+
+        controllers =
+            next;
+
+        return true;
+    }
+
+    public bool TryRemoveController(
+        MonoBehaviour controller)
+    {
+        if (controller == null ||
+            controllers == null ||
+            controllers.Length == 0)
+        {
+            return false;
+        }
+
+        int removeIndex =
+            -1;
+
+        for (int i = 0; i < controllers.Length; i++)
+        {
+            if (ReferenceEquals(
+                    controllers[i],
+                    controller))
+            {
+                removeIndex = i;
+                break;
+            }
+        }
+
+        if (removeIndex < 0)
+            return false;
+
+        if (controllers.Length == 1)
+        {
+            controllers =
+                System.Array.Empty<MonoBehaviour>();
+
+            return true;
+        }
+
+        MonoBehaviour[] next =
+            new MonoBehaviour[
+                controllers.Length - 1];
+
+        int dst =
+            0;
+
+        for (int i = 0; i < controllers.Length; i++)
+        {
+            if (i == removeIndex)
+                continue;
+
+            next[dst++] =
+                controllers[i];
+        }
+
+        controllers =
+            next;
+
+        return true;
     }
 
     public bool HasAnyController()
@@ -208,6 +342,7 @@ public sealed class Hardpoint : MonoBehaviour
                 lifecycle.OnInstalled(this);
         }
 
+        StateChanged?.Invoke(this);
         return true;
     }
 
@@ -232,7 +367,14 @@ public sealed class Hardpoint : MonoBehaviour
         }
 
         installedModule = null;
+        StateChanged?.Invoke(this);
         return removedDefinition != null;
+    }
+
+    private void ResolvePlacementMarkerRenderer()
+    {
+        if (placementMarkerRenderer == null)
+            placementMarkerRenderer = GetComponent<SpriteRenderer>();
     }
 
 #if UNITY_EDITOR
