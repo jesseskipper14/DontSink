@@ -16,15 +16,40 @@ MonoBehaviour:
   displayName: Toolbelt
   icon: {fileID: 5040953308449433282, guid: 251e73321609ae842b1cb39aa37261cb, type: 3}
   itemCategories: 1024
+  toolCapabilities: []
+  consumesContainedChargesWhileUsed: 0
+  chargeSourceCategories: 1024
+  chargeUsePerSecond: 0
+  minimumChargeToUse: 1
+  unitMass: 0.3
   maxStack: 1
   hasCharges: 0
   maxCharges: 1
   stowableInInventory: 1
   droppable: 1
   tradable: 1
+  basePrice: 10
+  canBeSoldByItemVendors: 1
+  canBeBoughtByItemVendors: 1
+  defaultVendorBuyMultiplier: 0.25
+  vendorAvailability:
+    useNodeRestrictions: 0
+    allowedNodeArchetypes: []
+    blockedNodeArchetypes: []
+    minProsperity: 0
+    minTradeRating: 0
+    minSecurity: 0
+    minStability: 0
   disallowedParentSlots: 040000000500000006000000070000000800000009000000
   preferredDisplacedDestination: 1
   equipSlot: 12
+  occupiedEquipSlots: 
+  wearableVisualSprite: {fileID: 0}
+  equippedBuffs: []
+  providesExternalAir: 0
+  externalAirSupplyPerSecond: 0
+  externalAirChargeUsePerSecond: 0
+  externalAirMaxAirBonus: 0
   isContainer: 1
   containerSlotCount: 4
   containerColumnCount: 1
@@ -34,4 +59,5 @@ MonoBehaviour:
   pickupHoldDuration: 0.4
   isModule: 0
   moduleDefinition: {fileID: 0}
+  soldByBoatVendors: 0
   worldPrefab: {fileID: 61859146187821167, guid: e3f5b61d7b19fb74c882f5ad485861cb, type: 3}

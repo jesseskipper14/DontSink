@@ -21,6 +21,7 @@ MonoBehaviour:
   chargeSourceCategories: 1024
   chargeUsePerSecond: 0
   minimumChargeToUse: 1
+  unitMass: 5
   maxStack: 1
   hasCharges: 0
   maxCharges: 1

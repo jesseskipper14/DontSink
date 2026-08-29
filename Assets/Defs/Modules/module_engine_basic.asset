@@ -16,4 +16,13 @@ MonoBehaviour:
   displayName: Basic Engine
   allowedHardpointTypes: 00000000
   installedPrefab: {fileID: 8130874790704986176, guid: 75b52a3cdf644b6458a8878d27aa4c20, type: 3}
+  baseMass: 5
   itemDefinition: {fileID: 11400000, guid: b413736c925b2d844b8bafde6697e097, type: 2}
+  storage:
+    mode: 0
+    slotCount: 12
+    columnCount: 4
+    acceptsPortableContainers: 0
+    acceptsCargoCrates: 0
+    countsAsSecuredStorage: 1
+    looseFailureChance: 0

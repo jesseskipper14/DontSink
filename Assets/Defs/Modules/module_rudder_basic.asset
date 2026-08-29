@@ -16,6 +16,7 @@ MonoBehaviour:
   displayName: Basic Rudder
   allowedHardpointTypes: 07000000
   installedPrefab: {fileID: 8130874790704986176, guid: dc2967557788d26419d8dc0cc21cee3f, type: 3}
+  baseMass: 2
   itemDefinition: {fileID: 11400000, guid: c77cbd0e61f1dfa47a5873495fce8c97, type: 2}
   storage:
     mode: 0

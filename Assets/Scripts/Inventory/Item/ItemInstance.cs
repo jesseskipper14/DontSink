@@ -10,9 +10,29 @@ public sealed class ItemInstance
     [SerializeReference] private ItemContainerState containerState;
     [SerializeField] private int currentCharges;
 
+    [NonSerialized] public Action Changed;
+
+    [NonSerialized] private ItemContainerState subscribedContainerState;
+
     public string InstanceId => instanceId;
     public ItemDefinition Definition => definition;
     public int Quantity => Mathf.Max(1, quantity);
+
+    public float UnitMass =>
+        definition != null
+            ? definition.UnitMass
+            : 0f;
+
+    public float OwnMass =>
+        Mathf.Max(0f, UnitMass * Quantity);
+
+    public float TotalMass =>
+        Mathf.Max(
+            0f,
+            OwnMass +
+            (containerState != null
+                ? containerState.ContentsMass
+                : 0f));
 
     public ItemContainerState ContainerState => containerState;
     public bool HasContainerState => containerState != null;
@@ -63,14 +83,59 @@ public sealed class ItemInstance
     {
         if (definition == null || !definition.IsContainer)
         {
-            containerState = null;
+            SetContainerStateInternal(null);
             return;
         }
 
         if (containerState == null)
-            containerState = new ItemContainerState(definition.ContainerSlotCount, definition.ContainerColumnCount);
+            SetContainerStateInternal(
+                new ItemContainerState(
+                    definition.ContainerSlotCount,
+                    definition.ContainerColumnCount));
         else
-            containerState.EnsureLayout(definition.ContainerSlotCount, definition.ContainerColumnCount);
+            containerState.EnsureLayout(
+                definition.ContainerSlotCount,
+                definition.ContainerColumnCount);
+
+        BindContainerState();
+    }
+
+    private void SetContainerStateInternal(ItemContainerState newState)
+    {
+        UnbindContainerState();
+        containerState = newState;
+        BindContainerState();
+    }
+
+    private void BindContainerState()
+    {
+        if (ReferenceEquals(subscribedContainerState, containerState))
+            return;
+
+        UnbindContainerState();
+
+        subscribedContainerState = containerState;
+
+        if (subscribedContainerState != null)
+            subscribedContainerState.Changed += HandleContainerStateChanged;
+    }
+
+    private void UnbindContainerState()
+    {
+        if (subscribedContainerState != null)
+            subscribedContainerState.Changed -= HandleContainerStateChanged;
+
+        subscribedContainerState = null;
+    }
+
+    private void HandleContainerStateChanged()
+    {
+        Changed?.Invoke();
+    }
+
+    private void NotifyChanged()
+    {
+        Changed?.Invoke();
     }
 
     public bool CanStackWith(ItemInstance other)
@@ -94,6 +159,10 @@ public sealed class ItemInstance
 
         int added = Mathf.Min(RemainingStackSpace, amount);
         quantity += added;
+
+        if (added > 0)
+            NotifyChanged();
+
         return added;
     }
 
@@ -104,6 +173,10 @@ public sealed class ItemInstance
 
         int removed = Mathf.Min(quantity, amount);
         quantity -= removed;
+
+        if (removed > 0)
+            NotifyChanged();
+
         return removed;
     }
 
@@ -113,6 +186,7 @@ public sealed class ItemInstance
             return null;
 
         quantity -= amount;
+        NotifyChanged();
         return Create(definition, amount);
     }
 
@@ -125,6 +199,7 @@ public sealed class ItemInstance
             return false;
 
         currentCharges -= amount;
+        NotifyChanged();
         return true;
     }
 
@@ -135,6 +210,10 @@ public sealed class ItemInstance
 
         int consumed = Mathf.Min(CurrentCharges, amount);
         currentCharges -= consumed;
+
+        if (consumed > 0)
+            NotifyChanged();
+
         return consumed;
     }
 
@@ -146,7 +225,13 @@ public sealed class ItemInstance
             return;
         }
 
-        currentCharges = Mathf.Clamp(value, 0, MaxCharges);
+        int next = Mathf.Clamp(value, 0, MaxCharges);
+
+        if (currentCharges == next)
+            return;
+
+        currentCharges = next;
+        NotifyChanged();
     }
 
     public void RefillCharges()
@@ -157,7 +242,11 @@ public sealed class ItemInstance
             return;
         }
 
+        if (currentCharges == MaxCharges)
+            return;
+
         currentCharges = MaxCharges;
+        NotifyChanged();
     }
 
     public bool IsDepleted()
@@ -207,9 +296,16 @@ public sealed class ItemInstance
         if (def.IsContainer)
         {
             if (snapshot.container != null)
-                instance.containerState = ItemContainerState.FromSnapshot(snapshot.container, resolver);
+            {
+                instance.SetContainerStateInternal(
+                    ItemContainerState.FromSnapshot(
+                        snapshot.container,
+                        resolver));
+            }
             else
+            {
                 instance.EnsureContainerStateMatchesDefinition();
+            }
         }
 
         return instance;

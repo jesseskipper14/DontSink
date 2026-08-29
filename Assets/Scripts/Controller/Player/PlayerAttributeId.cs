@@ -79,6 +79,9 @@ namespace Survival.Attributes
         MiniGameProgressMultiplier = 141,
         MiniGameFailurePenaltyMultiplier = 142,
 
+        // Load / carrying
+        EncumbranceCapacity = 160,
+
         // Boat handling
         PilotingControlMultiplier = 180,
         HelmResponsivenessMultiplier = 181,

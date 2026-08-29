@@ -357,6 +357,8 @@ public sealed class Hardpoint : MonoBehaviour
 
         if (installedModule != null)
         {
+            installedModule.DetachMassContributionFromBoat();
+
             foreach (MonoBehaviour mb in installedModule.GetComponents<MonoBehaviour>())
             {
                 if (mb is IInstalledModuleLifecycle lifecycle)
@@ -465,6 +467,8 @@ public sealed class Hardpoint : MonoBehaviour
         }
 
         UnityEditor.Undo.RecordObject(this, "Uninstall Module From Hardpoint");
+
+        installedModule.DetachMassContributionFromBoat();
 
         foreach (MonoBehaviour mb in installedModule.GetComponents<MonoBehaviour>())
         {

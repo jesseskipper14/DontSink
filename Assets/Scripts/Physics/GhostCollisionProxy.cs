@@ -22,7 +22,7 @@ public sealed class GhostCollisionProxy : MonoBehaviour
     [SerializeField] private Rigidbody2D followBody;
 
     [Header("Collision Sources")]
-    [Tooltip("Only non-trigger Collider2Ds below these roots that are attached to Follow Body are mirrored. Use structural containment roots such as _Hull and _Deck.")]
+    [Tooltip("Only ordinary non-trigger Collider2Ds below these roots that are attached to Follow Body are mirrored. Colliders driven by effectors (for example one-way HatchLedge platforms) are intentionally left real and are not ghosted.")]
     [SerializeField] private Transform[] sourceRoots;
 
     [Header("Ghost Layer")]
@@ -386,6 +386,19 @@ public sealed class GhostCollisionProxy : MonoBehaviour
                 if (candidate == null ||
                     candidate.isTrigger)
                 {
+                    continue;
+                }
+
+                // Effector-driven colliders carry semantic collision behavior
+                // (one-way platforms, etc.) that a raw cloned Collider2D cannot
+                // reproduce safely. Leave those real instead of creating a solid
+                // spectral copy. HatchLedge is the first concrete use case.
+                if (candidate.usedByEffector)
+                {
+                    Log(
+                        $"Skipping effector-driven source collider " +
+                        $"'{candidate.name}' ({candidate.GetType().Name}).");
+
                     continue;
                 }
 

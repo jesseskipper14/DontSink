@@ -16,4 +16,13 @@ MonoBehaviour:
   displayName: Basic Pump
   allowedHardpointTypes: 01000000
   installedPrefab: {fileID: 8130874790704986176, guid: 0aea0dd56ac488a4bb7c214adff08923, type: 3}
+  baseMass: 5
   itemDefinition: {fileID: 11400000, guid: 0bf82beaea0ec254fa382d06449712df, type: 2}
+  storage:
+    mode: 0
+    slotCount: 12
+    columnCount: 4
+    acceptsPortableContainers: 0
+    acceptsCargoCrates: 0
+    countsAsSecuredStorage: 1
+    looseFailureChance: 0

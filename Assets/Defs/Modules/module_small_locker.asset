@@ -16,6 +16,7 @@ MonoBehaviour:
   displayName: Small Locker
   allowedHardpointTypes: 06000000
   installedPrefab: {fileID: 3018305932997409295, guid: 9715236ce50fcca4da16830b6f230f2e, type: 3}
+  baseMass: 3
   itemDefinition: {fileID: 11400000, guid: 1226c0c0170de9846b924e48187cf5f3, type: 2}
   storage:
     mode: 1

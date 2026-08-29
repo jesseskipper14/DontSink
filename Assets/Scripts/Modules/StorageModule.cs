@@ -7,10 +7,16 @@ public sealed class StorageModule : MonoBehaviour, IInstalledModuleLifecycle
     [SerializeField] private InstalledModule installedModule;
     [SerializeField] private ItemContainerState containerState;
 
+    private ItemContainerState subscribedContainerState;
+
     public InstalledModule InstalledModule => installedModule;
     public ItemContainerState ContainerState => containerState;
 
     public bool HasContainer => containerState != null;
+    public float ContentsMass =>
+        containerState != null
+            ? containerState.ContentsMass
+            : 0f;
 
     public StorageModuleMode Mode
     {
@@ -37,10 +43,13 @@ public sealed class StorageModule : MonoBehaviour, IInstalledModuleLifecycle
     {
         CacheRefs();
         EnsureContainer();
+        RefreshInstalledModuleMass();
     }
 
     public void OnRemoved()
     {
+        UnbindContainerChanged();
+
         // Later:
         // - block removal if container has contents
         // - or intentionally eject/drop contents
@@ -67,6 +76,9 @@ public sealed class StorageModule : MonoBehaviour, IInstalledModuleLifecycle
         {
             containerState.EnsureLayout(slotCount, columnCount);
         }
+
+        BindContainerChanged();
+        RefreshInstalledModuleMass();
     }
 
     public bool CanAcceptItem(ItemInstance item)
@@ -150,6 +162,8 @@ public sealed class StorageModule : MonoBehaviour, IInstalledModuleLifecycle
         if (def == null || !def.HasStorage || def.Storage == null)
             return;
 
+        UnbindContainerChanged();
+
         if (snapshot != null)
         {
             containerState = ItemContainerState.FromSnapshot(snapshot, resolver);
@@ -191,9 +205,48 @@ public sealed class StorageModule : MonoBehaviour, IInstalledModuleLifecycle
         return CanAcceptItem(item);
     }
 
+    private void BindContainerChanged()
+    {
+        if (ReferenceEquals(subscribedContainerState, containerState))
+            return;
+
+        UnbindContainerChanged();
+
+        subscribedContainerState = containerState;
+
+        if (subscribedContainerState != null)
+            subscribedContainerState.Changed += HandleContainerChanged;
+    }
+
+    private void UnbindContainerChanged()
+    {
+        if (subscribedContainerState != null)
+            subscribedContainerState.Changed -= HandleContainerChanged;
+
+        subscribedContainerState = null;
+    }
+
+    private void HandleContainerChanged()
+    {
+        RefreshInstalledModuleMass();
+    }
+
+    private void RefreshInstalledModuleMass()
+    {
+        CacheRefs();
+
+        if (installedModule != null)
+            installedModule.RefreshMassFromDefinitionAndContents();
+    }
+
     private void CacheRefs()
     {
         if (installedModule == null)
             installedModule = GetComponent<InstalledModule>();
+    }
+
+    private void OnDestroy()
+    {
+        UnbindContainerChanged();
     }
 }

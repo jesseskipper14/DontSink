@@ -16,4 +16,13 @@ MonoBehaviour:
   displayName: Basic Turret
   allowedHardpointTypes: 03000000
   installedPrefab: {fileID: 8130874790704986176, guid: 3d0e77f875505784cb859e205181615c, type: 3}
+  baseMass: 5
   itemDefinition: {fileID: 11400000, guid: 239c0b9b8ba85484f926005419f23df2, type: 2}
+  storage:
+    mode: 0
+    slotCount: 12
+    columnCount: 4
+    acceptsPortableContainers: 0
+    acceptsCargoCrates: 0
+    countsAsSecuredStorage: 1
+    looseFailureChance: 0

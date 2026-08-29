@@ -3,21 +3,19 @@ using UnityEngine;
 [DefaultExecutionOrder(-100)]
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Rigidbody2D))]
-public sealed class MoneyChestDynamicWeight : MonoBehaviour
+public sealed class MoneyChestDynamicWeight : MonoBehaviour, IWorldItemMassModifier
 {
     [Header("Refs")]
     [SerializeField] private MoneyChestState chest;
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private WorldItem worldItem;
 
     [Header("Linear Mass")]
-    [Tooltip("Rigidbody mass when the chest has no money.")]
-    [SerializeField, Min(0.01f)] private float emptyMass = 0.75f;
-
-    [Tooltip("Mass added per 1 money unit in the chest. Example: 0.0018 means $500 adds 0.9 mass.")]
+    [Tooltip("Mass added per 1 money unit in the chest. The empty shell mass comes from the chest ItemDefinition.UnitMass.")]
     [SerializeField, Min(0f)] private float massPerMoneyUnit = 0.0018f;
 
-    [Tooltip("Maximum Rigidbody mass, so absurd rich-player money does not become a physics black hole.")]
-    [SerializeField, Min(0.01f)] private float maxMass = 12f;
+    [Tooltip("Maximum TOTAL physical mass of the money chest, including its ItemDefinition shell mass. Once reached, additional wealth is treated as larger denominations rather than more physical coin weight.")]
+    [SerializeField, Min(0.01f)] private float maxTotalMass = 5f;
 
     [Header("Reference Preview")]
     [Tooltip("Does not control behavior directly. Used for debug preview: what mass does the chest have around this balance?")]
@@ -40,9 +38,18 @@ public sealed class MoneyChestDynamicWeight : MonoBehaviour
     private int lastAppliedBalance = int.MinValue;
     private float lastAppliedMass = -1f;
 
-    public float EmptyMass => emptyMass;
+    public float EmptyMass => ResolveCanonicalItemMass();
     public float MassPerMoneyUnit => massPerMoneyUnit;
-    public float MaxMass => maxMass;
+
+    /// <summary>
+    /// Configured maximum TOTAL chest mass. If the empty shell itself is ever
+    /// authored heavier than this value, the shell mass wins rather than being
+    /// artificially reduced.
+    /// </summary>
+    public float MaxTotalMass => maxTotalMass;
+
+    // Compatibility alias for any existing debug/UI callers.
+    public float MaxMass => MaxTotalMass;
 
     public float ReferenceSinkMass => ComputeMass(referenceSinkBalance);
 
@@ -82,12 +89,8 @@ public sealed class MoneyChestDynamicWeight : MonoBehaviour
 
     private void OnValidate()
     {
-        emptyMass = Mathf.Max(0.01f, emptyMass);
         massPerMoneyUnit = Mathf.Max(0f, massPerMoneyUnit);
-        maxMass = Mathf.Max(0.01f, maxMass);
-
-        if (maxMass < emptyMass)
-            maxMass = emptyMass;
+        maxTotalMass = Mathf.Max(0.01f, maxTotalMass);
 
         referenceSinkBalance = Mathf.Max(0, referenceSinkBalance);
         balanceForLoadedCenterOfMass = Mathf.Max(1, balanceForLoadedCenterOfMass);
@@ -106,6 +109,15 @@ public sealed class MoneyChestDynamicWeight : MonoBehaviour
 
         if (chest == null)
             chest = GetComponentInChildren<MoneyChestState>(true);
+
+        if (worldItem == null)
+            worldItem = GetComponent<WorldItem>();
+
+        if (worldItem == null)
+            worldItem = GetComponentInParent<WorldItem>();
+
+        if (worldItem == null)
+            worldItem = GetComponentInChildren<WorldItem>(true);
     }
 
     private void HandleChestChanged(MoneyChestState changedChest)
@@ -115,22 +127,46 @@ public sealed class MoneyChestDynamicWeight : MonoBehaviour
 
     public void ApplyWeightNow(string reason = "Manual", bool force = true)
     {
-        if (rb == null || chest == null)
+        if (rb == null || chest == null || worldItem == null)
             ResolveRefs();
 
-        if (rb == null)
+        if (rb == null ||
+            worldItem == null ||
+            worldItem.Instance == null ||
+            worldItem.Instance.Definition == null)
+        {
             return;
+        }
 
-        int balance = chest != null ? Mathf.Max(0, chest.Balance) : 0;
-        float targetMass = ComputeMass(balance);
+        int balance =
+            chest != null
+                ? Mathf.Max(0, chest.Balance)
+                : 0;
 
-        bool balanceChanged = balance != lastAppliedBalance;
-        bool massChanged = Mathf.Abs(targetMass - lastAppliedMass) >= 0.0001f;
+        float targetMass =
+            ComputeMass(
+                balance,
+                worldItem.Instance.TotalMass);
 
-        if (!force && !balanceChanged && !massChanged)
+        bool balanceChanged =
+            balance != lastAppliedBalance;
+
+        bool massChanged =
+            Mathf.Abs(
+                targetMass -
+                lastAppliedMass) >= 0.0001f;
+
+        if (!force &&
+            !balanceChanged &&
+            !massChanged)
+        {
             return;
+        }
 
-        rb.mass = targetMass;
+        // WorldItem is the single writer for normal world-item Rigidbody mass.
+        // It starts from ItemInstance.TotalMass, then calls this component through
+        // IWorldItemMassModifier to add the money payload.
+        worldItem.RefreshPhysicalMass();
 
         if (adjustCenterOfMass)
             rb.centerOfMass = ComputeCenterOfMass(balance);
@@ -140,15 +176,20 @@ public sealed class MoneyChestDynamicWeight : MonoBehaviour
             bool shouldLog =
                 force ||
                 lastAppliedMass < 0f ||
-                Mathf.Abs(rb.mass - lastAppliedMass) >= logMinMassDelta;
+                Mathf.Abs(
+                    rb.mass -
+                    lastAppliedMass) >= logMinMassDelta;
 
             if (shouldLog)
             {
                 Debug.Log(
                     $"[MoneyChestDynamicWeight:{name}] " +
                     $"balance={balance}, mass={rb.mass:F4}, " +
-                    $"emptyMass={emptyMass:F4}, massPerMoneyUnit={massPerMoneyUnit:F6}, " +
-                    $"referenceSinkBalance={referenceSinkBalance}, referenceSinkMass={ReferenceSinkMass:F4}, " +
+                    $"itemBaseMass={ResolveCanonicalItemMass():F4}, " +
+                    $"massPerMoneyUnit={massPerMoneyUnit:F6}, " +
+                    $"maxTotalMass={maxTotalMass:F4}, " +
+                    $"referenceSinkBalance={referenceSinkBalance}, " +
+                    $"referenceSinkMass={ReferenceSinkMass:F4}, " +
                     $"reason='{reason}'",
                     this);
             }
@@ -158,12 +199,62 @@ public sealed class MoneyChestDynamicWeight : MonoBehaviour
         lastAppliedMass = rb.mass;
     }
 
+    public float ModifyWorldItemMass(
+        ItemInstance instance,
+        float canonicalMass)
+    {
+        int balance =
+            chest != null
+                ? Mathf.Max(0, chest.Balance)
+                : 0;
+
+        return ComputeMass(
+            balance,
+            Mathf.Max(0f, canonicalMass));
+    }
+
+    private float ResolveCanonicalItemMass()
+    {
+        ResolveRefs();
+
+        return worldItem != null &&
+               worldItem.Instance != null
+            ? worldItem.Instance.TotalMass
+            : 0f;
+    }
+
     private float ComputeMass(int balance)
+    {
+        return ComputeMass(
+            balance,
+            ResolveCanonicalItemMass());
+    }
+
+    private float ComputeMass(
+        int balance,
+        float canonicalItemMass)
     {
         balance = Mathf.Max(0, balance);
 
-        float mass = emptyMass + balance * massPerMoneyUnit;
-        return Mathf.Clamp(mass, emptyMass, maxMass);
+        float baseMass =
+            Mathf.Max(0f, canonicalItemMass);
+
+        float mass =
+            baseMass +
+            balance * massPerMoneyUnit;
+
+        // Wealth is abstracted into progressively larger denominations.
+        // Once the chest reaches its configured total physical weight cap,
+        // additional money no longer makes it heavier.
+        float effectiveMaxTotalMass =
+            Mathf.Max(
+                baseMass,
+                maxTotalMass);
+
+        return Mathf.Clamp(
+            mass,
+            baseMass,
+            effectiveMaxTotalMass);
     }
 
     private Vector2 ComputeCenterOfMass(int balance)

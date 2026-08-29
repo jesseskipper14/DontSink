@@ -16,4 +16,13 @@ MonoBehaviour:
   displayName: Basic Generator
   allowedHardpointTypes: 04000000
   installedPrefab: {fileID: 8130874790704986176, guid: 6a6d6379ef280cd4cbe70167f62ddd9d, type: 3}
+  baseMass: 5
   itemDefinition: {fileID: 11400000, guid: 5b6806cef4b0316498600f7b5ac1b6cc, type: 2}
+  storage:
+    mode: 0
+    slotCount: 12
+    columnCount: 4
+    acceptsPortableContainers: 0
+    acceptsCargoCrates: 0
+    countsAsSecuredStorage: 1
+    looseFailureChance: 0

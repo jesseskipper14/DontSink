@@ -26,12 +26,39 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
     public bool IsBoarded { get; private set; }
     public Transform CurrentBoatRoot { get; private set; }
 
-    // While boarded, Steve contributes his Rigidbody mass at his actual world
-    // center of mass to the Boat's explicit mass/COM model. This preserves boat
-    // listing/sink response after physical Hull reaction impulses are removed.
+    // Boarding context and physical support are deliberately separate.
+    //
+    // The boarded volume may extend above/around the boat so Steve remains in
+    // boat gameplay context while jumping. That does NOT mean the boat should
+    // keep carrying Steve's static mass/COM while his feet are in the air.
+    //
+    // V1 support rule: grounded while boarded = supported by the boat.
+    // This can later grow to explicitly include supported ladder/seat states if
+    // either proves necessary.
+    public bool IsPhysicallySupportedByBoat =>
+        IsBoarded &&
+        _motor != null &&
+        _motor.IsGrounded;
+
+    // While physically supported, Steve contributes his truthful physical load:
+    // body Rigidbody mass + carried inventory/equipment mass.
+    //
+    // IMPORTANT: carried mass is NOT written into Rigidbody2D.mass. Player
+    // locomotion keeps its stable body physics; PlayerLoadState is the gameplay/
+    // vehicle bridge for carried physical weight.
+    //
+    // TODO BOAT IMPULSE PASS:
+    // When Steve jumps from a boat, apply the corresponding reaction impulse back
+    // into the authoritative Boat. Keep that with the future generalized boat
+    // impulse/contact pass rather than mixing transient impulses into this static
+    // supported-mass/COM contribution.
     public float MassContribution =>
-        IsBoarded && _rb != null
-            ? Mathf.Max(0f, _rb.mass)
+        IsPhysicallySupportedByBoat
+            ? (_loadState != null
+                ? Mathf.Max(0f, _loadState.TotalPhysicalMass)
+                : (_rb != null
+                    ? Mathf.Max(0f, _rb.mass)
+                    : 0f))
             : 0f;
 
     public Vector2 WorldCenterOfMass =>
@@ -41,6 +68,7 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
 
     private Rigidbody2D _rb;
     private CharacterMotor2D _motor;
+    private PlayerLoadState _loadState;
     private Boat _massContributionBoat;
 
     private int _hullLayer;
@@ -71,6 +99,11 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
         _rb = GetComponent<Rigidbody2D>();
         _motor = GetComponent<CharacterMotor2D>();
 
+        _loadState =
+            GetComponent<PlayerLoadState>() ??
+            GetComponentInChildren<PlayerLoadState>(true) ??
+            GetComponentInParent<PlayerLoadState>();
+
         CacheSpriteRenderers();
         CacheLayers();
         BuildMasks();
@@ -84,6 +117,17 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
         GhostCollisionProxy.ActiveProxySetChanged +=
             HandleGhostProxySetChanged;
 
+        if (_loadState == null)
+        {
+            _loadState =
+                GetComponent<PlayerLoadState>() ??
+                GetComponentInChildren<PlayerLoadState>(true) ??
+                GetComponentInParent<PlayerLoadState>();
+        }
+
+        if (_loadState != null)
+            _loadState.Changed += HandlePlayerLoadChanged;
+
         if (IsBoarded)
         {
             RegisterMassContributionForCurrentBoat();
@@ -95,6 +139,9 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
     {
         GhostCollisionProxy.ActiveProxySetChanged -=
             HandleGhostProxySetChanged;
+
+        if (_loadState != null)
+            _loadState.Changed -= HandlePlayerLoadChanged;
 
         ClearGhostCollisionPairs();
         UnregisterMassContribution();
@@ -351,6 +398,18 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
     private void HandleGhostProxySetChanged()
     {
         ApplyMask();
+    }
+
+    private void HandlePlayerLoadChanged(
+        PlayerLoadState loadState)
+    {
+        if (!IsBoarded ||
+            _massContributionBoat == null)
+        {
+            return;
+        }
+
+        _massContributionBoat.RecomputeMassAndCOM();
     }
 
     private void RegisterMassContributionForCurrentBoat()

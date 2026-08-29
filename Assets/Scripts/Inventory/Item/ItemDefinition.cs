@@ -84,6 +84,10 @@ public sealed class ItemDefinition : ScriptableObject
         return false;
     }
 
+    [Header("Physical")]
+    [Tooltip("Canonical mass of ONE unit of this item. This is the source of truth for portable-item mass in inventory, containers, and spawned world objects.")]
+    [SerializeField, Min(0f)] private float unitMass = 1f;
+
     [Header("Stacking")]
     [Min(1)]
     [SerializeField] private int maxStack = 1;
@@ -179,6 +183,7 @@ public sealed class ItemDefinition : ScriptableObject
     public Sprite Icon => icon;
     public ItemCategoryFlags ItemCategories => itemCategories;
     public bool IsSacred => (itemCategories & ItemCategoryFlags.Sacred) != 0;
+    public float UnitMass => Mathf.Max(0f, unitMass);
     public int MaxStack => Mathf.Max(1, maxStack);
 
     public bool HasCharges => hasCharges;
@@ -285,6 +290,7 @@ public sealed class ItemDefinition : ScriptableObject
 #if UNITY_EDITOR
     private void OnValidate()
     {
+        unitMass = Mathf.Max(0f, unitMass);
         maxStack = Mathf.Max(1, maxStack);
         maxCharges = Mathf.Max(1, maxCharges);
         containerSlotCount = Mathf.Max(0, containerSlotCount);

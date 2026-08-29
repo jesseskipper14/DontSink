@@ -11,9 +11,43 @@ public sealed class ItemContainerState
 
     [NonSerialized] public Action Changed;
 
+    [NonSerialized] private HashSet<ItemInstance> subscribedItems;
+
     public int SlotCount => Mathf.Max(0, slotCount);
     public int ColumnCount => Mathf.Max(1, columnCount);
     public IReadOnlyList<InventorySlot> Slots => slots;
+
+    /// <summary>
+    /// Recursive mass of every ItemInstance currently stored in this container.
+    /// Each child ItemInstance owns the mass of its own nested contents.
+    /// </summary>
+    public float ContentsMass
+    {
+        get
+        {
+            if (slots == null)
+                return 0f;
+
+            float total = 0f;
+
+            for (int i = 0; i < slots.Count; i++)
+            {
+                InventorySlot slot = slots[i];
+                ItemInstance instance = slot != null ? slot.Instance : null;
+
+                if (instance == null ||
+                    instance.Definition == null ||
+                    instance.Quantity <= 0)
+                {
+                    continue;
+                }
+
+                total += instance.TotalMass;
+            }
+
+            return Mathf.Max(0f, total);
+        }
+    }
 
     public ItemContainerState(int slotCount, int columnCount = 4)
     {
@@ -39,6 +73,8 @@ public sealed class ItemContainerState
             if (slots[i] == null)
                 slots[i] = new InventorySlot();
         }
+
+        RefreshContainedItemSubscriptions();
     }
 
     public InventorySlot GetSlot(int index)
@@ -54,6 +90,52 @@ public sealed class ItemContainerState
 
     public void NotifyChanged()
     {
+        RefreshContainedItemSubscriptions();
+        Changed?.Invoke();
+    }
+
+    private void RefreshContainedItemSubscriptions()
+    {
+        if (subscribedItems == null)
+            subscribedItems = new HashSet<ItemInstance>();
+
+        HashSet<ItemInstance> currentItems = new HashSet<ItemInstance>();
+
+        if (slots != null)
+        {
+            for (int i = 0; i < slots.Count; i++)
+            {
+                InventorySlot slot = slots[i];
+                ItemInstance instance = slot != null ? slot.Instance : null;
+
+                if (instance != null)
+                    currentItems.Add(instance);
+            }
+        }
+
+        foreach (ItemInstance oldItem in subscribedItems)
+        {
+            if (oldItem != null && !currentItems.Contains(oldItem))
+                oldItem.Changed -= HandleContainedItemChanged;
+        }
+
+        foreach (ItemInstance currentItem in currentItems)
+        {
+            if (currentItem != null && !subscribedItems.Contains(currentItem))
+                currentItem.Changed += HandleContainedItemChanged;
+        }
+
+        subscribedItems = currentItems;
+    }
+
+    private void HandleContainedItemChanged()
+    {
+        // Bubble nested quantity/container changes to the parent container.
+        // This is what lets:
+        //
+        //   pearl -> chest -> locker -> installed module -> Boat
+        //
+        // update without polling every nesting level every frame.
         Changed?.Invoke();
     }
 
@@ -97,6 +179,7 @@ public sealed class ItemContainerState
             state.slots[i].Set(instance);
         }
 
+        state.RefreshContainedItemSubscriptions();
         return state;
     }
 }

@@ -16,6 +16,7 @@ MonoBehaviour:
   displayName: Basic Helm
   allowedHardpointTypes: 05000000
   installedPrefab: {fileID: 8130874790704986176, guid: bc761c21f38092b468cefe5d7dfbe796, type: 3}
+  baseMass: 2
   itemDefinition: {fileID: 11400000, guid: 8dcf74f0a71c6874eb23c1ab61f0a69a, type: 2}
   storage:
     mode: 0

@@ -22,6 +22,11 @@ public sealed class ModuleDefinition : ScriptableObject
     public string ModuleId => moduleId;
     public string DisplayName => displayName;
     public GameObject InstalledPrefab => installedPrefab;
+    // Compatibility alias. ItemDefinition is the single authored source of truth.
+    public float BaseMass =>
+        itemDefinition != null
+            ? itemDefinition.UnitMass
+            : 0f;
     public ItemDefinition ItemDefinition => itemDefinition;
     public HardpointType[] AllowedHardpointTypes => allowedHardpointTypes;
 

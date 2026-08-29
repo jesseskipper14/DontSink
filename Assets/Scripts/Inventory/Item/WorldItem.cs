@@ -25,6 +25,8 @@ public sealed class WorldItem :
     [SerializeField] private bool verboseLogging = false;
 
     private BoatOwnedItem _ownedItem;
+    private Rigidbody2D _rb;
+    private ItemInstance _subscribedItemInstance;
 
     public ItemInstance Instance => itemInstance;
     public ItemDefinition Item => itemInstance != null ? itemInstance.Definition : null;
@@ -55,20 +57,31 @@ public sealed class WorldItem :
     private void Awake()
     {
         CacheBoat();
+        ResolveRigidbody();
 
         if (itemInstance != null)
+        {
             itemInstance.EnsureContainerStateMatchesDefinition();
+            BindItemMassChanges(itemInstance);
+            RefreshPhysicalMass();
+        }
 
         SetHighlighted(false);
-
     }
 
     public void Initialize(ItemInstance instance)
     {
+        UnbindItemMassChanges();
+
         itemInstance = instance;
 
         if (itemInstance != null)
+        {
             itemInstance.EnsureContainerStateMatchesDefinition();
+            BindItemMassChanges(itemInstance);
+        }
+
+        RefreshPhysicalMass();
 
         CargoWorldLabel cargoLabel = GetComponentInChildren<CargoWorldLabel>(true);
         if (cargoLabel != null)
@@ -147,7 +160,9 @@ public sealed class WorldItem :
         if (!resolver.TryAcquire(itemInstance))
             return;
 
+        UnbindItemMassChanges();
         itemInstance = null;
+
         BoatOwnedItem owned = GetComponent<BoatOwnedItem>();
         if (owned != null)
             owned.ClearOwnership();
@@ -251,10 +266,81 @@ public sealed class WorldItem :
         return null;
     }
 
+    public void RefreshPhysicalMass()
+    {
+        ResolveRigidbody();
+
+        if (_rb == null ||
+            itemInstance == null ||
+            itemInstance.Definition == null)
+        {
+            return;
+        }
+
+        float finalMass =
+            itemInstance.TotalMass;
+
+        MonoBehaviour[] components =
+            GetComponents<MonoBehaviour>();
+
+        for (int i = 0; i < components.Length; i++)
+        {
+            MonoBehaviour component = components[i];
+
+            if (component is IWorldItemMassModifier modifier)
+            {
+                finalMass =
+                    modifier.ModifyWorldItemMass(
+                        itemInstance,
+                        finalMass);
+            }
+        }
+
+        _rb.mass =
+            Mathf.Max(0.0001f, finalMass);
+    }
+
+    private void ResolveRigidbody()
+    {
+        if (_rb == null)
+            _rb = GetComponent<Rigidbody2D>();
+    }
+
+    private void BindItemMassChanges(ItemInstance instance)
+    {
+        if (ReferenceEquals(_subscribedItemInstance, instance))
+            return;
+
+        UnbindItemMassChanges();
+
+        _subscribedItemInstance = instance;
+
+        if (_subscribedItemInstance != null)
+            _subscribedItemInstance.Changed += HandleItemMassChanged;
+    }
+
+    private void UnbindItemMassChanges()
+    {
+        if (_subscribedItemInstance != null)
+            _subscribedItemInstance.Changed -= HandleItemMassChanged;
+
+        _subscribedItemInstance = null;
+    }
+
+    private void HandleItemMassChanged()
+    {
+        RefreshPhysicalMass();
+    }
+
     private void CacheBoat()
     {
         if (_cachedBoat == null)
             _cachedBoat = GetComponentInParent<Boat>();
+    }
+
+    private void OnDestroy()
+    {
+        UnbindItemMassChanges();
     }
 
     private static ItemAcquisitionResolver FindAcquisitionResolver(GameObject actor)

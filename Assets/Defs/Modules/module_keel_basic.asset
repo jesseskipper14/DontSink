@@ -16,6 +16,7 @@ MonoBehaviour:
   displayName: Basic Keel
   allowedHardpointTypes: 08000000
   installedPrefab: {fileID: 8130874790704986176, guid: be4ca1904c6dcd246bb1334b358743c3, type: 3}
+  baseMass: 5
   itemDefinition: {fileID: 11400000, guid: 743e5a107b525144cbdacb935fc9db0d, type: 2}
   storage:
     mode: 0

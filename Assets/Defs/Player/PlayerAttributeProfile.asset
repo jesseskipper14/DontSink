@@ -135,3 +135,5 @@ MonoBehaviour:
     value: 0.15
   - attribute: 122
     value: 1.5
+  - attribute: 160
+    value: 100

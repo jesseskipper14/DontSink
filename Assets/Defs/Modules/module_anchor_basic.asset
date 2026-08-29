@@ -16,6 +16,7 @@ MonoBehaviour:
   displayName: Basic Anchor
   allowedHardpointTypes: 09000000
   installedPrefab: {fileID: 8130874790704986176, guid: c450dcee84e6d5a4c98209957849dda9, type: 3}
+  baseMass: 10
   itemDefinition: {fileID: 11400000, guid: f4415e5a2fbeafb458948875373ebfbd, type: 2}
   storage:
     mode: 0

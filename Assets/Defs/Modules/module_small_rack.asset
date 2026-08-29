@@ -16,6 +16,7 @@ MonoBehaviour:
   displayName: Small Rack
   allowedHardpointTypes: 06000000
   installedPrefab: {fileID: 2666357289410987568, guid: 4cb4f1c1666c0c8428c620139bbf9ea0, type: 3}
+  baseMass: 3
   itemDefinition: {fileID: 11400000, guid: 830be0af62dec7149a6107d54e2f2d4c, type: 2}
   storage:
     mode: 2

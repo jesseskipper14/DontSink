@@ -21,12 +21,25 @@ MonoBehaviour:
   chargeSourceCategories: 1024
   chargeUsePerSecond: 0
   minimumChargeToUse: 1
+  unitMass: 0.5
   maxStack: 1
   hasCharges: 1
   maxCharges: 100
   stowableInInventory: 1
   droppable: 1
   tradable: 1
+  basePrice: 10
+  canBeSoldByItemVendors: 1
+  canBeBoughtByItemVendors: 1
+  defaultVendorBuyMultiplier: 0.25
+  vendorAvailability:
+    useNodeRestrictions: 0
+    allowedNodeArchetypes: []
+    blockedNodeArchetypes: []
+    minProsperity: 0
+    minTradeRating: 0
+    minSecurity: 0
+    minStability: 0
   disallowedParentSlots: 040000000500000006000000070000000800000009000000
   preferredDisplacedDestination: 1
   equipSlot: 14
@@ -49,4 +62,5 @@ MonoBehaviour:
   pickupHoldDuration: 0.4
   isModule: 0
   moduleDefinition: {fileID: 0}
+  soldByBoatVendors: 0
   worldPrefab: {fileID: 61859146187821167, guid: f8e9876fc3e794f46bdb2f9ff08a6cc0, type: 3}

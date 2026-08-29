@@ -229,6 +229,7 @@ MonoBehaviour:
   interactionPriority: 25
   maxInteractDistance: 1.5
   climbCenter: {fileID: 8485376572730471918}
+  boatAccessMode: 0
   debugLogs: 0
 --- !u!114 &2304285462032090332
 MonoBehaviour:

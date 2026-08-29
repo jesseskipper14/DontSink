@@ -18,15 +18,39 @@ MonoBehaviour:
   itemCategories: 4
   toolCapabilities:
   - {fileID: 11400000, guid: 87bdba1b5c8a1664ab1a487b45122023, type: 2}
+  consumesContainedChargesWhileUsed: 0
+  chargeSourceCategories: 1024
+  chargeUsePerSecond: 0
+  minimumChargeToUse: 1
+  unitMass: 0.5
   maxStack: 1
   hasCharges: 0
   maxCharges: 1
   stowableInInventory: 1
   droppable: 1
   tradable: 1
+  basePrice: 10
+  canBeSoldByItemVendors: 1
+  canBeBoughtByItemVendors: 1
+  defaultVendorBuyMultiplier: 0.25
+  vendorAvailability:
+    useNodeRestrictions: 0
+    allowedNodeArchetypes: []
+    blockedNodeArchetypes: []
+    minProsperity: 0
+    minTradeRating: 0
+    minSecurity: 0
+    minStability: 0
   disallowedParentSlots: 
   preferredDisplacedDestination: 2
   equipSlot: 0
+  occupiedEquipSlots: 
+  wearableVisualSprite: {fileID: 0}
+  equippedBuffs: []
+  providesExternalAir: 0
+  externalAirSupplyPerSecond: 0
+  externalAirChargeUsePerSecond: 0
+  externalAirMaxAirBonus: 0
   isContainer: 1
   containerSlotCount: 1
   containerColumnCount: 1
@@ -36,4 +60,5 @@ MonoBehaviour:
   pickupHoldDuration: 0.4
   isModule: 0
   moduleDefinition: {fileID: 0}
+  soldByBoatVendors: 0
   worldPrefab: {fileID: 61859146187821167, guid: 2528b76264c27bc4baa86a7b854b3cf0, type: 3}

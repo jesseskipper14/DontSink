@@ -35,6 +35,9 @@ namespace Survival.Attributes
 
             new() { attribute = PlayerAttributeId.ExertionEnergyMax, value = 100f },
 
+            // Load / carrying
+            new() { attribute = PlayerAttributeId.EncumbranceCapacity, value = 100f },
+
             // Exertion
             new() { attribute = PlayerAttributeId.ExertionRestCeiling, value = 0.08f },
             new() { attribute = PlayerAttributeId.ExertionWalkCeiling, value = 0.45f },
