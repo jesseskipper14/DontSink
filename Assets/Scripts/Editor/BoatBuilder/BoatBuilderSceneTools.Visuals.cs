@@ -9,6 +9,213 @@ using UnityEngine;
 public static partial class BoatBuilderSceneTools
 {
 
+    // Keep side/bottom escape boundaries close to the actual boat so an item
+    // cannot sit fully outside the hull while still loading Boat mass.
+    private const float DefaultItemContainmentHorizontalPadding = 0.10f;
+    private const float DefaultItemContainmentBottomPadding = 0.10f;
+
+    private static GameObject CreateGeneratedItemContainmentZone(
+        Transform boatRoot,
+        Transform parent)
+    {
+        if (boatRoot == null)
+        {
+            Debug.LogError(
+                "[BoatBuilder] Cannot create BoatItemContainmentZone without a BoatRoot.");
+            return null;
+        }
+
+        GameObject placed =
+            new GameObject("BoatItemContainmentZone");
+
+        Undo.RegisterCreatedObjectUndo(
+            placed,
+            "Create Boat Item Containment Zone");
+
+        Transform targetParent =
+            parent != null
+                ? parent
+                : GetOrCreateBoatCategoryRoot(
+                    boatRoot,
+                    BoatVisualCategory.Volume);
+
+        Undo.SetTransformParent(
+            placed.transform,
+            targetParent != null ? targetParent : boatRoot,
+            "Parent Boat Item Containment Zone");
+
+        placed.transform.localPosition = Vector3.zero;
+        placed.transform.localRotation = Quaternion.identity;
+        placed.transform.localScale = Vector3.one;
+
+        BoxCollider2D box =
+            Undo.AddComponent<BoxCollider2D>(placed);
+
+        box.isTrigger = true;
+
+        Undo.AddComponent<BoatItemContainmentZone>(placed);
+
+        AutoFitItemContainmentZone(
+            boatRoot,
+            placed,
+            DefaultItemContainmentHorizontalPadding,
+            DefaultItemContainmentBottomPadding);
+
+        Selection.activeGameObject = placed;
+        EditorGUIUtility.PingObject(placed);
+
+        EditorUtility.SetDirty(placed);
+        EditorUtility.SetDirty(box);
+        EditorSceneManager.MarkSceneDirty(
+            EditorSceneManager.GetActiveScene());
+
+        return placed;
+    }
+
+    private static void AutoFitItemContainmentZone(
+        Transform boatRoot,
+        GameObject placed,
+        float horizontalPadding,
+        float bottomPadding)
+    {
+        if (boatRoot == null || placed == null)
+            return;
+
+        BoxCollider2D box =
+            placed.GetComponent<BoxCollider2D>();
+
+        if (box == null)
+        {
+            Debug.LogError(
+                "[BoatBuilder] BoatItemContainmentZone has no BoxCollider2D to auto-fit.",
+                placed);
+            return;
+        }
+
+        // Use the same visual-bounds basis as BoardedVolume authoring, but with
+        // intentionally modest margins. This is a loose-item physical containment
+        // envelope, not the tall gameplay boarding envelope.
+        Renderer[] renderers =
+            boatRoot.GetComponentsInChildren<Renderer>(true)
+                .Where(
+                    r =>
+                        r != null &&
+                        !r.transform.IsChildOf(placed.transform))
+                .ToArray();
+
+        if (renderers.Length == 0)
+        {
+            Debug.LogError(
+                "[BoatBuilder] Could not auto-fit BoatItemContainmentZone: no renderers found under BoatRoot.",
+                boatRoot);
+            return;
+        }
+
+        Bounds bounds = renderers[0].bounds;
+
+        for (int i = 1; i < renderers.Length; i++)
+            bounds.Encapsulate(renderers[i].bounds);
+
+        horizontalPadding =
+            Mathf.Max(
+                0f,
+                horizontalPadding);
+
+        bottomPadding =
+            Mathf.Max(
+                0f,
+                bottomPadding);
+
+        float left =
+            bounds.min.x -
+            horizontalPadding;
+
+        float right =
+            bounds.max.x +
+            horizontalPadding;
+
+        float bottom =
+            bounds.min.y -
+            bottomPadding;
+
+        // Cargo stacks can legitimately extend far above the visible hull.
+        // Use the BoardedVolume's authored upper boundary as the containment
+        // ceiling instead of inventing a second unrelated "how tall is aboard?"
+        // number.
+        float top =
+            bounds.max.y;
+
+        BoatBoardedVolume boardedVolume =
+            boatRoot.GetComponentInChildren<BoatBoardedVolume>(
+                true);
+
+        Collider2D boardedCollider =
+            boardedVolume != null
+                ? boardedVolume.GetComponent<Collider2D>()
+                : null;
+
+        if (boardedCollider != null &&
+            boardedCollider.enabled)
+        {
+            top =
+                Mathf.Max(
+                    top,
+                    boardedCollider.bounds.max.y);
+        }
+        else
+        {
+            Debug.LogWarning(
+                "[BoatBuilder] Auto-fitting BoatItemContainmentZone without a usable " +
+                "BoatBoardedVolume Collider2D. Falling back to the boat's visual top. " +
+                "BoardedVolume is a required piece and should normally be placed first.",
+                boatRoot);
+        }
+
+        Bounds fittedBounds =
+            new Bounds();
+
+        fittedBounds.SetMinMax(
+            new Vector3(
+                left,
+                bottom,
+                bounds.min.z),
+            new Vector3(
+                right,
+                top,
+                bounds.max.z));
+
+        Undo.RecordObject(
+            placed.transform,
+            "Auto-fit Boat Item Containment Zone");
+
+        Undo.RecordObject(
+            box,
+            "Resize Boat Item Containment Zone");
+
+        placed.transform.position =
+            new Vector3(
+                fittedBounds.center.x,
+                fittedBounds.center.y,
+                placed.transform.position.z);
+
+        // _Volumes is authored with identity local transform under BoatRoot, so the
+        // BoatRoot conversion keeps the generated box aligned with the boat.
+        Vector2 localSize =
+            boatRoot.InverseTransformVector(
+                fittedBounds.size);
+
+        box.offset = Vector2.zero;
+        box.size =
+            new Vector2(
+                Mathf.Abs(localSize.x),
+                Mathf.Abs(localSize.y));
+
+        box.isTrigger = true;
+
+        EditorUtility.SetDirty(placed.transform);
+        EditorUtility.SetDirty(box);
+    }
+
     private static void AutoFitBoardedVolume(Transform boatRoot, GameObject placed, float padding, float extraUp, float extraDown)
     {
         if (boatRoot == null || placed == null)
@@ -100,6 +307,9 @@ public static partial class BoatBuilderSceneTools
 
             // Volumes/triggers
             BoatBuilderWindow.Tool.BoardedVolume =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Volume),
+
+            BoatBuilderWindow.Tool.ItemContainmentZone =>
                 GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.Volume),
 
             BoatBuilderWindow.Tool.BoatVisibilityZone =>

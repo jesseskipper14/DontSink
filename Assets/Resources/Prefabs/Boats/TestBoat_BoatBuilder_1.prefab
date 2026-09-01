@@ -103,6 +103,10 @@ MonoBehaviour:
   baseMass: 30
   mass: 1
   baseLocalCenterOfMass: {x: 0, y: 0}
+  mysteryOscillationLog: 0
+  mysteryOscillationLogEveryFixedTick: 0
+  mysteryOscillationMinimumForceMagnitude: 0
+  mysteryOscillationMinimumTorqueMagnitude: 0
   width: 20
   height: 5
   volume: 1

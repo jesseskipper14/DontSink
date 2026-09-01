@@ -51,6 +51,9 @@ public class BoatBuilderWindow : EditorWindow
         BoatCleat = 19,
         DeckBoardZone = 20,
         MoneyChestSlot = 21,
+
+        // Generated technical volume. Append only; do not renumber existing tool ids.
+        ItemContainmentZone = 22,
     }
 
     private struct ActionButtonDef
@@ -494,6 +497,7 @@ public class BoatBuilderWindow : EditorWindow
             Tool.MoneyChestSlot,
             Tool.PlayerSpawnPoint,
             Tool.BoardedVolume,
+            Tool.ItemContainmentZone,
             Tool.BoatVisibilityZone,
             Tool.Hardpoint,
             Tool.TurretControllerChair
@@ -580,6 +584,7 @@ public class BoatBuilderWindow : EditorWindow
             Tool.MoneyChestSlot => "Money Slot",
             Tool.PlayerSpawnPoint => "Spawn",
             Tool.BoardedVolume => "Volume",
+            Tool.ItemContainmentZone => "Item Volume",
             Tool.BoatVisibilityZone => "Visibility Zone",
             Tool.Hardpoint => "Hardpoint",
             Tool.TurretControllerChair => "Turret Chair",
@@ -756,13 +761,34 @@ public class BoatBuilderWindow : EditorWindow
                 out var hasMap,
                 out var hasMoneyChestSlot,
                 out var spawnCount,
-                out var hasVolume);
+                out var hasVolume,
+                out var hasItemContainmentVolume);
 
             DrawCheck("BoatBoardObject", hasBoard);
             DrawCheck("MapTable", hasMap);
             DrawCheck("MoneyChestSlot", hasMoneyChestSlot);
             DrawCheck($"PlayerSpawnPoint x4 (found {spawnCount})", spawnCount >= 4);
             DrawCheck("BoardedVolume", hasVolume);
+            DrawCheck("BoatItemContainmentZone", hasItemContainmentVolume);
+
+            EditorGUILayout.Space(4);
+            EditorGUILayout.LabelField("Required Root Systems", EditorStyles.miniBoldLabel);
+
+            BoatBuilderSceneTools.GetRequiredBoatSystemsStatus(
+                root,
+                out var hasBoat,
+                out var hasRigidbody,
+                out var hasBuoyancy,
+                out var hasGhostCollision,
+                out var hasItemRegistry,
+                out var hasVisualController);
+
+            DrawCheck("Boat", hasBoat);
+            DrawCheck("Root Rigidbody2D", hasRigidbody);
+            DrawCheck("BuoyancyPolygonForce", hasBuoyancy);
+            DrawCheck("GhostCollisionProxy", hasGhostCollision);
+            DrawCheck("BoatItemRegistry", hasItemRegistry);
+            DrawCheck("BoatVisualStateController", hasVisualController);
 
             int hardpointControllerWarnings = BoatBuilderSceneTools.CountHardpointControllerWarnings(root);
             DrawCheck($"Controllable hardpoints wired (warnings {hardpointControllerWarnings})", hardpointControllerWarnings == 0);
@@ -1045,6 +1071,20 @@ public class BoatBuilderWindow : EditorWindow
             if (_tool != Tool.TurretControllerChair)
             {
                 _tool = Tool.TurretControllerChair;
+                changed = true;
+            }
+
+            return changed;
+        }
+
+        BoatItemContainmentZone selectedItemContainment =
+            FindSelectedComponentInParents<BoatItemContainmentZone>();
+
+        if (selectedItemContainment != null)
+        {
+            if (_tool != Tool.ItemContainmentZone)
+            {
+                _tool = Tool.ItemContainmentZone;
                 changed = true;
             }
 

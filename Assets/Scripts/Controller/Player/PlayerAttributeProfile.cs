@@ -22,6 +22,9 @@ namespace Survival.Attributes
             new() { attribute = PlayerAttributeId.DiveAccel, value = 22f },
             new() { attribute = PlayerAttributeId.SwimMaxSpeedY, value = 3.0f },
 
+            // Ladder movement
+            new() { attribute = PlayerAttributeId.LadderClimbSpeedMultiplier, value = 1f },
+
             new() { attribute = PlayerAttributeId.MaxAir, value = 100f },
             new() { attribute = PlayerAttributeId.AirQualityConsumePerSecond, value = 0.05f },
             new() { attribute = PlayerAttributeId.AirConsumptionMultiplier, value = 1f },

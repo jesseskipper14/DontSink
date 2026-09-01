@@ -18,6 +18,7 @@ public sealed class BoatOwnedItem : MonoBehaviour, IMassContribution
     public string OwningBoatInstanceId => owningBoatInstanceId;
     public bool IsOwnedByBoat => !string.IsNullOrWhiteSpace(owningBoatInstanceId);
     public Boat OwningBoat => _owningBoat;
+    public bool IsContributingMassToBoat => _massContributionBoat != null;
 
     /// <summary>
     /// Boat load contribution for any physical boat-owned world item.
@@ -75,6 +76,12 @@ public sealed class BoatOwnedItem : MonoBehaviour, IMassContribution
 
         RegisterMassContribution(boat);
 
+        // Any physical boat-owned world item needs containment tracking.
+        // Adding it here covers drops, restored items, and any future assignment
+        // path that correctly comes through BoatOwnedItem.AssignToBoat().
+        if (GetComponent<BoatOwnedItemEscapeTracker>() == null)
+            gameObject.AddComponent<BoatOwnedItemEscapeTracker>();
+
         _registry = boat.GetComponent<BoatItemRegistry>();
         if (_registry != null)
         {
@@ -126,6 +133,28 @@ public sealed class BoatOwnedItem : MonoBehaviour, IMassContribution
     {
         if (_rb == null)
             _rb = GetComponent<Rigidbody2D>();
+    }
+
+    /// <summary>
+    /// Controls only the item's physical mass/COM contribution to its owning Boat.
+    /// Boat ownership itself is deliberately left unchanged.
+    ///
+    /// This lets a loose item stop loading the Boat the instant it leaves the
+    /// containment zone while preserving the existing ownership grace period for
+    /// persistence/layers/recovery behavior.
+    /// </summary>
+    public void SetPhysicallyContainedByOwningBoat(bool contained)
+    {
+        if (!contained)
+        {
+            UnregisterMassContribution();
+            return;
+        }
+
+        if (!IsOwnedByBoat || _owningBoat == null)
+            return;
+
+        RegisterMassContribution(_owningBoat);
     }
 
     private void RegisterMassContribution(Boat boat)

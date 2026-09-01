@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Survival.Attributes;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -10,6 +11,7 @@ public sealed class PlayerLadderClimber : MonoBehaviour
     [SerializeField] private LocalCharacterIntentSource localCharacterIntentSource;
     [SerializeField] private CharacterMotor2D motor;
     [SerializeField] private PlayerExertionEnergyState exertionEnergy;
+    [SerializeField] private PlayerAttributeState attributes;
 
     [Header("Detection")]
     [SerializeField] private LayerMask ladderMask = ~0;
@@ -177,6 +179,14 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         if (exertionEnergy == null)
             exertionEnergy = GetComponent<PlayerExertionEnergyState>();
 
+        if (attributes == null)
+        {
+            attributes =
+                GetComponent<PlayerAttributeState>() ??
+                GetComponentInParent<PlayerAttributeState>() ??
+                GetComponentInChildren<PlayerAttributeState>(true);
+        }
+
         _climbCastHits = new RaycastHit2D[Mathf.Max(1, climbCastMaxHits)];
         _playerColliders = GetComponentsInChildren<Collider2D>(true);
         _hatchLedgeOverlapBuffer = new Collider2D[24];
@@ -238,14 +248,30 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         float verticalAuthority = GetVerticalClimbAuthority(vertical);
         float horizontalAuthority = GetHorizontalClimbAuthority(horizontal);
 
+        // Per-ladder authored speed remains the baseline. Player attributes apply
+        // a global multiplier on top, so buffs/debuffs can affect climbing without
+        // erasing ladder-specific tuning.
+        float climbSpeedMultiplier =
+            GetLadderClimbSpeedMultiplier();
+
         Transform ladderFrame = _activeLadder.transform;
         Vector3 proposedLocalPos = _ladderLocalClimbPosition;
 
         float centerLocalX = GetClimbCenterLocalX(ladderFrame);
 
-        proposedLocalPos.y += vertical * _activeLadder.ClimbSpeed * verticalAuthority * Time.fixedDeltaTime;
+        proposedLocalPos.y +=
+            vertical *
+            _activeLadder.ClimbSpeed *
+            climbSpeedMultiplier *
+            verticalAuthority *
+            Time.fixedDeltaTime;
 
-        ApplyHorizontalLadderMovement(ref proposedLocalPos, centerLocalX, horizontal, horizontalAuthority);
+        ApplyHorizontalLadderMovement(
+            ref proposedLocalPos,
+            centerLocalX,
+            horizontal,
+            horizontalAuthority,
+            climbSpeedMultiplier);
 
         float localXDistanceFromCenter = Mathf.Abs(proposedLocalPos.x - centerLocalX);
         if (allowHorizontalMovementWhileClimbing && localXDistanceFromCenter > maxAttachedLocalXDistance)
@@ -395,7 +421,8 @@ public sealed class PlayerLadderClimber : MonoBehaviour
     ref Vector3 localPos,
     float centerLocalX,
     float horizontal,
-    float horizontalAuthority)
+    float horizontalAuthority,
+    float climbSpeedMultiplier)
     {
         if (!allowHorizontalMovementWhileClimbing)
         {
@@ -409,7 +436,12 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
         if (Mathf.Abs(horizontal) > 0.01f)
         {
-            localPos.x += horizontal * horizontalClimbSpeed * horizontalAuthority * Time.fixedDeltaTime;
+            localPos.x +=
+                horizontal *
+                horizontalClimbSpeed *
+                climbSpeedMultiplier *
+                horizontalAuthority *
+                Time.fixedDeltaTime;
             return;
         }
 
@@ -1014,6 +1046,20 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             s.x = -Mathf.Abs(s.x);
             transform.localScale = s;
         }
+    }
+
+    private float GetLadderClimbSpeedMultiplier()
+    {
+        float multiplier =
+            attributes != null
+                ? attributes.GetFloat(
+                    PlayerAttributeId.LadderClimbSpeedMultiplier,
+                    1f)
+                : 1f;
+
+        return Mathf.Max(
+            0f,
+            multiplier);
     }
 
     private float GetVerticalIntent(CharacterIntent intent)

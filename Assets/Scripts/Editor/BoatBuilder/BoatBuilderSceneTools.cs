@@ -133,15 +133,25 @@ public static partial class BoatBuilderSceneTools
             return;
         }
 
-        if (_ctx.Kit == null)
+        bool generatedItemContainmentTool =
+            _ctx.ActiveTool == BoatBuilderWindow.Tool.ItemContainmentZone;
+
+        if (_ctx.Kit == null && !generatedItemContainmentTool)
         {
             DrawStatus(view, "BoatKit missing. Assign one in Tools > Boat Builder > Window.");
             DestroyPreview();
             return;
         }
 
-        var prefab = GetPrefabForTool(_ctx.Kit, _ctx.ActiveTool, _ctx.SelectedHardpointType);
-        if (prefab == null)
+        GameObject prefab =
+            generatedItemContainmentTool
+                ? null
+                : GetPrefabForTool(
+                    _ctx.Kit,
+                    _ctx.ActiveTool,
+                    _ctx.SelectedHardpointType);
+
+        if (!generatedItemContainmentTool && prefab == null)
         {
             DrawStatus(view, $"Missing prefab reference for {_ctx.ActiveTool} in BoatKit.");
             DestroyPreview();
@@ -182,14 +192,23 @@ public static partial class BoatBuilderSceneTools
             return;
         }
 
-        if (_ctx.ShowSnapPreview && (e.type == EventType.MouseMove || e.type == EventType.MouseDrag || e.type == EventType.Repaint || e.type == EventType.Layout))
+        if (!generatedItemContainmentTool &&
+            _ctx.ShowSnapPreview &&
+            (e.type == EventType.MouseMove ||
+             e.type == EventType.MouseDrag ||
+             e.type == EventType.Repaint ||
+             e.type == EventType.Layout))
         {
             var world = MouseToWorldOnZPlane(e.mousePosition, _ctx.ZPlane);
             if (_ctx.SnapOnPlace) world = Snap(world, _ctx.GridSize);
             UpdatePreview(prefab, world);
 
-            if (e.type == EventType.MouseMove || e.type == EventType.MouseDrag || e.type == EventType.Layout)
+            if (e.type == EventType.MouseMove ||
+                e.type == EventType.MouseDrag ||
+                e.type == EventType.Layout)
+            {
                 view.Repaint();
+            }
         }
         else
         {
@@ -201,7 +220,15 @@ public static partial class BoatBuilderSceneTools
             var world = MouseToWorldOnZPlane(e.mousePosition, _ctx.ZPlane);
             if (_ctx.SnapOnPlace) world = Snap(world, _ctx.GridSize);
 
-            Transform boatRoot = _ctx.AutoParentToBoatRoot ? ResolveBoatRootParent() : null;
+            // Generated technical infrastructure must always resolve the BoatRoot;
+            // allowing it to float unparented would defeat the entire point.
+            Transform boatRoot =
+                generatedItemContainmentTool
+                    ? ResolveBoatRootParent()
+                    : (_ctx.AutoParentToBoatRoot
+                        ? ResolveBoatRootParent()
+                        : null);
+
             Transform parent = boatRoot != null
                 ? ResolvePlacementParentForTool(_ctx.ActiveTool, boatRoot)
                 : null;
@@ -218,7 +245,14 @@ public static partial class BoatBuilderSceneTools
 
             GameObject placed = null;
 
-            if (_ctx.ActiveTool == BoatBuilderWindow.Tool.Hatch)
+            if (_ctx.ActiveTool == BoatBuilderWindow.Tool.ItemContainmentZone)
+            {
+                placed =
+                    CreateGeneratedItemContainmentZone(
+                        boatRoot,
+                        parent);
+            }
+            else if (_ctx.ActiveTool == BoatBuilderWindow.Tool.Hatch)
             {
                 placed = TryPlaceHatchWithFloorSplit(prefab, world, parent);
             }

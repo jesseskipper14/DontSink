@@ -349,6 +349,10 @@ MonoBehaviour:
   baseMass: 7
   mass: 1
   baseLocalCenterOfMass: {x: 5.470949, y: 2.1594887}
+  mysteryOscillationLog: 0
+  mysteryOscillationLogEveryFixedTick: 0
+  mysteryOscillationMinimumForceMagnitude: 0
+  mysteryOscillationMinimumTorqueMagnitude: 0
   width: 9.941898
   height: 4.9659195
   volume: 49.370667

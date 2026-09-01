@@ -1268,6 +1268,10 @@ MonoBehaviour:
   baseMass: 30
   mass: 1
   baseLocalCenterOfMass: {x: 0, y: 2.8207016}
+  mysteryOscillationLog: 0
+  mysteryOscillationLogEveryFixedTick: 0
+  mysteryOscillationMinimumForceMagnitude: 0
+  mysteryOscillationMinimumTorqueMagnitude: 0
   width: 21
   height: 7.0914
   volume: 148.9194
@@ -1423,7 +1427,7 @@ MonoBehaviour:
   targetCamera: {fileID: 0}
   hideByCameraMaskWhenInterior:
     serializedVersion: 2
-    m_Bits: 66560
+    m_Bits: 1024
   autoFindMainCamera: 1
   logVisibility: 0
 --- !u!114 &412166976615872101

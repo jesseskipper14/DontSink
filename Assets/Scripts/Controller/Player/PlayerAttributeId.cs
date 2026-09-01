@@ -74,6 +74,9 @@ namespace Survival.Attributes
         CharacterSwimmingTorqueMultiplier = 121,
         CharacterUprightHeldMultiplier = 122,
 
+        // Ladder movement
+        LadderClimbSpeedMultiplier = 123,
+
         // Mini-games
         MiniGameTimingWindowMultiplier = 140,
         MiniGameProgressMultiplier = 141,

@@ -136,4 +136,6 @@ MonoBehaviour:
   - attribute: 122
     value: 1.5
   - attribute: 160
-    value: 100
+    value: 6
+  - attribute: 123
+    value: 1

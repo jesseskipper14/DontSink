@@ -26,6 +26,25 @@ public class Boat : MonoBehaviour, IForceBody
     [SerializeField]
     private Vector2 baseLocalCenterOfMass = Vector2.zero;
 
+    [Header("Mystery Oscillation Log")]
+    [Tooltip("Logs Boat.AddForce/AddTorque calls plus a once-per-FixedUpdate boat physics summary. Off by default.")]
+    [SerializeField] private bool mysteryOscillationLog = false;
+
+    [Tooltip("If true, also logs FixedUpdate summaries even on ticks where Boat.AddForce/AddTorque received nothing.")]
+    [SerializeField] private bool mysteryOscillationLogEveryFixedTick = false;
+
+    [Tooltip("Ignore individual force calls below this magnitude. Useful for suppressing tiny buoyancy/noise forces.")]
+    [SerializeField, Min(0f)] private float mysteryOscillationMinimumForceMagnitude = 0f;
+
+    [Tooltip("Ignore individual torque calls below this absolute magnitude.")]
+    [SerializeField, Min(0f)] private float mysteryOscillationMinimumTorqueMagnitude = 0f;
+
+    private Vector2 _mysteryOscillationAccumulatedForce;
+    private float _mysteryOscillationAccumulatedTorque;
+    private int _mysteryOscillationForceCallCount;
+    private int _mysteryOscillationTorqueCallCount;
+    private bool _mysteryOscillationHadLoggedInputThisTick;
+
     // ========================
     // Geometry
     // ========================
@@ -147,6 +166,8 @@ public class Boat : MonoBehaviour, IForceBody
     {
         float dt = Time.fixedDeltaTime;
 
+        BeginMysteryOscillationTick();
+
         EqualizeAllCompartments(dt);
 
         //foreach (var c in Compartments)
@@ -155,6 +176,8 @@ public class Boat : MonoBehaviour, IForceBody
         //}
 
         RecomputeMassAndCOM(); // TO DO ONLY RECOMPUTE WHEN MASS CHANGES
+
+        EndMysteryOscillationTick();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -170,13 +193,112 @@ public class Boat : MonoBehaviour, IForceBody
 
     public void AddForce(Vector2 force)
     {
+        if (mysteryOscillationLog)
+            LogMysteryOscillationForce(force);
+
         rb.AddForce(force, ForceMode2D.Force);
     }
 
     // Add a torque
     public void AddTorque(float torque)
     {
+        if (mysteryOscillationLog)
+            LogMysteryOscillationTorque(torque);
+
         rb.AddTorque(torque, ForceMode2D.Force);
+    }
+
+    private void BeginMysteryOscillationTick()
+    {
+        if (!mysteryOscillationLog)
+            return;
+
+        _mysteryOscillationAccumulatedForce = Vector2.zero;
+        _mysteryOscillationAccumulatedTorque = 0f;
+        _mysteryOscillationForceCallCount = 0;
+        _mysteryOscillationTorqueCallCount = 0;
+        _mysteryOscillationHadLoggedInputThisTick = false;
+    }
+
+    private void LogMysteryOscillationForce(Vector2 force)
+    {
+        float magnitude = force.magnitude;
+
+        _mysteryOscillationAccumulatedForce += force;
+        _mysteryOscillationForceCallCount++;
+
+        if (magnitude < mysteryOscillationMinimumForceMagnitude)
+            return;
+
+        _mysteryOscillationHadLoggedInputThisTick = true;
+
+        Debug.Log(
+            $"[Mystery Oscillation Log:{name}] FORCE " +
+            $"tick={Time.frameCount} fixedTime={Time.fixedTime:F4} " +
+            $"force=({force.x:F4},{force.y:F4}) mag={magnitude:F4} " +
+            $"pos=({rb.position.x:F4},{rb.position.y:F4}) " +
+            $"rot={rb.rotation:F3} " +
+            $"vel=({rb.linearVelocity.x:F4},{rb.linearVelocity.y:F4}) " +
+            $"angVel={rb.angularVelocity:F4} " +
+            $"mass={rb.mass:F4} " +
+            $"worldCOM=({rb.worldCenterOfMass.x:F4},{rb.worldCenterOfMass.y:F4})",
+            this);
+    }
+
+    private void LogMysteryOscillationTorque(float torque)
+    {
+        float magnitude = Mathf.Abs(torque);
+
+        _mysteryOscillationAccumulatedTorque += torque;
+        _mysteryOscillationTorqueCallCount++;
+
+        if (magnitude < mysteryOscillationMinimumTorqueMagnitude)
+            return;
+
+        _mysteryOscillationHadLoggedInputThisTick = true;
+
+        Debug.Log(
+            $"[Mystery Oscillation Log:{name}] TORQUE " +
+            $"tick={Time.frameCount} fixedTime={Time.fixedTime:F4} " +
+            $"torque={torque:F4} " +
+            $"rot={rb.rotation:F3} " +
+            $"angVel={rb.angularVelocity:F4} " +
+            $"mass={rb.mass:F4} " +
+            $"inertia={rb.inertia:F4}",
+            this);
+    }
+
+    private void EndMysteryOscillationTick()
+    {
+        if (!mysteryOscillationLog)
+            return;
+
+        if (!mysteryOscillationLogEveryFixedTick &&
+            !_mysteryOscillationHadLoggedInputThisTick)
+        {
+            return;
+        }
+
+        Vector2 totalForce =
+            _mysteryOscillationAccumulatedForce;
+
+        Debug.Log(
+            $"[Mystery Oscillation Log:{name}] TICK SUMMARY " +
+            $"tick={Time.frameCount} fixedTime={Time.fixedTime:F4} " +
+            $"forceCalls={_mysteryOscillationForceCallCount} " +
+            $"sumForce=({totalForce.x:F4},{totalForce.y:F4}) " +
+            $"sumForceMag={totalForce.magnitude:F4} " +
+            $"torqueCalls={_mysteryOscillationTorqueCallCount} " +
+            $"sumTorque={_mysteryOscillationAccumulatedTorque:F4} " +
+            $"pos=({rb.position.x:F4},{rb.position.y:F4}) " +
+            $"rot={rb.rotation:F3} " +
+            $"vel=({rb.linearVelocity.x:F4},{rb.linearVelocity.y:F4}) " +
+            $"angVel={rb.angularVelocity:F4} " +
+            $"mass={rb.mass:F4} " +
+            $"localCOM=({rb.centerOfMass.x:F4},{rb.centerOfMass.y:F4}) " +
+            $"worldCOM=({rb.worldCenterOfMass.x:F4},{rb.worldCenterOfMass.y:F4}) " +
+            $"inertia={rb.inertia:F4}",
+            this);
     }
 
     // ========================
