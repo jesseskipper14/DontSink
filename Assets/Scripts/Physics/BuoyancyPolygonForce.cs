@@ -130,7 +130,10 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
 
             totalSubmergedArea += area;
 
-            Vector2 centroid = -PolygonCentroid(slicePoly, area);
+            Vector2 centroid =
+                PolygonCentroid(
+                    slicePoly,
+                    area);
 
             // --- Buoyant force ---
             float sliceVolume = area; // 2D: area acts as volume proxy
@@ -245,25 +248,60 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
             Vector2 curr = polygon[i];
             Vector2 next = polygon[(i + 1) % n];
 
-            float surfaceCurr = SampleActiveSurfaceY(curr.x);
-            float surfaceNext = SampleActiveSurfaceY(next.x);
+            float surfaceCurr =
+                SampleActiveSurfaceY(
+                    curr.x);
 
-            bool currSubmerged = curr.y <= surfaceCurr;
-            bool nextSubmerged = next.y <= surfaceNext;
+            float surfaceNext =
+                SampleActiveSurfaceY(
+                    next.x);
+
+            // Signed distance from each polygon endpoint to the sampled water
+            // surface. Negative/zero means submerged.
+            float currDistance =
+                curr.y -
+                surfaceCurr;
+
+            float nextDistance =
+                next.y -
+                surfaceNext;
+
+            bool currSubmerged =
+                currDistance <= 0f;
+
+            bool nextSubmerged =
+                nextDistance <= 0f;
 
             if (currSubmerged)
                 output.Add(curr);
 
             if (currSubmerged != nextSubmerged)
             {
-                float denom = next.y - curr.y;
-                float t = Mathf.Abs(denom) > 0.000001f
-                    ? (surfaceCurr - curr.y) / denom
-                    : 0f;
+                // Treat the sampled surface between the two endpoints as
+                // locally linear. The previous calculation used surfaceCurr
+                // for both ends, which is only correct for perfectly flat water.
+                float denom =
+                    currDistance -
+                    nextDistance;
 
-                t = Mathf.Clamp01(t);
-                Vector2 intersect = curr + t * (next - curr);
-                output.Add(intersect);
+                float t =
+                    Mathf.Abs(denom) >
+                    0.000001f
+                        ? currDistance /
+                          denom
+                        : 0f;
+
+                t =
+                    Mathf.Clamp01(
+                        t);
+
+                Vector2 intersect =
+                    curr +
+                    t *
+                    (next - curr);
+
+                output.Add(
+                    intersect);
             }
         }
 
@@ -318,39 +356,90 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
         return Mathf.Abs(area) * 0.5f;
     }
 
-    Vector2 PolygonCentroid(List<Vector2> poly, float area)
+    Vector2 PolygonCentroid(
+        List<Vector2> poly,
+        float area)
     {
-        float cx = 0f;
-        float cy = 0f;
-        float factor;
-        int count = poly.Count;
-
-        for (int i = 0; i < count; i++)
+        if (poly == null ||
+            poly.Count == 0)
         {
-            Vector2 a = poly[i];
-            Vector2 b = poly[(i + 1) % count];
-            factor = a.x * b.y - b.x * a.y;
-            cx += (a.x + b.x) * factor;
-            cy += (a.y + b.y) * factor;
+            return Vector2.zero;
         }
 
-        float denom = area * 6f;
-        if (Mathf.Abs(denom) < 1e-5f)
-            return poly[0]; // degenerate fallback
+        float weightedX = 0f;
+        float weightedY = 0f;
+        float crossSum = 0f;
+        int count = poly.Count;
 
-        return new Vector2(cx / denom, cy / denom);
+        for (int i = 0;
+             i < count;
+             i++)
+        {
+            Vector2 a =
+                poly[i];
+
+            Vector2 b =
+                poly[(i + 1) %
+                     count];
+
+            float cross =
+                a.x * b.y -
+                b.x * a.y;
+
+            crossSum +=
+                cross;
+
+            weightedX +=
+                (a.x + b.x) *
+                cross;
+
+            weightedY +=
+                (a.y + b.y) *
+                cross;
+        }
+
+        // Standard polygon centroid denominator:
+        // 6 * signedArea == 3 * crossSum.
+        //
+        // Using the signed cross sum means this works for BOTH clockwise and
+        // counter-clockwise polygons. The old code used absolute area and then
+        // compensated at call sites with a unary minus, which was fragile.
+        float denom =
+            3f *
+            crossSum;
+
+        if (Mathf.Abs(denom) <
+            0.00001f)
+        {
+            return poly[0];
+        }
+
+        return new Vector2(
+            weightedX / denom,
+            weightedY / denom);
     }
 
-    Vector2 LocalToWorld(IForceBody body, Vector2 local)
+    Vector2 LocalToWorld(
+        IForceBody body,
+        Vector2 local)
     {
-        float rad = body.rb.rotation * Mathf.Deg2Rad;
-        float c = Mathf.Cos(rad);
-        float s = Mathf.Sin(rad);
+        if (body == null)
+            return local;
 
-        return body.Position + new Vector2(
-            local.x * c - local.y * s,
-            local.x * s + local.y * c
-        );
+        if (body.rb != null)
+        {
+            // Authoritative geometry is stored in body-local coordinates.
+            // TransformPoint applies translation, rotation, AND scale exactly
+            // once. The previous hand-written conversion ignored scale, which
+            // caused the buoyancy hull/slices to diverge from scaled boats.
+            return
+                body.rb.transform.TransformPoint(
+                    local);
+        }
+
+        return
+            body.Position +
+            local;
     }
 
     List<Vector2> ClipPolygonByY(
@@ -615,20 +704,47 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
             float area = PolygonArea(slicePoly);
             if (area > 0f)
             {
-                Vector2 centroid = -PolygonCentroid(slicePoly, area);
-                Gizmos.color = Color.blue;
-                Gizmos.DrawSphere(centroid, 0.05f);
+                Vector2 centroid =
+                    PolygonCentroid(
+                        slicePoly,
+                        area);
+
+                Gizmos.color =
+                    Color.blue;
+
+                Gizmos.DrawSphere(
+                    centroid,
+                    0.05f);
             }
         }
 
         // --- Draw water surface reference ---
         Gizmos.color = Color.red;
-        float drawMinX = body.Position.x - body.Width;
-        float drawMaxX = body.Position.x + body.Width;
+
+        float drawMinX =
+            float.PositiveInfinity;
+
+        float drawMaxX =
+            float.NegativeInfinity;
+
+        for (int i = 0;
+             i < worldHull.Length;
+             i++)
+        {
+            drawMinX =
+                Mathf.Min(
+                    drawMinX,
+                    worldHull[i].x);
+
+            drawMaxX =
+                Mathf.Max(
+                    drawMaxX,
+                    worldHull[i].x);
+        }
 
         const int steps = 16;
         Vector2 prev = new Vector2(drawMinX, waveManager.SampleSurfaceY(drawMinX));
-        
+
         for (int i = 1; i <= steps; i++)
         {
             float x = Mathf.Lerp(drawMinX, drawMaxX, i / (float)steps);

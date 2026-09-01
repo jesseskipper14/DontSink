@@ -1,0 +1,12736 @@
+# Scene Hierarchy Diagnostics Report
+
+Generated Local: `2026-09-01 14:51:10`
+Generated UTC: `2026-09-01T19:51:10.0579942Z`
+Unity: `6000.0.65f1`
+Project: `Don't Sink`
+Play Mode: `False`
+
+## Scene Summary
+
+| Scene | Path | Build Index | Loaded | Dirty | Objects | Components | DDOL |
+|---|---|---:|---:|---:|---:|---:|---:|
+| `NodeScene` | `Assets/Scenes/NodeScene.unity` | 1 | True | True | 280 | 827 | False |
+
+Total Objects: `280`
+Total Components: `827`
+Missing Scripts: `0`
+Stable ID Entries: `4`
+Duplicate Stable ID Groups: `0`
+
+## Suspicion Report
+
+### Null Object Reference Fields
+
+- `NodeScene` `AgentSceneSpawner/MarketVendorSpawn` `AgentSpawnPoint.prefabOverride`
+- `NodeScene` `AgentSceneSpawner/MarketVendorSpawn/MarketVendorBounds` `BoxCollider2D.m_Material`
+- `NodeScene` `AgentSceneSpawner/ItemVendorSpawn` `AgentSpawnPoint.prefabOverride`
+- `NodeScene` `AgentSceneSpawner/ItemVendorSpawn/ItemVendorBounds` `BoxCollider2D.m_Material`
+- `NodeScene` `AgentSceneSpawner/BoatVendorSpawn` `AgentSpawnPoint.prefabOverride`
+- `NodeScene` `AgentSceneSpawner/BoatVendorSpawn/BoatVendorBounds` `BoxCollider2D.m_Material`
+- `NodeScene` `AgentSceneSpawner/SmallFishSpawn` `AgentSpawnPoint.prefabOverride`
+- `NodeScene` `AgentSceneSpawner/SmallFishSpawn/SmallFishBounds` `BoxCollider2D.m_Material`
+- `NodeScene` `CharacterPlayer` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `CharacterPlayer` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `CharacterPlayer` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `CharacterPlayer` `Rigidbody2D.m_Material`
+- `NodeScene` `CharacterPlayer` `BoxCollider2D.m_Material`
+- `NodeScene` `CharacterPlayer` `CapsuleCollider2D.m_Material`
+- `NodeScene` `CharacterPlayer` `BuoyancyPolygonForce.waveManager`
+- `NodeScene` `CharacterPlayer` `BuoyancyPolygonForce.explicitWaterContext`
+- `NodeScene` `CharacterPlayer` `CharacterUprightForce.attributes`
+- `NodeScene` `CharacterPlayer` `InteractPromptDriver.localAuthoritySource`
+- `NodeScene` `CharacterPlayer` `PlayerLadderClimber.attributes`
+- `NodeScene` `CharacterPlayer` `PlayerSubmersionState.boardingState`
+- `NodeScene` `CharacterPlayer` `PlayerSubmersionState.explicitWaterContext`
+- `NodeScene` `CharacterPlayer` `PlayerSubmersionState.waveManager`
+- `NodeScene` `CharacterPlayer` `PlayerSubmersionState.bottomPoint`
+- `NodeScene` `CharacterPlayer` `PlayerSubmersionState.topPoint`
+- `NodeScene` `CharacterPlayer` `PlayerSwimOrientationForce.sub`
+- `NodeScene` `CharacterPlayer/Head` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `CharacterPlayer/Head` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `CharacterPlayer/Head` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `CharacterPlayer/Hands` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `CharacterPlayer/Hands` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `CharacterPlayer/Hands` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `CharacterPlayer/Hands` `PlayerHeldItemVisual.heldSpriteRenderer`
+- `NodeScene` `CharacterPlayer/Hands` `PlayerHeldItemVisual.visualRoot`
+- `NodeScene` `CharacterPlayer/Hands` `PlayerHeldItemVisual.cargoLabel`
+- `NodeScene` `CharacterPlayer/Vitals` `AmbientSurfaceAirSource.waveManager`
+- `NodeScene` `CharacterPlayer/Vitals` `AmbientSurfaceAirSource.explicitWaterContext`
+- `NodeScene` `CharacterPlayer/Vitals` `AmbientSurfaceAirSource.boardingState`
+- `NodeScene` `CharacterPlayer/Vitals` `CorpseRespawnHandler.body`
+- `NodeScene` `CharacterPlayer/Vitals` `CorpseRespawnHandler.air`
+- `NodeScene` `CharacterPlayer/Vitals` `CorpseRespawnHandler.oxygenation`
+- `NodeScene` `CharacterPlayer/Vitals` `CorpseRespawnHandler.afflictions`
+- `NodeScene` `CharacterPlayer/Vitals` `CorpseRespawnHandler.exertionEnergy`
+- `NodeScene` `CharacterPlayer/WearableOverlay` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `CharacterPlayer/WearableOverlay` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `CharacterPlayer/WearableOverlay` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `CharacterPlayer/WearableOverlay` `SpriteRenderer.m_Sprite`
+- `NodeScene` `EnvironmentManager/GlobalBrightnessManager` `GlobalBrightnessManager.globalLight`
+- `NodeScene` `EnvironmentManager/SkyVisualManager` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `EnvironmentManager/SkyVisualManager` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `EnvironmentManager/SkyVisualManager` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `EnvironmentManager/SkyVisualManager` `SpriteRenderer.m_Sprite`
+- `NodeScene` `EnvironmentManager/TimeManager` `TimeOfDayManager.phaseConfig`
+- `NodeScene` `EnvironmentManager/TimeManager` `TimeOfDayDriver.timeOfDay`
+- `NodeScene` `EnvironmentManager/WindManager/WindShaderRenderer` `MeshRenderer.m_ProbeAnchor`
+- `NodeScene` `EnvironmentManager/WindManager/WindShaderRenderer` `MeshRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `EnvironmentManager/WindManager/WindShaderRenderer` `MeshRenderer.m_LightmapParameters`
+- `NodeScene` `EventSystem` `EventSystem.m_FirstSelected`
+- `NodeScene` `EventSystem` `InputSystemUIInputModule.m_XRTrackingOrigin`
+- `NodeScene` `GameState` `GameState.boatRegistry`
+- `NodeScene` `GameState` `GameState.moneyChestTreasury`
+- `NodeScene` `Global Light 2D` `Light2D.m_LightCookieSprite`
+- `NodeScene` `Global Light 2D` `Light2D.m_DeprecatedPointLightCookieSprite`
+- `NodeScene` `Main Camera` `Camera.m_TargetTexture`
+- `NodeScene` `Main Camera` `UniversalAdditionalCameraData.m_VolumeTrigger`
+- `NodeScene` `Main Camera` `CameraManager.internalCamera`
+- `NodeScene` `Main Camera` `CameraManager.intentSourceComponent`
+- `NodeScene` `Moon` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `Moon` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `Moon` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `Moon` `Light2D.m_LightCookieSprite`
+- `NodeScene` `Moon` `Light2D.m_DeprecatedPointLightCookieSprite`
+- `NodeScene` `NodeContext/NodeView/Dock` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/Dock` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/Dock` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/NodeView/Dock` `BoxCollider2D.m_Material`
+- `NodeScene` `NodeContext/NodeView/Dock/post` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/Dock/post` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/Dock/post` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/NodeView/Dock/post (1)` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/Dock/post (1)` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/Dock/post (1)` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/NodeView/Dock/post (2)` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/Dock/post (2)` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/Dock/post (2)` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/NodeView/Dock/post (3)` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/Dock/post (3)` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/Dock/post (3)` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/NodeView/Dock/Ladder` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/Dock/Ladder` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/Dock/Ladder` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/NodeView/Dock/Ladder` `BoxCollider2D.m_Material`
+- `NodeScene` `NodeContext/NodeView/Dock/Ladder (1)` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/Dock/Ladder (1)` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/Dock/Ladder (1)` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/NodeView/Dock/Ladder (1)` `BoxCollider2D.m_Material`
+- `NodeScene` `NodeContext/NodeView/Dock/Ladder (2)` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/Dock/Ladder (2)` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/Dock/Ladder (2)` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/NodeView/Dock/Ladder (2)` `BoxCollider2D.m_Material`
+- `NodeScene` `NodeContext/NodeView/NodeBackground` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/NodeBackground` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/NodeBackground` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/NodeView/NodeEnvironmentBackground` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/NodeEnvironmentBackground` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/NodeEnvironmentBackground` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/NodeView/NodeTownBackground` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/NodeTownBackground` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/NodeTownBackground` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/NodeView/Building A - Market` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/Building A - Market` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/Building A - Market` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/NodeView/Building A - Market/MarketSellZone` `BoxCollider2D.m_Material`
+- `NodeScene` `NodeContext/NodeView/Building A - Market/InteractableZone` `BoxCollider2D.m_Material`
+- `NodeScene` `NodeContext/NodeView/Building B` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/Building B` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/Building B` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/NodeView/Building C` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/Building C` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/Building C` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/NodeView/Building D` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/Building D` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/Building D` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/NodeView/Building E` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/Building E` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/Building E` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/NodeView/Building F` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `NodeContext/NodeView/Building F` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `NodeContext/NodeView/Building F` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `NodeContext/MoneyChestNodeLostChestSpawner` `MoneyChestNodeLostChestSpawner.spawnAnchor`
+- `NodeScene` `NodeContext/MoneyChestReplacementChestSpawner` `MoneyChestReplacementChestSpawner.explicitSecureSlot`
+- `NodeScene` `NodeContext/MoneyChestReplacementChestSpawner` `MoneyChestReplacementChestSpawner.fallbackSpawnArea`
+- `NodeScene` `Runners` `TradeWorldMapRunner.timeOfDay`
+- `NodeScene` `Runners` `TradeWorldMapRunner.binder`
+- `NodeScene` `Runners` `TradeWorldMapRunner.itemStoreOverride`
+- `NodeScene` `SceneContext` `SceneContext.travelLauncher`
+- `NodeScene` `SeaFloor` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `SeaFloor` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `SeaFloor` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `SeaFloor` `Rigidbody2D.m_Material`
+- `NodeScene` `SeaFloor` `EdgeCollider2D.m_Material`
+- `NodeScene` `SeaFloor` `GeneratedGroundSampler2D.edge`
+- `NodeScene` `SeaFloor/NodeGroundVisual` `MeshFilter.m_Mesh`
+- `NodeScene` `SeaFloor/NodeGroundVisual` `MeshRenderer.m_ProbeAnchor`
+- `NodeScene` `SeaFloor/NodeGroundVisual` `MeshRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `SeaFloor/NodeGroundVisual` `MeshRenderer.m_LightmapParameters`
+- `NodeScene` `SeaFloor/BoundaryWall_Left` `BoxCollider2D.m_Material`
+- `NodeScene` `SeaFloor/BoundaryWall_Right` `BoxCollider2D.m_Material`
+- `NodeScene` `SeaFloor/UnderwaterResourceSpawner` `UnderwaterResourceSceneSpawner.spawnedRoot`
+- `NodeScene` `SkyBackground` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `SkyBackground` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `SkyBackground` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `SkyBackground/SunMask` `SpriteMask.m_ProbeAnchor`
+- `NodeScene` `SkyBackground/SunMask` `SpriteMask.m_LightProbeVolumeOverride`
+- `NodeScene` `SkyBackground/SunMask` `SpriteMask.m_LightmapParameters`
+- `NodeScene` `SkyBackground/SeaBackground2D` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `SkyBackground/SeaBackground2D` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `SkyBackground/SeaBackground2D` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `SkyBackground/Sunrise/Sunset` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `SkyBackground/Sunrise/Sunset` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `SkyBackground/Sunrise/Sunset` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `SkyBackground/CloudBackground2D_1` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `SkyBackground/CloudBackground2D_1` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `SkyBackground/CloudBackground2D_1` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `SkyBackground/CloudBackground2D_2` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `SkyBackground/CloudBackground2D_2` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `SkyBackground/CloudBackground2D_2` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `SkyBackground/Rain2D` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `SkyBackground/Rain2D` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `SkyBackground/Rain2D` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `SkyBackground/FogForeground2D` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `SkyBackground/FogForeground2D` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `SkyBackground/FogForeground2D` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `SkyBackground/FogMidground2D` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `SkyBackground/FogMidground2D` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `SkyBackground/FogMidground2D` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `SkyBackground/FogBackground2D` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `SkyBackground/FogBackground2D` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `SkyBackground/FogBackground2D` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `SkyBackground/WindForeground2D` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `SkyBackground/WindForeground2D` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `SkyBackground/WindForeground2D` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `Sun` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `Sun` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `Sun` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `Sun` `Light2D.m_LightCookieSprite`
+- `NodeScene` `Sun` `Light2D.m_DeprecatedPointLightCookieSprite`
+- `NodeScene` `Sun/Corona` `SpriteRenderer.m_ProbeAnchor`
+- `NodeScene` `Sun/Corona` `SpriteRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `Sun/Corona` `SpriteRenderer.m_LightmapParameters`
+- `NodeScene` `WaveSystem` `LineRenderer.m_ProbeAnchor`
+- `NodeScene` `WaveSystem` `LineRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `WaveSystem` `LineRenderer.m_LightmapParameters`
+- `NodeScene` `WaveSystem` `WaveRenderer_Line.centerTarget`
+- `NodeScene` `WaveSystem` `MeshFilter.m_Mesh`
+- `NodeScene` `WaveSystem` `MeshRenderer.m_ProbeAnchor`
+- `NodeScene` `WaveSystem` `MeshRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `WaveSystem` `MeshRenderer.m_LightmapParameters`
+- `NodeScene` `WaveSystem/Ocean_Back` `MeshFilter.m_Mesh`
+- `NodeScene` `WaveSystem/Ocean_Back` `MeshRenderer.m_ProbeAnchor`
+- `NodeScene` `WaveSystem/Ocean_Back` `MeshRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `WaveSystem/Ocean_Back` `MeshRenderer.m_LightmapParameters`
+- `NodeScene` `WaveSystem/Ocean_Front` `MeshFilter.m_Mesh`
+- `NodeScene` `WaveSystem/Ocean_Front` `MeshRenderer.m_ProbeAnchor`
+- `NodeScene` `WaveSystem/Ocean_Front` `MeshRenderer.m_LightProbeVolumeOverride`
+- `NodeScene` `WaveSystem/Ocean_Front` `MeshRenderer.m_LightmapParameters`
+- `NodeScene` `WorldGenerationRoot` `WorldMapTopographyDebugSource.contourTexture`
+- `NodeScene` `WorldGenerationRoot` `WorldMapTopographyDebugSource.debugTexture`
+- `NodeScene` `WorldGenerationRoot` `WorldMapTopographyDebugSource.classificationTexture`
+- `NodeScene` `WorldGenerationRoot` `WorldMapTopographyDebugSource.biomeTexture`
+- `NodeScene` `UIOverlayRoot/Canvas` `Canvas.m_Camera`
+- `NodeScene` `UIOverlayRoot/Canvas/Time` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/NodeUI/Embark!` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/NodeUI/Embark!/Embark!` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel` `Image.m_Sprite`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/MapContent/RouteEdge` `UIEdgeGraphic.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/MapContent/PlayerMarker` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/MapContent/PlayerMarker` `Image.m_Sprite`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Prosperity` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Prosperity/Prosperity` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Stability` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Stability/Stability` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Security` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Security/Security` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Dock` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Dock/Dock` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Trade` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Trade/Trade` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Population` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Population/Population` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Food Balance` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Food Balance/Food Balance` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/None (Reset)` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/None (Reset)/None (Reset)` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/ActiveSelection` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/TravelOptions` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/TravelOptions/Lock` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/TravelOptions/Lock/Lock` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/TravelOptions/Unlock` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/TravelOptions/Unlock/Unlock` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/InteractPromptUI` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ExertionEnergyUI` `DevExertionEnergyHUD.model`
+- `NodeScene` `UIOverlayRoot/Canvas/ExertionEnergyUI` `DevExertionEnergyHUD.debugText`
+- `NodeScene` `UIOverlayRoot/Canvas/ExertionEnergyUI/Energy/Background` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ExertionEnergyUI/Energy/Fill Area/Fill` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ExertionEnergyUI/Energy/Handle Slide Area/Handle` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ExertionEnergyUI/Energy/EnergyBar` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ExertionEnergyUI/Exertion/Background` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ExertionEnergyUI/Exertion/Fill Area/Fill` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ExertionEnergyUI/Exertion/Handle Slide Area/Handle` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ExertionEnergyUI/Exertion/ExertionBar` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ExertionEnergyUI/ExertionState` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ExertionEnergyUI/EnergyState` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/AirMeterUI` `DevAirHUD.air`
+- `NodeScene` `UIOverlayRoot/Canvas/AirMeterUI` `DevAirHUD.airFillImage`
+- `NodeScene` `UIOverlayRoot/Canvas/AirMeterUI` `DevAirHUD.debugText`
+- `NodeScene` `UIOverlayRoot/Canvas/AirMeterUI/AirMeter/Background` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/AirMeterUI/AirMeter/Fill Area/Fill` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/AirMeterUI/AirMeter/Handle Slide Area/Handle` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/AirMeterUI/AirMeter/Air` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/AirMeterUI/AirState` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/TitleText` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/TitleText` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/TitleText` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/TitleText` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/TitleText` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/TitleText` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/TitleText` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/TitleText` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/BodyText` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/BodyText` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/BodyText` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/BodyText` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/BodyText` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/BodyText` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/BodyText` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/BodyText` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/Afflictions` `AfflictionListUI.system`
+- `NodeScene` `UIOverlayRoot/Canvas/Afflictions/AfflictionList` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/Afflictions/AfflictionList` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/Afflictions/AfflictionList` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/Afflictions/AfflictionList` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/Afflictions/AfflictionList` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/Afflictions/AfflictionList` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/Afflictions/AfflictionList` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/Afflictions/AfflictionList` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/HealthUI` `SpO2DebugUI.oxygenation`
+- `NodeScene` `UIOverlayRoot/Canvas/HealthUI/SpO2` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/HealthUI/SpO2` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/HealthUI/SpO2` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/HealthUI/SpO2` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/HealthUI/SpO2` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/HealthUI/SpO2` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/HealthUI/SpO2` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/HealthUI/SpO2` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/ExternalInventoryRoot/ExternalInventoryPanel` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ExternalInventoryRoot/ExternalInventoryPanel/ItemInventoryText` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ExternalInventoryRoot/ExternalInventoryPanel/ItemInventoryText` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/ExternalInventoryRoot/ExternalInventoryPanel/ItemInventoryText` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/ExternalInventoryRoot/ExternalInventoryPanel/ItemInventoryText` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/ExternalInventoryRoot/ExternalInventoryPanel/ItemInventoryText` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/ExternalInventoryRoot/ExternalInventoryPanel/ItemInventoryText` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/ExternalInventoryRoot/ExternalInventoryPanel/ItemInventoryText` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/ExternalInventoryRoot/ExternalInventoryPanel/ItemInventoryText` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/DragVisualRoot/DragIcon` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/DragVisualRoot/DragIcon` `Image.m_Sprite`
+- `NodeScene` `UIOverlayRoot/Canvas/DragVisualRoot/DragQuantity` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/DragVisualRoot/DragCargoLabel` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/DragVisualRoot/DragCargoLabel` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/DragVisualRoot/DragCargoLabel` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/DragVisualRoot/DragCargoLabel` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/DragVisualRoot/DragCargoLabel` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/DragVisualRoot/DragCargoLabel` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/DragVisualRoot/DragCargoLabel` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/DragVisualRoot/DragCargoLabel` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/EscapeMenuRoot` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/EscapeMenuRoot` `EscapeMenuUI.saveLoadPanel`
+- `NodeScene` `UIOverlayRoot/Canvas/EscapeMenuRoot/ResumeButton` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/EscapeMenuRoot/ResumeButton/Resume` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/EscapeMenuRoot/SaveButton` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/EscapeMenuRoot/SaveButton/Save` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/EscapeMenuRoot/LoadButton` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/EscapeMenuRoot/LoadButton/Load` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/EscapeMenuRoot/SettingsButton` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/EscapeMenuRoot/SettingsButton/Settings` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/EscapeMenuRoot/MainMenuButton` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/EscapeMenuRoot/MainMenuButton/Main Menu` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/EscapeMenuRoot/QuitButton` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/EscapeMenuRoot/QuitButton/Quit` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot` `SaveLoadPanelUI.saveLoad`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot` `SaveLoadPanelUI.deleteSelectedButton`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot` `SaveLoadPanelUI.versionText`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Header/SaveLoadText` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Header/SaveLoadText` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Header/SaveLoadText` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Header/SaveLoadText` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Header/SaveLoadText` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Header/SaveLoadText` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Header/SaveLoadText` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Header/SaveLoadText` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView` `Image.m_Sprite`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView` `ScrollRect.m_HorizontalScrollbar`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Viewport` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Viewport` `Image.m_Sprite`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Scrollbar` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Scrollbar/Sliding Area/Handle` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput` `TMP_InputField.m_VerticalScrollbar`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput` `TMP_InputField.m_VerticalScrollbarEventHandler`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput` `TMP_InputField.m_LayoutGroup`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput` `TMP_InputField.m_InputValidator`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput` `TMP_InputField.m_VerticalScrollbar`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput` `TMP_InputField.m_VerticalScrollbarEventHandler`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput` `TMP_InputField.m_LayoutGroup`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput` `TMP_InputField.m_InputValidator`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/StatusText` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/StatusText` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/StatusText` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/StatusText` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/StatusText` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/StatusText` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/StatusText` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/StatusText` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/SaveButton` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/SaveButton/Save` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/LoadButton` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/LoadButton/Load` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/OpenFolderButton` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/OpenFolderButton/OpenFolder` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/CloseButton` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/CloseButton/Close` `Text.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/TitleText` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/TitleText` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/TitleText` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/TitleText` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/TitleText` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/TitleText` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/TitleText` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/TitleText` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/MessageText` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/MessageText` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/MessageText` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/MessageText` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/MessageText` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/MessageText` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/MessageText` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/MessageText` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/CancelButton` `Image.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` `TextMeshProUGUI.m_Material`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` `TextMeshProUGUI.m_fontMaterial`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` `TextMeshProUGUI.m_spriteAsset`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` `TextMeshProUGUI.m_StyleSheet`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` `TextMeshProUGUI.m_linkedTextComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` `TextMeshProUGUI.parentLinkedComponent`
+- `NodeScene` `UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` `TextMeshProUGUI.m_baseMaterial`
+- `NodeScene` `WorldMapRuntime` `WorldMapRuntimeBinder.runtimePrefab`
+
+### Debug / Temp / Test Named Objects or Components
+
+- `NodeScene` `CharacterPlayer/Vitals` `DebugDeathHandler`
+- `NodeScene` `CharacterPlayer/PlayerInventory` `InventoryDebugSpawner`
+- `NodeScene` `Controllers` `WorldMapTravelDebugController`
+- `NodeScene` `Controllers` `StarMapDebugController`
+- `NodeScene` `GameplayAuthority` `GameplayAuthorityDebugSetter`
+- `NodeScene` `NodeContext/NodeDebug` `Transform`
+- `NodeScene` `Runners` `MoneyServiceDebugTester`
+- `NodeScene` `WorldGenerationRoot` `WorldMapTopographyDebugSource`
+- `NodeScene` `UIOverlayRoot/Canvas/HealthUI` `SpO2DebugUI`
+
+## Component Type Summary
+
+- `RectTransform`: `159`
+- `Transform`: `121`
+- `CanvasRenderer`: `104`
+- `Image`: `50`
+- `SpriteRenderer`: `36`
+- `Text`: `30`
+- `Button`: `25`
+- `TextMeshProUGUI`: `22`
+- `LayoutElement`: `19`
+- `BoxCollider2D`: `13`
+- `VerticalLayoutGroup`: `12`
+- `HorizontalLayoutGroup`: `7`
+- `MeshRenderer`: `5`
+- `GridLayoutGroup`: `5`
+- `AgentSpawnPoint`: `4`
+- `AgentHomeBounds`: `4`
+- `MeshFilter`: `4`
+- `SortingLayerSetter`: `4`
+- `Light2D`: `3`
+- `LadderZone`: `3`
+- `ResizableSegment2D`: `3`
+- `LadderAutoFitAuthoring`: `3`
+- `WaterMeshRenderer`: `3`
+- `Slider`: `3`
+- `RectMask2D`: `3`
+- `Rigidbody2D`: `2`
+- `TMP_InputField`: `2`
+- `AgentSceneSpawner`: `1`
+- `AgentSpawnZone`: `1`
+- `CapsuleCollider2D`: `1`
+- `CharacterPlayer`: `1`
+- `BuoyancyPolygonForce`: `1`
+- `CharacterLocomotionModeSwitcher`: `1`
+- `CharacterMotor2D`: `1`
+- `CharacterMoveForce`: `1`
+- `CharacterSwimForce`: `1`
+- `CharacterUprightForce`: `1`
+- `DragForce`: `1`
+- `ForceBody2D`: `1`
+- `ForceSystem`: `1`
+- `InteractPromptDriver`: `1`
+- `Interactor2D`: `1`
+- `LocalBoatControlIntentSource`: `1`
+- `LocalInteractionIntentSource`: `1`
+- `LocalCharacterIntentSource`: `1`
+- `PlayerBoardingState`: `1`
+- `PlayerCreatureThreatSource`: `1`
+- `PlayerDiveHoldForce`: `1`
+- `PlayerDrowningForce`: `1`
+- `PlayerHatchLedgeDropper`: `1`
+- `PlayerLadderClimber`: `1`
+- `PlayerLoadState`: `1`
+- `PlayerLoadoutRestoreOnSceneStart`: `1`
+- `PlayerSceneContextRestorer`: `1`
+- `PlayerSubmersionState`: `1`
+- `PlayerSwimOrientationForce`: `1`
+- `PlayerTurretController`: `1`
+- `SpriteFacingController`: `1`
+- `UnderwaterHarvestActor`: `1`
+- `PlayerHeldItemVisual`: `1`
+- `AfflictionSystem`: `1`
+- `AfflictionPostFxController`: `1`
+- `AmbientSurfaceAirSource`: `1`
+- `DebugDeathHandler`: `1`
+- `DrowningAfflictionProducer`: `1`
+- `DrowningDeathCause`: `1`
+- `EquippedItemAirSource`: `1`
+- `ExertionStatePlayerBuffProducer`: `1`
+- `PlayerAirState`: `1`
+- `PlayerDeathSystem`: `1`
+- `PlayerExertionEnergyState`: `1`
+- `PlayerOxygenationState`: `1`
+- `PlayerOxygenationBodyDefaults`: `1`
+- `PlayerUnconsciousnessState`: `1`
+- `SpO2AfflictionProducer`: `1`
+- `CorpseRespawnHandler`: `1`
+- `PlayerBuffSystem`: `1`
+- `PlayerAttributeState`: `1`
+- `PlayerEncumbranceBuffProducer`: `1`
+- `PlayerEquipmentBuffProducer`: `1`
+- `PlayerEquipment`: `1`
+- `ItemAcquisitionResolver`: `1`
+- `PlayerInventoryInput`: `1`
+- `PlayerInventory`: `1`
+- `InventoryDebugSpawner`: `1`
+- `PlayerWearableVisualController`: `1`
+- `WorldMapTravelDebugController`: `1`
+- `StarMapDebugController`: `1`
+- `NodeTravelController`: `1`
+- `OceanWaterPresentationController`: `1`
+- `MapOverlayToggleService`: `1`
+- `ItemVendorPurchaseService`: `1`
+- `ItemVendorAgentServiceHandler`: `1`
+- `ItemVendorSellService`: `1`
+- `BoatVendorAgentServiceHandler`: `1`
+- `BoatVendorModuleTransactionService`: `1`
+- `ServiceRoot`: `1`
+- `CelestialBodyManager`: `1`
+- `CloudManager`: `1`
+- `CloudShaderRenderer`: `1`
+- `FogManager`: `1`
+- `FogShaderRenderer`: `1`
+- `GlobalBrightnessManager`: `1`
+- `RainManager`: `1`
+- `RainShaderRenderer`: `1`
+- `SkyVisualManager`: `1`
+- `SunriseSunsetOverlayManager`: `1`
+- `TimeOfDayManager`: `1`
+- `TimeOfDayDriver`: `1`
+- `WaterVisualManager`: `1`
+- `WeatherManager`: `1`
+- `WindManager`: `1`
+- `WindShaderRenderer`: `1`
+- `WaveManager`: `1`
+- `WeatherEventManager`: `1`
+- `EventSystem`: `1`
+- `InputSystemUIInputModule`: `1`
+- `ExternalWaterSourceSystem`: `1`
+- `GameplayAuthorityDebugSetter`: `1`
+- `GameState`: `1`
+- `SceneTransitionController`: `1`
+- `EscapeCloseRegistry`: `1`
+- `GlobalEscapeRouter`: `1`
+- `SaveLoadController`: `1`
+- `GameplayInputBlocker`: `1`
+- `Camera`: `1`
+- `AudioListener`: `1`
+- `UniversalAdditionalCameraData`: `1`
+- `CameraWASDController`: `1`
+- `Physics2DRaycaster`: `1`
+- `CameraManager`: `1`
+- `MiniGameOverlayHost`: `1`
+- `MiniGameOverlayView`: `1`
+- `PlatformEffector2D`: `1`
+- `MarketTradeAgentServiceHandler`: `1`
+- `MarketCargoSpawnPoint`: `1`
+- `MarketSellZone`: `1`
+- `PhysicalCargoItemStore`: `1`
+- `MarketStallInteractable`: `1`
+- `BoatSpawner`: `1`
+- `MoneyChestNodeLostChestSpawner`: `1`
+- `MoneyChestReplacementChestSpawner`: `1`
+- `PhysicsManager`: `1`
+- `StarObservationWorldMapRunner`: `1`
+- `TradeWorldMapRunner`: `1`
+- `ModuleOverlayRunner`: `1`
+- `CargoSecuringMiniGameRunner`: `1`
+- `WorldMapOverlayRunner`: `1`
+- `MoneyServiceDebugTester`: `1`
+- `ItemVendorOverlayRunner`: `1`
+- `BoatVendorOverlayRunner`: `1`
+- `PilotingOverlayRunner`: `1`
+- `HelmOverlayRunner`: `1`
+- `SceneContext`: `1`
+- `WorldMapPlayerRef`: `1`
+- `PlayerSceneRestoreBootstrap`: `1`
+- `PlayerLoadoutPersistence`: `1`
+- `Volume`: `1`
+- `EdgeCollider2D`: `1`
+- `NodeGroundGenerator2D`: `1`
+- `GeneratedGroundSampler2D`: `1`
+- `GroundFillMeshRenderer2D`: `1`
+- `UnderwaterResourceSceneSpawner`: `1`
+- `BackgroundFollower`: `1`
+- `SpriteMask`: `1`
+- `WaveField`: `1`
+- `LineRenderer`: `1`
+- `WaveRenderer_Line`: `1`
+- `NodeWaterBottomBinder`: `1`
+- `WorldMapGraphGenerator`: `1`
+- `WorldMapNodeSelection`: `1`
+- `WorldMapTopographyDebugSource`: `1`
+- `WorldMapPOISource`: `1`
+- `WorldMapKnowledgeSource`: `1`
+- `WorldMapEventManager`: `1`
+- `WorldMapChangeLogger`: `1`
+- `Canvas`: `1`
+- `CanvasScaler`: `1`
+- `GraphicRaycaster`: `1`
+- `TimeDateHUD`: `1`
+- `CanvasGroup`: `1`
+- `UIEdgeGraphic`: `1`
+- `WorldMapPlayerMarkerUI`: `1`
+- `InteractPromptUI`: `1`
+- `DevExertionEnergyHUD`: `1`
+- `DevAirHUD`: `1`
+- `PlayerBuffBarUI`: `1`
+- `AfflictionBarUI`: `1`
+- `StatusIconTooltipUI`: `1`
+- `AfflictionListUI`: `1`
+- `SpO2DebugUI`: `1`
+- `InventoryDragController`: `1`
+- `ContainerInventoryPanelUI`: `1`
+- `DisplacedItemResolver`: `1`
+- `LoadoutContainerOverlayUI`: `1`
+- `LoadoutContainerOverlayHotkey`: `1`
+- `ExternalContainerOverlayUI`: `1`
+- `PlayerInventoryUI`: `1`
+- `EscapeMenuUI`: `1`
+- `SaveLoadPanelUI`: `1`
+- `ScrollRect`: `1`
+- `Scrollbar`: `1`
+- `ChoiceDialogUI`: `1`
+- `WorldMapRuntimeBinder`: `1`
+- `WorldMapDriftSimulator`: `1`
+
+## Important Components
+
+- `AgentSceneSpawner` in `NodeScene` at `AgentSceneSpawner`
+- `AgentSpawnPoint` in `NodeScene` at `AgentSceneSpawner/BoatVendorSpawn`
+- `AgentSpawnPoint` in `NodeScene` at `AgentSceneSpawner/ItemVendorSpawn`
+- `AgentSpawnPoint` in `NodeScene` at `AgentSceneSpawner/MarketVendorSpawn`
+- `AgentSpawnPoint` in `NodeScene` at `AgentSceneSpawner/SmallFishSpawn`
+- `GameState` in `NodeScene` at `GameState`
+- `SceneTransitionController` in `NodeScene` at `GameState`
+
+## Full Hierarchy
+
+### Scene: `NodeScene`
+
+- `AgentSceneSpawner` | path=`AgentSceneSpawner` | activeSelf=True | activeInHierarchy=True | layer=`Player` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `0, 0, 0`
+    - worldPosition: `0, 0, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `AgentSceneSpawner` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `AgentSceneSpawner (MonoScript) asset='Assets/Scripts/Agents/Spawning/AgentSceneSpawner.cs'`
+      - `spawnOnStart` (Boolean) = `True`
+      - `clearPreviousSpawnedAgents` (Boolean) = `True`
+      - `seedOffset` (Integer) = `0`
+      - `spawnGroups` (Generic) = `array size=2`
+      - `spawnedRoot` (ObjectReference) = `SpawnedAgents (Transform) scenePath='AgentSceneSpawner/SpawnedAgents'`
+      - `authorityMode` (Enum) = `Single Player Or Authoritative`
+      - `logSkippedForAuthority` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+  - `BoatVendorSpawn` | path=`AgentSceneSpawner/BoatVendorSpawn` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `10.877, 2, -0.622`
+      - worldPosition: `10.877, 2, -0.622`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(10.88, 2.00, -0.62)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `AgentSpawnPoint` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `AgentSpawnPoint (MonoScript) asset='Assets/Scripts/Agents/Runtime/AgentSpawnPoint.cs'`
+        - `stableId` (String) = `agent_spawn_boat_vendor_001`
+        - `nodeId` (String) = ``
+        - `definition` (ObjectReference) = `Boat Vendor (AgentDefinition) asset='Assets/Defs/Agents/Agents/Boat Vendor.asset'`
+        - `prefabOverride` (ObjectReference) = `null`
+        - `spawnOnStart` (Boolean) = `False`
+        - `spawnParent` (ObjectReference) = `BoatVendorSpawn (Transform) scenePath='AgentSceneSpawner/BoatVendorSpawn'`
+        - `homeBounds` (ObjectReference) = `BoatVendorBounds (AgentHomeBounds) scenePath='AgentSceneSpawner/BoatVendorSpawn/BoatVendorBounds'`
+        - `snapToGroundAfterSpawn` (Boolean) = `True`
+    - `BoatVendorBounds` | path=`AgentSceneSpawner/BoatVendorSpawn/BoatVendorBounds` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `4.365, 3.408, 0.622`
+        - worldPosition: `15.242, 5.408, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `12, 10, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(4.36, 3.41, 0.62)`
+          - `m_LocalScale` (Vector3) = `(12.00, 10.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_Material` (ObjectReference) = `null`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(0.80, 1.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `AgentHomeBounds` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `AgentHomeBounds (MonoScript) asset='Assets/Scripts/Agents/Runtime/AgentHomeBounds.cs'`
+          - `boundsCollider` (ObjectReference) = `BoatVendorBounds (BoxCollider2D) scenePath='AgentSceneSpawner/BoatVendorSpawn/BoatVendorBounds'`
+  - `FishSpawnZone_Shallow` | path=`AgentSceneSpawner/FishSpawnZone_Shallow` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `50.877, -10.5, -0.622`
+      - worldPosition: `50.877, -10.5, -0.622`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(50.88, -10.50, -0.62)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `AgentSpawnZone` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `AgentSpawnZone (MonoScript) asset='Assets/Scripts/Agents/Spawning/AgentSpawnZone.cs'`
+        - `domain` (Enum) = `Underwater`
+        - `tags` (Generic) = `array size=1`
+        - `localSize` (Vector2) = `(40.00, 20.00)`
+        - `drawGizmos` (Boolean) = `True`
+        - `gizmoColor` (Color) = `RGBA(0.200, 0.800, 1.000, 0.250)`
+  - `ItemVendorSpawn` | path=`AgentSceneSpawner/ItemVendorSpawn` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `15.877, 2, -0.622`
+      - worldPosition: `15.877, 2, -0.622`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(15.88, 2.00, -0.62)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `AgentSpawnPoint` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `AgentSpawnPoint (MonoScript) asset='Assets/Scripts/Agents/Runtime/AgentSpawnPoint.cs'`
+        - `stableId` (String) = `agent_spawn_item_vendor_001`
+        - `nodeId` (String) = ``
+        - `definition` (ObjectReference) = `Item Vendor (AgentDefinition) asset='Assets/Defs/Agents/Agents/Item Vendor.asset'`
+        - `prefabOverride` (ObjectReference) = `null`
+        - `spawnOnStart` (Boolean) = `False`
+        - `spawnParent` (ObjectReference) = `ItemVendorSpawn (Transform) scenePath='AgentSceneSpawner/ItemVendorSpawn'`
+        - `homeBounds` (ObjectReference) = `ItemVendorBounds (AgentHomeBounds) scenePath='AgentSceneSpawner/ItemVendorSpawn/ItemVendorBounds'`
+        - `snapToGroundAfterSpawn` (Boolean) = `True`
+    - `ItemVendorBounds` | path=`AgentSceneSpawner/ItemVendorSpawn/ItemVendorBounds` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `4.365, 3.408, 0.622`
+        - worldPosition: `20.242, 5.408, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `12, 10, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(4.36, 3.41, 0.62)`
+          - `m_LocalScale` (Vector3) = `(12.00, 10.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_Material` (ObjectReference) = `null`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(0.80, 1.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `AgentHomeBounds` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `AgentHomeBounds (MonoScript) asset='Assets/Scripts/Agents/Runtime/AgentHomeBounds.cs'`
+          - `boundsCollider` (ObjectReference) = `ItemVendorBounds (BoxCollider2D) scenePath='AgentSceneSpawner/ItemVendorSpawn/ItemVendorBounds'`
+  - `MarketVendorSpawn` | path=`AgentSceneSpawner/MarketVendorSpawn` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0.877, 2, -0.622`
+      - worldPosition: `0.877, 2, -0.622`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.88, 2.00, -0.62)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `AgentSpawnPoint` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `AgentSpawnPoint (MonoScript) asset='Assets/Scripts/Agents/Runtime/AgentSpawnPoint.cs'`
+        - `stableId` (String) = `agent_spawn_market_vendor_001`
+        - `nodeId` (String) = ``
+        - `definition` (ObjectReference) = `Market Vendor (AgentDefinition) asset='Assets/Defs/Agents/Agents/Market Vendor.asset'`
+        - `prefabOverride` (ObjectReference) = `null`
+        - `spawnOnStart` (Boolean) = `False`
+        - `spawnParent` (ObjectReference) = `MarketVendorSpawn (Transform) scenePath='AgentSceneSpawner/MarketVendorSpawn'`
+        - `homeBounds` (ObjectReference) = `MarketVendorBounds (AgentHomeBounds) scenePath='AgentSceneSpawner/MarketVendorSpawn/MarketVendorBounds'`
+        - `snapToGroundAfterSpawn` (Boolean) = `True`
+    - `MarketVendorBounds` | path=`AgentSceneSpawner/MarketVendorSpawn/MarketVendorBounds` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-2.877, 3.408, 0.622`
+        - worldPosition: `-2, 5.408, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `12, 10, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-2.88, 3.41, 0.62)`
+          - `m_LocalScale` (Vector3) = `(12.00, 10.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_Material` (ObjectReference) = `null`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(0.80, 1.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `AgentHomeBounds` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `AgentHomeBounds (MonoScript) asset='Assets/Scripts/Agents/Runtime/AgentHomeBounds.cs'`
+          - `boundsCollider` (ObjectReference) = `MarketVendorBounds (BoxCollider2D) scenePath='AgentSceneSpawner/MarketVendorSpawn/MarketVendorBounds'`
+  - `SmallFishSpawn` | path=`AgentSceneSpawner/SmallFishSpawn` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `40.877, -5.5, -0.622`
+      - worldPosition: `40.877, -5.5, -0.622`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(40.88, -5.50, -0.62)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `AgentSpawnPoint` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `AgentSpawnPoint (MonoScript) asset='Assets/Scripts/Agents/Runtime/AgentSpawnPoint.cs'`
+        - `stableId` (String) = `agent_spawn_small_fish_01`
+        - `nodeId` (String) = ``
+        - `definition` (ObjectReference) = `Small Fish 1 (AgentDefinition) asset='Assets/Defs/Agents/Agents/Creatures/Small Fish 1.asset'`
+        - `prefabOverride` (ObjectReference) = `null`
+        - `spawnOnStart` (Boolean) = `False`
+        - `spawnParent` (ObjectReference) = `SmallFishSpawn (Transform) scenePath='AgentSceneSpawner/SmallFishSpawn'`
+        - `homeBounds` (ObjectReference) = `SmallFishBounds (AgentHomeBounds) scenePath='AgentSceneSpawner/SmallFishSpawn/SmallFishBounds'`
+        - `snapToGroundAfterSpawn` (Boolean) = `True`
+    - `SmallFishBounds` | path=`AgentSceneSpawner/SmallFishSpawn/SmallFishBounds` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0.622`
+        - worldPosition: `40.877, -5.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `40, 10, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.62)`
+          - `m_LocalScale` (Vector3) = `(40.00, 10.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_Material` (ObjectReference) = `null`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(0.80, 1.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `AgentHomeBounds` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `AgentHomeBounds (MonoScript) asset='Assets/Scripts/Agents/Runtime/AgentHomeBounds.cs'`
+          - `boundsCollider` (ObjectReference) = `SmallFishBounds (BoxCollider2D) scenePath='AgentSceneSpawner/SmallFishSpawn/SmallFishBounds'`
+  - `SpawnedAgents` | path=`AgentSceneSpawner/SpawnedAgents` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0.877, 10.296, -0.622`
+      - worldPosition: `0.877, 10.296, -0.622`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.88, 10.30, -0.62)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+- `CharacterPlayer` | path=`CharacterPlayer` | activeSelf=True | activeInHierarchy=True | layer=`Player` | tag=`Player` | static=False
+  - Transform:
+    - localPosition: `-17.78, 2, 0`
+    - worldPosition: `-17.78, 2, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 2, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(-17.78, 2.00, 0.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 2.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `SpriteRenderer` index=1 enabled=`True`
+      - `m_CastShadows` (Enum) = `Off`
+      - `m_ReceiveShadows` (Boolean) = `False`
+      - `m_DynamicOccludee` (Boolean) = `True`
+      - `m_StaticShadowCaster` (Boolean) = `False`
+      - `m_MotionVectors` (Enum) = `Per Object Motion`
+      - `m_LightProbeUsage` (Integer) = `1`
+      - `m_ReflectionProbeUsage` (Integer) = `1`
+      - `m_RayTracingMode` (Integer) = `0`
+      - `m_RayTraceProcedural` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+      - `m_SmallMeshCulling` (Boolean) = `True`
+      - `m_RenderingLayerMask` (Integer) = `1`
+      - `m_RendererPriority` (Integer) = `0`
+      - `m_Materials` (Generic) = `array size=1`
+      - `m_ProbeAnchor` (ObjectReference) = `null`
+      - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+      - `m_LightmapParameters` (ObjectReference) = `null`
+      - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+      - `m_Color` (Color) = `RGBA(1.000, 0.000, 0.000, 1.000)`
+      - `m_FlipX` (Boolean) = `False`
+      - `m_FlipY` (Boolean) = `False`
+      - `m_DrawMode` (Enum) = `Simple`
+      - `m_Size` (Vector2) = `(1.00, 1.00)`
+      - `m_AdaptiveModeThreshold` (Float) = `0.5`
+      - `m_SpriteTileMode` (Enum) = `Continuous`
+      - `m_MaskInteraction` (Enum) = `None`
+      - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Rigidbody2D` index=2 enabled=`n/a`
+      - `m_BodyType` (Enum) = `Dynamic`
+      - `m_Simulated` (Boolean) = `True`
+      - `m_UseFullKinematicContacts` (Boolean) = `False`
+      - `m_UseAutoMass` (Boolean) = `False`
+      - `m_Mass` (Float) = `3`
+      - `m_LinearDamping` (Float) = `2`
+      - `m_AngularDamping` (Float) = `2`
+      - `m_GravityScale` (Float) = `1`
+      - `m_Material` (ObjectReference) = `null`
+      - `m_IncludeLayers` (LayerMask) = `0`
+      - `m_ExcludeLayers` (LayerMask) = `3080`
+      - `m_Interpolate` (Enum) = `Interpolate`
+      - `m_SleepingMode` (Enum) = `Start Awake`
+      - `m_CollisionDetection` (Enum) = `Continuous`
+      - `m_Constraints` (Integer) = `0`
+    - `BoxCollider2D` index=3 enabled=`False`
+      - `m_Density` (Float) = `1`
+      - `m_Material` (ObjectReference) = `null`
+      - `m_IncludeLayers` (LayerMask) = `0`
+      - `m_ExcludeLayers` (LayerMask) = `0`
+      - `m_LayerOverridePriority` (Integer) = `0`
+      - `m_ForceSendLayers` (LayerMask) = `-1`
+      - `m_ForceReceiveLayers` (LayerMask) = `-1`
+      - `m_ContactCaptureLayers` (LayerMask) = `-1`
+      - `m_CallbackLayers` (LayerMask) = `-1`
+      - `m_IsTrigger` (Boolean) = `False`
+      - `m_UsedByEffector` (Boolean) = `False`
+      - `m_CompositeOperation` (Enum) = `None`
+      - `m_CompositeOrder` (Integer) = `0`
+      - `m_Offset` (Vector2) = `(0.00, 0.00)`
+      - `m_AutoTiling` (Boolean) = `False`
+      - `m_Size` (Vector2) = `(1.00, 1.00)`
+      - `m_EdgeRadius` (Float) = `0`
+    - `CapsuleCollider2D` index=4 enabled=`True`
+      - `m_Density` (Float) = `1`
+      - `m_Material` (ObjectReference) = `null`
+      - `m_IncludeLayers` (LayerMask) = `0`
+      - `m_ExcludeLayers` (LayerMask) = `0`
+      - `m_LayerOverridePriority` (Integer) = `0`
+      - `m_ForceSendLayers` (LayerMask) = `-1`
+      - `m_ForceReceiveLayers` (LayerMask) = `-1`
+      - `m_ContactCaptureLayers` (LayerMask) = `-1`
+      - `m_CallbackLayers` (LayerMask) = `-1`
+      - `m_IsTrigger` (Boolean) = `False`
+      - `m_UsedByEffector` (Boolean) = `False`
+      - `m_CompositeOperation` (Enum) = `None`
+      - `m_CompositeOrder` (Integer) = `0`
+      - `m_Offset` (Vector2) = `(0.00, 0.00)`
+      - `m_Size` (Vector2) = `(1.00, 1.00)`
+      - `m_Direction` (Enum) = `Vertical`
+    - `CharacterPlayer` index=5 enabled=`True`
+      - `m_Script` (ObjectReference) = `CharacterPlayer (MonoScript) asset='Assets/Scripts/Controller/Player/CharacterPlayer.cs'`
+      - `width` (Float) = `2`
+      - `height` (Float) = `2`
+      - `volume` (Float) = `2`
+      - `destroyOnImpact` (Boolean) = `True`
+      - `buoyancyForce` (ObjectReference) = `CharacterPlayer (BuoyancyPolygonForce) scenePath='CharacterPlayer'`
+      - `wave` (ObjectReference) = `WaveSystem (WaveField) scenePath='WaveSystem'`
+    - `BuoyancyPolygonForce` index=6 enabled=`True`
+      - `m_Script` (ObjectReference) = `BuoyancyPolygonForce (MonoScript) asset='Assets/Scripts/Physics/BuoyancyPolygonForce.cs'`
+      - `bodySource` (ObjectReference) = `CharacterPlayer (ForceBody2D) scenePath='CharacterPlayer'`
+      - `waveManager` (ObjectReference) = `null`
+      - `wave` (ObjectReference) = `WaveSystem (WaveField) scenePath='WaveSystem'`
+      - `useBoatWaterContext` (Boolean) = `True`
+      - `explicitWaterContext` (ObjectReference) = `null`
+      - `boatBodyAlwaysUsesOcean` (Boolean) = `True`
+      - `sliceCount` (Integer) = `10`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `50`
+    - `CharacterLocomotionModeSwitcher` index=7 enabled=`True`
+      - `m_Script` (ObjectReference) = `CharacterLocomotionModeSwitcher (MonoScript) asset='Assets/Scripts/Controller/Player/CharacterLocomotionModeSwitcher.cs'`
+      - `submersion` (ObjectReference) = `CharacterPlayer (PlayerSubmersionState) scenePath='CharacterPlayer'`
+      - `landMove` (ObjectReference) = `CharacterPlayer (CharacterMoveForce) scenePath='CharacterPlayer'`
+      - `swimMove` (ObjectReference) = `CharacterPlayer (CharacterSwimForce) scenePath='CharacterPlayer'`
+    - `CharacterMotor2D` index=8 enabled=`True`
+      - `m_Script` (ObjectReference) = `CharacterMotor2D (MonoScript) asset='Assets/Scripts/Controller/Player/CharacterMotor2D.cs'`
+      - `maxSpeed` (Float) = `7`
+      - `moveForce` (Float) = `60`
+      - `jumpImpulse` (Float) = `8`
+      - `coyoteTime` (Float) = `0.08`
+      - `jumpBuffer` (Float) = `0.08`
+      - `groundMask` (LayerMask) = `2105344`
+      - `groundCheckLocalOffset` (Vector2) = `(0.00, -1.00)`
+      - `groundCheckRadius` (Float) = `0.2`
+      - `debugJumpChecks` (Boolean) = `False`
+    - `CharacterMoveForce` index=9 enabled=`True`
+      - `m_Script` (ObjectReference) = `CharacterMoveForce (MonoScript) asset='Assets/Scripts/Controller/Player/CharacterMoveForce.cs'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `100`
+      - `attributes` (ObjectReference) = `Vitals (PlayerAttributeState) scenePath='CharacterPlayer/Vitals'`
+      - `crawlAngleDeg` (Float) = `90`
+      - `disabledAngleDeg` (Float) = `100`
+      - `sprintSpeedMultiplier` (Float) = `1.5`
+      - `sprintForceMultiplier` (Float) = `1.35`
+      - `crawlMoveMultiplier` (Float) = `0.3`
+      - `wadeMinMoveMultiplier` (Float) = `0.4`
+      - `maxJumpAngleDeg` (Float) = `60`
+      - `debugJumpDecisions` (Boolean) = `True`
+      - `jumpExertionImpulse01` (Float) = `0.1`
+      - `jumpAuthorityAtLowEnergy` (Float) = `0.65`
+      - `jumpAuthorityAtZeroEnergy` (Float) = `0`
+    - `CharacterSwimForce` index=10 enabled=`True`
+      - `m_Script` (ObjectReference) = `CharacterSwimForce (MonoScript) asset='Assets/Scripts/CharacterSwimForce.cs'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `40`
+      - `attributes` (ObjectReference) = `Vitals (PlayerAttributeState) scenePath='CharacterPlayer/Vitals'`
+      - `swimMaxSpeedX` (Float) = `2.5`
+      - `swimAccelX` (Float) = `30`
+      - `swimUpAccel` (Float) = `10`
+      - `diveAccel` (Float) = `10`
+      - `swimSprintSpeedMultiplier` (Float) = `1.4`
+      - `swimSprintAccelMultiplier` (Float) = `1.3`
+      - `swimSprintVerticalMultiplier` (Float) = `1.2`
+      - `swimMaxSpeedY` (Float) = `3`
+      - `restoreDragOnExit` (Boolean) = `True`
+    - `CharacterUprightForce` index=11 enabled=`True`
+      - `m_Script` (ObjectReference) = `CharacterUprightForce (MonoScript) asset='Assets/Scripts/Controller/Player/CharacterUprightForce.cs'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `90`
+      - `attributes` (ObjectReference) = `null`
+      - `baseTargetAngleDeg` (Float) = `0`
+      - `enableMovementLean` (Boolean) = `True`
+      - `maxLeanDeg` (Float) = `6`
+      - `leanSign` (Float) = `-1`
+      - `leanSmoothSpeed` (Float) = `10`
+      - `sprintLeanMultiplier` (Float) = `2`
+      - `leanMinHorizontalSpeed` (Float) = `1`
+      - `leanFullHorizontalSpeed` (Float) = `2.5`
+      - `leanUsesVelocityDirection` (Boolean) = `True`
+      - `kP` (Float) = `40`
+      - `kD` (Float) = `8`
+      - `maxTorque` (Float) = `20`
+      - `deadZoneDeg` (Float) = `0`
+      - `disableWhileClimbing` (Boolean) = `True`
+      - `reduceWhileSwimming` (Boolean) = `True`
+      - `swimmingTorqueMultiplier` (Float) = `0.15`
+      - `wadingTorqueMultiplier` (Float) = `0.65`
+      - `uprightInputBoost` (Boolean) = `True`
+      - `uprightHeldMultiplier` (Float) = `1.5`
+      - `_effectiveTargetAngleOffsetDeg` (Float) = `0`
+      - `_effectiveKP` (Float) = `0`
+      - `_effectiveKD` (Float) = `0`
+      - `_effectiveMaxTorque` (Float) = `0`
+      - `_effectiveDeadZoneDeg` (Float) = `0`
+      - `_effectiveStateMultiplier` (Float) = `1`
+      - `debugLogs` (Boolean) = `False`
+    - `DragForce` index=12 enabled=`True`
+      - `m_Script` (ObjectReference) = `DragForce (MonoScript) asset='Assets/Scripts/Physics/DragForce.cs'`
+      - `submersionSource` (ObjectReference) = `CharacterPlayer (BuoyancyPolygonForce) scenePath='CharacterPlayer'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `100`
+    - `ForceBody2D` index=13 enabled=`True`
+      - `m_Script` (ObjectReference) = `ForceBody2D (MonoScript) asset='Assets/Scripts/Physics/ForceBody2D.cs'`
+      - `width` (Float) = `2`
+      - `height` (Float) = `2`
+    - `ForceSystem` index=14 enabled=`True`
+      - `m_Script` (ObjectReference) = `ForceSystem (MonoScript) asset='Assets/Scripts/Physics/ForceSystem.cs'`
+      - `verboseDiagnostics` (Boolean) = `True`
+    - `InteractPromptDriver` index=15 enabled=`True`
+      - `m_Script` (ObjectReference) = `InteractPromptDriver (MonoScript) asset='Assets/Scripts/Controller/Interactions/InteractPromptDriver.cs'`
+      - `interactor` (ObjectReference) = `CharacterPlayer (Interactor2D) scenePath='CharacterPlayer'`
+      - `promptUI` (ObjectReference) = `InteractPromptUI (InteractPromptUI) scenePath='UIOverlayRoot/Canvas/InteractPromptUI'`
+      - `localAuthoritySource` (ObjectReference) = `null`
+      - `defaultVerb` (String) = `Interact`
+      - `debugPromptTargets` (Boolean) = `False`
+      - `debugPromptEveryNFrames` (Integer) = `15`
+    - `Interactor2D` index=16 enabled=`True`
+      - `m_Script` (ObjectReference) = `Interactor2D (MonoScript) asset='Assets/Scripts/Controller/Interactions/Interactor2D.cs'`
+      - `interactableMask` (LayerMask) = `-1`
+      - `overlapRadius` (Float) = `1.2`
+      - `rayDistance` (Float) = `1.6`
+      - `useRaycast` (Boolean) = `True`
+      - `aimBias` (Float) = `0.35`
+      - `preferMouseHoveredInteractable` (Boolean) = `True`
+      - `mouseHoverRadius` (Float) = `0.08`
+      - `applyMouseHoverToPickup` (Boolean) = `True`
+      - `mouseOnlyTargeting` (Boolean) = `True`
+      - `allowMouseHarvest` (Boolean) = `True`
+      - `mouseHarvestButton` (Integer) = `0`
+      - `defaultHoverNameRange` (Float) = `10`
+      - `defaultActionRange` (Float) = `3`
+      - `debugMousePickupResolution` (Boolean) = `False`
+      - `debugMousePickupEveryNFrames` (Integer) = `15`
+    - `LocalBoatControlIntentSource` index=17 enabled=`True`
+      - `m_Script` (ObjectReference) = `LocalBoatControlIntentSource (MonoScript) asset='Assets/Scripts/Controller/Player/LocalBoatControlIntentSource.cs'`
+      - `throttleUp` (Enum) = `W`
+      - `throttleDown` (Enum) = `S`
+      - `rudderPort` (Enum) = `A`
+      - `rudderStarboard` (Enum) = `D`
+      - `throttleStop` (Enum) = `X`
+      - `exitKey` (Enum) = `Escape`
+    - `LocalInteractionIntentSource` index=18 enabled=`True`
+      - `m_Script` (ObjectReference) = `LocalInteractionIntentSource (MonoScript) asset='Assets/Scripts/Controller/Interactions/LocalInteractionIntentSource.cs'`
+      - `interactKey` (Enum) = `E`
+      - `pickupKey` (Enum) = `F`
+      - `toggleKey` (Enum) = `T`
+      - `unsecureKey` (Enum) = `X`
+      - `linkKey` (Enum) = `L`
+      - `enableDoubleClickInteract` (Boolean) = `True`
+      - `doubleClickMaxInterval` (Float) = `0.28`
+      - `doubleClickMaxScreenDistance` (Float) = `18`
+      - `useMouseAim` (Boolean) = `True`
+      - `respectGameplayInputBlocker` (Boolean) = `True`
+    - `LocalCharacterIntentSource` index=19 enabled=`True`
+      - `m_Script` (ObjectReference) = `LocalCharacterIntentSource (MonoScript) asset='Assets/Scripts/Controller/Player/LocalCharacterIntentSource.cs'`
+      - `horizontalAxis` (String) = `Horizontal`
+      - `jumpKey` (Enum) = `Space`
+      - `uprightKey` (Enum) = `W`
+      - `swimUpKey` (Enum) = `Space`
+      - `diveKey` (Enum) = `Left Control`
+      - `sprintKey` (Enum) = `Left Shift`
+      - `climbUpKey` (Enum) = `W`
+      - `climbDownKey` (Enum) = `S`
+      - `focusMouseButton` (Integer) = `1`
+      - `primaryUseMouseButton` (Integer) = `0`
+      - `cancelKey` (Enum) = `Escape`
+    - `PlayerBoardingState` index=20 enabled=`True`
+      - `m_Script` (ObjectReference) = `PlayerBoardingState (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerBoardingState.cs'`
+      - `hullLayerName` (String) = `Hull`
+      - `boatItemLayerName` (String) = `BoatItem`
+      - `hatchLedgeLayerName` (String) = `HatchLedge`
+      - `groundLayerName` (String) = `Ground`
+      - `worldLedgeLayerName` (String) = `WorldLedge`
+      - `ghostCollisionLayerName` (String) = `GhostCollision`
+      - `boardedSortingLayerName` (String) = `BoatPlayer`
+      - `includeInactiveChildRenderers` (Boolean) = `True`
+      - `restoreOriginalSortingLayersOnUnboard` (Boolean) = `True`
+      - `logMaskChanges` (Boolean) = `False`
+    - `PlayerCreatureThreatSource` index=21 enabled=`True`
+      - `m_Script` (ObjectReference) = `PlayerCreatureThreatSource (MonoScript) asset='Assets/Scripts/Agents/Spawning/PlayerCreatureThreatSource.cs'`
+      - `kind` (Enum) = `Player`
+      - `activeThreat` (Boolean) = `True`
+      - `radius` (Float) = `5`
+      - `strength` (Float) = `1`
+      - `drawGizmosAlways` (Boolean) = `True`
+    - `PlayerDiveHoldForce` index=22 enabled=`True`
+      - `m_Script` (ObjectReference) = `PlayerDiveHoldForce (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerDiveHoldForce.cs'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `45`
+      - `intentSourceBehaviour` (ObjectReference) = `CharacterPlayer (LocalCharacterIntentSource) scenePath='CharacterPlayer'`
+      - `rb` (ObjectReference) = `CharacterPlayer (Rigidbody2D) scenePath='CharacterPlayer'`
+      - `submersionProviderBehaviour` (ObjectReference) = `CharacterPlayer (BuoyancyPolygonForce) scenePath='CharacterPlayer'`
+      - `minSubmersionToApply` (Float) = `0.9`
+      - `neutralizeStrength` (Float) = `0.3`
+      - `verticalDamping` (Float) = `2`
+      - `neutralizeWhileSwimUpMultiplier` (Float) = `0`
+      - `extraSinkBiasWhileDive` (Float) = `0.25`
+    - `PlayerDrowningForce` index=23 enabled=`True`
+      - `m_Script` (ObjectReference) = `PlayerDrowningForce (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerDrowningForce.cs'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `60`
+      - `energy` (ObjectReference) = `Vitals (PlayerExertionEnergyState) scenePath='CharacterPlayer/Vitals'`
+      - `submersion` (ObjectReference) = `CharacterPlayer (PlayerSubmersionState) scenePath='CharacterPlayer'`
+      - `motor` (ObjectReference) = `CharacterPlayer (CharacterMotor2D) scenePath='CharacterPlayer'`
+      - `requireNotGrounded` (Boolean) = `True`
+      - `energyZeroEpsilon` (Float) = `0.001`
+      - `minSubmersionToApply` (Float) = `0.1`
+      - `timeBetweenTugs` (Float) = `5`
+      - `betweenTugsJitter` (Float) = `2`
+      - `tugDuration` (Float) = `2`
+      - `tugDurationJitter` (Float) = `1`
+      - `tugDownAcceleration` (Float) = `10`
+      - `scaleBySubmersion` (Boolean) = `False`
+      - `submersionScaleMin` (Float) = `0.55`
+      - `submersionScaleMax` (Float) = `1.15`
+      - `easeFraction` (Float) = `0.5`
+      - `escalationTimeToMax` (Float) = `30`
+      - `useEscalationCurve` (Boolean) = `True`
+      - `escalationCurve` (AnimationCurve) = `keys=2`
+      - `maxAccelMultiplier` (Float) = `3`
+      - `maxDurationMultiplier` (Float) = `1.6`
+      - `minBetweenTugsMultiplier` (Float) = `0.45`
+      - `resetEscalationWhenGrounded` (Boolean) = `True`
+    - `PlayerHatchLedgeDropper` index=24 enabled=`True`
+      - `m_Script` (ObjectReference) = `PlayerHatchLedgeDropper (MonoScript) asset='Assets/Scripts/Parts/Hatch/PlayerHatchLedgeDropper.cs'`
+      - `localCharacterIntentSource` (ObjectReference) = `CharacterPlayer (LocalCharacterIntentSource) scenePath='CharacterPlayer'`
+      - `motor` (ObjectReference) = `CharacterPlayer (CharacterMotor2D) scenePath='CharacterPlayer'`
+      - `boardingState` (ObjectReference) = `CharacterPlayer (PlayerBoardingState) scenePath='CharacterPlayer'`
+      - `ledgeMask` (LayerMask) = `2621440`
+      - `ledgeDetectRadiusPadding` (Float) = `0.08`
+      - `allowPlatformEffectorLedges` (Boolean) = `True`
+      - `allowAnyColliderOnLedgeMask` (Boolean) = `True`
+      - `boardedRequiresHatchLedgeComponent` (Boolean) = `True`
+      - `ignoreCollisionSeconds` (Float) = `1`
+      - `downwardNudgeVelocity` (Float) = `0.75`
+      - `requireGroundedOnLedge` (Boolean) = `True`
+      - `debugLogs` (Boolean) = `False`
+    - `PlayerLadderClimber` index=25 enabled=`True`
+      - `m_Script` (ObjectReference) = `PlayerLadderClimber (MonoScript) asset='Assets/Scripts/Controller/Player/Ladders/PlayerLadderClimber.cs'`
+      - `localCharacterIntentSource` (ObjectReference) = `CharacterPlayer (LocalCharacterIntentSource) scenePath='CharacterPlayer'`
+      - `motor` (ObjectReference) = `CharacterPlayer (CharacterMotor2D) scenePath='CharacterPlayer'`
+      - `exertionEnergy` (ObjectReference) = `Vitals (PlayerExertionEnergyState) scenePath='CharacterPlayer/Vitals'`
+      - `attributes` (ObjectReference) = `null`
+      - `ladderMask` (LayerMask) = `-1`
+      - `ladderSearchRadius` (Float) = `0.75`
+      - `disableGravityWhileClimbing` (Boolean) = `True`
+      - `detachDistance` (Float) = `1.25`
+      - `allowHorizontalMovementWhileClimbing` (Boolean) = `True`
+      - `horizontalClimbSpeed` (Float) = `2.25`
+      - `useLadderExertion` (Boolean) = `True`
+      - `idleOnLadderExertionCeiling` (Float) = `0.16`
+      - `climbUpExertionCeiling` (Float) = `0.92`
+      - `climbDownExertionCeiling` (Float) = `0.38`
+      - `horizontalClimbExertionCeiling` (Float) = `0.48`
+      - `ladderExertionApproachRate` (Float) = `0.3`
+      - `scaleUpwardClimbByEnergy` (Boolean) = `True`
+      - `scaleHorizontalClimbByEnergy` (Boolean) = `True`
+      - `scaleDownwardClimbByEnergy` (Boolean) = `False`
+      - `minClimbAuthorityWhenExhausted` (Float) = `0.25`
+      - `maxAttachedLocalXDistance` (Float) = `0.65`
+      - `recenterWhenNoHorizontalInput` (Boolean) = `True`
+      - `idleRecenterSpeed` (Float) = `6`
+      - `snapToCenterOnBeginClimb` (Boolean) = `False`
+      - `initialAttachClampFraction` (Float) = `0.85`
+      - `sideDetachVelocity` (Float) = `1.25`
+      - `alignRotationToLadderWhileClimbing` (Boolean) = `True`
+      - `rotationSnapSpeed` (Float) = `18`
+      - `faceUsingHorizontalInput` (Boolean) = `True`
+      - `allowImplicitEntry` (Boolean) = `False`
+      - `implicitInputDeadzone` (Float) = `0.01`
+      - `jumpExitsLadder` (Boolean) = `True`
+      - `groundedExitsAtTopOrBottom` (Boolean) = `True`
+      - `blockClimbIntoSolid` (Boolean) = `True`
+      - `climbBlockMask` (LayerMask) = `4104`
+      - `climbBlockSkin` (Float) = `0.025`
+      - `climbCastMaxHits` (Integer) = `8`
+      - `debugClimbBlock` (Boolean) = `False`
+      - `ignoreBoatCollisionsWhileExternallyClimbing` (Boolean) = `True`
+      - `ignoreHatchLedgeLayerWhileClimbing` (Boolean) = `True`
+      - `hatchLedgeLayerName` (String) = `HatchLedge`
+      - `hatchLedgeMinimumIgnoreAfterDetachSeconds` (Float) = `0.05`
+      - `hatchLedgeOverlapCheckPadding` (Float) = `0.05`
+      - `hatchLedgePenetrationTolerance` (Float) = `0.002`
+      - `maxHatchLedgeRestoreWaitSeconds` (Float) = `3`
+      - `debugLogs` (Boolean) = `False`
+    - `PlayerLoadState` index=26 enabled=`True`
+      - `m_Script` (ObjectReference) = `PlayerLoadState (MonoScript) asset='Assets/Scripts/GameState/Inventory/PlayerLoadState.cs'`
+      - `inventory` (ObjectReference) = `PlayerInventory (PlayerInventory) scenePath='CharacterPlayer/PlayerInventory'`
+      - `equipment` (ObjectReference) = `PlayerEquipment (PlayerEquipment) scenePath='CharacterPlayer/PlayerEquipment'`
+      - `attributes` (ObjectReference) = `Vitals (PlayerAttributeState) scenePath='CharacterPlayer/Vitals'`
+      - `fallbackEncumbranceCapacity` (Float) = `100`
+      - `logChanges` (Boolean) = `False`
+    - `PlayerLoadoutRestoreOnSceneStart` index=27 enabled=`True`
+      - `m_Script` (ObjectReference) = `PlayerLoadoutRestoreOnSceneStart (MonoScript) asset='Assets/Scripts/Saves/PlayerLoadoutRestoreOnSceneStart.cs'`
+      - `restoreDelaySeconds` (Float) = `0.05`
+      - `restoreOnlyIfGameStateHasLoadout` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+    - `PlayerSceneContextRestorer` index=28 enabled=`True`
+      - `m_Script` (ObjectReference) = `PlayerSceneContextRestorer (MonoScript) asset='Assets/Scripts/GameState/Scene/PlayerSceneContextRestorer.cs'`
+      - `boardingState` (ObjectReference) = `CharacterPlayer (PlayerBoardingState) scenePath='CharacterPlayer'`
+      - `boatPlayerSpawnPointName` (String) = `PlayerSpawnPoint`
+      - `boardedFallbackLocalOffset` (Vector3) = `(0.00, 1.00, 0.00)`
+      - `boatSceneName` (String) = `BoatScene`
+      - `nodeSceneName` (String) = `NodeScene`
+      - `defaultBoatSceneBoarded` (Boolean) = `True`
+      - `defaultNodeSceneBoarded` (Boolean) = `False`
+      - `restoreDelaySeconds` (Float) = `0.05`
+      - `maxWaitForBoatSeconds` (Float) = `2`
+      - `verboseLogging` (Boolean) = `False`
+    - `PlayerSubmersionState` index=29 enabled=`True`
+      - `m_Script` (ObjectReference) = `PlayerSubmersionState (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerSubmersionState.cs'`
+      - `swimThreshold` (Float) = `0.6`
+      - `dryEpsilon` (Float) = `0.02`
+      - `useContextualWater` (Boolean) = `True`
+      - `fallbackToProvidersWhenNoContext` (Boolean) = `True`
+      - `boardingState` (ObjectReference) = `null`
+      - `explicitWaterContext` (ObjectReference) = `null`
+      - `waveManager` (ObjectReference) = `null`
+      - `bottomPoint` (ObjectReference) = `null`
+      - `topPoint` (ObjectReference) = `null`
+      - `localBottomOffset` (Vector2) = `(0.00, -0.45)`
+      - `localTopOffset` (Vector2) = `(0.00, 0.55)`
+      - `logWhenStateChanges` (Boolean) = `False`
+      - `verboseWaterContext` (Boolean) = `False`
+    - `PlayerSwimOrientationForce` index=30 enabled=`True`
+      - `m_Script` (ObjectReference) = `PlayerSwimOrientationForce (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerSwimOrientationForce.cs'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `55`
+      - `sub` (ObjectReference) = `null`
+      - `sidewaysTiltDeg` (Float) = `75`
+      - `downTiltDeg` (Float) = `180`
+      - `inputDeadzone` (Float) = `0.15`
+      - `rotateTorque` (Float) = `2`
+      - `angularDamping` (Float) = `1`
+    - `PlayerTurretController` index=31 enabled=`True`
+      - `m_Script` (ObjectReference) = `PlayerTurretController (MonoScript) asset='Assets/Scripts/Modules/PlayerTurretController.cs'`
+      - `intentSourceComponent` (ObjectReference) = `CharacterPlayer (LocalCharacterIntentSource) scenePath='CharacterPlayer'`
+    - `SpriteFacingController` index=32 enabled=`True`
+      - `m_Script` (ObjectReference) = `SpriteFacingController (MonoScript) asset='Assets/Scripts/Controller/Player/SpriteFacingController.cs'`
+      - `rb` (ObjectReference) = `CharacterPlayer (Rigidbody2D) scenePath='CharacterPlayer'`
+      - `visualRoot` (ObjectReference) = `CharacterPlayer (Transform) scenePath='CharacterPlayer'`
+      - `intentSourceComponent` (ObjectReference) = `CharacterPlayer (LocalCharacterIntentSource) scenePath='CharacterPlayer'`
+      - `flipThreshold` (Float) = `0.2`
+    - `UnderwaterHarvestActor` index=33 enabled=`True`
+      - `m_Script` (ObjectReference) = `UnderwaterHarvestActor (MonoScript) asset='Assets/Scripts/Environment/Resources/UnderwaterHarvestActor.cs'`
+      - `hasSimpleDrill` (Boolean) = `True`
+      - `hasCrane` (Boolean) = `False`
+      - `debugTreatAsUnderwater` (Boolean) = `True`
+      - `oxygenCapacityMultiplier` (Float) = `1`
+  - `Feet` | path=`CharacterPlayer/Feet` | activeSelf=True | activeInHierarchy=True | layer=`Player` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, -0.5, 0`
+      - worldPosition: `-17.78, 1, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, -0.50, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `Hands` | path=`CharacterPlayer/Hands` | activeSelf=True | activeInHierarchy=True | layer=`Player` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0.5, 0, 0`
+      - worldPosition: `-17.28, 2, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `0.3, 0.15, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.50, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(0.30, 0.15, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SpriteRenderer` index=1 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+        - `m_Sprite` (ObjectReference) = `Circle (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Circle.png'`
+        - `m_Color` (Color) = `RGBA(0.991, 0.617, 0.556, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+      - `PlayerHeldItemVisual` index=2 enabled=`True`
+        - `m_Script` (ObjectReference) = `PlayerHeldItemVisual (MonoScript) asset='Assets/Scripts/Inventory/Item/PlayerHeldItemVisual.cs'`
+        - `equipment` (ObjectReference) = `PlayerEquipment (PlayerEquipment) scenePath='CharacterPlayer/PlayerEquipment'`
+        - `handVisualAnchor` (ObjectReference) = `Hands (Transform) scenePath='CharacterPlayer/Hands'`
+        - `sortingSource` (ObjectReference) = `CharacterPlayer (SpriteRenderer) scenePath='CharacterPlayer'`
+        - `heldSpriteRenderer` (ObjectReference) = `null`
+        - `visualRoot` (ObjectReference) = `null`
+        - `localPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `localEulerAngles` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `localScale` (Vector3) = `(3.30, 3.30, 1.00)`
+        - `preferWorldPrefabSprite` (Boolean) = `True`
+        - `syncSortingEveryFrame` (Boolean) = `True`
+        - `sortingOrderOffset` (Integer) = `5`
+        - `syncGameObjectLayer` (Boolean) = `True`
+        - `applyLayerRecursively` (Boolean) = `True`
+        - `showCargoLabel` (Boolean) = `True`
+        - `cargoLabel` (ObjectReference) = `null`
+        - `cargoLabelLocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `cargoLabelFontSize` (Float) = `3`
+        - `cargoLabelMaxCharacters` (Integer) = `14`
+        - `cargoLabelSortingOrderOffset` (Integer) = `2`
+        - `cargoLabelColor` (Color) = `RGBA(0.000, 0.000, 0.000, 1.000)`
+        - `verboseLogging` (Boolean) = `False`
+  - `Head` | path=`CharacterPlayer/Head` | activeSelf=True | activeInHierarchy=True | layer=`Player` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0.4, 0`
+      - worldPosition: `-17.78, 2.8, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1.2, 0.6, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.40, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.20, 0.60, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SpriteRenderer` index=1 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+        - `m_Sprite` (ObjectReference) = `Circle (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Circle.png'`
+        - `m_Color` (Color) = `RGBA(0.991, 0.617, 0.556, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+  - `PlayerEquipment` | path=`CharacterPlayer/PlayerEquipment` | activeSelf=True | activeInHierarchy=True | layer=`Player` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-17.78, 2, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PlayerEquipment` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `PlayerEquipment (MonoScript) asset='Assets/Scripts/Inventory/PlayerEquipment.cs'`
+        - `hands` (ManagedReference) = `null`
+        - `head` (ManagedReference) = `null`
+        - `feet` (ManagedReference) = `null`
+        - `toolbelt` (ManagedReference) = `null`
+        - `backpack` (ManagedReference) = `null`
+        - `body` (ManagedReference) = `null`
+      - `ItemAcquisitionResolver` index=2 enabled=`True`
+        - `m_Script` (ObjectReference) = `ItemAcquisitionResolver (MonoScript) asset='Assets/Scripts/Inventory/Item/ItemAcquisitionResolver.cs'`
+        - `inventory` (ObjectReference) = `PlayerInventory (PlayerInventory) scenePath='CharacterPlayer/PlayerInventory'`
+        - `equipment` (ObjectReference) = `PlayerEquipment (PlayerEquipment) scenePath='CharacterPlayer/PlayerEquipment'`
+        - `verboseLogging` (Boolean) = `False`
+  - `PlayerInventory` | path=`CharacterPlayer/PlayerInventory` | activeSelf=True | activeInHierarchy=True | layer=`Player` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-17.78, 2, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PlayerInventoryInput` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `PlayerInventoryInput (MonoScript) asset='Assets/Scripts/Inventory/PlayerInventoryInput.cs'`
+        - `inventory` (ObjectReference) = `PlayerInventory (PlayerInventory) scenePath='CharacterPlayer/PlayerInventory'`
+        - `dropPoint` (ObjectReference) = `CharacterPlayer (Transform) scenePath='CharacterPlayer'`
+        - `dropOffset` (Vector3) = `(0.75, 0.00, 0.00)`
+      - `PlayerInventory` index=2 enabled=`True`
+        - `m_Script` (ObjectReference) = `PlayerInventory (MonoScript) asset='Assets/Scripts/Inventory/PlayerInventory.cs'`
+        - `hotbarSlotCount` (Integer) = `6`
+        - `scrollIncludesEquipmentSlots` (Boolean) = `True`
+        - `equipment` (ObjectReference) = `PlayerEquipment (PlayerEquipment) scenePath='CharacterPlayer/PlayerEquipment'`
+        - `hotbarSlots` (Generic) = `array size=0`
+        - `selectedSlot` (Enum) = `Hotbar 0`
+      - `InventoryDebugSpawner` index=3 enabled=`True`
+        - `m_Script` (ObjectReference) = `InventoryDebugSpawner (MonoScript) asset='Assets/Scripts/Debug/InventoryDebugSpawner.cs'`
+        - `itemCatalog` (ObjectReference) = `itemCatalog (ItemDefinitionCatalog) asset='Assets/Defs/Items/Catalogs/itemCatalog.asset'`
+        - `acquisitionResolver` (ObjectReference) = `PlayerEquipment (ItemAcquisitionResolver) scenePath='CharacterPlayer/PlayerEquipment'`
+        - `dropOrigin` (ObjectReference) = `CharacterPlayer (Transform) scenePath='CharacterPlayer'`
+        - `selectedIndex` (Integer) = `0`
+        - `spawnQuantity` (Integer) = `1`
+        - `spawnSelectedKey` (Enum) = `F6`
+        - `nextItemKey` (Enum) = `Page Down`
+        - `previousItemKey` (Enum) = `Page Up`
+        - `printCatalogKey` (Enum) = `F7`
+        - `toggleHudKey` (Enum) = `F8`
+        - `increaseQuantityKey` (Enum) = `Equals`
+        - `decreaseQuantityKey` (Enum) = `Minus`
+        - `increaseQuantityFastKey` (Enum) = `Right Bracket`
+        - `decreaseQuantityFastKey` (Enum) = `Left Bracket`
+        - `showHud` (Boolean) = `False`
+        - `hudPosition` (Vector2) = `(16.00, 16.00)`
+        - `autoFitHudToScreen` (Boolean) = `True`
+        - `hudWidth` (Float) = `640`
+        - `hudHeight` (Float) = `172`
+        - `hudScreenMargin` (Float) = `16`
+        - `fontSize` (Integer) = `14`
+        - `showNeighborItems` (Boolean) = `True`
+        - `hudDraggable` (Boolean) = `True`
+        - `resetHudPositionKey` (Enum) = `None`
+        - `overrideSpawnCharges` (Boolean) = `False`
+        - `spawnCharges` (Integer) = `100`
+        - `chargeSmallStep` (Integer) = `1`
+        - `chargeLargeStep` (Integer) = `10`
+        - `logSelectionChanges` (Boolean) = `False`
+        - `logSpawnResults` (Boolean) = `False`
+  - `Vitals` | path=`CharacterPlayer/Vitals` | activeSelf=True | activeInHierarchy=True | layer=`Player` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-17.78, 2, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `AfflictionSystem` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `AfflictionSystem (MonoScript) asset='Assets/Scripts/Survival/Afflictions/AfflictionSystem.cs'`
+        - `useFixedUpdate` (Boolean) = `True`
+      - `AfflictionPostFxController` index=2 enabled=`True`
+        - `m_Script` (ObjectReference) = `AfflictionPostFxController (MonoScript) asset='Assets/Scripts/Survival/Afflictions/AfflictionPostFxController.cs'`
+        - `afflictionReadBehaviour` (ObjectReference) = `Vitals (AfflictionSystem) scenePath='CharacterPlayer/Vitals'`
+        - `volume` (ObjectReference) = `ScreenPostFx (Volume) scenePath='ScreenPostFx'`
+        - `bindings` (Generic) = `array size=3`
+        - `useMaxMix` (Boolean) = `True`
+      - `AmbientSurfaceAirSource` index=3 enabled=`True`
+        - `m_Script` (ObjectReference) = `AmbientSurfaceAirSource (MonoScript) asset='Assets/Scripts/Survival/Air/AmbientSurfaceAirSource.cs'`
+        - `air` (ObjectReference) = `Vitals (PlayerAirState) scenePath='CharacterPlayer/Vitals'`
+        - `waveManager` (ObjectReference) = `null`
+        - `headPoint` (ObjectReference) = `Head (Transform) scenePath='CharacterPlayer/Head'`
+        - `useBoatWaterContext` (Boolean) = `True`
+        - `explicitWaterContext` (ObjectReference) = `null`
+        - `boardingState` (ObjectReference) = `null`
+        - `fallbackToOceanWhenNoContext` (Boolean) = `True`
+        - `headClearance` (Float) = `0.05`
+        - `hysteresis` (Float) = `0.02`
+        - `verboseLogging` (Boolean) = `False`
+      - `DebugDeathHandler` index=4 enabled=`True`
+        - `m_Script` (ObjectReference) = `DebugDeathHandler (MonoScript) asset='Assets/Scripts/Survival/Death/DebugDeathHandler.cs'`
+      - `DrowningAfflictionProducer` index=5 enabled=`True`
+        - `m_Script` (ObjectReference) = `DrowningAfflictionProducer (MonoScript) asset='Assets/Scripts/Survival/Afflictions/DrowningAfflictionProducer.cs'`
+        - `drowningForce` (ObjectReference) = `CharacterPlayer (PlayerDrowningForce) scenePath='CharacterPlayer'`
+        - `drowningAffliction` (ObjectReference) = `Affliction_Drowning (AfflictionDefinition) asset='Assets/Defs/Player/Afflictions/Affliction_Drowning.asset'`
+        - `fallbackStableId` (String) = `affliction.drowning`
+        - `producerId` (String) = `producer.drowning`
+        - `minimumEmittedSeverity01` (Float) = `0.1`
+        - `warnIfMissingRefs` (Boolean) = `True`
+      - `DrowningDeathCause` index=6 enabled=`True`
+        - `m_Script` (ObjectReference) = `DrowningDeathCause (MonoScript) asset='Assets/Scripts/Survival/Death/DrowningDeathCause.cs'`
+        - `oxygenation` (ObjectReference) = `Vitals (PlayerOxygenationState) scenePath='CharacterPlayer/Vitals'`
+        - `afflictionReadBehaviour` (ObjectReference) = `Vitals (AfflictionSystem) scenePath='CharacterPlayer/Vitals'`
+        - `unconsciousId` (Generic) = `<generic>`
+        - `unconsciousCriticalSecondsToDie` (Float) = `3`
+        - `criticalSpo2Threshold` (Float) = `0.7`
+      - `EquippedItemAirSource` index=7 enabled=`True`
+        - `m_Script` (ObjectReference) = `EquippedItemAirSource (MonoScript) asset='Assets/Scripts/Survival/Air/EquippedItemAirSource.cs'`
+        - `equipment` (ObjectReference) = `PlayerEquipment (PlayerEquipment) scenePath='CharacterPlayer/PlayerEquipment'`
+        - `attributes` (ObjectReference) = `Vitals (PlayerAttributeState) scenePath='CharacterPlayer/Vitals'`
+        - `slotsToCheck` (Generic) = `array size=3`
+      - `ExertionStatePlayerBuffProducer` index=8 enabled=`True`
+        - `m_Script` (ObjectReference) = `ExertionStatePlayerBuffProducer (MonoScript) asset='Assets/Scripts/Survival/Buffs/ExertionStatePlayerBuffProducer.cs'`
+        - `exertion` (ObjectReference) = `Vitals (PlayerExertionEnergyState) scenePath='CharacterPlayer/Vitals'`
+        - `producerId` (String) = `producer.exertion_state`
+        - `emittedSeverity01` (Float) = `1`
+        - `restingBuff` (ObjectReference) = `RestingBuff (PlayerBuffDefinition) asset='Assets/Defs/Player/PlayerBuffs/RestingBuff.asset'`
+        - `calmBuff` (ObjectReference) = `CalmBuff (PlayerBuffDefinition) asset='Assets/Defs/Player/PlayerBuffs/CalmBuff.asset'`
+        - `activeBuff` (ObjectReference) = `ActiveBuff (PlayerBuffDefinition) asset='Assets/Defs/Player/PlayerBuffs/ActiveBuff.asset'`
+        - `windedBuff` (ObjectReference) = `WindedBuff (PlayerBuffDefinition) asset='Assets/Defs/Player/PlayerBuffs/WindedBuff.asset'`
+        - `exertedBuff` (ObjectReference) = `ExertedBuff (PlayerBuffDefinition) asset='Assets/Defs/Player/PlayerBuffs/ExertedBuff.asset'`
+        - `redliningBuff` (ObjectReference) = `RedliningBuff (PlayerBuffDefinition) asset='Assets/Defs/Player/PlayerBuffs/RedliningBuff.asset'`
+        - `warnIfMissingBuff` (Boolean) = `True`
+      - `PlayerAirState` index=9 enabled=`True`
+        - `m_Script` (ObjectReference) = `PlayerAirState (MonoScript) asset='Assets/Scripts/Survival/Air/PlayerAirState.cs'`
+        - `attributes` (ObjectReference) = `Vitals (PlayerAttributeState) scenePath='CharacterPlayer/Vitals'`
+        - `baseMaxAir` (Float) = `100`
+        - `airCurrent` (Float) = `100`
+        - `lungGasQuality01` (Float) = `1`
+        - `lungQualityRecoverPerSecond` (Float) = `1`
+        - `lungQualityMin` (Float) = `0.05`
+        - `surfaceRegenDelay` (Float) = `0`
+        - `exertion` (ObjectReference) = `Vitals (PlayerExertionEnergyState) scenePath='CharacterPlayer/Vitals'`
+        - `baseQualityConsumePerSecond` (Float) = `0.01`
+        - `demandByExertion` (Generic) = `<generic>`
+        - `lowThreshold` (Float) = `0.35`
+        - `criticalThreshold` (Float) = `0.15`
+        - `autoCollectSources` (Boolean) = `True`
+        - `oxygenQuality01` (Float) = `1`
+      - `PlayerDeathSystem` index=10 enabled=`True`
+        - `m_Script` (ObjectReference) = `PlayerDeathSystem (MonoScript) asset='Assets/Scripts/Survival/Death/PlayerDeathSystem.cs'`
+        - `useFixedUpdate` (Boolean) = `True`
+      - `PlayerExertionEnergyState` index=11 enabled=`True`
+        - `m_Script` (ObjectReference) = `PlayerExertionEnergyState (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerExertionEnergyState.cs'`
+        - `intentSourceBehaviour` (ObjectReference) = `CharacterPlayer (LocalCharacterIntentSource) scenePath='CharacterPlayer'`
+        - `submersion` (ObjectReference) = `CharacterPlayer (PlayerSubmersionState) scenePath='CharacterPlayer'`
+        - `motor` (ObjectReference) = `CharacterPlayer (CharacterMotor2D) scenePath='CharacterPlayer'`
+        - `attributes` (ObjectReference) = `Vitals (PlayerAttributeState) scenePath='CharacterPlayer/Vitals'`
+        - `exertion01` (Float) = `0`
+        - `restCeiling` (Float) = `0.08`
+        - `walkCeiling` (Float) = `0.35`
+        - `sprintCeiling` (Float) = `0.98`
+        - `swimCeiling` (Float) = `0.7`
+        - `sprintSwimCeiling` (Float) = `1`
+        - `diveCeilingBonus` (Float) = `0.08`
+        - `restApproachRate` (Float) = `0.1`
+        - `activityApproachRate` (Float) = `0.02`
+        - `sprintApproachRate` (Float) = `0.05`
+        - `swimApproachRate` (Float) = `0.07`
+        - `sprintSwimApproachRate` (Float) = `0.1`
+        - `enableTreadingWater` (Boolean) = `False`
+        - `treadAboveRegen` (Float) = `0.1`
+        - `treadApproachRate` (Float) = `0.02`
+        - `underwaterTreadFactor` (Float) = `0.2`
+        - `energyMax` (Float) = `100`
+        - `energyCurrent` (Float) = `100`
+        - `_effectiveEnergyMax` (Float) = `100`
+        - `drainThreshold` (Float) = `0.4`
+        - `baseDrainPerSecond` (Float) = `20`
+        - `drainPower` (Float) = `5`
+        - `regenPerSecond` (Float) = `0.5`
+        - `regenThreshold` (Float) = `0.4`
+        - `restingRegenBonus` (Float) = `0.5`
+        - `landRegenBonus` (Float) = `0.5`
+        - `energyGood` (Float) = `0.8`
+        - `energyOkay` (Float) = `0.6`
+        - `energyLow` (Float) = `0.4`
+        - `energyCritical` (Float) = `0.2`
+        - `lowEnergyThreshold` (Float) = `0.4`
+        - `authorityAtLowThreshold` (Float) = `1`
+        - `authorityAtZero` (Float) = `0.3`
+        - `useAuthorityCurve` (Boolean) = `False`
+        - `authorityCurve` (AnimationCurve) = `keys=2`
+        - `_moveAuthority` (Float) = `1`
+        - `_sprintAuthority` (Float) = `1`
+        - `_swimUpAuthority` (Float) = `1`
+      - `PlayerOxygenationState` index=12 enabled=`True`
+        - `m_Script` (ObjectReference) = `PlayerOxygenationState (MonoScript) asset='Assets/Scripts/Survival/Vitals/PlayerOxygenationState.cs'`
+        - `airRead` (ObjectReference) = `Vitals (PlayerAirState) scenePath='CharacterPlayer/Vitals'`
+        - `bodyRead` (ObjectReference) = `Vitals (PlayerOxygenationBodyDefaults) scenePath='CharacterPlayer/Vitals'`
+        - `riseRate` (Float) = `0.5`
+        - `fallRate` (Float) = `0.05`
+        - `minTargetSpO2` (Float) = `0.4`
+        - `useFixedUpdate` (Boolean) = `True`
+        - `lowThresh` (Float) = `0.9`
+        - `criticalThresh` (Float) = `0.7`
+        - `exposureRecoveryRate` (Float) = `10`
+        - `saturationCurve` (AnimationCurve) = `keys=5`
+      - `PlayerOxygenationBodyDefaults` index=13 enabled=`True`
+        - `m_Script` (ObjectReference) = `PlayerOxygenationBodyDefaults (MonoScript) asset='Assets/Scripts/Survival/Vitals/PlayerOxygenationBodyDefaults.cs'`
+        - `lungEffectiveness01` (Float) = `1`
+        - `perfusion01` (Float) = `1`
+        - `bloodQuality01` (Float) = `1`
+        - `demandMul` (Float) = `1`
+      - `PlayerUnconsciousnessState` index=14 enabled=`True`
+        - `m_Script` (ObjectReference) = `PlayerUnconsciousnessState (MonoScript) asset='Assets/Scripts/Survival/Vitals/PlayerUnconsciousnessState.cs'`
+        - `afflictionsReadBehaviour` (ObjectReference) = `Vitals (AfflictionSystem) scenePath='CharacterPlayer/Vitals'`
+        - `intentSourceBehaviour` (ObjectReference) = `CharacterPlayer (LocalCharacterIntentSource) scenePath='CharacterPlayer'`
+        - `body` (ObjectReference) = `CharacterPlayer (Rigidbody2D) scenePath='CharacterPlayer'`
+        - `unconsciousId` (String) = `aff.unconscious`
+        - `minUnconsciousSeconds` (Float) = `2`
+        - `fadeRate` (Float) = `1`
+        - `linearDamp` (Float) = `0`
+        - `angularDamp` (Float) = `0`
+        - `snapToStop` (Boolean) = `False`
+        - `stopEpsilon` (Float) = `0.03`
+      - `SpO2AfflictionProducer` index=15 enabled=`True`
+        - `m_Script` (ObjectReference) = `SpO2AfflictionProducer (MonoScript) asset='Assets/Scripts/Survival/Afflictions/SpO2AfflictionProducer.cs'`
+        - `oxygenation` (ObjectReference) = `Vitals (PlayerOxygenationState) scenePath='CharacterPlayer/Vitals'`
+        - `airRead` (ObjectReference) = `Vitals (PlayerAirState) scenePath='CharacterPlayer/Vitals'`
+        - `lowOxygenId` (String) = `aff.low_oxygen`
+        - `criticalOxygenId` (String) = `aff.critical_oxygen`
+        - `unconsciousId` (String) = `aff.unconscious`
+        - `criticalSecondsToUnconscious` (Float) = `15`
+        - `debtRecoveryRateWhileOxygenating` (Float) = `3`
+        - `debtRecoveryRateWhenNotLow` (Float) = `6`
+      - `CorpseRespawnHandler` index=16 enabled=`True`
+        - `m_Script` (ObjectReference) = `CorpseRespawnHandler (MonoScript) asset='Assets/Scripts/Survival/Death/CorpseRespawnHandler.cs'`
+        - `corpsePrefab` (ObjectReference) = `CharacterCorpse (GameObject) asset='Assets/Resources/Prefabs/Player/CharacterCorpse.prefab'`
+        - `corpseSpawnPointOverride` (ObjectReference) = `CharacterPlayer (Transform) scenePath='CharacterPlayer'`
+        - `respawnPoint` (ObjectReference) = `Building A - Market (Transform) scenePath='NodeContext/NodeView/Building A - Market'`
+        - `respawnKey` (Enum) = `R`
+        - `livingBehaviours` (Generic) = `array size=6`
+        - `deadCamBehaviours` (Generic) = `array size=1`
+        - `aliveCamBehaviours` (Generic) = `array size=1`
+        - `body` (ObjectReference) = `null`
+        - `air` (ObjectReference) = `null`
+        - `oxygenation` (ObjectReference) = `null`
+        - `afflictions` (ObjectReference) = `null`
+        - `exertionEnergy` (ObjectReference) = `null`
+      - `PlayerBuffSystem` index=17 enabled=`True`
+        - `m_Script` (ObjectReference) = `PlayerBuffSystem (MonoScript) asset='Assets/Scripts/Survival/Buffs/PlayerBuffSystem.cs'`
+        - `useFixedUpdate` (Boolean) = `True`
+      - `PlayerAttributeState` index=18 enabled=`True`
+        - `m_Script` (ObjectReference) = `PlayerAttributeState (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerAttributeState.cs'`
+        - `profile` (ObjectReference) = `PlayerAttributeProfile (PlayerAttributeProfile) asset='Assets/Defs/Player/PlayerAttributeProfile.asset'`
+        - `buffSystem` (ObjectReference) = `Vitals (PlayerBuffSystem) scenePath='CharacterPlayer/Vitals'`
+      - `PlayerEncumbranceBuffProducer` index=19 enabled=`True`
+        - `m_Script` (ObjectReference) = `PlayerEncumbranceBuffProducer (MonoScript) asset='Assets/Scripts/Survival/Buffs/PlayerEncumbranceBuffProducer.cs'`
+        - `loadState` (ObjectReference) = `CharacterPlayer (PlayerLoadState) scenePath='CharacterPlayer'`
+        - `encumberedBuff` (ObjectReference) = `EncumberedBuff (PlayerBuffDefinition) asset='Assets/Defs/Player/PlayerBuffs/EncumberedBuff.asset'`
+        - `encumbranceStartsAtCapacityMultiplier` (Float) = `1`
+        - `fullSeverityAtCapacityMultiplier` (Float) = `2`
+        - `severityCurve` (AnimationCurve) = `keys=2`
+        - `producerId` (String) = `producer.encumbrance`
+        - `currentCarriedMass` (Float) = `0`
+        - `currentCapacity` (Float) = `0`
+        - `currentCapacityMultiple` (Float) = `0`
+        - `currentSeverity01` (Float) = `0`
+      - `PlayerEquipmentBuffProducer` index=20 enabled=`True`
+        - `m_Script` (ObjectReference) = `PlayerEquipmentBuffProducer (MonoScript) asset='Assets/Scripts/Survival/Buffs/PlayerEquipmentBuffProducer.cs'`
+        - `equipment` (ObjectReference) = `PlayerEquipment (PlayerEquipment) scenePath='CharacterPlayer/PlayerEquipment'`
+        - `slots` (Generic) = `array size=6`
+  - `WearableOverlay` | path=`CharacterPlayer/WearableOverlay` | activeSelf=True | activeInHierarchy=True | layer=`Player` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0.05, 0, 0`
+      - worldPosition: `-17.73, 2, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 0.5, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.05, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 0.50, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SpriteRenderer` index=1 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+        - `m_Sprite` (ObjectReference) = `null`
+        - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+      - `PlayerWearableVisualController` index=2 enabled=`True`
+        - `m_Script` (ObjectReference) = `PlayerWearableVisualController (MonoScript) asset='Assets/Scripts/Inventory/PlayerWearableVisualController.cs'`
+        - `equipment` (ObjectReference) = `PlayerEquipment (PlayerEquipment) scenePath='CharacterPlayer/PlayerEquipment'`
+        - `wearableRenderer` (ObjectReference) = `WearableOverlay (SpriteRenderer) scenePath='CharacterPlayer/WearableOverlay'`
+        - `wearableVisualPriority` (Generic) = `array size=5`
+- `Controllers` | path=`Controllers` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `2.27, 23.741, -0.105`
+    - worldPosition: `2.27, 23.741, -0.105`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(2.27, 23.74, -0.11)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `WorldMapTravelDebugController` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `WorldMapTravelDebugController (MonoScript) asset='Assets/Scripts/Travel/Travel/WorldMapTravelDebugController.cs'`
+      - `runtimeBinder` (ObjectReference) = `WorldMapRuntime (WorldMapRuntimeBinder) scenePath='WorldMapRuntime'`
+      - `player` (ObjectReference) = `SceneContext (WorldMapPlayerRef) scenePath='SceneContext'`
+      - `travelRules` (ObjectReference) = `WorldMapTravelRulesConfig (WorldMapTravelRulesConfig) asset='Assets/Scripts/Travel/Travel/WorldMapTravelRulesConfig.asset'`
+      - `maxRouteLengthOverride` (Float) = `999999`
+      - `useOverrideMaxRouteLength` (Boolean) = `False`
+      - `bypassAllTravelValidation` (Boolean) = `False`
+      - `bypassBoardingRequirement` (Boolean) = `False`
+      - `bypassDirectEdgeRequirement` (Boolean) = `False`
+      - `bypassRouteRestrictions` (Boolean) = `False`
+      - `bypassOutcomeRoll` (Boolean) = `False`
+      - `logTravelDecisions` (Boolean) = `False`
+      - `loadNodeSceneAfterInstantComplete` (Boolean) = `False`
+      - `nodeSceneName` (String) = `NodeScene`
+      - `overrideMode` (Enum) = `Always Succeed`
+      - `toNodeId` (String) = `2:7`
+      - `routeLength` (Float) = `1`
+      - `seed` (Integer) = `2`
+    - `StarMapDebugController` index=2 enabled=`True`
+      - `m_Script` (ObjectReference) = `StarMapDebugController (MonoScript) asset='Assets/Scripts/WorldMap/Input/StarMapDebugController.cs'`
+      - `playerRef` (ObjectReference) = `SceneContext (WorldMapPlayerRef) scenePath='SceneContext'`
+      - `runtimeBinder` (ObjectReference) = `WorldMapRuntime (WorldMapRuntimeBinder) scenePath='WorldMapRuntime'`
+      - `targetNodeIndex` (Integer) = `0`
+      - `rumorAmount` (Integer) = `1`
+      - `progressDelta01` (Float) = `0.1`
+      - `forceState` (Enum) = `Rumored`
+    - `NodeTravelController` index=3 enabled=`True`
+      - `m_Script` (ObjectReference) = `NodeTravelController (MonoScript) asset='Assets/Scripts/Travel/Travel/NodeTravelController.cs'`
+      - `runtimeBinder` (ObjectReference) = `WorldMapRuntime (WorldMapRuntimeBinder) scenePath='WorldMapRuntime'`
+      - `generator` (ObjectReference) = `WorldGenerationRoot (WorldMapGraphGenerator) scenePath='WorldGenerationRoot'`
+      - `travelDebug` (ObjectReference) = `Controllers (WorldMapTravelDebugController) scenePath='Controllers'`
+      - `travelRules` (ObjectReference) = `WorldMapTravelRulesConfig (WorldMapTravelRulesConfig) asset='Assets/Scripts/Travel/Travel/WorldMapTravelRulesConfig.asset'`
+      - `playerLoadoutPersistence` (ObjectReference) = `SceneContext (PlayerLoadoutPersistence) scenePath='SceneContext'`
+      - `allowLaunchWithoutValidation` (Boolean) = `False`
+      - `useOutcomeRollBeforeLaunch` (Boolean) = `False`
+      - `allowNonEdgeTravel` (Boolean) = `False`
+      - `allowLaunchWhenNotBoarded` (Boolean) = `False`
+      - `seedOverride` (Integer) = `0`
+      - `logTravelDiagnostics` (Boolean) = `True`
+    - `OceanWaterPresentationController` index=4 enabled=`True`
+      - `m_Script` (ObjectReference) = `OceanWaterPresentationController (MonoScript) asset='Assets/Scripts/Global/Rendering/OceanWaterPresentationController.cs'`
+      - `backgroundOceanRenderers` (Generic) = `array size=1`
+      - `foregroundOceanRenderers` (Generic) = `array size=1`
+      - `showBackgroundInInterior` (Boolean) = `True`
+      - `showForegroundInInterior` (Boolean) = `False`
+      - `showBackgroundWhenBoardedExterior` (Boolean) = `False`
+      - `showForegroundWhenBoardedExterior` (Boolean) = `True`
+      - `showBackgroundWhenUnboarded` (Boolean) = `False`
+      - `showForegroundWhenUnboarded` (Boolean) = `True`
+      - `showBackgroundInTransition` (Boolean) = `True`
+      - `showForegroundInTransition` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+    - `MapOverlayToggleService` index=5 enabled=`True`
+      - `m_Script` (ObjectReference) = `MapOverlayToggleService (MonoScript) asset='Assets/Scripts/WorldMap/UI/MapOverlayToggleService.cs'`
+      - `mapRunner` (ObjectReference) = `Runners (WorldMapOverlayRunner) scenePath='Runners'`
+      - `player` (ObjectReference) = `CharacterPlayer (Transform) scenePath='CharacterPlayer'`
+      - `allowHotkeyM` (Boolean) = `True`
+      - `respectGameplayInputBlocker` (Boolean) = `True`
+      - `autoCloseWhenFar` (Boolean) = `False`
+      - `autoCloseDistance` (Float) = `3.5`
+    - `ItemVendorPurchaseService` index=6 enabled=`True`
+      - `m_Script` (ObjectReference) = `ItemVendorPurchaseService (MonoScript) asset='Assets/Scripts/Inventory/Item/Vendor/ItemVendorPurchaseService.cs'`
+      - `itemCatalog` (ObjectReference) = `itemCatalog (ItemDefinitionCatalog) asset='Assets/Defs/Items/Catalogs/itemCatalog.asset'`
+      - `fallbackDropOffset` (Vector3) = `(0.75, 0.25, 0.00)`
+      - `verboseLogging` (Boolean) = `False`
+    - `ItemVendorAgentServiceHandler` index=7 enabled=`True`
+      - `m_Script` (ObjectReference) = `ItemVendorAgentServiceHandler (MonoScript) asset='Assets/Scripts/Inventory/Item/Vendor/ItemVendorAgentServiceHandler.cs'`
+      - `handlerPriority` (Integer) = `0`
+      - `runner` (ObjectReference) = `Runners (ItemVendorOverlayRunner) scenePath='Runners'`
+    - `ItemVendorSellService` index=8 enabled=`True`
+      - `m_Script` (ObjectReference) = `ItemVendorSellService (MonoScript) asset='Assets/Scripts/Inventory/Item/Vendor/ItemVendorSellService.cs'`
+      - `verboseLogging` (Boolean) = `False`
+    - `BoatVendorAgentServiceHandler` index=9 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatVendorAgentServiceHandler (MonoScript) asset='Assets/Scripts/Boats/Vendor/BoatVendorAgentServiceHandler.cs'`
+      - `handlerPriority` (Integer) = `0`
+      - `runner` (ObjectReference) = `Runners (BoatVendorOverlayRunner) scenePath='Runners'`
+    - `BoatVendorModuleTransactionService` index=10 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatVendorModuleTransactionService (MonoScript) asset='Assets/Scripts/Boats/Vendor/BoatVendorModuleTransactionService.cs'`
+      - `itemCatalog` (ObjectReference) = `itemCatalog (ItemDefinitionCatalog) asset='Assets/Defs/Items/Catalogs/itemCatalog.asset'`
+      - `fallbackDropOffset` (Vector3) = `(0.75, 0.25, 0.00)`
+      - `verboseLogging` (Boolean) = `False`
+- `EnvironmentManager` | path=`EnvironmentManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `-0.424, -0.382, -0.05`
+    - worldPosition: `-0.424, -0.382, -0.05`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(-0.42, -0.38, -0.05)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `ServiceRoot` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `ServiceRoot (MonoScript) asset='Assets/Scripts/Global/ServiceRoot/ServiceRoot.cs'`
+      - `celestialManager` (ObjectReference) = `CelestialBodyManager (CelestialBodyManager) scenePath='EnvironmentManager/CelestialBodyManager'`
+      - `cloudManager` (ObjectReference) = `CloudManager (CloudManager) scenePath='EnvironmentManager/CloudManager'`
+      - `fogManager` (ObjectReference) = `FogManager (FogManager) scenePath='EnvironmentManager/FogManager'`
+      - `globalBrightnessManager` (ObjectReference) = `GlobalBrightnessManager (GlobalBrightnessManager) scenePath='EnvironmentManager/GlobalBrightnessManager'`
+      - `rainManager` (ObjectReference) = `RainManager (RainManager) scenePath='EnvironmentManager/RainManager'`
+      - `skyVisualManager` (ObjectReference) = `SkyVisualManager (SkyVisualManager) scenePath='EnvironmentManager/SkyVisualManager'`
+      - `sunriseSunsetManager` (ObjectReference) = `SunriseSunsetManager (SunriseSunsetOverlayManager) scenePath='EnvironmentManager/SunriseSunsetManager'`
+      - `timeOfDayManager` (ObjectReference) = `TimeManager (TimeOfDayManager) scenePath='EnvironmentManager/TimeManager'`
+      - `waterVisualManager` (ObjectReference) = `WaterVisualManager (WaterVisualManager) scenePath='EnvironmentManager/WaterVisualManager'`
+      - `weatherManager` (ObjectReference) = `WeatherManager (WeatherManager) scenePath='EnvironmentManager/WeatherManager'`
+      - `windManager` (ObjectReference) = `WindManager (WindManager) scenePath='EnvironmentManager/WindManager'`
+      - `waveManager` (ObjectReference) = `WaveManager (WaveManager) scenePath='EnvironmentManager/WaveManager'`
+      - `waveField` (ObjectReference) = `WaveSystem (WaveField) scenePath='WaveSystem'`
+      - `tickTimeInRoot` (Boolean) = `False`
+  - `CelestialBodyManager` | path=`EnvironmentManager/CelestialBodyManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-0.424, -0.382, -0.05`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `CelestialBodyManager` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `CelestialBodyManager (MonoScript) asset='Assets/Scripts/Global/Physics/CelestialBodyManager.cs'`
+        - `celestialOffsetX` (Float) = `0`
+        - `sunTransform` (ObjectReference) = `Sun (Transform) scenePath='Sun'`
+        - `sunLight` (ObjectReference) = `Sun (Light2D) scenePath='Sun'`
+        - `sunStartX` (Float) = `-50`
+        - `sunEndX` (Float) = `50`
+        - `sunMinY` (Float) = `-40`
+        - `sunMaxY` (Float) = `25`
+        - `sunMaxIntensity` (Float) = `1`
+        - `sunBrightnessCurve` (AnimationCurve) = `keys=6`
+        - `sunArcSharpness` (Float) = `1`
+        - `sunCorona` (ObjectReference) = `Sun (SpriteRenderer) scenePath='Sun'`
+        - `coronaMaterial` (ObjectReference) = `SunCoronaMaterial2D (Material) asset='Assets/Resources/Materials/SunCoronaMaterial2D.mat'`
+        - `coronaMaxRadius` (Float) = `0.55`
+        - `coronaMinSoftness` (Float) = `0.7`
+        - `moonTransform` (ObjectReference) = `Moon (Transform) scenePath='Moon'`
+        - `moonLight` (ObjectReference) = `Moon (Light2D) scenePath='Moon'`
+        - `moonRise` (Float) = `19`
+        - `moonSet` (Float) = `5`
+        - `moonStartX` (Float) = `-50`
+        - `moonEndX` (Float) = `50`
+        - `moonMinY` (Float) = `-40`
+        - `moonMaxY` (Float) = `25`
+        - `moonMinIntensity` (Float) = `0`
+        - `moonMaxIntensity` (Float) = `0.5`
+        - `moonArcSharpness` (Float) = `1`
+  - `CloudManager` | path=`EnvironmentManager/CloudManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-0.424, -0.382, -0.05`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `CloudManager` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `CloudManager (MonoScript) asset='Assets/Scripts/Global/Weather/CloudManager.cs'`
+        - `cloudCoverage` (Float) = `0.5`
+        - `cloudRenderer` (ObjectReference) = `CloudBackground2D_1 (SpriteRenderer) scenePath='SkyBackground/CloudBackground2D_1'`
+        - `cloudMaterial` (ObjectReference) = `CloudBackground2D (Material) asset='Assets/Resources/Materials/CloudBackground2D.mat'`
+        - `transitionDuration` (Float) = `5`
+    - `CloudShaderRenderer` | path=`EnvironmentManager/CloudManager/CloudShaderRenderer` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `-0.424, -0.382, -0.05`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `CloudShaderRenderer` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `CloudShaderRenderer (MonoScript) asset='Assets/Scripts/Environment/CloudShaderRenderer.cs'`
+          - `cloudSource` (ObjectReference) = `CloudManager (CloudManager) scenePath='EnvironmentManager/CloudManager'`
+          - `cloudMaterial` (ObjectReference) = `CloudBackground2D (Material) asset='Assets/Resources/Materials/CloudBackground2D.mat'`
+  - `FogManager` | path=`EnvironmentManager/FogManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-0.424, -0.382, -0.05`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `FogManager` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `FogManager (MonoScript) asset='Assets/Scripts/Global/Rendering/FogManager.cs'`
+        - `currentIntensity` (Float) = `0`
+        - `currentBrightness` (Float) = `0`
+        - `transitionDuration` (Float) = `5`
+        - `debugSetFog` (Boolean) = `False`
+        - `debugTargetIntensity` (Float) = `0`
+        - `debugTargetBrightness` (Float) = `0.8`
+    - `FogShaderRenderer` | path=`EnvironmentManager/FogManager/FogShaderRenderer` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `-0.424, -0.382, -0.05`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `FogShaderRenderer` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `FogShaderRenderer (MonoScript) asset='Assets/Scripts/Environment/FogShaderRenderer.cs'`
+          - `fogSource` (ObjectReference) = `FogManager (FogManager) scenePath='EnvironmentManager/FogManager'`
+          - `fogMaterial` (ObjectReference) = `Fog2D (Material) asset='Assets/Resources/Materials/Fog2D.mat'`
+          - `maxFogIntensity` (Float) = `0.75`
+          - `maxFogBrightness` (Float) = `1`
+  - `GlobalBrightnessManager` | path=`EnvironmentManager/GlobalBrightnessManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-0.424, -0.382, -0.05`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `GlobalBrightnessManager` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `GlobalBrightnessManager (MonoScript) asset='Assets/Scripts/Global/Rendering/GlobalBrightnessManager.cs'`
+        - `brightnessCurve` (AnimationCurve) = `keys=7`
+        - `minBrightness` (Float) = `0.02`
+        - `maxBrightness` (Float) = `1`
+        - `globalLight` (ObjectReference) = `null`
+        - `driveGlobalLight` (Boolean) = `True`
+        - `lightIntensityMultiplier` (Float) = `1`
+  - `RainManager` | path=`EnvironmentManager/RainManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-0.424, -0.382, -0.05`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `RainManager` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `RainManager (MonoScript) asset='Assets/Scripts/Global/Weather/RainManager.cs'`
+        - `currentDropDensity` (Float) = `0`
+        - `currentFallSpeed` (Float) = `0`
+    - `RainShaderRenderer` | path=`EnvironmentManager/RainManager/RainShaderRenderer` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `-0.424, -0.382, -0.05`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `RainShaderRenderer` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `RainShaderRenderer (MonoScript) asset='Assets/Scripts/Environment/RainShaderRenderer.cs'`
+          - `rainSource` (ObjectReference) = `RainManager (RainManager) scenePath='EnvironmentManager/RainManager'`
+          - `windSource` (ObjectReference) = `WindManager (WindManager) scenePath='EnvironmentManager/WindManager'`
+          - `rainMaterial` (ObjectReference) = `Rain2D (Material) asset='Assets/Resources/Materials/Rain2D.mat'`
+          - `maxRaindrops` (Integer) = `2000`
+          - `minRainSpeed` (Float) = `0.05`
+          - `maxRainSpeed` (Float) = `2`
+          - `maxWindStrength` (Float) = `1`
+  - `SkyVisualManager` | path=`EnvironmentManager/SkyVisualManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-0.424, -0.382, -0.05`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SkyVisualManager` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `SkyVisualManager (MonoScript) asset='Assets/Scripts/Global/Rendering/SkyVisualManager.cs'`
+        - `horizonTint` (Color) = `RGBA(1.000, 0.600, 0.300, 1.000)`
+        - `skyVariationStrength` (Float) = `0.05`
+        - `skyMaterial` (ObjectReference) = `SkyboxMaterial2D (Material) asset='Assets/Resources/Materials/SkyboxMaterial2D.mat'`
+        - `starsRenderer` (ObjectReference) = `SkyBackground (SpriteRenderer) scenePath='SkyBackground'`
+        - `starsMaterial` (ObjectReference) = `SkyboxMaterial2D (Material) asset='Assets/Resources/Materials/SkyboxMaterial2D.mat'`
+        - `starsFadeInStart` (Float) = `18`
+        - `starsFadeInEnd` (Float) = `19`
+        - `starsFadeOutStart` (Float) = `4`
+        - `starsFadeOutEnd` (Float) = `6`
+        - `starsMinAlpha` (Float) = `0`
+        - `starsMaxAlpha` (Float) = `1`
+      - `SpriteRenderer` index=2 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+        - `m_Sprite` (ObjectReference) = `null`
+        - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+  - `SunriseSunsetManager` | path=`EnvironmentManager/SunriseSunsetManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-0.424, -0.382, -0.05`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SunriseSunsetOverlayManager` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `SunsetSunriseOverlayManager (MonoScript) asset='Assets/Scripts/Global/Rendering/SunsetSunriseOverlayManager.cs'`
+        - `overlayRenderer` (ObjectReference) = `Sunrise/Sunset (SpriteRenderer) scenePath='SkyBackground/Sunrise/Sunset'`
+        - `overlayMaterial` (ObjectReference) = `SunSetRiseMaterial2D (Material) asset='Assets/Resources/Materials/SunSetRiseMaterial2D.mat'`
+        - `sunriseStart` (Float) = `4`
+        - `sunrisePeak` (Float) = `5.5`
+        - `sunriseFadeEnd` (Float) = `6.5`
+        - `sunsetStart` (Float) = `17.5`
+        - `sunsetPeak` (Float) = `18.5`
+        - `sunsetFadeEnd` (Float) = `19.5`
+        - `sunriseGradientMin` (Float) = `0`
+        - `sunriseGradientMax` (Float) = `5`
+        - `sunriseBrightnessMin` (Float) = `0.5`
+        - `sunriseBrightnessMax` (Float) = `1`
+        - `sunriseAlphaMin` (Float) = `0`
+        - `sunriseAlphaMax` (Float) = `0.5`
+        - `sunsetGradientMin` (Float) = `5`
+        - `sunsetGradientMax` (Float) = `0`
+        - `sunsetBrightnessMin` (Float) = `1`
+        - `sunsetBrightnessMax` (Float) = `0.5`
+        - `sunsetAlphaMin` (Float) = `0`
+        - `sunsetAlphaMax` (Float) = `0.7`
+  - `TimeManager` | path=`EnvironmentManager/TimeManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-0.424, -0.382, -0.05`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `TimeOfDayManager` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `TimeOfDayManager (MonoScript) asset='Assets/Scripts/Global/Time/TimeOfDayManager.cs'`
+        - `dayLength` (Float) = `1200`
+        - `currentTime` (Float) = `12`
+        - `phaseConfig` (ObjectReference) = `null`
+        - `daysPerMonth` (Integer) = `30`
+        - `monthsPerYear` (Integer) = `8`
+        - `year` (Integer) = `1`
+        - `month` (Integer) = `1`
+        - `day` (Integer) = `1`
+      - `TimeOfDayDriver` index=2 enabled=`True`
+        - `m_Script` (ObjectReference) = `TimeOfDayDriver (MonoScript) asset='Assets/Scripts/Global/Time/TimeOfDayDriver.cs'`
+        - `timeOfDay` (ObjectReference) = `null`
+        - `timeScale` (Float) = `1`
+  - `WaterVisualManager` | path=`EnvironmentManager/WaterVisualManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-0.424, -0.382, -0.05`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `WaterVisualManager` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `WaterVisualManager (MonoScript) asset='Assets/Scripts/Global/Rendering/WaterVisualManager.cs'`
+        - `seaRenderer` (ObjectReference) = `SeaBackground2D (SpriteRenderer) scenePath='SkyBackground/SeaBackground2D'`
+        - `seaMaterial` (ObjectReference) = `SeaBackgroundMaterial2D (Material) asset='Assets/Resources/Materials/SeaBackgroundMaterial2D.mat'`
+        - `seaBrightnessMin` (Float) = `0`
+        - `seaBrightnessMax` (Float) = `1`
+        - `sparkleMin` (Float) = `0`
+        - `sparkleMax` (Float) = `1.2`
+        - `sideWaterRenderer` (ObjectReference) = `WaveSystem (MeshRenderer) scenePath='WaveSystem'`
+        - `sideWaterMaterial` (ObjectReference) = `SeaForegroundMaterial2D (Material) asset='Assets/Resources/Materials/SeaForegroundMaterial2D.mat'`
+        - `foamIntensity` (Float) = `1`
+  - `WaveManager` | path=`EnvironmentManager/WaveManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-0.424, -0.382, -0.05`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `WaveManager` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `WaveManager (MonoScript) asset='Assets/Scripts/Global/Physics/WaveManager.cs'`
+        - `amplitude` (Float) = `0.1`
+        - `frequency` (Float) = `0.3`
+        - `speed` (Float) = `0.5`
+        - `transitionDuration` (Float) = `5`
+        - `autoFindWaveField` (Boolean) = `True`
+        - `debugSetWave` (Boolean) = `False`
+        - `debugAmplitude` (Float) = `0.5`
+        - `debugFrequency` (Float) = `0.1`
+        - `debugSpeed` (Float) = `0.8`
+  - `WeatherEventManager` | path=`EnvironmentManager/WeatherEventManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-0.424, -0.382, -0.05`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `WeatherEventManager` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `WeatherEventManager (MonoScript) asset='Assets/Scripts/Global/Weather/WeatherEventManager.cs'`
+        - `weatherManager` (ObjectReference) = `WeatherManager (WeatherManager) scenePath='EnvironmentManager/WeatherManager'`
+        - `weatherEvents` (Generic) = `array size=7`
+        - `duration` (Integer) = `0`
+        - `injectCustomEvent` (Boolean) = `False`
+        - `customEvent` (ObjectReference) = `Clear (WeatherEventSO) asset='Assets/Defs/Weather Events/Clear.asset'`
+        - `selectedEventIndex` (Integer) = `0`
+  - `WeatherManager` | path=`EnvironmentManager/WeatherManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-0.424, -0.382, -0.05`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `WeatherManager` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `WeatherManager (MonoScript) asset='Assets/Scripts/Global/Weather/WeatherManager.cs'`
+        - `rainDropDensity` (Float) = `0`
+        - `rainFallSpeed` (Float) = `0`
+        - `wind` (Float) = `0`
+        - `maxWindSpeed` (Float) = `0.3`
+        - `cloudCoverage` (Float) = `0.4`
+        - `fogIntensity` (Float) = `0`
+        - `fogBrightness` (Float) = `0`
+        - `waveAmplitude` (Float) = `2`
+        - `waveFrequency` (Float) = `0.02`
+        - `waveSpeed` (Float) = `0.5`
+  - `WindManager` | path=`EnvironmentManager/WindManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-0.424, -0.382, -0.05`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `WindManager` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `WindManager (MonoScript) asset='Assets/Scripts/Global/Weather/WindManager.cs'`
+        - `windStrength01` (Float) = `0`
+        - `maxWindSpeed` (Float) = `0.3`
+        - `windDirection` (Vector2) = `(1.00, 0.00)`
+        - `transitionDuration` (Float) = `5`
+    - `WindShaderRenderer` | path=`EnvironmentManager/WindManager/WindShaderRenderer` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `-0.424, -0.382, -0.05`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `WindShaderRenderer` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `WindShaderRenderer (MonoScript) asset='Assets/Scripts/Environment/WindShaderRenderer.cs'`
+          - `windSource` (ObjectReference) = `WindManager (WindManager) scenePath='EnvironmentManager/WindManager'`
+          - `windMaterial` (ObjectReference) = `Wind2D (Material) asset='Assets/Resources/Materials/Wind2D.mat'`
+        - `MeshRenderer` index=2 enabled=`True`
+          - `m_CastShadows` (Enum) = `On`
+          - `m_ReceiveShadows` (Boolean) = `True`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `2`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_ProbeAnchor` (ObjectReference) = `null`
+          - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+          - `m_LightmapParameters` (ObjectReference) = `null`
+- `EventSystem` | path=`EventSystem` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `0, 0, 0`
+    - worldPosition: `0, 0, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `EventSystem` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `EventSystem (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/EventSystem/EventSystem.cs'`
+      - `m_FirstSelected` (ObjectReference) = `null`
+      - `m_sendNavigationEvents` (Boolean) = `True`
+      - `m_DragThreshold` (Integer) = `10`
+    - `InputSystemUIInputModule` index=2 enabled=`True`
+      - `m_Script` (ObjectReference) = `InputSystemUIInputModule (MonoScript) asset='Packages/com.unity.inputsystem/InputSystem/Plugins/UI/InputSystemUIInputModule.cs'`
+      - `m_SendPointerHoverToParent` (Boolean) = `True`
+      - `m_MoveRepeatDelay` (Float) = `0.5`
+      - `m_MoveRepeatRate` (Float) = `0.1`
+      - `m_XRTrackingOrigin` (ObjectReference) = `null`
+      - `m_DeselectOnBackgroundClick` (Boolean) = `True`
+      - `m_PointerBehavior` (Enum) = `Single Mouse Or Pen But Multi Touch And Track`
+      - `m_ScrollDeltaPerTick` (Float) = `6`
+- `ExternalWaterSourceSystem` | path=`ExternalWaterSourceSystem` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `-0.524, 2.408, -0.115`
+    - worldPosition: `-0.524, 2.408, -0.115`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(-0.52, 2.41, -0.11)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `ExternalWaterSourceSystem` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `ExternalWaterSourceSystem (MonoScript) asset='Assets/Scripts/Boats/Compartments/ExternalWaterSourceSystem.cs'`
+      - `rainSourceMono` (ObjectReference) = `RainManager (RainManager) scenePath='EnvironmentManager/RainManager'`
+      - `waveField` (ObjectReference) = `WaveSystem (WaveField) scenePath='WaveSystem'`
+      - `boats` (Generic) = `array size=1`
+      - `useBoatRegistry` (Boolean) = `True`
+- `GameplayAuthority` | path=`GameplayAuthority` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `0, 0, 0`
+    - worldPosition: `0, 0, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `GameplayAuthorityDebugSetter` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `GameplayAuthorityDebugSetter (MonoScript) asset='Assets/Scripts/Multiplayer/GameplayAuthorityDebugSetter.cs'`
+      - `authoritative` (Boolean) = `True`
+      - `applyOnAwake` (Boolean) = `True`
+      - `logEvenIfUnchanged` (Boolean) = `False`
+- `GameplayUIBootStrap` | path=`GameplayUIBootStrap` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `59.651, 26.441, -1.045`
+    - worldPosition: `59.651, 26.441, -1.045`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(59.65, 26.44, -1.05)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `EscapeCloseRegistry` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `EscapeCloseRegistry (MonoScript) asset='Assets/Scripts/Menu/EscapeCloseRegistry.cs'`
+    - `GlobalEscapeRouter` index=2 enabled=`True`
+      - `m_Script` (ObjectReference) = `GlobalEscapeRouter (MonoScript) asset='Assets/Scripts/Menu/GlobalEscapeRouter.cs'`
+      - `escapeKey` (Enum) = `Escape`
+      - `escapeMenu` (ObjectReference) = `EscapeMenuRoot (EscapeMenuUI) scenePath='UIOverlayRoot/Canvas/EscapeMenuRoot'`
+      - `verboseLogging` (Boolean) = `False`
+    - `SaveLoadController` index=3 enabled=`True`
+      - `m_Script` (ObjectReference) = `SaveLoadController (MonoScript) asset='Assets/Scripts/Saves/SaveLoadController.cs'`
+      - `profileId` (String) = `default`
+      - `defaultSlotId` (String) = `manual_001`
+      - `defaultDisplayName` (String) = `Manual Save`
+      - `maxAutosaves` (Integer) = `5`
+      - `nodeSceneName` (String) = `NodeScene`
+      - `mainMenuSceneName` (String) = `MainMenu`
+      - `boatCatalog` (ObjectReference) = `BoatCatalog (BoatCatalog) asset='Assets/Defs/Boat/BoatCatalog.asset'`
+      - `runCompatibilityDiagnostics` (Boolean) = `True`
+      - `blockSaveOnCompatibilityErrors` (Boolean) = `True`
+      - `blockLoadOnCompatibilityErrors` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+    - `GameplayInputBlocker` index=4 enabled=`True`
+      - `m_Script` (ObjectReference) = `GameplayInputBlocker (MonoScript) asset='Assets/Scripts/Menu/GameplayInputBlocker.cs'`
+- `GameState` | path=`GameState` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `0, 0, 0`
+    - worldPosition: `0, 0, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `GameState` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `GameState (MonoScript) asset='Assets/Scripts/GameState/GameState.cs'`
+      - `verboseLogging` (Boolean) = `False`
+      - `logSingletonLifecycle` (Boolean) = `False`
+      - `logStateSnapshots` (Boolean) = `False`
+      - `warnOnDuplicateSingleton` (Boolean) = `False`
+      - `player` (Generic) = `<generic>`
+      - `worldMap` (Generic) = `<generic>`
+      - `worldMapSnapshot` (Generic) = `<generic>`
+      - `activeTravel` (Generic) = `<generic>`
+      - `playerLoadout` (Generic) = `<generic>`
+      - `boatRegistry` (ObjectReference) = `null`
+      - `moneyChestTreasuryState` (Generic) = `<generic>`
+      - `moneyChestTreasury` (ObjectReference) = `null`
+      - `playerSceneContext` (Generic) = `<generic>`
+      - `boat` (Generic) = `<generic>`
+    - `SceneTransitionController` index=2 enabled=`True`
+      - `m_Script` (ObjectReference) = `SceneTransitionController (MonoScript) asset='Assets/Scripts/GameState/Scene/SceneTransitionController.cs'`
+      - `nodeSceneName` (String) = `NodeScene`
+      - `boatSceneName` (String) = `BoatScene`
+      - `verboseLogging` (Boolean) = `False`
+      - `enableDebugTravelHotkeys` (Boolean) = `True`
+      - `debugCompleteTravelKey` (Enum) = `F1`
+      - `debugAbortTravelKey` (Enum) = `F2`
+- `Global Light 2D` | path=`Global Light 2D` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `-2, 6, 0`
+    - worldPosition: `-2, 6, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(-2.00, 6.00, 0.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `Light2D` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `Light2D (MonoScript) asset='Packages/com.unity.render-pipelines.universal/Runtime/2D/Light2D.cs'`
+      - `m_ComponentVersion` (Enum) = `Version_2`
+      - `m_LightType` (Enum) = `Global`
+      - `m_BlendStyleIndex` (Integer) = `0`
+      - `m_FalloffIntensity` (Float) = `0.5`
+      - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+      - `m_Intensity` (Float) = `1`
+      - `m_LightVolumeIntensity` (Float) = `1`
+      - `m_LightVolumeEnabled` (Boolean) = `False`
+      - `m_ApplyToSortingLayers` (Generic) = `array size=18`
+      - `m_LightCookieSprite` (ObjectReference) = `null`
+      - `m_DeprecatedPointLightCookieSprite` (ObjectReference) = `null`
+      - `m_LightOrder` (Integer) = `0`
+      - `m_AlphaBlendOnOverlap` (Boolean) = `False`
+      - `m_OverlapOperation` (Enum) = `Additive`
+      - `m_NormalMapDistance` (Float) = `3`
+      - `m_NormalMapQuality` (Enum) = `Disabled`
+      - `m_UseNormalMap` (Boolean) = `False`
+      - `m_ShadowsEnabled` (Boolean) = `True`
+      - `m_ShadowIntensity` (Float) = `0.75`
+      - `m_ShadowSoftness` (Float) = `0.3`
+      - `m_ShadowSoftnessFalloffIntensity` (Float) = `0.5`
+      - `m_ShadowVolumeIntensityEnabled` (Boolean) = `False`
+      - `m_ShadowVolumeIntensity` (Float) = `0.75`
+      - `m_LocalBounds` (Bounds) = `Center: (0.00, 0.00, 0.00), Extents: (1.00, 1.00, 0.00)`
+      - `m_PointLightInnerAngle` (Float) = `360`
+      - `m_PointLightOuterAngle` (Float) = `360`
+      - `m_PointLightInnerRadius` (Float) = `0`
+      - `m_PointLightOuterRadius` (Float) = `1`
+      - `m_ShapeLightParametricSides` (Integer) = `5`
+      - `m_ShapeLightParametricAngleOffset` (Float) = `0`
+      - `m_ShapeLightParametricRadius` (Float) = `1`
+      - `m_ShapeLightFalloffSize` (Float) = `0.5`
+      - `m_ShapeLightFalloffOffset` (Vector2) = `(0.00, 0.00)`
+      - `m_ShapePath` (Generic) = `array size=4`
+- `Main Camera` | path=`Main Camera` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`MainCamera` | static=False
+  - Transform:
+    - localPosition: `0, 0, -10`
+    - worldPosition: `0, 0, -10`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.00, 0.00, -10.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `Camera` index=1 enabled=`True`
+      - `m_ClearFlags` (Enum) = `Skybox`
+      - `m_BackGroundColor` (Color) = `RGBA(0.192, 0.302, 0.475, 0.000)`
+      - `m_projectionMatrixMode` (Integer) = `1`
+      - `m_GateFitMode` (Integer) = `2`
+      - `m_FOVAxisMode` (Integer) = `0`
+      - `m_Iso` (Integer) = `200`
+      - `m_ShutterSpeed` (Float) = `0.005`
+      - `m_Aperture` (Float) = `16`
+      - `m_FocusDistance` (Float) = `10`
+      - `m_FocalLength` (Float) = `50`
+      - `m_BladeCount` (Integer) = `5`
+      - `m_Curvature` (Vector2) = `(2.00, 11.00)`
+      - `m_BarrelClipping` (Float) = `0.25`
+      - `m_Anamorphism` (Float) = `0`
+      - `m_SensorSize` (Vector2) = `(36.00, 24.00)`
+      - `m_LensShift` (Vector2) = `(0.00, 0.00)`
+      - `m_NormalizedViewPortRect` (Rect) = `(x:0.00, y:0.00, width:1.00, height:1.00)`
+      - `near clip plane` (Float) = `0.3`
+      - `far clip plane` (Float) = `1000`
+      - `field of view` (Float) = `60`
+      - `orthographic` (Boolean) = `True`
+      - `orthographic size` (Float) = `15`
+      - `m_Depth` (Float) = `-1`
+      - `m_CullingMask` (LayerMask) = `-1`
+      - `m_RenderingPath` (Enum) = `Use Graphics Settings`
+      - `m_TargetTexture` (ObjectReference) = `null`
+      - `m_TargetDisplay` (Integer) = `0`
+      - `m_TargetEye` (Integer) = `3`
+      - `m_HDR` (Boolean) = `True`
+      - `m_AllowMSAA` (Boolean) = `True`
+      - `m_AllowDynamicResolution` (Boolean) = `False`
+      - `m_ForceIntoRT` (Boolean) = `False`
+      - `m_OcclusionCulling` (Boolean) = `True`
+      - `m_StereoConvergence` (Float) = `10`
+      - `m_StereoSeparation` (Float) = `0.022`
+    - `AudioListener` index=2 enabled=`True`
+    - `UniversalAdditionalCameraData` index=3 enabled=`True`
+      - `m_Script` (ObjectReference) = `UniversalAdditionalCameraData (MonoScript) asset='Packages/com.unity.render-pipelines.universal/Runtime/UniversalAdditionalCameraData.cs'`
+      - `m_RenderShadows` (Boolean) = `True`
+      - `m_RequiresDepthTextureOption` (Enum) = `Use settings from Render Pipeline Asset`
+      - `m_RequiresOpaqueTextureOption` (Enum) = `Use settings from Render Pipeline Asset`
+      - `m_CameraType` (Enum) = `Base`
+      - `m_Cameras` (Generic) = `array size=0`
+      - `m_RendererIndex` (Integer) = `-1`
+      - `m_VolumeLayerMask` (LayerMask) = `1`
+      - `m_VolumeTrigger` (ObjectReference) = `null`
+      - `m_VolumeFrameworkUpdateModeOption` (Enum) = `Use Pipeline Settings`
+      - `m_RenderPostProcessing` (Boolean) = `True`
+      - `m_Antialiasing` (Enum) = `No Anti-aliasing`
+      - `m_AntialiasingQuality` (Enum) = `High`
+      - `m_StopNaN` (Boolean) = `False`
+      - `m_Dithering` (Boolean) = `False`
+      - `m_ClearDepth` (Boolean) = `True`
+      - `m_AllowXRRendering` (Boolean) = `True`
+      - `m_AllowHDROutput` (Boolean) = `True`
+      - `m_UseScreenCoordOverride` (Boolean) = `False`
+      - `m_ScreenSizeOverride` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+      - `m_ScreenCoordScaleBias` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+      - `m_RequiresDepthTexture` (Boolean) = `False`
+      - `m_RequiresColorTexture` (Boolean) = `False`
+      - `m_TaaSettings` (Generic) = `<generic>`
+    - `CameraWASDController` index=4 enabled=`False`
+      - `m_Script` (ObjectReference) = `CameraWASDController (MonoScript) asset='Assets/Scripts/Camera/CameraWASDController.cs'`
+      - `moveSpeed` (Float) = `15`
+      - `fastMultiplier` (Float) = `3`
+      - `enableZoom` (Boolean) = `True`
+      - `zoomSpeed` (Float) = `10`
+      - `minOrthoSize` (Float) = `2`
+      - `maxOrthoSize` (Float) = `50`
+    - `Physics2DRaycaster` index=5 enabled=`True`
+      - `m_Script` (ObjectReference) = `Physics2DRaycaster (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/EventSystem/Raycasters/Physics2DRaycaster.cs'`
+      - `m_EventMask` (LayerMask) = `-1`
+      - `m_MaxRayIntersections` (Integer) = `0`
+    - `CameraManager` index=6 enabled=`True`
+      - `m_Script` (ObjectReference) = `CameraManager (MonoScript) asset='Assets/Scripts/Camera/CameraManager.cs'`
+      - `mainCamera` (ObjectReference) = `Main Camera (Camera) scenePath='Main Camera'`
+      - `internalCamera` (ObjectReference) = `null`
+      - `otherCameras` (Generic) = `array size=0`
+      - `waveSystem` (ObjectReference) = `WaveSystem (Transform) scenePath='WaveSystem'`
+      - `mainCameraWaveZ` (Float) = `0`
+      - `internalCameraWaveZ` (Float) = `10`
+      - `defaultOrthoSize` (Float) = `10`
+      - `followTarget` (ObjectReference) = `CharacterPlayer (Transform) scenePath='CharacterPlayer'`
+      - `followOffset` (Vector3) = `(0.00, 0.00, -10.00)`
+      - `followSmooth` (Float) = `12`
+      - `followActiveCameraOnly` (Boolean) = `True`
+      - `intentSourceComponent` (ObjectReference) = `null`
+      - `focusSoftPanEnabled` (Boolean) = `True`
+      - `focusPanStrength` (Float) = `0.35`
+      - `focusPanMaxOffset` (Float) = `20`
+      - `focusPanSmooth` (Float) = `6`
+- `MiniGameHost` | path=`MiniGameHost` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `-14.397, -3.743, -0.391`
+    - worldPosition: `-14.397, -3.743, -0.391`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(-14.40, -3.74, -0.39)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `MiniGameOverlayHost` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `MiniGameOverlayHost (MonoScript) asset='Assets/Scripts/MiniGames/Overlay/MiniGameOverlayHost.cs'`
+      - `exitKey` (Enum) = `Escape`
+      - `blockGameplayInputWhileOpen` (Boolean) = `True`
+      - `isOpen` (Boolean) = `False`
+      - `activeTargetId` (String) = ``
+      - `closeViaGlobalEscapeRouter` (Boolean) = `True`
+      - `escapePriority` (Integer) = `1000`
+    - `MiniGameOverlayView` index=2 enabled=`True`
+      - `m_Script` (ObjectReference) = `MiniGameOverlayView (MonoScript) asset='Assets/Scripts/MiniGames/Overlay/MiniGameOverlayView.cs'`
+      - `host` (ObjectReference) = `MiniGameHost (MiniGameOverlayHost) scenePath='MiniGameHost'`
+      - `dimAlpha` (Float) = `0.55`
+      - `panelHalfSize` (Float) = `0.38`
+      - `dotSize` (Float) = `10`
+- `Moon` | path=`Moon` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `0, -14.8, 0`
+    - worldPosition: `0, -14.8, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `2, 2, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.00, -14.80, 0.00)`
+      - `m_LocalScale` (Vector3) = `(2.00, 2.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `SpriteRenderer` index=1 enabled=`True`
+      - `m_CastShadows` (Enum) = `Off`
+      - `m_ReceiveShadows` (Boolean) = `False`
+      - `m_DynamicOccludee` (Boolean) = `True`
+      - `m_StaticShadowCaster` (Boolean) = `False`
+      - `m_MotionVectors` (Enum) = `Per Object Motion`
+      - `m_LightProbeUsage` (Integer) = `1`
+      - `m_ReflectionProbeUsage` (Integer) = `1`
+      - `m_RayTracingMode` (Integer) = `0`
+      - `m_RayTraceProcedural` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+      - `m_SmallMeshCulling` (Boolean) = `True`
+      - `m_RenderingLayerMask` (Integer) = `1`
+      - `m_RendererPriority` (Integer) = `0`
+      - `m_Materials` (Generic) = `array size=1`
+      - `m_ProbeAnchor` (ObjectReference) = `null`
+      - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+      - `m_LightmapParameters` (ObjectReference) = `null`
+      - `m_Sprite` (ObjectReference) = `Circle (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/Circle.png'`
+      - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+      - `m_FlipX` (Boolean) = `False`
+      - `m_FlipY` (Boolean) = `False`
+      - `m_DrawMode` (Enum) = `Simple`
+      - `m_Size` (Vector2) = `(1.00, 1.00)`
+      - `m_AdaptiveModeThreshold` (Float) = `0.5`
+      - `m_SpriteTileMode` (Enum) = `Continuous`
+      - `m_MaskInteraction` (Enum) = `Visible Outside Mask`
+      - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Light2D` index=2 enabled=`False`
+      - `m_Script` (ObjectReference) = `Light2D (MonoScript) asset='Packages/com.unity.render-pipelines.universal/Runtime/2D/Light2D.cs'`
+      - `m_ComponentVersion` (Enum) = `Version_2`
+      - `m_LightType` (Enum) = `Point`
+      - `m_BlendStyleIndex` (Integer) = `0`
+      - `m_FalloffIntensity` (Float) = `0.5`
+      - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+      - `m_Intensity` (Float) = `1`
+      - `m_LightVolumeIntensity` (Float) = `1`
+      - `m_LightVolumeEnabled` (Boolean) = `False`
+      - `m_ApplyToSortingLayers` (Generic) = `array size=5`
+      - `m_LightCookieSprite` (ObjectReference) = `null`
+      - `m_DeprecatedPointLightCookieSprite` (ObjectReference) = `null`
+      - `m_LightOrder` (Integer) = `0`
+      - `m_AlphaBlendOnOverlap` (Boolean) = `False`
+      - `m_OverlapOperation` (Enum) = `Additive`
+      - `m_NormalMapDistance` (Float) = `3`
+      - `m_NormalMapQuality` (Enum) = `Disabled`
+      - `m_UseNormalMap` (Boolean) = `False`
+      - `m_ShadowsEnabled` (Boolean) = `True`
+      - `m_ShadowIntensity` (Float) = `0.75`
+      - `m_ShadowSoftness` (Float) = `0.3`
+      - `m_ShadowSoftnessFalloffIntensity` (Float) = `0.5`
+      - `m_ShadowVolumeIntensityEnabled` (Boolean) = `False`
+      - `m_ShadowVolumeIntensity` (Float) = `0.75`
+      - `m_LocalBounds` (Bounds) = `Center: (0.00, 0.00, 0.00), Extents: (1.00, 1.00, 0.00)`
+      - `m_PointLightInnerAngle` (Float) = `360`
+      - `m_PointLightOuterAngle` (Float) = `360`
+      - `m_PointLightInnerRadius` (Float) = `0`
+      - `m_PointLightOuterRadius` (Float) = `1`
+      - `m_ShapeLightParametricSides` (Integer) = `5`
+      - `m_ShapeLightParametricAngleOffset` (Float) = `0`
+      - `m_ShapeLightParametricRadius` (Float) = `1`
+      - `m_ShapeLightFalloffSize` (Float) = `0.5`
+      - `m_ShapeLightFalloffOffset` (Vector2) = `(0.00, 0.00)`
+      - `m_ShapePath` (Generic) = `array size=4`
+- `NodeContext` | path=`NodeContext` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `0.877, 20.592, -0.622`
+    - worldPosition: `0.877, 20.592, -0.622`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.88, 20.59, -0.62)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `MoneyChestNodeLostChestSpawner` | path=`NodeContext/MoneyChestNodeLostChestSpawner` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0.877, 20.592, -0.622`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MoneyChestNodeLostChestSpawner` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `MoneyChestNodeLostChestSpawner (MonoScript) asset='Assets/Scripts/MoneyChest/MoneyChestNodeLostChestSpawner.cs'`
+        - `itemCatalog` (ObjectReference) = `itemCatalog (ItemDefinitionCatalog) asset='Assets/Defs/Items/Catalogs/itemCatalog.asset'`
+        - `spawnAnchor` (ObjectReference) = `null`
+        - `fallbackMoneyChestItemId` (String) = `item_money_chest`
+        - `requireCurrentNodeMatch` (Boolean) = `True`
+        - `spawnNodeLessLostChestsForDebug` (Boolean) = `False`
+        - `preferAnchorOverSavedPosition` (Boolean) = `True`
+        - `randomSpawnRadius` (Float) = `1.25`
+        - `fallbackLocalOffset` (Vector2) = `(0.00, 1.00)`
+        - `spawnOnStart` (Boolean) = `True`
+        - `skipIfLiveChestAlreadyExists` (Boolean) = `True`
+        - `clearBoatOwnershipOnSpawn` (Boolean) = `True`
+        - `logDebugMessages` (Boolean) = `False`
+  - `MoneyChestReplacementChestSpawner` | path=`NodeContext/MoneyChestReplacementChestSpawner` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0.877, 20.592, -0.622`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MoneyChestReplacementChestSpawner` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `MoneyChestReplacementChestSpawner (MonoScript) asset='Assets/Scripts/MoneyChest/MoneyChestReplacementChestSpawner.cs'`
+        - `replacementChestPrefab` (ObjectReference) = `MoneyChest (GameObject) asset='Assets/Resources/Prefabs/Items/Sacred/MoneyChest.prefab'`
+        - `moneyChestItemDefinition` (ObjectReference) = `item_money_chest (ItemDefinition) asset='Assets/Defs/Items/Sacred/item_money_chest.asset'`
+        - `trySecureSlotFirst` (Boolean) = `True`
+        - `explicitSecureSlot` (ObjectReference) = `null`
+        - `fallbackSpawnPoint` (ObjectReference) = `SpawnPoint (Transform) scenePath='NodeContext/MoneyChestReplacementChestSpawner/SpawnPoint'`
+        - `fallbackSpawnArea` (ObjectReference) = `null`
+        - `fallbackExistingSearchRadius` (Float) = `1.25`
+        - `onlySpawnInNodeScene` (Boolean) = `True`
+        - `nodeSceneNameContains` (String) = `Node`
+        - `maxWaitSeconds` (Float) = `2`
+        - `registerExistingSceneChestsBeforeCheck` (Boolean) = `True`
+        - `waitForSecureSlotSeconds` (Float) = `2`
+        - `logDebugMessages` (Boolean) = `False`
+    - `SpawnPoint` | path=`NodeContext/MoneyChestReplacementChestSpawner/SpawnPoint` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `5, -18, 0`
+        - worldPosition: `5.877, 2.592, -0.622`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(5.00, -18.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `NodeDebug` | path=`NodeContext/NodeDebug` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0.877, 20.592, -0.622`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `NodeView` | path=`NodeContext/NodeView` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `-0.877, -19.592, -0.013`
+      - worldPosition: `0, 1, -0.635`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(-0.88, -19.59, -0.01)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `Building A - Market` | path=`NodeContext/NodeView/Building A - Market` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-2, 5, 0.635`
+        - worldPosition: `-2, 6, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `12, 10, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-2.00, 5.00, 0.63)`
+          - `m_LocalScale` (Vector3) = `(12.00, 10.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_ProbeAnchor` (ObjectReference) = `null`
+          - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+          - `m_LightmapParameters` (ObjectReference) = `null`
+          - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+          - `m_Color` (Color) = `RGBA(1.000, 0.795, 0.486, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `MarketTradeAgentServiceHandler` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `MarketTradeAgentServiceHandler (MonoScript) asset='Assets/Scripts/Agents/Services/MarketTradeAgentServiceHandler.cs'`
+          - `handlerPriority` (Integer) = `100`
+          - `tradeRunner` (ObjectReference) = `Runners (TradeWorldMapRunner) scenePath='Runners'`
+      - `InteractableZone` | path=`NodeContext/NodeView/Building A - Market/InteractableZone` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-2, 6, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `MarketStallInteractable` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `MarketStallInteractable (MonoScript) asset='Assets/Scripts/Parts/MarketStallInteractable.cs'`
+            - `priority` (Integer) = `1`
+            - `maxUseDistance` (Float) = `5`
+            - `tradeRunner` (ObjectReference) = `Runners (TradeWorldMapRunner) scenePath='Runners'`
+          - `BoxCollider2D` index=2 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_EdgeRadius` (Float) = `0`
+      - `MarketCargoSpawnPoint` | path=`NodeContext/NodeView/Building A - Market/MarketCargoSpawnPoint` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0.5, -0.4, 0`
+          - worldPosition: `4, 2, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.50, -0.40, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `MarketCargoSpawnPoint` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `MarketCargoSpawnPoint (MonoScript) asset='Assets/Scripts/GameState/Scene/BoatScene/MarketCargoSpawnPoint.cs'`
+      - `MarketSellZone` | path=`NodeContext/NodeView/Building A - Market/MarketSellZone` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `-0.5, -0.4, 0`
+          - worldPosition: `-8, 2, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(-0.50, -0.40, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.30)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `MarketSellZone` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `MarketSellZone (MonoScript) asset='Assets/Scripts/GameState/Scene/BoatScene/MarketSellZone.cs'`
+      - `PhysicalCargoItemStore` | path=`NodeContext/NodeView/Building A - Market/PhysicalCargoItemStore` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-2, 6, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `PhysicalCargoItemStore` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `PhysicalCargoItemStore (MonoScript) asset='Assets/Scripts/Inventory/Cargo/PhysicalCargoItemStore.cs'`
+            - `cargoItemCatalog` (ObjectReference) = `CargoItemCatalog (CargoItemCatalog) asset='Assets/Defs/Items/CargoItems/CargoItemCatalog.asset'`
+            - `spawnPoint` (ObjectReference) = `MarketCargoSpawnPoint (MarketCargoSpawnPoint) scenePath='NodeContext/NodeView/Building A - Market/MarketCargoSpawnPoint'`
+            - `sellZone` (ObjectReference) = `MarketSellZone (MarketSellZone) scenePath='NodeContext/NodeView/Building A - Market/MarketSellZone'`
+            - `spawnHorizontalStep` (Float) = `0.45`
+            - `spawnVerticalStep` (Float) = `0.05`
+            - `maxOverlapHits` (Integer) = `256`
+            - `verboseLogging` (Boolean) = `False`
+    - `Building B` | path=`NodeContext/NodeView/Building B` | activeSelf=False | activeInHierarchy=False | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-15, 5, 0.635`
+        - worldPosition: `-15, 6, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `12, 10, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-15.00, 5.00, 0.63)`
+          - `m_LocalScale` (Vector3) = `(12.00, 10.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_ProbeAnchor` (ObjectReference) = `null`
+          - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+          - `m_LightmapParameters` (ObjectReference) = `null`
+          - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Building C` | path=`NodeContext/NodeView/Building C` | activeSelf=False | activeInHierarchy=False | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-28, 5, 0.635`
+        - worldPosition: `-28, 6, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `12, 10, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-28.00, 5.00, 0.63)`
+          - `m_LocalScale` (Vector3) = `(12.00, 10.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_ProbeAnchor` (ObjectReference) = `null`
+          - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+          - `m_LightmapParameters` (ObjectReference) = `null`
+          - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Building D` | path=`NodeContext/NodeView/Building D` | activeSelf=False | activeInHierarchy=False | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-41, 5, 0.635`
+        - worldPosition: `-41, 6, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `12, 10, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-41.00, 5.00, 0.63)`
+          - `m_LocalScale` (Vector3) = `(12.00, 10.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_ProbeAnchor` (ObjectReference) = `null`
+          - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+          - `m_LightmapParameters` (ObjectReference) = `null`
+          - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Building E` | path=`NodeContext/NodeView/Building E` | activeSelf=False | activeInHierarchy=False | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-54, 5, 0.635`
+        - worldPosition: `-54, 6, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `12, 10, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-54.00, 5.00, 0.63)`
+          - `m_LocalScale` (Vector3) = `(12.00, 10.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_ProbeAnchor` (ObjectReference) = `null`
+          - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+          - `m_LightmapParameters` (ObjectReference) = `null`
+          - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Building F` | path=`NodeContext/NodeView/Building F` | activeSelf=False | activeInHierarchy=False | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-67, 5, 0.635`
+        - worldPosition: `-67, 6, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `12, 10, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-67.00, 5.00, 0.63)`
+          - `m_LocalScale` (Vector3) = `(12.00, 10.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_ProbeAnchor` (ObjectReference) = `null`
+          - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+          - `m_LightmapParameters` (ObjectReference) = `null`
+          - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Dock` | path=`NodeContext/NodeView/Dock` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `25.242, -0.306, -1`
+        - worldPosition: `25.242, 0.695, -1.635`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(25.24, -0.31, -1.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_ProbeAnchor` (ObjectReference) = `null`
+          - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+          - `m_LightmapParameters` (ObjectReference) = `null`
+          - `m_Sprite` (ObjectReference) = `DockWorn_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/DockWorn_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(0.953, 0.730, 0.427, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Tiled`
+          - `m_Size` (Vector2) = `(42.50, 0.75)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoxCollider2D` index=2 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_Material` (ObjectReference) = `null`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `24`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `True`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(42.50, 0.75)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `PlatformEffector2D` index=3 enabled=`True`
+          - `m_UseColliderMask` (Boolean) = `False`
+          - `m_ColliderMask` (LayerMask) = `-1`
+          - `m_RotationalOffset` (Float) = `0`
+          - `m_UseOneWay` (Boolean) = `True`
+          - `m_UseOneWayGrouping` (Boolean) = `True`
+          - `m_SurfaceArc` (Float) = `180`
+          - `m_UseSideFriction` (Boolean) = `False`
+          - `m_UseSideBounce` (Boolean) = `False`
+          - `m_SideArc` (Float) = `1`
+      - `Ladder` | path=`NodeContext/NodeView/Dock/Ladder` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `-6, -1, 1`
+          - worldPosition: `19.242, -0.306, -0.635`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(-6.00, -1.00, 1.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_ProbeAnchor` (ObjectReference) = `null`
+            - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+            - `m_LightmapParameters` (ObjectReference) = `null`
+            - `m_Sprite` (ObjectReference) = `LadderMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/LadderMetal_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(1.28, 3.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+          - `BoxCollider2D` index=2 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(1.28, 3.00)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `LadderZone` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `LadderZone (MonoScript) asset='Assets/Scripts/Controller/Player/Ladders/LadderZone.cs'`
+            - `climbSpeed` (Float) = `6`
+            - `snapToCenterSpeed` (Float) = `18`
+            - `requireInteractToClimb` (Boolean) = `True`
+            - `allowImplicitDownClimb` (Boolean) = `True`
+            - `allowTopExit` (Boolean) = `True`
+            - `allowBottomExit` (Boolean) = `True`
+            - `topExitMargin` (Float) = `0.15`
+            - `bottomExitMargin` (Float) = `0.15`
+            - `topExitPoint` (ObjectReference) = `TopExit (Transform) scenePath='NodeContext/NodeView/Dock/Ladder/TopExit'`
+            - `bottomExitPoint` (ObjectReference) = `Bottom (Transform) scenePath='NodeContext/NodeView/Dock/Ladder/Bottom'`
+            - `interactionPriority` (Integer) = `25`
+            - `maxInteractDistance` (Float) = `1.5`
+            - `climbCenter` (ObjectReference) = `Middle (Transform) scenePath='NodeContext/NodeView/Dock/Ladder/Middle'`
+            - `boatAccessMode` (Enum) = `Auto`
+            - `debugLogs` (Boolean) = `False`
+          - `ResizableSegment2D` index=4 enabled=`True`
+            - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+            - `spriteRenderer` (ObjectReference) = `Ladder (SpriteRenderer) scenePath='NodeContext/NodeView/Dock/Ladder'`
+            - `boxCollider` (ObjectReference) = `Ladder (BoxCollider2D) scenePath='NodeContext/NodeView/Dock/Ladder'`
+            - `width` (Float) = `1.28`
+            - `height` (Float) = `3`
+            - `resizeAxis` (Enum) = `Vertical`
+            - `resizeSprite` (Boolean) = `True`
+            - `resizeCollider` (Boolean) = `True`
+            - `forceTiledSprite` (Boolean) = `True`
+            - `snapResizeInEditor` (Boolean) = `True`
+            - `resizeSnapIncrement` (Float) = `1`
+          - `LadderAutoFitAuthoring` index=5 enabled=`True`
+            - `m_Script` (ObjectReference) = `LadderAutoFitAuthoring (MonoScript) asset='Assets/Scripts/Controller/Player/Ladders/LadderAutoFitAuthoring.cs'`
+            - `resizable` (ObjectReference) = `Ladder (ResizableSegment2D) scenePath='NodeContext/NodeView/Dock/Ladder'`
+            - `ladderCollider` (ObjectReference) = `Ladder (BoxCollider2D) scenePath='NodeContext/NodeView/Dock/Ladder'`
+            - `top` (ObjectReference) = `Top (Transform) scenePath='NodeContext/NodeView/Dock/Ladder/Top'`
+            - `middle` (ObjectReference) = `Middle (Transform) scenePath='NodeContext/NodeView/Dock/Ladder/Middle'`
+            - `bottom` (ObjectReference) = `Bottom (Transform) scenePath='NodeContext/NodeView/Dock/Ladder/Bottom'`
+            - `topExitPoint` (ObjectReference) = `TopExit (Transform) scenePath='NodeContext/NodeView/Dock/Ladder/TopExit'`
+            - `bottomExitPoint` (ObjectReference) = `BottomExit (Transform) scenePath='NodeContext/NodeView/Dock/Ladder/BottomExit'`
+            - `topInset` (Float) = `0.05`
+            - `bottomInset` (Float) = `0.05`
+            - `topExitLocalOffset` (Vector2) = `(0.00, 1.50)`
+            - `bottomExitLocalOffset` (Vector2) = `(0.00, 0.15)`
+            - `autoApplyInEditor` (Boolean) = `True`
+      - `Ladder (1)` | path=`NodeContext/NodeView/Dock/Ladder (1)` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `4, -1, 1`
+          - worldPosition: `29.242, -0.306, -0.635`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(4.00, -1.00, 1.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_ProbeAnchor` (ObjectReference) = `null`
+            - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+            - `m_LightmapParameters` (ObjectReference) = `null`
+            - `m_Sprite` (ObjectReference) = `LadderMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/LadderMetal_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(1.28, 3.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+          - `BoxCollider2D` index=2 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(1.28, 3.00)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `LadderZone` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `LadderZone (MonoScript) asset='Assets/Scripts/Controller/Player/Ladders/LadderZone.cs'`
+            - `climbSpeed` (Float) = `6`
+            - `snapToCenterSpeed` (Float) = `18`
+            - `requireInteractToClimb` (Boolean) = `True`
+            - `allowImplicitDownClimb` (Boolean) = `True`
+            - `allowTopExit` (Boolean) = `True`
+            - `allowBottomExit` (Boolean) = `True`
+            - `topExitMargin` (Float) = `0.15`
+            - `bottomExitMargin` (Float) = `0.15`
+            - `topExitPoint` (ObjectReference) = `TopExit (Transform) scenePath='NodeContext/NodeView/Dock/Ladder (1)/TopExit'`
+            - `bottomExitPoint` (ObjectReference) = `Bottom (Transform) scenePath='NodeContext/NodeView/Dock/Ladder (1)/Bottom'`
+            - `interactionPriority` (Integer) = `25`
+            - `maxInteractDistance` (Float) = `1.5`
+            - `climbCenter` (ObjectReference) = `Middle (Transform) scenePath='NodeContext/NodeView/Dock/Ladder (1)/Middle'`
+            - `boatAccessMode` (Enum) = `Auto`
+            - `debugLogs` (Boolean) = `False`
+          - `ResizableSegment2D` index=4 enabled=`True`
+            - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+            - `spriteRenderer` (ObjectReference) = `Ladder (1) (SpriteRenderer) scenePath='NodeContext/NodeView/Dock/Ladder (1)'`
+            - `boxCollider` (ObjectReference) = `Ladder (1) (BoxCollider2D) scenePath='NodeContext/NodeView/Dock/Ladder (1)'`
+            - `width` (Float) = `1.28`
+            - `height` (Float) = `3`
+            - `resizeAxis` (Enum) = `Vertical`
+            - `resizeSprite` (Boolean) = `True`
+            - `resizeCollider` (Boolean) = `True`
+            - `forceTiledSprite` (Boolean) = `True`
+            - `snapResizeInEditor` (Boolean) = `True`
+            - `resizeSnapIncrement` (Float) = `1`
+          - `LadderAutoFitAuthoring` index=5 enabled=`True`
+            - `m_Script` (ObjectReference) = `LadderAutoFitAuthoring (MonoScript) asset='Assets/Scripts/Controller/Player/Ladders/LadderAutoFitAuthoring.cs'`
+            - `resizable` (ObjectReference) = `Ladder (1) (ResizableSegment2D) scenePath='NodeContext/NodeView/Dock/Ladder (1)'`
+            - `ladderCollider` (ObjectReference) = `Ladder (1) (BoxCollider2D) scenePath='NodeContext/NodeView/Dock/Ladder (1)'`
+            - `top` (ObjectReference) = `Top (Transform) scenePath='NodeContext/NodeView/Dock/Ladder (1)/Top'`
+            - `middle` (ObjectReference) = `Middle (Transform) scenePath='NodeContext/NodeView/Dock/Ladder (1)/Middle'`
+            - `bottom` (ObjectReference) = `Bottom (Transform) scenePath='NodeContext/NodeView/Dock/Ladder (1)/Bottom'`
+            - `topExitPoint` (ObjectReference) = `TopExit (Transform) scenePath='NodeContext/NodeView/Dock/Ladder (1)/TopExit'`
+            - `bottomExitPoint` (ObjectReference) = `BottomExit (Transform) scenePath='NodeContext/NodeView/Dock/Ladder (1)/BottomExit'`
+            - `topInset` (Float) = `0.05`
+            - `bottomInset` (Float) = `0.05`
+            - `topExitLocalOffset` (Vector2) = `(0.00, 1.50)`
+            - `bottomExitLocalOffset` (Vector2) = `(0.00, 0.15)`
+            - `autoApplyInEditor` (Boolean) = `True`
+        - `Bottom` | path=`NodeContext/NodeView/Dock/Ladder (1)/Bottom` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, -1.45, 0`
+            - worldPosition: `29.242, -1.756, -0.635`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, -1.45, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BottomExit` | path=`NodeContext/NodeView/Dock/Ladder (1)/BottomExit` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, -1.3, 0`
+            - worldPosition: `29.242, -1.605, -0.635`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, -1.30, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `Middle` | path=`NodeContext/NodeView/Dock/Ladder (1)/Middle` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `29.242, -0.306, -0.635`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `Top` | path=`NodeContext/NodeView/Dock/Ladder (1)/Top` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 1.45, 0`
+            - worldPosition: `29.242, 1.145, -0.635`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 1.45, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `TopExit` | path=`NodeContext/NodeView/Dock/Ladder (1)/TopExit` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 2.95, 0`
+            - worldPosition: `29.242, 2.645, -0.635`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 2.95, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `Ladder (2)` | path=`NodeContext/NodeView/Dock/Ladder (2)` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `14, -1, 1`
+          - worldPosition: `39.242, -0.306, -0.635`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(14.00, -1.00, 1.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_ProbeAnchor` (ObjectReference) = `null`
+            - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+            - `m_LightmapParameters` (ObjectReference) = `null`
+            - `m_Sprite` (ObjectReference) = `LadderMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/LadderMetal_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(1.28, 3.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+          - `BoxCollider2D` index=2 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(1.28, 3.00)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `LadderZone` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `LadderZone (MonoScript) asset='Assets/Scripts/Controller/Player/Ladders/LadderZone.cs'`
+            - `climbSpeed` (Float) = `6`
+            - `snapToCenterSpeed` (Float) = `18`
+            - `requireInteractToClimb` (Boolean) = `True`
+            - `allowImplicitDownClimb` (Boolean) = `True`
+            - `allowTopExit` (Boolean) = `True`
+            - `allowBottomExit` (Boolean) = `True`
+            - `topExitMargin` (Float) = `0.15`
+            - `bottomExitMargin` (Float) = `0.15`
+            - `topExitPoint` (ObjectReference) = `TopExit (Transform) scenePath='NodeContext/NodeView/Dock/Ladder (2)/TopExit'`
+            - `bottomExitPoint` (ObjectReference) = `Bottom (Transform) scenePath='NodeContext/NodeView/Dock/Ladder (2)/Bottom'`
+            - `interactionPriority` (Integer) = `25`
+            - `maxInteractDistance` (Float) = `1.5`
+            - `climbCenter` (ObjectReference) = `Middle (Transform) scenePath='NodeContext/NodeView/Dock/Ladder (2)/Middle'`
+            - `boatAccessMode` (Enum) = `Auto`
+            - `debugLogs` (Boolean) = `False`
+          - `ResizableSegment2D` index=4 enabled=`True`
+            - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+            - `spriteRenderer` (ObjectReference) = `Ladder (2) (SpriteRenderer) scenePath='NodeContext/NodeView/Dock/Ladder (2)'`
+            - `boxCollider` (ObjectReference) = `Ladder (2) (BoxCollider2D) scenePath='NodeContext/NodeView/Dock/Ladder (2)'`
+            - `width` (Float) = `1.28`
+            - `height` (Float) = `3`
+            - `resizeAxis` (Enum) = `Vertical`
+            - `resizeSprite` (Boolean) = `True`
+            - `resizeCollider` (Boolean) = `True`
+            - `forceTiledSprite` (Boolean) = `True`
+            - `snapResizeInEditor` (Boolean) = `True`
+            - `resizeSnapIncrement` (Float) = `1`
+          - `LadderAutoFitAuthoring` index=5 enabled=`True`
+            - `m_Script` (ObjectReference) = `LadderAutoFitAuthoring (MonoScript) asset='Assets/Scripts/Controller/Player/Ladders/LadderAutoFitAuthoring.cs'`
+            - `resizable` (ObjectReference) = `Ladder (2) (ResizableSegment2D) scenePath='NodeContext/NodeView/Dock/Ladder (2)'`
+            - `ladderCollider` (ObjectReference) = `Ladder (2) (BoxCollider2D) scenePath='NodeContext/NodeView/Dock/Ladder (2)'`
+            - `top` (ObjectReference) = `Top (Transform) scenePath='NodeContext/NodeView/Dock/Ladder (2)/Top'`
+            - `middle` (ObjectReference) = `Middle (Transform) scenePath='NodeContext/NodeView/Dock/Ladder (2)/Middle'`
+            - `bottom` (ObjectReference) = `Bottom (Transform) scenePath='NodeContext/NodeView/Dock/Ladder (2)/Bottom'`
+            - `topExitPoint` (ObjectReference) = `TopExit (Transform) scenePath='NodeContext/NodeView/Dock/Ladder (2)/TopExit'`
+            - `bottomExitPoint` (ObjectReference) = `BottomExit (Transform) scenePath='NodeContext/NodeView/Dock/Ladder (2)/BottomExit'`
+            - `topInset` (Float) = `0.05`
+            - `bottomInset` (Float) = `0.05`
+            - `topExitLocalOffset` (Vector2) = `(0.00, 1.50)`
+            - `bottomExitLocalOffset` (Vector2) = `(0.00, 0.15)`
+            - `autoApplyInEditor` (Boolean) = `True`
+        - `Bottom` | path=`NodeContext/NodeView/Dock/Ladder (2)/Bottom` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, -1.45, 0`
+            - worldPosition: `39.242, -1.756, -0.635`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, -1.45, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BottomExit` | path=`NodeContext/NodeView/Dock/Ladder (2)/BottomExit` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, -1.3, 0`
+            - worldPosition: `39.242, -1.605, -0.635`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, -1.30, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `Middle` | path=`NodeContext/NodeView/Dock/Ladder (2)/Middle` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `39.242, -0.306, -0.635`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `Top` | path=`NodeContext/NodeView/Dock/Ladder (2)/Top` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 1.45, 0`
+            - worldPosition: `39.242, 1.145, -0.635`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 1.45, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `TopExit` | path=`NodeContext/NodeView/Dock/Ladder (2)/TopExit` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 2.95, 0`
+            - worldPosition: `39.242, 2.645, -0.635`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 2.95, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `Bottom` | path=`NodeContext/NodeView/Dock/Ladder/Bottom` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, -1.45, 0`
+            - worldPosition: `19.242, -1.756, -0.635`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, -1.45, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BottomExit` | path=`NodeContext/NodeView/Dock/Ladder/BottomExit` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, -1.3, 0`
+            - worldPosition: `19.242, -1.605, -0.635`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, -1.30, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `Middle` | path=`NodeContext/NodeView/Dock/Ladder/Middle` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `19.242, -0.306, -0.635`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `Top` | path=`NodeContext/NodeView/Dock/Ladder/Top` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 1.45, 0`
+            - worldPosition: `19.242, 1.145, -0.635`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 1.45, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `TopExit` | path=`NodeContext/NodeView/Dock/Ladder/TopExit` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 2.95, 0`
+            - worldPosition: `19.242, 2.645, -0.635`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 2.95, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `post` | path=`NodeContext/NodeView/Dock/post` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `-19.36, -2.25, 1.635`
+          - worldPosition: `5.882, -1.556, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(-19.36, -2.25, 1.63)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_ProbeAnchor` (ObjectReference) = `null`
+            - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+            - `m_LightmapParameters` (ObjectReference) = `null`
+            - `m_Sprite` (ObjectReference) = `DockPost_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/DockPost_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `post (1)` | path=`NodeContext/NodeView/Dock/post (1)` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `-15.21, -2.3, 1.635`
+          - worldPosition: `10.032, -1.605, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(-15.21, -2.30, 1.63)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_ProbeAnchor` (ObjectReference) = `null`
+            - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+            - `m_LightmapParameters` (ObjectReference) = `null`
+            - `m_Sprite` (ObjectReference) = `DockPost_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/DockPost_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `post (2)` | path=`NodeContext/NodeView/Dock/post (2)` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `-11.33, -2.35, 1.635`
+          - worldPosition: `13.912, -1.656, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(-11.33, -2.35, 1.63)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_ProbeAnchor` (ObjectReference) = `null`
+            - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+            - `m_LightmapParameters` (ObjectReference) = `null`
+            - `m_Sprite` (ObjectReference) = `DockPost_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/DockPost_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `post (3)` | path=`NodeContext/NodeView/Dock/post (3)` | activeSelf=True | activeInHierarchy=True | layer=`WorldLedge` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `-7.06, -2.28, 1.635`
+          - worldPosition: `18.182, -1.586, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(-7.06, -2.28, 1.63)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_ProbeAnchor` (ObjectReference) = `null`
+            - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+            - `m_LightmapParameters` (ObjectReference) = `null`
+            - `m_Sprite` (ObjectReference) = `DockPost_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/DockPost_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+    - `NodeBackground` | path=`NodeContext/NodeView/NodeBackground` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0.635`
+        - worldPosition: `0, 1, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `150, 40, 1`
+      - Suspicion Notes:
+        - Transform has very large local scale.
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.63)`
+          - `m_LocalScale` (Vector3) = `(150.00, 40.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_ProbeAnchor` (ObjectReference) = `null`
+          - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+          - `m_LightmapParameters` (ObjectReference) = `null`
+          - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+          - `m_Color` (Color) = `RGBA(0.509, 0.509, 0.509, 0.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+    - `NodeEnvironmentBackground` | path=`NodeContext/NodeView/NodeEnvironmentBackground` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 10, 0.635`
+        - worldPosition: `0, 11, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `150, 20, 1`
+      - Suspicion Notes:
+        - Transform has very large local scale.
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 10.00, 0.63)`
+          - `m_LocalScale` (Vector3) = `(150.00, 20.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_ProbeAnchor` (ObjectReference) = `null`
+          - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+          - `m_LightmapParameters` (ObjectReference) = `null`
+          - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+          - `m_Color` (Color) = `RGBA(0.362, 0.570, 0.613, 0.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+    - `NodeTownBackground` | path=`NodeContext/NodeView/NodeTownBackground` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-35, 10, 0.635`
+        - worldPosition: `-35, 11, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `80, 20, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-35.00, 10.00, 0.63)`
+          - `m_LocalScale` (Vector3) = `(80.00, 20.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_ProbeAnchor` (ObjectReference) = `null`
+          - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+          - `m_LightmapParameters` (ObjectReference) = `null`
+          - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+          - `m_Color` (Color) = `RGBA(0.642, 0.642, 0.642, 0.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+  - `PlayerBoatSpawnPoint` | path=`NodeContext/PlayerBoatSpawnPoint` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Respawn` | static=False
+    - Transform:
+      - localPosition: `35, -20, 0`
+      - worldPosition: `35.877, 0.592, -0.622`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(35.00, -20.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `BoatSpawner` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `BoatSpawner (MonoScript) asset='Assets/Scripts/GameState/Boat/BoatSpawner.cs'`
+        - `verboseLogging` (Boolean) = `False`
+        - `spawnPoint` (ObjectReference) = `PlayerBoatSpawnPoint (Transform) scenePath='NodeContext/PlayerBoatSpawnPoint'`
+        - `spawnTag` (String) = `Respawn`
+        - `fallbackSpawn` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `boatCatalog` (ObjectReference) = `BoatCatalog (BoatCatalog) asset='Assets/Defs/Boat/BoatCatalog.asset'`
+        - `defaultBoatPrefab` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (GameObject) asset='Assets/Resources/Prefabs/Boats/TestBoat_11_Keel_Anchor_Rudder.prefab'`
+- `PhysicsManager` | path=`PhysicsManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `-9.758, -0.209, -10.182`
+    - worldPosition: `-9.758, -0.209, -10.182`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(-9.76, -0.21, -10.18)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `PhysicsManager` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `PhysicsManager (MonoScript) asset='Assets/Scripts/Global/Physics/PhysicsManager.cs'`
+      - `globals` (ObjectReference) = `PhysicsGlobals (PhysicsGlobals) asset='Assets/Resources/ScriptableObjects/PhysicsGlobals.asset'`
+- `Runners` | path=`Runners` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `-14.397, -3.743, -0.391`
+    - worldPosition: `-14.397, -3.743, -0.391`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(-14.40, -3.74, -0.39)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `StarObservationWorldMapRunner` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `StarObservationWorldMapRunner (MonoScript) asset='Assets/Scripts/MiniGames/Runners/StarObservationWorldMapRunner.cs'`
+      - `overlay` (ObjectReference) = `MiniGameHost (MiniGameOverlayHost) scenePath='MiniGameHost'`
+      - `playerRef` (ObjectReference) = `SceneContext (WorldMapPlayerRef) scenePath='SceneContext'`
+      - `runtimeBinder` (ObjectReference) = `WorldMapRuntime (WorldMapRuntimeBinder) scenePath='WorldMapRuntime'`
+      - `targetNodeIndex` (Integer) = `3`
+      - `difficulty` (Float) = `1`
+    - `TradeWorldMapRunner` index=2 enabled=`True`
+      - `m_Script` (ObjectReference) = `TradeWorldMapRunner (MonoScript) asset='Assets/Scripts/MiniGames/Runners/TradeWorldMapRunner.cs'`
+      - `overlay` (ObjectReference) = `MiniGameHost (MiniGameOverlayHost) scenePath='MiniGameHost'`
+      - `playerRef` (ObjectReference) = `SceneContext (WorldMapPlayerRef) scenePath='SceneContext'`
+      - `timeOfDay` (ObjectReference) = `null`
+      - `binder` (ObjectReference) = `null`
+      - `resourceCatalog` (ObjectReference) = `ResourceCatalog (ResourceCatalog) asset='Assets/Defs/Trade/ResourceCatalog.asset'`
+      - `marketTuning` (ObjectReference) = `PressureMarketPolicyTuning_Default (PressureMarketPolicyTuning) asset='Assets/Defs/Trade/PressureMarketPolicyTuning_Default.asset'`
+      - `itemStoreOverride` (ObjectReference) = `null`
+      - `pressureImpulsePerUnitSold` (Float) = `0.08`
+      - `pressureImpulsePerOrder` (Float) = `0.15`
+      - `minImpulsePerLine` (Float) = `0.05`
+      - `pressureFeedbackClampPerTrade` (Float) = `2`
+      - `baseFeeRate` (Float) = `0.03`
+      - `tradeRatingFeeBoost` (Float) = `0.02`
+      - `minFeePerLine` (Integer) = `1`
+      - `worldUnhealth01` (Float) = `0`
+      - `worldUnhealthFeeBoost` (Float) = `0.03`
+    - `ModuleOverlayRunner` index=3 enabled=`True`
+      - `m_Script` (ObjectReference) = `ModuleOverlayRunner (MonoScript) asset='Assets/Scripts/MiniGames/Runners/ModuleOverlayRunner.cs'`
+      - `overlay` (ObjectReference) = `MiniGameHost (MiniGameOverlayHost) scenePath='MiniGameHost'`
+    - `CargoSecuringMiniGameRunner` index=4 enabled=`True`
+      - `m_Script` (ObjectReference) = `CargoSecuringMiniGameRunner (MonoScript) asset='Assets/Scripts/MiniGames/Runners/CargoSecuringMiniGameRunner.cs'`
+      - `overlay` (ObjectReference) = `MiniGameHost (MiniGameOverlayHost) scenePath='MiniGameHost'`
+      - `ropeItemDefinition` (ObjectReference) = `item_rope (ItemDefinition) asset='Assets/Defs/Items/Items/item_rope.asset'`
+      - `secureRopeCost` (Integer) = `3`
+      - `fastenRopeCost` (Integer) = `1`
+      - `ropeBonus01` (Float) = `0.15`
+      - `secureQualityAtPerfect` (Float) = `1`
+      - `fastenRestoreAtPerfect` (Float) = `0.7`
+      - `verboseLogging` (Boolean) = `False`
+    - `WorldMapOverlayRunner` index=5 enabled=`True`
+      - `m_Script` (ObjectReference) = `WorldMapOverlayRunner (MonoScript) asset='Assets/Scripts/MiniGames/Runners/WorldMapOverlayRunner.cs'`
+      - `overlay` (ObjectReference) = `MiniGameHost (MiniGameOverlayHost) scenePath='MiniGameHost'`
+      - `generator` (ObjectReference) = `WorldGenerationRoot (WorldMapGraphGenerator) scenePath='WorldGenerationRoot'`
+      - `runtimeBinder` (ObjectReference) = `WorldMapRuntime (WorldMapRuntimeBinder) scenePath='WorldMapRuntime'`
+      - `player` (ObjectReference) = `SceneContext (WorldMapPlayerRef) scenePath='SceneContext'`
+      - `travelRules` (ObjectReference) = `WorldMapTravelRulesConfig (WorldMapTravelRulesConfig) asset='Assets/Scripts/Travel/Travel/WorldMapTravelRulesConfig.asset'`
+      - `travelDebug` (ObjectReference) = `Controllers (WorldMapTravelDebugController) scenePath='Controllers'`
+      - `travelLauncher` (ObjectReference) = `Controllers (NodeTravelController) scenePath='Controllers'`
+      - `eventManager` (ObjectReference) = `WorldMapEventManager (WorldMapEventManager) scenePath='WorldMapEventManager'`
+      - `effectCatalog` (ObjectReference) = `WorldMapEffectCatalog (WorldMapEffectCatalog) asset='Assets/Defs/WorldMap/Node/Catalog/WorldMapEffectCatalog.asset'`
+      - `topographyDebugSource` (ObjectReference) = `WorldGenerationRoot (WorldMapTopographyDebugSource) scenePath='WorldGenerationRoot'`
+      - `poiSource` (ObjectReference) = `WorldGenerationRoot (WorldMapPOISource) scenePath='WorldGenerationRoot'`
+      - `debugOpenWithKey` (Boolean) = `False`
+      - `debugOpenKey` (Enum) = `M`
+    - `MoneyServiceDebugTester` index=6 enabled=`True`
+      - `m_Script` (ObjectReference) = `MoneyServiceDebugTester (MonoScript) asset='Assets/Scripts/MoneyChest/MoneyServiceDebugTester.cs'`
+    - `ItemVendorOverlayRunner` index=7 enabled=`True`
+      - `m_Script` (ObjectReference) = `ItemVendorOverlayRunner (MonoScript) asset='Assets/Scripts/MiniGames/Runners/ItemVendorOverlayRunner.cs'`
+      - `overlay` (ObjectReference) = `MiniGameHost (MiniGameOverlayHost) scenePath='MiniGameHost'`
+      - `itemCatalog` (ObjectReference) = `itemCatalog (ItemDefinitionCatalog) asset='Assets/Defs/Items/Catalogs/itemCatalog.asset'`
+      - `purchaseService` (ObjectReference) = `Controllers (ItemVendorPurchaseService) scenePath='Controllers'`
+      - `sellService` (ObjectReference) = `Controllers (ItemVendorSellService) scenePath='Controllers'`
+      - `verboseLogging` (Boolean) = `False`
+    - `BoatVendorOverlayRunner` index=8 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatVendorOverlayRunner (MonoScript) asset='Assets/Scripts/MiniGames/Runners/BoatVendorOverlayRunner.cs'`
+      - `overlay` (ObjectReference) = `MiniGameHost (MiniGameOverlayHost) scenePath='MiniGameHost'`
+      - `boatCatalog` (ObjectReference) = `BoatCatalog (BoatCatalog) asset='Assets/Defs/Boat/BoatCatalog.asset'`
+      - `itemCatalog` (ObjectReference) = `itemCatalog (ItemDefinitionCatalog) asset='Assets/Defs/Items/Catalogs/itemCatalog.asset'`
+      - `moduleTransactionService` (ObjectReference) = `Controllers (BoatVendorModuleTransactionService) scenePath='Controllers'`
+      - `verboseLogging` (Boolean) = `False`
+    - `PilotingOverlayRunner` index=9 enabled=`True`
+      - `m_Script` (ObjectReference) = `PilotingOverlayRunner (MonoScript) asset='Assets/Scripts/MiniGames/Runners/PilotingOverlayRunner.cs'`
+      - `overlay` (ObjectReference) = `MiniGameHost (MiniGameOverlayHost) scenePath='MiniGameHost'`
+      - `visibleWorldHeight` (Float) = `90`
+      - `lockZoom` (Boolean) = `True`
+      - `troughFlatFraction` (Float) = `0.3`
+      - `waveTextureRefreshHz` (Float) = `20`
+    - `HelmOverlayRunner` index=10 enabled=`True`
+      - `m_Script` (ObjectReference) = `HelmOverlayRunner (MonoScript) asset='Assets/Scripts/MiniGames/Runners/HelmOverlayRunner.cs'`
+      - `overlay` (ObjectReference) = `MiniGameHost (MiniGameOverlayHost) scenePath='MiniGameHost'`
+- `SceneContext` | path=`SceneContext` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `134.431, -55.857, -2.641`
+    - worldPosition: `134.431, -55.857, -2.641`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(134.43, -55.86, -2.64)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `SceneContext` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `SceneContext (MonoScript) asset='Assets/Scripts/GameState/Scene/SceneContext.cs'`
+      - `waveField` (ObjectReference) = `WaveSystem (WaveField) scenePath='WaveSystem'`
+      - `rainSourceMono` (ObjectReference) = `RainManager (RainManager) scenePath='EnvironmentManager/RainManager'`
+      - `playerSpawn` (ObjectReference) = `PlayerBoatSpawnPoint (Transform) scenePath='NodeContext/PlayerBoatSpawnPoint'`
+      - `mapGenerator` (ObjectReference) = `WorldGenerationRoot (WorldMapGraphGenerator) scenePath='WorldGenerationRoot'`
+      - `runtimeBinder` (ObjectReference) = `WorldMapRuntime (WorldMapRuntimeBinder) scenePath='WorldMapRuntime'`
+      - `travelDebug` (ObjectReference) = `Controllers (WorldMapTravelDebugController) scenePath='Controllers'`
+      - `travelLauncher` (ObjectReference) = `null`
+      - `sunTransform` (ObjectReference) = `Sun (Transform) scenePath='Sun'`
+      - `sunLight` (ObjectReference) = `Sun (Light2D) scenePath='Sun'`
+      - `moonTransform` (ObjectReference) = `Moon (Transform) scenePath='Moon'`
+      - `moonLight` (ObjectReference) = `Moon (Light2D) scenePath='Moon'`
+      - `sunCorona` (ObjectReference) = `Corona (SpriteRenderer) scenePath='Sun/Corona'`
+      - `coronaMaterial` (ObjectReference) = `SunCoronaMaterial2D (Material) asset='Assets/Resources/Materials/SunCoronaMaterial2D.mat'`
+      - `seaRenderer` (ObjectReference) = `SeaBackground2D (SpriteRenderer) scenePath='SkyBackground/SeaBackground2D'`
+      - `sideWaterRenderer` (ObjectReference) = `WaveSystem (MeshRenderer) scenePath='WaveSystem'`
+      - `cloudRenderer` (ObjectReference) = `CloudBackground2D_1 (SpriteRenderer) scenePath='SkyBackground/CloudBackground2D_1'`
+      - `starsRenderer` (ObjectReference) = `SkyBackground (SpriteRenderer) scenePath='SkyBackground'`
+      - `sunriseOverlayRenderer` (ObjectReference) = `Sunrise/Sunset (SpriteRenderer) scenePath='SkyBackground/Sunrise/Sunset'`
+      - `skyMaterialOverride` (ObjectReference) = `SkyboxMaterial2D (Material) asset='Assets/Resources/Materials/SkyboxMaterial2D.mat'`
+      - `starsMaterialOverride` (ObjectReference) = `SkyboxMaterial2D (Material) asset='Assets/Resources/Materials/SkyboxMaterial2D.mat'`
+      - `cloudMaterialOverride` (ObjectReference) = `CloudMaterial2D (Material) asset='Assets/Resources/Materials/Old/CloudMaterial2D.mat'`
+      - `sunriseOverlayMaterialOverride` (ObjectReference) = `SunSetRiseMaterial2D (Material) asset='Assets/Resources/Materials/SunSetRiseMaterial2D.mat'`
+    - `WorldMapPlayerRef` index=2 enabled=`True`
+      - `m_Script` (ObjectReference) = `WorldMapPlayerRef (MonoScript) asset='Assets/Scripts/GameState/WorldMapPlayerRef.cs'`
+    - `PlayerSceneRestoreBootstrap` index=3 enabled=`True`
+      - `m_Script` (ObjectReference) = `PlayerSceneRestoreBootstrap (MonoScript) asset='Assets/Scripts/GameState/Inventory/PlayerSceneRestoreBootstrap.cs'`
+    - `PlayerLoadoutPersistence` index=4 enabled=`True`
+      - `m_Script` (ObjectReference) = `PlayerLoadoutPersistence (MonoScript) asset='Assets/Scripts/GameState/Inventory/PlayerLoadoutPersistence.cs'`
+      - `inventory` (ObjectReference) = `PlayerInventory (PlayerInventory) scenePath='CharacterPlayer/PlayerInventory'`
+      - `equipment` (ObjectReference) = `PlayerEquipment (PlayerEquipment) scenePath='CharacterPlayer/PlayerEquipment'`
+      - `itemCatalog` (ObjectReference) = `itemCatalog (ItemDefinitionCatalog) asset='Assets/Defs/Items/Catalogs/itemCatalog.asset'`
+      - `verboseLogging` (Boolean) = `False`
+- `ScreenPostFx` | path=`ScreenPostFx` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `1640.832, 512.098, -2.765`
+    - worldPosition: `1640.832, 512.098, -2.765`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(1640.83, 512.10, -2.77)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `Volume` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `Volume (MonoScript) asset='Packages/com.unity.render-pipelines.core/Runtime/Volume/Volume.cs'`
+      - `m_IsGlobal` (Boolean) = `True`
+      - `priority` (Float) = `0`
+      - `blendDistance` (Float) = `0`
+      - `weight` (Float) = `1`
+      - `sharedProfile` (ObjectReference) = `ScreenEffects Profile (VolumeProfile) asset='Assets/Scenes/Old Scene Stuff/ScreenEffects Profile.asset'`
+- `SeaFloor` | path=`SeaFloor` | activeSelf=True | activeInHierarchy=True | layer=`Ground` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `-120, 0.1, 0`
+    - worldPosition: `-120, 0.1, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(-120.00, 0.10, 0.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `SpriteRenderer` index=1 enabled=`True`
+      - `m_CastShadows` (Enum) = `Off`
+      - `m_ReceiveShadows` (Boolean) = `False`
+      - `m_DynamicOccludee` (Boolean) = `True`
+      - `m_StaticShadowCaster` (Boolean) = `False`
+      - `m_MotionVectors` (Enum) = `Per Object Motion`
+      - `m_LightProbeUsage` (Integer) = `1`
+      - `m_ReflectionProbeUsage` (Integer) = `1`
+      - `m_RayTracingMode` (Integer) = `0`
+      - `m_RayTraceProcedural` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+      - `m_SmallMeshCulling` (Boolean) = `True`
+      - `m_RenderingLayerMask` (Integer) = `1`
+      - `m_RendererPriority` (Integer) = `0`
+      - `m_Materials` (Generic) = `array size=1`
+      - `m_ProbeAnchor` (ObjectReference) = `null`
+      - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+      - `m_LightmapParameters` (ObjectReference) = `null`
+      - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+      - `m_Color` (Color) = `RGBA(0.906, 0.827, 0.534, 1.000)`
+      - `m_FlipX` (Boolean) = `False`
+      - `m_FlipY` (Boolean) = `False`
+      - `m_DrawMode` (Enum) = `Simple`
+      - `m_Size` (Vector2) = `(1.00, 1.00)`
+      - `m_AdaptiveModeThreshold` (Float) = `0.5`
+      - `m_SpriteTileMode` (Enum) = `Continuous`
+      - `m_MaskInteraction` (Enum) = `None`
+      - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Rigidbody2D` index=2 enabled=`n/a`
+      - `m_BodyType` (Enum) = `Kinematic`
+      - `m_Simulated` (Boolean) = `True`
+      - `m_UseFullKinematicContacts` (Boolean) = `False`
+      - `m_UseAutoMass` (Boolean) = `False`
+      - `m_Mass` (Float) = `1`
+      - `m_LinearDamping` (Float) = `0`
+      - `m_AngularDamping` (Float) = `0.05`
+      - `m_GravityScale` (Float) = `1`
+      - `m_Material` (ObjectReference) = `null`
+      - `m_IncludeLayers` (LayerMask) = `0`
+      - `m_ExcludeLayers` (LayerMask) = `0`
+      - `m_Interpolate` (Enum) = `Interpolate`
+      - `m_SleepingMode` (Enum) = `Start Awake`
+      - `m_CollisionDetection` (Enum) = `Continuous`
+      - `m_Constraints` (Integer) = `0`
+    - `EdgeCollider2D` index=3 enabled=`True`
+      - `m_Density` (Float) = `1`
+      - `m_Material` (ObjectReference) = `null`
+      - `m_IncludeLayers` (LayerMask) = `0`
+      - `m_ExcludeLayers` (LayerMask) = `0`
+      - `m_LayerOverridePriority` (Integer) = `0`
+      - `m_ForceSendLayers` (LayerMask) = `-1`
+      - `m_ForceReceiveLayers` (LayerMask) = `-1`
+      - `m_ContactCaptureLayers` (LayerMask) = `-1`
+      - `m_CallbackLayers` (LayerMask) = `-1`
+      - `m_IsTrigger` (Boolean) = `False`
+      - `m_UsedByEffector` (Boolean) = `False`
+      - `m_CompositeOperation` (Enum) = `None`
+      - `m_CompositeOrder` (Integer) = `0`
+      - `m_Offset` (Vector2) = `(0.00, 0.00)`
+      - `m_EdgeRadius` (Float) = `0`
+      - `m_Points` (Generic) = `array size=240`
+      - `m_AdjacentStartPoint` (Vector2) = `(0.00, 0.00)`
+      - `m_AdjacentEndPoint` (Vector2) = `(0.00, 0.00)`
+      - `m_UseAdjacentStartPoint` (Boolean) = `False`
+      - `m_UseAdjacentEndPoint` (Boolean) = `False`
+    - `NodeGroundGenerator2D` index=4 enabled=`True`
+      - `m_Script` (ObjectReference) = `NodeGroundGenerator2D (MonoScript) asset='Assets/Scripts/Environment/GroundGeneration/NodeGroundGenerator2D.cs'`
+      - `pointCount` (Integer) = `240`
+      - `worldWidth` (Float) = `240`
+      - `landY` (Float) = `1`
+      - `islandLength` (Float) = `120`
+      - `slopeLength` (Float) = `100.305`
+      - `slopeDrop` (Float) = `42.441`
+      - `slopeDeformationAmplitude` (Float) = `0.5`
+      - `slopeDeformationScale` (Float) = `0.5`
+      - `slopeDeformationOctaves` (Integer) = `6`
+      - `slopeDeformationEdgeFade` (Float) = `0.1`
+      - `deformationAmplitude` (Float) = `1`
+      - `deformationScale` (Float) = `0.2`
+      - `deformationOctaves` (Integer) = `3`
+      - `octavePersistence` (Float) = `0.482`
+      - `octaveLacunarity` (Float) = `2.293`
+      - `deformationRampDistance` (Float) = `0.01`
+      - `landWobbleAmplitude` (Float) = `0`
+      - `landWobbleScale` (Float) = `0.5`
+      - `groundLayerName` (String) = `Ground`
+      - `createBoundaryWalls` (Boolean) = `True`
+      - `boundaryPadding` (Float) = `-20`
+      - `boundaryWallHeight` (Float) = `200`
+      - `boundaryWallThickness` (Float) = `2`
+      - `boundaryLayerName` (String) = `Ground`
+      - `regenerateOnValidate` (Boolean) = `True`
+      - `randomizeSeedOnGenerate` (Boolean) = `True`
+      - `slopeRandomizationRange` (Float) = `3`
+      - `seed` (Integer) = `1469132467`
+    - `GeneratedGroundSampler2D` index=5 enabled=`True`
+      - `m_Script` (ObjectReference) = `GeneratedGroundSampler2D (MonoScript) asset='Assets/Scripts/Environment/GroundGeneration/GeneratedGroundSampler2D.cs'`
+      - `edge` (ObjectReference) = `null`
+  - `BoundaryWall_Left` | path=`SeaFloor/BoundaryWall_Left` | activeSelf=True | activeInHierarchy=True | layer=`Ground` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `20, -99, 0`
+      - worldPosition: `-100, -98.9, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(20.00, -99.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `BoxCollider2D` index=1 enabled=`True`
+        - `m_Density` (Float) = `1`
+        - `m_Material` (ObjectReference) = `null`
+        - `m_IncludeLayers` (LayerMask) = `0`
+        - `m_ExcludeLayers` (LayerMask) = `0`
+        - `m_LayerOverridePriority` (Integer) = `0`
+        - `m_ForceSendLayers` (LayerMask) = `-1`
+        - `m_ForceReceiveLayers` (LayerMask) = `-1`
+        - `m_ContactCaptureLayers` (LayerMask) = `-1`
+        - `m_CallbackLayers` (LayerMask) = `-1`
+        - `m_IsTrigger` (Boolean) = `False`
+        - `m_UsedByEffector` (Boolean) = `False`
+        - `m_CompositeOperation` (Enum) = `None`
+        - `m_CompositeOrder` (Integer) = `0`
+        - `m_Offset` (Vector2) = `(0.00, 100.00)`
+        - `m_AutoTiling` (Boolean) = `False`
+        - `m_Size` (Vector2) = `(2.00, 200.00)`
+        - `m_EdgeRadius` (Float) = `0`
+  - `BoundaryWall_Right` | path=`SeaFloor/BoundaryWall_Right` | activeSelf=True | activeInHierarchy=True | layer=`Ground` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `220, -99, 0`
+      - worldPosition: `100, -98.9, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(220.00, -99.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `BoxCollider2D` index=1 enabled=`True`
+        - `m_Density` (Float) = `1`
+        - `m_Material` (ObjectReference) = `null`
+        - `m_IncludeLayers` (LayerMask) = `0`
+        - `m_ExcludeLayers` (LayerMask) = `0`
+        - `m_LayerOverridePriority` (Integer) = `0`
+        - `m_ForceSendLayers` (LayerMask) = `-1`
+        - `m_ForceReceiveLayers` (LayerMask) = `-1`
+        - `m_ContactCaptureLayers` (LayerMask) = `-1`
+        - `m_CallbackLayers` (LayerMask) = `-1`
+        - `m_IsTrigger` (Boolean) = `False`
+        - `m_UsedByEffector` (Boolean) = `False`
+        - `m_CompositeOperation` (Enum) = `None`
+        - `m_CompositeOrder` (Integer) = `0`
+        - `m_Offset` (Vector2) = `(0.00, 100.00)`
+        - `m_AutoTiling` (Boolean) = `False`
+        - `m_Size` (Vector2) = `(2.00, 200.00)`
+        - `m_EdgeRadius` (Float) = `0`
+  - `NodeGroundVisual` | path=`SeaFloor/NodeGroundVisual` | activeSelf=True | activeInHierarchy=True | layer=`Ground` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-120, 0.1, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MeshFilter` index=1 enabled=`n/a`
+        - `m_Mesh` (ObjectReference) = `null`
+      - `MeshRenderer` index=2 enabled=`True`
+        - `m_CastShadows` (Enum) = `On`
+        - `m_ReceiveShadows` (Boolean) = `True`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `2`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+      - `GroundFillMeshRenderer2D` index=3 enabled=`True`
+        - `m_Script` (ObjectReference) = `GroundFillMeshRenderer2D (MonoScript) asset='Assets/Scripts/Environment/GroundGeneration/GroundFillMeshRenderer2D.cs'`
+        - `generatorSource` (ObjectReference) = `SeaFloor (NodeGroundGenerator2D) scenePath='SeaFloor'`
+        - `edge` (ObjectReference) = `SeaFloor (EdgeCollider2D) scenePath='SeaFloor'`
+        - `fillBottomY` (Float) = `-30`
+        - `extraFillDepth` (Float) = `20`
+        - `decimate` (Boolean) = `True`
+        - `decimateStep` (Integer) = `2`
+      - `SortingLayerSetter` index=4 enabled=`True`
+        - `m_Script` (ObjectReference) = `SortingLayerSetter (MonoScript) asset='Assets/Scripts/Camera/SortingLayerSetter.cs'`
+        - `sortingLayerName` (String) = `Ground`
+        - `sortingOrder` (Integer) = `0`
+  - `UnderwaterResourceSpawner` | path=`SeaFloor/UnderwaterResourceSpawner` | activeSelf=True | activeInHierarchy=True | layer=`Ground` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `-120, 0.1, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `UnderwaterResourceSceneSpawner` index=1 enabled=`True`
+        - `m_Script` (ObjectReference) = `UnderwaterResourceSceneSpawner (MonoScript) asset='Assets/Scripts/Environment/Resources/UnderwaterResourceSceneSpawner.cs'`
+        - `resourceCatalog` (ObjectReference) = `UnderwaterResourceCatalog (UnderwaterResourceCatalog) asset='Assets/Defs/Resources/UnderwaterResourceCatalog.asset'`
+        - `groundSampler` (ObjectReference) = `SeaFloor (GeneratedGroundSampler2D) scenePath='SeaFloor'`
+        - `groundGeneratedNotifierSource` (ObjectReference) = `SeaFloor (NodeGroundGenerator2D) scenePath='SeaFloor'`
+        - `respawnWhenGroundRegenerates` (Boolean) = `True`
+        - `spawnXPadding` (Float) = `2`
+        - `maxPlacementAttempts` (Integer) = `100`
+        - `waterSurfaceY` (Float) = `0`
+        - `sceneMinDepth` (Float) = `0.5`
+        - `sceneMaxDepth` (Float) = `500`
+        - `worldSeed` (Integer) = `12345`
+        - `routeStableId` (String) = `debug_route`
+        - `randomizeVisitSaltOnAwake` (Boolean) = `True`
+        - `sceneVisitSalt` (Integer) = `0`
+        - `collectableBudget` (Integer) = `50`
+        - `extractableBudget` (Integer) = `10`
+        - `craneableBudget` (Integer) = `3`
+        - `activeModifiers` (Generic) = `array size=0`
+        - `spawnedRoot` (ObjectReference) = `null`
+        - `spawnOnStart` (Boolean) = `True`
+        - `logSpawnSummary` (Boolean) = `False`
+- `SkyBackground` | path=`SkyBackground` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `0, -6, 0`
+    - worldPosition: `0, -6, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `300, 1000, 1`
+  - Suspicion Notes:
+    - Transform has very large local scale.
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.00, -6.00, 0.00)`
+      - `m_LocalScale` (Vector3) = `(300.00, 1000.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `SpriteRenderer` index=1 enabled=`True`
+      - `m_CastShadows` (Enum) = `Off`
+      - `m_ReceiveShadows` (Boolean) = `False`
+      - `m_DynamicOccludee` (Boolean) = `True`
+      - `m_StaticShadowCaster` (Boolean) = `False`
+      - `m_MotionVectors` (Enum) = `Per Object Motion`
+      - `m_LightProbeUsage` (Integer) = `1`
+      - `m_ReflectionProbeUsage` (Integer) = `1`
+      - `m_RayTracingMode` (Integer) = `0`
+      - `m_RayTraceProcedural` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+      - `m_SmallMeshCulling` (Boolean) = `True`
+      - `m_RenderingLayerMask` (Integer) = `1`
+      - `m_RendererPriority` (Integer) = `0`
+      - `m_Materials` (Generic) = `array size=1`
+      - `m_ProbeAnchor` (ObjectReference) = `null`
+      - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+      - `m_LightmapParameters` (ObjectReference) = `null`
+      - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+      - `m_Color` (Color) = `RGBA(0.750, 0.992, 1.000, 1.000)`
+      - `m_FlipX` (Boolean) = `False`
+      - `m_FlipY` (Boolean) = `False`
+      - `m_DrawMode` (Enum) = `Simple`
+      - `m_Size` (Vector2) = `(1.00, 1.00)`
+      - `m_AdaptiveModeThreshold` (Float) = `0.5`
+      - `m_SpriteTileMode` (Enum) = `Continuous`
+      - `m_MaskInteraction` (Enum) = `None`
+      - `m_SpriteSortPoint` (Enum) = `Center`
+    - `BackgroundFollower` index=2 enabled=`True`
+      - `m_Script` (ObjectReference) = `BackgroundFollower (MonoScript) asset='Assets/Scripts/Camera/BackgroundFollower.cs'`
+      - `target` (ObjectReference) = `CharacterPlayer (Transform) scenePath='CharacterPlayer'`
+      - `offset` (Vector3) = `(0.00, -6.00, 0.00)`
+      - `lockY` (Boolean) = `True`
+      - `retryInterval` (Float) = `0.25`
+      - `celestialScale` (Float) = `1`
+  - `CloudBackground2D_1` | path=`SkyBackground/CloudBackground2D_1` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0.03, 0`
+      - worldPosition: `0, 24.35, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 0.053, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.03, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 0.05, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SpriteRenderer` index=1 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+        - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+        - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 0.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+  - `CloudBackground2D_2` | path=`SkyBackground/CloudBackground2D_2` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0.03, 0`
+      - worldPosition: `0, 24.35, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 0.053, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.03, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 0.05, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SpriteRenderer` index=1 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+        - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+        - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 0.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+  - `FogBackground2D` | path=`SkyBackground/FogBackground2D` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, -6, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SpriteRenderer` index=1 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+        - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+        - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+  - `FogForeground2D` | path=`SkyBackground/FogForeground2D` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, -6, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SpriteRenderer` index=1 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+        - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+        - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+  - `FogMidground2D` | path=`SkyBackground/FogMidground2D` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, -6, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SpriteRenderer` index=1 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+        - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+        - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+  - `Rain2D` | path=`SkyBackground/Rain2D` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0.021, -6.02, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 0.101, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 0.10, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SpriteRenderer` index=1 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+        - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+        - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+  - `SeaBackground2D` | path=`SkyBackground/SeaBackground2D` | activeSelf=True | activeInHierarchy=True | layer=`Water` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, -0.009, 0`
+      - worldPosition: `0, -15.423, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 0.031, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, -0.01, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 0.03, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SpriteRenderer` index=1 enabled=`False`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+        - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+        - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+  - `SunMask` | path=`SkyBackground/SunMask` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, -0.05, 0`
+      - worldPosition: `0, -56, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 0.112, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, -0.05, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 0.11, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SpriteMask` index=1 enabled=`True`
+        - `m_CastShadows` (Enum) = `On`
+        - `m_ReceiveShadows` (Boolean) = `True`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+        - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Assets/Resources/Sprites/Water.png'`
+        - `m_MaskAlphaCutoff` (Float) = `0.2`
+        - `m_IsCustomRangeActive` (Boolean) = `False`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+        - `m_MaskSource` (Enum) = `Sprite`
+  - `Sunrise/Sunset` | path=`SkyBackground/Sunrise/Sunset` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0.016, 0`
+      - worldPosition: `-0.006, 10, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 0.02, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.02, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 0.02, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SpriteRenderer` index=1 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+        - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+        - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+  - `WindForeground2D` | path=`SkyBackground/WindForeground2D` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `-0.042, 0.025, 0`
+      - worldPosition: `-12.642, 19.08, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 0.083, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(-0.04, 0.03, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 0.08, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SpriteRenderer` index=1 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+        - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png'`
+        - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+- `Sun` | path=`Sun` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `0, 18.09, 0`
+    - worldPosition: `0, 18.09, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `2, 2, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.00, 18.09, 0.00)`
+      - `m_LocalScale` (Vector3) = `(2.00, 2.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `SpriteRenderer` index=1 enabled=`True`
+      - `m_CastShadows` (Enum) = `Off`
+      - `m_ReceiveShadows` (Boolean) = `False`
+      - `m_DynamicOccludee` (Boolean) = `True`
+      - `m_StaticShadowCaster` (Boolean) = `False`
+      - `m_MotionVectors` (Enum) = `Per Object Motion`
+      - `m_LightProbeUsage` (Integer) = `1`
+      - `m_ReflectionProbeUsage` (Integer) = `1`
+      - `m_RayTracingMode` (Integer) = `0`
+      - `m_RayTraceProcedural` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+      - `m_SmallMeshCulling` (Boolean) = `True`
+      - `m_RenderingLayerMask` (Integer) = `1`
+      - `m_RendererPriority` (Integer) = `0`
+      - `m_Materials` (Generic) = `array size=1`
+      - `m_ProbeAnchor` (ObjectReference) = `null`
+      - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+      - `m_LightmapParameters` (ObjectReference) = `null`
+      - `m_Sprite` (ObjectReference) = `Circle (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Circle.png'`
+      - `m_Color` (Color) = `RGBA(0.979, 0.981, 0.773, 1.000)`
+      - `m_FlipX` (Boolean) = `False`
+      - `m_FlipY` (Boolean) = `False`
+      - `m_DrawMode` (Enum) = `Simple`
+      - `m_Size` (Vector2) = `(1.00, 1.00)`
+      - `m_AdaptiveModeThreshold` (Float) = `0.5`
+      - `m_SpriteTileMode` (Enum) = `Continuous`
+      - `m_MaskInteraction` (Enum) = `Visible Outside Mask`
+      - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Light2D` index=2 enabled=`False`
+      - `m_Script` (ObjectReference) = `Light2D (MonoScript) asset='Packages/com.unity.render-pipelines.universal/Runtime/2D/Light2D.cs'`
+      - `m_ComponentVersion` (Enum) = `Version_2`
+      - `m_LightType` (Enum) = `Point`
+      - `m_BlendStyleIndex` (Integer) = `0`
+      - `m_FalloffIntensity` (Float) = `0.495`
+      - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+      - `m_Intensity` (Float) = `10`
+      - `m_LightVolumeIntensity` (Float) = `1`
+      - `m_LightVolumeEnabled` (Boolean) = `False`
+      - `m_ApplyToSortingLayers` (Generic) = `array size=5`
+      - `m_LightCookieSprite` (ObjectReference) = `null`
+      - `m_DeprecatedPointLightCookieSprite` (ObjectReference) = `null`
+      - `m_LightOrder` (Integer) = `0`
+      - `m_AlphaBlendOnOverlap` (Boolean) = `False`
+      - `m_OverlapOperation` (Enum) = `Additive`
+      - `m_NormalMapDistance` (Float) = `3`
+      - `m_NormalMapQuality` (Enum) = `Disabled`
+      - `m_UseNormalMap` (Boolean) = `False`
+      - `m_ShadowsEnabled` (Boolean) = `True`
+      - `m_ShadowIntensity` (Float) = `0.75`
+      - `m_ShadowSoftness` (Float) = `0.3`
+      - `m_ShadowSoftnessFalloffIntensity` (Float) = `0.5`
+      - `m_ShadowVolumeIntensityEnabled` (Boolean) = `False`
+      - `m_ShadowVolumeIntensity` (Float) = `0.75`
+      - `m_LocalBounds` (Bounds) = `Center: (0.00, 0.00, 0.00), Extents: (1.00, 1.00, 0.00)`
+      - `m_PointLightInnerAngle` (Float) = `360`
+      - `m_PointLightOuterAngle` (Float) = `360`
+      - `m_PointLightInnerRadius` (Float) = `0`
+      - `m_PointLightOuterRadius` (Float) = `2`
+      - `m_ShapeLightParametricSides` (Integer) = `5`
+      - `m_ShapeLightParametricAngleOffset` (Float) = `0`
+      - `m_ShapeLightParametricRadius` (Float) = `1`
+      - `m_ShapeLightFalloffSize` (Float) = `0.5`
+      - `m_ShapeLightFalloffOffset` (Vector2) = `(0.00, 0.00)`
+      - `m_ShapePath` (Generic) = `array size=4`
+  - `Corona` | path=`Sun/Corona` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 18.09, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `2, 2, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(2.00, 2.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SpriteRenderer` index=1 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+        - `m_Sprite` (ObjectReference) = `Circle (Sprite) asset='Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Circle.png'`
+        - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `Visible Outside Mask`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+- `UIOverlayRoot` | path=`UIOverlayRoot` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `956, 462.5, 0`
+    - worldPosition: `956, 462.5, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(956.00, 462.50, 0.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `Canvas` | path=`UIOverlayRoot/Canvas` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `39.5, -48, 0`
+      - worldPosition: `995.5, 414.5, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `0.579, 0.579, 0.579`
+    - Components:
+      - `RectTransform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(39.50, -48.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(0.58, 0.58, 0.58)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+        - `m_AnchorMax` (Vector2) = `(0.00, 0.00)`
+        - `m_AnchoredPosition` (Vector2) = `(39.50, -48.00)`
+        - `m_SizeDelta` (Vector2) = `(3440.00, 1432.33)`
+        - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+      - `Canvas` index=1 enabled=`True`
+        - `m_RenderMode` (Enum) = `Screen Space - Overlay`
+        - `m_Camera` (ObjectReference) = `null`
+        - `m_PlaneDistance` (Float) = `100`
+        - `m_PixelPerfect` (Boolean) = `False`
+        - `m_ReceivesEvents` (Boolean) = `True`
+        - `m_OverrideSorting` (Boolean) = `False`
+        - `m_OverridePixelPerfect` (Boolean) = `False`
+        - `m_SortingBucketNormalizedSize` (Float) = `0`
+        - `m_VertexColorAlwaysGammaSpace` (Boolean) = `False`
+        - `m_AdditionalShaderChannelsFlag` (Enum) = `-1`
+        - `m_UpdateRectTransformForStandalone` (Enum) = `Enabled`
+      - `CanvasScaler` index=2 enabled=`True`
+        - `m_Script` (ObjectReference) = `CanvasScaler (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/CanvasScaler.cs'`
+        - `m_UiScaleMode` (Enum) = `Scale With Screen Size`
+        - `m_ReferencePixelsPerUnit` (Float) = `100`
+        - `m_ScaleFactor` (Float) = `1`
+        - `m_ReferenceResolution` (Vector2) = `(3440.00, 1440.00)`
+        - `m_ScreenMatchMode` (Enum) = `Match Width Or Height`
+        - `m_MatchWidthOrHeight` (Float) = `0`
+        - `m_PhysicalUnit` (Enum) = `Points`
+        - `m_FallbackScreenDPI` (Float) = `96`
+        - `m_DefaultSpriteDPI` (Float) = `96`
+        - `m_DynamicPixelsPerUnit` (Float) = `1`
+        - `m_PresetInfoIsWorld` (Boolean) = `False`
+      - `GraphicRaycaster` index=3 enabled=`True`
+        - `m_Script` (ObjectReference) = `GraphicRaycaster (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/GraphicRaycaster.cs'`
+        - `m_IgnoreReversedGraphics` (Boolean) = `True`
+        - `m_BlockingObjects` (Enum) = `None`
+        - `m_BlockingMask` (LayerMask) = `-1`
+    - `Afflictions` | path=`UIOverlayRoot/Canvas/Afflictions` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `1520, -416.163, 0`
+        - worldPosition: `1875.244, 173.634, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(1520.00, -416.16, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(1.00, 0.00)`
+          - `m_AnchorMax` (Vector2) = `(1.00, 0.00)`
+          - `m_AnchoredPosition` (Vector2) = `(-200.00, 300.00)`
+          - `m_SizeDelta` (Vector2) = `(400.00, 600.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `AfflictionListUI` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `AfflictionListUI (MonoScript) asset='Assets/Scripts/UI/AfflictionListUI.cs'`
+          - `system` (ObjectReference) = `null`
+          - `catalog` (ObjectReference) = `AfflictionCatalog (AfflictionCatalog) asset='Assets/Defs/Player/Afflictions/AfflictionCatalog.asset'`
+          - `label` (ObjectReference) = `AfflictionList (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/Afflictions/AfflictionList'`
+          - `maxRows` (Integer) = `6`
+      - `AfflictionList` | path=`UIOverlayRoot/Canvas/Afflictions/AfflictionList` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `1875.244, 173.634, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+            - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+            - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `TextMeshProUGUI` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_text` (String) = `New Text`
+            - `m_isRightToLeft` (Boolean) = `False`
+            - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+            - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+            - `m_fontSharedMaterials` (Generic) = `array size=0`
+            - `m_fontMaterial` (ObjectReference) = `null`
+            - `m_fontMaterials` (Generic) = `array size=0`
+            - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_enableVertexGradient` (Boolean) = `False`
+            - `m_colorMode` (Enum) = `Four Corners Gradient`
+            - `m_fontColorGradient` (Generic) = `<generic>`
+            - `m_fontColorGradientPreset` (ObjectReference) = `null`
+            - `m_spriteAsset` (ObjectReference) = `null`
+            - `m_tintAllSprites` (Boolean) = `False`
+            - `m_StyleSheet` (ObjectReference) = `null`
+            - `m_TextStyleHashCode` (Integer) = `-1183493901`
+            - `m_overrideHtmlColors` (Boolean) = `False`
+            - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_fontSize` (Float) = `36`
+            - `m_fontSizeBase` (Float) = `36`
+            - `m_fontWeight` (Enum) = `Regular`
+            - `m_enableAutoSizing` (Boolean) = `False`
+            - `m_fontSizeMin` (Float) = `18`
+            - `m_fontSizeMax` (Float) = `72`
+            - `m_fontStyle` (Enum) = `Normal`
+            - `m_HorizontalAlignment` (Enum) = `Left`
+            - `m_VerticalAlignment` (Enum) = `Top`
+            - `m_textAlignment` (Enum) = `Converted`
+            - `m_characterSpacing` (Float) = `0`
+            - `m_characterHorizontalScale` (Float) = `1`
+            - `m_wordSpacing` (Float) = `0`
+            - `m_lineSpacing` (Float) = `0`
+            - `m_lineSpacingMax` (Float) = `0`
+            - `m_paragraphSpacing` (Float) = `0`
+            - `m_charWidthMaxAdj` (Float) = `0`
+            - `m_TextWrappingMode` (Enum) = `Normal`
+            - `m_wordWrappingRatios` (Float) = `0.4`
+            - `m_overflowMode` (Enum) = `Overflow`
+            - `m_linkedTextComponent` (ObjectReference) = `null`
+            - `parentLinkedComponent` (ObjectReference) = `null`
+            - `m_enableKerning` (Boolean) = `False`
+            - `m_ActiveFontFeatures` (Generic) = `array size=1`
+            - `m_enableExtraPadding` (Boolean) = `False`
+            - `checkPaddingRequired` (Boolean) = `False`
+            - `m_isRichText` (Boolean) = `True`
+            - `m_EmojiFallbackSupport` (Boolean) = `True`
+            - `m_parseCtrlCharacters` (Boolean) = `True`
+            - `m_isOrthographic` (Boolean) = `True`
+            - `m_isCullingEnabled` (Boolean) = `False`
+            - `m_horizontalMapping` (Enum) = `Character`
+            - `m_verticalMapping` (Enum) = `Character`
+            - `m_uvLineOffset` (Float) = `0`
+            - `m_geometrySortingOrder` (Enum) = `Normal`
+            - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+            - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+            - `m_useMaxVisibleDescender` (Boolean) = `True`
+            - `m_pageToDisplay` (Integer) = `1`
+            - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+            - `m_isVolumetricText` (Boolean) = `False`
+            - `m_hasFontAssetChanged` (Boolean) = `False`
+            - `m_baseMaterial` (ObjectReference) = `null`
+            - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+    - `AirMeterUI` | path=`UIOverlayRoot/Canvas/AirMeterUI` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `1570, 551.163, 0`
+        - worldPosition: `1904.183, 733.502, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(1570.00, 551.16, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(1.00, 1.00)`
+          - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+          - `m_AnchoredPosition` (Vector2) = `(-150.00, -165.00)`
+          - `m_SizeDelta` (Vector2) = `(100.00, 100.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `DevAirHUD` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `DevAirHUD (MonoScript) asset='Assets/Scripts/UI/DevAirHUD.cs'`
+          - `air` (ObjectReference) = `null`
+          - `airSlider` (ObjectReference) = `AirMeter (Slider) scenePath='UIOverlayRoot/Canvas/AirMeterUI/AirMeter'`
+          - `airFillImage` (ObjectReference) = `null`
+          - `stateText` (ObjectReference) = `AirState (Text) scenePath='UIOverlayRoot/Canvas/AirMeterUI/AirState'`
+          - `debugText` (ObjectReference) = `null`
+          - `goodColor` (Color) = `RGBA(0.200, 0.900, 0.300, 1.000)`
+          - `badColor` (Color) = `RGBA(0.950, 0.200, 0.200, 1.000)`
+          - `qualityWeight` (Float) = `0.75`
+      - `AirMeter` | path=`UIOverlayRoot/Canvas/AirMeterUI/AirMeter` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `1904.183, 733.502, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+            - `m_SizeDelta` (Vector2) = `(160.00, 20.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `Slider` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `Slider (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Slider.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `Handle (Image) scenePath='UIOverlayRoot/Canvas/AirMeterUI/AirMeter/Handle Slide Area/Handle'`
+            - `m_FillRect` (ObjectReference) = `Fill (RectTransform) scenePath='UIOverlayRoot/Canvas/AirMeterUI/AirMeter/Fill Area/Fill'`
+            - `m_HandleRect` (ObjectReference) = `Handle (RectTransform) scenePath='UIOverlayRoot/Canvas/AirMeterUI/AirMeter/Handle Slide Area/Handle'`
+            - `m_Direction` (Enum) = `Left To Right`
+            - `m_MinValue` (Float) = `0`
+            - `m_MaxValue` (Float) = `1`
+            - `m_WholeNumbers` (Boolean) = `False`
+            - `m_Value` (Float) = `0`
+            - `m_OnValueChanged` (Generic) = `<generic>`
+        - `Air` | path=`UIOverlayRoot/Canvas/AirMeterUI/AirMeter/Air` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 5, 0`
+            - worldPosition: `1904.183, 736.395, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 5.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+              - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 5.00)`
+              - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Text` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_FontData` (Generic) = `<generic>`
+              - `m_Text` (String) = `Air
+`
+        - `Background` | path=`UIOverlayRoot/Canvas/AirMeterUI/AirMeter/Background` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `1904.183, 733.502, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.25)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 0.75)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `Background (Sprite) asset='Resources/unity_builtin_extra'`
+              - `m_Type` (Enum) = `Sliced`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+        - `Fill Area` | path=`UIOverlayRoot/Canvas/AirMeterUI/AirMeter/Fill Area` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `-5, 0, 0`
+            - worldPosition: `1901.289, 733.502, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(-5.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.25)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 0.75)`
+              - `m_AnchoredPosition` (Vector2) = `(-5.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(-20.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `Fill` | path=`UIOverlayRoot/Canvas/AirMeterUI/AirMeter/Fill Area/Fill` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `-70, 0, 0`
+              - worldPosition: `1860.775, 733.502, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(-70.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(10.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+        - `Handle Slide Area` | path=`UIOverlayRoot/Canvas/AirMeterUI/AirMeter/Handle Slide Area` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `1904.183, 733.502, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(-20.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `Handle` | path=`UIOverlayRoot/Canvas/AirMeterUI/AirMeter/Handle Slide Area/Handle` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `-70, 0, 0`
+              - worldPosition: `1863.669, 733.502, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(-70.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(20.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `Knob (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Simple`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+      - `AirState` | path=`UIOverlayRoot/Canvas/AirMeterUI/AirState` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -30, 0`
+          - worldPosition: `1904.183, 716.138, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -30.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, -30.00)`
+            - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Text` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_FontData` (Generic) = `<generic>`
+            - `m_Text` (String) = `AirState`
+    - `BottomBarRoot` | path=`UIOverlayRoot/Canvas/BottomBarRoot` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, -246.163, 0`
+        - worldPosition: `995.5, 272.026, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, -246.16, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+          - `m_AnchorMax` (Vector2) = `(1.00, 0.00)`
+          - `m_AnchoredPosition` (Vector2) = `(0.00, 470.00)`
+          - `m_SizeDelta` (Vector2) = `(0.00, 800.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `HorizontalLayoutGroup` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `HorizontalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/HorizontalLayoutGroup.cs'`
+          - `m_Padding` (Generic) = `<generic>`
+          - `m_ChildAlignment` (Enum) = `Lower Center`
+          - `m_Spacing` (Float) = `200`
+          - `m_ChildForceExpandWidth` (Boolean) = `False`
+          - `m_ChildForceExpandHeight` (Boolean) = `False`
+          - `m_ChildControlWidth` (Boolean) = `True`
+          - `m_ChildControlHeight` (Boolean) = `True`
+          - `m_ChildScaleWidth` (Boolean) = `False`
+          - `m_ChildScaleHeight` (Boolean) = `False`
+          - `m_ReverseArrangement` (Boolean) = `False`
+        - `InventoryDragController` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `InventoryDragController (MonoScript) asset='Assets/Scripts/Inventory/InventoryDragController.cs'`
+          - `dragIcon` (ObjectReference) = `DragIcon (Image) scenePath='UIOverlayRoot/Canvas/DragVisualRoot/DragIcon'`
+          - `dragCount` (ObjectReference) = `DragQuantity (Text) scenePath='UIOverlayRoot/Canvas/DragVisualRoot/DragQuantity'`
+          - `dragCargoLabel` (ObjectReference) = `DragCargoLabel (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/DragVisualRoot/DragCargoLabel'`
+          - `dragCargoLabelMaxCharacters` (Integer) = `10`
+          - `canvas` (ObjectReference) = `Canvas (Canvas) scenePath='UIOverlayRoot/Canvas'`
+          - `displacedItemResolver` (ObjectReference) = `BottomBarRoot (DisplacedItemResolver) scenePath='UIOverlayRoot/Canvas/BottomBarRoot'`
+          - `playerInventoryUI` (ObjectReference) = `PlayerInventoryUI (PlayerInventoryUI) scenePath='UIOverlayRoot/Canvas/PlayerInventoryUI'`
+          - `loadoutOverlayUI` (ObjectReference) = `BottomBarRoot (LoadoutContainerOverlayUI) scenePath='UIOverlayRoot/Canvas/BottomBarRoot'`
+          - `inventory` (ObjectReference) = `PlayerInventory (PlayerInventory) scenePath='CharacterPlayer/PlayerInventory'`
+          - `inventoryInput` (ObjectReference) = `PlayerInventory (PlayerInventoryInput) scenePath='CharacterPlayer/PlayerInventory'`
+          - `worldDropTargetMask` (LayerMask) = `-1`
+          - `worldDropTargetRadius` (Float) = `0.2`
+          - `worldCamera` (ObjectReference) = `Main Camera (Camera) scenePath='Main Camera'`
+          - `verboseLogging` (Boolean) = `False`
+        - `ContainerInventoryPanelUI` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `ContainerInventoryPanelUI (MonoScript) asset='Assets/Scripts/Inventory/ContainerInventoryPanelUI.cs'`
+          - `appendagesPanelRoot` (ObjectReference) = `AppendagesSlotNested (RectTransform) scenePath='UIOverlayRoot/Canvas/BottomBarRoot/AppendagesVerticalContainer/AppendagesSlotNested'`
+          - `hotbarPanelRoot` (ObjectReference) = `HotbarSlotNested (RectTransform) scenePath='UIOverlayRoot/Canvas/BottomBarRoot/HotbarVerticalContainer/HotbarSlotNested'`
+          - `equipPanelRoot` (ObjectReference) = `EquipSlotNested (RectTransform) scenePath='UIOverlayRoot/Canvas/BottomBarRoot/BodyVerticalContainer/EquipSlotNested'`
+          - `appendagesSlotParent` (ObjectReference) = `AppendagesSlotNested (RectTransform) scenePath='UIOverlayRoot/Canvas/BottomBarRoot/AppendagesVerticalContainer/AppendagesSlotNested'`
+          - `hotbarSlotParent` (ObjectReference) = `HotbarSlotNested (RectTransform) scenePath='UIOverlayRoot/Canvas/BottomBarRoot/HotbarVerticalContainer/HotbarSlotNested'`
+          - `equipSlotParent` (ObjectReference) = `EquipSlotNested (RectTransform) scenePath='UIOverlayRoot/Canvas/BottomBarRoot/BodyVerticalContainer/EquipSlotNested'`
+          - `appendagesGrid` (ObjectReference) = `AppendagesSlotNested (GridLayoutGroup) scenePath='UIOverlayRoot/Canvas/BottomBarRoot/AppendagesVerticalContainer/AppendagesSlotNested'`
+          - `hotbarGrid` (ObjectReference) = `HotbarSlotNested (GridLayoutGroup) scenePath='UIOverlayRoot/Canvas/BottomBarRoot/HotbarVerticalContainer/HotbarSlotNested'`
+          - `equipGrid` (ObjectReference) = `EquipSlotNested (GridLayoutGroup) scenePath='UIOverlayRoot/Canvas/BottomBarRoot/BodyVerticalContainer/EquipSlotNested'`
+          - `slotPrefab` (ObjectReference) = `InventorySlotUI (InventorySlotUI) asset='Assets/Resources/Prefabs/Inventory/InventorySlotUI.prefab'`
+          - `dragController` (ObjectReference) = `BottomBarRoot (InventoryDragController) scenePath='UIOverlayRoot/Canvas/BottomBarRoot'`
+          - `owner` (ObjectReference) = `PlayerInventoryUI (PlayerInventoryUI) scenePath='UIOverlayRoot/Canvas/PlayerInventoryUI'`
+          - `verboseLogging` (Boolean) = `False`
+        - `DisplacedItemResolver` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `DisplacedItemResolver (MonoScript) asset='Assets/Scripts/Inventory/Item/DisplacedItemResolver.cs'`
+          - `inventory` (ObjectReference) = `PlayerInventory (PlayerInventory) scenePath='CharacterPlayer/PlayerInventory'`
+          - `equipment` (ObjectReference) = `PlayerEquipment (PlayerEquipment) scenePath='CharacterPlayer/PlayerEquipment'`
+          - `worldDropOrigin` (ObjectReference) = `Hands (Transform) scenePath='CharacterPlayer/Hands'`
+          - `verboseLogging` (Boolean) = `False`
+        - `LoadoutContainerOverlayUI` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `LoadoutContainerOverlayUI (MonoScript) asset='Assets/Scripts/Inventory/LoadoutContainerOverlayUI.cs'`
+          - `playerInventoryUI` (ObjectReference) = `PlayerInventoryUI (PlayerInventoryUI) scenePath='UIOverlayRoot/Canvas/PlayerInventoryUI'`
+          - `appendagesNestedRoot` (ObjectReference) = `AppendagesSlotOpenAllRoot (RectTransform) scenePath='UIOverlayRoot/Canvas/BottomBarRoot/AppendagesVerticalContainer/AppendagesSlotOpenAllRoot'`
+          - `hotbarNestedRoot` (ObjectReference) = `HotbarSlotOpenAllRoot (RectTransform) scenePath='UIOverlayRoot/Canvas/BottomBarRoot/HotbarVerticalContainer/HotbarSlotOpenAllRoot'`
+          - `equipNestedRoot` (ObjectReference) = `EquipSlotOpenAllRoot (RectTransform) scenePath='UIOverlayRoot/Canvas/BottomBarRoot/BodyVerticalContainer/EquipSlotOpenAllRoot'`
+          - `canvas` (ObjectReference) = `Canvas (Canvas) scenePath='UIOverlayRoot/Canvas'`
+          - `uiCamera` (ObjectReference) = `Main Camera (Camera) scenePath='Main Camera'`
+          - `subviewPrefab` (ObjectReference) = `ContainerSubviewUI (ContainerSubviewUI) asset='Assets/Resources/Prefabs/Inventory/ContainerSubviewUI.prefab'`
+          - `dragController` (ObjectReference) = `BottomBarRoot (InventoryDragController) scenePath='UIOverlayRoot/Canvas/BottomBarRoot'`
+          - `closeViaGlobalEscapeRouter` (Boolean) = `True`
+          - `escapePriority` (Integer) = `350`
+          - `defaultOffset` (Vector2) = `(0.00, 90.00)`
+          - `verboseLogging` (Boolean) = `False`
+        - `LoadoutContainerOverlayHotkey` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `LoadoutContainerOverlayHotkey (MonoScript) asset='Assets/Scripts/Inventory/LoadoutContainerOverlayHotkey.cs'`
+          - `overlay` (ObjectReference) = `BottomBarRoot (LoadoutContainerOverlayUI) scenePath='UIOverlayRoot/Canvas/BottomBarRoot'`
+          - `toggleKey` (Enum) = `I`
+      - `AppendagesVerticalContainer` | path=`UIOverlayRoot/Canvas/BottomBarRoot/AppendagesVerticalContainer` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `-400, -365, 0`
+          - worldPosition: `763.988, 60.772, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(-400.00, -365.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(1320.00, -765.00)`
+            - `m_SizeDelta` (Vector2) = `(200.00, 70.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `VerticalLayoutGroup` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+            - `m_Padding` (Generic) = `<generic>`
+            - `m_ChildAlignment` (Enum) = `Middle Center`
+            - `m_Spacing` (Float) = `35`
+            - `m_ChildForceExpandWidth` (Boolean) = `False`
+            - `m_ChildForceExpandHeight` (Boolean) = `False`
+            - `m_ChildControlWidth` (Boolean) = `True`
+            - `m_ChildControlHeight` (Boolean) = `True`
+            - `m_ChildScaleWidth` (Boolean) = `False`
+            - `m_ChildScaleHeight` (Boolean) = `False`
+            - `m_ReverseArrangement` (Boolean) = `False`
+        - `AppendagesSlotNested` | path=`UIOverlayRoot/Canvas/BottomBarRoot/AppendagesVerticalContainer/AppendagesSlotNested` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 35, 0`
+            - worldPosition: `763.988, 81.029, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 35.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(100.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(200.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `GridLayoutGroup` index=1 enabled=`True`
+              - `m_Script` (ObjectReference) = `GridLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/GridLayoutGroup.cs'`
+              - `m_Padding` (Generic) = `<generic>`
+              - `m_ChildAlignment` (Enum) = `Middle Right`
+              - `m_StartCorner` (Enum) = `Upper Right`
+              - `m_StartAxis` (Enum) = `Horizontal`
+              - `m_CellSize` (Vector2) = `(100.00, 100.00)`
+              - `m_Spacing` (Vector2) = `(0.00, 0.00)`
+              - `m_Constraint` (Enum) = `Fixed Column Count`
+              - `m_ConstraintCount` (Integer) = `2`
+        - `AppendagesSlotOpenAllRoot` | path=`UIOverlayRoot/Canvas/BottomBarRoot/AppendagesVerticalContainer/AppendagesSlotOpenAllRoot` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `763.988, 60.772, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(100.00, -35.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `AppendagesSlotsContainer` | path=`UIOverlayRoot/Canvas/BottomBarRoot/AppendagesVerticalContainer/AppendagesSlotsContainer` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, -35, 0`
+            - worldPosition: `763.988, 40.515, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, -35.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(100.00, -70.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `HorizontalLayoutGroup` index=1 enabled=`True`
+              - `m_Script` (ObjectReference) = `HorizontalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/HorizontalLayoutGroup.cs'`
+              - `m_Padding` (Generic) = `<generic>`
+              - `m_ChildAlignment` (Enum) = `Middle Center`
+              - `m_Spacing` (Float) = `120`
+              - `m_ChildForceExpandWidth` (Boolean) = `False`
+              - `m_ChildForceExpandHeight` (Boolean) = `False`
+              - `m_ChildControlWidth` (Boolean) = `True`
+              - `m_ChildControlHeight` (Boolean) = `True`
+              - `m_ChildScaleWidth` (Boolean) = `False`
+              - `m_ChildScaleHeight` (Boolean) = `False`
+              - `m_ReverseArrangement` (Boolean) = `False`
+      - `BodyVerticalContainer` | path=`UIOverlayRoot/Canvas/BottomBarRoot/BodyVerticalContainer` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `400, -365, 0`
+          - worldPosition: `1227.011, 60.772, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(400.00, -365.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(2120.00, -765.00)`
+            - `m_SizeDelta` (Vector2) = `(200.00, 70.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `VerticalLayoutGroup` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+            - `m_Padding` (Generic) = `<generic>`
+            - `m_ChildAlignment` (Enum) = `Middle Center`
+            - `m_Spacing` (Float) = `35`
+            - `m_ChildForceExpandWidth` (Boolean) = `False`
+            - `m_ChildForceExpandHeight` (Boolean) = `False`
+            - `m_ChildControlWidth` (Boolean) = `True`
+            - `m_ChildControlHeight` (Boolean) = `True`
+            - `m_ChildScaleWidth` (Boolean) = `False`
+            - `m_ChildScaleHeight` (Boolean) = `False`
+            - `m_ReverseArrangement` (Boolean) = `False`
+        - `BodySlotsContainer` | path=`UIOverlayRoot/Canvas/BottomBarRoot/BodyVerticalContainer/BodySlotsContainer` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, -35, 0`
+            - worldPosition: `1227.011, 40.515, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, -35.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(100.00, -70.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `HorizontalLayoutGroup` index=1 enabled=`True`
+              - `m_Script` (ObjectReference) = `HorizontalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/HorizontalLayoutGroup.cs'`
+              - `m_Padding` (Generic) = `<generic>`
+              - `m_ChildAlignment` (Enum) = `Middle Center`
+              - `m_Spacing` (Float) = `120`
+              - `m_ChildForceExpandWidth` (Boolean) = `False`
+              - `m_ChildForceExpandHeight` (Boolean) = `False`
+              - `m_ChildControlWidth` (Boolean) = `True`
+              - `m_ChildControlHeight` (Boolean) = `True`
+              - `m_ChildScaleWidth` (Boolean) = `False`
+              - `m_ChildScaleHeight` (Boolean) = `False`
+              - `m_ReverseArrangement` (Boolean) = `False`
+        - `EquipSlotNested` | path=`UIOverlayRoot/Canvas/BottomBarRoot/BodyVerticalContainer/EquipSlotNested` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 35, 0`
+            - worldPosition: `1227.011, 81.029, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 35.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(100.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(200.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `GridLayoutGroup` index=1 enabled=`True`
+              - `m_Script` (ObjectReference) = `GridLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/GridLayoutGroup.cs'`
+              - `m_Padding` (Generic) = `<generic>`
+              - `m_ChildAlignment` (Enum) = `Middle Right`
+              - `m_StartCorner` (Enum) = `Upper Left`
+              - `m_StartAxis` (Enum) = `Horizontal`
+              - `m_CellSize` (Vector2) = `(100.00, 100.00)`
+              - `m_Spacing` (Vector2) = `(0.00, 0.00)`
+              - `m_Constraint` (Enum) = `Fixed Column Count`
+              - `m_ConstraintCount` (Integer) = `2`
+        - `EquipSlotOpenAllRoot` | path=`UIOverlayRoot/Canvas/BottomBarRoot/BodyVerticalContainer/EquipSlotOpenAllRoot` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `1227.011, 60.772, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(100.00, -35.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+      - `HotbarVerticalContainer` | path=`UIOverlayRoot/Canvas/BottomBarRoot/HotbarVerticalContainer` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -365, 0`
+          - worldPosition: `995.5, 60.772, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -365.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(1720.00, -765.00)`
+            - `m_SizeDelta` (Vector2) = `(200.00, 70.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `VerticalLayoutGroup` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+            - `m_Padding` (Generic) = `<generic>`
+            - `m_ChildAlignment` (Enum) = `Middle Center`
+            - `m_Spacing` (Float) = `35`
+            - `m_ChildForceExpandWidth` (Boolean) = `False`
+            - `m_ChildForceExpandHeight` (Boolean) = `False`
+            - `m_ChildControlWidth` (Boolean) = `True`
+            - `m_ChildControlHeight` (Boolean) = `True`
+            - `m_ChildScaleWidth` (Boolean) = `False`
+            - `m_ChildScaleHeight` (Boolean) = `False`
+            - `m_ReverseArrangement` (Boolean) = `False`
+        - `HotbarSlotNested` | path=`UIOverlayRoot/Canvas/BottomBarRoot/HotbarVerticalContainer/HotbarSlotNested` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 35, 0`
+            - worldPosition: `995.5, 81.029, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 35.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(100.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(200.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `GridLayoutGroup` index=1 enabled=`True`
+              - `m_Script` (ObjectReference) = `GridLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/GridLayoutGroup.cs'`
+              - `m_Padding` (Generic) = `<generic>`
+              - `m_ChildAlignment` (Enum) = `Middle Right`
+              - `m_StartCorner` (Enum) = `Upper Right`
+              - `m_StartAxis` (Enum) = `Horizontal`
+              - `m_CellSize` (Vector2) = `(100.00, 100.00)`
+              - `m_Spacing` (Vector2) = `(0.00, 0.00)`
+              - `m_Constraint` (Enum) = `Fixed Column Count`
+              - `m_ConstraintCount` (Integer) = `2`
+        - `HotbarSlotOpenAllRoot` | path=`UIOverlayRoot/Canvas/BottomBarRoot/HotbarVerticalContainer/HotbarSlotOpenAllRoot` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `995.5, 60.772, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(100.00, -35.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `HotbarSlotsContainer` | path=`UIOverlayRoot/Canvas/BottomBarRoot/HotbarVerticalContainer/HotbarSlotsContainer` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, -35, 0`
+            - worldPosition: `995.5, 40.515, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, -35.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(100.00, -70.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `HorizontalLayoutGroup` index=1 enabled=`True`
+              - `m_Script` (ObjectReference) = `HorizontalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/HorizontalLayoutGroup.cs'`
+              - `m_Padding` (Generic) = `<generic>`
+              - `m_ChildAlignment` (Enum) = `Middle Center`
+              - `m_Spacing` (Float) = `120`
+              - `m_ChildForceExpandWidth` (Boolean) = `False`
+              - `m_ChildForceExpandHeight` (Boolean) = `False`
+              - `m_ChildControlWidth` (Boolean) = `True`
+              - `m_ChildControlHeight` (Boolean) = `True`
+              - `m_ChildScaleWidth` (Boolean) = `False`
+              - `m_ChildScaleHeight` (Boolean) = `False`
+              - `m_ReverseArrangement` (Boolean) = `False`
+    - `BuffAfflictionStatusRoot` | path=`UIOverlayRoot/Canvas/BuffAfflictionStatusRoot` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 716.163, 0`
+        - worldPosition: `995.5, 829, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 716.16, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+          - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+          - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+          - `m_SizeDelta` (Vector2) = `(0.00, 200.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 1.00)`
+      - `StatusBars` | path=`UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusBars` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -100, 0`
+          - worldPosition: `995.5, 771.122, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -100.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+            - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+            - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `VerticalLayoutGroup` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+            - `m_Padding` (Generic) = `<generic>`
+            - `m_ChildAlignment` (Enum) = `Upper Left`
+            - `m_Spacing` (Float) = `0`
+            - `m_ChildForceExpandWidth` (Boolean) = `True`
+            - `m_ChildForceExpandHeight` (Boolean) = `True`
+            - `m_ChildControlWidth` (Boolean) = `False`
+            - `m_ChildControlHeight` (Boolean) = `True`
+            - `m_ChildScaleWidth` (Boolean) = `False`
+            - `m_ChildScaleHeight` (Boolean) = `False`
+            - `m_ReverseArrangement` (Boolean) = `False`
+        - `AfflictionBar` | path=`UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusBars/AfflictionBar` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `-1220, -50, 0`
+            - worldPosition: `289.39, 742.183, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(-1220.00, -50.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(500.00, -150.00)`
+              - `m_SizeDelta` (Vector2) = `(1000.00, 100.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `AfflictionBarUI` index=1 enabled=`True`
+              - `m_Script` (ObjectReference) = `AfflictionBarUI (MonoScript) asset='Assets/Scripts/UI/AfflictionBarUI.cs'`
+              - `afflictionSystem` (ObjectReference) = `Vitals (AfflictionSystem) scenePath='CharacterPlayer/Vitals'`
+              - `iconPrefab` (ObjectReference) = `StatusIconUI (StatusIconUI) asset='Assets/Resources/Prefabs/UI/StatusIconUI.prefab'`
+              - `iconRoot` (ObjectReference) = `AfflictionBar (RectTransform) scenePath='UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusBars/AfflictionBar'`
+              - `tooltip` (ObjectReference) = `StatusTooltip (StatusIconTooltipUI) scenePath='UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip'`
+              - `catalog` (ObjectReference) = `AfflictionCatalog (AfflictionCatalog) asset='Assets/Defs/Player/Afflictions/AfflictionCatalog.asset'`
+              - `maxColumns` (Integer) = `20`
+              - `iconSize` (Float) = `20`
+              - `columnSpacing` (Float) = `30`
+              - `rowSpacing` (Float) = `20`
+              - `padding` (Vector2) = `(40.00, 40.00)`
+              - `hideRootWhenEmpty` (Boolean) = `False`
+              - `unknownColor` (Color) = `RGBA(0.550, 0.550, 0.550, 0.950)`
+              - `mildColor` (Color) = `RGBA(0.950, 0.750, 0.200, 0.950)`
+              - `moderateColor` (Color) = `RGBA(1.000, 0.450, 0.150, 0.950)`
+              - `severeColor` (Color) = `RGBA(0.900, 0.120, 0.120, 0.950)`
+              - `mildThreshold` (Float) = `0.1`
+              - `moderateThreshold` (Float) = `0.35`
+              - `severeThreshold` (Float) = `0.7`
+        - `PlayerBuffBar` | path=`UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusBars/PlayerBuffBar` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `-1220, 50, 0`
+            - worldPosition: `289.39, 800.061, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(-1220.00, 50.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(500.00, -50.00)`
+              - `m_SizeDelta` (Vector2) = `(1000.00, 100.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `PlayerBuffBarUI` index=1 enabled=`True`
+              - `m_Script` (ObjectReference) = `PlayerBuffBarUI (MonoScript) asset='Assets/Scripts/UI/PlayerBuffBarUI.cs'`
+              - `playerBuffSystem` (ObjectReference) = `Vitals (PlayerBuffSystem) scenePath='CharacterPlayer/Vitals'`
+              - `iconPrefab` (ObjectReference) = `StatusIconUI (StatusIconUI) asset='Assets/Resources/Prefabs/UI/StatusIconUI.prefab'`
+              - `iconRoot` (ObjectReference) = `PlayerBuffBar (RectTransform) scenePath='UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusBars/PlayerBuffBar'`
+              - `tooltip` (ObjectReference) = `StatusTooltip (StatusIconTooltipUI) scenePath='UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip'`
+              - `maxColumns` (Integer) = `20`
+              - `iconSize` (Float) = `20`
+              - `columnSpacing` (Float) = `30`
+              - `rowSpacing` (Float) = `20`
+              - `padding` (Vector2) = `(40.00, 40.00)`
+              - `hideRootWhenEmpty` (Boolean) = `False`
+              - `positiveColor` (Color) = `RGBA(0.200, 0.850, 0.350, 0.950)`
+              - `negativeColor` (Color) = `RGBA(0.900, 0.200, 0.200, 0.950)`
+              - `neutralColor` (Color) = `RGBA(0.550, 0.550, 0.550, 0.950)`
+      - `StatusTooltip` | path=`UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -100, 0`
+          - worldPosition: `995.5, 771.122, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -100.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+            - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+            - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `StatusIconTooltipUI` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `StatusIconTooltipUI (MonoScript) asset='Assets/Scripts/UI/StatusIconTooltipUI.cs'`
+            - `tooltipRoot` (ObjectReference) = `StatusTooltip (RectTransform) scenePath='UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip'`
+            - `titleText` (ObjectReference) = `TitleText (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/TitleText'`
+            - `bodyText` (ObjectReference) = `BodyText (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/BodyText'`
+            - `followCursor` (Boolean) = `True`
+            - `screenOffset` (Vector2) = `(40.00, -40.00)`
+        - `BodyText` | path=`UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/BodyText` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `50, -50, 0`
+            - worldPosition: `1024.439, 742.183, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(50.00, -50.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+              - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+              - `m_AnchoredPosition` (Vector2) = `(50.00, -50.00)`
+              - `m_SizeDelta` (Vector2) = `(200.00, 100.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `TextMeshProUGUI` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_text` (String) = `New Text`
+              - `m_isRightToLeft` (Boolean) = `False`
+              - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_fontSharedMaterials` (Generic) = `array size=0`
+              - `m_fontMaterial` (ObjectReference) = `null`
+              - `m_fontMaterials` (Generic) = `array size=0`
+              - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_enableVertexGradient` (Boolean) = `False`
+              - `m_colorMode` (Enum) = `Four Corners Gradient`
+              - `m_fontColorGradient` (Generic) = `<generic>`
+              - `m_fontColorGradientPreset` (ObjectReference) = `null`
+              - `m_spriteAsset` (ObjectReference) = `null`
+              - `m_tintAllSprites` (Boolean) = `False`
+              - `m_StyleSheet` (ObjectReference) = `null`
+              - `m_TextStyleHashCode` (Integer) = `-1183493901`
+              - `m_overrideHtmlColors` (Boolean) = `False`
+              - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontSize` (Float) = `14`
+              - `m_fontSizeBase` (Float) = `14`
+              - `m_fontWeight` (Enum) = `Regular`
+              - `m_enableAutoSizing` (Boolean) = `False`
+              - `m_fontSizeMin` (Float) = `18`
+              - `m_fontSizeMax` (Float) = `72`
+              - `m_fontStyle` (Enum) = `Normal`
+              - `m_HorizontalAlignment` (Enum) = `Left`
+              - `m_VerticalAlignment` (Enum) = `Top`
+              - `m_textAlignment` (Enum) = `Converted`
+              - `m_characterSpacing` (Float) = `0`
+              - `m_characterHorizontalScale` (Float) = `1`
+              - `m_wordSpacing` (Float) = `0`
+              - `m_lineSpacing` (Float) = `0`
+              - `m_lineSpacingMax` (Float) = `0`
+              - `m_paragraphSpacing` (Float) = `0`
+              - `m_charWidthMaxAdj` (Float) = `0`
+              - `m_TextWrappingMode` (Enum) = `Normal`
+              - `m_wordWrappingRatios` (Float) = `0.4`
+              - `m_overflowMode` (Enum) = `Overflow`
+              - `m_linkedTextComponent` (ObjectReference) = `null`
+              - `parentLinkedComponent` (ObjectReference) = `null`
+              - `m_enableKerning` (Boolean) = `False`
+              - `m_ActiveFontFeatures` (Generic) = `array size=1`
+              - `m_enableExtraPadding` (Boolean) = `False`
+              - `checkPaddingRequired` (Boolean) = `False`
+              - `m_isRichText` (Boolean) = `True`
+              - `m_EmojiFallbackSupport` (Boolean) = `True`
+              - `m_parseCtrlCharacters` (Boolean) = `True`
+              - `m_isOrthographic` (Boolean) = `True`
+              - `m_isCullingEnabled` (Boolean) = `False`
+              - `m_horizontalMapping` (Enum) = `Character`
+              - `m_verticalMapping` (Enum) = `Character`
+              - `m_uvLineOffset` (Float) = `0`
+              - `m_geometrySortingOrder` (Enum) = `Normal`
+              - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+              - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+              - `m_useMaxVisibleDescender` (Boolean) = `True`
+              - `m_pageToDisplay` (Integer) = `1`
+              - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+              - `m_isVolumetricText` (Boolean) = `False`
+              - `m_hasFontAssetChanged` (Boolean) = `False`
+              - `m_baseMaterial` (ObjectReference) = `null`
+              - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+        - `TitleText` | path=`UIOverlayRoot/Canvas/BuffAfflictionStatusRoot/StatusTooltip/TitleText` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `50, -30, 0`
+            - worldPosition: `1024.439, 753.759, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(50.00, -30.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+              - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+              - `m_AnchoredPosition` (Vector2) = `(50.00, -30.00)`
+              - `m_SizeDelta` (Vector2) = `(200.00, 100.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `TextMeshProUGUI` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_text` (String) = `New Text`
+              - `m_isRightToLeft` (Boolean) = `False`
+              - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_fontSharedMaterials` (Generic) = `array size=0`
+              - `m_fontMaterial` (ObjectReference) = `null`
+              - `m_fontMaterials` (Generic) = `array size=0`
+              - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_enableVertexGradient` (Boolean) = `False`
+              - `m_colorMode` (Enum) = `Four Corners Gradient`
+              - `m_fontColorGradient` (Generic) = `<generic>`
+              - `m_fontColorGradientPreset` (ObjectReference) = `null`
+              - `m_spriteAsset` (ObjectReference) = `null`
+              - `m_tintAllSprites` (Boolean) = `False`
+              - `m_StyleSheet` (ObjectReference) = `null`
+              - `m_TextStyleHashCode` (Integer) = `-1183493901`
+              - `m_overrideHtmlColors` (Boolean) = `False`
+              - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontSize` (Float) = `14`
+              - `m_fontSizeBase` (Float) = `14`
+              - `m_fontWeight` (Enum) = `Regular`
+              - `m_enableAutoSizing` (Boolean) = `False`
+              - `m_fontSizeMin` (Float) = `18`
+              - `m_fontSizeMax` (Float) = `72`
+              - `m_fontStyle` (Enum) = `Bold`
+              - `m_HorizontalAlignment` (Enum) = `Left`
+              - `m_VerticalAlignment` (Enum) = `Top`
+              - `m_textAlignment` (Enum) = `Converted`
+              - `m_characterSpacing` (Float) = `0`
+              - `m_characterHorizontalScale` (Float) = `1`
+              - `m_wordSpacing` (Float) = `0`
+              - `m_lineSpacing` (Float) = `0`
+              - `m_lineSpacingMax` (Float) = `0`
+              - `m_paragraphSpacing` (Float) = `0`
+              - `m_charWidthMaxAdj` (Float) = `0`
+              - `m_TextWrappingMode` (Enum) = `Normal`
+              - `m_wordWrappingRatios` (Float) = `0.4`
+              - `m_overflowMode` (Enum) = `Overflow`
+              - `m_linkedTextComponent` (ObjectReference) = `null`
+              - `parentLinkedComponent` (ObjectReference) = `null`
+              - `m_enableKerning` (Boolean) = `False`
+              - `m_ActiveFontFeatures` (Generic) = `array size=1`
+              - `m_enableExtraPadding` (Boolean) = `False`
+              - `checkPaddingRequired` (Boolean) = `False`
+              - `m_isRichText` (Boolean) = `True`
+              - `m_EmojiFallbackSupport` (Boolean) = `True`
+              - `m_parseCtrlCharacters` (Boolean) = `True`
+              - `m_isOrthographic` (Boolean) = `True`
+              - `m_isCullingEnabled` (Boolean) = `False`
+              - `m_horizontalMapping` (Enum) = `Character`
+              - `m_verticalMapping` (Enum) = `Character`
+              - `m_uvLineOffset` (Float) = `0`
+              - `m_geometrySortingOrder` (Enum) = `Normal`
+              - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+              - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+              - `m_useMaxVisibleDescender` (Boolean) = `True`
+              - `m_pageToDisplay` (Integer) = `1`
+              - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+              - `m_isVolumetricText` (Boolean) = `False`
+              - `m_hasFontAssetChanged` (Boolean) = `False`
+              - `m_baseMaterial` (ObjectReference) = `null`
+              - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+    - `ChoiceDialogRoot` | path=`UIOverlayRoot/Canvas/ChoiceDialogRoot` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `995.5, 414.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1.515, 1.515, 1.515`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.51, 1.51, 1.51)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.30, 0.30)`
+          - `m_AnchorMax` (Vector2) = `(0.70, 0.70)`
+          - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+          - `m_SizeDelta` (Vector2) = `(-467.60, -167.81)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `CanvasRenderer` index=1 enabled=`n/a`
+          - `m_CullTransparentMesh` (Boolean) = `True`
+        - `Image` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+          - `m_Material` (ObjectReference) = `null`
+          - `m_Color` (Color) = `RGBA(0.171, 0.207, 0.321, 0.992)`
+          - `m_RaycastTarget` (Boolean) = `True`
+          - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+          - `m_Maskable` (Boolean) = `True`
+          - `m_OnCullStateChanged` (Generic) = `<generic>`
+          - `m_Sprite` (ObjectReference) = `Background (Sprite) asset='Resources/unity_builtin_extra'`
+          - `m_Type` (Enum) = `Sliced`
+          - `m_PreserveAspect` (Boolean) = `False`
+          - `m_FillCenter` (Boolean) = `True`
+          - `m_FillMethod` (Enum) = `Radial 360`
+          - `m_FillAmount` (Float) = `1`
+          - `m_FillClockwise` (Boolean) = `True`
+          - `m_FillOrigin` (Integer) = `0`
+          - `m_UseSpriteMesh` (Boolean) = `False`
+          - `m_PixelsPerUnitMultiplier` (Float) = `1`
+        - `ChoiceDialogUI` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `ChoiceDialogUI (MonoScript) asset='Assets/Scripts/Saves/ChoiceDialogUI.cs'`
+          - `root` (ObjectReference) = `ChoiceDialogRoot (GameObject) scenePath='UIOverlayRoot/Canvas/ChoiceDialogRoot'`
+          - `titleText` (ObjectReference) = `TitleText (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/ChoiceDialogRoot/TitleText'`
+          - `messageText` (ObjectReference) = `MessageText (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/ChoiceDialogRoot/MessageText'`
+          - `primaryButton` (ObjectReference) = `PrimaryButton (Button) scenePath='UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton'`
+          - `primaryButtonText` (ObjectReference) = `Text (TMP) (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)'`
+          - `secondaryButton` (ObjectReference) = `SecondaryButton (Button) scenePath='UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton'`
+          - `secondaryButtonText` (ObjectReference) = `Text (TMP) (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)'`
+          - `cancelButton` (ObjectReference) = `CancelButton (Button) scenePath='UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/CancelButton'`
+          - `cancelButtonText` (ObjectReference) = `Text (TMP) (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)'`
+        - `VerticalLayoutGroup` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+          - `m_Padding` (Generic) = `<generic>`
+          - `m_ChildAlignment` (Enum) = `Middle Center`
+          - `m_Spacing` (Float) = `0`
+          - `m_ChildForceExpandWidth` (Boolean) = `True`
+          - `m_ChildForceExpandHeight` (Boolean) = `True`
+          - `m_ChildControlWidth` (Boolean) = `True`
+          - `m_ChildControlHeight` (Boolean) = `False`
+          - `m_ChildScaleWidth` (Boolean) = `False`
+          - `m_ChildScaleHeight` (Boolean) = `False`
+          - `m_ReverseArrangement` (Boolean) = `False`
+      - `HorizontalLayout` | path=`UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -118.374, 0`
+          - worldPosition: `995.5, 310.721, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -118.37, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(454.20, -320.93)`
+            - `m_SizeDelta` (Vector2) = `(908.40, 100.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `HorizontalLayoutGroup` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `HorizontalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/HorizontalLayoutGroup.cs'`
+            - `m_Padding` (Generic) = `<generic>`
+            - `m_ChildAlignment` (Enum) = `Middle Center`
+            - `m_Spacing` (Float) = `40`
+            - `m_ChildForceExpandWidth` (Boolean) = `True`
+            - `m_ChildForceExpandHeight` (Boolean) = `True`
+            - `m_ChildControlWidth` (Boolean) = `True`
+            - `m_ChildControlHeight` (Boolean) = `False`
+            - `m_ChildScaleWidth` (Boolean) = `False`
+            - `m_ChildScaleHeight` (Boolean) = `False`
+            - `m_ReverseArrangement` (Boolean) = `False`
+        - `CancelButton` | path=`UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/CancelButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `316.133, 0, 0`
+            - worldPosition: `1272.656, 310.721, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(316.13, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(770.33, -50.00)`
+              - `m_SizeDelta` (Vector2) = `(276.13, 30.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+              - `m_Type` (Enum) = `Sliced`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+            - `Button` index=3 enabled=`True`
+              - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+              - `m_Navigation` (Generic) = `<generic>`
+              - `m_Transition` (Enum) = `Color Tint`
+              - `m_Colors` (Generic) = `<generic>`
+              - `m_SpriteState` (Generic) = `<generic>`
+              - `m_AnimationTriggers` (Generic) = `<generic>`
+              - `m_Interactable` (Boolean) = `True`
+              - `m_TargetGraphic` (ObjectReference) = `CancelButton (Image) scenePath='UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/CancelButton'`
+              - `m_OnClick` (Generic) = `<generic>`
+          - `Text (TMP)` | path=`UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `1272.656, 310.721, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `TextMeshProUGUI` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_text` (String) = `Button`
+                - `m_isRightToLeft` (Boolean) = `False`
+                - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_fontSharedMaterials` (Generic) = `array size=0`
+                - `m_fontMaterial` (ObjectReference) = `null`
+                - `m_fontMaterials` (Generic) = `array size=0`
+                - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_enableVertexGradient` (Boolean) = `False`
+                - `m_colorMode` (Enum) = `Four Corners Gradient`
+                - `m_fontColorGradient` (Generic) = `<generic>`
+                - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                - `m_spriteAsset` (ObjectReference) = `null`
+                - `m_tintAllSprites` (Boolean) = `False`
+                - `m_StyleSheet` (ObjectReference) = `null`
+                - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                - `m_overrideHtmlColors` (Boolean) = `False`
+                - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_fontSize` (Float) = `24`
+                - `m_fontSizeBase` (Float) = `24`
+                - `m_fontWeight` (Enum) = `Regular`
+                - `m_enableAutoSizing` (Boolean) = `False`
+                - `m_fontSizeMin` (Float) = `18`
+                - `m_fontSizeMax` (Float) = `72`
+                - `m_fontStyle` (Enum) = `Normal`
+                - `m_HorizontalAlignment` (Enum) = `Center`
+                - `m_VerticalAlignment` (Enum) = `Middle`
+                - `m_textAlignment` (Enum) = `Converted`
+                - `m_characterSpacing` (Float) = `0`
+                - `m_characterHorizontalScale` (Float) = `1`
+                - `m_wordSpacing` (Float) = `0`
+                - `m_lineSpacing` (Float) = `0`
+                - `m_lineSpacingMax` (Float) = `0`
+                - `m_paragraphSpacing` (Float) = `0`
+                - `m_charWidthMaxAdj` (Float) = `0`
+                - `m_TextWrappingMode` (Enum) = `Normal`
+                - `m_wordWrappingRatios` (Float) = `0.4`
+                - `m_overflowMode` (Enum) = `Overflow`
+                - `m_linkedTextComponent` (ObjectReference) = `null`
+                - `parentLinkedComponent` (ObjectReference) = `null`
+                - `m_enableKerning` (Boolean) = `False`
+                - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                - `m_enableExtraPadding` (Boolean) = `False`
+                - `checkPaddingRequired` (Boolean) = `False`
+                - `m_isRichText` (Boolean) = `True`
+                - `m_EmojiFallbackSupport` (Boolean) = `True`
+                - `m_parseCtrlCharacters` (Boolean) = `True`
+                - `m_isOrthographic` (Boolean) = `True`
+                - `m_isCullingEnabled` (Boolean) = `False`
+                - `m_horizontalMapping` (Enum) = `Character`
+                - `m_verticalMapping` (Enum) = `Character`
+                - `m_uvLineOffset` (Float) = `0`
+                - `m_geometrySortingOrder` (Enum) = `Normal`
+                - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                - `m_useMaxVisibleDescender` (Boolean) = `True`
+                - `m_pageToDisplay` (Integer) = `1`
+                - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                - `m_isVolumetricText` (Boolean) = `False`
+                - `m_hasFontAssetChanged` (Boolean) = `False`
+                - `m_baseMaterial` (ObjectReference) = `null`
+                - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+        - `PrimaryButton` | path=`UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `-316.133, 0, 0`
+            - worldPosition: `718.344, 310.721, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(-316.13, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(138.07, -50.00)`
+              - `m_SizeDelta` (Vector2) = `(276.13, 30.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+              - `m_Type` (Enum) = `Sliced`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+            - `Button` index=3 enabled=`True`
+              - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+              - `m_Navigation` (Generic) = `<generic>`
+              - `m_Transition` (Enum) = `Color Tint`
+              - `m_Colors` (Generic) = `<generic>`
+              - `m_SpriteState` (Generic) = `<generic>`
+              - `m_AnimationTriggers` (Generic) = `<generic>`
+              - `m_Interactable` (Boolean) = `True`
+              - `m_TargetGraphic` (ObjectReference) = `PrimaryButton (Image) scenePath='UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton'`
+              - `m_OnClick` (Generic) = `<generic>`
+          - `Text (TMP)` | path=`UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `718.344, 310.721, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `TextMeshProUGUI` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_text` (String) = `Button`
+                - `m_isRightToLeft` (Boolean) = `False`
+                - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_fontSharedMaterials` (Generic) = `array size=0`
+                - `m_fontMaterial` (ObjectReference) = `null`
+                - `m_fontMaterials` (Generic) = `array size=0`
+                - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_enableVertexGradient` (Boolean) = `False`
+                - `m_colorMode` (Enum) = `Four Corners Gradient`
+                - `m_fontColorGradient` (Generic) = `<generic>`
+                - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                - `m_spriteAsset` (ObjectReference) = `null`
+                - `m_tintAllSprites` (Boolean) = `False`
+                - `m_StyleSheet` (ObjectReference) = `null`
+                - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                - `m_overrideHtmlColors` (Boolean) = `False`
+                - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_fontSize` (Float) = `24`
+                - `m_fontSizeBase` (Float) = `24`
+                - `m_fontWeight` (Enum) = `Regular`
+                - `m_enableAutoSizing` (Boolean) = `False`
+                - `m_fontSizeMin` (Float) = `18`
+                - `m_fontSizeMax` (Float) = `72`
+                - `m_fontStyle` (Enum) = `Normal`
+                - `m_HorizontalAlignment` (Enum) = `Center`
+                - `m_VerticalAlignment` (Enum) = `Middle`
+                - `m_textAlignment` (Enum) = `Converted`
+                - `m_characterSpacing` (Float) = `0`
+                - `m_characterHorizontalScale` (Float) = `1`
+                - `m_wordSpacing` (Float) = `0`
+                - `m_lineSpacing` (Float) = `0`
+                - `m_lineSpacingMax` (Float) = `0`
+                - `m_paragraphSpacing` (Float) = `0`
+                - `m_charWidthMaxAdj` (Float) = `0`
+                - `m_TextWrappingMode` (Enum) = `Normal`
+                - `m_wordWrappingRatios` (Float) = `0.4`
+                - `m_overflowMode` (Enum) = `Overflow`
+                - `m_linkedTextComponent` (ObjectReference) = `null`
+                - `parentLinkedComponent` (ObjectReference) = `null`
+                - `m_enableKerning` (Boolean) = `False`
+                - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                - `m_enableExtraPadding` (Boolean) = `False`
+                - `checkPaddingRequired` (Boolean) = `False`
+                - `m_isRichText` (Boolean) = `True`
+                - `m_EmojiFallbackSupport` (Boolean) = `True`
+                - `m_parseCtrlCharacters` (Boolean) = `True`
+                - `m_isOrthographic` (Boolean) = `True`
+                - `m_isCullingEnabled` (Boolean) = `False`
+                - `m_horizontalMapping` (Enum) = `Character`
+                - `m_verticalMapping` (Enum) = `Character`
+                - `m_uvLineOffset` (Float) = `0`
+                - `m_geometrySortingOrder` (Enum) = `Normal`
+                - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                - `m_useMaxVisibleDescender` (Boolean) = `True`
+                - `m_pageToDisplay` (Integer) = `1`
+                - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                - `m_isVolumetricText` (Boolean) = `False`
+                - `m_hasFontAssetChanged` (Boolean) = `False`
+                - `m_baseMaterial` (ObjectReference) = `null`
+                - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+        - `SecondaryButton` | path=`UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `995.5, 310.721, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(454.20, -50.00)`
+              - `m_SizeDelta` (Vector2) = `(276.13, 30.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+              - `m_Type` (Enum) = `Sliced`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+            - `Button` index=3 enabled=`True`
+              - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+              - `m_Navigation` (Generic) = `<generic>`
+              - `m_Transition` (Enum) = `Color Tint`
+              - `m_Colors` (Generic) = `<generic>`
+              - `m_SpriteState` (Generic) = `<generic>`
+              - `m_AnimationTriggers` (Generic) = `<generic>`
+              - `m_Interactable` (Boolean) = `True`
+              - `m_TargetGraphic` (ObjectReference) = `SecondaryButton (Image) scenePath='UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton'`
+              - `m_OnClick` (Generic) = `<generic>`
+          - `Text (TMP)` | path=`UIOverlayRoot/Canvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `995.5, 310.721, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `TextMeshProUGUI` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_text` (String) = `Button`
+                - `m_isRightToLeft` (Boolean) = `False`
+                - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_fontSharedMaterials` (Generic) = `array size=0`
+                - `m_fontMaterial` (ObjectReference) = `null`
+                - `m_fontMaterials` (Generic) = `array size=0`
+                - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_enableVertexGradient` (Boolean) = `False`
+                - `m_colorMode` (Enum) = `Four Corners Gradient`
+                - `m_fontColorGradient` (Generic) = `<generic>`
+                - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                - `m_spriteAsset` (ObjectReference) = `null`
+                - `m_tintAllSprites` (Boolean) = `False`
+                - `m_StyleSheet` (ObjectReference) = `null`
+                - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                - `m_overrideHtmlColors` (Boolean) = `False`
+                - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_fontSize` (Float) = `24`
+                - `m_fontSizeBase` (Float) = `24`
+                - `m_fontWeight` (Enum) = `Regular`
+                - `m_enableAutoSizing` (Boolean) = `False`
+                - `m_fontSizeMin` (Float) = `18`
+                - `m_fontSizeMax` (Float) = `72`
+                - `m_fontStyle` (Enum) = `Normal`
+                - `m_HorizontalAlignment` (Enum) = `Center`
+                - `m_VerticalAlignment` (Enum) = `Middle`
+                - `m_textAlignment` (Enum) = `Converted`
+                - `m_characterSpacing` (Float) = `0`
+                - `m_characterHorizontalScale` (Float) = `1`
+                - `m_wordSpacing` (Float) = `0`
+                - `m_lineSpacing` (Float) = `0`
+                - `m_lineSpacingMax` (Float) = `0`
+                - `m_paragraphSpacing` (Float) = `0`
+                - `m_charWidthMaxAdj` (Float) = `0`
+                - `m_TextWrappingMode` (Enum) = `Normal`
+                - `m_wordWrappingRatios` (Float) = `0.4`
+                - `m_overflowMode` (Enum) = `Overflow`
+                - `m_linkedTextComponent` (ObjectReference) = `null`
+                - `parentLinkedComponent` (ObjectReference) = `null`
+                - `m_enableKerning` (Boolean) = `False`
+                - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                - `m_enableExtraPadding` (Boolean) = `False`
+                - `checkPaddingRequired` (Boolean) = `False`
+                - `m_isRichText` (Boolean) = `True`
+                - `m_EmojiFallbackSupport` (Boolean) = `True`
+                - `m_parseCtrlCharacters` (Boolean) = `True`
+                - `m_isOrthographic` (Boolean) = `True`
+                - `m_isCullingEnabled` (Boolean) = `False`
+                - `m_horizontalMapping` (Enum) = `Character`
+                - `m_verticalMapping` (Enum) = `Character`
+                - `m_uvLineOffset` (Float) = `0`
+                - `m_geometrySortingOrder` (Enum) = `Normal`
+                - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                - `m_useMaxVisibleDescender` (Boolean) = `True`
+                - `m_pageToDisplay` (Integer) = `1`
+                - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                - `m_isVolumetricText` (Boolean) = `False`
+                - `m_hasFontAssetChanged` (Boolean) = `False`
+                - `m_baseMaterial` (ObjectReference) = `null`
+                - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+      - `MessageText` | path=`UIOverlayRoot/Canvas/ChoiceDialogRoot/MessageText` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 25, 0`
+          - worldPosition: `995.5, 436.418, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 25.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(454.20, -177.56)`
+            - `m_SizeDelta` (Vector2) = `(908.40, 50.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `TextMeshProUGUI` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_text` (String) = `Message`
+            - `m_isRightToLeft` (Boolean) = `False`
+            - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+            - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+            - `m_fontSharedMaterials` (Generic) = `array size=0`
+            - `m_fontMaterial` (ObjectReference) = `null`
+            - `m_fontMaterials` (Generic) = `array size=0`
+            - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_enableVertexGradient` (Boolean) = `False`
+            - `m_colorMode` (Enum) = `Four Corners Gradient`
+            - `m_fontColorGradient` (Generic) = `<generic>`
+            - `m_fontColorGradientPreset` (ObjectReference) = `null`
+            - `m_spriteAsset` (ObjectReference) = `null`
+            - `m_tintAllSprites` (Boolean) = `False`
+            - `m_StyleSheet` (ObjectReference) = `null`
+            - `m_TextStyleHashCode` (Integer) = `-1183493901`
+            - `m_overrideHtmlColors` (Boolean) = `False`
+            - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_fontSize` (Float) = `36`
+            - `m_fontSizeBase` (Float) = `36`
+            - `m_fontWeight` (Enum) = `Regular`
+            - `m_enableAutoSizing` (Boolean) = `False`
+            - `m_fontSizeMin` (Float) = `18`
+            - `m_fontSizeMax` (Float) = `72`
+            - `m_fontStyle` (Enum) = `Normal`
+            - `m_HorizontalAlignment` (Enum) = `Center`
+            - `m_VerticalAlignment` (Enum) = `Top`
+            - `m_textAlignment` (Enum) = `Converted`
+            - `m_characterSpacing` (Float) = `0`
+            - `m_characterHorizontalScale` (Float) = `1`
+            - `m_wordSpacing` (Float) = `0`
+            - `m_lineSpacing` (Float) = `0`
+            - `m_lineSpacingMax` (Float) = `0`
+            - `m_paragraphSpacing` (Float) = `0`
+            - `m_charWidthMaxAdj` (Float) = `0`
+            - `m_TextWrappingMode` (Enum) = `Normal`
+            - `m_wordWrappingRatios` (Float) = `0.4`
+            - `m_overflowMode` (Enum) = `Overflow`
+            - `m_linkedTextComponent` (ObjectReference) = `null`
+            - `parentLinkedComponent` (ObjectReference) = `null`
+            - `m_enableKerning` (Boolean) = `False`
+            - `m_ActiveFontFeatures` (Generic) = `array size=1`
+            - `m_enableExtraPadding` (Boolean) = `False`
+            - `checkPaddingRequired` (Boolean) = `False`
+            - `m_isRichText` (Boolean) = `True`
+            - `m_EmojiFallbackSupport` (Boolean) = `True`
+            - `m_parseCtrlCharacters` (Boolean) = `True`
+            - `m_isOrthographic` (Boolean) = `True`
+            - `m_isCullingEnabled` (Boolean) = `False`
+            - `m_horizontalMapping` (Enum) = `Character`
+            - `m_verticalMapping` (Enum) = `Character`
+            - `m_uvLineOffset` (Float) = `0`
+            - `m_geometrySortingOrder` (Enum) = `Normal`
+            - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+            - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+            - `m_useMaxVisibleDescender` (Boolean) = `True`
+            - `m_pageToDisplay` (Integer) = `1`
+            - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+            - `m_isVolumetricText` (Boolean) = `False`
+            - `m_hasFontAssetChanged` (Boolean) = `False`
+            - `m_baseMaterial` (ObjectReference) = `null`
+            - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+      - `TitleText` | path=`UIOverlayRoot/Canvas/ChoiceDialogRoot/TitleText` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 143.374, 0`
+          - worldPosition: `995.5, 540.197, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 143.37, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(454.20, -59.19)`
+            - `m_SizeDelta` (Vector2) = `(908.40, 50.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `TextMeshProUGUI` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_text` (String) = `Title`
+            - `m_isRightToLeft` (Boolean) = `False`
+            - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+            - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+            - `m_fontSharedMaterials` (Generic) = `array size=0`
+            - `m_fontMaterial` (ObjectReference) = `null`
+            - `m_fontMaterials` (Generic) = `array size=0`
+            - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_enableVertexGradient` (Boolean) = `False`
+            - `m_colorMode` (Enum) = `Four Corners Gradient`
+            - `m_fontColorGradient` (Generic) = `<generic>`
+            - `m_fontColorGradientPreset` (ObjectReference) = `null`
+            - `m_spriteAsset` (ObjectReference) = `null`
+            - `m_tintAllSprites` (Boolean) = `False`
+            - `m_StyleSheet` (ObjectReference) = `null`
+            - `m_TextStyleHashCode` (Integer) = `-1183493901`
+            - `m_overrideHtmlColors` (Boolean) = `False`
+            - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_fontSize` (Float) = `36`
+            - `m_fontSizeBase` (Float) = `36`
+            - `m_fontWeight` (Enum) = `Regular`
+            - `m_enableAutoSizing` (Boolean) = `False`
+            - `m_fontSizeMin` (Float) = `18`
+            - `m_fontSizeMax` (Float) = `72`
+            - `m_fontStyle` (Enum) = `Normal`
+            - `m_HorizontalAlignment` (Enum) = `Center`
+            - `m_VerticalAlignment` (Enum) = `Top`
+            - `m_textAlignment` (Enum) = `Converted`
+            - `m_characterSpacing` (Float) = `0`
+            - `m_characterHorizontalScale` (Float) = `1`
+            - `m_wordSpacing` (Float) = `0`
+            - `m_lineSpacing` (Float) = `0`
+            - `m_lineSpacingMax` (Float) = `0`
+            - `m_paragraphSpacing` (Float) = `0`
+            - `m_charWidthMaxAdj` (Float) = `0`
+            - `m_TextWrappingMode` (Enum) = `Normal`
+            - `m_wordWrappingRatios` (Float) = `0.4`
+            - `m_overflowMode` (Enum) = `Overflow`
+            - `m_linkedTextComponent` (ObjectReference) = `null`
+            - `parentLinkedComponent` (ObjectReference) = `null`
+            - `m_enableKerning` (Boolean) = `False`
+            - `m_ActiveFontFeatures` (Generic) = `array size=1`
+            - `m_enableExtraPadding` (Boolean) = `False`
+            - `checkPaddingRequired` (Boolean) = `False`
+            - `m_isRichText` (Boolean) = `True`
+            - `m_EmojiFallbackSupport` (Boolean) = `True`
+            - `m_parseCtrlCharacters` (Boolean) = `True`
+            - `m_isOrthographic` (Boolean) = `True`
+            - `m_isCullingEnabled` (Boolean) = `False`
+            - `m_horizontalMapping` (Enum) = `Character`
+            - `m_verticalMapping` (Enum) = `Character`
+            - `m_uvLineOffset` (Float) = `0`
+            - `m_geometrySortingOrder` (Enum) = `Normal`
+            - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+            - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+            - `m_useMaxVisibleDescender` (Boolean) = `True`
+            - `m_pageToDisplay` (Integer) = `1`
+            - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+            - `m_isVolumetricText` (Boolean) = `False`
+            - `m_hasFontAssetChanged` (Boolean) = `False`
+            - `m_baseMaterial` (ObjectReference) = `null`
+            - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+    - `DragVisualRoot` | path=`UIOverlayRoot/Canvas/DragVisualRoot` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `995.5, 414.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+          - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+          - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+          - `m_SizeDelta` (Vector2) = `(100.00, 100.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+      - `DragCargoLabel` | path=`UIOverlayRoot/Canvas/DragVisualRoot/DragCargoLabel` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `995.5, 414.5, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+            - `m_SizeDelta` (Vector2) = `(56.00, 56.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `TextMeshProUGUI` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_text` (String) = `New Text`
+            - `m_isRightToLeft` (Boolean) = `False`
+            - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+            - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+            - `m_fontSharedMaterials` (Generic) = `array size=0`
+            - `m_fontMaterial` (ObjectReference) = `null`
+            - `m_fontMaterials` (Generic) = `array size=0`
+            - `m_fontColor32` (Color) = `RGBA(0.000, 0.000, 0.000, 1.000)`
+            - `m_fontColor` (Color) = `RGBA(0.000, 0.000, 0.000, 1.000)`
+            - `m_enableVertexGradient` (Boolean) = `False`
+            - `m_colorMode` (Enum) = `Four Corners Gradient`
+            - `m_fontColorGradient` (Generic) = `<generic>`
+            - `m_fontColorGradientPreset` (ObjectReference) = `null`
+            - `m_spriteAsset` (ObjectReference) = `null`
+            - `m_tintAllSprites` (Boolean) = `False`
+            - `m_StyleSheet` (ObjectReference) = `null`
+            - `m_TextStyleHashCode` (Integer) = `-1183493901`
+            - `m_overrideHtmlColors` (Boolean) = `False`
+            - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_fontSize` (Float) = `14`
+            - `m_fontSizeBase` (Float) = `14`
+            - `m_fontWeight` (Enum) = `Regular`
+            - `m_enableAutoSizing` (Boolean) = `False`
+            - `m_fontSizeMin` (Float) = `18`
+            - `m_fontSizeMax` (Float) = `72`
+            - `m_fontStyle` (Enum) = `Bold`
+            - `m_HorizontalAlignment` (Enum) = `Center`
+            - `m_VerticalAlignment` (Enum) = `Middle`
+            - `m_textAlignment` (Enum) = `Converted`
+            - `m_characterSpacing` (Float) = `0`
+            - `m_characterHorizontalScale` (Float) = `1`
+            - `m_wordSpacing` (Float) = `0`
+            - `m_lineSpacing` (Float) = `0`
+            - `m_lineSpacingMax` (Float) = `0`
+            - `m_paragraphSpacing` (Float) = `0`
+            - `m_charWidthMaxAdj` (Float) = `0`
+            - `m_TextWrappingMode` (Enum) = `No Wrap`
+            - `m_wordWrappingRatios` (Float) = `0.4`
+            - `m_overflowMode` (Enum) = `Truncate`
+            - `m_linkedTextComponent` (ObjectReference) = `null`
+            - `parentLinkedComponent` (ObjectReference) = `null`
+            - `m_enableKerning` (Boolean) = `False`
+            - `m_ActiveFontFeatures` (Generic) = `array size=1`
+            - `m_enableExtraPadding` (Boolean) = `False`
+            - `checkPaddingRequired` (Boolean) = `False`
+            - `m_isRichText` (Boolean) = `True`
+            - `m_EmojiFallbackSupport` (Boolean) = `True`
+            - `m_parseCtrlCharacters` (Boolean) = `True`
+            - `m_isOrthographic` (Boolean) = `True`
+            - `m_isCullingEnabled` (Boolean) = `False`
+            - `m_horizontalMapping` (Enum) = `Character`
+            - `m_verticalMapping` (Enum) = `Character`
+            - `m_uvLineOffset` (Float) = `0`
+            - `m_geometrySortingOrder` (Enum) = `Normal`
+            - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+            - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+            - `m_useMaxVisibleDescender` (Boolean) = `True`
+            - `m_pageToDisplay` (Integer) = `1`
+            - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+            - `m_isVolumetricText` (Boolean) = `False`
+            - `m_hasFontAssetChanged` (Boolean) = `False`
+            - `m_baseMaterial` (ObjectReference) = `null`
+            - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+      - `DragIcon` | path=`UIOverlayRoot/Canvas/DragVisualRoot/DragIcon` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `995.5, 414.5, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+            - `m_SizeDelta` (Vector2) = `(70.00, 70.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `False`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `null`
+            - `m_Type` (Enum) = `Simple`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+      - `DragQuantity` | path=`UIOverlayRoot/Canvas/DragVisualRoot/DragQuantity` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `995.5, 414.5, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+            - `m_SizeDelta` (Vector2) = `(100.00, 100.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Text` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 0.611, 0.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_FontData` (Generic) = `<generic>`
+            - `m_Text` (String) = ``
+    - `EscapeMenuRoot` | path=`UIOverlayRoot/Canvas/EscapeMenuRoot` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `995.5, 414.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.30, 0.10)`
+          - `m_AnchorMax` (Vector2) = `(0.70, 0.90)`
+          - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+          - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `CanvasRenderer` index=1 enabled=`n/a`
+          - `m_CullTransparentMesh` (Boolean) = `True`
+        - `Image` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+          - `m_Material` (ObjectReference) = `null`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 0.392)`
+          - `m_RaycastTarget` (Boolean) = `True`
+          - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+          - `m_Maskable` (Boolean) = `True`
+          - `m_OnCullStateChanged` (Generic) = `<generic>`
+          - `m_Sprite` (ObjectReference) = `Background (Sprite) asset='Resources/unity_builtin_extra'`
+          - `m_Type` (Enum) = `Sliced`
+          - `m_PreserveAspect` (Boolean) = `False`
+          - `m_FillCenter` (Boolean) = `True`
+          - `m_FillMethod` (Enum) = `Radial 360`
+          - `m_FillAmount` (Float) = `1`
+          - `m_FillClockwise` (Boolean) = `True`
+          - `m_FillOrigin` (Integer) = `0`
+          - `m_UseSpriteMesh` (Boolean) = `False`
+          - `m_PixelsPerUnitMultiplier` (Float) = `1`
+        - `VerticalLayoutGroup` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+          - `m_Padding` (Generic) = `<generic>`
+          - `m_ChildAlignment` (Enum) = `Middle Center`
+          - `m_Spacing` (Float) = `0`
+          - `m_ChildForceExpandWidth` (Boolean) = `True`
+          - `m_ChildForceExpandHeight` (Boolean) = `True`
+          - `m_ChildControlWidth` (Boolean) = `False`
+          - `m_ChildControlHeight` (Boolean) = `False`
+          - `m_ChildScaleWidth` (Boolean) = `False`
+          - `m_ChildScaleHeight` (Boolean) = `True`
+          - `m_ReverseArrangement` (Boolean) = `False`
+        - `EscapeMenuUI` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `EscapeMenuUI (MonoScript) asset='Assets/Scripts/Menu/EscapeMenuUI.cs'`
+          - `root` (ObjectReference) = `EscapeMenuRoot (GameObject) scenePath='UIOverlayRoot/Canvas/EscapeMenuRoot'`
+          - `pauseTimeWhenOpen` (Boolean) = `False`
+          - `mainMenuSceneName` (String) = `MainMenu`
+          - `escapePriority` (Integer) = `0`
+          - `saveLoadController` (ObjectReference) = `GameplayUIBootStrap (SaveLoadController) scenePath='GameplayUIBootStrap'`
+          - `saveLoadPanel` (ObjectReference) = `null`
+      - `LoadButton` | path=`UIOverlayRoot/Canvas/EscapeMenuRoot/LoadButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -96.178, 0`
+          - worldPosition: `995.5, 358.834, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -96.18, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(688.00, -669.11)`
+            - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+            - `m_Type` (Enum) = `Sliced`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Button` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `LoadButton (Image) scenePath='UIOverlayRoot/Canvas/EscapeMenuRoot/LoadButton'`
+            - `m_OnClick` (Generic) = `<generic>`
+        - `Load` | path=`UIOverlayRoot/Canvas/EscapeMenuRoot/LoadButton/Load` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `995.5, 358.834, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Text` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_FontData` (Generic) = `<generic>`
+              - `m_Text` (String) = `Load`
+      - `MainMenuButton` | path=`UIOverlayRoot/Canvas/EscapeMenuRoot/MainMenuButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -311.465, 0`
+          - worldPosition: `995.5, 234.231, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -311.47, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(688.00, -884.40)`
+            - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+            - `m_Type` (Enum) = `Sliced`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Button` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `MainMenuButton (Image) scenePath='UIOverlayRoot/Canvas/EscapeMenuRoot/MainMenuButton'`
+            - `m_OnClick` (Generic) = `<generic>`
+        - `Main Menu` | path=`UIOverlayRoot/Canvas/EscapeMenuRoot/MainMenuButton/Main Menu` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `995.5, 234.231, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Text` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_FontData` (Generic) = `<generic>`
+              - `m_Text` (String) = `Main Menu`
+      - `QuitButton` | path=`UIOverlayRoot/Canvas/EscapeMenuRoot/QuitButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -419.109, 0`
+          - worldPosition: `995.5, 171.929, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -419.11, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(688.00, -992.04)`
+            - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+            - `m_Type` (Enum) = `Sliced`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Button` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `QuitButton (Image) scenePath='UIOverlayRoot/Canvas/EscapeMenuRoot/QuitButton'`
+            - `m_OnClick` (Generic) = `<generic>`
+        - `Quit` | path=`UIOverlayRoot/Canvas/EscapeMenuRoot/QuitButton/Quit` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `995.5, 171.929, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Text` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_FontData` (Generic) = `<generic>`
+              - `m_Text` (String) = `Quit`
+      - `ResumeButton` | path=`UIOverlayRoot/Canvas/EscapeMenuRoot/ResumeButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 119.109, 0`
+          - worldPosition: `995.5, 483.438, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 119.11, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(688.00, -453.82)`
+            - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+            - `m_Type` (Enum) = `Sliced`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Button` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `ResumeButton (Image) scenePath='UIOverlayRoot/Canvas/EscapeMenuRoot/ResumeButton'`
+            - `m_OnClick` (Generic) = `<generic>`
+        - `Resume` | path=`UIOverlayRoot/Canvas/EscapeMenuRoot/ResumeButton/Resume` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `995.5, 483.438, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Text` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_FontData` (Generic) = `<generic>`
+              - `m_Text` (String) = `Resume
+`
+      - `SaveButton` | path=`UIOverlayRoot/Canvas/EscapeMenuRoot/SaveButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 11.465, 0`
+          - worldPosition: `995.5, 421.136, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 11.47, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(688.00, -561.47)`
+            - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+            - `m_Type` (Enum) = `Sliced`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Button` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `SaveButton (Image) scenePath='UIOverlayRoot/Canvas/EscapeMenuRoot/SaveButton'`
+            - `m_OnClick` (Generic) = `<generic>`
+        - `Save` | path=`UIOverlayRoot/Canvas/EscapeMenuRoot/SaveButton/Save` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `995.5, 421.136, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Text` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_FontData` (Generic) = `<generic>`
+              - `m_Text` (String) = `Save`
+      - `SettingsButton` | path=`UIOverlayRoot/Canvas/EscapeMenuRoot/SettingsButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -203.822, 0`
+          - worldPosition: `995.5, 296.532, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -203.82, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(688.00, -776.75)`
+            - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+            - `m_Type` (Enum) = `Sliced`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Button` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `SettingsButton (Image) scenePath='UIOverlayRoot/Canvas/EscapeMenuRoot/SettingsButton'`
+            - `m_OnClick` (Generic) = `<generic>`
+        - `Settings` | path=`UIOverlayRoot/Canvas/EscapeMenuRoot/SettingsButton/Settings` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `995.5, 296.532, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Text` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_FontData` (Generic) = `<generic>`
+              - `m_Text` (String) = `Setting (WIP)`
+    - `ExertionEnergyUI` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `1570, 616.163, 0`
+        - worldPosition: `1904.183, 771.122, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(1570.00, 616.16, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(1.00, 1.00)`
+          - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+          - `m_AnchoredPosition` (Vector2) = `(-150.00, -100.00)`
+          - `m_SizeDelta` (Vector2) = `(300.00, 100.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `DevExertionEnergyHUD` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `DevExertionEnergyHUD (MonoScript) asset='Assets/Scripts/UI/DevExertionEnergyHUD.cs'`
+          - `model` (ObjectReference) = `null`
+          - `energySlider` (ObjectReference) = `Energy (Slider) scenePath='UIOverlayRoot/Canvas/ExertionEnergyUI/Energy'`
+          - `exertionSlider` (ObjectReference) = `Exertion (Slider) scenePath='UIOverlayRoot/Canvas/ExertionEnergyUI/Exertion'`
+          - `stateText` (ObjectReference) = `ExertionState (Text) scenePath='UIOverlayRoot/Canvas/ExertionEnergyUI/ExertionState'`
+          - `energyStateText` (ObjectReference) = `EnergyState (Text) scenePath='UIOverlayRoot/Canvas/ExertionEnergyUI/EnergyState'`
+          - `debugText` (ObjectReference) = `null`
+      - `Energy` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI/Energy` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 30, 0`
+          - worldPosition: `1904.183, 788.486, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 30.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, 30.00)`
+            - `m_SizeDelta` (Vector2) = `(160.00, 20.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `Slider` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `Slider (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Slider.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `Handle (Image) scenePath='UIOverlayRoot/Canvas/ExertionEnergyUI/Energy/Handle Slide Area/Handle'`
+            - `m_FillRect` (ObjectReference) = `Fill (RectTransform) scenePath='UIOverlayRoot/Canvas/ExertionEnergyUI/Energy/Fill Area/Fill'`
+            - `m_HandleRect` (ObjectReference) = `Handle (RectTransform) scenePath='UIOverlayRoot/Canvas/ExertionEnergyUI/Energy/Handle Slide Area/Handle'`
+            - `m_Direction` (Enum) = `Left To Right`
+            - `m_MinValue` (Float) = `0`
+            - `m_MaxValue` (Float) = `1`
+            - `m_WholeNumbers` (Boolean) = `False`
+            - `m_Value` (Float) = `0`
+            - `m_OnValueChanged` (Generic) = `<generic>`
+        - `Background` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI/Energy/Background` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `1904.183, 788.486, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.25)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 0.75)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `Background (Sprite) asset='Resources/unity_builtin_extra'`
+              - `m_Type` (Enum) = `Sliced`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+        - `EnergyBar` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI/Energy/EnergyBar` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 5, 0`
+            - worldPosition: `1904.183, 791.379, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 5.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+              - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 5.00)`
+              - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Text` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_FontData` (Generic) = `<generic>`
+              - `m_Text` (String) = `Energy`
+        - `Fill Area` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI/Energy/Fill Area` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `-5, 0, 0`
+            - worldPosition: `1901.289, 788.486, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(-5.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.25)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 0.75)`
+              - `m_AnchoredPosition` (Vector2) = `(-5.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(-20.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `Fill` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI/Energy/Fill Area/Fill` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `-70, 0, 0`
+              - worldPosition: `1860.775, 788.486, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(-70.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(10.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+        - `Handle Slide Area` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI/Energy/Handle Slide Area` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `1904.183, 788.486, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(-20.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `Handle` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI/Energy/Handle Slide Area/Handle` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `-70, 0, 0`
+              - worldPosition: `1863.669, 788.486, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(-70.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(20.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `Knob (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Simple`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+      - `EnergyState` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI/EnergyState` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `80, -30, 0`
+          - worldPosition: `1950.485, 753.759, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(80.00, -30.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchoredPosition` (Vector2) = `(80.00, -30.00)`
+            - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Text` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_FontData` (Generic) = `<generic>`
+            - `m_Text` (String) = `New Text`
+      - `Exertion` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI/Exertion` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `1904.183, 771.122, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+            - `m_SizeDelta` (Vector2) = `(160.00, 20.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `Slider` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `Slider (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Slider.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `Handle (Image) scenePath='UIOverlayRoot/Canvas/ExertionEnergyUI/Exertion/Handle Slide Area/Handle'`
+            - `m_FillRect` (ObjectReference) = `Fill (RectTransform) scenePath='UIOverlayRoot/Canvas/ExertionEnergyUI/Exertion/Fill Area/Fill'`
+            - `m_HandleRect` (ObjectReference) = `Handle (RectTransform) scenePath='UIOverlayRoot/Canvas/ExertionEnergyUI/Exertion/Handle Slide Area/Handle'`
+            - `m_Direction` (Enum) = `Left To Right`
+            - `m_MinValue` (Float) = `0`
+            - `m_MaxValue` (Float) = `1`
+            - `m_WholeNumbers` (Boolean) = `False`
+            - `m_Value` (Float) = `0`
+            - `m_OnValueChanged` (Generic) = `<generic>`
+        - `Background` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI/Exertion/Background` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `1904.183, 771.122, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.25)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 0.75)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `Background (Sprite) asset='Resources/unity_builtin_extra'`
+              - `m_Type` (Enum) = `Sliced`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+        - `ExertionBar` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI/Exertion/ExertionBar` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `1, 5, 0`
+            - worldPosition: `1904.762, 774.016, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(1.00, 5.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+              - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+              - `m_AnchoredPosition` (Vector2) = `(1.00, 5.00)`
+              - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Text` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_FontData` (Generic) = `<generic>`
+              - `m_Text` (String) = `Exertion`
+        - `Fill Area` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI/Exertion/Fill Area` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `-5, 0, 0`
+            - worldPosition: `1901.289, 771.122, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(-5.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.25)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 0.75)`
+              - `m_AnchoredPosition` (Vector2) = `(-5.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(-20.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `Fill` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI/Exertion/Fill Area/Fill` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `-70, 0, 0`
+              - worldPosition: `1860.775, 771.122, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(-70.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(10.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+        - `Handle Slide Area` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI/Exertion/Handle Slide Area` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `1904.183, 771.122, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(-20.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `Handle` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI/Exertion/Handle Slide Area/Handle` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `-70, 0, 0`
+              - worldPosition: `1863.669, 771.122, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(-70.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(20.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `Knob (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Simple`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+      - `ExertionState` | path=`UIOverlayRoot/Canvas/ExertionEnergyUI/ExertionState` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `-80, -30, 0`
+          - worldPosition: `1857.881, 753.759, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(-80.00, -30.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchoredPosition` (Vector2) = `(-80.00, -30.00)`
+            - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Text` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_FontData` (Generic) = `<generic>`
+            - `m_Text` (String) = `New Text`
+    - `ExternalInventoryRoot` | path=`UIOverlayRoot/Canvas/ExternalInventoryRoot` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 666.163, 0`
+        - worldPosition: `995.5, 800.061, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 666.16, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.50, 1.00)`
+          - `m_AnchorMax` (Vector2) = `(0.50, 1.00)`
+          - `m_AnchoredPosition` (Vector2) = `(0.00, -50.00)`
+          - `m_SizeDelta` (Vector2) = `(100.00, 100.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `ExternalContainerOverlayUI` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `ExternalContainerOverlayUI (MonoScript) asset='Assets/Scripts/Inventory/ExternalContainerOverlayUI.cs'`
+          - `root` (ObjectReference) = `ExternalInventoryPanel (GameObject) scenePath='UIOverlayRoot/Canvas/ExternalInventoryRoot/ExternalInventoryPanel'`
+          - `slotRoot` (ObjectReference) = `ExternalSlots (RectTransform) scenePath='UIOverlayRoot/Canvas/ExternalInventoryRoot/ExternalInventoryPanel/ExternalSlots'`
+          - `slotPrefab` (ObjectReference) = `InventorySlotUI (InventorySlotUI) asset='Assets/Resources/Prefabs/Inventory/InventorySlotUI.prefab'`
+          - `titleText` (ObjectReference) = `ItemInventoryText (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/ExternalInventoryRoot/ExternalInventoryPanel/ItemInventoryText'`
+          - `owner` (ObjectReference) = `PlayerInventoryUI (PlayerInventoryUI) scenePath='UIOverlayRoot/Canvas/PlayerInventoryUI'`
+          - `dragController` (ObjectReference) = `BottomBarRoot (InventoryDragController) scenePath='UIOverlayRoot/Canvas/BottomBarRoot'`
+          - `closeKey` (Enum) = `Escape`
+          - `playerTransform` (ObjectReference) = `CharacterPlayer (Transform) scenePath='CharacterPlayer'`
+          - `closeOnKey` (Boolean) = `True`
+          - `closeWhenSourceDestroyed` (Boolean) = `True`
+          - `closeViaGlobalEscapeRouter` (Boolean) = `True`
+          - `escapePriority` (Integer) = `800`
+          - `_autoCloseDistance` (Float) = `-1`
+          - `panelRect` (ObjectReference) = `ExternalInventoryPanel (RectTransform) scenePath='UIOverlayRoot/Canvas/ExternalInventoryRoot/ExternalInventoryPanel'`
+          - `screenOffset` (Vector2) = `(-150.00, -150.00)`
+      - `ExternalInventoryPanel` | path=`UIOverlayRoot/Canvas/ExternalInventoryRoot/ExternalInventoryPanel` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `995.5, 800.061, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+            - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+            - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 0.392)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `Background (Sprite) asset='Resources/unity_builtin_extra'`
+            - `m_Type` (Enum) = `Sliced`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+        - `ExternalSlots` | path=`UIOverlayRoot/Canvas/ExternalInventoryRoot/ExternalInventoryPanel/ExternalSlots` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `995.5, 800.061, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(50.00, -50.00)`
+              - `m_SizeDelta` (Vector2) = `(100.00, 100.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `GridLayoutGroup` index=1 enabled=`True`
+              - `m_Script` (ObjectReference) = `GridLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/GridLayoutGroup.cs'`
+              - `m_Padding` (Generic) = `<generic>`
+              - `m_ChildAlignment` (Enum) = `Upper Left`
+              - `m_StartCorner` (Enum) = `Upper Left`
+              - `m_StartAxis` (Enum) = `Horizontal`
+              - `m_CellSize` (Vector2) = `(100.00, 100.00)`
+              - `m_Spacing` (Vector2) = `(0.00, 0.00)`
+              - `m_Constraint` (Enum) = `Fixed Column Count`
+              - `m_ConstraintCount` (Integer) = `4`
+        - `ItemInventoryText` | path=`UIOverlayRoot/Canvas/ExternalInventoryRoot/ExternalInventoryPanel/ItemInventoryText` | activeSelf=False | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `995.5, 800.061, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+              - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(200.00, 50.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `TextMeshProUGUI` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_text` (String) = `Inventory
+`
+              - `m_isRightToLeft` (Boolean) = `False`
+              - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_fontSharedMaterials` (Generic) = `array size=0`
+              - `m_fontMaterial` (ObjectReference) = `null`
+              - `m_fontMaterials` (Generic) = `array size=0`
+              - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_enableVertexGradient` (Boolean) = `False`
+              - `m_colorMode` (Enum) = `Four Corners Gradient`
+              - `m_fontColorGradient` (Generic) = `<generic>`
+              - `m_fontColorGradientPreset` (ObjectReference) = `null`
+              - `m_spriteAsset` (ObjectReference) = `null`
+              - `m_tintAllSprites` (Boolean) = `False`
+              - `m_StyleSheet` (ObjectReference) = `null`
+              - `m_TextStyleHashCode` (Integer) = `-1183493901`
+              - `m_overrideHtmlColors` (Boolean) = `False`
+              - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontSize` (Float) = `36`
+              - `m_fontSizeBase` (Float) = `36`
+              - `m_fontWeight` (Enum) = `Regular`
+              - `m_enableAutoSizing` (Boolean) = `False`
+              - `m_fontSizeMin` (Float) = `18`
+              - `m_fontSizeMax` (Float) = `72`
+              - `m_fontStyle` (Enum) = `Normal`
+              - `m_HorizontalAlignment` (Enum) = `Left`
+              - `m_VerticalAlignment` (Enum) = `Top`
+              - `m_textAlignment` (Enum) = `Converted`
+              - `m_characterSpacing` (Float) = `0`
+              - `m_characterHorizontalScale` (Float) = `1`
+              - `m_wordSpacing` (Float) = `0`
+              - `m_lineSpacing` (Float) = `0`
+              - `m_lineSpacingMax` (Float) = `0`
+              - `m_paragraphSpacing` (Float) = `0`
+              - `m_charWidthMaxAdj` (Float) = `0`
+              - `m_TextWrappingMode` (Enum) = `Normal`
+              - `m_wordWrappingRatios` (Float) = `0.4`
+              - `m_overflowMode` (Enum) = `Overflow`
+              - `m_linkedTextComponent` (ObjectReference) = `null`
+              - `parentLinkedComponent` (ObjectReference) = `null`
+              - `m_enableKerning` (Boolean) = `False`
+              - `m_ActiveFontFeatures` (Generic) = `array size=1`
+              - `m_enableExtraPadding` (Boolean) = `False`
+              - `checkPaddingRequired` (Boolean) = `False`
+              - `m_isRichText` (Boolean) = `True`
+              - `m_EmojiFallbackSupport` (Boolean) = `True`
+              - `m_parseCtrlCharacters` (Boolean) = `True`
+              - `m_isOrthographic` (Boolean) = `True`
+              - `m_isCullingEnabled` (Boolean) = `False`
+              - `m_horizontalMapping` (Enum) = `Character`
+              - `m_verticalMapping` (Enum) = `Character`
+              - `m_uvLineOffset` (Float) = `0`
+              - `m_geometrySortingOrder` (Enum) = `Normal`
+              - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+              - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+              - `m_useMaxVisibleDescender` (Boolean) = `True`
+              - `m_pageToDisplay` (Integer) = `1`
+              - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+              - `m_isVolumetricText` (Boolean) = `False`
+              - `m_hasFontAssetChanged` (Boolean) = `False`
+              - `m_baseMaterial` (ObjectReference) = `null`
+              - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+    - `HealthUI` | path=`UIOverlayRoot/Canvas/HealthUI` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `1520, 0, 0`
+        - worldPosition: `1875.244, 414.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(1520.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(1.00, 0.50)`
+          - `m_AnchorMax` (Vector2) = `(1.00, 0.50)`
+          - `m_AnchoredPosition` (Vector2) = `(-200.00, 0.00)`
+          - `m_SizeDelta` (Vector2) = `(400.00, 200.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `SpO2DebugUI` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `SpO2DebugUI (MonoScript) asset='Assets/Scripts/UI/SpO2DebugUI.cs'`
+          - `oxygenation` (ObjectReference) = `null`
+          - `label` (ObjectReference) = `SpO2 (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/HealthUI/SpO2'`
+          - `showExposure` (Boolean) = `True`
+      - `SpO2` | path=`UIOverlayRoot/Canvas/HealthUI/SpO2` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `1875.244, 414.5, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+            - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+            - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `TextMeshProUGUI` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_text` (String) = `New Text`
+            - `m_isRightToLeft` (Boolean) = `False`
+            - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+            - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+            - `m_fontSharedMaterials` (Generic) = `array size=0`
+            - `m_fontMaterial` (ObjectReference) = `null`
+            - `m_fontMaterials` (Generic) = `array size=0`
+            - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_enableVertexGradient` (Boolean) = `False`
+            - `m_colorMode` (Enum) = `Four Corners Gradient`
+            - `m_fontColorGradient` (Generic) = `<generic>`
+            - `m_fontColorGradientPreset` (ObjectReference) = `null`
+            - `m_spriteAsset` (ObjectReference) = `null`
+            - `m_tintAllSprites` (Boolean) = `False`
+            - `m_StyleSheet` (ObjectReference) = `null`
+            - `m_TextStyleHashCode` (Integer) = `-1183493901`
+            - `m_overrideHtmlColors` (Boolean) = `False`
+            - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_fontSize` (Float) = `36`
+            - `m_fontSizeBase` (Float) = `36`
+            - `m_fontWeight` (Enum) = `Regular`
+            - `m_enableAutoSizing` (Boolean) = `False`
+            - `m_fontSizeMin` (Float) = `18`
+            - `m_fontSizeMax` (Float) = `72`
+            - `m_fontStyle` (Enum) = `Normal`
+            - `m_HorizontalAlignment` (Enum) = `Left`
+            - `m_VerticalAlignment` (Enum) = `Top`
+            - `m_textAlignment` (Enum) = `Converted`
+            - `m_characterSpacing` (Float) = `0`
+            - `m_characterHorizontalScale` (Float) = `1`
+            - `m_wordSpacing` (Float) = `0`
+            - `m_lineSpacing` (Float) = `0`
+            - `m_lineSpacingMax` (Float) = `0`
+            - `m_paragraphSpacing` (Float) = `0`
+            - `m_charWidthMaxAdj` (Float) = `0`
+            - `m_TextWrappingMode` (Enum) = `Normal`
+            - `m_wordWrappingRatios` (Float) = `0.4`
+            - `m_overflowMode` (Enum) = `Overflow`
+            - `m_linkedTextComponent` (ObjectReference) = `null`
+            - `parentLinkedComponent` (ObjectReference) = `null`
+            - `m_enableKerning` (Boolean) = `False`
+            - `m_ActiveFontFeatures` (Generic) = `array size=1`
+            - `m_enableExtraPadding` (Boolean) = `False`
+            - `checkPaddingRequired` (Boolean) = `False`
+            - `m_isRichText` (Boolean) = `True`
+            - `m_EmojiFallbackSupport` (Boolean) = `True`
+            - `m_parseCtrlCharacters` (Boolean) = `True`
+            - `m_isOrthographic` (Boolean) = `True`
+            - `m_isCullingEnabled` (Boolean) = `False`
+            - `m_horizontalMapping` (Enum) = `Character`
+            - `m_verticalMapping` (Enum) = `Character`
+            - `m_uvLineOffset` (Float) = `0`
+            - `m_geometrySortingOrder` (Enum) = `Normal`
+            - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+            - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+            - `m_useMaxVisibleDescender` (Boolean) = `True`
+            - `m_pageToDisplay` (Integer) = `1`
+            - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+            - `m_isVolumetricText` (Boolean) = `False`
+            - `m_hasFontAssetChanged` (Boolean) = `False`
+            - `m_baseMaterial` (ObjectReference) = `null`
+            - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+    - `InteractPromptUI` | path=`UIOverlayRoot/Canvas/InteractPromptUI` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `995.5, 414.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+          - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+          - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+          - `m_SizeDelta` (Vector2) = `(400.00, 120.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `CanvasRenderer` index=1 enabled=`n/a`
+          - `m_CullTransparentMesh` (Boolean) = `True`
+        - `Image` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+          - `m_Material` (ObjectReference) = `null`
+          - `m_Color` (Color) = `RGBA(0.280, 0.724, 0.792, 0.306)`
+          - `m_RaycastTarget` (Boolean) = `True`
+          - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+          - `m_Maskable` (Boolean) = `True`
+          - `m_OnCullStateChanged` (Generic) = `<generic>`
+          - `m_Sprite` (ObjectReference) = `Background (Sprite) asset='Resources/unity_builtin_extra'`
+          - `m_Type` (Enum) = `Sliced`
+          - `m_PreserveAspect` (Boolean) = `False`
+          - `m_FillCenter` (Boolean) = `True`
+          - `m_FillMethod` (Enum) = `Radial 360`
+          - `m_FillAmount` (Float) = `1`
+          - `m_FillClockwise` (Boolean) = `True`
+          - `m_FillOrigin` (Integer) = `0`
+          - `m_UseSpriteMesh` (Boolean) = `False`
+          - `m_PixelsPerUnitMultiplier` (Float) = `1`
+        - `InteractPromptUI` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `InteractPromptUI (MonoScript) asset='Assets/Scripts/UI/InteractPromptUI.cs'`
+          - `root` (ObjectReference) = `InteractPromptUI (RectTransform) scenePath='UIOverlayRoot/Canvas/InteractPromptUI'`
+          - `rowRoot` (ObjectReference) = `RootRow (RectTransform) scenePath='UIOverlayRoot/Canvas/InteractPromptUI/Root/RootRow'`
+          - `rowPrefab` (ObjectReference) = `InteractPromptActionRow (InteractPromptActionRowUI) asset='Assets/Resources/Prefabs/Inventory/InteractPromptActionRow.prefab'`
+          - `worldCamera` (ObjectReference) = `Main Camera (Camera) scenePath='Main Camera'`
+          - `canvas` (ObjectReference) = `Canvas (Canvas) scenePath='UIOverlayRoot/Canvas'`
+          - `screenOffset` (Vector2) = `(0.00, 100.00)`
+      - `Root` | path=`UIOverlayRoot/Canvas/InteractPromptUI/Root` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `995.5, 414.5, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+            - `m_SizeDelta` (Vector2) = `(100.00, 100.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `RootRow` | path=`UIOverlayRoot/Canvas/InteractPromptUI/Root/RootRow` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `995.5, 414.5, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+              - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(100.00, 100.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `VerticalLayoutGroup` index=1 enabled=`True`
+              - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+              - `m_Padding` (Generic) = `<generic>`
+              - `m_ChildAlignment` (Enum) = `Upper Left`
+              - `m_Spacing` (Float) = `5`
+              - `m_ChildForceExpandWidth` (Boolean) = `True`
+              - `m_ChildForceExpandHeight` (Boolean) = `True`
+              - `m_ChildControlWidth` (Boolean) = `True`
+              - `m_ChildControlHeight` (Boolean) = `True`
+              - `m_ChildScaleWidth` (Boolean) = `False`
+              - `m_ChildScaleHeight` (Boolean) = `False`
+              - `m_ReverseArrangement` (Boolean) = `False`
+    - `InventoryPanelRoot` | path=`UIOverlayRoot/Canvas/InventoryPanelRoot` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `995.5, 414.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+          - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+          - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+          - `m_SizeDelta` (Vector2) = `(100.00, 100.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+      - `InventoryGridContainer` | path=`UIOverlayRoot/Canvas/InventoryPanelRoot/InventoryGridContainer` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `995.5, 414.5, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+            - `m_SizeDelta` (Vector2) = `(100.00, 100.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `GridLayoutGroup` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `GridLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/GridLayoutGroup.cs'`
+            - `m_Padding` (Generic) = `<generic>`
+            - `m_ChildAlignment` (Enum) = `Upper Left`
+            - `m_StartCorner` (Enum) = `Upper Left`
+            - `m_StartAxis` (Enum) = `Horizontal`
+            - `m_CellSize` (Vector2) = `(100.00, 100.00)`
+            - `m_Spacing` (Vector2) = `(8.00, 8.00)`
+            - `m_Constraint` (Enum) = `Fixed Column Count`
+            - `m_ConstraintCount` (Integer) = `6`
+    - `MapOverlayRoot (DEPRECATED)` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)` | activeSelf=False | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `995.5, 414.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+          - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+          - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+          - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `CanvasGroup` index=1 enabled=`True`
+          - `m_Alpha` (Float) = `1`
+          - `m_Interactable` (Boolean) = `True`
+          - `m_BlocksRaycasts` (Boolean) = `True`
+          - `m_IgnoreParentGroups` (Boolean) = `False`
+        - `CanvasRenderer` index=2 enabled=`n/a`
+          - `m_CullTransparentMesh` (Boolean) = `True`
+      - `MapPanel` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `995.5, 414.5, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+            - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+            - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(0.184, 0.646, 0.830, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `null`
+            - `m_Type` (Enum) = `Simple`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+        - `MapContent` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/MapContent` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `995.5, 414.5, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+              - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(10000.00, 6000.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `NodeContainer` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/MapContent/NodeContainer` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `995.5, 414.5, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(9900.00, 5900.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `NodeMarkers` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/MapContent/NodeMarkers` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `995.5, 414.5, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `PlayerMarker` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/MapContent/PlayerMarker` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `995.5, 414.5, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `0.25, 0.25, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(0.25, 0.25, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(100.00, 100.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 0.526, 0.353, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `False`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `null`
+                - `m_Type` (Enum) = `Simple`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `WorldMapPlayerMarkerUI` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `WorldMapPlayerMarkerUI (MonoScript) asset='Assets/Scripts/WorldMap/Player/WorldMapPlayerMarkerUI.cs'`
+                - `marker` (ObjectReference) = `PlayerMarker (RectTransform) scenePath='UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/MapContent/PlayerMarker'`
+                - `mapPanel` (ObjectReference) = `MapPanel (RectTransform) scenePath='UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel'`
+                - `generator` (ObjectReference) = `WorldGenerationRoot (WorldMapGraphGenerator) scenePath='WorldGenerationRoot'`
+                - `runtimeBinder` (ObjectReference) = `WorldMapRuntime (WorldMapRuntimeBinder) scenePath='WorldMapRuntime'`
+                - `playerRef` (ObjectReference) = `SceneContext (WorldMapPlayerRef) scenePath='SceneContext'`
+                - `pixelOffset` (Vector2) = `(0.00, 0.00)`
+                - `debugTravelT` (Float) = `0.5`
+          - `RouteEdge` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/MapContent/RouteEdge` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `38.04, -19.85, 0`
+              - worldPosition: `1017.517, 403.011, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(38.04, -19.85, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(38.04, -19.85)`
+                - `m_SizeDelta` (Vector2) = `(9900.00, 5900.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `UIEdgeGraphic` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `UIEdgeGraphic (MonoScript) asset='Assets/Scripts/WorldMap/UI/UIEdgeGraphic.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `False`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `lineThickness` (Float) = `5`
+        - `NodeOptions` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `-1710, 706.163, 0`
+            - worldPosition: `5.788, 823.212, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(-1710.00, 706.16, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(10.00, -10.00)`
+              - `m_SizeDelta` (Vector2) = `(200.00, 280.00)`
+              - `m_Pivot` (Vector2) = `(0.00, 1.00)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 0.392)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `Background (Sprite) asset='Resources/unity_builtin_extra'`
+              - `m_Type` (Enum) = `Sliced`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `ActiveSelection` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/ActiveSelection` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `100, -260, 0`
+              - worldPosition: `63.666, 672.73, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(100.00, -260.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, -120.00)`
+                - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Text` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_FontData` (Generic) = `<generic>`
+                - `m_Text` (String) = `New Text`
+          - `Dock` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Dock` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `100, -110, 0`
+              - worldPosition: `63.666, 759.547, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(100.00, -110.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 30.00)`
+                - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `Button` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `Dock (Image) scenePath='UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Dock'`
+                - `m_OnClick` (Generic) = `<generic>`
+            - `Dock` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Dock/Dock` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `63.666, 759.547, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `Text` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_FontData` (Generic) = `<generic>`
+                  - `m_Text` (String) = `Dock`
+          - `Food Balance` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Food Balance` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `100, -200, 0`
+              - worldPosition: `63.666, 707.456, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(100.00, -200.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, -60.00)`
+                - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `Button` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `Food Balance (Image) scenePath='UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Food Balance'`
+                - `m_OnClick` (Generic) = `<generic>`
+            - `Food Balance` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Food Balance/Food Balance` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `63.666, 707.456, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `Text` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_FontData` (Generic) = `<generic>`
+                  - `m_Text` (String) = `Food Balance`
+          - `None (Reset)` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/None (Reset)` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `100, -230, 0`
+              - worldPosition: `63.666, 690.093, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(100.00, -230.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, -90.00)`
+                - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `Button` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `None (Reset) (Image) scenePath='UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/None (Reset)'`
+                - `m_OnClick` (Generic) = `<generic>`
+            - `None (Reset)` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/None (Reset)/None (Reset)` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `63.666, 690.093, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `Text` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_FontData` (Generic) = `<generic>`
+                  - `m_Text` (String) = `None (Reset)`
+          - `Population` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Population` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `100, -170, 0`
+              - worldPosition: `63.666, 724.82, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(100.00, -170.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, -30.00)`
+                - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `Button` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `Population (Image) scenePath='UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Population'`
+                - `m_OnClick` (Generic) = `<generic>`
+            - `Population` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Population/Population` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `63.666, 724.82, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `Text` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_FontData` (Generic) = `<generic>`
+                  - `m_Text` (String) = `Population`
+          - `Prosperity` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Prosperity` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `100, -20, 0`
+              - worldPosition: `63.666, 811.637, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(100.00, -20.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 120.00)`
+                - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `Button` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `Prosperity (Image) scenePath='UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Prosperity'`
+                - `m_OnClick` (Generic) = `<generic>`
+            - `Prosperity` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Prosperity/Prosperity` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `63.666, 811.637, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `Text` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_FontData` (Generic) = `<generic>`
+                  - `m_Text` (String) = `Prosperity`
+          - `Security` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Security` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `100, -80, 0`
+              - worldPosition: `63.666, 776.91, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(100.00, -80.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 60.00)`
+                - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `Button` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `Security (Image) scenePath='UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Security'`
+                - `m_OnClick` (Generic) = `<generic>`
+            - `Security` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Security/Security` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `63.666, 776.91, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `Text` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_FontData` (Generic) = `<generic>`
+                  - `m_Text` (String) = `Security`
+          - `Stability` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Stability` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `100, -50, 0`
+              - worldPosition: `63.666, 794.273, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(100.00, -50.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 90.00)`
+                - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `Button` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `Stability (Image) scenePath='UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Stability'`
+                - `m_OnClick` (Generic) = `<generic>`
+            - `Stability` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Stability/Stability` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `63.666, 794.273, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `Text` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_FontData` (Generic) = `<generic>`
+                  - `m_Text` (String) = `Stability`
+          - `Trade` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Trade` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `100, -140, 0`
+              - worldPosition: `63.666, 742.183, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(100.00, -140.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `Button` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `Trade (Image) scenePath='UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Trade'`
+                - `m_OnClick` (Generic) = `<generic>`
+            - `Trade` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/NodeOptions/Trade/Trade` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `63.666, 742.183, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `Text` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_FontData` (Generic) = `<generic>`
+                  - `m_Text` (String) = `Trade`
+        - `TravelOptions` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/TravelOptions` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 706.163, 0`
+            - worldPosition: `995.5, 823.212, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 706.16, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.50, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.50, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, -10.00)`
+              - `m_SizeDelta` (Vector2) = `(200.00, 100.00)`
+              - `m_Pivot` (Vector2) = `(0.00, 1.00)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 0.392)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `Background (Sprite) asset='Resources/unity_builtin_extra'`
+              - `m_Type` (Enum) = `Sliced`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Lock` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/TravelOptions/Lock` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `100, -30, 0`
+              - worldPosition: `1053.378, 805.849, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(100.00, -30.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 20.00)`
+                - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `Button` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `Lock (Image) scenePath='UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/TravelOptions/Lock'`
+                - `m_OnClick` (Generic) = `<generic>`
+            - `Lock` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/TravelOptions/Lock/Lock` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `1053.378, 805.849, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `Text` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_FontData` (Generic) = `<generic>`
+                  - `m_Text` (String) = `Lock`
+          - `Unlock` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/TravelOptions/Unlock` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `100, -70, 0`
+              - worldPosition: `1053.378, 782.698, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(100.00, -70.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, -20.00)`
+                - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `Button` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `Unlock (Image) scenePath='UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/TravelOptions/Unlock'`
+                - `m_OnClick` (Generic) = `<generic>`
+            - `Unlock` | path=`UIOverlayRoot/Canvas/MapOverlayRoot (DEPRECATED)/MapPanel/TravelOptions/Unlock/Unlock` | activeSelf=True | activeInHierarchy=False | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `1053.378, 782.698, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `Text` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_FontData` (Generic) = `<generic>`
+                  - `m_Text` (String) = `Unlock`
+    - `NodeUI` | path=`UIOverlayRoot/Canvas/NodeUI` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, -566.163, 0`
+        - worldPosition: `995.5, 86.817, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, -566.16, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.50, 0.00)`
+          - `m_AnchorMax` (Vector2) = `(0.50, 0.00)`
+          - `m_AnchoredPosition` (Vector2) = `(0.00, 150.00)`
+          - `m_SizeDelta` (Vector2) = `(100.00, 100.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+      - `Embark!` | path=`UIOverlayRoot/Canvas/NodeUI/Embark!` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `995.5, 86.817, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+            - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+            - `m_Type` (Enum) = `Sliced`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Button` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `Embark! (Image) scenePath='UIOverlayRoot/Canvas/NodeUI/Embark!'`
+            - `m_OnClick` (Generic) = `<generic>`
+        - `Embark!` | path=`UIOverlayRoot/Canvas/NodeUI/Embark!/Embark!` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `995.5, 86.817, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Text` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_FontData` (Generic) = `<generic>`
+              - `m_Text` (String) = `Embark!`
+    - `PlayerInventoryUI` | path=`UIOverlayRoot/Canvas/PlayerInventoryUI` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `995.5, 414.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.50, 0.50)`
+          - `m_AnchorMax` (Vector2) = `(0.50, 0.50)`
+          - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+          - `m_SizeDelta` (Vector2) = `(100.00, 100.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `PlayerInventoryUI` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `PlayerInventoryUI (MonoScript) asset='Assets/Scripts/Inventory/PlayerInventoryUI.cs'`
+          - `inventory` (ObjectReference) = `PlayerInventory (PlayerInventory) scenePath='CharacterPlayer/PlayerInventory'`
+          - `equipment` (ObjectReference) = `PlayerEquipment (PlayerEquipment) scenePath='CharacterPlayer/PlayerEquipment'`
+          - `dragController` (ObjectReference) = `BottomBarRoot (InventoryDragController) scenePath='UIOverlayRoot/Canvas/BottomBarRoot'`
+          - `appendagesGroup` (ObjectReference) = `AppendagesSlotsContainer (RectTransform) scenePath='UIOverlayRoot/Canvas/BottomBarRoot/AppendagesVerticalContainer/AppendagesSlotsContainer'`
+          - `hotbarGroup` (ObjectReference) = `HotbarSlotsContainer (RectTransform) scenePath='UIOverlayRoot/Canvas/BottomBarRoot/HotbarVerticalContainer/HotbarSlotsContainer'`
+          - `bodyGroup` (ObjectReference) = `BodySlotsContainer (RectTransform) scenePath='UIOverlayRoot/Canvas/BottomBarRoot/BodyVerticalContainer/BodySlotsContainer'`
+          - `slotPrefab` (ObjectReference) = `InventorySlotUI (InventorySlotUI) asset='Assets/Resources/Prefabs/Inventory/InventorySlotUI.prefab'`
+          - `inventoryPanelRoot` (ObjectReference) = `InventoryPanelRoot (GameObject) scenePath='UIOverlayRoot/Canvas/InventoryPanelRoot'`
+          - `containerPanel` (ObjectReference) = `BottomBarRoot (ContainerInventoryPanelUI) scenePath='UIOverlayRoot/Canvas/BottomBarRoot'`
+          - `allSlots` (Generic) = `array size=0`
+          - `handsSlotIcon` (ObjectReference) = `InventorySlotHand_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/InventorySlotHand_Sprite.gif'`
+          - `headSlotIcon` (ObjectReference) = `InventorySlotHead_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/InventorySlotHead_Sprite.gif'`
+          - `feetSlotIcon` (ObjectReference) = `InventorySlotFeet_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/InventorySlotFeet_Sprite.gif'`
+          - `toolbeltSlotIcon` (ObjectReference) = `InventorySlotToolbelt_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/InventorySlotToolbelt_Sprite.gif'`
+          - `backpackSlotIcon` (ObjectReference) = `InventorySlotBackpack_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/InventorySlotBackpack_Sprite.gif'`
+          - `bodySlotIcon` (ObjectReference) = `InventorySlotBody_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/InventorySlotBody_Sprite.gif'`
+          - `loadoutOverlay` (ObjectReference) = `BottomBarRoot (LoadoutContainerOverlayUI) scenePath='UIOverlayRoot/Canvas/BottomBarRoot'`
+          - `closeViaGlobalEscapeRouter` (Boolean) = `True`
+          - `escapePriority` (Integer) = `300`
+          - `verboseLogging` (Boolean) = `False`
+    - `SaveLoadPanelRoot` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `995.5, 414.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1.515, 1.515, 1.515`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.51, 1.51, 1.51)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.20, 0.10)`
+          - `m_AnchorMax` (Vector2) = `(0.80, 0.90)`
+          - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+          - `m_SizeDelta` (Vector2) = `(-701.40, -335.62)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `CanvasRenderer` index=1 enabled=`n/a`
+          - `m_CullTransparentMesh` (Boolean) = `True`
+        - `Image` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+          - `m_Material` (ObjectReference) = `null`
+          - `m_Color` (Color) = `RGBA(0.096, 0.177, 0.453, 0.796)`
+          - `m_RaycastTarget` (Boolean) = `True`
+          - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+          - `m_Maskable` (Boolean) = `True`
+          - `m_OnCullStateChanged` (Generic) = `<generic>`
+          - `m_Sprite` (ObjectReference) = `Background (Sprite) asset='Resources/unity_builtin_extra'`
+          - `m_Type` (Enum) = `Sliced`
+          - `m_PreserveAspect` (Boolean) = `False`
+          - `m_FillCenter` (Boolean) = `True`
+          - `m_FillMethod` (Enum) = `Radial 360`
+          - `m_FillAmount` (Float) = `1`
+          - `m_FillClockwise` (Boolean) = `True`
+          - `m_FillOrigin` (Integer) = `0`
+          - `m_UseSpriteMesh` (Boolean) = `False`
+          - `m_PixelsPerUnitMultiplier` (Float) = `1`
+        - `SaveLoadPanelUI` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `SaveLoadPanelUI (MonoScript) asset='Assets/Scripts/Saves/SaveLoadPanelUI.cs'`
+          - `root` (ObjectReference) = `SaveLoadPanelRoot (GameObject) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot'`
+          - `saveLoad` (ObjectReference) = `null`
+          - `dialog` (ObjectReference) = `ChoiceDialogRoot (ChoiceDialogUI) scenePath='UIOverlayRoot/Canvas/ChoiceDialogRoot'`
+          - `slotListRoot` (ObjectReference) = `Content (RectTransform) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Viewport/Content'`
+          - `slotRowPrefab` (ObjectReference) = `SaveSlotRow (SaveSlotRowUI) asset='Assets/Resources/Prefabs/UI/SaveSlotRow.prefab'`
+          - `selectedSlotText` (ObjectReference) = `SelectedSaveText (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText'`
+          - `slotIdInput` (ObjectReference) = `SlotIdInput (TMP_InputField) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput'`
+          - `displayNameInput` (ObjectReference) = `SlotIdInput (TMP_InputField) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput'`
+          - `saveSelectedButton` (ObjectReference) = `SaveButton (Button) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/SaveButton'`
+          - `loadSelectedButton` (ObjectReference) = `LoadButton (Button) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/LoadButton'`
+          - `newSaveButton` (ObjectReference) = `NewSaveButton (Button) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton'`
+          - `deleteSelectedButton` (ObjectReference) = `null`
+          - `openFolderButton` (ObjectReference) = `OpenFolderButton (Button) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/OpenFolderButton'`
+          - `closeButton` (ObjectReference) = `CloseButton (Button) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/CloseButton'`
+          - `statusText` (ObjectReference) = `StatusText (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/StatusText'`
+          - `closeViaGlobalEscapeRouter` (Boolean) = `True`
+          - `escapePriority` (Integer) = `900`
+          - `versionText` (ObjectReference) = `null`
+          - `refreshSlotListOnOpen` (Boolean) = `True`
+        - `VerticalLayoutGroup` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+          - `m_Padding` (Generic) = `<generic>`
+          - `m_ChildAlignment` (Enum) = `Upper Center`
+          - `m_Spacing` (Float) = `16`
+          - `m_ChildForceExpandWidth` (Boolean) = `True`
+          - `m_ChildForceExpandHeight` (Boolean) = `False`
+          - `m_ChildControlWidth` (Boolean) = `True`
+          - `m_ChildControlHeight` (Boolean) = `False`
+          - `m_ChildScaleWidth` (Boolean) = `False`
+          - `m_ChildScaleHeight` (Boolean) = `False`
+          - `m_ReverseArrangement` (Boolean) = `False`
+      - `Body` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 142.758, 0`
+          - worldPosition: `995.5, 539.657, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 142.76, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(681.30, -262.36)`
+            - `m_SizeDelta` (Vector2) = `(1314.60, 387.27)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `HorizontalLayoutGroup` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `HorizontalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/HorizontalLayoutGroup.cs'`
+            - `m_Padding` (Generic) = `<generic>`
+            - `m_ChildAlignment` (Enum) = `Upper Left`
+            - `m_Spacing` (Float) = `20`
+            - `m_ChildForceExpandWidth` (Boolean) = `True`
+            - `m_ChildForceExpandHeight` (Boolean) = `True`
+            - `m_ChildControlWidth` (Boolean) = `True`
+            - `m_ChildControlHeight` (Boolean) = `True`
+            - `m_ChildScaleWidth` (Boolean) = `False`
+            - `m_ChildScaleHeight` (Boolean) = `False`
+            - `m_ReverseArrangement` (Boolean) = `False`
+          - `LayoutElement` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+            - `m_IgnoreLayout` (Boolean) = `False`
+            - `m_MinWidth` (Float) = `-1`
+            - `m_MinHeight` (Float) = `-1`
+            - `m_PreferredWidth` (Float) = `-1`
+            - `m_PreferredHeight` (Float) = `450`
+            - `m_FlexibleWidth` (Float) = `-1`
+            - `m_FlexibleHeight` (Float) = `1`
+            - `m_LayoutPriority` (Integer) = `1`
+        - `LeftColumn` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `-322.073, 0, 0`
+            - worldPosition: `713.137, 539.657, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(-322.07, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(335.23, -193.64)`
+              - `m_SizeDelta` (Vector2) = `(670.45, 387.27)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `VerticalLayoutGroup` index=1 enabled=`True`
+              - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+              - `m_Padding` (Generic) = `<generic>`
+              - `m_ChildAlignment` (Enum) = `Upper Left`
+              - `m_Spacing` (Float) = `8`
+              - `m_ChildForceExpandWidth` (Boolean) = `True`
+              - `m_ChildForceExpandHeight` (Boolean) = `False`
+              - `m_ChildControlWidth` (Boolean) = `True`
+              - `m_ChildControlHeight` (Boolean) = `False`
+              - `m_ChildScaleWidth` (Boolean) = `False`
+              - `m_ChildScaleHeight` (Boolean) = `False`
+              - `m_ReverseArrangement` (Boolean) = `False`
+            - `LayoutElement` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+              - `m_IgnoreLayout` (Boolean) = `False`
+              - `m_MinWidth` (Float) = `-1`
+              - `m_MinHeight` (Float) = `-1`
+              - `m_PreferredWidth` (Float) = `-1`
+              - `m_PreferredHeight` (Float) = `-1`
+              - `m_FlexibleWidth` (Float) = `1.2`
+              - `m_FlexibleHeight` (Float) = `-1`
+              - `m_LayoutPriority` (Integer) = `1`
+          - `ExistingSavesScrollView` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, -16.364, 0`
+              - worldPosition: `713.137, 525.311, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, -16.36, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(335.23, -210.00)`
+                - `m_SizeDelta` (Vector2) = `(670.45, 340.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `LayoutElement` index=1 enabled=`True`
+                - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+                - `m_IgnoreLayout` (Boolean) = `False`
+                - `m_MinWidth` (Float) = `-1`
+                - `m_MinHeight` (Float) = `-1`
+                - `m_PreferredWidth` (Float) = `-1`
+                - `m_PreferredHeight` (Float) = `340`
+                - `m_FlexibleWidth` (Float) = `-1`
+                - `m_FlexibleHeight` (Float) = `1`
+                - `m_LayoutPriority` (Integer) = `1`
+              - `CanvasRenderer` index=2 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(0.000, 0.000, 0.000, 0.525)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `null`
+                - `m_Type` (Enum) = `Simple`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `ScrollRect` index=4 enabled=`True`
+                - `m_Script` (ObjectReference) = `ScrollRect (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/ScrollRect.cs'`
+                - `m_Content` (ObjectReference) = `Content (RectTransform) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Viewport/Content'`
+                - `m_Horizontal` (Boolean) = `False`
+                - `m_Vertical` (Boolean) = `True`
+                - `m_MovementType` (Enum) = `Clamped`
+                - `m_Elasticity` (Float) = `0.1`
+                - `m_Inertia` (Boolean) = `True`
+                - `m_DecelerationRate` (Float) = `0.135`
+                - `m_ScrollSensitivity` (Float) = `6`
+                - `m_Viewport` (ObjectReference) = `Viewport (RectTransform) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Viewport'`
+                - `m_HorizontalScrollbar` (ObjectReference) = `null`
+                - `m_VerticalScrollbar` (ObjectReference) = `Scrollbar (Scrollbar) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Scrollbar'`
+                - `m_HorizontalScrollbarVisibility` (Enum) = `Permanent`
+                - `m_VerticalScrollbarVisibility` (Enum) = `Permanent`
+                - `m_HorizontalScrollbarSpacing` (Float) = `0`
+                - `m_VerticalScrollbarSpacing` (Float) = `0`
+                - `m_OnValueChanged` (Generic) = `<generic>`
+            - `Scrollbar` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Scrollbar` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `325.227, 0, 0`
+                - worldPosition: `998.266, 525.311, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(325.23, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(1.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(-10.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(20.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `Image` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_Sprite` (ObjectReference) = `Background (Sprite) asset='Resources/unity_builtin_extra'`
+                  - `m_Type` (Enum) = `Sliced`
+                  - `m_PreserveAspect` (Boolean) = `False`
+                  - `m_FillCenter` (Boolean) = `True`
+                  - `m_FillMethod` (Enum) = `Radial 360`
+                  - `m_FillAmount` (Float) = `1`
+                  - `m_FillClockwise` (Boolean) = `True`
+                  - `m_FillOrigin` (Integer) = `0`
+                  - `m_UseSpriteMesh` (Boolean) = `False`
+                  - `m_PixelsPerUnitMultiplier` (Float) = `1`
+                - `Scrollbar` index=3 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Scrollbar (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Scrollbar.cs'`
+                  - `m_Navigation` (Generic) = `<generic>`
+                  - `m_Transition` (Enum) = `Color Tint`
+                  - `m_Colors` (Generic) = `<generic>`
+                  - `m_SpriteState` (Generic) = `<generic>`
+                  - `m_AnimationTriggers` (Generic) = `<generic>`
+                  - `m_Interactable` (Boolean) = `True`
+                  - `m_TargetGraphic` (ObjectReference) = `Handle (Image) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Scrollbar/Sliding Area/Handle'`
+                  - `m_HandleRect` (ObjectReference) = `Handle (RectTransform) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Scrollbar/Sliding Area/Handle'`
+                  - `m_Direction` (Enum) = `Top To Bottom`
+                  - `m_Value` (Float) = `1`
+                  - `m_Size` (Float) = `0.167`
+                  - `m_NumberOfSteps` (Integer) = `0`
+                  - `m_OnValueChanged` (Generic) = `<generic>`
+              - `Sliding Area` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Scrollbar/Sliding Area` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+                - Transform:
+                  - localPosition: `0, 0, 0`
+                  - worldPosition: `998.266, 525.311, 0`
+                  - localRotationEuler: `0, 0, 0`
+                  - worldRotationEuler: `0, 0, 0`
+                  - localScale: `1, 1, 1`
+                - Components:
+                  - `RectTransform` index=0 enabled=`n/a`
+                    - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                    - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                    - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                    - `m_ConstrainProportionsScale` (Boolean) = `False`
+                    - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                    - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                    - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                    - `m_SizeDelta` (Vector2) = `(-20.00, -20.00)`
+                    - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `Handle` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Scrollbar/Sliding Area/Handle` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+                  - Transform:
+                    - localPosition: `0, -133.333, 0`
+                    - worldPosition: `998.266, 408.416, 0`
+                    - localRotationEuler: `0, 0, 0`
+                    - worldRotationEuler: `0, 0, 0`
+                    - localScale: `1, 1, 1`
+                  - Components:
+                    - `RectTransform` index=0 enabled=`n/a`
+                      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                      - `m_LocalPosition` (Vector3) = `(0.00, -133.33, 0.00)`
+                      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                      - `m_ConstrainProportionsScale` (Boolean) = `False`
+                      - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                      - `m_AnchorMax` (Vector2) = `(1.00, 0.17)`
+                      - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                      - `m_SizeDelta` (Vector2) = `(20.00, 20.00)`
+                      - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                    - `CanvasRenderer` index=1 enabled=`n/a`
+                      - `m_CullTransparentMesh` (Boolean) = `True`
+                    - `Image` index=2 enabled=`True`
+                      - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                      - `m_Material` (ObjectReference) = `null`
+                      - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                      - `m_RaycastTarget` (Boolean) = `True`
+                      - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                      - `m_Maskable` (Boolean) = `True`
+                      - `m_OnCullStateChanged` (Generic) = `<generic>`
+                      - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                      - `m_Type` (Enum) = `Sliced`
+                      - `m_PreserveAspect` (Boolean) = `False`
+                      - `m_FillCenter` (Boolean) = `True`
+                      - `m_FillMethod` (Enum) = `Radial 360`
+                      - `m_FillAmount` (Float) = `1`
+                      - `m_FillClockwise` (Boolean) = `True`
+                      - `m_FillOrigin` (Integer) = `0`
+                      - `m_UseSpriteMesh` (Boolean) = `False`
+                      - `m_PixelsPerUnitMultiplier` (Float) = `1`
+            - `Viewport` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Viewport` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `713.137, 525.311, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `Image` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 0.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_Sprite` (ObjectReference) = `null`
+                  - `m_Type` (Enum) = `Simple`
+                  - `m_PreserveAspect` (Boolean) = `False`
+                  - `m_FillCenter` (Boolean) = `True`
+                  - `m_FillMethod` (Enum) = `Radial 360`
+                  - `m_FillAmount` (Float) = `1`
+                  - `m_FillClockwise` (Boolean) = `True`
+                  - `m_FillOrigin` (Integer) = `0`
+                  - `m_UseSpriteMesh` (Boolean) = `False`
+                  - `m_PixelsPerUnitMultiplier` (Float) = `1`
+                - `RectMask2D` index=3 enabled=`True`
+                  - `m_Script` (ObjectReference) = `RectMask2D (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/RectMask2D.cs'`
+                  - `m_Padding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Softness` (Vector2Int) = `(0, 0)`
+              - `Content` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Viewport/Content` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+                - Transform:
+                  - localPosition: `0, -850, 0`
+                  - worldPosition: `713.137, -219.89, 0`
+                  - localRotationEuler: `0, 0, 0`
+                  - worldRotationEuler: `0, 0, 0`
+                  - localScale: `1, 1, 1`
+                - Components:
+                  - `RectTransform` index=0 enabled=`n/a`
+                    - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                    - `m_LocalPosition` (Vector3) = `(0.00, -850.00, 0.00)`
+                    - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                    - `m_ConstrainProportionsScale` (Boolean) = `False`
+                    - `m_AnchorMin` (Vector2) = `(0.00, -5.00)`
+                    - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                    - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                    - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                    - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                  - `VerticalLayoutGroup` index=1 enabled=`True`
+                    - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+                    - `m_Padding` (Generic) = `<generic>`
+                    - `m_ChildAlignment` (Enum) = `Upper Left`
+                    - `m_Spacing` (Float) = `6`
+                    - `m_ChildForceExpandWidth` (Boolean) = `True`
+                    - `m_ChildForceExpandHeight` (Boolean) = `False`
+                    - `m_ChildControlWidth` (Boolean) = `True`
+                    - `m_ChildControlHeight` (Boolean) = `True`
+                    - `m_ChildScaleWidth` (Boolean) = `False`
+                    - `m_ChildScaleHeight` (Boolean) = `False`
+                    - `m_ReverseArrangement` (Boolean) = `False`
+          - `SaveLoadText` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 177.636, 0`
+              - worldPosition: `713.137, 695.392, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 177.64, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(335.23, -16.00)`
+                - `m_SizeDelta` (Vector2) = `(670.45, 32.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `TextMeshProUGUI` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_text` (String) = `Existing Saves`
+                - `m_isRightToLeft` (Boolean) = `False`
+                - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_fontSharedMaterials` (Generic) = `array size=0`
+                - `m_fontMaterial` (ObjectReference) = `null`
+                - `m_fontMaterials` (Generic) = `array size=0`
+                - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_enableVertexGradient` (Boolean) = `False`
+                - `m_colorMode` (Enum) = `Four Corners Gradient`
+                - `m_fontColorGradient` (Generic) = `<generic>`
+                - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                - `m_spriteAsset` (ObjectReference) = `null`
+                - `m_tintAllSprites` (Boolean) = `False`
+                - `m_StyleSheet` (ObjectReference) = `null`
+                - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                - `m_overrideHtmlColors` (Boolean) = `False`
+                - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_fontSize` (Float) = `22`
+                - `m_fontSizeBase` (Float) = `22`
+                - `m_fontWeight` (Enum) = `Regular`
+                - `m_enableAutoSizing` (Boolean) = `False`
+                - `m_fontSizeMin` (Float) = `18`
+                - `m_fontSizeMax` (Float) = `72`
+                - `m_fontStyle` (Enum) = `Bold`
+                - `m_HorizontalAlignment` (Enum) = `Left`
+                - `m_VerticalAlignment` (Enum) = `Middle`
+                - `m_textAlignment` (Enum) = `Converted`
+                - `m_characterSpacing` (Float) = `0`
+                - `m_characterHorizontalScale` (Float) = `1`
+                - `m_wordSpacing` (Float) = `0`
+                - `m_lineSpacing` (Float) = `0`
+                - `m_lineSpacingMax` (Float) = `0`
+                - `m_paragraphSpacing` (Float) = `0`
+                - `m_charWidthMaxAdj` (Float) = `0`
+                - `m_TextWrappingMode` (Enum) = `Normal`
+                - `m_wordWrappingRatios` (Float) = `0.4`
+                - `m_overflowMode` (Enum) = `Overflow`
+                - `m_linkedTextComponent` (ObjectReference) = `null`
+                - `parentLinkedComponent` (ObjectReference) = `null`
+                - `m_enableKerning` (Boolean) = `False`
+                - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                - `m_enableExtraPadding` (Boolean) = `False`
+                - `checkPaddingRequired` (Boolean) = `False`
+                - `m_isRichText` (Boolean) = `True`
+                - `m_EmojiFallbackSupport` (Boolean) = `True`
+                - `m_parseCtrlCharacters` (Boolean) = `True`
+                - `m_isOrthographic` (Boolean) = `True`
+                - `m_isCullingEnabled` (Boolean) = `False`
+                - `m_horizontalMapping` (Enum) = `Character`
+                - `m_verticalMapping` (Enum) = `Character`
+                - `m_uvLineOffset` (Float) = `0`
+                - `m_geometrySortingOrder` (Enum) = `Normal`
+                - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                - `m_useMaxVisibleDescender` (Boolean) = `True`
+                - `m_pageToDisplay` (Integer) = `1`
+                - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                - `m_isVolumetricText` (Boolean) = `False`
+                - `m_hasFontAssetChanged` (Boolean) = `False`
+                - `m_baseMaterial` (ObjectReference) = `null`
+                - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+        - `RightColumn` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `345.227, 0, 0`
+            - worldPosition: `1298.163, 539.657, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(345.23, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(1002.53, -193.64)`
+              - `m_SizeDelta` (Vector2) = `(624.15, 387.27)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `VerticalLayoutGroup` index=1 enabled=`True`
+              - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+              - `m_Padding` (Generic) = `<generic>`
+              - `m_ChildAlignment` (Enum) = `Upper Left`
+              - `m_Spacing` (Float) = `10`
+              - `m_ChildForceExpandWidth` (Boolean) = `True`
+              - `m_ChildForceExpandHeight` (Boolean) = `False`
+              - `m_ChildControlWidth` (Boolean) = `True`
+              - `m_ChildControlHeight` (Boolean) = `True`
+              - `m_ChildScaleWidth` (Boolean) = `False`
+              - `m_ChildScaleHeight` (Boolean) = `False`
+              - `m_ReverseArrangement` (Boolean) = `False`
+            - `LayoutElement` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+              - `m_IgnoreLayout` (Boolean) = `False`
+              - `m_MinWidth` (Float) = `-1`
+              - `m_MinHeight` (Float) = `-1`
+              - `m_PreferredWidth` (Float) = `-1`
+              - `m_PreferredHeight` (Float) = `-1`
+              - `m_FlexibleWidth` (Float) = `1`
+              - `m_FlexibleHeight` (Float) = `-1`
+              - `m_LayoutPriority` (Integer) = `1`
+          - `DisplayNameInput` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, -109.594, 0`
+              - worldPosition: `1298.163, 443.575, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, -109.59, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(312.07, -303.23)`
+                - `m_SizeDelta` (Vector2) = `(624.15, 36.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `InputFieldBackground (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `TMP_InputField` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `TMP_InputField (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TMP_InputField.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `DisplayNameInput (Image) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput'`
+                - `m_TextViewport` (ObjectReference) = `Text Area (RectTransform) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area'`
+                - `m_TextComponent` (ObjectReference) = `Text (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text'`
+                - `m_Placeholder` (ObjectReference) = `Placeholder (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder'`
+                - `m_VerticalScrollbar` (ObjectReference) = `null`
+                - `m_VerticalScrollbarEventHandler` (ObjectReference) = `null`
+                - `m_LayoutGroup` (ObjectReference) = `null`
+                - `m_ScrollSensitivity` (Float) = `1`
+                - `m_ContentType` (Enum) = `Standard`
+                - `m_InputType` (Enum) = `Standard`
+                - `m_AsteriskChar` (Character) = `*`
+                - `m_KeyboardType` (Enum) = `Default`
+                - `m_LineType` (Enum) = `Single Line`
+                - `m_HideMobileInput` (Boolean) = `False`
+                - `m_HideSoftKeyboard` (Boolean) = `False`
+                - `m_CharacterValidation` (Enum) = `None`
+                - `m_RegexValue` (String) = ``
+                - `m_GlobalPointSize` (Float) = `14`
+                - `m_CharacterLimit` (Integer) = `0`
+                - `m_OnEndEdit` (Generic) = `<generic>`
+                - `m_OnSubmit` (Generic) = `<generic>`
+                - `m_OnSelect` (Generic) = `<generic>`
+                - `m_OnDeselect` (Generic) = `<generic>`
+                - `m_OnTextSelection` (Generic) = `<generic>`
+                - `m_OnEndTextSelection` (Generic) = `<generic>`
+                - `m_OnValueChanged` (Generic) = `<generic>`
+                - `m_OnTouchScreenKeyboardStatusChanged` (Generic) = `<generic>`
+                - `m_CaretColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_CustomCaretColor` (Boolean) = `False`
+                - `m_SelectionColor` (Color) = `RGBA(0.659, 0.808, 1.000, 0.753)`
+                - `m_Text` (String) = `Display Name`
+                - `m_CaretBlinkRate` (Float) = `0.85`
+                - `m_CaretWidth` (Integer) = `1`
+                - `m_ReadOnly` (Boolean) = `False`
+                - `m_RichText` (Boolean) = `True`
+                - `m_GlobalFontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_OnFocusSelectAll` (Boolean) = `True`
+                - `m_ResetOnDeActivation` (Boolean) = `True`
+                - `m_KeepTextSelectionVisible` (Boolean) = `False`
+                - `m_RestoreOriginalTextOnEscape` (Boolean) = `True`
+                - `m_isRichTextEditingAllowed` (Boolean) = `False`
+                - `m_LineLimit` (Integer) = `0`
+                - `isAlert` (Boolean) = `False`
+                - `m_InputValidator` (ObjectReference) = `null`
+                - `m_ShouldActivateOnSelect` (Boolean) = `True`
+              - `LayoutElement` index=4 enabled=`True`
+                - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+                - `m_IgnoreLayout` (Boolean) = `False`
+                - `m_MinWidth` (Float) = `-1`
+                - `m_MinHeight` (Float) = `-1`
+                - `m_PreferredWidth` (Float) = `-1`
+                - `m_PreferredHeight` (Float) = `36`
+                - `m_FlexibleWidth` (Float) = `-1`
+                - `m_FlexibleHeight` (Float) = `-1`
+                - `m_LayoutPriority` (Integer) = `1`
+            - `Text Area` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, -0.5, 0`
+                - worldPosition: `1298.163, 443.137, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, -0.50, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, -0.50)`
+                  - `m_SizeDelta` (Vector2) = `(-20.00, -13.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `RectMask2D` index=1 enabled=`True`
+                  - `m_Script` (ObjectReference) = `RectMask2D (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/RectMask2D.cs'`
+                  - `m_Padding` (Vector4) = `(-8.00, -5.00, -8.00, -5.00)`
+                  - `m_Softness` (Vector2Int) = `(0, 0)`
+              - `Placeholder` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+                - Transform:
+                  - localPosition: `0, 0, 0`
+                  - worldPosition: `1298.163, 443.137, 0`
+                  - localRotationEuler: `0, 0, 0`
+                  - worldRotationEuler: `0, 0, 0`
+                  - localScale: `1, 1, 1`
+                - Components:
+                  - `RectTransform` index=0 enabled=`n/a`
+                    - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                    - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                    - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                    - `m_ConstrainProportionsScale` (Boolean) = `False`
+                    - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                    - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                    - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                    - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                    - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                  - `CanvasRenderer` index=1 enabled=`n/a`
+                    - `m_CullTransparentMesh` (Boolean) = `True`
+                  - `TextMeshProUGUI` index=2 enabled=`False`
+                    - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                    - `m_Material` (ObjectReference) = `null`
+                    - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                    - `m_RaycastTarget` (Boolean) = `True`
+                    - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                    - `m_Maskable` (Boolean) = `True`
+                    - `m_OnCullStateChanged` (Generic) = `<generic>`
+                    - `m_text` (String) = `Enter text...`
+                    - `m_isRightToLeft` (Boolean) = `False`
+                    - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                    - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                    - `m_fontSharedMaterials` (Generic) = `array size=0`
+                    - `m_fontMaterial` (ObjectReference) = `null`
+                    - `m_fontMaterials` (Generic) = `array size=0`
+                    - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 0.502)`
+                    - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 0.500)`
+                    - `m_enableVertexGradient` (Boolean) = `False`
+                    - `m_colorMode` (Enum) = `Four Corners Gradient`
+                    - `m_fontColorGradient` (Generic) = `<generic>`
+                    - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                    - `m_spriteAsset` (ObjectReference) = `null`
+                    - `m_tintAllSprites` (Boolean) = `False`
+                    - `m_StyleSheet` (ObjectReference) = `null`
+                    - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                    - `m_overrideHtmlColors` (Boolean) = `False`
+                    - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                    - `m_fontSize` (Float) = `14`
+                    - `m_fontSizeBase` (Float) = `14`
+                    - `m_fontWeight` (Enum) = `Regular`
+                    - `m_enableAutoSizing` (Boolean) = `False`
+                    - `m_fontSizeMin` (Float) = `18`
+                    - `m_fontSizeMax` (Float) = `72`
+                    - `m_fontStyle` (Enum) = `Italic`
+                    - `m_HorizontalAlignment` (Enum) = `Left`
+                    - `m_VerticalAlignment` (Enum) = `Top`
+                    - `m_textAlignment` (Enum) = `Converted`
+                    - `m_characterSpacing` (Float) = `0`
+                    - `m_characterHorizontalScale` (Float) = `1`
+                    - `m_wordSpacing` (Float) = `0`
+                    - `m_lineSpacing` (Float) = `0`
+                    - `m_lineSpacingMax` (Float) = `0`
+                    - `m_paragraphSpacing` (Float) = `0`
+                    - `m_charWidthMaxAdj` (Float) = `0`
+                    - `m_TextWrappingMode` (Enum) = `No Wrap`
+                    - `m_wordWrappingRatios` (Float) = `0.4`
+                    - `m_overflowMode` (Enum) = `Overflow`
+                    - `m_linkedTextComponent` (ObjectReference) = `null`
+                    - `parentLinkedComponent` (ObjectReference) = `null`
+                    - `m_enableKerning` (Boolean) = `False`
+                    - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                    - `m_enableExtraPadding` (Boolean) = `True`
+                    - `checkPaddingRequired` (Boolean) = `False`
+                    - `m_isRichText` (Boolean) = `True`
+                    - `m_EmojiFallbackSupport` (Boolean) = `True`
+                    - `m_parseCtrlCharacters` (Boolean) = `True`
+                    - `m_isOrthographic` (Boolean) = `True`
+                    - `m_isCullingEnabled` (Boolean) = `False`
+                    - `m_horizontalMapping` (Enum) = `Character`
+                    - `m_verticalMapping` (Enum) = `Character`
+                    - `m_uvLineOffset` (Float) = `0`
+                    - `m_geometrySortingOrder` (Enum) = `Normal`
+                    - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                    - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                    - `m_useMaxVisibleDescender` (Boolean) = `True`
+                    - `m_pageToDisplay` (Integer) = `1`
+                    - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                    - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                    - `m_isVolumetricText` (Boolean) = `False`
+                    - `m_hasFontAssetChanged` (Boolean) = `False`
+                    - `m_baseMaterial` (ObjectReference) = `null`
+                    - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `LayoutElement` index=3 enabled=`True`
+                    - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+                    - `m_IgnoreLayout` (Boolean) = `True`
+                    - `m_MinWidth` (Float) = `-1`
+                    - `m_MinHeight` (Float) = `-1`
+                    - `m_PreferredWidth` (Float) = `-1`
+                    - `m_PreferredHeight` (Float) = `-1`
+                    - `m_FlexibleWidth` (Float) = `-1`
+                    - `m_FlexibleHeight` (Float) = `-1`
+                    - `m_LayoutPriority` (Integer) = `1`
+              - `Text` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+                - Transform:
+                  - localPosition: `0, 0, 0`
+                  - worldPosition: `1298.163, 443.137, 0`
+                  - localRotationEuler: `0, 0, 0`
+                  - worldRotationEuler: `0, 0, 0`
+                  - localScale: `1, 1, 1`
+                - Components:
+                  - `RectTransform` index=0 enabled=`n/a`
+                    - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                    - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                    - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                    - `m_ConstrainProportionsScale` (Boolean) = `False`
+                    - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                    - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                    - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                    - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                    - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                  - `CanvasRenderer` index=1 enabled=`n/a`
+                    - `m_CullTransparentMesh` (Boolean) = `True`
+                  - `TextMeshProUGUI` index=2 enabled=`True`
+                    - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                    - `m_Material` (ObjectReference) = `null`
+                    - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                    - `m_RaycastTarget` (Boolean) = `True`
+                    - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                    - `m_Maskable` (Boolean) = `True`
+                    - `m_OnCullStateChanged` (Generic) = `<generic>`
+                    - `m_text` (String) = `Display Name​`
+                    - `m_isRightToLeft` (Boolean) = `False`
+                    - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                    - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                    - `m_fontSharedMaterials` (Generic) = `array size=0`
+                    - `m_fontMaterial` (ObjectReference) = `null`
+                    - `m_fontMaterials` (Generic) = `array size=0`
+                    - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                    - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                    - `m_enableVertexGradient` (Boolean) = `False`
+                    - `m_colorMode` (Enum) = `Four Corners Gradient`
+                    - `m_fontColorGradient` (Generic) = `<generic>`
+                    - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                    - `m_spriteAsset` (ObjectReference) = `null`
+                    - `m_tintAllSprites` (Boolean) = `False`
+                    - `m_StyleSheet` (ObjectReference) = `null`
+                    - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                    - `m_overrideHtmlColors` (Boolean) = `False`
+                    - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                    - `m_fontSize` (Float) = `14`
+                    - `m_fontSizeBase` (Float) = `14`
+                    - `m_fontWeight` (Enum) = `Regular`
+                    - `m_enableAutoSizing` (Boolean) = `False`
+                    - `m_fontSizeMin` (Float) = `18`
+                    - `m_fontSizeMax` (Float) = `72`
+                    - `m_fontStyle` (Enum) = `Normal`
+                    - `m_HorizontalAlignment` (Enum) = `Left`
+                    - `m_VerticalAlignment` (Enum) = `Top`
+                    - `m_textAlignment` (Enum) = `Converted`
+                    - `m_characterSpacing` (Float) = `0`
+                    - `m_characterHorizontalScale` (Float) = `1`
+                    - `m_wordSpacing` (Float) = `0`
+                    - `m_lineSpacing` (Float) = `0`
+                    - `m_lineSpacingMax` (Float) = `0`
+                    - `m_paragraphSpacing` (Float) = `0`
+                    - `m_charWidthMaxAdj` (Float) = `0`
+                    - `m_TextWrappingMode` (Enum) = `Preserve Whitespace No Wrap`
+                    - `m_wordWrappingRatios` (Float) = `0.4`
+                    - `m_overflowMode` (Enum) = `Overflow`
+                    - `m_linkedTextComponent` (ObjectReference) = `null`
+                    - `parentLinkedComponent` (ObjectReference) = `null`
+                    - `m_enableKerning` (Boolean) = `False`
+                    - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                    - `m_enableExtraPadding` (Boolean) = `True`
+                    - `checkPaddingRequired` (Boolean) = `False`
+                    - `m_isRichText` (Boolean) = `True`
+                    - `m_EmojiFallbackSupport` (Boolean) = `True`
+                    - `m_parseCtrlCharacters` (Boolean) = `True`
+                    - `m_isOrthographic` (Boolean) = `True`
+                    - `m_isCullingEnabled` (Boolean) = `False`
+                    - `m_horizontalMapping` (Enum) = `Character`
+                    - `m_verticalMapping` (Enum) = `Character`
+                    - `m_uvLineOffset` (Float) = `0`
+                    - `m_geometrySortingOrder` (Enum) = `Normal`
+                    - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                    - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                    - `m_useMaxVisibleDescender` (Boolean) = `True`
+                    - `m_pageToDisplay` (Integer) = `1`
+                    - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                    - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                    - `m_isVolumetricText` (Boolean) = `False`
+                    - `m_hasFontAssetChanged` (Boolean) = `False`
+                    - `m_baseMaterial` (ObjectReference) = `null`
+                    - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+          - `NewSaveLabel` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, -26.944, 0`
+              - worldPosition: `1298.163, 516.035, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, -26.94, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(312.07, -220.58)`
+                - `m_SizeDelta` (Vector2) = `(624.15, 32.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `TextMeshProUGUI` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_text` (String) = `New / Rename Save`
+                - `m_isRightToLeft` (Boolean) = `False`
+                - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_fontSharedMaterials` (Generic) = `array size=0`
+                - `m_fontMaterial` (ObjectReference) = `null`
+                - `m_fontMaterials` (Generic) = `array size=0`
+                - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_enableVertexGradient` (Boolean) = `False`
+                - `m_colorMode` (Enum) = `Four Corners Gradient`
+                - `m_fontColorGradient` (Generic) = `<generic>`
+                - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                - `m_spriteAsset` (ObjectReference) = `null`
+                - `m_tintAllSprites` (Boolean) = `False`
+                - `m_StyleSheet` (ObjectReference) = `null`
+                - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                - `m_overrideHtmlColors` (Boolean) = `False`
+                - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_fontSize` (Float) = `22`
+                - `m_fontSizeBase` (Float) = `22`
+                - `m_fontWeight` (Enum) = `Regular`
+                - `m_enableAutoSizing` (Boolean) = `False`
+                - `m_fontSizeMin` (Float) = `18`
+                - `m_fontSizeMax` (Float) = `72`
+                - `m_fontStyle` (Enum) = `Normal`
+                - `m_HorizontalAlignment` (Enum) = `Left`
+                - `m_VerticalAlignment` (Enum) = `Top`
+                - `m_textAlignment` (Enum) = `Converted`
+                - `m_characterSpacing` (Float) = `0`
+                - `m_characterHorizontalScale` (Float) = `1`
+                - `m_wordSpacing` (Float) = `0`
+                - `m_lineSpacing` (Float) = `0`
+                - `m_lineSpacingMax` (Float) = `0`
+                - `m_paragraphSpacing` (Float) = `0`
+                - `m_charWidthMaxAdj` (Float) = `0`
+                - `m_TextWrappingMode` (Enum) = `Normal`
+                - `m_wordWrappingRatios` (Float) = `0.4`
+                - `m_overflowMode` (Enum) = `Overflow`
+                - `m_linkedTextComponent` (ObjectReference) = `null`
+                - `parentLinkedComponent` (ObjectReference) = `null`
+                - `m_enableKerning` (Boolean) = `False`
+                - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                - `m_enableExtraPadding` (Boolean) = `False`
+                - `checkPaddingRequired` (Boolean) = `False`
+                - `m_isRichText` (Boolean) = `True`
+                - `m_EmojiFallbackSupport` (Boolean) = `True`
+                - `m_parseCtrlCharacters` (Boolean) = `True`
+                - `m_isOrthographic` (Boolean) = `True`
+                - `m_isCullingEnabled` (Boolean) = `False`
+                - `m_horizontalMapping` (Enum) = `Character`
+                - `m_verticalMapping` (Enum) = `Character`
+                - `m_uvLineOffset` (Float) = `0`
+                - `m_geometrySortingOrder` (Enum) = `Normal`
+                - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                - `m_useMaxVisibleDescender` (Boolean) = `True`
+                - `m_pageToDisplay` (Integer) = `1`
+                - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                - `m_isVolumetricText` (Boolean) = `False`
+                - `m_hasFontAssetChanged` (Boolean) = `False`
+                - `m_baseMaterial` (ObjectReference) = `null`
+                - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `LayoutElement` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+                - `m_IgnoreLayout` (Boolean) = `False`
+                - `m_MinWidth` (Float) = `-1`
+                - `m_MinHeight` (Float) = `-1`
+                - `m_PreferredWidth` (Float) = `-1`
+                - `m_PreferredHeight` (Float) = `32`
+                - `m_FlexibleWidth` (Float) = `-1`
+                - `m_FlexibleHeight` (Float) = `-1`
+                - `m_LayoutPriority` (Integer) = `1`
+          - `SelectedSaveLabel` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 181.346, 0`
+              - worldPosition: `1298.163, 698.644, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 181.35, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(312.07, -12.29)`
+                - `m_SizeDelta` (Vector2) = `(624.15, 24.58)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `TextMeshProUGUI` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_text` (String) = `. . . . . . . .`
+                - `m_isRightToLeft` (Boolean) = `False`
+                - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_fontSharedMaterials` (Generic) = `array size=0`
+                - `m_fontMaterial` (ObjectReference) = `null`
+                - `m_fontMaterials` (Generic) = `array size=0`
+                - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_enableVertexGradient` (Boolean) = `False`
+                - `m_colorMode` (Enum) = `Four Corners Gradient`
+                - `m_fontColorGradient` (Generic) = `<generic>`
+                - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                - `m_spriteAsset` (ObjectReference) = `null`
+                - `m_tintAllSprites` (Boolean) = `False`
+                - `m_StyleSheet` (ObjectReference) = `null`
+                - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                - `m_overrideHtmlColors` (Boolean) = `False`
+                - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_fontSize` (Float) = `22`
+                - `m_fontSizeBase` (Float) = `22`
+                - `m_fontWeight` (Enum) = `Regular`
+                - `m_enableAutoSizing` (Boolean) = `False`
+                - `m_fontSizeMin` (Float) = `18`
+                - `m_fontSizeMax` (Float) = `72`
+                - `m_fontStyle` (Enum) = `Bold`
+                - `m_HorizontalAlignment` (Enum) = `Left`
+                - `m_VerticalAlignment` (Enum) = `Top`
+                - `m_textAlignment` (Enum) = `Converted`
+                - `m_characterSpacing` (Float) = `0`
+                - `m_characterHorizontalScale` (Float) = `1`
+                - `m_wordSpacing` (Float) = `0`
+                - `m_lineSpacing` (Float) = `0`
+                - `m_lineSpacingMax` (Float) = `0`
+                - `m_paragraphSpacing` (Float) = `0`
+                - `m_charWidthMaxAdj` (Float) = `0`
+                - `m_TextWrappingMode` (Enum) = `Normal`
+                - `m_wordWrappingRatios` (Float) = `0.4`
+                - `m_overflowMode` (Enum) = `Overflow`
+                - `m_linkedTextComponent` (ObjectReference) = `null`
+                - `parentLinkedComponent` (ObjectReference) = `null`
+                - `m_enableKerning` (Boolean) = `False`
+                - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                - `m_enableExtraPadding` (Boolean) = `False`
+                - `checkPaddingRequired` (Boolean) = `False`
+                - `m_isRichText` (Boolean) = `True`
+                - `m_EmojiFallbackSupport` (Boolean) = `True`
+                - `m_parseCtrlCharacters` (Boolean) = `True`
+                - `m_isOrthographic` (Boolean) = `True`
+                - `m_isCullingEnabled` (Boolean) = `False`
+                - `m_horizontalMapping` (Enum) = `Character`
+                - `m_verticalMapping` (Enum) = `Character`
+                - `m_uvLineOffset` (Float) = `0`
+                - `m_geometrySortingOrder` (Enum) = `Normal`
+                - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                - `m_useMaxVisibleDescender` (Boolean) = `True`
+                - `m_pageToDisplay` (Integer) = `1`
+                - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                - `m_isVolumetricText` (Boolean) = `False`
+                - `m_hasFontAssetChanged` (Boolean) = `False`
+                - `m_baseMaterial` (ObjectReference) = `null`
+                - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+          - `SelectedSaveText` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 79.056, 0`
+              - worldPosition: `1298.163, 608.966, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 79.06, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(312.07, -114.58)`
+                - `m_SizeDelta` (Vector2) = `(624.15, 160.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `TextMeshProUGUI` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_text` (String) = ``
+                - `m_isRightToLeft` (Boolean) = `False`
+                - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_fontSharedMaterials` (Generic) = `array size=0`
+                - `m_fontMaterial` (ObjectReference) = `null`
+                - `m_fontMaterials` (Generic) = `array size=0`
+                - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_enableVertexGradient` (Boolean) = `False`
+                - `m_colorMode` (Enum) = `Four Corners Gradient`
+                - `m_fontColorGradient` (Generic) = `<generic>`
+                - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                - `m_spriteAsset` (ObjectReference) = `null`
+                - `m_tintAllSprites` (Boolean) = `False`
+                - `m_StyleSheet` (ObjectReference) = `null`
+                - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                - `m_overrideHtmlColors` (Boolean) = `False`
+                - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_fontSize` (Float) = `18`
+                - `m_fontSizeBase` (Float) = `18`
+                - `m_fontWeight` (Enum) = `Regular`
+                - `m_enableAutoSizing` (Boolean) = `False`
+                - `m_fontSizeMin` (Float) = `18`
+                - `m_fontSizeMax` (Float) = `72`
+                - `m_fontStyle` (Enum) = `Normal`
+                - `m_HorizontalAlignment` (Enum) = `Left`
+                - `m_VerticalAlignment` (Enum) = `Top`
+                - `m_textAlignment` (Enum) = `Converted`
+                - `m_characterSpacing` (Float) = `0`
+                - `m_characterHorizontalScale` (Float) = `1`
+                - `m_wordSpacing` (Float) = `0`
+                - `m_lineSpacing` (Float) = `0`
+                - `m_lineSpacingMax` (Float) = `0`
+                - `m_paragraphSpacing` (Float) = `0`
+                - `m_charWidthMaxAdj` (Float) = `0`
+                - `m_TextWrappingMode` (Enum) = `No Wrap`
+                - `m_wordWrappingRatios` (Float) = `0.4`
+                - `m_overflowMode` (Enum) = `Overflow`
+                - `m_linkedTextComponent` (ObjectReference) = `null`
+                - `parentLinkedComponent` (ObjectReference) = `null`
+                - `m_enableKerning` (Boolean) = `False`
+                - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                - `m_enableExtraPadding` (Boolean) = `False`
+                - `checkPaddingRequired` (Boolean) = `False`
+                - `m_isRichText` (Boolean) = `True`
+                - `m_EmojiFallbackSupport` (Boolean) = `True`
+                - `m_parseCtrlCharacters` (Boolean) = `True`
+                - `m_isOrthographic` (Boolean) = `True`
+                - `m_isCullingEnabled` (Boolean) = `False`
+                - `m_horizontalMapping` (Enum) = `Character`
+                - `m_verticalMapping` (Enum) = `Character`
+                - `m_uvLineOffset` (Float) = `0`
+                - `m_geometrySortingOrder` (Enum) = `Normal`
+                - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                - `m_useMaxVisibleDescender` (Boolean) = `True`
+                - `m_pageToDisplay` (Integer) = `1`
+                - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                - `m_isVolumetricText` (Boolean) = `False`
+                - `m_hasFontAssetChanged` (Boolean) = `False`
+                - `m_baseMaterial` (ObjectReference) = `null`
+                - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `LayoutElement` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+                - `m_IgnoreLayout` (Boolean) = `False`
+                - `m_MinWidth` (Float) = `-1`
+                - `m_MinHeight` (Float) = `-1`
+                - `m_PreferredWidth` (Float) = `-1`
+                - `m_PreferredHeight` (Float) = `160`
+                - `m_FlexibleWidth` (Float) = `-1`
+                - `m_FlexibleHeight` (Float) = `0`
+                - `m_LayoutPriority` (Integer) = `1`
+          - `SlotIdInput` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, -67.269, 0`
+              - worldPosition: `1298.163, 480.682, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, -67.27, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(312.07, -260.91)`
+                - `m_SizeDelta` (Vector2) = `(624.15, 28.65)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `InputFieldBackground (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `TMP_InputField` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `TMP_InputField (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TMP_InputField.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `SlotIdInput (Image) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput'`
+                - `m_TextViewport` (ObjectReference) = `Text Area (RectTransform) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area'`
+                - `m_TextComponent` (ObjectReference) = `Text (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text'`
+                - `m_Placeholder` (ObjectReference) = `Placeholder (TextMeshProUGUI) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder'`
+                - `m_VerticalScrollbar` (ObjectReference) = `null`
+                - `m_VerticalScrollbarEventHandler` (ObjectReference) = `null`
+                - `m_LayoutGroup` (ObjectReference) = `null`
+                - `m_ScrollSensitivity` (Float) = `1`
+                - `m_ContentType` (Enum) = `Standard`
+                - `m_InputType` (Enum) = `Standard`
+                - `m_AsteriskChar` (Character) = `*`
+                - `m_KeyboardType` (Enum) = `Default`
+                - `m_LineType` (Enum) = `Single Line`
+                - `m_HideMobileInput` (Boolean) = `False`
+                - `m_HideSoftKeyboard` (Boolean) = `False`
+                - `m_CharacterValidation` (Enum) = `None`
+                - `m_RegexValue` (String) = ``
+                - `m_GlobalPointSize` (Float) = `14`
+                - `m_CharacterLimit` (Integer) = `0`
+                - `m_OnEndEdit` (Generic) = `<generic>`
+                - `m_OnSubmit` (Generic) = `<generic>`
+                - `m_OnSelect` (Generic) = `<generic>`
+                - `m_OnDeselect` (Generic) = `<generic>`
+                - `m_OnTextSelection` (Generic) = `<generic>`
+                - `m_OnEndTextSelection` (Generic) = `<generic>`
+                - `m_OnValueChanged` (Generic) = `<generic>`
+                - `m_OnTouchScreenKeyboardStatusChanged` (Generic) = `<generic>`
+                - `m_CaretColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_CustomCaretColor` (Boolean) = `False`
+                - `m_SelectionColor` (Color) = `RGBA(0.659, 0.808, 1.000, 0.753)`
+                - `m_Text` (String) = ``
+                - `m_CaretBlinkRate` (Float) = `0.85`
+                - `m_CaretWidth` (Integer) = `1`
+                - `m_ReadOnly` (Boolean) = `False`
+                - `m_RichText` (Boolean) = `True`
+                - `m_GlobalFontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_OnFocusSelectAll` (Boolean) = `True`
+                - `m_ResetOnDeActivation` (Boolean) = `True`
+                - `m_KeepTextSelectionVisible` (Boolean) = `False`
+                - `m_RestoreOriginalTextOnEscape` (Boolean) = `True`
+                - `m_isRichTextEditingAllowed` (Boolean) = `False`
+                - `m_LineLimit` (Integer) = `0`
+                - `isAlert` (Boolean) = `False`
+                - `m_InputValidator` (ObjectReference) = `null`
+                - `m_ShouldActivateOnSelect` (Boolean) = `True`
+            - `Text Area` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, -0.5, 0`
+                - worldPosition: `1298.163, 480.243, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, -0.50, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, -0.50)`
+                  - `m_SizeDelta` (Vector2) = `(-20.00, -13.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `RectMask2D` index=1 enabled=`True`
+                  - `m_Script` (ObjectReference) = `RectMask2D (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/RectMask2D.cs'`
+                  - `m_Padding` (Vector4) = `(-8.00, -5.00, -8.00, -5.00)`
+                  - `m_Softness` (Vector2Int) = `(0, 0)`
+              - `Placeholder` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+                - Transform:
+                  - localPosition: `0, 0, 0`
+                  - worldPosition: `1298.163, 480.243, 0`
+                  - localRotationEuler: `0, 0, 0`
+                  - worldRotationEuler: `0, 0, 0`
+                  - localScale: `1, 1, 1`
+                - Components:
+                  - `RectTransform` index=0 enabled=`n/a`
+                    - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                    - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                    - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                    - `m_ConstrainProportionsScale` (Boolean) = `False`
+                    - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                    - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                    - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                    - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                    - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                  - `CanvasRenderer` index=1 enabled=`n/a`
+                    - `m_CullTransparentMesh` (Boolean) = `True`
+                  - `TextMeshProUGUI` index=2 enabled=`True`
+                    - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                    - `m_Material` (ObjectReference) = `null`
+                    - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                    - `m_RaycastTarget` (Boolean) = `True`
+                    - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                    - `m_Maskable` (Boolean) = `True`
+                    - `m_OnCullStateChanged` (Generic) = `<generic>`
+                    - `m_text` (String) = `save_file_name`
+                    - `m_isRightToLeft` (Boolean) = `False`
+                    - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                    - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                    - `m_fontSharedMaterials` (Generic) = `array size=0`
+                    - `m_fontMaterial` (ObjectReference) = `null`
+                    - `m_fontMaterials` (Generic) = `array size=0`
+                    - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 0.502)`
+                    - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 0.500)`
+                    - `m_enableVertexGradient` (Boolean) = `False`
+                    - `m_colorMode` (Enum) = `Four Corners Gradient`
+                    - `m_fontColorGradient` (Generic) = `<generic>`
+                    - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                    - `m_spriteAsset` (ObjectReference) = `null`
+                    - `m_tintAllSprites` (Boolean) = `False`
+                    - `m_StyleSheet` (ObjectReference) = `null`
+                    - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                    - `m_overrideHtmlColors` (Boolean) = `False`
+                    - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                    - `m_fontSize` (Float) = `14`
+                    - `m_fontSizeBase` (Float) = `14`
+                    - `m_fontWeight` (Enum) = `Regular`
+                    - `m_enableAutoSizing` (Boolean) = `False`
+                    - `m_fontSizeMin` (Float) = `18`
+                    - `m_fontSizeMax` (Float) = `72`
+                    - `m_fontStyle` (Enum) = `Italic`
+                    - `m_HorizontalAlignment` (Enum) = `Left`
+                    - `m_VerticalAlignment` (Enum) = `Top`
+                    - `m_textAlignment` (Enum) = `Converted`
+                    - `m_characterSpacing` (Float) = `0`
+                    - `m_characterHorizontalScale` (Float) = `1`
+                    - `m_wordSpacing` (Float) = `0`
+                    - `m_lineSpacing` (Float) = `0`
+                    - `m_lineSpacingMax` (Float) = `0`
+                    - `m_paragraphSpacing` (Float) = `0`
+                    - `m_charWidthMaxAdj` (Float) = `0`
+                    - `m_TextWrappingMode` (Enum) = `No Wrap`
+                    - `m_wordWrappingRatios` (Float) = `0.4`
+                    - `m_overflowMode` (Enum) = `Overflow`
+                    - `m_linkedTextComponent` (ObjectReference) = `null`
+                    - `parentLinkedComponent` (ObjectReference) = `null`
+                    - `m_enableKerning` (Boolean) = `False`
+                    - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                    - `m_enableExtraPadding` (Boolean) = `True`
+                    - `checkPaddingRequired` (Boolean) = `False`
+                    - `m_isRichText` (Boolean) = `True`
+                    - `m_EmojiFallbackSupport` (Boolean) = `True`
+                    - `m_parseCtrlCharacters` (Boolean) = `True`
+                    - `m_isOrthographic` (Boolean) = `True`
+                    - `m_isCullingEnabled` (Boolean) = `False`
+                    - `m_horizontalMapping` (Enum) = `Character`
+                    - `m_verticalMapping` (Enum) = `Character`
+                    - `m_uvLineOffset` (Float) = `0`
+                    - `m_geometrySortingOrder` (Enum) = `Normal`
+                    - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                    - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                    - `m_useMaxVisibleDescender` (Boolean) = `True`
+                    - `m_pageToDisplay` (Integer) = `1`
+                    - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                    - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                    - `m_isVolumetricText` (Boolean) = `False`
+                    - `m_hasFontAssetChanged` (Boolean) = `False`
+                    - `m_baseMaterial` (ObjectReference) = `null`
+                    - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `LayoutElement` index=3 enabled=`True`
+                    - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+                    - `m_IgnoreLayout` (Boolean) = `True`
+                    - `m_MinWidth` (Float) = `-1`
+                    - `m_MinHeight` (Float) = `-1`
+                    - `m_PreferredWidth` (Float) = `-1`
+                    - `m_PreferredHeight` (Float) = `-1`
+                    - `m_FlexibleWidth` (Float) = `-1`
+                    - `m_FlexibleHeight` (Float) = `-1`
+                    - `m_LayoutPriority` (Integer) = `1`
+                  - `LayoutElement` index=4 enabled=`True`
+                    - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+                    - `m_IgnoreLayout` (Boolean) = `False`
+                    - `m_MinWidth` (Float) = `-1`
+                    - `m_MinHeight` (Float) = `-1`
+                    - `m_PreferredWidth` (Float) = `-1`
+                    - `m_PreferredHeight` (Float) = `36`
+                    - `m_FlexibleWidth` (Float) = `-1`
+                    - `m_FlexibleHeight` (Float) = `-1`
+                    - `m_LayoutPriority` (Integer) = `1`
+              - `Text` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+                - Transform:
+                  - localPosition: `0, 0, 0`
+                  - worldPosition: `1298.163, 480.243, 0`
+                  - localRotationEuler: `0, 0, 0`
+                  - worldRotationEuler: `0, 0, 0`
+                  - localScale: `1, 1, 1`
+                - Components:
+                  - `RectTransform` index=0 enabled=`n/a`
+                    - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                    - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                    - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                    - `m_ConstrainProportionsScale` (Boolean) = `False`
+                    - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                    - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                    - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                    - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                    - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                  - `CanvasRenderer` index=1 enabled=`n/a`
+                    - `m_CullTransparentMesh` (Boolean) = `True`
+                  - `TextMeshProUGUI` index=2 enabled=`True`
+                    - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                    - `m_Material` (ObjectReference) = `null`
+                    - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                    - `m_RaycastTarget` (Boolean) = `True`
+                    - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                    - `m_Maskable` (Boolean) = `True`
+                    - `m_OnCullStateChanged` (Generic) = `<generic>`
+                    - `m_text` (String) = `​`
+                    - `m_isRightToLeft` (Boolean) = `False`
+                    - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                    - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                    - `m_fontSharedMaterials` (Generic) = `array size=0`
+                    - `m_fontMaterial` (ObjectReference) = `null`
+                    - `m_fontMaterials` (Generic) = `array size=0`
+                    - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                    - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                    - `m_enableVertexGradient` (Boolean) = `False`
+                    - `m_colorMode` (Enum) = `Four Corners Gradient`
+                    - `m_fontColorGradient` (Generic) = `<generic>`
+                    - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                    - `m_spriteAsset` (ObjectReference) = `null`
+                    - `m_tintAllSprites` (Boolean) = `False`
+                    - `m_StyleSheet` (ObjectReference) = `null`
+                    - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                    - `m_overrideHtmlColors` (Boolean) = `False`
+                    - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                    - `m_fontSize` (Float) = `14`
+                    - `m_fontSizeBase` (Float) = `14`
+                    - `m_fontWeight` (Enum) = `Regular`
+                    - `m_enableAutoSizing` (Boolean) = `False`
+                    - `m_fontSizeMin` (Float) = `18`
+                    - `m_fontSizeMax` (Float) = `72`
+                    - `m_fontStyle` (Enum) = `Normal`
+                    - `m_HorizontalAlignment` (Enum) = `Left`
+                    - `m_VerticalAlignment` (Enum) = `Top`
+                    - `m_textAlignment` (Enum) = `Converted`
+                    - `m_characterSpacing` (Float) = `0`
+                    - `m_characterHorizontalScale` (Float) = `1`
+                    - `m_wordSpacing` (Float) = `0`
+                    - `m_lineSpacing` (Float) = `0`
+                    - `m_lineSpacingMax` (Float) = `0`
+                    - `m_paragraphSpacing` (Float) = `0`
+                    - `m_charWidthMaxAdj` (Float) = `0`
+                    - `m_TextWrappingMode` (Enum) = `Preserve Whitespace No Wrap`
+                    - `m_wordWrappingRatios` (Float) = `0.4`
+                    - `m_overflowMode` (Enum) = `Overflow`
+                    - `m_linkedTextComponent` (ObjectReference) = `null`
+                    - `parentLinkedComponent` (ObjectReference) = `null`
+                    - `m_enableKerning` (Boolean) = `False`
+                    - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                    - `m_enableExtraPadding` (Boolean) = `True`
+                    - `checkPaddingRequired` (Boolean) = `False`
+                    - `m_isRichText` (Boolean) = `True`
+                    - `m_EmojiFallbackSupport` (Boolean) = `True`
+                    - `m_parseCtrlCharacters` (Boolean) = `True`
+                    - `m_isOrthographic` (Boolean) = `True`
+                    - `m_isCullingEnabled` (Boolean) = `False`
+                    - `m_horizontalMapping` (Enum) = `Character`
+                    - `m_verticalMapping` (Enum) = `Character`
+                    - `m_uvLineOffset` (Float) = `0`
+                    - `m_geometrySortingOrder` (Enum) = `Normal`
+                    - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                    - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                    - `m_useMaxVisibleDescender` (Boolean) = `True`
+                    - `m_pageToDisplay` (Integer) = `1`
+                    - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                    - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                    - `m_isVolumetricText` (Boolean) = `False`
+                    - `m_hasFontAssetChanged` (Boolean) = `False`
+                    - `m_baseMaterial` (ObjectReference) = `null`
+                    - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+      - `Footer` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -146.879, 0`
+          - worldPosition: `995.5, 285.731, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -146.88, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(681.30, -552.00)`
+            - `m_SizeDelta` (Vector2) = `(1314.60, 160.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `VerticalLayoutGroup` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+            - `m_Padding` (Generic) = `<generic>`
+            - `m_ChildAlignment` (Enum) = `Upper Left`
+            - `m_Spacing` (Float) = `10`
+            - `m_ChildForceExpandWidth` (Boolean) = `True`
+            - `m_ChildForceExpandHeight` (Boolean) = `False`
+            - `m_ChildControlWidth` (Boolean) = `True`
+            - `m_ChildControlHeight` (Boolean) = `False`
+            - `m_ChildScaleWidth` (Boolean) = `False`
+            - `m_ChildScaleHeight` (Boolean) = `False`
+            - `m_ReverseArrangement` (Boolean) = `False`
+          - `LayoutElement` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+            - `m_IgnoreLayout` (Boolean) = `False`
+            - `m_MinWidth` (Float) = `-1`
+            - `m_MinHeight` (Float) = `-1`
+            - `m_PreferredWidth` (Float) = `-1`
+            - `m_PreferredHeight` (Float) = `60`
+            - `m_FlexibleWidth` (Float) = `-1`
+            - `m_FlexibleHeight` (Float) = `-1`
+            - `m_LayoutPriority` (Integer) = `1`
+        - `Buttons` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, -30, 0`
+            - worldPosition: `995.5, 259.429, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, -30.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(657.30, -110.00)`
+              - `m_SizeDelta` (Vector2) = `(1314.60, 100.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `HorizontalLayoutGroup` index=1 enabled=`True`
+              - `m_Script` (ObjectReference) = `HorizontalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/HorizontalLayoutGroup.cs'`
+              - `m_Padding` (Generic) = `<generic>`
+              - `m_ChildAlignment` (Enum) = `Upper Left`
+              - `m_Spacing` (Float) = `12`
+              - `m_ChildForceExpandWidth` (Boolean) = `True`
+              - `m_ChildForceExpandHeight` (Boolean) = `False`
+              - `m_ChildControlWidth` (Boolean) = `True`
+              - `m_ChildControlHeight` (Boolean) = `True`
+              - `m_ChildScaleWidth` (Boolean) = `False`
+              - `m_ChildScaleHeight` (Boolean) = `False`
+              - `m_ReverseArrangement` (Boolean) = `False`
+            - `LayoutElement` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+              - `m_IgnoreLayout` (Boolean) = `False`
+              - `m_MinWidth` (Float) = `-1`
+              - `m_MinHeight` (Float) = `-1`
+              - `m_PreferredWidth` (Float) = `-1`
+              - `m_PreferredHeight` (Float) = `44`
+              - `m_FlexibleWidth` (Float) = `-1`
+              - `m_FlexibleHeight` (Float) = `-1`
+              - `m_LayoutPriority` (Integer) = `1`
+          - `CloseButton` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/CloseButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `530.64, 30, 0`
+              - worldPosition: `1460.715, 285.731, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(530.64, 30.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(1187.94, -20.00)`
+                - `m_SizeDelta` (Vector2) = `(253.32, 40.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `Button` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `CloseButton (Image) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/CloseButton'`
+                - `m_OnClick` (Generic) = `<generic>`
+              - `LayoutElement` index=4 enabled=`True`
+                - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+                - `m_IgnoreLayout` (Boolean) = `False`
+                - `m_MinWidth` (Float) = `-1`
+                - `m_MinHeight` (Float) = `-1`
+                - `m_PreferredWidth` (Float) = `140`
+                - `m_PreferredHeight` (Float) = `40`
+                - `m_FlexibleWidth` (Float) = `1`
+                - `m_FlexibleHeight` (Float) = `-1`
+                - `m_LayoutPriority` (Integer) = `1`
+            - `Close` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/CloseButton/Close` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `1460.715, 285.731, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `Text` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_FontData` (Generic) = `<generic>`
+                  - `m_Text` (String) = `Close`
+          - `LoadButton` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/LoadButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `-265.32, 30, 0`
+              - worldPosition: `762.892, 285.731, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(-265.32, 30.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(391.98, -20.00)`
+                - `m_SizeDelta` (Vector2) = `(253.32, 40.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `Button` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `LoadButton (Image) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/LoadButton'`
+                - `m_OnClick` (Generic) = `<generic>`
+              - `LayoutElement` index=4 enabled=`True`
+                - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+                - `m_IgnoreLayout` (Boolean) = `False`
+                - `m_MinWidth` (Float) = `-1`
+                - `m_MinHeight` (Float) = `-1`
+                - `m_PreferredWidth` (Float) = `140`
+                - `m_PreferredHeight` (Float) = `40`
+                - `m_FlexibleWidth` (Float) = `1`
+                - `m_FlexibleHeight` (Float) = `-1`
+                - `m_LayoutPriority` (Integer) = `1`
+            - `Load` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/LoadButton/Load` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `762.892, 285.731, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `Text` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_FontData` (Generic) = `<generic>`
+                  - `m_Text` (String) = `Load`
+          - `NewSaveButton` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 30, 0`
+              - worldPosition: `995.5, 285.731, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 30.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(657.30, -20.00)`
+                - `m_SizeDelta` (Vector2) = `(253.32, 40.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `Button` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `NewSaveButton (Image) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton'`
+                - `m_OnClick` (Generic) = `<generic>`
+              - `LayoutElement` index=4 enabled=`True`
+                - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+                - `m_IgnoreLayout` (Boolean) = `False`
+                - `m_MinWidth` (Float) = `-1`
+                - `m_MinHeight` (Float) = `-1`
+                - `m_PreferredWidth` (Float) = `140`
+                - `m_PreferredHeight` (Float) = `40`
+                - `m_FlexibleWidth` (Float) = `1`
+                - `m_FlexibleHeight` (Float) = `-1`
+                - `m_LayoutPriority` (Integer) = `1`
+            - `Text (TMP)` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `995.5, 285.731, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `TextMeshProUGUI` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_text` (String) = `New Save`
+                  - `m_isRightToLeft` (Boolean) = `False`
+                  - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                  - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                  - `m_fontSharedMaterials` (Generic) = `array size=0`
+                  - `m_fontMaterial` (ObjectReference) = `null`
+                  - `m_fontMaterials` (Generic) = `array size=0`
+                  - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_enableVertexGradient` (Boolean) = `False`
+                  - `m_colorMode` (Enum) = `Four Corners Gradient`
+                  - `m_fontColorGradient` (Generic) = `<generic>`
+                  - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                  - `m_spriteAsset` (ObjectReference) = `null`
+                  - `m_tintAllSprites` (Boolean) = `False`
+                  - `m_StyleSheet` (ObjectReference) = `null`
+                  - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                  - `m_overrideHtmlColors` (Boolean) = `False`
+                  - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                  - `m_fontSize` (Float) = `14`
+                  - `m_fontSizeBase` (Float) = `14`
+                  - `m_fontWeight` (Enum) = `Regular`
+                  - `m_enableAutoSizing` (Boolean) = `False`
+                  - `m_fontSizeMin` (Float) = `18`
+                  - `m_fontSizeMax` (Float) = `72`
+                  - `m_fontStyle` (Enum) = `Normal`
+                  - `m_HorizontalAlignment` (Enum) = `Center`
+                  - `m_VerticalAlignment` (Enum) = `Middle`
+                  - `m_textAlignment` (Enum) = `Converted`
+                  - `m_characterSpacing` (Float) = `0`
+                  - `m_characterHorizontalScale` (Float) = `1`
+                  - `m_wordSpacing` (Float) = `0`
+                  - `m_lineSpacing` (Float) = `0`
+                  - `m_lineSpacingMax` (Float) = `0`
+                  - `m_paragraphSpacing` (Float) = `0`
+                  - `m_charWidthMaxAdj` (Float) = `0`
+                  - `m_TextWrappingMode` (Enum) = `Normal`
+                  - `m_wordWrappingRatios` (Float) = `0.4`
+                  - `m_overflowMode` (Enum) = `Overflow`
+                  - `m_linkedTextComponent` (ObjectReference) = `null`
+                  - `parentLinkedComponent` (ObjectReference) = `null`
+                  - `m_enableKerning` (Boolean) = `False`
+                  - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                  - `m_enableExtraPadding` (Boolean) = `False`
+                  - `checkPaddingRequired` (Boolean) = `False`
+                  - `m_isRichText` (Boolean) = `True`
+                  - `m_EmojiFallbackSupport` (Boolean) = `True`
+                  - `m_parseCtrlCharacters` (Boolean) = `True`
+                  - `m_isOrthographic` (Boolean) = `True`
+                  - `m_isCullingEnabled` (Boolean) = `False`
+                  - `m_horizontalMapping` (Enum) = `Character`
+                  - `m_verticalMapping` (Enum) = `Character`
+                  - `m_uvLineOffset` (Float) = `0`
+                  - `m_geometrySortingOrder` (Enum) = `Normal`
+                  - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                  - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                  - `m_useMaxVisibleDescender` (Boolean) = `True`
+                  - `m_pageToDisplay` (Integer) = `1`
+                  - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                  - `m_isVolumetricText` (Boolean) = `False`
+                  - `m_hasFontAssetChanged` (Boolean) = `False`
+                  - `m_baseMaterial` (ObjectReference) = `null`
+                  - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+          - `OpenFolderButton` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/OpenFolderButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `265.32, 30, 0`
+              - worldPosition: `1228.108, 285.731, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(265.32, 30.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(922.62, -20.00)`
+                - `m_SizeDelta` (Vector2) = `(253.32, 40.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `Button` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `OpenFolderButton (Image) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/OpenFolderButton'`
+                - `m_OnClick` (Generic) = `<generic>`
+              - `LayoutElement` index=4 enabled=`True`
+                - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+                - `m_IgnoreLayout` (Boolean) = `False`
+                - `m_MinWidth` (Float) = `-1`
+                - `m_MinHeight` (Float) = `-1`
+                - `m_PreferredWidth` (Float) = `140`
+                - `m_PreferredHeight` (Float) = `40`
+                - `m_FlexibleWidth` (Float) = `1`
+                - `m_FlexibleHeight` (Float) = `-1`
+                - `m_LayoutPriority` (Integer) = `1`
+            - `OpenFolder` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/OpenFolderButton/OpenFolder` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `1228.108, 285.731, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `Text` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_FontData` (Generic) = `<generic>`
+                  - `m_Text` (String) = `Open Folder`
+          - `SaveButton` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/SaveButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `-530.64, 30, 0`
+              - worldPosition: `530.285, 285.731, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(-530.64, 30.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(126.66, -20.00)`
+                - `m_SizeDelta` (Vector2) = `(253.32, 40.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `Button` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `SaveButton (Image) scenePath='UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/SaveButton'`
+                - `m_OnClick` (Generic) = `<generic>`
+              - `LayoutElement` index=4 enabled=`True`
+                - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+                - `m_IgnoreLayout` (Boolean) = `False`
+                - `m_MinWidth` (Float) = `-1`
+                - `m_MinHeight` (Float) = `-1`
+                - `m_PreferredWidth` (Float) = `140`
+                - `m_PreferredHeight` (Float) = `40`
+                - `m_FlexibleWidth` (Float) = `1`
+                - `m_FlexibleHeight` (Float) = `-1`
+                - `m_LayoutPriority` (Integer) = `1`
+            - `Save` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/Buttons/SaveButton/Save` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `530.285, 285.731, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `Text` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_FontData` (Generic) = `<generic>`
+                  - `m_Text` (String) = `Save`
+        - `StatusText` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Footer/StatusText` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 55, 0`
+            - worldPosition: `995.5, 333.95, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 55.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(657.30, -25.00)`
+              - `m_SizeDelta` (Vector2) = `(1314.60, 50.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `TextMeshProUGUI` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_text` (String) = `Status`
+              - `m_isRightToLeft` (Boolean) = `False`
+              - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_fontSharedMaterials` (Generic) = `array size=0`
+              - `m_fontMaterial` (ObjectReference) = `null`
+              - `m_fontMaterials` (Generic) = `array size=0`
+              - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_enableVertexGradient` (Boolean) = `False`
+              - `m_colorMode` (Enum) = `Four Corners Gradient`
+              - `m_fontColorGradient` (Generic) = `<generic>`
+              - `m_fontColorGradientPreset` (ObjectReference) = `null`
+              - `m_spriteAsset` (ObjectReference) = `null`
+              - `m_tintAllSprites` (Boolean) = `False`
+              - `m_StyleSheet` (ObjectReference) = `null`
+              - `m_TextStyleHashCode` (Integer) = `-1183493901`
+              - `m_overrideHtmlColors` (Boolean) = `False`
+              - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontSize` (Float) = `16`
+              - `m_fontSizeBase` (Float) = `16`
+              - `m_fontWeight` (Enum) = `Regular`
+              - `m_enableAutoSizing` (Boolean) = `False`
+              - `m_fontSizeMin` (Float) = `18`
+              - `m_fontSizeMax` (Float) = `72`
+              - `m_fontStyle` (Enum) = `Normal`
+              - `m_HorizontalAlignment` (Enum) = `Center`
+              - `m_VerticalAlignment` (Enum) = `Middle`
+              - `m_textAlignment` (Enum) = `Converted`
+              - `m_characterSpacing` (Float) = `0`
+              - `m_characterHorizontalScale` (Float) = `1`
+              - `m_wordSpacing` (Float) = `0`
+              - `m_lineSpacing` (Float) = `0`
+              - `m_lineSpacingMax` (Float) = `0`
+              - `m_paragraphSpacing` (Float) = `0`
+              - `m_charWidthMaxAdj` (Float) = `0`
+              - `m_TextWrappingMode` (Enum) = `Normal`
+              - `m_wordWrappingRatios` (Float) = `0.4`
+              - `m_overflowMode` (Enum) = `Overflow`
+              - `m_linkedTextComponent` (ObjectReference) = `null`
+              - `parentLinkedComponent` (ObjectReference) = `null`
+              - `m_enableKerning` (Boolean) = `False`
+              - `m_ActiveFontFeatures` (Generic) = `array size=1`
+              - `m_enableExtraPadding` (Boolean) = `False`
+              - `checkPaddingRequired` (Boolean) = `False`
+              - `m_isRichText` (Boolean) = `True`
+              - `m_EmojiFallbackSupport` (Boolean) = `True`
+              - `m_parseCtrlCharacters` (Boolean) = `True`
+              - `m_isOrthographic` (Boolean) = `True`
+              - `m_isCullingEnabled` (Boolean) = `False`
+              - `m_horizontalMapping` (Enum) = `Character`
+              - `m_verticalMapping` (Enum) = `Character`
+              - `m_uvLineOffset` (Float) = `0`
+              - `m_geometrySortingOrder` (Enum) = `Normal`
+              - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+              - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+              - `m_useMaxVisibleDescender` (Boolean) = `True`
+              - `m_pageToDisplay` (Integer) = `1`
+              - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+              - `m_isVolumetricText` (Boolean) = `False`
+              - `m_hasFontAssetChanged` (Boolean) = `False`
+              - `m_baseMaterial` (ObjectReference) = `null`
+              - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `LayoutElement` index=3 enabled=`True`
+              - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+              - `m_IgnoreLayout` (Boolean) = `False`
+              - `m_MinWidth` (Float) = `-1`
+              - `m_MinHeight` (Float) = `-1`
+              - `m_PreferredWidth` (Float) = `-1`
+              - `m_PreferredHeight` (Float) = `30`
+              - `m_FlexibleWidth` (Float) = `-1`
+              - `m_FlexibleHeight` (Float) = `-1`
+              - `m_LayoutPriority` (Integer) = `1`
+      - `Header` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Header` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 368.758, 0`
+          - worldPosition: `995.5, 737.792, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 368.76, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(681.30, -36.36)`
+            - `m_SizeDelta` (Vector2) = `(1314.60, 32.73)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `LayoutElement` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+            - `m_IgnoreLayout` (Boolean) = `False`
+            - `m_MinWidth` (Float) = `-1`
+            - `m_MinHeight` (Float) = `-1`
+            - `m_PreferredWidth` (Float) = `-1`
+            - `m_PreferredHeight` (Float) = `90`
+            - `m_FlexibleWidth` (Float) = `-1`
+            - `m_FlexibleHeight` (Float) = `1`
+            - `m_LayoutPriority` (Integer) = `1`
+        - `SaveLoadText` | path=`UIOverlayRoot/Canvas/SaveLoadPanelRoot/Header/SaveLoadText` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `995.5, 737.792, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `TextMeshProUGUI` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_text` (String) = `Save / Load`
+              - `m_isRightToLeft` (Boolean) = `False`
+              - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_fontSharedMaterials` (Generic) = `array size=0`
+              - `m_fontMaterial` (ObjectReference) = `null`
+              - `m_fontMaterials` (Generic) = `array size=0`
+              - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_enableVertexGradient` (Boolean) = `False`
+              - `m_colorMode` (Enum) = `Four Corners Gradient`
+              - `m_fontColorGradient` (Generic) = `<generic>`
+              - `m_fontColorGradientPreset` (ObjectReference) = `null`
+              - `m_spriteAsset` (ObjectReference) = `null`
+              - `m_tintAllSprites` (Boolean) = `False`
+              - `m_StyleSheet` (ObjectReference) = `null`
+              - `m_TextStyleHashCode` (Integer) = `-1183493901`
+              - `m_overrideHtmlColors` (Boolean) = `False`
+              - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontSize` (Float) = `36`
+              - `m_fontSizeBase` (Float) = `36`
+              - `m_fontWeight` (Enum) = `Regular`
+              - `m_enableAutoSizing` (Boolean) = `False`
+              - `m_fontSizeMin` (Float) = `18`
+              - `m_fontSizeMax` (Float) = `72`
+              - `m_fontStyle` (Enum) = `Bold`
+              - `m_HorizontalAlignment` (Enum) = `Left`
+              - `m_VerticalAlignment` (Enum) = `Middle`
+              - `m_textAlignment` (Enum) = `Converted`
+              - `m_characterSpacing` (Float) = `0`
+              - `m_characterHorizontalScale` (Float) = `1`
+              - `m_wordSpacing` (Float) = `0`
+              - `m_lineSpacing` (Float) = `0`
+              - `m_lineSpacingMax` (Float) = `0`
+              - `m_paragraphSpacing` (Float) = `0`
+              - `m_charWidthMaxAdj` (Float) = `0`
+              - `m_TextWrappingMode` (Enum) = `Normal`
+              - `m_wordWrappingRatios` (Float) = `0.4`
+              - `m_overflowMode` (Enum) = `Overflow`
+              - `m_linkedTextComponent` (ObjectReference) = `null`
+              - `parentLinkedComponent` (ObjectReference) = `null`
+              - `m_enableKerning` (Boolean) = `False`
+              - `m_ActiveFontFeatures` (Generic) = `array size=1`
+              - `m_enableExtraPadding` (Boolean) = `False`
+              - `checkPaddingRequired` (Boolean) = `False`
+              - `m_isRichText` (Boolean) = `True`
+              - `m_EmojiFallbackSupport` (Boolean) = `True`
+              - `m_parseCtrlCharacters` (Boolean) = `True`
+              - `m_isOrthographic` (Boolean) = `True`
+              - `m_isCullingEnabled` (Boolean) = `False`
+              - `m_horizontalMapping` (Enum) = `Character`
+              - `m_verticalMapping` (Enum) = `Character`
+              - `m_uvLineOffset` (Float) = `0`
+              - `m_geometrySortingOrder` (Enum) = `Normal`
+              - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+              - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+              - `m_useMaxVisibleDescender` (Boolean) = `True`
+              - `m_pageToDisplay` (Integer) = `1`
+              - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+              - `m_isVolumetricText` (Boolean) = `False`
+              - `m_hasFontAssetChanged` (Boolean) = `False`
+              - `m_baseMaterial` (ObjectReference) = `null`
+              - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+    - `Time` | path=`UIOverlayRoot/Canvas/Time` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `1700, 696.163, 0`
+        - worldPosition: `1979.424, 817.424, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(1700.00, 696.16, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(1.00, 1.00)`
+          - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+          - `m_AnchoredPosition` (Vector2) = `(-20.00, -20.00)`
+          - `m_SizeDelta` (Vector2) = `(160.00, 30.00)`
+          - `m_Pivot` (Vector2) = `(1.00, 1.00)`
+        - `CanvasRenderer` index=1 enabled=`n/a`
+          - `m_CullTransparentMesh` (Boolean) = `True`
+        - `Text` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+          - `m_Material` (ObjectReference) = `null`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_RaycastTarget` (Boolean) = `True`
+          - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+          - `m_Maskable` (Boolean) = `True`
+          - `m_OnCullStateChanged` (Generic) = `<generic>`
+          - `m_FontData` (Generic) = `<generic>`
+          - `m_Text` (String) = `New Text`
+        - `TimeDateHUD` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `TimeDateHUD (MonoScript) asset='Assets/Scripts/WorldMap/UI/TimeDateHUD.cs'`
+          - `timeOfDay` (ObjectReference) = `TimeManager (TimeOfDayManager) scenePath='EnvironmentManager/TimeManager'`
+          - `label` (ObjectReference) = `Time (Text) scenePath='UIOverlayRoot/Canvas/Time'`
+          - `showTimeOfDay` (Boolean) = `True`
+          - `prefix` (String) = ``
+- `WaveSystem` | path=`WaveSystem` | activeSelf=True | activeInHierarchy=True | layer=`Water` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `0, 0, 0`
+    - worldPosition: `0, 0, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `WaveField` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `WaveField (MonoScript) asset='Assets/Scripts/Water/WaveField.cs'`
+      - `debugThreshold` (Float) = `5`
+      - `debugOn` (Boolean) = `False`
+      - `amplitude` (Float) = `0.3`
+      - `frequency` (Float) = `0.03`
+      - `speed` (Float) = `0.5`
+      - `resolution` (Integer) = `1000`
+      - `width` (Float) = `300`
+      - `stiffness` (Float) = `100`
+      - `damping` (Float) = `0.01`
+      - `horizontalDamping` (Float) = `0.7`
+      - `tension` (Float) = `30`
+      - `viscosity` (Float) = `0.02`
+      - `maxWaveVelocity` (Float) = `1`
+    - `LineRenderer` index=2 enabled=`True`
+      - `m_CastShadows` (Enum) = `On`
+      - `m_ReceiveShadows` (Boolean) = `True`
+      - `m_DynamicOccludee` (Boolean) = `True`
+      - `m_StaticShadowCaster` (Boolean) = `False`
+      - `m_MotionVectors` (Enum) = `Camera Motion Only`
+      - `m_LightProbeUsage` (Integer) = `0`
+      - `m_ReflectionProbeUsage` (Integer) = `0`
+      - `m_RayTracingMode` (Integer) = `0`
+      - `m_RayTraceProcedural` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+      - `m_SmallMeshCulling` (Boolean) = `True`
+      - `m_RenderingLayerMask` (Integer) = `1`
+      - `m_RendererPriority` (Integer) = `0`
+      - `m_Materials` (Generic) = `array size=1`
+      - `m_ProbeAnchor` (ObjectReference) = `null`
+      - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+      - `m_LightmapParameters` (ObjectReference) = `null`
+      - `m_Positions` (Generic) = `array size=2`
+      - `m_Parameters` (Generic) = `<generic>`
+      - `m_MaskInteraction` (Enum) = `None`
+      - `m_UseWorldSpace` (Boolean) = `True`
+      - `m_Loop` (Boolean) = `False`
+      - `m_ApplyActiveColorSpace` (Boolean) = `True`
+    - `WaveRenderer_Line` index=3 enabled=`False`
+      - `m_Script` (ObjectReference) = `WaveRenderer_Line (MonoScript) asset='Assets/Scripts/Water/WaveRenderer_Line.cs'`
+      - `waveManager` (ObjectReference) = `WaveManager (WaveManager) scenePath='EnvironmentManager/WaveManager'`
+      - `centerTarget` (ObjectReference) = `null`
+      - `points` (Integer) = `300`
+      - `width` (Float) = `300`
+    - `MeshFilter` index=4 enabled=`n/a`
+      - `m_Mesh` (ObjectReference) = `null`
+    - `MeshRenderer` index=5 enabled=`True`
+      - `m_CastShadows` (Enum) = `On`
+      - `m_ReceiveShadows` (Boolean) = `True`
+      - `m_DynamicOccludee` (Boolean) = `True`
+      - `m_StaticShadowCaster` (Boolean) = `False`
+      - `m_MotionVectors` (Enum) = `Per Object Motion`
+      - `m_LightProbeUsage` (Integer) = `1`
+      - `m_ReflectionProbeUsage` (Integer) = `1`
+      - `m_RayTracingMode` (Integer) = `2`
+      - `m_RayTraceProcedural` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+      - `m_SmallMeshCulling` (Boolean) = `True`
+      - `m_RenderingLayerMask` (Integer) = `1`
+      - `m_RendererPriority` (Integer) = `0`
+      - `m_Materials` (Generic) = `array size=1`
+      - `m_ProbeAnchor` (ObjectReference) = `null`
+      - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+      - `m_LightmapParameters` (ObjectReference) = `null`
+    - `WaterMeshRenderer` index=6 enabled=`False`
+      - `m_Script` (ObjectReference) = `WaterMeshRenderer (MonoScript) asset='Assets/Scripts/Water/WaterMeshRenderer.cs'`
+      - `waveManager` (ObjectReference) = `WaveManager (WaveManager) scenePath='EnvironmentManager/WaveManager'`
+      - `centerTarget` (ObjectReference) = `CharacterPlayer (Transform) scenePath='CharacterPlayer'`
+      - `points` (Integer) = `1000`
+      - `bottomY` (Float) = `-200`
+      - `textureWorldScale` (Float) = `10`
+      - `meshWidth` (Float) = `240`
+    - `SortingLayerSetter` index=7 enabled=`False`
+      - `m_Script` (ObjectReference) = `SortingLayerSetter (MonoScript) asset='Assets/Scripts/Camera/SortingLayerSetter.cs'`
+      - `sortingLayerName` (String) = `NodeWater`
+      - `sortingOrder` (Integer) = `0`
+    - `NodeWaterBottomBinder` index=8 enabled=`True`
+      - `m_Script` (ObjectReference) = `NodeWaterBottomBinder (MonoScript) asset='Assets/Scripts/Environment/GroundGeneration/NodeWaterBottomBinder.cs'`
+      - `groundSource` (ObjectReference) = `SeaFloor (NodeGroundGenerator2D) scenePath='SeaFloor'`
+      - `water` (ObjectReference) = `WaveSystem (WaterMeshRenderer) scenePath='WaveSystem'`
+      - `extraDepth` (Float) = `0`
+  - `Ocean_Back` | path=`WaveSystem/Ocean_Back` | activeSelf=True | activeInHierarchy=True | layer=`Water` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MeshFilter` index=1 enabled=`n/a`
+        - `m_Mesh` (ObjectReference) = `null`
+      - `MeshRenderer` index=2 enabled=`True`
+        - `m_CastShadows` (Enum) = `On`
+        - `m_ReceiveShadows` (Boolean) = `True`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `2`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+      - `WaterMeshRenderer` index=3 enabled=`True`
+        - `m_Script` (ObjectReference) = `WaterMeshRenderer (MonoScript) asset='Assets/Scripts/Water/WaterMeshRenderer.cs'`
+        - `waveManager` (ObjectReference) = `WaveManager (WaveManager) scenePath='EnvironmentManager/WaveManager'`
+        - `centerTarget` (ObjectReference) = `CharacterPlayer (Transform) scenePath='CharacterPlayer'`
+        - `points` (Integer) = `1000`
+        - `bottomY` (Float) = `-500`
+        - `textureWorldScale` (Float) = `10`
+        - `meshWidth` (Float) = `240`
+      - `SortingLayerSetter` index=4 enabled=`True`
+        - `m_Script` (ObjectReference) = `SortingLayerSetter (MonoScript) asset='Assets/Scripts/Camera/SortingLayerSetter.cs'`
+        - `sortingLayerName` (String) = `BackWater`
+        - `sortingOrder` (Integer) = `0`
+  - `Ocean_Front` | path=`WaveSystem/Ocean_Front` | activeSelf=True | activeInHierarchy=True | layer=`Water` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MeshFilter` index=1 enabled=`n/a`
+        - `m_Mesh` (ObjectReference) = `null`
+      - `MeshRenderer` index=2 enabled=`True`
+        - `m_CastShadows` (Enum) = `On`
+        - `m_ReceiveShadows` (Boolean) = `True`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `2`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_ProbeAnchor` (ObjectReference) = `null`
+        - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+        - `m_LightmapParameters` (ObjectReference) = `null`
+      - `WaterMeshRenderer` index=3 enabled=`True`
+        - `m_Script` (ObjectReference) = `WaterMeshRenderer (MonoScript) asset='Assets/Scripts/Water/WaterMeshRenderer.cs'`
+        - `waveManager` (ObjectReference) = `WaveManager (WaveManager) scenePath='EnvironmentManager/WaveManager'`
+        - `centerTarget` (ObjectReference) = `CharacterPlayer (Transform) scenePath='CharacterPlayer'`
+        - `points` (Integer) = `1000`
+        - `bottomY` (Float) = `-500`
+        - `textureWorldScale` (Float) = `10`
+        - `meshWidth` (Float) = `240`
+      - `SortingLayerSetter` index=4 enabled=`True`
+        - `m_Script` (ObjectReference) = `SortingLayerSetter (MonoScript) asset='Assets/Scripts/Camera/SortingLayerSetter.cs'`
+        - `sortingLayerName` (String) = `FrontWater`
+        - `sortingOrder` (Integer) = `0`
+- `WorldGenerationRoot` | path=`WorldGenerationRoot` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `0, 0, -0.068`
+    - worldPosition: `0, 0, -0.068`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.00, 0.00, -0.07)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `WorldMapGraphGenerator` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `WorldMapGraphGenerator (MonoScript) asset='Assets/Scripts/WorldMap/Data/WorldMapGraphGenerator.cs'`
+      - `seed` (Integer) = `2`
+      - `clusterCount` (Integer) = `5`
+      - `nodesPerClusterMin` (Integer) = `3`
+      - `nodesPerClusterMax` (Integer) = `5`
+      - `generationMode` (Enum) = `Topography First`
+      - `fallbackToLegacyIfTopographyMissing` (Boolean) = `True`
+      - `topographySource` (ObjectReference) = `WorldGenerationRoot (WorldMapTopographyDebugSource) scenePath='WorldGenerationRoot'`
+      - `loadOrGenerateTopographyIfMissing` (Boolean) = `True`
+      - `generateNodeLayerOnAwake` (Boolean) = `True`
+      - `regenerateNodeLayerOnAwakeEvenIfGraphExists` (Boolean) = `False`
+      - `topographyTargetNodeCount` (Integer) = `25`
+      - `topographyCandidateGridWidth` (Integer) = `160`
+      - `topographyCandidateGridHeight` (Integer) = `100`
+      - `topographyCandidateEdgeInset01` (Float) = `0.045`
+      - `topographyCandidateSampleRadiusWorld` (Float) = `8`
+      - `topographyCandidateSampleGrid` (Integer) = `5`
+      - `topographyCandidateMinScore` (Float) = `0.35`
+      - `coastPresenceWeight` (Float) = `2.2`
+      - `beachWeight` (Float) = `1.35`
+      - `lowlandWeight` (Float) = `1.05`
+      - `shelfWaterWeight` (Float) = `0.65`
+      - `shallowWaterWeight` (Float) = `0.75`
+      - `highlandWeight` (Float) = `0.2`
+      - `deepOceanPenalty` (Float) = `1.6`
+      - `openOceanPenalty` (Float) = `0.75`
+      - `mountainPenalty` (Float) = `0.65`
+      - `centerBeachLowlandBonus` (Float) = `0.9`
+      - `centerShallowOrShelfBonus` (Float) = `0.35`
+      - `topographyCandidateNoise` (Float) = `0.08`
+      - `topographyNodeMinSpacing` (Float) = `9`
+      - `topographyMinSpacingFallbackFraction` (Float) = `0.55`
+      - `topographyPreferOneNodePerLandmass` (Boolean) = `True`
+      - `topographyMinLandmassCellsForCoverage` (Integer) = `5`
+      - `topographyLandmassCoverageSpacingMultiplier` (Float) = `0.65`
+      - `topographyCandidateLandmassSearchRadius` (Integer) = `3`
+      - `topographyExtraEdgesPerCluster` (Integer) = `2`
+      - `topographyIntraClusterExtraEdgeMaxLength` (Float) = `42`
+      - `topographyExtraInterClusterEdges` (Integer) = `6`
+      - `topographyInterClusterExtraEdgeMaxLength` (Float) = `140`
+      - `clusterSpacing` (Float) = `20`
+      - `clusterRadius` (Float) = `5`
+      - `nodeJitter` (Float) = `0.6`
+      - `extraEdgesPerCluster` (Integer) = `2`
+      - `extraInterClusterEdges` (Integer) = `7`
+      - `interClusterNeighborRange` (Integer) = `5`
+      - `statJitter` (Float) = `0.25`
+      - `buildingJitter` (Float) = `0.1`
+      - `autoRegenerate` (Boolean) = `False`
+      - `drawGizmos` (Boolean) = `True`
+      - `drawNodeLabels` (Boolean) = `True`
+      - `nodeGizmoRadius` (Float) = `0.25`
+      - `graph` (Generic) = `<generic>`
+    - `WorldMapNodeSelection` index=2 enabled=`True`
+      - `m_Script` (ObjectReference) = `WorldMapNodeSelection (MonoScript) asset='Assets/Scripts/WorldMap/Runtime/WorldMapNodeSelection.cs'`
+      - `generator` (ObjectReference) = `WorldGenerationRoot (WorldMapGraphGenerator) scenePath='WorldGenerationRoot'`
+      - `runtimeBinder` (ObjectReference) = `WorldMapRuntime (WorldMapRuntimeBinder) scenePath='WorldMapRuntime'`
+      - `selectedNodeId` (Integer) = `7`
+      - `debugOutcome` (ObjectReference) = `Successful Trade! (EventOutcome) asset='Assets/Defs/WorldMap/Node/Outcomes/Successful Trade!.asset'`
+    - `WorldMapTopographyDebugSource` index=3 enabled=`True`
+      - `m_Script` (ObjectReference) = `WorldMapTopographyDebugSource (MonoScript) asset='Assets/Scripts/WorldMap/Topography/WorldMapTopographyDebugSource.cs'`
+      - `graphGenerator` (ObjectReference) = `WorldGenerationRoot (WorldMapGraphGenerator) scenePath='WorldGenerationRoot'`
+      - `settings` (ObjectReference) = `WorldMapTopographySettings (WorldMapTopographySettings) asset='Assets/Defs/WorldMap/Topography/WorldMapTopographySettings.asset'`
+      - `bakedAsset` (ObjectReference) = `BakedTopography_2 (WorldMapTopographyBakeAsset) asset='Assets/Data/WorldMap/Topography/Baked/BakedTopography_2.asset'`
+      - `preferBakedAsset` (Boolean) = `True`
+      - `generateIfBakeMissingOrStale` (Boolean) = `True`
+      - `preferRuntimeCache` (Boolean) = `True`
+      - `publishToRuntimeCache` (Boolean) = `True`
+      - `bakeBaseTexture` (Boolean) = `True`
+      - `bakeContourTexture` (Boolean) = `False`
+      - `bakeDebugTexture` (Boolean) = `False`
+      - `bakeClassificationTexture` (Boolean) = `False`
+      - `generateOnAwake` (Boolean) = `True`
+      - `fallbackSeed` (Integer) = `12345`
+      - `biomeCatalog` (ObjectReference) = `WorldMapBiomeCatalog (WorldMapBiomeCatalog) asset='Assets/Defs/WorldMap/Biomes/WorldMapBiomeCatalog.asset'`
+      - `baseTexture` (ObjectReference) = `TopographyBaseTexture_2 (Texture2D) asset='Assets/Data/WorldMap/Topography/Baked/BakedTopography_2.asset'`
+      - `contourTexture` (ObjectReference) = `null`
+      - `debugTexture` (ObjectReference) = `null`
+      - `classificationTexture` (ObjectReference) = `null`
+      - `biomeTexture` (ObjectReference) = `null`
+    - `WorldMapPOISource` index=4 enabled=`True`
+      - `m_Script` (ObjectReference) = `WorldMapPOISource (MonoScript) asset='Assets/Scripts/WorldMap/POI/WorldMapPOISource.cs'`
+      - `topographySource` (ObjectReference) = `WorldGenerationRoot (WorldMapTopographyDebugSource) scenePath='WorldGenerationRoot'`
+      - `settings` (ObjectReference) = `WorldMapPOIGenerationSettings (WorldMapPOIGenerationSettings) asset='Assets/Defs/WorldMap/POIs/WorldMapPOIGenerationSettings.asset'`
+      - `catalog` (ObjectReference) = `WorldMapPOICatalog (WorldMapPOICatalog) asset='Assets/Defs/WorldMap/POIs/WorldMapPOICatalog.asset'`
+      - `generateOnAwake` (Boolean) = `True`
+      - `seedSalt` (Integer) = `420691`
+      - `hasGenerated` (Boolean) = `False`
+    - `WorldMapKnowledgeSource` index=5 enabled=`True`
+      - `m_Script` (ObjectReference) = `WorldMapKnowledgeSource (MonoScript) asset='Assets/Scripts/WorldMap/Fog/WorldMapKnowledgeSource.cs'`
+      - `topographySource` (ObjectReference) = `WorldGenerationRoot (WorldMapTopographyDebugSource) scenePath='WorldGenerationRoot'`
+      - `runtimeBinder` (ObjectReference) = `WorldMapRuntime (WorldMapRuntimeBinder) scenePath='WorldMapRuntime'`
+      - `playerRef` (ObjectReference) = `SceneContext (WorldMapPlayerRef) scenePath='SceneContext'`
+      - `gridWidth` (Integer) = `128`
+      - `gridHeight` (Integer) = `128`
+      - `currentNodeSurfaceRevealRadius` (Float) = `28`
+      - `currentNodeUnderwaterSurveyRadius` (Float) = `12`
+      - `travelDestinationSurfaceRevealRadius` (Float) = `28`
+      - `travelCorridorSurfaceRevealRadius` (Float) = `18`
+      - `travelCorridorRevealSteps` (Integer) = `18`
+      - `initializeOnAwake` (Boolean) = `True`
+      - `restoreFromGameStateOnAwake` (Boolean) = `True`
+      - `revealCurrentNodeOnAwake` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+- `WorldMapEventManager` | path=`WorldMapEventManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `-27.193, -0.703, -0.189`
+    - worldPosition: `-27.193, -0.703, -0.189`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(-27.19, -0.70, -0.19)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `WorldMapEventManager` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `WorldMapEventManager (MonoScript) asset='Assets/Scripts/WorldMap/Events/WorldMapEventManager.cs'`
+      - `generator` (ObjectReference) = `WorldGenerationRoot (WorldMapGraphGenerator) scenePath='WorldGenerationRoot'`
+      - `timeOfDay` (ObjectReference) = `TimeManager (TimeOfDayManager) scenePath='EnvironmentManager/TimeManager'`
+      - `runtimeBinder` (ObjectReference) = `WorldMapRuntime (WorldMapRuntimeBinder) scenePath='WorldMapRuntime'`
+      - `effectCatalog` (ObjectReference) = `WorldMapEffectCatalog (WorldMapEffectCatalog) asset='Assets/Defs/WorldMap/Node/Catalog/WorldMapEffectCatalog.asset'`
+      - `tickSeconds` (Float) = `0.25`
+      - `simSpeed` (Float) = `1`
+      - `logResolutions` (Boolean) = `True`
+      - `debugStormDef` (ObjectReference) = `StormEvent (StormEventDefinition) asset='Assets/Defs/WorldMap/Node/MapEvents/StormEvent.asset'`
+- `WorldMapRuntime` | path=`WorldMapRuntime` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `38.239, -17.025, -0.823`
+    - worldPosition: `38.239, -17.025, -0.823`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(38.24, -17.03, -0.82)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `WorldMapRuntimeBinder` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `WorldMapRuntimeBinder (MonoScript) asset='Assets/Scripts/WorldMap/Runtime/WorldMapRuntimeBinder.cs'`
+      - `generator` (ObjectReference) = `WorldGenerationRoot (WorldMapGraphGenerator) scenePath='WorldGenerationRoot'`
+      - `container` (ObjectReference) = `WorldMapRuntime (Transform) scenePath='WorldMapRuntime'`
+      - `runtimePrefab` (ObjectReference) = `null`
+      - `archetypes` (ObjectReference) = `ArchetypeCatalog (ArchetypeCatalog) asset='Assets/Defs/WorldMap/Node Archetypes/ArchetypeCatalog.asset'`
+- `WorldMapSim` | path=`WorldMapSim` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `11.193, -2.919, -0.496`
+    - worldPosition: `11.193, -2.919, -0.496`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(11.19, -2.92, -0.50)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `WorldMapDriftSimulator` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `WorldMapDriftSimulator (MonoScript) asset='Assets/Scripts/WorldMap/Simulation/WorldMapDriftSimulator.cs'`
+      - `runtimeBinder` (ObjectReference) = `WorldMapRuntime (WorldMapRuntimeBinder) scenePath='WorldMapRuntime'`
+      - `simTickSeconds` (Float) = `0.25`
+      - `simSpeed` (Float) = `1`
+      - `driftDockAndTrade` (Boolean) = `True`
+      - `buildingRestoreStrength` (Float) = `0.08`
+      - `buildingEquilibrium` (Float) = `2`
+      - `populationLossRate` (Float) = `0.02`
+      - `populationGrowthRate` (Float) = `0.01`
+      - `graphGenerator` (ObjectReference) = `WorldGenerationRoot (WorldMapGraphGenerator) scenePath='WorldGenerationRoot'`
+      - `resourceCatalog` (ObjectReference) = `ResourceCatalog (ResourceCatalog) asset='Assets/Defs/Trade/ResourceCatalog.asset'`
+      - `pressureConductance` (Float) = `0.01`
+      - `intraClusterPressureMult` (Float) = `0.5`
+      - `interClusterPressureMult` (Float) = `0.2`
+      - `logisticsInfluence` (Float) = `0.6`
+      - `edgeLoss01` (Float) = `0.05`
+      - `maxPressurePerEdge` (Float) = `0.2`
+      - `targetEdgeDegree` (Integer) = `4`
+- `WorldMapUI (DEPRECATED)` | path=`WorldMapUI (DEPRECATED)` | activeSelf=False | activeInHierarchy=False | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `3.051, -3.753, -0.375`
+    - worldPosition: `3.051, -3.753, -0.375`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(3.05, -3.75, -0.38)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `WorldMapChangeLogger` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `WorldMapChangeLogger (MonoScript) asset='Assets/Scripts/WorldMap/UI/WorldMapChangeLogger.cs'`
+      - `milestoneStep` (Float) = `0.2`
+      - `upwardOnly` (Boolean) = `False`
+      - `logStats` (Boolean) = `True`
+      - `logBuildings` (Boolean) = `True`
+

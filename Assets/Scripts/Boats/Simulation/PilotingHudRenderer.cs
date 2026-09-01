@@ -94,7 +94,7 @@ public sealed class PilotingHudRenderer
 
         float height =
             Mathf.Min(
-                330f,
+                390f,
                 playArea.height - 20f);
 
         Rect debugRect =
@@ -273,6 +273,37 @@ public sealed class PilotingHudRenderer
                 line),
             $"SEA      Amp {waves.Amplitude:0.00} (temporary storm proxy)   " +
             $"Wave speed {waves.WorldSpeed:0.00}   Spacing {waves.Spacing:0.00}");
+
+        y +=
+            line;
+
+        GUI.Label(
+            new Rect(
+                x,
+                y,
+                labelWidth,
+                line),
+            $"DISTURB  Severity {simulation.EnvironmentalSeverity01 * 100f:0}%   " +
+            $"Beam {simulation.EnvironmentalBeamExposure01 * 100f:0}%   " +
+            $"Angle {simulation.EnvironmentalEncounterBroadsideDegrees:0}°   " +
+            $"Pulses {simulation.EnvironmentalPulseCount}");
+
+        y +=
+            line;
+
+        Vector2 lastLateralKick = simulation.LastEnvironmentalLateralVelocityKick;
+
+        GUI.Label(
+            new Rect(
+                x,
+                y,
+                labelWidth,
+                line),
+            $"DRIFT    Vel ({simulation.EnvironmentalNavigationVelocity.x:+0.00;-0.00;0.00}," +
+            $"{simulation.EnvironmentalNavigationVelocity.y:+0.00;-0.00;0.00})   " +
+            $"Last Lat {lastLateralKick.magnitude:0.00}   " +
+            $"Last Yaw {simulation.LastEnvironmentalYawVelocityKickDegrees:+0.0;-0.0;0.0}°/s   " +
+            $"Next {simulation.EnvironmentalSecondsUntilNextPulse:0.0}s");
 
         y +=
             line;

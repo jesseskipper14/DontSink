@@ -26,6 +26,10 @@ public class Boat : MonoBehaviour, IForceBody
     [SerializeField]
     private Vector2 baseLocalCenterOfMass = Vector2.zero;
 
+    [Header("Mass Debug")]
+    [Tooltip("Draws every active IMassContribution in Scene view so an out-of-bounds COM contributor is immediately visible.")]
+    [SerializeField] private bool drawMassContributionGizmos = false;
+
     [Header("Mystery Oscillation Log")]
     [Tooltip("Logs Boat.AddForce/AddTorque calls plus a once-per-FixedUpdate boat physics summary. Off by default.")]
     [SerializeField] private bool mysteryOscillationLog = false;
@@ -83,8 +87,30 @@ public class Boat : MonoBehaviour, IForceBody
     public float Height => height;
     public float Volume => volume;
     public float Mass => mass;
-    public float MomentOfInertia =>
-        Mass * (Width * Width + Height * Height) / 12f;
+    public float MomentOfInertia
+    {
+        get
+        {
+            // Width/Height are authoritative BOAT-LOCAL geometry.
+            // Rigidbody2D.inertia is a world-physics quantity, so root scale
+            // must participate exactly once.
+            Vector3 scale = transform.lossyScale;
+
+            float physicalWidth =
+                Width *
+                Mathf.Abs(scale.x);
+
+            float physicalHeight =
+                Height *
+                Mathf.Abs(scale.y);
+
+            return
+                Mass *
+                (physicalWidth * physicalWidth +
+                 physicalHeight * physicalHeight) /
+                12f;
+        }
+    }
 
     [Header("Identity")]
     [SerializeField] private string boatInstanceId; // stable across scenes
@@ -147,7 +173,16 @@ public class Boat : MonoBehaviour, IForceBody
 
         SanitizeCompartmentsAndConnections();
 
-        massContributions.AddRange(GetComponentsInChildren<IMassContribution>());
+        IMassContribution[] discoveredMassContributions =
+            GetComponentsInChildren<IMassContribution>();
+
+        for (int i = 0;
+             i < discoveredMassContributions.Length;
+             i++)
+        {
+            RegisterMassContribution(
+                discoveredMassContributions[i]);
+        }
 
         RecomputeMassAndCOM();
     }
@@ -323,44 +358,168 @@ public class Boat : MonoBehaviour, IForceBody
 
     public void RecomputeMassAndCOM()
     {
-        float totalMass = baseMass;
-        Vector2 weightedWorldSum = baseMass * transform.TransformPoint(baseLocalCenterOfMass);
+        if (rb == null)
+            return;
 
-        foreach (var c in massContributions)
+        float safeBaseMass =
+            Mathf.Max(
+                0f,
+                baseMass);
+
+        float totalMass =
+            safeBaseMass;
+
+        Vector2 baseWorldCOM =
+            transform.TransformPoint(
+                baseLocalCenterOfMass);
+
+        Vector2 weightedWorldSum =
+            safeBaseMass *
+            baseWorldCOM;
+
+        if (massContributions != null)
         {
-            float m = c.MassContribution;
-            if (m <= 0f) continue;
+            for (int i = 0;
+                 i < massContributions.Count;
+                 i++)
+            {
+                IMassContribution contribution =
+                    massContributions[i];
 
-            Vector2 worldCOM = c.WorldCenterOfMass;
+                if (!IsLiveMassContribution(
+                        contribution))
+                {
+                    continue;
+                }
 
-            weightedWorldSum += m * worldCOM;
+                float contributionMass =
+                    contribution.MassContribution;
 
-            totalMass += m;
+                if (contributionMass <= 0f ||
+                    float.IsNaN(contributionMass) ||
+                    float.IsInfinity(contributionMass))
+                {
+                    continue;
+                }
+
+                Vector2 contributionWorldCOM =
+                    contribution.WorldCenterOfMass;
+
+                if (!IsFinite(
+                        contributionWorldCOM))
+                {
+                    continue;
+                }
+
+                weightedWorldSum +=
+                    contributionMass *
+                    contributionWorldCOM;
+
+                totalMass +=
+                    contributionMass;
+            }
         }
 
-        Vector2 worldCOMFinal = weightedWorldSum / totalMass;
-
-        Vector2 localCOMFinal = Vector2.Scale(transform.InverseTransformPoint(worldCOMFinal), transform.localScale);
-
-        if (float.IsNaN(localCOMFinal.x) || float.IsNaN(localCOMFinal.y)) // protect against unity
+        // A Boat should never realistically have zero mass, but keep the
+        // Rigidbody sane even if an author temporarily sets baseMass to zero.
+        if (totalMass <= 0.000001f)
         {
-            localCOMFinal = Vector2.zero;
+            totalMass = 0.000001f;
+            weightedWorldSum =
+                totalMass *
+                baseWorldCOM;
         }
 
-        mass = totalMass;
-        rb.mass = mass;
-        rb.centerOfMass = localCOMFinal;
-        rb.inertia = MomentOfInertia;
+        Vector2 desiredWorldCOM =
+            weightedWorldSum /
+            totalMass;
+
+        // CRITICAL:
+        // InverseTransformPoint already converts world -> local and already
+        // accounts for translation, rotation, AND scale.
+        //
+        // The old code multiplied this result by transform.localScale again,
+        // corrupting Rigidbody2D.centerOfMass whenever root scale != (1,1).
+        Vector2 localCOMFinal =
+            transform.InverseTransformPoint(
+                desiredWorldCOM);
+
+        if (!IsFinite(localCOMFinal))
+        {
+            localCOMFinal =
+                baseLocalCenterOfMass;
+        }
+
+        mass =
+            totalMass;
+
+        rb.mass =
+            mass;
+
+        rb.centerOfMass =
+            localCOMFinal;
+
+        rb.inertia =
+            MomentOfInertia;
     }
 
-    public void RegisterMassContribution(IMassContribution c)
+    public void RegisterMassContribution(
+        IMassContribution c)
     {
-        massContributions.Add(c);
+        if (!IsLiveMassContribution(c))
+            return;
+
+        if (massContributions == null)
+        {
+            massContributions =
+                new List<IMassContribution>();
+        }
+
+        if (!massContributions.Contains(c))
+        {
+            massContributions.Add(c);
+        }
     }
 
-    public void UnregisterMassContribution(IMassContribution c)
+    public void UnregisterMassContribution(
+        IMassContribution c)
     {
-        massContributions.Remove(c);
+        if (massContributions == null ||
+            c == null)
+        {
+            return;
+        }
+
+        // Historical code allowed duplicates. Remove every copy defensively so
+        // old runtime/prefab state cannot leave one ghost registration behind.
+        while (massContributions.Remove(c))
+        {
+        }
+    }
+
+    private static bool IsLiveMassContribution(
+        IMassContribution contribution)
+    {
+        if (contribution == null)
+            return false;
+
+        if (contribution is UnityEngine.Object unityObject &&
+            unityObject == null)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool IsFinite(
+        Vector2 value)
+    {
+        return
+            !float.IsNaN(value.x) &&
+            !float.IsNaN(value.y) &&
+            !float.IsInfinity(value.x) &&
+            !float.IsInfinity(value.y);
     }
 
     public void SetAuthoritativeGeometry(float newWidth, float newHeight, float newVolume)
@@ -429,6 +588,84 @@ public class Boat : MonoBehaviour, IForceBody
         //DrawBoatGizmo();
         DrawConnectionGizmo();
         DrawBoatCOMGizmo();
+
+        if (drawMassContributionGizmos)
+            DrawMassContributionGizmos();
+    }
+
+    private void DrawMassContributionGizmos()
+    {
+        if (massContributions == null)
+            return;
+
+        Vector2 baseWorld =
+            transform.TransformPoint(
+                baseLocalCenterOfMass);
+
+        Gizmos.color =
+            Color.cyan;
+
+        Gizmos.DrawWireSphere(
+            baseWorld,
+            0.10f);
+
+#if UNITY_EDITOR
+        UnityEditor.Handles.Label(
+            baseWorld + Vector2.up * 0.12f,
+            $"BASE MASS\n{Mathf.Max(0f, baseMass):F2}");
+#endif
+
+        for (int i = 0;
+             i < massContributions.Count;
+             i++)
+        {
+            IMassContribution contribution =
+                massContributions[i];
+
+            if (!IsLiveMassContribution(
+                    contribution))
+            {
+                continue;
+            }
+
+            float contributionMass =
+                contribution.MassContribution;
+
+            if (contributionMass <= 0f ||
+                float.IsNaN(contributionMass) ||
+                float.IsInfinity(contributionMass))
+            {
+                continue;
+            }
+
+            Vector2 contributionWorldCOM =
+                contribution.WorldCenterOfMass;
+
+            if (!IsFinite(
+                    contributionWorldCOM))
+            {
+                continue;
+            }
+
+            Gizmos.color =
+                Color.yellow;
+
+            Gizmos.DrawSphere(
+                contributionWorldCOM,
+                0.075f);
+
+#if UNITY_EDITOR
+            string contributorName =
+                contribution is Component component
+                    ? $"{component.name} [{component.GetType().Name}]"
+                    : contribution.GetType().Name;
+
+            UnityEditor.Handles.Label(
+                contributionWorldCOM +
+                Vector2.up * 0.10f,
+                $"{contributorName}\nMass {contributionMass:F2}");
+#endif
+        }
     }
 
     private void DrawBoatGizmo()

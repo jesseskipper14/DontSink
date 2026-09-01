@@ -977,6 +977,7 @@ MonoBehaviour:
   baseMass: 30
   mass: 1
   baseLocalCenterOfMass: {x: 0, y: -1.5680555}
+  drawMassContributionGizmos: 0
   mysteryOscillationLog: 0
   mysteryOscillationLogEveryFixedTick: 0
   mysteryOscillationMinimumForceMagnitude: 0
@@ -1143,6 +1144,17 @@ MonoBehaviour:
   recentCourseQualityDistance: 40
   courseNeutralQuality: 0.65
   routeCoverageAhead: 1200
+  environmentalDisturbance:
+    minimumWaveAmplitude: 0.5
+    waveAmplitudeForFullSeverity: 10
+    waveTravelDirection: {x: 0, y: -1}
+    maxPulseInterval: 4.5
+    minPulseInterval: 0.9
+    pulseIntervalRandomMultiplier: {x: 0.75, y: 1.25}
+    maxLateralVelocityKick: 2.4
+    lateralVelocityDrag: 1.35
+    maxYawVelocityKickDegrees: 16
+    pulseStrengthRandomMultiplier: {x: 0.75, y: 1.25}
 --- !u!114 &7434705420847039383
 MonoBehaviour:
   m_ObjectHideFlags: 0

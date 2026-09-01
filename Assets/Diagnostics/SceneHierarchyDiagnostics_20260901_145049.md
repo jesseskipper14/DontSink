@@ -1,0 +1,4281 @@
+# Scene Hierarchy Diagnostics Report
+
+Generated Local: `2026-09-01 14:50:49`
+Generated UTC: `2026-09-01T19:50:49.3015639Z`
+Unity: `6000.0.65f1`
+Project: `Don't Sink`
+Play Mode: `False`
+
+## Scene Summary
+
+| Scene | Path | Build Index | Loaded | Dirty | Objects | Components | DDOL |
+|---|---|---:|---:|---:|---:|---:|---:|
+| `MainMenu` | `Assets/Scenes/MainMenu.unity` | 0 | True | False | 69 | 245 | False |
+
+Total Objects: `69`
+Total Components: `245`
+Missing Scripts: `0`
+Stable ID Entries: `0`
+Duplicate Stable ID Groups: `0`
+
+## Suspicion Report
+
+### Null Object Reference Fields
+
+- `MainMenu` `EventSystem` `EventSystem.m_FirstSelected`
+- `MainMenu` `EventSystem` `InputSystemUIInputModule.m_XRTrackingOrigin`
+- `MainMenu` `Main Camera` `Camera.m_TargetTexture`
+- `MainMenu` `Main Camera` `UniversalAdditionalCameraData.m_VolumeTrigger`
+- `MainMenu` `MainMenuSystems` `MainMenuController.saveLoadPanel`
+- `MainMenu` `MainMenuCanvas` `Canvas.m_Camera`
+- `MainMenu` `MainMenuCanvas/MainMenuPanel` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/MainMenuPanel/TitleText` `Text.m_Material`
+- `MainMenu` `MainMenuCanvas/MainMenuPanel/MenuButtons/NewGameButton` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/MainMenuPanel/MenuButtons/NewGameButton/NewGame` `Text.m_Material`
+- `MainMenu` `MainMenuCanvas/MainMenuPanel/MenuButtons/LoadGameButton` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/MainMenuPanel/MenuButtons/LoadGameButton/NewGame` `Text.m_Material`
+- `MainMenu` `MainMenuCanvas/MainMenuPanel/MenuButtons/ProfilesButton` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/MainMenuPanel/MenuButtons/ProfilesButton/Profiles` `Text.m_Material`
+- `MainMenu` `MainMenuCanvas/MainMenuPanel/MenuButtons/SettingsButton` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/MainMenuPanel/MenuButtons/SettingsButton/Settings` `Text.m_Material`
+- `MainMenu` `MainMenuCanvas/MainMenuPanel/MenuButtons/QuitButton` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/MainMenuPanel/MenuButtons/QuitButton/Quit` `Text.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Header/SaveLoadText` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Header/SaveLoadText` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Header/SaveLoadText` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Header/SaveLoadText` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Header/SaveLoadText` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Header/SaveLoadText` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Header/SaveLoadText` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Header/SaveLoadText` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView` `Image.m_Sprite`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView` `ScrollRect.m_HorizontalScrollbar`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Viewport` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Viewport` `Image.m_Sprite`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Scrollbar` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Scrollbar/Sliding Area/Handle` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput` `TMP_InputField.m_VerticalScrollbar`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput` `TMP_InputField.m_VerticalScrollbarEventHandler`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput` `TMP_InputField.m_LayoutGroup`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput` `TMP_InputField.m_InputValidator`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput` `TMP_InputField.m_VerticalScrollbar`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput` `TMP_InputField.m_VerticalScrollbarEventHandler`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput` `TMP_InputField.m_LayoutGroup`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput` `TMP_InputField.m_InputValidator`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/StatusText` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/StatusText` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/StatusText` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/StatusText` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/StatusText` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/StatusText` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/StatusText` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/StatusText` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/SaveButton` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/SaveButton/Save` `Text.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/LoadButton` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/LoadButton/Load` `Text.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/DeleteButton` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/DeleteButton/Text (TMP)` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/DeleteButton/Text (TMP)` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/DeleteButton/Text (TMP)` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/DeleteButton/Text (TMP)` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/DeleteButton/Text (TMP)` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/DeleteButton/Text (TMP)` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/DeleteButton/Text (TMP)` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/DeleteButton/Text (TMP)` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/OpenFolderButton` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/OpenFolderButton/OpenFolder` `Text.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/CloseButton` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/CloseButton/Close` `Text.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/VersionText` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/VersionText` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/VersionText` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/VersionText` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/VersionText` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/VersionText` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/VersionText` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/SaveLoadPanelRoot/Footer/VersionText` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/TitleText` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/TitleText` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/TitleText` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/TitleText` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/TitleText` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/TitleText` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/TitleText` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/TitleText` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/MessageText` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/MessageText` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/MessageText` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/MessageText` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/MessageText` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/MessageText` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/MessageText` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/MessageText` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/CancelButton` `Image.m_Material`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` `TextMeshProUGUI.m_Material`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` `TextMeshProUGUI.m_fontMaterial`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` `TextMeshProUGUI.m_fontColorGradientPreset`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` `TextMeshProUGUI.m_spriteAsset`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` `TextMeshProUGUI.m_StyleSheet`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` `TextMeshProUGUI.m_linkedTextComponent`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` `TextMeshProUGUI.parentLinkedComponent`
+- `MainMenu` `MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` `TextMeshProUGUI.m_baseMaterial`
+- `MainMenu` `WaveSystem` `LineRenderer.m_ProbeAnchor`
+- `MainMenu` `WaveSystem` `LineRenderer.m_LightProbeVolumeOverride`
+- `MainMenu` `WaveSystem` `LineRenderer.m_LightmapParameters`
+- `MainMenu` `WaveSystem` `MeshFilter.m_Mesh`
+- `MainMenu` `WaveSystem` `MeshRenderer.m_ProbeAnchor`
+- `MainMenu` `WaveSystem` `MeshRenderer.m_LightProbeVolumeOverride`
+- `MainMenu` `WaveSystem` `MeshRenderer.m_LightmapParameters`
+- `MainMenu` `WaveSystem` `NodeWaterBottomBinder.groundSource`
+
+## Component Type Summary
+
+- `RectTransform`: `64`
+- `CanvasRenderer`: `51`
+- `Image`: `23`
+- `LayoutElement`: `20`
+- `TextMeshProUGUI`: `18`
+- `Button`: `14`
+- `Text`: `10`
+- `VerticalLayoutGroup`: `7`
+- `Transform`: `5`
+- `HorizontalLayoutGroup`: `3`
+- `RectMask2D`: `3`
+- `TMP_InputField`: `2`
+- `EventSystem`: `1`
+- `InputSystemUIInputModule`: `1`
+- `Camera`: `1`
+- `AudioListener`: `1`
+- `UniversalAdditionalCameraData`: `1`
+- `MainMenuController`: `1`
+- `SaveLoadController`: `1`
+- `EscapeCloseRegistry`: `1`
+- `GameplayInputBlocker`: `1`
+- `Canvas`: `1`
+- `CanvasScaler`: `1`
+- `GraphicRaycaster`: `1`
+- `SaveLoadPanelUI`: `1`
+- `ScrollRect`: `1`
+- `Scrollbar`: `1`
+- `ChoiceDialogUI`: `1`
+- `WaveManager`: `1`
+- `WaveField`: `1`
+- `LineRenderer`: `1`
+- `WaveRenderer_Line`: `1`
+- `MeshFilter`: `1`
+- `MeshRenderer`: `1`
+- `WaterMeshRenderer`: `1`
+- `SortingLayerSetter`: `1`
+- `NodeWaterBottomBinder`: `1`
+
+## Important Components
+
+No tracked important components found.
+
+## Full Hierarchy
+
+### Scene: `MainMenu`
+
+- `EventSystem` | path=`EventSystem` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `0, 0, 0`
+    - worldPosition: `0, 0, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `EventSystem` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `EventSystem (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/EventSystem/EventSystem.cs'`
+      - `m_FirstSelected` (ObjectReference) = `null`
+      - `m_sendNavigationEvents` (Boolean) = `True`
+      - `m_DragThreshold` (Integer) = `10`
+    - `InputSystemUIInputModule` index=2 enabled=`True`
+      - `m_Script` (ObjectReference) = `InputSystemUIInputModule (MonoScript) asset='Packages/com.unity.inputsystem/InputSystem/Plugins/UI/InputSystemUIInputModule.cs'`
+      - `m_SendPointerHoverToParent` (Boolean) = `True`
+      - `m_MoveRepeatDelay` (Float) = `0.5`
+      - `m_MoveRepeatRate` (Float) = `0.1`
+      - `m_XRTrackingOrigin` (ObjectReference) = `null`
+      - `m_DeselectOnBackgroundClick` (Boolean) = `True`
+      - `m_PointerBehavior` (Enum) = `Single Mouse Or Pen But Multi Touch And Track`
+      - `m_ScrollDeltaPerTick` (Float) = `6`
+- `Main Camera` | path=`Main Camera` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`MainCamera` | static=False
+  - Transform:
+    - localPosition: `0, 0, -10`
+    - worldPosition: `0, 0, -10`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.00, 0.00, -10.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `Camera` index=1 enabled=`True`
+      - `m_ClearFlags` (Enum) = `Skybox`
+      - `m_BackGroundColor` (Color) = `RGBA(0.192, 0.302, 0.475, 0.000)`
+      - `m_projectionMatrixMode` (Integer) = `1`
+      - `m_GateFitMode` (Integer) = `2`
+      - `m_FOVAxisMode` (Integer) = `0`
+      - `m_Iso` (Integer) = `200`
+      - `m_ShutterSpeed` (Float) = `0.005`
+      - `m_Aperture` (Float) = `16`
+      - `m_FocusDistance` (Float) = `10`
+      - `m_FocalLength` (Float) = `50`
+      - `m_BladeCount` (Integer) = `5`
+      - `m_Curvature` (Vector2) = `(2.00, 11.00)`
+      - `m_BarrelClipping` (Float) = `0.25`
+      - `m_Anamorphism` (Float) = `0`
+      - `m_SensorSize` (Vector2) = `(36.00, 24.00)`
+      - `m_LensShift` (Vector2) = `(0.00, 0.00)`
+      - `m_NormalizedViewPortRect` (Rect) = `(x:0.00, y:0.00, width:1.00, height:1.00)`
+      - `near clip plane` (Float) = `0.3`
+      - `far clip plane` (Float) = `1000`
+      - `field of view` (Float) = `60`
+      - `orthographic` (Boolean) = `True`
+      - `orthographic size` (Float) = `5`
+      - `m_Depth` (Float) = `-1`
+      - `m_CullingMask` (LayerMask) = `-1`
+      - `m_RenderingPath` (Enum) = `Use Graphics Settings`
+      - `m_TargetTexture` (ObjectReference) = `null`
+      - `m_TargetDisplay` (Integer) = `0`
+      - `m_TargetEye` (Integer) = `3`
+      - `m_HDR` (Boolean) = `True`
+      - `m_AllowMSAA` (Boolean) = `True`
+      - `m_AllowDynamicResolution` (Boolean) = `False`
+      - `m_ForceIntoRT` (Boolean) = `False`
+      - `m_OcclusionCulling` (Boolean) = `True`
+      - `m_StereoConvergence` (Float) = `10`
+      - `m_StereoSeparation` (Float) = `0.022`
+    - `AudioListener` index=2 enabled=`True`
+    - `UniversalAdditionalCameraData` index=3 enabled=`True`
+      - `m_Script` (ObjectReference) = `UniversalAdditionalCameraData (MonoScript) asset='Packages/com.unity.render-pipelines.universal/Runtime/UniversalAdditionalCameraData.cs'`
+      - `m_RenderShadows` (Boolean) = `True`
+      - `m_RequiresDepthTextureOption` (Enum) = `Use settings from Render Pipeline Asset`
+      - `m_RequiresOpaqueTextureOption` (Enum) = `Use settings from Render Pipeline Asset`
+      - `m_CameraType` (Enum) = `Base`
+      - `m_Cameras` (Generic) = `array size=0`
+      - `m_RendererIndex` (Integer) = `-1`
+      - `m_VolumeLayerMask` (LayerMask) = `1`
+      - `m_VolumeTrigger` (ObjectReference) = `null`
+      - `m_VolumeFrameworkUpdateModeOption` (Enum) = `Use Pipeline Settings`
+      - `m_RenderPostProcessing` (Boolean) = `False`
+      - `m_Antialiasing` (Enum) = `No Anti-aliasing`
+      - `m_AntialiasingQuality` (Enum) = `High`
+      - `m_StopNaN` (Boolean) = `False`
+      - `m_Dithering` (Boolean) = `False`
+      - `m_ClearDepth` (Boolean) = `True`
+      - `m_AllowXRRendering` (Boolean) = `True`
+      - `m_AllowHDROutput` (Boolean) = `True`
+      - `m_UseScreenCoordOverride` (Boolean) = `False`
+      - `m_ScreenSizeOverride` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+      - `m_ScreenCoordScaleBias` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+      - `m_RequiresDepthTexture` (Boolean) = `False`
+      - `m_RequiresColorTexture` (Boolean) = `False`
+      - `m_TaaSettings` (Generic) = `<generic>`
+- `MainMenuCanvas` | path=`MainMenuCanvas` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `995.5, 414.5, 0`
+    - worldPosition: `995.5, 414.5, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `RectTransform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(995.50, 414.50, 0.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+      - `m_AnchorMax` (Vector2) = `(0.00, 0.00)`
+      - `m_AnchoredPosition` (Vector2) = `(995.50, 414.50)`
+      - `m_SizeDelta` (Vector2) = `(1991.00, 829.00)`
+      - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+    - `Canvas` index=1 enabled=`True`
+      - `m_RenderMode` (Enum) = `Screen Space - Overlay`
+      - `m_Camera` (ObjectReference) = `null`
+      - `m_PlaneDistance` (Float) = `100`
+      - `m_PixelPerfect` (Boolean) = `False`
+      - `m_ReceivesEvents` (Boolean) = `True`
+      - `m_OverrideSorting` (Boolean) = `False`
+      - `m_OverridePixelPerfect` (Boolean) = `False`
+      - `m_SortingBucketNormalizedSize` (Float) = `0`
+      - `m_VertexColorAlwaysGammaSpace` (Boolean) = `False`
+      - `m_AdditionalShaderChannelsFlag` (Enum) = `-1`
+      - `m_UpdateRectTransformForStandalone` (Enum) = `Enabled`
+    - `CanvasScaler` index=2 enabled=`True`
+      - `m_Script` (ObjectReference) = `CanvasScaler (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/CanvasScaler.cs'`
+      - `m_UiScaleMode` (Enum) = `Constant Pixel Size`
+      - `m_ReferencePixelsPerUnit` (Float) = `100`
+      - `m_ScaleFactor` (Float) = `1`
+      - `m_ReferenceResolution` (Vector2) = `(800.00, 600.00)`
+      - `m_ScreenMatchMode` (Enum) = `Match Width Or Height`
+      - `m_MatchWidthOrHeight` (Float) = `0`
+      - `m_PhysicalUnit` (Enum) = `Points`
+      - `m_FallbackScreenDPI` (Float) = `96`
+      - `m_DefaultSpriteDPI` (Float) = `96`
+      - `m_DynamicPixelsPerUnit` (Float) = `1`
+      - `m_PresetInfoIsWorld` (Boolean) = `False`
+    - `GraphicRaycaster` index=3 enabled=`True`
+      - `m_Script` (ObjectReference) = `GraphicRaycaster (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/GraphicRaycaster.cs'`
+      - `m_IgnoreReversedGraphics` (Boolean) = `True`
+      - `m_BlockingObjects` (Enum) = `None`
+      - `m_BlockingMask` (LayerMask) = `-1`
+  - `ChoiceDialogRoot` | path=`MainMenuCanvas/ChoiceDialogRoot` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `995.5, 414.5, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `RectTransform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `m_AnchorMin` (Vector2) = `(0.30, 0.30)`
+        - `m_AnchorMax` (Vector2) = `(0.70, 0.70)`
+        - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+        - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+        - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+      - `CanvasRenderer` index=1 enabled=`n/a`
+        - `m_CullTransparentMesh` (Boolean) = `True`
+      - `Image` index=2 enabled=`True`
+        - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+        - `m_Material` (ObjectReference) = `null`
+        - `m_Color` (Color) = `RGBA(0.171, 0.207, 0.321, 0.992)`
+        - `m_RaycastTarget` (Boolean) = `True`
+        - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+        - `m_Maskable` (Boolean) = `True`
+        - `m_OnCullStateChanged` (Generic) = `<generic>`
+        - `m_Sprite` (ObjectReference) = `Background (Sprite) asset='Resources/unity_builtin_extra'`
+        - `m_Type` (Enum) = `Sliced`
+        - `m_PreserveAspect` (Boolean) = `False`
+        - `m_FillCenter` (Boolean) = `True`
+        - `m_FillMethod` (Enum) = `Radial 360`
+        - `m_FillAmount` (Float) = `1`
+        - `m_FillClockwise` (Boolean) = `True`
+        - `m_FillOrigin` (Integer) = `0`
+        - `m_UseSpriteMesh` (Boolean) = `False`
+        - `m_PixelsPerUnitMultiplier` (Float) = `1`
+      - `ChoiceDialogUI` index=3 enabled=`True`
+        - `m_Script` (ObjectReference) = `ChoiceDialogUI (MonoScript) asset='Assets/Scripts/Saves/ChoiceDialogUI.cs'`
+        - `root` (ObjectReference) = `ChoiceDialogRoot (GameObject) scenePath='MainMenuCanvas/ChoiceDialogRoot'`
+        - `titleText` (ObjectReference) = `TitleText (TextMeshProUGUI) scenePath='MainMenuCanvas/ChoiceDialogRoot/TitleText'`
+        - `messageText` (ObjectReference) = `MessageText (TextMeshProUGUI) scenePath='MainMenuCanvas/ChoiceDialogRoot/MessageText'`
+        - `primaryButton` (ObjectReference) = `PrimaryButton (Button) scenePath='MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton'`
+        - `primaryButtonText` (ObjectReference) = `Text (TMP) (TextMeshProUGUI) scenePath='MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)'`
+        - `secondaryButton` (ObjectReference) = `SecondaryButton (Button) scenePath='MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton'`
+        - `secondaryButtonText` (ObjectReference) = `Text (TMP) (TextMeshProUGUI) scenePath='MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)'`
+        - `cancelButton` (ObjectReference) = `CancelButton (Button) scenePath='MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/CancelButton'`
+        - `cancelButtonText` (ObjectReference) = `Text (TMP) (TextMeshProUGUI) scenePath='MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)'`
+      - `VerticalLayoutGroup` index=4 enabled=`True`
+        - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+        - `m_Padding` (Generic) = `<generic>`
+        - `m_ChildAlignment` (Enum) = `Middle Center`
+        - `m_Spacing` (Float) = `0`
+        - `m_ChildForceExpandWidth` (Boolean) = `True`
+        - `m_ChildForceExpandHeight` (Boolean) = `True`
+        - `m_ChildControlWidth` (Boolean) = `True`
+        - `m_ChildControlHeight` (Boolean) = `False`
+        - `m_ChildScaleWidth` (Boolean) = `False`
+        - `m_ChildScaleHeight` (Boolean) = `False`
+        - `m_ReverseArrangement` (Boolean) = `False`
+    - `HorizontalLayout` | path=`MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, -93.867, 0`
+        - worldPosition: `995.5, 320.633, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, -93.87, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+          - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+          - `m_AnchoredPosition` (Vector2) = `(398.20, -259.67)`
+          - `m_SizeDelta` (Vector2) = `(796.40, 100.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `HorizontalLayoutGroup` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `HorizontalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/HorizontalLayoutGroup.cs'`
+          - `m_Padding` (Generic) = `<generic>`
+          - `m_ChildAlignment` (Enum) = `Middle Center`
+          - `m_Spacing` (Float) = `40`
+          - `m_ChildForceExpandWidth` (Boolean) = `True`
+          - `m_ChildForceExpandHeight` (Boolean) = `True`
+          - `m_ChildControlWidth` (Boolean) = `True`
+          - `m_ChildControlHeight` (Boolean) = `False`
+          - `m_ChildScaleWidth` (Boolean) = `False`
+          - `m_ChildScaleHeight` (Boolean) = `False`
+          - `m_ReverseArrangement` (Boolean) = `False`
+      - `CancelButton` | path=`MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/CancelButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `278.8, 0, 0`
+          - worldPosition: `1274.3, 320.633, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(278.80, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(677.00, -50.00)`
+            - `m_SizeDelta` (Vector2) = `(238.80, 30.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+            - `m_Type` (Enum) = `Sliced`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Button` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `CancelButton (Image) scenePath='MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/CancelButton'`
+            - `m_OnClick` (Generic) = `<generic>`
+        - `Text (TMP)` | path=`MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/CancelButton/Text (TMP)` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `1274.3, 320.633, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `TextMeshProUGUI` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_text` (String) = `Button`
+              - `m_isRightToLeft` (Boolean) = `False`
+              - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_fontSharedMaterials` (Generic) = `array size=0`
+              - `m_fontMaterial` (ObjectReference) = `null`
+              - `m_fontMaterials` (Generic) = `array size=0`
+              - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_enableVertexGradient` (Boolean) = `False`
+              - `m_colorMode` (Enum) = `Four Corners Gradient`
+              - `m_fontColorGradient` (Generic) = `<generic>`
+              - `m_fontColorGradientPreset` (ObjectReference) = `null`
+              - `m_spriteAsset` (ObjectReference) = `null`
+              - `m_tintAllSprites` (Boolean) = `False`
+              - `m_StyleSheet` (ObjectReference) = `null`
+              - `m_TextStyleHashCode` (Integer) = `-1183493901`
+              - `m_overrideHtmlColors` (Boolean) = `False`
+              - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontSize` (Float) = `24`
+              - `m_fontSizeBase` (Float) = `24`
+              - `m_fontWeight` (Enum) = `Regular`
+              - `m_enableAutoSizing` (Boolean) = `False`
+              - `m_fontSizeMin` (Float) = `18`
+              - `m_fontSizeMax` (Float) = `72`
+              - `m_fontStyle` (Enum) = `Normal`
+              - `m_HorizontalAlignment` (Enum) = `Center`
+              - `m_VerticalAlignment` (Enum) = `Middle`
+              - `m_textAlignment` (Enum) = `Converted`
+              - `m_characterSpacing` (Float) = `0`
+              - `m_characterHorizontalScale` (Float) = `1`
+              - `m_wordSpacing` (Float) = `0`
+              - `m_lineSpacing` (Float) = `0`
+              - `m_lineSpacingMax` (Float) = `0`
+              - `m_paragraphSpacing` (Float) = `0`
+              - `m_charWidthMaxAdj` (Float) = `0`
+              - `m_TextWrappingMode` (Enum) = `Normal`
+              - `m_wordWrappingRatios` (Float) = `0.4`
+              - `m_overflowMode` (Enum) = `Overflow`
+              - `m_linkedTextComponent` (ObjectReference) = `null`
+              - `parentLinkedComponent` (ObjectReference) = `null`
+              - `m_enableKerning` (Boolean) = `False`
+              - `m_ActiveFontFeatures` (Generic) = `array size=1`
+              - `m_enableExtraPadding` (Boolean) = `False`
+              - `checkPaddingRequired` (Boolean) = `False`
+              - `m_isRichText` (Boolean) = `True`
+              - `m_EmojiFallbackSupport` (Boolean) = `True`
+              - `m_parseCtrlCharacters` (Boolean) = `True`
+              - `m_isOrthographic` (Boolean) = `True`
+              - `m_isCullingEnabled` (Boolean) = `False`
+              - `m_horizontalMapping` (Enum) = `Character`
+              - `m_verticalMapping` (Enum) = `Character`
+              - `m_uvLineOffset` (Float) = `0`
+              - `m_geometrySortingOrder` (Enum) = `Normal`
+              - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+              - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+              - `m_useMaxVisibleDescender` (Boolean) = `True`
+              - `m_pageToDisplay` (Integer) = `1`
+              - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+              - `m_isVolumetricText` (Boolean) = `False`
+              - `m_hasFontAssetChanged` (Boolean) = `False`
+              - `m_baseMaterial` (ObjectReference) = `null`
+              - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+      - `PrimaryButton` | path=`MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `-278.8, 0, 0`
+          - worldPosition: `716.7, 320.633, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(-278.80, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(119.40, -50.00)`
+            - `m_SizeDelta` (Vector2) = `(238.80, 30.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+            - `m_Type` (Enum) = `Sliced`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Button` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `PrimaryButton (Image) scenePath='MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton'`
+            - `m_OnClick` (Generic) = `<generic>`
+        - `Text (TMP)` | path=`MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/PrimaryButton/Text (TMP)` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `716.7, 320.633, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `TextMeshProUGUI` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_text` (String) = `Button`
+              - `m_isRightToLeft` (Boolean) = `False`
+              - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_fontSharedMaterials` (Generic) = `array size=0`
+              - `m_fontMaterial` (ObjectReference) = `null`
+              - `m_fontMaterials` (Generic) = `array size=0`
+              - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_enableVertexGradient` (Boolean) = `False`
+              - `m_colorMode` (Enum) = `Four Corners Gradient`
+              - `m_fontColorGradient` (Generic) = `<generic>`
+              - `m_fontColorGradientPreset` (ObjectReference) = `null`
+              - `m_spriteAsset` (ObjectReference) = `null`
+              - `m_tintAllSprites` (Boolean) = `False`
+              - `m_StyleSheet` (ObjectReference) = `null`
+              - `m_TextStyleHashCode` (Integer) = `-1183493901`
+              - `m_overrideHtmlColors` (Boolean) = `False`
+              - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontSize` (Float) = `24`
+              - `m_fontSizeBase` (Float) = `24`
+              - `m_fontWeight` (Enum) = `Regular`
+              - `m_enableAutoSizing` (Boolean) = `False`
+              - `m_fontSizeMin` (Float) = `18`
+              - `m_fontSizeMax` (Float) = `72`
+              - `m_fontStyle` (Enum) = `Normal`
+              - `m_HorizontalAlignment` (Enum) = `Center`
+              - `m_VerticalAlignment` (Enum) = `Middle`
+              - `m_textAlignment` (Enum) = `Converted`
+              - `m_characterSpacing` (Float) = `0`
+              - `m_characterHorizontalScale` (Float) = `1`
+              - `m_wordSpacing` (Float) = `0`
+              - `m_lineSpacing` (Float) = `0`
+              - `m_lineSpacingMax` (Float) = `0`
+              - `m_paragraphSpacing` (Float) = `0`
+              - `m_charWidthMaxAdj` (Float) = `0`
+              - `m_TextWrappingMode` (Enum) = `Normal`
+              - `m_wordWrappingRatios` (Float) = `0.4`
+              - `m_overflowMode` (Enum) = `Overflow`
+              - `m_linkedTextComponent` (ObjectReference) = `null`
+              - `parentLinkedComponent` (ObjectReference) = `null`
+              - `m_enableKerning` (Boolean) = `False`
+              - `m_ActiveFontFeatures` (Generic) = `array size=1`
+              - `m_enableExtraPadding` (Boolean) = `False`
+              - `checkPaddingRequired` (Boolean) = `False`
+              - `m_isRichText` (Boolean) = `True`
+              - `m_EmojiFallbackSupport` (Boolean) = `True`
+              - `m_parseCtrlCharacters` (Boolean) = `True`
+              - `m_isOrthographic` (Boolean) = `True`
+              - `m_isCullingEnabled` (Boolean) = `False`
+              - `m_horizontalMapping` (Enum) = `Character`
+              - `m_verticalMapping` (Enum) = `Character`
+              - `m_uvLineOffset` (Float) = `0`
+              - `m_geometrySortingOrder` (Enum) = `Normal`
+              - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+              - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+              - `m_useMaxVisibleDescender` (Boolean) = `True`
+              - `m_pageToDisplay` (Integer) = `1`
+              - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+              - `m_isVolumetricText` (Boolean) = `False`
+              - `m_hasFontAssetChanged` (Boolean) = `False`
+              - `m_baseMaterial` (ObjectReference) = `null`
+              - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+      - `SecondaryButton` | path=`MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `995.5, 320.633, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(398.20, -50.00)`
+            - `m_SizeDelta` (Vector2) = `(238.80, 30.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+            - `m_Type` (Enum) = `Sliced`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Button` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `SecondaryButton (Image) scenePath='MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton'`
+            - `m_OnClick` (Generic) = `<generic>`
+        - `Text (TMP)` | path=`MainMenuCanvas/ChoiceDialogRoot/HorizontalLayout/SecondaryButton/Text (TMP)` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `995.5, 320.633, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `TextMeshProUGUI` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_text` (String) = `Button`
+              - `m_isRightToLeft` (Boolean) = `False`
+              - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_fontSharedMaterials` (Generic) = `array size=0`
+              - `m_fontMaterial` (ObjectReference) = `null`
+              - `m_fontMaterials` (Generic) = `array size=0`
+              - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_enableVertexGradient` (Boolean) = `False`
+              - `m_colorMode` (Enum) = `Four Corners Gradient`
+              - `m_fontColorGradient` (Generic) = `<generic>`
+              - `m_fontColorGradientPreset` (ObjectReference) = `null`
+              - `m_spriteAsset` (ObjectReference) = `null`
+              - `m_tintAllSprites` (Boolean) = `False`
+              - `m_StyleSheet` (ObjectReference) = `null`
+              - `m_TextStyleHashCode` (Integer) = `-1183493901`
+              - `m_overrideHtmlColors` (Boolean) = `False`
+              - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontSize` (Float) = `24`
+              - `m_fontSizeBase` (Float) = `24`
+              - `m_fontWeight` (Enum) = `Regular`
+              - `m_enableAutoSizing` (Boolean) = `False`
+              - `m_fontSizeMin` (Float) = `18`
+              - `m_fontSizeMax` (Float) = `72`
+              - `m_fontStyle` (Enum) = `Normal`
+              - `m_HorizontalAlignment` (Enum) = `Center`
+              - `m_VerticalAlignment` (Enum) = `Middle`
+              - `m_textAlignment` (Enum) = `Converted`
+              - `m_characterSpacing` (Float) = `0`
+              - `m_characterHorizontalScale` (Float) = `1`
+              - `m_wordSpacing` (Float) = `0`
+              - `m_lineSpacing` (Float) = `0`
+              - `m_lineSpacingMax` (Float) = `0`
+              - `m_paragraphSpacing` (Float) = `0`
+              - `m_charWidthMaxAdj` (Float) = `0`
+              - `m_TextWrappingMode` (Enum) = `Normal`
+              - `m_wordWrappingRatios` (Float) = `0.4`
+              - `m_overflowMode` (Enum) = `Overflow`
+              - `m_linkedTextComponent` (ObjectReference) = `null`
+              - `parentLinkedComponent` (ObjectReference) = `null`
+              - `m_enableKerning` (Boolean) = `False`
+              - `m_ActiveFontFeatures` (Generic) = `array size=1`
+              - `m_enableExtraPadding` (Boolean) = `False`
+              - `checkPaddingRequired` (Boolean) = `False`
+              - `m_isRichText` (Boolean) = `True`
+              - `m_EmojiFallbackSupport` (Boolean) = `True`
+              - `m_parseCtrlCharacters` (Boolean) = `True`
+              - `m_isOrthographic` (Boolean) = `True`
+              - `m_isCullingEnabled` (Boolean) = `False`
+              - `m_horizontalMapping` (Enum) = `Character`
+              - `m_verticalMapping` (Enum) = `Character`
+              - `m_uvLineOffset` (Float) = `0`
+              - `m_geometrySortingOrder` (Enum) = `Normal`
+              - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+              - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+              - `m_useMaxVisibleDescender` (Boolean) = `True`
+              - `m_pageToDisplay` (Integer) = `1`
+              - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+              - `m_isVolumetricText` (Boolean) = `False`
+              - `m_hasFontAssetChanged` (Boolean) = `False`
+              - `m_baseMaterial` (ObjectReference) = `null`
+              - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+    - `MessageText` | path=`MainMenuCanvas/ChoiceDialogRoot/MessageText` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 25, 0`
+        - worldPosition: `995.5, 439.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 25.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+          - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+          - `m_AnchoredPosition` (Vector2) = `(398.20, -140.80)`
+          - `m_SizeDelta` (Vector2) = `(796.40, 50.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `CanvasRenderer` index=1 enabled=`n/a`
+          - `m_CullTransparentMesh` (Boolean) = `True`
+        - `TextMeshProUGUI` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+          - `m_Material` (ObjectReference) = `null`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_RaycastTarget` (Boolean) = `True`
+          - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+          - `m_Maskable` (Boolean) = `True`
+          - `m_OnCullStateChanged` (Generic) = `<generic>`
+          - `m_text` (String) = `Message`
+          - `m_isRightToLeft` (Boolean) = `False`
+          - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+          - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+          - `m_fontSharedMaterials` (Generic) = `array size=0`
+          - `m_fontMaterial` (ObjectReference) = `null`
+          - `m_fontMaterials` (Generic) = `array size=0`
+          - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_enableVertexGradient` (Boolean) = `False`
+          - `m_colorMode` (Enum) = `Four Corners Gradient`
+          - `m_fontColorGradient` (Generic) = `<generic>`
+          - `m_fontColorGradientPreset` (ObjectReference) = `null`
+          - `m_spriteAsset` (ObjectReference) = `null`
+          - `m_tintAllSprites` (Boolean) = `False`
+          - `m_StyleSheet` (ObjectReference) = `null`
+          - `m_TextStyleHashCode` (Integer) = `-1183493901`
+          - `m_overrideHtmlColors` (Boolean) = `False`
+          - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_fontSize` (Float) = `36`
+          - `m_fontSizeBase` (Float) = `36`
+          - `m_fontWeight` (Enum) = `Regular`
+          - `m_enableAutoSizing` (Boolean) = `False`
+          - `m_fontSizeMin` (Float) = `18`
+          - `m_fontSizeMax` (Float) = `72`
+          - `m_fontStyle` (Enum) = `Normal`
+          - `m_HorizontalAlignment` (Enum) = `Center`
+          - `m_VerticalAlignment` (Enum) = `Top`
+          - `m_textAlignment` (Enum) = `Converted`
+          - `m_characterSpacing` (Float) = `0`
+          - `m_characterHorizontalScale` (Float) = `1`
+          - `m_wordSpacing` (Float) = `0`
+          - `m_lineSpacing` (Float) = `0`
+          - `m_lineSpacingMax` (Float) = `0`
+          - `m_paragraphSpacing` (Float) = `0`
+          - `m_charWidthMaxAdj` (Float) = `0`
+          - `m_TextWrappingMode` (Enum) = `Normal`
+          - `m_wordWrappingRatios` (Float) = `0.4`
+          - `m_overflowMode` (Enum) = `Overflow`
+          - `m_linkedTextComponent` (ObjectReference) = `null`
+          - `parentLinkedComponent` (ObjectReference) = `null`
+          - `m_enableKerning` (Boolean) = `False`
+          - `m_ActiveFontFeatures` (Generic) = `array size=1`
+          - `m_enableExtraPadding` (Boolean) = `False`
+          - `checkPaddingRequired` (Boolean) = `False`
+          - `m_isRichText` (Boolean) = `True`
+          - `m_EmojiFallbackSupport` (Boolean) = `True`
+          - `m_parseCtrlCharacters` (Boolean) = `True`
+          - `m_isOrthographic` (Boolean) = `True`
+          - `m_isCullingEnabled` (Boolean) = `False`
+          - `m_horizontalMapping` (Enum) = `Character`
+          - `m_verticalMapping` (Enum) = `Character`
+          - `m_uvLineOffset` (Float) = `0`
+          - `m_geometrySortingOrder` (Enum) = `Normal`
+          - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+          - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+          - `m_useMaxVisibleDescender` (Boolean) = `True`
+          - `m_pageToDisplay` (Integer) = `1`
+          - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+          - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+          - `m_isVolumetricText` (Boolean) = `False`
+          - `m_hasFontAssetChanged` (Boolean) = `False`
+          - `m_baseMaterial` (ObjectReference) = `null`
+          - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+    - `TitleText` | path=`MainMenuCanvas/ChoiceDialogRoot/TitleText` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 118.867, 0`
+        - worldPosition: `995.5, 533.367, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 118.87, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+          - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+          - `m_AnchoredPosition` (Vector2) = `(398.20, -46.93)`
+          - `m_SizeDelta` (Vector2) = `(796.40, 50.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `CanvasRenderer` index=1 enabled=`n/a`
+          - `m_CullTransparentMesh` (Boolean) = `True`
+        - `TextMeshProUGUI` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+          - `m_Material` (ObjectReference) = `null`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_RaycastTarget` (Boolean) = `True`
+          - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+          - `m_Maskable` (Boolean) = `True`
+          - `m_OnCullStateChanged` (Generic) = `<generic>`
+          - `m_text` (String) = `Title`
+          - `m_isRightToLeft` (Boolean) = `False`
+          - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+          - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+          - `m_fontSharedMaterials` (Generic) = `array size=0`
+          - `m_fontMaterial` (ObjectReference) = `null`
+          - `m_fontMaterials` (Generic) = `array size=0`
+          - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_enableVertexGradient` (Boolean) = `False`
+          - `m_colorMode` (Enum) = `Four Corners Gradient`
+          - `m_fontColorGradient` (Generic) = `<generic>`
+          - `m_fontColorGradientPreset` (ObjectReference) = `null`
+          - `m_spriteAsset` (ObjectReference) = `null`
+          - `m_tintAllSprites` (Boolean) = `False`
+          - `m_StyleSheet` (ObjectReference) = `null`
+          - `m_TextStyleHashCode` (Integer) = `-1183493901`
+          - `m_overrideHtmlColors` (Boolean) = `False`
+          - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_fontSize` (Float) = `36`
+          - `m_fontSizeBase` (Float) = `36`
+          - `m_fontWeight` (Enum) = `Regular`
+          - `m_enableAutoSizing` (Boolean) = `False`
+          - `m_fontSizeMin` (Float) = `18`
+          - `m_fontSizeMax` (Float) = `72`
+          - `m_fontStyle` (Enum) = `Normal`
+          - `m_HorizontalAlignment` (Enum) = `Center`
+          - `m_VerticalAlignment` (Enum) = `Top`
+          - `m_textAlignment` (Enum) = `Converted`
+          - `m_characterSpacing` (Float) = `0`
+          - `m_characterHorizontalScale` (Float) = `1`
+          - `m_wordSpacing` (Float) = `0`
+          - `m_lineSpacing` (Float) = `0`
+          - `m_lineSpacingMax` (Float) = `0`
+          - `m_paragraphSpacing` (Float) = `0`
+          - `m_charWidthMaxAdj` (Float) = `0`
+          - `m_TextWrappingMode` (Enum) = `Normal`
+          - `m_wordWrappingRatios` (Float) = `0.4`
+          - `m_overflowMode` (Enum) = `Overflow`
+          - `m_linkedTextComponent` (ObjectReference) = `null`
+          - `parentLinkedComponent` (ObjectReference) = `null`
+          - `m_enableKerning` (Boolean) = `False`
+          - `m_ActiveFontFeatures` (Generic) = `array size=1`
+          - `m_enableExtraPadding` (Boolean) = `False`
+          - `checkPaddingRequired` (Boolean) = `False`
+          - `m_isRichText` (Boolean) = `True`
+          - `m_EmojiFallbackSupport` (Boolean) = `True`
+          - `m_parseCtrlCharacters` (Boolean) = `True`
+          - `m_isOrthographic` (Boolean) = `True`
+          - `m_isCullingEnabled` (Boolean) = `False`
+          - `m_horizontalMapping` (Enum) = `Character`
+          - `m_verticalMapping` (Enum) = `Character`
+          - `m_uvLineOffset` (Float) = `0`
+          - `m_geometrySortingOrder` (Enum) = `Normal`
+          - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+          - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+          - `m_useMaxVisibleDescender` (Boolean) = `True`
+          - `m_pageToDisplay` (Integer) = `1`
+          - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+          - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+          - `m_isVolumetricText` (Boolean) = `False`
+          - `m_hasFontAssetChanged` (Boolean) = `False`
+          - `m_baseMaterial` (ObjectReference) = `null`
+          - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+  - `MainMenuPanel` | path=`MainMenuCanvas/MainMenuPanel` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `995.5, 414.5, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `RectTransform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+        - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+        - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+        - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+        - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+      - `CanvasRenderer` index=1 enabled=`n/a`
+        - `m_CullTransparentMesh` (Boolean) = `True`
+      - `Image` index=2 enabled=`True`
+        - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+        - `m_Material` (ObjectReference) = `null`
+        - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 0.392)`
+        - `m_RaycastTarget` (Boolean) = `True`
+        - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+        - `m_Maskable` (Boolean) = `True`
+        - `m_OnCullStateChanged` (Generic) = `<generic>`
+        - `m_Sprite` (ObjectReference) = `Background (Sprite) asset='Resources/unity_builtin_extra'`
+        - `m_Type` (Enum) = `Sliced`
+        - `m_PreserveAspect` (Boolean) = `False`
+        - `m_FillCenter` (Boolean) = `True`
+        - `m_FillMethod` (Enum) = `Radial 360`
+        - `m_FillAmount` (Float) = `1`
+        - `m_FillClockwise` (Boolean) = `True`
+        - `m_FillOrigin` (Integer) = `0`
+        - `m_UseSpriteMesh` (Boolean) = `False`
+        - `m_PixelsPerUnitMultiplier` (Float) = `1`
+    - `MenuButtons` | path=`MainMenuCanvas/MainMenuPanel/MenuButtons` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-719.11, -0.922, 0`
+        - worldPosition: `276.39, 413.578, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-719.11, -0.92, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.00, 0.50)`
+          - `m_AnchorMax` (Vector2) = `(0.00, 0.50)`
+          - `m_AnchoredPosition` (Vector2) = `(276.39, -0.92)`
+          - `m_SizeDelta` (Vector2) = `(552.77, 433.82)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `VerticalLayoutGroup` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+          - `m_Padding` (Generic) = `<generic>`
+          - `m_ChildAlignment` (Enum) = `Middle Center`
+          - `m_Spacing` (Float) = `0`
+          - `m_ChildForceExpandWidth` (Boolean) = `True`
+          - `m_ChildForceExpandHeight` (Boolean) = `True`
+          - `m_ChildControlWidth` (Boolean) = `False`
+          - `m_ChildControlHeight` (Boolean) = `False`
+          - `m_ChildScaleWidth` (Boolean) = `False`
+          - `m_ChildScaleHeight` (Boolean) = `False`
+          - `m_ReverseArrangement` (Boolean) = `False`
+      - `LoadGameButton` | path=`MainMenuCanvas/MainMenuPanel/MenuButtons/LoadGameButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 86.763, 0`
+          - worldPosition: `276.39, 500.341, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 86.76, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(276.39, -130.15)`
+            - `m_SizeDelta` (Vector2) = `(320.00, 50.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+            - `m_Type` (Enum) = `Sliced`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Button` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `LoadGameButton (Image) scenePath='MainMenuCanvas/MainMenuPanel/MenuButtons/LoadGameButton'`
+            - `m_OnClick` (Generic) = `<generic>`
+        - `NewGame` | path=`MainMenuCanvas/MainMenuPanel/MenuButtons/LoadGameButton/NewGame` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `276.39, 500.341, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Text` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_FontData` (Generic) = `<generic>`
+              - `m_Text` (String) = `Load Game`
+      - `NewGameButton` | path=`MainMenuCanvas/MainMenuPanel/MenuButtons/NewGameButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 173.527, 0`
+          - worldPosition: `276.39, 587.104, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 173.53, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(276.39, -43.38)`
+            - `m_SizeDelta` (Vector2) = `(320.00, 50.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+            - `m_Type` (Enum) = `Sliced`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Button` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `NewGameButton (Image) scenePath='MainMenuCanvas/MainMenuPanel/MenuButtons/NewGameButton'`
+            - `m_OnClick` (Generic) = `<generic>`
+        - `NewGame` | path=`MainMenuCanvas/MainMenuPanel/MenuButtons/NewGameButton/NewGame` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `276.39, 587.104, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Text` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_FontData` (Generic) = `<generic>`
+              - `m_Text` (String) = `New Game`
+      - `ProfilesButton` | path=`MainMenuCanvas/MainMenuPanel/MenuButtons/ProfilesButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `276.39, 413.578, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(276.39, -216.91)`
+            - `m_SizeDelta` (Vector2) = `(320.00, 50.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+            - `m_Type` (Enum) = `Sliced`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Button` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `ProfilesButton (Image) scenePath='MainMenuCanvas/MainMenuPanel/MenuButtons/ProfilesButton'`
+            - `m_OnClick` (Generic) = `<generic>`
+        - `Profiles` | path=`MainMenuCanvas/MainMenuPanel/MenuButtons/ProfilesButton/Profiles` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `276.39, 413.578, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Text` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_FontData` (Generic) = `<generic>`
+              - `m_Text` (String) = `Profiles`
+      - `QuitButton` | path=`MainMenuCanvas/MainMenuPanel/MenuButtons/QuitButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -173.527, 0`
+          - worldPosition: `276.39, 240.051, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -173.53, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(276.39, -390.44)`
+            - `m_SizeDelta` (Vector2) = `(320.00, 50.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+            - `m_Type` (Enum) = `Sliced`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Button` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `QuitButton (Image) scenePath='MainMenuCanvas/MainMenuPanel/MenuButtons/QuitButton'`
+            - `m_OnClick` (Generic) = `<generic>`
+        - `Quit` | path=`MainMenuCanvas/MainMenuPanel/MenuButtons/QuitButton/Quit` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `276.39, 240.051, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Text` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_FontData` (Generic) = `<generic>`
+              - `m_Text` (String) = `Quit`
+      - `SettingsButton` | path=`MainMenuCanvas/MainMenuPanel/MenuButtons/SettingsButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -86.763, 0`
+          - worldPosition: `276.39, 326.814, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -86.76, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(276.39, -303.67)`
+            - `m_SizeDelta` (Vector2) = `(320.00, 50.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `Image` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+            - `m_Type` (Enum) = `Sliced`
+            - `m_PreserveAspect` (Boolean) = `False`
+            - `m_FillCenter` (Boolean) = `True`
+            - `m_FillMethod` (Enum) = `Radial 360`
+            - `m_FillAmount` (Float) = `1`
+            - `m_FillClockwise` (Boolean) = `True`
+            - `m_FillOrigin` (Integer) = `0`
+            - `m_UseSpriteMesh` (Boolean) = `False`
+            - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Button` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+            - `m_Navigation` (Generic) = `<generic>`
+            - `m_Transition` (Enum) = `Color Tint`
+            - `m_Colors` (Generic) = `<generic>`
+            - `m_SpriteState` (Generic) = `<generic>`
+            - `m_AnimationTriggers` (Generic) = `<generic>`
+            - `m_Interactable` (Boolean) = `True`
+            - `m_TargetGraphic` (ObjectReference) = `SettingsButton (Image) scenePath='MainMenuCanvas/MainMenuPanel/MenuButtons/SettingsButton'`
+            - `m_OnClick` (Generic) = `<generic>`
+        - `Settings` | path=`MainMenuCanvas/MainMenuPanel/MenuButtons/SettingsButton/Settings` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0`
+            - worldPosition: `276.39, 326.814, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+              - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+              - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Text` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_FontData` (Generic) = `<generic>`
+              - `m_Text` (String) = `Settings`
+    - `TitleText` | path=`MainMenuCanvas/MainMenuPanel/TitleText` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-719.113, 318.743, 0`
+        - worldPosition: `276.387, 733.243, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-719.11, 318.74, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+          - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+          - `m_AnchoredPosition` (Vector2) = `(276.39, -95.76)`
+          - `m_SizeDelta` (Vector2) = `(552.77, 191.52)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `CanvasRenderer` index=1 enabled=`n/a`
+          - `m_CullTransparentMesh` (Boolean) = `True`
+        - `Text` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+          - `m_Material` (ObjectReference) = `null`
+          - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+          - `m_RaycastTarget` (Boolean) = `True`
+          - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+          - `m_Maskable` (Boolean) = `True`
+          - `m_OnCullStateChanged` (Generic) = `<generic>`
+          - `m_FontData` (Generic) = `<generic>`
+          - `m_Text` (String) = `Don't Sink`
+  - `SaveLoadPanelRoot` | path=`MainMenuCanvas/SaveLoadPanelRoot` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `995.5, 414.5, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `RectTransform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `m_AnchorMin` (Vector2) = `(0.20, 0.10)`
+        - `m_AnchorMax` (Vector2) = `(0.80, 0.90)`
+        - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+        - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+        - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+      - `CanvasRenderer` index=1 enabled=`n/a`
+        - `m_CullTransparentMesh` (Boolean) = `True`
+      - `Image` index=2 enabled=`True`
+        - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+        - `m_Material` (ObjectReference) = `null`
+        - `m_Color` (Color) = `RGBA(0.096, 0.177, 0.453, 0.796)`
+        - `m_RaycastTarget` (Boolean) = `True`
+        - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+        - `m_Maskable` (Boolean) = `True`
+        - `m_OnCullStateChanged` (Generic) = `<generic>`
+        - `m_Sprite` (ObjectReference) = `Background (Sprite) asset='Resources/unity_builtin_extra'`
+        - `m_Type` (Enum) = `Sliced`
+        - `m_PreserveAspect` (Boolean) = `False`
+        - `m_FillCenter` (Boolean) = `True`
+        - `m_FillMethod` (Enum) = `Radial 360`
+        - `m_FillAmount` (Float) = `1`
+        - `m_FillClockwise` (Boolean) = `True`
+        - `m_FillOrigin` (Integer) = `0`
+        - `m_UseSpriteMesh` (Boolean) = `False`
+        - `m_PixelsPerUnitMultiplier` (Float) = `1`
+      - `SaveLoadPanelUI` index=3 enabled=`True`
+        - `m_Script` (ObjectReference) = `SaveLoadPanelUI (MonoScript) asset='Assets/Scripts/Saves/SaveLoadPanelUI.cs'`
+        - `root` (ObjectReference) = `SaveLoadPanelRoot (GameObject) scenePath='MainMenuCanvas/SaveLoadPanelRoot'`
+        - `saveLoad` (ObjectReference) = `MainMenuSystems (SaveLoadController) scenePath='MainMenuSystems'`
+        - `dialog` (ObjectReference) = `ChoiceDialogRoot (ChoiceDialogUI) scenePath='MainMenuCanvas/ChoiceDialogRoot'`
+        - `slotListRoot` (ObjectReference) = `Content (RectTransform) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Viewport/Content'`
+        - `slotRowPrefab` (ObjectReference) = `SaveSlotRow (SaveSlotRowUI) asset='Assets/Resources/Prefabs/UI/SaveSlotRow.prefab'`
+        - `selectedSlotText` (ObjectReference) = `SelectedSaveText (TextMeshProUGUI) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText'`
+        - `slotIdInput` (ObjectReference) = `SlotIdInput (TMP_InputField) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput'`
+        - `displayNameInput` (ObjectReference) = `SlotIdInput (TMP_InputField) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput'`
+        - `saveSelectedButton` (ObjectReference) = `SaveButton (Button) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/SaveButton'`
+        - `loadSelectedButton` (ObjectReference) = `LoadButton (Button) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/LoadButton'`
+        - `newSaveButton` (ObjectReference) = `NewSaveButton (Button) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton'`
+        - `deleteSelectedButton` (ObjectReference) = `DeleteButton (Button) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/DeleteButton'`
+        - `openFolderButton` (ObjectReference) = `OpenFolderButton (Button) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/OpenFolderButton'`
+        - `closeButton` (ObjectReference) = `CloseButton (Button) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/CloseButton'`
+        - `statusText` (ObjectReference) = `StatusText (TextMeshProUGUI) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Footer/StatusText'`
+        - `closeViaGlobalEscapeRouter` (Boolean) = `True`
+        - `escapePriority` (Integer) = `900`
+        - `versionText` (ObjectReference) = `VersionText (TextMeshProUGUI) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Footer/VersionText'`
+        - `refreshSlotListOnOpen` (Boolean) = `True`
+      - `VerticalLayoutGroup` index=4 enabled=`True`
+        - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+        - `m_Padding` (Generic) = `<generic>`
+        - `m_ChildAlignment` (Enum) = `Upper Center`
+        - `m_Spacing` (Float) = `16`
+        - `m_ChildForceExpandWidth` (Boolean) = `True`
+        - `m_ChildForceExpandHeight` (Boolean) = `False`
+        - `m_ChildControlWidth` (Boolean) = `True`
+        - `m_ChildControlHeight` (Boolean) = `False`
+        - `m_ChildScaleWidth` (Boolean) = `False`
+        - `m_ChildScaleHeight` (Boolean) = `False`
+        - `m_ReverseArrangement` (Boolean) = `False`
+    - `Body` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 69.236, 0`
+        - worldPosition: `995.5, 483.736, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 69.24, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+          - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+          - `m_AnchoredPosition` (Vector2) = `(597.30, -262.36)`
+          - `m_SizeDelta` (Vector2) = `(1146.60, 387.27)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `HorizontalLayoutGroup` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `HorizontalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/HorizontalLayoutGroup.cs'`
+          - `m_Padding` (Generic) = `<generic>`
+          - `m_ChildAlignment` (Enum) = `Upper Left`
+          - `m_Spacing` (Float) = `20`
+          - `m_ChildForceExpandWidth` (Boolean) = `True`
+          - `m_ChildForceExpandHeight` (Boolean) = `True`
+          - `m_ChildControlWidth` (Boolean) = `True`
+          - `m_ChildControlHeight` (Boolean) = `True`
+          - `m_ChildScaleWidth` (Boolean) = `False`
+          - `m_ChildScaleHeight` (Boolean) = `False`
+          - `m_ReverseArrangement` (Boolean) = `False`
+        - `LayoutElement` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+          - `m_IgnoreLayout` (Boolean) = `False`
+          - `m_MinWidth` (Float) = `-1`
+          - `m_MinHeight` (Float) = `-1`
+          - `m_PreferredWidth` (Float) = `-1`
+          - `m_PreferredHeight` (Float) = `450`
+          - `m_FlexibleWidth` (Float) = `-1`
+          - `m_FlexibleHeight` (Float) = `1`
+          - `m_LayoutPriority` (Integer) = `1`
+      - `LeftColumn` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `-283.891, 0, 0`
+          - worldPosition: `711.609, 483.736, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(-283.89, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(289.41, -193.64)`
+            - `m_SizeDelta` (Vector2) = `(578.82, 387.27)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `VerticalLayoutGroup` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+            - `m_Padding` (Generic) = `<generic>`
+            - `m_ChildAlignment` (Enum) = `Upper Left`
+            - `m_Spacing` (Float) = `8`
+            - `m_ChildForceExpandWidth` (Boolean) = `True`
+            - `m_ChildForceExpandHeight` (Boolean) = `False`
+            - `m_ChildControlWidth` (Boolean) = `True`
+            - `m_ChildControlHeight` (Boolean) = `False`
+            - `m_ChildScaleWidth` (Boolean) = `False`
+            - `m_ChildScaleHeight` (Boolean) = `False`
+            - `m_ReverseArrangement` (Boolean) = `False`
+          - `LayoutElement` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+            - `m_IgnoreLayout` (Boolean) = `False`
+            - `m_MinWidth` (Float) = `-1`
+            - `m_MinHeight` (Float) = `-1`
+            - `m_PreferredWidth` (Float) = `-1`
+            - `m_PreferredHeight` (Float) = `-1`
+            - `m_FlexibleWidth` (Float) = `1.2`
+            - `m_FlexibleHeight` (Float) = `-1`
+            - `m_LayoutPriority` (Integer) = `1`
+        - `ExistingSavesScrollView` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, -16.364, 0`
+            - worldPosition: `711.609, 467.373, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, -16.36, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(289.41, -210.00)`
+              - `m_SizeDelta` (Vector2) = `(578.82, 340.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `LayoutElement` index=1 enabled=`True`
+              - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+              - `m_IgnoreLayout` (Boolean) = `False`
+              - `m_MinWidth` (Float) = `-1`
+              - `m_MinHeight` (Float) = `-1`
+              - `m_PreferredWidth` (Float) = `-1`
+              - `m_PreferredHeight` (Float) = `340`
+              - `m_FlexibleWidth` (Float) = `-1`
+              - `m_FlexibleHeight` (Float) = `1`
+              - `m_LayoutPriority` (Integer) = `1`
+            - `CanvasRenderer` index=2 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=3 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(0.000, 0.000, 0.000, 0.525)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `null`
+              - `m_Type` (Enum) = `Simple`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+            - `ScrollRect` index=4 enabled=`True`
+              - `m_Script` (ObjectReference) = `ScrollRect (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/ScrollRect.cs'`
+              - `m_Content` (ObjectReference) = `Content (RectTransform) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Viewport/Content'`
+              - `m_Horizontal` (Boolean) = `False`
+              - `m_Vertical` (Boolean) = `True`
+              - `m_MovementType` (Enum) = `Clamped`
+              - `m_Elasticity` (Float) = `0.1`
+              - `m_Inertia` (Boolean) = `True`
+              - `m_DecelerationRate` (Float) = `0.135`
+              - `m_ScrollSensitivity` (Float) = `6`
+              - `m_Viewport` (ObjectReference) = `Viewport (RectTransform) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Viewport'`
+              - `m_HorizontalScrollbar` (ObjectReference) = `null`
+              - `m_VerticalScrollbar` (ObjectReference) = `Scrollbar (Scrollbar) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Scrollbar'`
+              - `m_HorizontalScrollbarVisibility` (Enum) = `Permanent`
+              - `m_VerticalScrollbarVisibility` (Enum) = `Permanent`
+              - `m_HorizontalScrollbarSpacing` (Float) = `0`
+              - `m_VerticalScrollbarSpacing` (Float) = `0`
+              - `m_OnValueChanged` (Generic) = `<generic>`
+          - `Scrollbar` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Scrollbar` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `279.409, 0, 0`
+              - worldPosition: `991.018, 467.373, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(279.41, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(1.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(-10.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(20.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `Background (Sprite) asset='Resources/unity_builtin_extra'`
+                - `m_Type` (Enum) = `Sliced`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `Scrollbar` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `Scrollbar (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Scrollbar.cs'`
+                - `m_Navigation` (Generic) = `<generic>`
+                - `m_Transition` (Enum) = `Color Tint`
+                - `m_Colors` (Generic) = `<generic>`
+                - `m_SpriteState` (Generic) = `<generic>`
+                - `m_AnimationTriggers` (Generic) = `<generic>`
+                - `m_Interactable` (Boolean) = `True`
+                - `m_TargetGraphic` (ObjectReference) = `Handle (Image) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Scrollbar/Sliding Area/Handle'`
+                - `m_HandleRect` (ObjectReference) = `Handle (RectTransform) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Scrollbar/Sliding Area/Handle'`
+                - `m_Direction` (Enum) = `Top To Bottom`
+                - `m_Value` (Float) = `1`
+                - `m_Size` (Float) = `0.167`
+                - `m_NumberOfSteps` (Integer) = `0`
+                - `m_OnValueChanged` (Generic) = `<generic>`
+            - `Sliding Area` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Scrollbar/Sliding Area` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `991.018, 467.373, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(-20.00, -20.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `Handle` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Scrollbar/Sliding Area/Handle` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+                - Transform:
+                  - localPosition: `0, -133.333, 0`
+                  - worldPosition: `991.018, 334.039, 0`
+                  - localRotationEuler: `0, 0, 0`
+                  - worldRotationEuler: `0, 0, 0`
+                  - localScale: `1, 1, 1`
+                - Components:
+                  - `RectTransform` index=0 enabled=`n/a`
+                    - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                    - `m_LocalPosition` (Vector3) = `(0.00, -133.33, 0.00)`
+                    - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                    - `m_ConstrainProportionsScale` (Boolean) = `False`
+                    - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                    - `m_AnchorMax` (Vector2) = `(1.00, 0.17)`
+                    - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                    - `m_SizeDelta` (Vector2) = `(20.00, 20.00)`
+                    - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                  - `CanvasRenderer` index=1 enabled=`n/a`
+                    - `m_CullTransparentMesh` (Boolean) = `True`
+                  - `Image` index=2 enabled=`True`
+                    - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                    - `m_Material` (ObjectReference) = `null`
+                    - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                    - `m_RaycastTarget` (Boolean) = `True`
+                    - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                    - `m_Maskable` (Boolean) = `True`
+                    - `m_OnCullStateChanged` (Generic) = `<generic>`
+                    - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+                    - `m_Type` (Enum) = `Sliced`
+                    - `m_PreserveAspect` (Boolean) = `False`
+                    - `m_FillCenter` (Boolean) = `True`
+                    - `m_FillMethod` (Enum) = `Radial 360`
+                    - `m_FillAmount` (Float) = `1`
+                    - `m_FillClockwise` (Boolean) = `True`
+                    - `m_FillOrigin` (Integer) = `0`
+                    - `m_UseSpriteMesh` (Boolean) = `False`
+                    - `m_PixelsPerUnitMultiplier` (Float) = `1`
+          - `Viewport` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Viewport` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `711.609, 467.373, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Image` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 0.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_Sprite` (ObjectReference) = `null`
+                - `m_Type` (Enum) = `Simple`
+                - `m_PreserveAspect` (Boolean) = `False`
+                - `m_FillCenter` (Boolean) = `True`
+                - `m_FillMethod` (Enum) = `Radial 360`
+                - `m_FillAmount` (Float) = `1`
+                - `m_FillClockwise` (Boolean) = `True`
+                - `m_FillOrigin` (Integer) = `0`
+                - `m_UseSpriteMesh` (Boolean) = `False`
+                - `m_PixelsPerUnitMultiplier` (Float) = `1`
+              - `RectMask2D` index=3 enabled=`True`
+                - `m_Script` (ObjectReference) = `RectMask2D (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/RectMask2D.cs'`
+                - `m_Padding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Softness` (Vector2Int) = `(0, 0)`
+            - `Content` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/ExistingSavesScrollView/Viewport/Content` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, -850, 0`
+                - worldPosition: `711.609, -382.627, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, -850.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, -5.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `VerticalLayoutGroup` index=1 enabled=`True`
+                  - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+                  - `m_Padding` (Generic) = `<generic>`
+                  - `m_ChildAlignment` (Enum) = `Upper Left`
+                  - `m_Spacing` (Float) = `6`
+                  - `m_ChildForceExpandWidth` (Boolean) = `True`
+                  - `m_ChildForceExpandHeight` (Boolean) = `False`
+                  - `m_ChildControlWidth` (Boolean) = `True`
+                  - `m_ChildControlHeight` (Boolean) = `True`
+                  - `m_ChildScaleWidth` (Boolean) = `False`
+                  - `m_ChildScaleHeight` (Boolean) = `False`
+                  - `m_ReverseArrangement` (Boolean) = `False`
+        - `SaveLoadText` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/LeftColumn/SaveLoadText` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 177.636, 0`
+            - worldPosition: `711.609, 661.373, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 177.64, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(289.41, -16.00)`
+              - `m_SizeDelta` (Vector2) = `(578.82, 32.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `TextMeshProUGUI` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_text` (String) = `Existing Saves`
+              - `m_isRightToLeft` (Boolean) = `False`
+              - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_fontSharedMaterials` (Generic) = `array size=0`
+              - `m_fontMaterial` (ObjectReference) = `null`
+              - `m_fontMaterials` (Generic) = `array size=0`
+              - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_enableVertexGradient` (Boolean) = `False`
+              - `m_colorMode` (Enum) = `Four Corners Gradient`
+              - `m_fontColorGradient` (Generic) = `<generic>`
+              - `m_fontColorGradientPreset` (ObjectReference) = `null`
+              - `m_spriteAsset` (ObjectReference) = `null`
+              - `m_tintAllSprites` (Boolean) = `False`
+              - `m_StyleSheet` (ObjectReference) = `null`
+              - `m_TextStyleHashCode` (Integer) = `-1183493901`
+              - `m_overrideHtmlColors` (Boolean) = `False`
+              - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontSize` (Float) = `22`
+              - `m_fontSizeBase` (Float) = `22`
+              - `m_fontWeight` (Enum) = `Regular`
+              - `m_enableAutoSizing` (Boolean) = `False`
+              - `m_fontSizeMin` (Float) = `18`
+              - `m_fontSizeMax` (Float) = `72`
+              - `m_fontStyle` (Enum) = `Bold`
+              - `m_HorizontalAlignment` (Enum) = `Left`
+              - `m_VerticalAlignment` (Enum) = `Middle`
+              - `m_textAlignment` (Enum) = `Converted`
+              - `m_characterSpacing` (Float) = `0`
+              - `m_characterHorizontalScale` (Float) = `1`
+              - `m_wordSpacing` (Float) = `0`
+              - `m_lineSpacing` (Float) = `0`
+              - `m_lineSpacingMax` (Float) = `0`
+              - `m_paragraphSpacing` (Float) = `0`
+              - `m_charWidthMaxAdj` (Float) = `0`
+              - `m_TextWrappingMode` (Enum) = `Normal`
+              - `m_wordWrappingRatios` (Float) = `0.4`
+              - `m_overflowMode` (Enum) = `Overflow`
+              - `m_linkedTextComponent` (ObjectReference) = `null`
+              - `parentLinkedComponent` (ObjectReference) = `null`
+              - `m_enableKerning` (Boolean) = `False`
+              - `m_ActiveFontFeatures` (Generic) = `array size=1`
+              - `m_enableExtraPadding` (Boolean) = `False`
+              - `checkPaddingRequired` (Boolean) = `False`
+              - `m_isRichText` (Boolean) = `True`
+              - `m_EmojiFallbackSupport` (Boolean) = `True`
+              - `m_parseCtrlCharacters` (Boolean) = `True`
+              - `m_isOrthographic` (Boolean) = `True`
+              - `m_isCullingEnabled` (Boolean) = `False`
+              - `m_horizontalMapping` (Enum) = `Character`
+              - `m_verticalMapping` (Enum) = `Character`
+              - `m_uvLineOffset` (Float) = `0`
+              - `m_geometrySortingOrder` (Enum) = `Normal`
+              - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+              - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+              - `m_useMaxVisibleDescender` (Boolean) = `True`
+              - `m_pageToDisplay` (Integer) = `1`
+              - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+              - `m_isVolumetricText` (Boolean) = `False`
+              - `m_hasFontAssetChanged` (Boolean) = `False`
+              - `m_baseMaterial` (ObjectReference) = `null`
+              - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+      - `RightColumn` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `299.409, 0, 0`
+          - worldPosition: `1294.909, 483.736, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(299.41, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(872.71, -193.64)`
+            - `m_SizeDelta` (Vector2) = `(547.78, 387.27)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `VerticalLayoutGroup` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+            - `m_Padding` (Generic) = `<generic>`
+            - `m_ChildAlignment` (Enum) = `Upper Left`
+            - `m_Spacing` (Float) = `10`
+            - `m_ChildForceExpandWidth` (Boolean) = `True`
+            - `m_ChildForceExpandHeight` (Boolean) = `False`
+            - `m_ChildControlWidth` (Boolean) = `True`
+            - `m_ChildControlHeight` (Boolean) = `True`
+            - `m_ChildScaleWidth` (Boolean) = `False`
+            - `m_ChildScaleHeight` (Boolean) = `False`
+            - `m_ReverseArrangement` (Boolean) = `False`
+          - `LayoutElement` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+            - `m_IgnoreLayout` (Boolean) = `False`
+            - `m_MinWidth` (Float) = `-1`
+            - `m_MinHeight` (Float) = `-1`
+            - `m_PreferredWidth` (Float) = `-1`
+            - `m_PreferredHeight` (Float) = `-1`
+            - `m_FlexibleWidth` (Float) = `1`
+            - `m_FlexibleHeight` (Float) = `-1`
+            - `m_LayoutPriority` (Integer) = `1`
+        - `DisplayNameInput` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, -109.594, 0`
+            - worldPosition: `1294.909, 374.143, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, -109.59, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(273.89, -303.23)`
+              - `m_SizeDelta` (Vector2) = `(547.78, 36.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `InputFieldBackground (Sprite) asset='Resources/unity_builtin_extra'`
+              - `m_Type` (Enum) = `Sliced`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+            - `TMP_InputField` index=3 enabled=`True`
+              - `m_Script` (ObjectReference) = `TMP_InputField (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TMP_InputField.cs'`
+              - `m_Navigation` (Generic) = `<generic>`
+              - `m_Transition` (Enum) = `Color Tint`
+              - `m_Colors` (Generic) = `<generic>`
+              - `m_SpriteState` (Generic) = `<generic>`
+              - `m_AnimationTriggers` (Generic) = `<generic>`
+              - `m_Interactable` (Boolean) = `True`
+              - `m_TargetGraphic` (ObjectReference) = `DisplayNameInput (Image) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput'`
+              - `m_TextViewport` (ObjectReference) = `Text Area (RectTransform) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area'`
+              - `m_TextComponent` (ObjectReference) = `Text (TextMeshProUGUI) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text'`
+              - `m_Placeholder` (ObjectReference) = `Placeholder (TextMeshProUGUI) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder'`
+              - `m_VerticalScrollbar` (ObjectReference) = `null`
+              - `m_VerticalScrollbarEventHandler` (ObjectReference) = `null`
+              - `m_LayoutGroup` (ObjectReference) = `null`
+              - `m_ScrollSensitivity` (Float) = `1`
+              - `m_ContentType` (Enum) = `Standard`
+              - `m_InputType` (Enum) = `Standard`
+              - `m_AsteriskChar` (Character) = `*`
+              - `m_KeyboardType` (Enum) = `Default`
+              - `m_LineType` (Enum) = `Single Line`
+              - `m_HideMobileInput` (Boolean) = `False`
+              - `m_HideSoftKeyboard` (Boolean) = `False`
+              - `m_CharacterValidation` (Enum) = `None`
+              - `m_RegexValue` (String) = ``
+              - `m_GlobalPointSize` (Float) = `14`
+              - `m_CharacterLimit` (Integer) = `0`
+              - `m_OnEndEdit` (Generic) = `<generic>`
+              - `m_OnSubmit` (Generic) = `<generic>`
+              - `m_OnSelect` (Generic) = `<generic>`
+              - `m_OnDeselect` (Generic) = `<generic>`
+              - `m_OnTextSelection` (Generic) = `<generic>`
+              - `m_OnEndTextSelection` (Generic) = `<generic>`
+              - `m_OnValueChanged` (Generic) = `<generic>`
+              - `m_OnTouchScreenKeyboardStatusChanged` (Generic) = `<generic>`
+              - `m_CaretColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_CustomCaretColor` (Boolean) = `False`
+              - `m_SelectionColor` (Color) = `RGBA(0.659, 0.808, 1.000, 0.753)`
+              - `m_Text` (String) = `Display Name`
+              - `m_CaretBlinkRate` (Float) = `0.85`
+              - `m_CaretWidth` (Integer) = `1`
+              - `m_ReadOnly` (Boolean) = `False`
+              - `m_RichText` (Boolean) = `True`
+              - `m_GlobalFontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_OnFocusSelectAll` (Boolean) = `True`
+              - `m_ResetOnDeActivation` (Boolean) = `True`
+              - `m_KeepTextSelectionVisible` (Boolean) = `False`
+              - `m_RestoreOriginalTextOnEscape` (Boolean) = `True`
+              - `m_isRichTextEditingAllowed` (Boolean) = `False`
+              - `m_LineLimit` (Integer) = `0`
+              - `isAlert` (Boolean) = `False`
+              - `m_InputValidator` (ObjectReference) = `null`
+              - `m_ShouldActivateOnSelect` (Boolean) = `True`
+            - `LayoutElement` index=4 enabled=`True`
+              - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+              - `m_IgnoreLayout` (Boolean) = `False`
+              - `m_MinWidth` (Float) = `-1`
+              - `m_MinHeight` (Float) = `-1`
+              - `m_PreferredWidth` (Float) = `-1`
+              - `m_PreferredHeight` (Float) = `36`
+              - `m_FlexibleWidth` (Float) = `-1`
+              - `m_FlexibleHeight` (Float) = `-1`
+              - `m_LayoutPriority` (Integer) = `1`
+          - `Text Area` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, -0.5, 0`
+              - worldPosition: `1294.909, 373.643, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, -0.50, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, -0.50)`
+                - `m_SizeDelta` (Vector2) = `(-20.00, -13.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `RectMask2D` index=1 enabled=`True`
+                - `m_Script` (ObjectReference) = `RectMask2D (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/RectMask2D.cs'`
+                - `m_Padding` (Vector4) = `(-8.00, -5.00, -8.00, -5.00)`
+                - `m_Softness` (Vector2Int) = `(0, 0)`
+            - `Placeholder` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Placeholder` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `1294.909, 373.643, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `TextMeshProUGUI` index=2 enabled=`False`
+                  - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_text` (String) = `Enter text...`
+                  - `m_isRightToLeft` (Boolean) = `False`
+                  - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                  - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                  - `m_fontSharedMaterials` (Generic) = `array size=0`
+                  - `m_fontMaterial` (ObjectReference) = `null`
+                  - `m_fontMaterials` (Generic) = `array size=0`
+                  - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 0.502)`
+                  - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 0.500)`
+                  - `m_enableVertexGradient` (Boolean) = `False`
+                  - `m_colorMode` (Enum) = `Four Corners Gradient`
+                  - `m_fontColorGradient` (Generic) = `<generic>`
+                  - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                  - `m_spriteAsset` (ObjectReference) = `null`
+                  - `m_tintAllSprites` (Boolean) = `False`
+                  - `m_StyleSheet` (ObjectReference) = `null`
+                  - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                  - `m_overrideHtmlColors` (Boolean) = `False`
+                  - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                  - `m_fontSize` (Float) = `14`
+                  - `m_fontSizeBase` (Float) = `14`
+                  - `m_fontWeight` (Enum) = `Regular`
+                  - `m_enableAutoSizing` (Boolean) = `False`
+                  - `m_fontSizeMin` (Float) = `18`
+                  - `m_fontSizeMax` (Float) = `72`
+                  - `m_fontStyle` (Enum) = `Italic`
+                  - `m_HorizontalAlignment` (Enum) = `Left`
+                  - `m_VerticalAlignment` (Enum) = `Top`
+                  - `m_textAlignment` (Enum) = `Converted`
+                  - `m_characterSpacing` (Float) = `0`
+                  - `m_characterHorizontalScale` (Float) = `1`
+                  - `m_wordSpacing` (Float) = `0`
+                  - `m_lineSpacing` (Float) = `0`
+                  - `m_lineSpacingMax` (Float) = `0`
+                  - `m_paragraphSpacing` (Float) = `0`
+                  - `m_charWidthMaxAdj` (Float) = `0`
+                  - `m_TextWrappingMode` (Enum) = `No Wrap`
+                  - `m_wordWrappingRatios` (Float) = `0.4`
+                  - `m_overflowMode` (Enum) = `Overflow`
+                  - `m_linkedTextComponent` (ObjectReference) = `null`
+                  - `parentLinkedComponent` (ObjectReference) = `null`
+                  - `m_enableKerning` (Boolean) = `False`
+                  - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                  - `m_enableExtraPadding` (Boolean) = `True`
+                  - `checkPaddingRequired` (Boolean) = `False`
+                  - `m_isRichText` (Boolean) = `True`
+                  - `m_EmojiFallbackSupport` (Boolean) = `True`
+                  - `m_parseCtrlCharacters` (Boolean) = `True`
+                  - `m_isOrthographic` (Boolean) = `True`
+                  - `m_isCullingEnabled` (Boolean) = `False`
+                  - `m_horizontalMapping` (Enum) = `Character`
+                  - `m_verticalMapping` (Enum) = `Character`
+                  - `m_uvLineOffset` (Float) = `0`
+                  - `m_geometrySortingOrder` (Enum) = `Normal`
+                  - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                  - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                  - `m_useMaxVisibleDescender` (Boolean) = `True`
+                  - `m_pageToDisplay` (Integer) = `1`
+                  - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                  - `m_isVolumetricText` (Boolean) = `False`
+                  - `m_hasFontAssetChanged` (Boolean) = `False`
+                  - `m_baseMaterial` (ObjectReference) = `null`
+                  - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `LayoutElement` index=3 enabled=`True`
+                  - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+                  - `m_IgnoreLayout` (Boolean) = `True`
+                  - `m_MinWidth` (Float) = `-1`
+                  - `m_MinHeight` (Float) = `-1`
+                  - `m_PreferredWidth` (Float) = `-1`
+                  - `m_PreferredHeight` (Float) = `-1`
+                  - `m_FlexibleWidth` (Float) = `-1`
+                  - `m_FlexibleHeight` (Float) = `-1`
+                  - `m_LayoutPriority` (Integer) = `1`
+            - `Text` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/DisplayNameInput/Text Area/Text` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `1294.909, 373.643, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `TextMeshProUGUI` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_text` (String) = `Display Name​`
+                  - `m_isRightToLeft` (Boolean) = `False`
+                  - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                  - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                  - `m_fontSharedMaterials` (Generic) = `array size=0`
+                  - `m_fontMaterial` (ObjectReference) = `null`
+                  - `m_fontMaterials` (Generic) = `array size=0`
+                  - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_enableVertexGradient` (Boolean) = `False`
+                  - `m_colorMode` (Enum) = `Four Corners Gradient`
+                  - `m_fontColorGradient` (Generic) = `<generic>`
+                  - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                  - `m_spriteAsset` (ObjectReference) = `null`
+                  - `m_tintAllSprites` (Boolean) = `False`
+                  - `m_StyleSheet` (ObjectReference) = `null`
+                  - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                  - `m_overrideHtmlColors` (Boolean) = `False`
+                  - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                  - `m_fontSize` (Float) = `14`
+                  - `m_fontSizeBase` (Float) = `14`
+                  - `m_fontWeight` (Enum) = `Regular`
+                  - `m_enableAutoSizing` (Boolean) = `False`
+                  - `m_fontSizeMin` (Float) = `18`
+                  - `m_fontSizeMax` (Float) = `72`
+                  - `m_fontStyle` (Enum) = `Normal`
+                  - `m_HorizontalAlignment` (Enum) = `Left`
+                  - `m_VerticalAlignment` (Enum) = `Top`
+                  - `m_textAlignment` (Enum) = `Converted`
+                  - `m_characterSpacing` (Float) = `0`
+                  - `m_characterHorizontalScale` (Float) = `1`
+                  - `m_wordSpacing` (Float) = `0`
+                  - `m_lineSpacing` (Float) = `0`
+                  - `m_lineSpacingMax` (Float) = `0`
+                  - `m_paragraphSpacing` (Float) = `0`
+                  - `m_charWidthMaxAdj` (Float) = `0`
+                  - `m_TextWrappingMode` (Enum) = `Preserve Whitespace No Wrap`
+                  - `m_wordWrappingRatios` (Float) = `0.4`
+                  - `m_overflowMode` (Enum) = `Overflow`
+                  - `m_linkedTextComponent` (ObjectReference) = `null`
+                  - `parentLinkedComponent` (ObjectReference) = `null`
+                  - `m_enableKerning` (Boolean) = `False`
+                  - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                  - `m_enableExtraPadding` (Boolean) = `True`
+                  - `checkPaddingRequired` (Boolean) = `False`
+                  - `m_isRichText` (Boolean) = `True`
+                  - `m_EmojiFallbackSupport` (Boolean) = `True`
+                  - `m_parseCtrlCharacters` (Boolean) = `True`
+                  - `m_isOrthographic` (Boolean) = `True`
+                  - `m_isCullingEnabled` (Boolean) = `False`
+                  - `m_horizontalMapping` (Enum) = `Character`
+                  - `m_verticalMapping` (Enum) = `Character`
+                  - `m_uvLineOffset` (Float) = `0`
+                  - `m_geometrySortingOrder` (Enum) = `Normal`
+                  - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                  - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                  - `m_useMaxVisibleDescender` (Boolean) = `True`
+                  - `m_pageToDisplay` (Integer) = `1`
+                  - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                  - `m_isVolumetricText` (Boolean) = `False`
+                  - `m_hasFontAssetChanged` (Boolean) = `False`
+                  - `m_baseMaterial` (ObjectReference) = `null`
+                  - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+        - `NewSaveLabel` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/NewSaveLabel` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, -26.944, 0`
+            - worldPosition: `1294.909, 456.793, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, -26.94, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(273.89, -220.58)`
+              - `m_SizeDelta` (Vector2) = `(547.78, 32.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `TextMeshProUGUI` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_text` (String) = `New / Rename Save`
+              - `m_isRightToLeft` (Boolean) = `False`
+              - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_fontSharedMaterials` (Generic) = `array size=0`
+              - `m_fontMaterial` (ObjectReference) = `null`
+              - `m_fontMaterials` (Generic) = `array size=0`
+              - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_enableVertexGradient` (Boolean) = `False`
+              - `m_colorMode` (Enum) = `Four Corners Gradient`
+              - `m_fontColorGradient` (Generic) = `<generic>`
+              - `m_fontColorGradientPreset` (ObjectReference) = `null`
+              - `m_spriteAsset` (ObjectReference) = `null`
+              - `m_tintAllSprites` (Boolean) = `False`
+              - `m_StyleSheet` (ObjectReference) = `null`
+              - `m_TextStyleHashCode` (Integer) = `-1183493901`
+              - `m_overrideHtmlColors` (Boolean) = `False`
+              - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontSize` (Float) = `22`
+              - `m_fontSizeBase` (Float) = `22`
+              - `m_fontWeight` (Enum) = `Regular`
+              - `m_enableAutoSizing` (Boolean) = `False`
+              - `m_fontSizeMin` (Float) = `18`
+              - `m_fontSizeMax` (Float) = `72`
+              - `m_fontStyle` (Enum) = `Normal`
+              - `m_HorizontalAlignment` (Enum) = `Left`
+              - `m_VerticalAlignment` (Enum) = `Top`
+              - `m_textAlignment` (Enum) = `Converted`
+              - `m_characterSpacing` (Float) = `0`
+              - `m_characterHorizontalScale` (Float) = `1`
+              - `m_wordSpacing` (Float) = `0`
+              - `m_lineSpacing` (Float) = `0`
+              - `m_lineSpacingMax` (Float) = `0`
+              - `m_paragraphSpacing` (Float) = `0`
+              - `m_charWidthMaxAdj` (Float) = `0`
+              - `m_TextWrappingMode` (Enum) = `Normal`
+              - `m_wordWrappingRatios` (Float) = `0.4`
+              - `m_overflowMode` (Enum) = `Overflow`
+              - `m_linkedTextComponent` (ObjectReference) = `null`
+              - `parentLinkedComponent` (ObjectReference) = `null`
+              - `m_enableKerning` (Boolean) = `False`
+              - `m_ActiveFontFeatures` (Generic) = `array size=1`
+              - `m_enableExtraPadding` (Boolean) = `False`
+              - `checkPaddingRequired` (Boolean) = `False`
+              - `m_isRichText` (Boolean) = `True`
+              - `m_EmojiFallbackSupport` (Boolean) = `True`
+              - `m_parseCtrlCharacters` (Boolean) = `True`
+              - `m_isOrthographic` (Boolean) = `True`
+              - `m_isCullingEnabled` (Boolean) = `False`
+              - `m_horizontalMapping` (Enum) = `Character`
+              - `m_verticalMapping` (Enum) = `Character`
+              - `m_uvLineOffset` (Float) = `0`
+              - `m_geometrySortingOrder` (Enum) = `Normal`
+              - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+              - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+              - `m_useMaxVisibleDescender` (Boolean) = `True`
+              - `m_pageToDisplay` (Integer) = `1`
+              - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+              - `m_isVolumetricText` (Boolean) = `False`
+              - `m_hasFontAssetChanged` (Boolean) = `False`
+              - `m_baseMaterial` (ObjectReference) = `null`
+              - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `LayoutElement` index=3 enabled=`True`
+              - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+              - `m_IgnoreLayout` (Boolean) = `False`
+              - `m_MinWidth` (Float) = `-1`
+              - `m_MinHeight` (Float) = `-1`
+              - `m_PreferredWidth` (Float) = `-1`
+              - `m_PreferredHeight` (Float) = `32`
+              - `m_FlexibleWidth` (Float) = `-1`
+              - `m_FlexibleHeight` (Float) = `-1`
+              - `m_LayoutPriority` (Integer) = `1`
+        - `SelectedSaveLabel` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveLabel` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 181.346, 0`
+            - worldPosition: `1294.909, 665.083, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 181.35, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(273.89, -12.29)`
+              - `m_SizeDelta` (Vector2) = `(547.78, 24.58)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `TextMeshProUGUI` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_text` (String) = `. . . . . . . .`
+              - `m_isRightToLeft` (Boolean) = `False`
+              - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_fontSharedMaterials` (Generic) = `array size=0`
+              - `m_fontMaterial` (ObjectReference) = `null`
+              - `m_fontMaterials` (Generic) = `array size=0`
+              - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_enableVertexGradient` (Boolean) = `False`
+              - `m_colorMode` (Enum) = `Four Corners Gradient`
+              - `m_fontColorGradient` (Generic) = `<generic>`
+              - `m_fontColorGradientPreset` (ObjectReference) = `null`
+              - `m_spriteAsset` (ObjectReference) = `null`
+              - `m_tintAllSprites` (Boolean) = `False`
+              - `m_StyleSheet` (ObjectReference) = `null`
+              - `m_TextStyleHashCode` (Integer) = `-1183493901`
+              - `m_overrideHtmlColors` (Boolean) = `False`
+              - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontSize` (Float) = `22`
+              - `m_fontSizeBase` (Float) = `22`
+              - `m_fontWeight` (Enum) = `Regular`
+              - `m_enableAutoSizing` (Boolean) = `False`
+              - `m_fontSizeMin` (Float) = `18`
+              - `m_fontSizeMax` (Float) = `72`
+              - `m_fontStyle` (Enum) = `Bold`
+              - `m_HorizontalAlignment` (Enum) = `Left`
+              - `m_VerticalAlignment` (Enum) = `Top`
+              - `m_textAlignment` (Enum) = `Converted`
+              - `m_characterSpacing` (Float) = `0`
+              - `m_characterHorizontalScale` (Float) = `1`
+              - `m_wordSpacing` (Float) = `0`
+              - `m_lineSpacing` (Float) = `0`
+              - `m_lineSpacingMax` (Float) = `0`
+              - `m_paragraphSpacing` (Float) = `0`
+              - `m_charWidthMaxAdj` (Float) = `0`
+              - `m_TextWrappingMode` (Enum) = `Normal`
+              - `m_wordWrappingRatios` (Float) = `0.4`
+              - `m_overflowMode` (Enum) = `Overflow`
+              - `m_linkedTextComponent` (ObjectReference) = `null`
+              - `parentLinkedComponent` (ObjectReference) = `null`
+              - `m_enableKerning` (Boolean) = `False`
+              - `m_ActiveFontFeatures` (Generic) = `array size=1`
+              - `m_enableExtraPadding` (Boolean) = `False`
+              - `checkPaddingRequired` (Boolean) = `False`
+              - `m_isRichText` (Boolean) = `True`
+              - `m_EmojiFallbackSupport` (Boolean) = `True`
+              - `m_parseCtrlCharacters` (Boolean) = `True`
+              - `m_isOrthographic` (Boolean) = `True`
+              - `m_isCullingEnabled` (Boolean) = `False`
+              - `m_horizontalMapping` (Enum) = `Character`
+              - `m_verticalMapping` (Enum) = `Character`
+              - `m_uvLineOffset` (Float) = `0`
+              - `m_geometrySortingOrder` (Enum) = `Normal`
+              - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+              - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+              - `m_useMaxVisibleDescender` (Boolean) = `True`
+              - `m_pageToDisplay` (Integer) = `1`
+              - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+              - `m_isVolumetricText` (Boolean) = `False`
+              - `m_hasFontAssetChanged` (Boolean) = `False`
+              - `m_baseMaterial` (ObjectReference) = `null`
+              - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+        - `SelectedSaveText` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SelectedSaveText` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 79.056, 0`
+            - worldPosition: `1294.909, 562.793, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 79.06, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(273.89, -114.58)`
+              - `m_SizeDelta` (Vector2) = `(547.78, 160.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `TextMeshProUGUI` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_text` (String) = ``
+              - `m_isRightToLeft` (Boolean) = `False`
+              - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_fontSharedMaterials` (Generic) = `array size=0`
+              - `m_fontMaterial` (ObjectReference) = `null`
+              - `m_fontMaterials` (Generic) = `array size=0`
+              - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_enableVertexGradient` (Boolean) = `False`
+              - `m_colorMode` (Enum) = `Four Corners Gradient`
+              - `m_fontColorGradient` (Generic) = `<generic>`
+              - `m_fontColorGradientPreset` (ObjectReference) = `null`
+              - `m_spriteAsset` (ObjectReference) = `null`
+              - `m_tintAllSprites` (Boolean) = `False`
+              - `m_StyleSheet` (ObjectReference) = `null`
+              - `m_TextStyleHashCode` (Integer) = `-1183493901`
+              - `m_overrideHtmlColors` (Boolean) = `False`
+              - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_fontSize` (Float) = `18`
+              - `m_fontSizeBase` (Float) = `18`
+              - `m_fontWeight` (Enum) = `Regular`
+              - `m_enableAutoSizing` (Boolean) = `False`
+              - `m_fontSizeMin` (Float) = `18`
+              - `m_fontSizeMax` (Float) = `72`
+              - `m_fontStyle` (Enum) = `Normal`
+              - `m_HorizontalAlignment` (Enum) = `Left`
+              - `m_VerticalAlignment` (Enum) = `Top`
+              - `m_textAlignment` (Enum) = `Converted`
+              - `m_characterSpacing` (Float) = `0`
+              - `m_characterHorizontalScale` (Float) = `1`
+              - `m_wordSpacing` (Float) = `0`
+              - `m_lineSpacing` (Float) = `0`
+              - `m_lineSpacingMax` (Float) = `0`
+              - `m_paragraphSpacing` (Float) = `0`
+              - `m_charWidthMaxAdj` (Float) = `0`
+              - `m_TextWrappingMode` (Enum) = `No Wrap`
+              - `m_wordWrappingRatios` (Float) = `0.4`
+              - `m_overflowMode` (Enum) = `Overflow`
+              - `m_linkedTextComponent` (ObjectReference) = `null`
+              - `parentLinkedComponent` (ObjectReference) = `null`
+              - `m_enableKerning` (Boolean) = `False`
+              - `m_ActiveFontFeatures` (Generic) = `array size=1`
+              - `m_enableExtraPadding` (Boolean) = `False`
+              - `checkPaddingRequired` (Boolean) = `False`
+              - `m_isRichText` (Boolean) = `True`
+              - `m_EmojiFallbackSupport` (Boolean) = `True`
+              - `m_parseCtrlCharacters` (Boolean) = `True`
+              - `m_isOrthographic` (Boolean) = `True`
+              - `m_isCullingEnabled` (Boolean) = `False`
+              - `m_horizontalMapping` (Enum) = `Character`
+              - `m_verticalMapping` (Enum) = `Character`
+              - `m_uvLineOffset` (Float) = `0`
+              - `m_geometrySortingOrder` (Enum) = `Normal`
+              - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+              - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+              - `m_useMaxVisibleDescender` (Boolean) = `True`
+              - `m_pageToDisplay` (Integer) = `1`
+              - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+              - `m_isVolumetricText` (Boolean) = `False`
+              - `m_hasFontAssetChanged` (Boolean) = `False`
+              - `m_baseMaterial` (ObjectReference) = `null`
+              - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `LayoutElement` index=3 enabled=`True`
+              - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+              - `m_IgnoreLayout` (Boolean) = `False`
+              - `m_MinWidth` (Float) = `-1`
+              - `m_MinHeight` (Float) = `-1`
+              - `m_PreferredWidth` (Float) = `-1`
+              - `m_PreferredHeight` (Float) = `160`
+              - `m_FlexibleWidth` (Float) = `-1`
+              - `m_FlexibleHeight` (Float) = `0`
+              - `m_LayoutPriority` (Integer) = `1`
+        - `SlotIdInput` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, -67.269, 0`
+            - worldPosition: `1294.909, 416.468, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, -67.27, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(273.89, -260.91)`
+              - `m_SizeDelta` (Vector2) = `(547.78, 28.65)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `InputFieldBackground (Sprite) asset='Resources/unity_builtin_extra'`
+              - `m_Type` (Enum) = `Sliced`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+            - `TMP_InputField` index=3 enabled=`True`
+              - `m_Script` (ObjectReference) = `TMP_InputField (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TMP_InputField.cs'`
+              - `m_Navigation` (Generic) = `<generic>`
+              - `m_Transition` (Enum) = `Color Tint`
+              - `m_Colors` (Generic) = `<generic>`
+              - `m_SpriteState` (Generic) = `<generic>`
+              - `m_AnimationTriggers` (Generic) = `<generic>`
+              - `m_Interactable` (Boolean) = `True`
+              - `m_TargetGraphic` (ObjectReference) = `SlotIdInput (Image) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput'`
+              - `m_TextViewport` (ObjectReference) = `Text Area (RectTransform) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area'`
+              - `m_TextComponent` (ObjectReference) = `Text (TextMeshProUGUI) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text'`
+              - `m_Placeholder` (ObjectReference) = `Placeholder (TextMeshProUGUI) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder'`
+              - `m_VerticalScrollbar` (ObjectReference) = `null`
+              - `m_VerticalScrollbarEventHandler` (ObjectReference) = `null`
+              - `m_LayoutGroup` (ObjectReference) = `null`
+              - `m_ScrollSensitivity` (Float) = `1`
+              - `m_ContentType` (Enum) = `Standard`
+              - `m_InputType` (Enum) = `Standard`
+              - `m_AsteriskChar` (Character) = `*`
+              - `m_KeyboardType` (Enum) = `Default`
+              - `m_LineType` (Enum) = `Single Line`
+              - `m_HideMobileInput` (Boolean) = `False`
+              - `m_HideSoftKeyboard` (Boolean) = `False`
+              - `m_CharacterValidation` (Enum) = `None`
+              - `m_RegexValue` (String) = ``
+              - `m_GlobalPointSize` (Float) = `14`
+              - `m_CharacterLimit` (Integer) = `0`
+              - `m_OnEndEdit` (Generic) = `<generic>`
+              - `m_OnSubmit` (Generic) = `<generic>`
+              - `m_OnSelect` (Generic) = `<generic>`
+              - `m_OnDeselect` (Generic) = `<generic>`
+              - `m_OnTextSelection` (Generic) = `<generic>`
+              - `m_OnEndTextSelection` (Generic) = `<generic>`
+              - `m_OnValueChanged` (Generic) = `<generic>`
+              - `m_OnTouchScreenKeyboardStatusChanged` (Generic) = `<generic>`
+              - `m_CaretColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+              - `m_CustomCaretColor` (Boolean) = `False`
+              - `m_SelectionColor` (Color) = `RGBA(0.659, 0.808, 1.000, 0.753)`
+              - `m_Text` (String) = ``
+              - `m_CaretBlinkRate` (Float) = `0.85`
+              - `m_CaretWidth` (Integer) = `1`
+              - `m_ReadOnly` (Boolean) = `False`
+              - `m_RichText` (Boolean) = `True`
+              - `m_GlobalFontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+              - `m_OnFocusSelectAll` (Boolean) = `True`
+              - `m_ResetOnDeActivation` (Boolean) = `True`
+              - `m_KeepTextSelectionVisible` (Boolean) = `False`
+              - `m_RestoreOriginalTextOnEscape` (Boolean) = `True`
+              - `m_isRichTextEditingAllowed` (Boolean) = `False`
+              - `m_LineLimit` (Integer) = `0`
+              - `isAlert` (Boolean) = `False`
+              - `m_InputValidator` (ObjectReference) = `null`
+              - `m_ShouldActivateOnSelect` (Boolean) = `True`
+          - `Text Area` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, -0.5, 0`
+              - worldPosition: `1294.909, 415.968, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, -0.50, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, -0.50)`
+                - `m_SizeDelta` (Vector2) = `(-20.00, -13.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `RectMask2D` index=1 enabled=`True`
+                - `m_Script` (ObjectReference) = `RectMask2D (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/RectMask2D.cs'`
+                - `m_Padding` (Vector4) = `(-8.00, -5.00, -8.00, -5.00)`
+                - `m_Softness` (Vector2Int) = `(0, 0)`
+            - `Placeholder` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Placeholder` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `1294.909, 415.968, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `TextMeshProUGUI` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_text` (String) = `save_file_name`
+                  - `m_isRightToLeft` (Boolean) = `False`
+                  - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                  - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                  - `m_fontSharedMaterials` (Generic) = `array size=0`
+                  - `m_fontMaterial` (ObjectReference) = `null`
+                  - `m_fontMaterials` (Generic) = `array size=0`
+                  - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 0.502)`
+                  - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 0.500)`
+                  - `m_enableVertexGradient` (Boolean) = `False`
+                  - `m_colorMode` (Enum) = `Four Corners Gradient`
+                  - `m_fontColorGradient` (Generic) = `<generic>`
+                  - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                  - `m_spriteAsset` (ObjectReference) = `null`
+                  - `m_tintAllSprites` (Boolean) = `False`
+                  - `m_StyleSheet` (ObjectReference) = `null`
+                  - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                  - `m_overrideHtmlColors` (Boolean) = `False`
+                  - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                  - `m_fontSize` (Float) = `14`
+                  - `m_fontSizeBase` (Float) = `14`
+                  - `m_fontWeight` (Enum) = `Regular`
+                  - `m_enableAutoSizing` (Boolean) = `False`
+                  - `m_fontSizeMin` (Float) = `18`
+                  - `m_fontSizeMax` (Float) = `72`
+                  - `m_fontStyle` (Enum) = `Italic`
+                  - `m_HorizontalAlignment` (Enum) = `Left`
+                  - `m_VerticalAlignment` (Enum) = `Top`
+                  - `m_textAlignment` (Enum) = `Converted`
+                  - `m_characterSpacing` (Float) = `0`
+                  - `m_characterHorizontalScale` (Float) = `1`
+                  - `m_wordSpacing` (Float) = `0`
+                  - `m_lineSpacing` (Float) = `0`
+                  - `m_lineSpacingMax` (Float) = `0`
+                  - `m_paragraphSpacing` (Float) = `0`
+                  - `m_charWidthMaxAdj` (Float) = `0`
+                  - `m_TextWrappingMode` (Enum) = `No Wrap`
+                  - `m_wordWrappingRatios` (Float) = `0.4`
+                  - `m_overflowMode` (Enum) = `Overflow`
+                  - `m_linkedTextComponent` (ObjectReference) = `null`
+                  - `parentLinkedComponent` (ObjectReference) = `null`
+                  - `m_enableKerning` (Boolean) = `False`
+                  - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                  - `m_enableExtraPadding` (Boolean) = `True`
+                  - `checkPaddingRequired` (Boolean) = `False`
+                  - `m_isRichText` (Boolean) = `True`
+                  - `m_EmojiFallbackSupport` (Boolean) = `True`
+                  - `m_parseCtrlCharacters` (Boolean) = `True`
+                  - `m_isOrthographic` (Boolean) = `True`
+                  - `m_isCullingEnabled` (Boolean) = `False`
+                  - `m_horizontalMapping` (Enum) = `Character`
+                  - `m_verticalMapping` (Enum) = `Character`
+                  - `m_uvLineOffset` (Float) = `0`
+                  - `m_geometrySortingOrder` (Enum) = `Normal`
+                  - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                  - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                  - `m_useMaxVisibleDescender` (Boolean) = `True`
+                  - `m_pageToDisplay` (Integer) = `1`
+                  - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                  - `m_isVolumetricText` (Boolean) = `False`
+                  - `m_hasFontAssetChanged` (Boolean) = `False`
+                  - `m_baseMaterial` (ObjectReference) = `null`
+                  - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `LayoutElement` index=3 enabled=`True`
+                  - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+                  - `m_IgnoreLayout` (Boolean) = `True`
+                  - `m_MinWidth` (Float) = `-1`
+                  - `m_MinHeight` (Float) = `-1`
+                  - `m_PreferredWidth` (Float) = `-1`
+                  - `m_PreferredHeight` (Float) = `-1`
+                  - `m_FlexibleWidth` (Float) = `-1`
+                  - `m_FlexibleHeight` (Float) = `-1`
+                  - `m_LayoutPriority` (Integer) = `1`
+                - `LayoutElement` index=4 enabled=`True`
+                  - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+                  - `m_IgnoreLayout` (Boolean) = `False`
+                  - `m_MinWidth` (Float) = `-1`
+                  - `m_MinHeight` (Float) = `-1`
+                  - `m_PreferredWidth` (Float) = `-1`
+                  - `m_PreferredHeight` (Float) = `36`
+                  - `m_FlexibleWidth` (Float) = `-1`
+                  - `m_FlexibleHeight` (Float) = `-1`
+                  - `m_LayoutPriority` (Integer) = `1`
+            - `Text` | path=`MainMenuCanvas/SaveLoadPanelRoot/Body/RightColumn/SlotIdInput/Text Area/Text` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+              - Transform:
+                - localPosition: `0, 0, 0`
+                - worldPosition: `1294.909, 415.968, 0`
+                - localRotationEuler: `0, 0, 0`
+                - worldRotationEuler: `0, 0, 0`
+                - localScale: `1, 1, 1`
+              - Components:
+                - `RectTransform` index=0 enabled=`n/a`
+                  - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                  - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                  - `m_ConstrainProportionsScale` (Boolean) = `False`
+                  - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                  - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                  - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                  - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                  - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+                - `CanvasRenderer` index=1 enabled=`n/a`
+                  - `m_CullTransparentMesh` (Boolean) = `True`
+                - `TextMeshProUGUI` index=2 enabled=`True`
+                  - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                  - `m_Material` (ObjectReference) = `null`
+                  - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                  - `m_RaycastTarget` (Boolean) = `True`
+                  - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_Maskable` (Boolean) = `True`
+                  - `m_OnCullStateChanged` (Generic) = `<generic>`
+                  - `m_text` (String) = `​`
+                  - `m_isRightToLeft` (Boolean) = `False`
+                  - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                  - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                  - `m_fontSharedMaterials` (Generic) = `array size=0`
+                  - `m_fontMaterial` (ObjectReference) = `null`
+                  - `m_fontMaterials` (Generic) = `array size=0`
+                  - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                  - `m_enableVertexGradient` (Boolean) = `False`
+                  - `m_colorMode` (Enum) = `Four Corners Gradient`
+                  - `m_fontColorGradient` (Generic) = `<generic>`
+                  - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                  - `m_spriteAsset` (ObjectReference) = `null`
+                  - `m_tintAllSprites` (Boolean) = `False`
+                  - `m_StyleSheet` (ObjectReference) = `null`
+                  - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                  - `m_overrideHtmlColors` (Boolean) = `False`
+                  - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                  - `m_fontSize` (Float) = `14`
+                  - `m_fontSizeBase` (Float) = `14`
+                  - `m_fontWeight` (Enum) = `Regular`
+                  - `m_enableAutoSizing` (Boolean) = `False`
+                  - `m_fontSizeMin` (Float) = `18`
+                  - `m_fontSizeMax` (Float) = `72`
+                  - `m_fontStyle` (Enum) = `Normal`
+                  - `m_HorizontalAlignment` (Enum) = `Left`
+                  - `m_VerticalAlignment` (Enum) = `Top`
+                  - `m_textAlignment` (Enum) = `Converted`
+                  - `m_characterSpacing` (Float) = `0`
+                  - `m_characterHorizontalScale` (Float) = `1`
+                  - `m_wordSpacing` (Float) = `0`
+                  - `m_lineSpacing` (Float) = `0`
+                  - `m_lineSpacingMax` (Float) = `0`
+                  - `m_paragraphSpacing` (Float) = `0`
+                  - `m_charWidthMaxAdj` (Float) = `0`
+                  - `m_TextWrappingMode` (Enum) = `Preserve Whitespace No Wrap`
+                  - `m_wordWrappingRatios` (Float) = `0.4`
+                  - `m_overflowMode` (Enum) = `Overflow`
+                  - `m_linkedTextComponent` (ObjectReference) = `null`
+                  - `parentLinkedComponent` (ObjectReference) = `null`
+                  - `m_enableKerning` (Boolean) = `False`
+                  - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                  - `m_enableExtraPadding` (Boolean) = `True`
+                  - `checkPaddingRequired` (Boolean) = `False`
+                  - `m_isRichText` (Boolean) = `True`
+                  - `m_EmojiFallbackSupport` (Boolean) = `True`
+                  - `m_parseCtrlCharacters` (Boolean) = `True`
+                  - `m_isOrthographic` (Boolean) = `True`
+                  - `m_isCullingEnabled` (Boolean) = `False`
+                  - `m_horizontalMapping` (Enum) = `Character`
+                  - `m_verticalMapping` (Enum) = `Character`
+                  - `m_uvLineOffset` (Float) = `0`
+                  - `m_geometrySortingOrder` (Enum) = `Normal`
+                  - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                  - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                  - `m_useMaxVisibleDescender` (Boolean) = `True`
+                  - `m_pageToDisplay` (Integer) = `1`
+                  - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                  - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                  - `m_isVolumetricText` (Boolean) = `False`
+                  - `m_hasFontAssetChanged` (Boolean) = `False`
+                  - `m_baseMaterial` (ObjectReference) = `null`
+                  - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+    - `Footer` | path=`MainMenuCanvas/SaveLoadPanelRoot/Footer` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, -220.4, 0`
+        - worldPosition: `995.5, 194.1, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, -220.40, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+          - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+          - `m_AnchoredPosition` (Vector2) = `(597.30, -552.00)`
+          - `m_SizeDelta` (Vector2) = `(1146.60, 160.00)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `VerticalLayoutGroup` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `VerticalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs'`
+          - `m_Padding` (Generic) = `<generic>`
+          - `m_ChildAlignment` (Enum) = `Upper Left`
+          - `m_Spacing` (Float) = `10`
+          - `m_ChildForceExpandWidth` (Boolean) = `True`
+          - `m_ChildForceExpandHeight` (Boolean) = `False`
+          - `m_ChildControlWidth` (Boolean) = `True`
+          - `m_ChildControlHeight` (Boolean) = `False`
+          - `m_ChildScaleWidth` (Boolean) = `False`
+          - `m_ChildScaleHeight` (Boolean) = `False`
+          - `m_ReverseArrangement` (Boolean) = `False`
+        - `LayoutElement` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+          - `m_IgnoreLayout` (Boolean) = `False`
+          - `m_MinWidth` (Float) = `-1`
+          - `m_MinHeight` (Float) = `-1`
+          - `m_PreferredWidth` (Float) = `-1`
+          - `m_PreferredHeight` (Float) = `60`
+          - `m_FlexibleWidth` (Float) = `-1`
+          - `m_FlexibleHeight` (Float) = `-1`
+          - `m_LayoutPriority` (Integer) = `1`
+      - `Buttons` | path=`MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -30, 0`
+          - worldPosition: `995.5, 164.1, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -30.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(573.30, -110.00)`
+            - `m_SizeDelta` (Vector2) = `(1146.60, 100.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `HorizontalLayoutGroup` index=1 enabled=`True`
+            - `m_Script` (ObjectReference) = `HorizontalLayoutGroup (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/HorizontalLayoutGroup.cs'`
+            - `m_Padding` (Generic) = `<generic>`
+            - `m_ChildAlignment` (Enum) = `Upper Left`
+            - `m_Spacing` (Float) = `12`
+            - `m_ChildForceExpandWidth` (Boolean) = `True`
+            - `m_ChildForceExpandHeight` (Boolean) = `False`
+            - `m_ChildControlWidth` (Boolean) = `True`
+            - `m_ChildControlHeight` (Boolean) = `True`
+            - `m_ChildScaleWidth` (Boolean) = `False`
+            - `m_ChildScaleHeight` (Boolean) = `False`
+            - `m_ReverseArrangement` (Boolean) = `False`
+          - `LayoutElement` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+            - `m_IgnoreLayout` (Boolean) = `False`
+            - `m_MinWidth` (Float) = `-1`
+            - `m_MinHeight` (Float) = `-1`
+            - `m_PreferredWidth` (Float) = `-1`
+            - `m_PreferredHeight` (Float) = `44`
+            - `m_FlexibleWidth` (Float) = `-1`
+            - `m_FlexibleHeight` (Float) = `-1`
+            - `m_LayoutPriority` (Integer) = `1`
+        - `CloseButton` | path=`MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/CloseButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `482.75, 30, 0`
+            - worldPosition: `1478.25, 194.1, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(482.75, 30.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(1056.05, -20.00)`
+              - `m_SizeDelta` (Vector2) = `(181.10, 40.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+              - `m_Type` (Enum) = `Sliced`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+            - `Button` index=3 enabled=`True`
+              - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+              - `m_Navigation` (Generic) = `<generic>`
+              - `m_Transition` (Enum) = `Color Tint`
+              - `m_Colors` (Generic) = `<generic>`
+              - `m_SpriteState` (Generic) = `<generic>`
+              - `m_AnimationTriggers` (Generic) = `<generic>`
+              - `m_Interactable` (Boolean) = `True`
+              - `m_TargetGraphic` (ObjectReference) = `CloseButton (Image) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/CloseButton'`
+              - `m_OnClick` (Generic) = `<generic>`
+            - `LayoutElement` index=4 enabled=`True`
+              - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+              - `m_IgnoreLayout` (Boolean) = `False`
+              - `m_MinWidth` (Float) = `-1`
+              - `m_MinHeight` (Float) = `-1`
+              - `m_PreferredWidth` (Float) = `140`
+              - `m_PreferredHeight` (Float) = `40`
+              - `m_FlexibleWidth` (Float) = `1`
+              - `m_FlexibleHeight` (Float) = `-1`
+              - `m_LayoutPriority` (Integer) = `1`
+          - `Close` | path=`MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/CloseButton/Close` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `1478.25, 194.1, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Text` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_FontData` (Generic) = `<generic>`
+                - `m_Text` (String) = `Close`
+        - `DeleteButton` | path=`MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/DeleteButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `96.55, 30, 0`
+            - worldPosition: `1092.05, 194.1, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(96.55, 30.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(669.85, -20.00)`
+              - `m_SizeDelta` (Vector2) = `(181.10, 40.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+              - `m_Type` (Enum) = `Sliced`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+            - `Button` index=3 enabled=`True`
+              - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+              - `m_Navigation` (Generic) = `<generic>`
+              - `m_Transition` (Enum) = `Color Tint`
+              - `m_Colors` (Generic) = `<generic>`
+              - `m_SpriteState` (Generic) = `<generic>`
+              - `m_AnimationTriggers` (Generic) = `<generic>`
+              - `m_Interactable` (Boolean) = `True`
+              - `m_TargetGraphic` (ObjectReference) = `DeleteButton (Image) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/DeleteButton'`
+              - `m_OnClick` (Generic) = `<generic>`
+            - `LayoutElement` index=4 enabled=`True`
+              - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+              - `m_IgnoreLayout` (Boolean) = `False`
+              - `m_MinWidth` (Float) = `-1`
+              - `m_MinHeight` (Float) = `-1`
+              - `m_PreferredWidth` (Float) = `140`
+              - `m_PreferredHeight` (Float) = `40`
+              - `m_FlexibleWidth` (Float) = `1`
+              - `m_FlexibleHeight` (Float) = `-1`
+              - `m_LayoutPriority` (Integer) = `1`
+          - `Text (TMP)` | path=`MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/DeleteButton/Text (TMP)` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `1092.05, 194.1, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `TextMeshProUGUI` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_text` (String) = `Delete Save`
+                - `m_isRightToLeft` (Boolean) = `False`
+                - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_fontSharedMaterials` (Generic) = `array size=0`
+                - `m_fontMaterial` (ObjectReference) = `null`
+                - `m_fontMaterials` (Generic) = `array size=0`
+                - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_enableVertexGradient` (Boolean) = `False`
+                - `m_colorMode` (Enum) = `Four Corners Gradient`
+                - `m_fontColorGradient` (Generic) = `<generic>`
+                - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                - `m_spriteAsset` (ObjectReference) = `null`
+                - `m_tintAllSprites` (Boolean) = `False`
+                - `m_StyleSheet` (ObjectReference) = `null`
+                - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                - `m_overrideHtmlColors` (Boolean) = `False`
+                - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_fontSize` (Float) = `14`
+                - `m_fontSizeBase` (Float) = `14`
+                - `m_fontWeight` (Enum) = `Regular`
+                - `m_enableAutoSizing` (Boolean) = `False`
+                - `m_fontSizeMin` (Float) = `18`
+                - `m_fontSizeMax` (Float) = `72`
+                - `m_fontStyle` (Enum) = `Normal`
+                - `m_HorizontalAlignment` (Enum) = `Center`
+                - `m_VerticalAlignment` (Enum) = `Middle`
+                - `m_textAlignment` (Enum) = `Converted`
+                - `m_characterSpacing` (Float) = `0`
+                - `m_characterHorizontalScale` (Float) = `1`
+                - `m_wordSpacing` (Float) = `0`
+                - `m_lineSpacing` (Float) = `0`
+                - `m_lineSpacingMax` (Float) = `0`
+                - `m_paragraphSpacing` (Float) = `0`
+                - `m_charWidthMaxAdj` (Float) = `0`
+                - `m_TextWrappingMode` (Enum) = `Normal`
+                - `m_wordWrappingRatios` (Float) = `0.4`
+                - `m_overflowMode` (Enum) = `Overflow`
+                - `m_linkedTextComponent` (ObjectReference) = `null`
+                - `parentLinkedComponent` (ObjectReference) = `null`
+                - `m_enableKerning` (Boolean) = `False`
+                - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                - `m_enableExtraPadding` (Boolean) = `False`
+                - `checkPaddingRequired` (Boolean) = `False`
+                - `m_isRichText` (Boolean) = `True`
+                - `m_EmojiFallbackSupport` (Boolean) = `True`
+                - `m_parseCtrlCharacters` (Boolean) = `True`
+                - `m_isOrthographic` (Boolean) = `True`
+                - `m_isCullingEnabled` (Boolean) = `False`
+                - `m_horizontalMapping` (Enum) = `Character`
+                - `m_verticalMapping` (Enum) = `Character`
+                - `m_uvLineOffset` (Float) = `0`
+                - `m_geometrySortingOrder` (Enum) = `Normal`
+                - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                - `m_useMaxVisibleDescender` (Boolean) = `True`
+                - `m_pageToDisplay` (Integer) = `1`
+                - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                - `m_isVolumetricText` (Boolean) = `False`
+                - `m_hasFontAssetChanged` (Boolean) = `False`
+                - `m_baseMaterial` (ObjectReference) = `null`
+                - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+        - `LoadButton` | path=`MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/LoadButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `-289.65, 30, 0`
+            - worldPosition: `705.85, 194.1, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(-289.65, 30.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(283.65, -20.00)`
+              - `m_SizeDelta` (Vector2) = `(181.10, 40.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+              - `m_Type` (Enum) = `Sliced`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+            - `Button` index=3 enabled=`True`
+              - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+              - `m_Navigation` (Generic) = `<generic>`
+              - `m_Transition` (Enum) = `Color Tint`
+              - `m_Colors` (Generic) = `<generic>`
+              - `m_SpriteState` (Generic) = `<generic>`
+              - `m_AnimationTriggers` (Generic) = `<generic>`
+              - `m_Interactable` (Boolean) = `True`
+              - `m_TargetGraphic` (ObjectReference) = `LoadButton (Image) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/LoadButton'`
+              - `m_OnClick` (Generic) = `<generic>`
+            - `LayoutElement` index=4 enabled=`True`
+              - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+              - `m_IgnoreLayout` (Boolean) = `False`
+              - `m_MinWidth` (Float) = `-1`
+              - `m_MinHeight` (Float) = `-1`
+              - `m_PreferredWidth` (Float) = `140`
+              - `m_PreferredHeight` (Float) = `40`
+              - `m_FlexibleWidth` (Float) = `1`
+              - `m_FlexibleHeight` (Float) = `-1`
+              - `m_LayoutPriority` (Integer) = `1`
+          - `Load` | path=`MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/LoadButton/Load` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `705.85, 194.1, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Text` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_FontData` (Generic) = `<generic>`
+                - `m_Text` (String) = `Load`
+        - `NewSaveButton` | path=`MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `-96.55, 30, 0`
+            - worldPosition: `898.95, 194.1, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(-96.55, 30.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(476.75, -20.00)`
+              - `m_SizeDelta` (Vector2) = `(181.10, 40.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+              - `m_Type` (Enum) = `Sliced`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+            - `Button` index=3 enabled=`True`
+              - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+              - `m_Navigation` (Generic) = `<generic>`
+              - `m_Transition` (Enum) = `Color Tint`
+              - `m_Colors` (Generic) = `<generic>`
+              - `m_SpriteState` (Generic) = `<generic>`
+              - `m_AnimationTriggers` (Generic) = `<generic>`
+              - `m_Interactable` (Boolean) = `True`
+              - `m_TargetGraphic` (ObjectReference) = `NewSaveButton (Image) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton'`
+              - `m_OnClick` (Generic) = `<generic>`
+            - `LayoutElement` index=4 enabled=`True`
+              - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+              - `m_IgnoreLayout` (Boolean) = `False`
+              - `m_MinWidth` (Float) = `-1`
+              - `m_MinHeight` (Float) = `-1`
+              - `m_PreferredWidth` (Float) = `140`
+              - `m_PreferredHeight` (Float) = `40`
+              - `m_FlexibleWidth` (Float) = `1`
+              - `m_FlexibleHeight` (Float) = `-1`
+              - `m_LayoutPriority` (Integer) = `1`
+          - `Text (TMP)` | path=`MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/NewSaveButton/Text (TMP)` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `898.95, 194.1, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `TextMeshProUGUI` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_text` (String) = `New Save`
+                - `m_isRightToLeft` (Boolean) = `False`
+                - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+                - `m_fontSharedMaterials` (Generic) = `array size=0`
+                - `m_fontMaterial` (ObjectReference) = `null`
+                - `m_fontMaterials` (Generic) = `array size=0`
+                - `m_fontColor32` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_fontColor` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_enableVertexGradient` (Boolean) = `False`
+                - `m_colorMode` (Enum) = `Four Corners Gradient`
+                - `m_fontColorGradient` (Generic) = `<generic>`
+                - `m_fontColorGradientPreset` (ObjectReference) = `null`
+                - `m_spriteAsset` (ObjectReference) = `null`
+                - `m_tintAllSprites` (Boolean) = `False`
+                - `m_StyleSheet` (ObjectReference) = `null`
+                - `m_TextStyleHashCode` (Integer) = `-1183493901`
+                - `m_overrideHtmlColors` (Boolean) = `False`
+                - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+                - `m_fontSize` (Float) = `14`
+                - `m_fontSizeBase` (Float) = `14`
+                - `m_fontWeight` (Enum) = `Regular`
+                - `m_enableAutoSizing` (Boolean) = `False`
+                - `m_fontSizeMin` (Float) = `18`
+                - `m_fontSizeMax` (Float) = `72`
+                - `m_fontStyle` (Enum) = `Normal`
+                - `m_HorizontalAlignment` (Enum) = `Center`
+                - `m_VerticalAlignment` (Enum) = `Middle`
+                - `m_textAlignment` (Enum) = `Converted`
+                - `m_characterSpacing` (Float) = `0`
+                - `m_characterHorizontalScale` (Float) = `1`
+                - `m_wordSpacing` (Float) = `0`
+                - `m_lineSpacing` (Float) = `0`
+                - `m_lineSpacingMax` (Float) = `0`
+                - `m_paragraphSpacing` (Float) = `0`
+                - `m_charWidthMaxAdj` (Float) = `0`
+                - `m_TextWrappingMode` (Enum) = `Normal`
+                - `m_wordWrappingRatios` (Float) = `0.4`
+                - `m_overflowMode` (Enum) = `Overflow`
+                - `m_linkedTextComponent` (ObjectReference) = `null`
+                - `parentLinkedComponent` (ObjectReference) = `null`
+                - `m_enableKerning` (Boolean) = `False`
+                - `m_ActiveFontFeatures` (Generic) = `array size=1`
+                - `m_enableExtraPadding` (Boolean) = `False`
+                - `checkPaddingRequired` (Boolean) = `False`
+                - `m_isRichText` (Boolean) = `True`
+                - `m_EmojiFallbackSupport` (Boolean) = `True`
+                - `m_parseCtrlCharacters` (Boolean) = `True`
+                - `m_isOrthographic` (Boolean) = `True`
+                - `m_isCullingEnabled` (Boolean) = `False`
+                - `m_horizontalMapping` (Enum) = `Character`
+                - `m_verticalMapping` (Enum) = `Character`
+                - `m_uvLineOffset` (Float) = `0`
+                - `m_geometrySortingOrder` (Enum) = `Normal`
+                - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+                - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+                - `m_useMaxVisibleDescender` (Boolean) = `True`
+                - `m_pageToDisplay` (Integer) = `1`
+                - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+                - `m_isVolumetricText` (Boolean) = `False`
+                - `m_hasFontAssetChanged` (Boolean) = `False`
+                - `m_baseMaterial` (ObjectReference) = `null`
+                - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+        - `OpenFolderButton` | path=`MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/OpenFolderButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `289.65, 30, 0`
+            - worldPosition: `1285.15, 194.1, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(289.65, 30.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(862.95, -20.00)`
+              - `m_SizeDelta` (Vector2) = `(181.10, 40.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+              - `m_Type` (Enum) = `Sliced`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+            - `Button` index=3 enabled=`True`
+              - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+              - `m_Navigation` (Generic) = `<generic>`
+              - `m_Transition` (Enum) = `Color Tint`
+              - `m_Colors` (Generic) = `<generic>`
+              - `m_SpriteState` (Generic) = `<generic>`
+              - `m_AnimationTriggers` (Generic) = `<generic>`
+              - `m_Interactable` (Boolean) = `True`
+              - `m_TargetGraphic` (ObjectReference) = `OpenFolderButton (Image) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/OpenFolderButton'`
+              - `m_OnClick` (Generic) = `<generic>`
+            - `LayoutElement` index=4 enabled=`True`
+              - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+              - `m_IgnoreLayout` (Boolean) = `False`
+              - `m_MinWidth` (Float) = `-1`
+              - `m_MinHeight` (Float) = `-1`
+              - `m_PreferredWidth` (Float) = `140`
+              - `m_PreferredHeight` (Float) = `40`
+              - `m_FlexibleWidth` (Float) = `1`
+              - `m_FlexibleHeight` (Float) = `-1`
+              - `m_LayoutPriority` (Integer) = `1`
+          - `OpenFolder` | path=`MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/OpenFolderButton/OpenFolder` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `1285.15, 194.1, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Text` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_FontData` (Generic) = `<generic>`
+                - `m_Text` (String) = `Open Folder`
+        - `SaveButton` | path=`MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/SaveButton` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `-482.75, 30, 0`
+            - worldPosition: `512.75, 194.1, 0`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `RectTransform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(-482.75, 30.00, 0.00)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+              - `m_AnchoredPosition` (Vector2) = `(90.55, -20.00)`
+              - `m_SizeDelta` (Vector2) = `(181.10, 40.00)`
+              - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+            - `CanvasRenderer` index=1 enabled=`n/a`
+              - `m_CullTransparentMesh` (Boolean) = `True`
+            - `Image` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `Image (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs'`
+              - `m_Material` (ObjectReference) = `null`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_RaycastTarget` (Boolean) = `True`
+              - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+              - `m_Maskable` (Boolean) = `True`
+              - `m_OnCullStateChanged` (Generic) = `<generic>`
+              - `m_Sprite` (ObjectReference) = `UISprite (Sprite) asset='Resources/unity_builtin_extra'`
+              - `m_Type` (Enum) = `Sliced`
+              - `m_PreserveAspect` (Boolean) = `False`
+              - `m_FillCenter` (Boolean) = `True`
+              - `m_FillMethod` (Enum) = `Radial 360`
+              - `m_FillAmount` (Float) = `1`
+              - `m_FillClockwise` (Boolean) = `True`
+              - `m_FillOrigin` (Integer) = `0`
+              - `m_UseSpriteMesh` (Boolean) = `False`
+              - `m_PixelsPerUnitMultiplier` (Float) = `1`
+            - `Button` index=3 enabled=`True`
+              - `m_Script` (ObjectReference) = `Button (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs'`
+              - `m_Navigation` (Generic) = `<generic>`
+              - `m_Transition` (Enum) = `Color Tint`
+              - `m_Colors` (Generic) = `<generic>`
+              - `m_SpriteState` (Generic) = `<generic>`
+              - `m_AnimationTriggers` (Generic) = `<generic>`
+              - `m_Interactable` (Boolean) = `True`
+              - `m_TargetGraphic` (ObjectReference) = `SaveButton (Image) scenePath='MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/SaveButton'`
+              - `m_OnClick` (Generic) = `<generic>`
+            - `LayoutElement` index=4 enabled=`True`
+              - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+              - `m_IgnoreLayout` (Boolean) = `False`
+              - `m_MinWidth` (Float) = `-1`
+              - `m_MinHeight` (Float) = `-1`
+              - `m_PreferredWidth` (Float) = `140`
+              - `m_PreferredHeight` (Float) = `40`
+              - `m_FlexibleWidth` (Float) = `1`
+              - `m_FlexibleHeight` (Float) = `-1`
+              - `m_LayoutPriority` (Integer) = `1`
+          - `Save` | path=`MainMenuCanvas/SaveLoadPanelRoot/Footer/Buttons/SaveButton/Save` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `512.75, 194.1, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `RectTransform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+                - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+                - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+                - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+                - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+                - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+              - `CanvasRenderer` index=1 enabled=`n/a`
+                - `m_CullTransparentMesh` (Boolean) = `True`
+              - `Text` index=2 enabled=`True`
+                - `m_Script` (ObjectReference) = `Text (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Text.cs'`
+                - `m_Material` (ObjectReference) = `null`
+                - `m_Color` (Color) = `RGBA(0.196, 0.196, 0.196, 1.000)`
+                - `m_RaycastTarget` (Boolean) = `True`
+                - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+                - `m_Maskable` (Boolean) = `True`
+                - `m_OnCullStateChanged` (Generic) = `<generic>`
+                - `m_FontData` (Generic) = `<generic>`
+                - `m_Text` (String) = `Save`
+      - `StatusText` | path=`MainMenuCanvas/SaveLoadPanelRoot/Footer/StatusText` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 55, 0`
+          - worldPosition: `995.5, 249.1, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 55.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(573.30, -25.00)`
+            - `m_SizeDelta` (Vector2) = `(1146.60, 50.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `TextMeshProUGUI` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_text` (String) = `Status`
+            - `m_isRightToLeft` (Boolean) = `False`
+            - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+            - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+            - `m_fontSharedMaterials` (Generic) = `array size=0`
+            - `m_fontMaterial` (ObjectReference) = `null`
+            - `m_fontMaterials` (Generic) = `array size=0`
+            - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_enableVertexGradient` (Boolean) = `False`
+            - `m_colorMode` (Enum) = `Four Corners Gradient`
+            - `m_fontColorGradient` (Generic) = `<generic>`
+            - `m_fontColorGradientPreset` (ObjectReference) = `null`
+            - `m_spriteAsset` (ObjectReference) = `null`
+            - `m_tintAllSprites` (Boolean) = `False`
+            - `m_StyleSheet` (ObjectReference) = `null`
+            - `m_TextStyleHashCode` (Integer) = `-1183493901`
+            - `m_overrideHtmlColors` (Boolean) = `False`
+            - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_fontSize` (Float) = `16`
+            - `m_fontSizeBase` (Float) = `16`
+            - `m_fontWeight` (Enum) = `Regular`
+            - `m_enableAutoSizing` (Boolean) = `False`
+            - `m_fontSizeMin` (Float) = `18`
+            - `m_fontSizeMax` (Float) = `72`
+            - `m_fontStyle` (Enum) = `Normal`
+            - `m_HorizontalAlignment` (Enum) = `Center`
+            - `m_VerticalAlignment` (Enum) = `Middle`
+            - `m_textAlignment` (Enum) = `Converted`
+            - `m_characterSpacing` (Float) = `0`
+            - `m_characterHorizontalScale` (Float) = `1`
+            - `m_wordSpacing` (Float) = `0`
+            - `m_lineSpacing` (Float) = `0`
+            - `m_lineSpacingMax` (Float) = `0`
+            - `m_paragraphSpacing` (Float) = `0`
+            - `m_charWidthMaxAdj` (Float) = `0`
+            - `m_TextWrappingMode` (Enum) = `Normal`
+            - `m_wordWrappingRatios` (Float) = `0.4`
+            - `m_overflowMode` (Enum) = `Overflow`
+            - `m_linkedTextComponent` (ObjectReference) = `null`
+            - `parentLinkedComponent` (ObjectReference) = `null`
+            - `m_enableKerning` (Boolean) = `False`
+            - `m_ActiveFontFeatures` (Generic) = `array size=1`
+            - `m_enableExtraPadding` (Boolean) = `False`
+            - `checkPaddingRequired` (Boolean) = `False`
+            - `m_isRichText` (Boolean) = `True`
+            - `m_EmojiFallbackSupport` (Boolean) = `True`
+            - `m_parseCtrlCharacters` (Boolean) = `True`
+            - `m_isOrthographic` (Boolean) = `True`
+            - `m_isCullingEnabled` (Boolean) = `False`
+            - `m_horizontalMapping` (Enum) = `Character`
+            - `m_verticalMapping` (Enum) = `Character`
+            - `m_uvLineOffset` (Float) = `0`
+            - `m_geometrySortingOrder` (Enum) = `Normal`
+            - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+            - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+            - `m_useMaxVisibleDescender` (Boolean) = `True`
+            - `m_pageToDisplay` (Integer) = `1`
+            - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+            - `m_isVolumetricText` (Boolean) = `False`
+            - `m_hasFontAssetChanged` (Boolean) = `False`
+            - `m_baseMaterial` (ObjectReference) = `null`
+            - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+          - `LayoutElement` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+            - `m_IgnoreLayout` (Boolean) = `False`
+            - `m_MinWidth` (Float) = `-1`
+            - `m_MinHeight` (Float) = `-1`
+            - `m_PreferredWidth` (Float) = `-1`
+            - `m_PreferredHeight` (Float) = `30`
+            - `m_FlexibleWidth` (Float) = `-1`
+            - `m_FlexibleHeight` (Float) = `-1`
+            - `m_LayoutPriority` (Integer) = `1`
+      - `VersionText` | path=`MainMenuCanvas/SaveLoadPanelRoot/Footer/VersionText` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -115, 0`
+          - worldPosition: `995.5, 79.1, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -115.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(573.30, -195.00)`
+            - `m_SizeDelta` (Vector2) = `(1146.60, 50.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `TextMeshProUGUI` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_text` (String) = `New Text`
+            - `m_isRightToLeft` (Boolean) = `False`
+            - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+            - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+            - `m_fontSharedMaterials` (Generic) = `array size=0`
+            - `m_fontMaterial` (ObjectReference) = `null`
+            - `m_fontMaterials` (Generic) = `array size=0`
+            - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_enableVertexGradient` (Boolean) = `False`
+            - `m_colorMode` (Enum) = `Four Corners Gradient`
+            - `m_fontColorGradient` (Generic) = `<generic>`
+            - `m_fontColorGradientPreset` (ObjectReference) = `null`
+            - `m_spriteAsset` (ObjectReference) = `null`
+            - `m_tintAllSprites` (Boolean) = `False`
+            - `m_StyleSheet` (ObjectReference) = `null`
+            - `m_TextStyleHashCode` (Integer) = `-1183493901`
+            - `m_overrideHtmlColors` (Boolean) = `False`
+            - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_fontSize` (Float) = `12`
+            - `m_fontSizeBase` (Float) = `12`
+            - `m_fontWeight` (Enum) = `Regular`
+            - `m_enableAutoSizing` (Boolean) = `False`
+            - `m_fontSizeMin` (Float) = `18`
+            - `m_fontSizeMax` (Float) = `72`
+            - `m_fontStyle` (Enum) = `Normal`
+            - `m_HorizontalAlignment` (Enum) = `Left`
+            - `m_VerticalAlignment` (Enum) = `Top`
+            - `m_textAlignment` (Enum) = `Converted`
+            - `m_characterSpacing` (Float) = `0`
+            - `m_characterHorizontalScale` (Float) = `1`
+            - `m_wordSpacing` (Float) = `0`
+            - `m_lineSpacing` (Float) = `0`
+            - `m_lineSpacingMax` (Float) = `0`
+            - `m_paragraphSpacing` (Float) = `0`
+            - `m_charWidthMaxAdj` (Float) = `0`
+            - `m_TextWrappingMode` (Enum) = `Normal`
+            - `m_wordWrappingRatios` (Float) = `0.4`
+            - `m_overflowMode` (Enum) = `Overflow`
+            - `m_linkedTextComponent` (ObjectReference) = `null`
+            - `parentLinkedComponent` (ObjectReference) = `null`
+            - `m_enableKerning` (Boolean) = `False`
+            - `m_ActiveFontFeatures` (Generic) = `array size=1`
+            - `m_enableExtraPadding` (Boolean) = `False`
+            - `checkPaddingRequired` (Boolean) = `False`
+            - `m_isRichText` (Boolean) = `True`
+            - `m_EmojiFallbackSupport` (Boolean) = `True`
+            - `m_parseCtrlCharacters` (Boolean) = `True`
+            - `m_isOrthographic` (Boolean) = `True`
+            - `m_isCullingEnabled` (Boolean) = `False`
+            - `m_horizontalMapping` (Enum) = `Character`
+            - `m_verticalMapping` (Enum) = `Character`
+            - `m_uvLineOffset` (Float) = `0`
+            - `m_geometrySortingOrder` (Enum) = `Normal`
+            - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+            - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+            - `m_useMaxVisibleDescender` (Boolean) = `True`
+            - `m_pageToDisplay` (Integer) = `1`
+            - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+            - `m_isVolumetricText` (Boolean) = `False`
+            - `m_hasFontAssetChanged` (Boolean) = `False`
+            - `m_baseMaterial` (ObjectReference) = `null`
+            - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+    - `Header` | path=`MainMenuCanvas/SaveLoadPanelRoot/Header` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 295.236, 0`
+        - worldPosition: `995.5, 709.736, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `RectTransform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 295.24, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `m_AnchorMin` (Vector2) = `(0.00, 1.00)`
+          - `m_AnchorMax` (Vector2) = `(0.00, 1.00)`
+          - `m_AnchoredPosition` (Vector2) = `(597.30, -36.36)`
+          - `m_SizeDelta` (Vector2) = `(1146.60, 32.73)`
+          - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+        - `LayoutElement` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `LayoutElement (MonoScript) asset='Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs'`
+          - `m_IgnoreLayout` (Boolean) = `False`
+          - `m_MinWidth` (Float) = `-1`
+          - `m_MinHeight` (Float) = `-1`
+          - `m_PreferredWidth` (Float) = `-1`
+          - `m_PreferredHeight` (Float) = `90`
+          - `m_FlexibleWidth` (Float) = `-1`
+          - `m_FlexibleHeight` (Float) = `1`
+          - `m_LayoutPriority` (Integer) = `1`
+      - `SaveLoadText` | path=`MainMenuCanvas/SaveLoadPanelRoot/Header/SaveLoadText` | activeSelf=True | activeInHierarchy=True | layer=`UI` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `995.5, 709.736, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `RectTransform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `m_AnchorMin` (Vector2) = `(0.00, 0.00)`
+            - `m_AnchorMax` (Vector2) = `(1.00, 1.00)`
+            - `m_AnchoredPosition` (Vector2) = `(0.00, 0.00)`
+            - `m_SizeDelta` (Vector2) = `(0.00, 0.00)`
+            - `m_Pivot` (Vector2) = `(0.50, 0.50)`
+          - `CanvasRenderer` index=1 enabled=`n/a`
+            - `m_CullTransparentMesh` (Boolean) = `True`
+          - `TextMeshProUGUI` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `TextMeshProUGUI (MonoScript) asset='Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs'`
+            - `m_Material` (ObjectReference) = `null`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_RaycastTarget` (Boolean) = `True`
+            - `m_RaycastPadding` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_Maskable` (Boolean) = `True`
+            - `m_OnCullStateChanged` (Generic) = `<generic>`
+            - `m_text` (String) = `Save / Load`
+            - `m_isRightToLeft` (Boolean) = `False`
+            - `m_fontAsset` (ObjectReference) = `LiberationSans SDF (TMP_FontAsset) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+            - `m_sharedMaterial` (ObjectReference) = `LiberationSans SDF Material (Material) asset='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset'`
+            - `m_fontSharedMaterials` (Generic) = `array size=0`
+            - `m_fontMaterial` (ObjectReference) = `null`
+            - `m_fontMaterials` (Generic) = `array size=0`
+            - `m_fontColor32` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_fontColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_enableVertexGradient` (Boolean) = `False`
+            - `m_colorMode` (Enum) = `Four Corners Gradient`
+            - `m_fontColorGradient` (Generic) = `<generic>`
+            - `m_fontColorGradientPreset` (ObjectReference) = `null`
+            - `m_spriteAsset` (ObjectReference) = `null`
+            - `m_tintAllSprites` (Boolean) = `False`
+            - `m_StyleSheet` (ObjectReference) = `null`
+            - `m_TextStyleHashCode` (Integer) = `-1183493901`
+            - `m_overrideHtmlColors` (Boolean) = `False`
+            - `m_faceColor` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_fontSize` (Float) = `36`
+            - `m_fontSizeBase` (Float) = `36`
+            - `m_fontWeight` (Enum) = `Regular`
+            - `m_enableAutoSizing` (Boolean) = `False`
+            - `m_fontSizeMin` (Float) = `18`
+            - `m_fontSizeMax` (Float) = `72`
+            - `m_fontStyle` (Enum) = `Bold`
+            - `m_HorizontalAlignment` (Enum) = `Left`
+            - `m_VerticalAlignment` (Enum) = `Middle`
+            - `m_textAlignment` (Enum) = `Converted`
+            - `m_characterSpacing` (Float) = `0`
+            - `m_characterHorizontalScale` (Float) = `1`
+            - `m_wordSpacing` (Float) = `0`
+            - `m_lineSpacing` (Float) = `0`
+            - `m_lineSpacingMax` (Float) = `0`
+            - `m_paragraphSpacing` (Float) = `0`
+            - `m_charWidthMaxAdj` (Float) = `0`
+            - `m_TextWrappingMode` (Enum) = `Normal`
+            - `m_wordWrappingRatios` (Float) = `0.4`
+            - `m_overflowMode` (Enum) = `Overflow`
+            - `m_linkedTextComponent` (ObjectReference) = `null`
+            - `parentLinkedComponent` (ObjectReference) = `null`
+            - `m_enableKerning` (Boolean) = `False`
+            - `m_ActiveFontFeatures` (Generic) = `array size=1`
+            - `m_enableExtraPadding` (Boolean) = `False`
+            - `checkPaddingRequired` (Boolean) = `False`
+            - `m_isRichText` (Boolean) = `True`
+            - `m_EmojiFallbackSupport` (Boolean) = `True`
+            - `m_parseCtrlCharacters` (Boolean) = `True`
+            - `m_isOrthographic` (Boolean) = `True`
+            - `m_isCullingEnabled` (Boolean) = `False`
+            - `m_horizontalMapping` (Enum) = `Character`
+            - `m_verticalMapping` (Enum) = `Character`
+            - `m_uvLineOffset` (Float) = `0`
+            - `m_geometrySortingOrder` (Enum) = `Normal`
+            - `m_IsTextObjectScaleStatic` (Boolean) = `False`
+            - `m_VertexBufferAutoSizeReduction` (Boolean) = `False`
+            - `m_useMaxVisibleDescender` (Boolean) = `True`
+            - `m_pageToDisplay` (Integer) = `1`
+            - `m_margin` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+            - `m_isUsingLegacyAnimationComponent` (Boolean) = `False`
+            - `m_isVolumetricText` (Boolean) = `False`
+            - `m_hasFontAssetChanged` (Boolean) = `False`
+            - `m_baseMaterial` (ObjectReference) = `null`
+            - `m_maskOffset` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+- `MainMenuSystems` | path=`MainMenuSystems` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `0.152, 7.741, -0.176`
+    - worldPosition: `0.152, 7.741, -0.176`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.15, 7.74, -0.18)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `MainMenuController` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `MainMenuController (MonoScript) asset='Assets/Scripts/Menu/MainMenuController.cs'`
+      - `nodeSceneName` (String) = `NodeScene`
+      - `newGameButton` (ObjectReference) = `NewGameButton (Button) scenePath='MainMenuCanvas/MainMenuPanel/MenuButtons/NewGameButton'`
+      - `loadGameButton` (ObjectReference) = `LoadGameButton (Button) scenePath='MainMenuCanvas/MainMenuPanel/MenuButtons/LoadGameButton'`
+      - `profilesButton` (ObjectReference) = `ProfilesButton (Button) scenePath='MainMenuCanvas/MainMenuPanel/MenuButtons/ProfilesButton'`
+      - `settingsButton` (ObjectReference) = `SettingsButton (Button) scenePath='MainMenuCanvas/MainMenuPanel/MenuButtons/SettingsButton'`
+      - `quitButton` (ObjectReference) = `QuitButton (Button) scenePath='MainMenuCanvas/MainMenuPanel/MenuButtons/QuitButton'`
+      - `defaultBoatInstanceId` (String) = `boat_001`
+      - `defaultStartingNodeId` (String) = ``
+      - `clearPlayerSceneContextOnNewGame` (Boolean) = `True`
+      - `saveLoadController` (ObjectReference) = `MainMenuSystems (SaveLoadController) scenePath='MainMenuSystems'`
+      - `saveLoadPanel` (ObjectReference) = `null`
+      - `requireValidSaveForLoadButton` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+    - `SaveLoadController` index=2 enabled=`True`
+      - `m_Script` (ObjectReference) = `SaveLoadController (MonoScript) asset='Assets/Scripts/Saves/SaveLoadController.cs'`
+      - `profileId` (String) = `default`
+      - `defaultSlotId` (String) = `manual_001`
+      - `defaultDisplayName` (String) = `Manual Save`
+      - `maxAutosaves` (Integer) = `5`
+      - `nodeSceneName` (String) = `NodeScene`
+      - `mainMenuSceneName` (String) = `MainMenu`
+      - `boatCatalog` (ObjectReference) = `BoatCatalog (BoatCatalog) asset='Assets/Defs/Boat/BoatCatalog.asset'`
+      - `runCompatibilityDiagnostics` (Boolean) = `True`
+      - `blockSaveOnCompatibilityErrors` (Boolean) = `True`
+      - `blockLoadOnCompatibilityErrors` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+    - `EscapeCloseRegistry` index=3 enabled=`True`
+      - `m_Script` (ObjectReference) = `EscapeCloseRegistry (MonoScript) asset='Assets/Scripts/Menu/EscapeCloseRegistry.cs'`
+    - `GameplayInputBlocker` index=4 enabled=`True`
+      - `m_Script` (ObjectReference) = `GameplayInputBlocker (MonoScript) asset='Assets/Scripts/Menu/GameplayInputBlocker.cs'`
+- `WaveManager` | path=`WaveManager` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `-0.424, -0.382, -0.05`
+    - worldPosition: `-0.424, -0.382, -0.05`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(-0.42, -0.38, -0.05)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `WaveManager` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `WaveManager (MonoScript) asset='Assets/Scripts/Global/Physics/WaveManager.cs'`
+      - `amplitude` (Float) = `0.4`
+      - `frequency` (Float) = `0.03`
+      - `speed` (Float) = `1`
+      - `transitionDuration` (Float) = `5`
+      - `autoFindWaveField` (Boolean) = `True`
+      - `debugSetWave` (Boolean) = `False`
+      - `debugAmplitude` (Float) = `0.5`
+      - `debugFrequency` (Float) = `0.1`
+      - `debugSpeed` (Float) = `0.8`
+- `WaveSystem` | path=`WaveSystem` | activeSelf=True | activeInHierarchy=True | layer=`Water` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `0, 0, 0`
+    - worldPosition: `0, 0, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `WaveField` index=1 enabled=`True`
+      - `m_Script` (ObjectReference) = `WaveField (MonoScript) asset='Assets/Scripts/Water/WaveField.cs'`
+      - `debugThreshold` (Float) = `5`
+      - `debugOn` (Boolean) = `True`
+      - `amplitude` (Float) = `2`
+      - `frequency` (Float) = `0.2`
+      - `speed` (Float) = `0.5`
+      - `resolution` (Integer) = `1000`
+      - `width` (Float) = `300`
+      - `stiffness` (Float) = `100`
+      - `damping` (Float) = `0.01`
+      - `horizontalDamping` (Float) = `0.7`
+      - `tension` (Float) = `30`
+      - `viscosity` (Float) = `0.02`
+      - `maxWaveVelocity` (Float) = `1`
+    - `LineRenderer` index=2 enabled=`True`
+      - `m_CastShadows` (Enum) = `On`
+      - `m_ReceiveShadows` (Boolean) = `True`
+      - `m_DynamicOccludee` (Boolean) = `True`
+      - `m_StaticShadowCaster` (Boolean) = `False`
+      - `m_MotionVectors` (Enum) = `Camera Motion Only`
+      - `m_LightProbeUsage` (Integer) = `0`
+      - `m_ReflectionProbeUsage` (Integer) = `0`
+      - `m_RayTracingMode` (Integer) = `0`
+      - `m_RayTraceProcedural` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+      - `m_SmallMeshCulling` (Boolean) = `True`
+      - `m_RenderingLayerMask` (Integer) = `1`
+      - `m_RendererPriority` (Integer) = `0`
+      - `m_Materials` (Generic) = `array size=1`
+      - `m_ProbeAnchor` (ObjectReference) = `null`
+      - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+      - `m_LightmapParameters` (ObjectReference) = `null`
+      - `m_Positions` (Generic) = `array size=2`
+      - `m_Parameters` (Generic) = `<generic>`
+      - `m_MaskInteraction` (Enum) = `None`
+      - `m_UseWorldSpace` (Boolean) = `True`
+      - `m_Loop` (Boolean) = `False`
+      - `m_ApplyActiveColorSpace` (Boolean) = `True`
+    - `WaveRenderer_Line` index=3 enabled=`False`
+      - `m_Script` (ObjectReference) = `WaveRenderer_Line (MonoScript) asset='Assets/Scripts/Water/WaveRenderer_Line.cs'`
+      - `waveManager` (ObjectReference) = `WaveManager (WaveManager) scenePath='WaveManager'`
+      - `centerTarget` (ObjectReference) = `Main Camera (Transform) scenePath='Main Camera'`
+      - `points` (Integer) = `300`
+      - `width` (Float) = `300`
+    - `MeshFilter` index=4 enabled=`n/a`
+      - `m_Mesh` (ObjectReference) = `null`
+    - `MeshRenderer` index=5 enabled=`True`
+      - `m_CastShadows` (Enum) = `On`
+      - `m_ReceiveShadows` (Boolean) = `True`
+      - `m_DynamicOccludee` (Boolean) = `True`
+      - `m_StaticShadowCaster` (Boolean) = `False`
+      - `m_MotionVectors` (Enum) = `Per Object Motion`
+      - `m_LightProbeUsage` (Integer) = `1`
+      - `m_ReflectionProbeUsage` (Integer) = `1`
+      - `m_RayTracingMode` (Integer) = `2`
+      - `m_RayTraceProcedural` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+      - `m_SmallMeshCulling` (Boolean) = `True`
+      - `m_RenderingLayerMask` (Integer) = `1`
+      - `m_RendererPriority` (Integer) = `0`
+      - `m_Materials` (Generic) = `array size=1`
+      - `m_ProbeAnchor` (ObjectReference) = `null`
+      - `m_LightProbeVolumeOverride` (ObjectReference) = `null`
+      - `m_LightmapParameters` (ObjectReference) = `null`
+    - `WaterMeshRenderer` index=6 enabled=`True`
+      - `m_Script` (ObjectReference) = `WaterMeshRenderer (MonoScript) asset='Assets/Scripts/Water/WaterMeshRenderer.cs'`
+      - `waveManager` (ObjectReference) = `WaveManager (WaveManager) scenePath='WaveManager'`
+      - `centerTarget` (ObjectReference) = `Main Camera (Transform) scenePath='Main Camera'`
+      - `points` (Integer) = `1000`
+      - `bottomY` (Float) = `-200`
+      - `textureWorldScale` (Float) = `10`
+      - `meshWidth` (Float) = `240`
+    - `SortingLayerSetter` index=7 enabled=`True`
+      - `m_Script` (ObjectReference) = `SortingLayerSetter (MonoScript) asset='Assets/Scripts/Camera/SortingLayerSetter.cs'`
+      - `sortingLayerName` (String) = `NodeWater`
+      - `sortingOrder` (Integer) = `0`
+    - `NodeWaterBottomBinder` index=8 enabled=`True`
+      - `m_Script` (ObjectReference) = `NodeWaterBottomBinder (MonoScript) asset='Assets/Scripts/Environment/GroundGeneration/NodeWaterBottomBinder.cs'`
+      - `groundSource` (ObjectReference) = `null`
+      - `water` (ObjectReference) = `WaveSystem (WaterMeshRenderer) scenePath='WaveSystem'`
+      - `extraDepth` (Float) = `0`
+

@@ -71,6 +71,12 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     [Tooltip("How far ahead in navigation-world Y the simulation keeps route geometry generated.")]
     [SerializeField, Min(100f)] private float routeCoverageAhead = 1200f;
 
+    [Header("Environmental Disturbance Prototype")]
+    [Tooltip("Temporary wave-amplitude-driven lateral/yaw disturbance. Keel resistance and instability amplification come later.")]
+    [SerializeField]
+    private PilotingEnvironmentalDisturbance environmentalDisturbance =
+        new PilotingEnvironmentalDisturbance();
+
     private object _controlOwner;
     private BoatControlIntent _currentIntent;
 
@@ -81,6 +87,10 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
 
     private float _physicalForwardSpeed;
     private float _physicalTravelDelta;
+
+    private IWaveService _waveService;
+    private Vector2 _environmentNavigationVelocity;
+    private float _environmentYawVelocityKickDegrees;
 
     private Vector2 _lastPhysicalPosition;
     private bool _hasLastPhysicalPosition;
@@ -118,6 +128,16 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     /// </summary>
     public float PhysicalTravelDelta => _physicalTravelDelta;
 
+    public float EnvironmentalWaveAmplitude => environmentalDisturbance != null ? environmentalDisturbance.CurrentWaveAmplitude : 0f;
+    public float EnvironmentalSeverity01 => environmentalDisturbance != null ? environmentalDisturbance.Severity01 : 0f;
+    public float EnvironmentalBeamExposure01 => environmentalDisturbance != null ? environmentalDisturbance.BeamExposure01 : 0f;
+    public float EnvironmentalEncounterBroadsideDegrees => environmentalDisturbance != null ? environmentalDisturbance.EncounterBroadsideDegrees : 0f;
+    public Vector2 EnvironmentalNavigationVelocity => _environmentNavigationVelocity;
+    public Vector2 LastEnvironmentalLateralVelocityKick => environmentalDisturbance != null ? environmentalDisturbance.LastLateralVelocityKick : Vector2.zero;
+    public float LastEnvironmentalYawVelocityKickDegrees => environmentalDisturbance != null ? environmentalDisturbance.LastYawVelocityKickDegrees : 0f;
+    public int EnvironmentalPulseCount => environmentalDisturbance != null ? environmentalDisturbance.PulseCount : 0;
+    public float EnvironmentalSecondsUntilNextPulse => environmentalDisturbance != null ? environmentalDisturbance.SecondsUntilNextPulse : 0f;
+
     private void Reset()
     {
         ResolveRefs();
@@ -126,6 +146,8 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     private void Awake()
     {
         ResolveRefs();
+        if (environmentalDisturbance == null)
+            environmentalDisturbance = new PilotingEnvironmentalDisturbance();
         RefreshHandlingProfile();
         ResetPhysicalPositionSample();
         InitializeRouteGuidanceIfNeeded();
@@ -136,6 +158,8 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
 
     private void OnEnable()
     {
+        if (environmentalDisturbance == null)
+            environmentalDisturbance = new PilotingEnvironmentalDisturbance();
         RefreshHandlingProfile();
         ResetPhysicalPositionSample();
         InitializeRouteGuidanceIfNeeded();
@@ -406,6 +430,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
         }
 
         SampleActualBoatMotion(dt);
+        AdvanceEnvironmentalDisturbance(dt);
 
         // Crucial rule:
         // the navigation simulation cannot invent forward/reverse distance.
@@ -611,7 +636,8 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
                 : 0f;
 
         float angularVelocity =
-            state.AngularVelocityDegrees;
+            state.AngularVelocityDegrees +
+            _environmentYawVelocityKickDegrees;
 
         float angularAcceleration =
             rudderAngleAuthority *
@@ -646,19 +672,70 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
         Vector2 navigationPosition =
             state.NavigationPosition +
             headingForward *
-            physicalTravelDelta;
+            physicalTravelDelta +
+            _environmentNavigationVelocity *
+            dt;
 
-        // Diagnostic/presentation velocity only. Its magnitude comes from the real
-        // BoatScene velocity and its sign naturally sends reverse behind the bow.
+        // Presentation velocity combines real physical forward/reverse travel
+        // with simulation-owned environmental lateral drift.
         Vector2 navigationVelocity =
             headingForward *
-            physicalForwardSpeed;
+            physicalForwardSpeed +
+            _environmentNavigationVelocity;
 
         state.SetNavigationState(
             navigationPosition,
             navigationVelocity,
             heading,
             angularVelocity);
+    }
+
+    private void AdvanceEnvironmentalDisturbance(float dt)
+    {
+        _environmentNavigationVelocity = Vector2.zero;
+        _environmentYawVelocityKickDegrees = 0f;
+
+        if (environmentalDisturbance == null)
+            environmentalDisturbance = new PilotingEnvironmentalDisturbance();
+
+        ResolveWaveService();
+
+        TravelPayload activeTravel =
+            GameState.I != null
+                ? GameState.I.activeTravel
+                : null;
+
+        bool hasActiveVoyage = activeTravel != null;
+        int seed =
+            hasActiveVoyage && activeTravel.seed != 0
+                ? activeTravel.seed ^ unchecked((int)0x05EA51DE)
+                : routePrototypeSeed ^ unchecked((int)0x05EA51DE);
+
+        environmentalDisturbance.EnsureSeed(seed);
+
+        float waveAmplitude =
+            _waveService != null
+                ? Mathf.Max(0f, _waveService.Amplitude)
+                : 0f;
+
+        environmentalDisturbance.Tick(
+            dt,
+            hasActiveVoyage,
+            waveAmplitude,
+            state != null ? state.HeadingDegrees : 0f,
+            out _environmentYawVelocityKickDegrees);
+
+        _environmentNavigationVelocity =
+            environmentalDisturbance.NavigationDriftVelocity;
+    }
+
+    private void ResolveWaveService()
+    {
+        if (_waveService != null)
+            return;
+        if (ServiceRoot.Instance == null)
+            return;
+        _waveService = ServiceRoot.Instance.WaveManager;
     }
 
     private void RefreshHandlingProfile()
@@ -688,6 +765,8 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
 
         _physicalTravelDelta = 0f;
         _physicalForwardSpeed = 0f;
+        _environmentNavigationVelocity = Vector2.zero;
+        _environmentYawVelocityKickDegrees = 0f;
     }
 
     private Vector2 GetSceneForwardAxis()

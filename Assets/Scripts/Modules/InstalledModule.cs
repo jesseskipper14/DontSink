@@ -31,9 +31,24 @@ public sealed class InstalledModule : MonoBehaviour, IMassContribution
         {
             ResolveRigidbody();
 
-            return _rb != null
-                ? _rb.worldCenterOfMass
-                : (Vector2)transform.position;
+            if (_rb != null)
+            {
+                // Installed module rigidbodies are intentionally Kinematic and
+                // simulated=false. In that state Rigidbody2D.worldCenterOfMass
+                // can remain stale after the module Transform is parented/aligned
+                // to its hardpoint.
+                //
+                // The Transform is authoritative for installed-module placement.
+                // Rigidbody2D.centerOfMass is local-space data, so transform it
+                // through the module's CURRENT Transform instead of trusting the
+                // disabled physics body's cached world-space COM.
+                return
+                    _rb.transform.TransformPoint(
+                        _rb.centerOfMass);
+            }
+
+            return
+                transform.position;
         }
     }
 

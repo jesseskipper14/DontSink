@@ -1452,6 +1452,7 @@ MonoBehaviour:
   baseMass: 30
   mass: 1
   baseLocalCenterOfMass: {x: 5, y: 3.6960678}
+  drawMassContributionGizmos: 0
   mysteryOscillationLog: 0
   mysteryOscillationLogEveryFixedTick: 0
   mysteryOscillationMinimumForceMagnitude: 0
