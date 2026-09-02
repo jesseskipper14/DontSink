@@ -24,6 +24,12 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
     [HideInInspector] public float lastTotalSubmersion = 0f;
 
     private PhysicsGlobals physicsGlobals;
+
+    // Boat-only contributor cache. Compartments remain authoritative on Boat.Compartments;
+    // this cache only avoids rediscovering static structural boundary authoring every physics tick.
+    private Boat cachedContributorBoat;
+    private CompartmentBoundaryAuthoring[] cachedBoundaryContributors;
+
     public float SubmergedFraction => lastTotalSubmersion;
 
     public bool Enabled => enabledFlag;
@@ -53,58 +59,37 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
 
     public void ApplyForces(IForceBody body)
     {
-        if (!enabledFlag) return;
+        if (!enabledFlag)
+            return;
 
         ResolveWaveRefs();
 
-        if (!TryResolveWaterExposure(body, out _activeExposure) || !_activeExposure.HasWater)
+        if (!TryResolveWaterExposure(body, out _activeExposure) ||
+            !_activeExposure.HasWater)
         {
             lastTotalSubmersion = 0f;
             return;
         }
 
-        if (_activeExposure.UsesOceanSurface && waveManager == null)
+        if (_activeExposure.UsesOceanSurface &&
+            waveManager == null)
         {
             lastTotalSubmersion = 0f;
             return;
         }
 
-        // --- Build world hull polygon ---
-        Vector2 localCenter = Vector2.zero;
+        List<Vector2[]> contributorPolygons =
+            BuildWorldBuoyancyContributorPolygons(
+                body,
+                out float totalContributorArea,
+                out bool usingLegacyFallback);
 
-        if (bodySource is Boat boat)
-            localCenter = boat.GeometryLocalCenter;
-
-        Vector2[] localPoly =
-        {
-            new Vector2(localCenter.x - body.Width * 0.5f, localCenter.y - body.Height * 0.5f),
-            new Vector2(localCenter.x - body.Width * 0.5f, localCenter.y + body.Height * 0.5f),
-            new Vector2(localCenter.x + body.Width * 0.5f, localCenter.y + body.Height * 0.5f),
-            new Vector2(localCenter.x + body.Width * 0.5f, localCenter.y - body.Height * 0.5f)
-        };
-
-        Vector2[] worldPoly = new Vector2[localPoly.Length];
-        for (int i = 0; i < localPoly.Length; i++)
-            worldPoly[i] = LocalToWorld(body, localPoly[i]);
-
-        // --- Clip against wave surface ---
-        List<Vector2> submergedPoly = ClipPolygonWithWave(worldPoly);
-        if (submergedPoly.Count < 3)
+        if (contributorPolygons.Count == 0 ||
+            totalContributorArea <= 0.000001f)
         {
             lastTotalSubmersion = 0f;
             return;
         }
-
-        // --- X bounds of submerged polygon ---
-        float minX = float.MaxValue;
-        float maxX = float.MinValue;
-        foreach (var pt in submergedPoly)
-        {
-            minX = Mathf.Min(minX, pt.x);
-            maxX = Mathf.Max(maxX, pt.x);
-        }
-
-        float sliceWidth = (maxX - minX) / Mathf.Max(sliceCount, 1);
 
         float totalSubmergedArea = 0f;
 
@@ -112,130 +97,708 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
         float accumulatedImpulseX = 0f;
         float accumulatedSubmergedWidth = 0f;
 
-        // --- Slice integration ---
-        for (int i = 0; i < sliceCount; i++)
+        float maxTotalBuoyantForce =
+            physicsGlobals.MaxBuoyantAcceleration *
+            body.Mass;
+
+        for (int contributorIndex = 0;
+             contributorIndex < contributorPolygons.Count;
+             contributorIndex++)
         {
-            float xLeft = minX + i * sliceWidth;
-            float xRight = xLeft + sliceWidth;
+            Vector2[] worldPoly =
+                contributorPolygons[contributorIndex];
 
-            List<Vector2> slicePoly =
-                ClipPolygonBetweenXPlanes(submergedPoly, xLeft, xRight);
-
-            if (slicePoly.Count < 3)
-                continue;
-
-            float area = PolygonArea(slicePoly);
-            if (area <= 0f)
-                continue;
-
-            totalSubmergedArea += area;
-
-            Vector2 centroid =
-                PolygonCentroid(
-                    slicePoly,
-                    area);
-
-            // --- Buoyant force ---
-            float sliceVolume = area; // 2D: area acts as volume proxy
-            float sliceForce =
-                sliceVolume * physicsGlobals.WaterDensity * physicsGlobals.Gravity;
-
-            sliceForce = Mathf.Min(
-                sliceForce,
-                physicsGlobals.MaxBuoyantAcceleration * body.Mass / sliceCount
-            );
-
-            body.rb.AddForceAtPosition(Vector2.up * sliceForce, centroid, ForceMode2D.Force);
-
-#if UNITY_EDITOR
+            if (worldPoly == null ||
+                worldPoly.Length < 3)
             {
-                Vector2 com = body.rb.worldCenterOfMass;
-                Vector2 r = centroid - com;
-
-                // Torque = r x F (scalar in 2D)
-                float torque =
-                    r.x * sliceForce * Vector2.up.y -
-                    r.y * sliceForce * Vector2.up.x;
-
-                //Debug.Log(
-                //    $"[BuoyancySlice] Object={body.rb.gameObject.name} | " +
-                //    $"Slice={i} | " +
-                //    $"Area={area:F4} | " +
-                //    $"Force={sliceForce:F4} | " +
-                //    $"Centroid={centroid} | " +
-                //    $"COM={com} | " +
-                //    $"Torque={torque:F4} | " +
-                //    $"Mass={body.Mass} |" +
-                //    $"SubmergedArea={totalSubmergedArea} |" +
-                //    $"SliceVolume={sliceVolume}"
-                //);
+                continue;
             }
-#endif
 
-            // --- Wave momentum coupling (ported exactly) ---
-            float waveY = SampleActiveSurfaceY(centroid.x);
+            float contributorArea =
+                PolygonArea(
+                    worldPoly);
 
-            float sliceBottomY = float.MaxValue;
-            foreach (var pt in slicePoly)
-                sliceBottomY = Mathf.Min(sliceBottomY, pt.y);
+            if (contributorArea <= 0.000001f)
+                continue;
 
-            float depthUnderSurface = waveY - sliceBottomY;
+            float contributorAreaFraction =
+                Mathf.Clamp01(
+                    contributorArea /
+                    totalContributorArea);
 
-            if (depthUnderSurface <= 0f ||
-                depthUnderSurface > physicsGlobals.SurfaceInteractionDepth)
-                continue; // DO NOT TOUCH ESPECIALLY IF YOUR NAME IS CHATGPT
-            else
+            List<Vector2> submergedPoly =
+                ClipPolygonWithWave(
+                    worldPoly);
+
+            if (submergedPoly.Count < 3)
+                continue;
+
+            float minX = float.MaxValue;
+            float maxX = float.MinValue;
+
+            foreach (Vector2 pt in submergedPoly)
             {
-                if (!_activeExposure.AllowsWaveMomentumCoupling)
+                minX =
+                    Mathf.Min(
+                        minX,
+                        pt.x);
+
+                maxX =
+                    Mathf.Max(
+                        maxX,
+                        pt.x);
+            }
+
+            float submergedWidth =
+                maxX -
+                minX;
+
+            if (submergedWidth <= 0.000001f)
+                continue;
+
+            float sliceWidth =
+                submergedWidth /
+                Mathf.Max(
+                    sliceCount,
+                    1);
+
+            for (int i = 0;
+                 i < sliceCount;
+                 i++)
+            {
+                float xLeft =
+                    minX +
+                    i *
+                    sliceWidth;
+
+                float xRight =
+                    xLeft +
+                    sliceWidth;
+
+                List<Vector2> slicePoly =
+                    ClipPolygonBetweenXPlanes(
+                        submergedPoly,
+                        xLeft,
+                        xRight);
+
+                if (slicePoly.Count < 3)
                     continue;
 
-                float waveVelocity =
-                    (SampleActiveSurfaceVelocity(centroid.x - sliceWidth * 0.5f) +
-                     SampleActiveSurfaceVelocity(centroid.x + sliceWidth * 0.5f)) * 0.5f * 0.5f;
+                float area =
+                    PolygonArea(
+                        slicePoly);
 
-                float bodyVelocity = body.rb.GetPointVelocity(centroid).y;
-                float relativeVelocity = bodyVelocity - waveVelocity;
+                if (area <= 0f)
+                    continue;
 
-                float velocityTolerance = Mathf.Max(
-                    physicsGlobals.MinRelativeVelocityFactor * Mathf.Abs(waveVelocity),
-                    physicsGlobals.MinRelativeVelocityFactor * Mathf.Abs(bodyVelocity),
-                    physicsGlobals.MinRelativeVelocityAbsolute
-                );
+                totalSubmergedArea +=
+                    area;
 
-                if (Mathf.Abs(relativeVelocity) > velocityTolerance)
+                Vector2 centroid =
+                    PolygonCentroid(
+                        slicePoly,
+                        area);
+
+                // --- Buoyant force ---
+                float sliceVolume =
+                    area; // 2D: area acts as volume proxy
+
+                float sliceForce =
+                    sliceVolume *
+                    physicsGlobals.WaterDensity *
+                    physicsGlobals.Gravity;
+
+                // Preserve the legacy per-slice cap exactly for a single fallback
+                // rectangle, while dividing the same whole-body cap among multiple
+                // Boat contributors in proportion to their nominal displacement area.
+                float maxSliceForce =
+                    maxTotalBuoyantForce *
+                    contributorAreaFraction /
+                    Mathf.Max(
+                        sliceCount,
+                        1);
+
+                sliceForce =
+                    Mathf.Min(
+                        sliceForce,
+                        maxSliceForce);
+
+                body.rb.AddForceAtPosition(
+                    Vector2.up *
+                    sliceForce,
+                    centroid,
+                    ForceMode2D.Force);
+
+                // --- Wave momentum coupling (ported exactly) ---
+                float waveY =
+                    SampleActiveSurfaceY(
+                        centroid.x);
+
+                float sliceBottomY =
+                    float.MaxValue;
+
+                foreach (Vector2 pt in slicePoly)
                 {
-                    float bodyMassSlice = body.Mass / sliceCount;
-                    float waterMass = physicsGlobals.WaterDensity * area;
-                    float totalMass = bodyMassSlice + waterMass;
+                    sliceBottomY =
+                        Mathf.Min(
+                            sliceBottomY,
+                            pt.y);
+                }
 
-                    if (totalMass > 0f)
+                float depthUnderSurface =
+                    waveY -
+                    sliceBottomY;
+
+                if (depthUnderSurface <= 0f ||
+                    depthUnderSurface > physicsGlobals.SurfaceInteractionDepth)
+                    continue; // DO NOT TOUCH ESPECIALLY IF YOUR NAME IS CHATGPT
+                else
+                {
+                    if (!_activeExposure.AllowsWaveMomentumCoupling)
+                        continue;
+
+                    float waveVelocity =
+                        (SampleActiveSurfaceVelocity(
+                             centroid.x -
+                             sliceWidth *
+                             0.5f) +
+                         SampleActiveSurfaceVelocity(
+                             centroid.x +
+                             sliceWidth *
+                             0.5f)) *
+                        0.5f *
+                        0.5f;
+
+                    float bodyVelocity =
+                        body.rb.GetPointVelocity(
+                            centroid).y;
+
+                    float relativeVelocity =
+                        bodyVelocity -
+                        waveVelocity;
+
+                    float velocityTolerance =
+                        Mathf.Max(
+                            physicsGlobals.MinRelativeVelocityFactor *
+                                Mathf.Abs(
+                                    waveVelocity),
+                            physicsGlobals.MinRelativeVelocityFactor *
+                                Mathf.Abs(
+                                    bodyVelocity),
+                            physicsGlobals.MinRelativeVelocityAbsolute);
+
+                    if (Mathf.Abs(
+                            relativeVelocity) >
+                        velocityTolerance)
                     {
-                        float rawImpulse =
-                            (bodyMassSlice * waterMass / totalMass) * relativeVelocity;
+                        // A single fallback rectangle resolves to the exact legacy
+                        // body.Mass / sliceCount value. Multiple Boat contributors
+                        // divide that same body-mass budget by contributor area.
+                        float bodyMassSlice =
+                            body.Mass *
+                            contributorAreaFraction /
+                            Mathf.Max(
+                                sliceCount,
+                                1);
 
-                        float maxImpulse = Mathf.Abs(relativeVelocity) * waterMass;
-                        float impulse = Mathf.Clamp(rawImpulse, -maxImpulse, maxImpulse);
+                        float waterMass =
+                            physicsGlobals.WaterDensity *
+                            area;
 
-                        accumulatedImpulse += impulse * area;
-                        accumulatedImpulseX += centroid.x * area;
-                        accumulatedSubmergedWidth += area;
+                        float totalMass =
+                            bodyMassSlice +
+                            waterMass;
+
+                        if (totalMass > 0f)
+                        {
+                            float rawImpulse =
+                                (bodyMassSlice *
+                                 waterMass /
+                                 totalMass) *
+                                relativeVelocity;
+
+                            float maxImpulse =
+                                Mathf.Abs(
+                                    relativeVelocity) *
+                                waterMass;
+
+                            float impulse =
+                                Mathf.Clamp(
+                                    rawImpulse,
+                                    -maxImpulse,
+                                    maxImpulse);
+
+                            accumulatedImpulse +=
+                                impulse *
+                                area;
+
+                            accumulatedImpulseX +=
+                                centroid.x *
+                                area;
+
+                            accumulatedSubmergedWidth +=
+                                area;
+                        }
                     }
                 }
             }
         }
 
         lastTotalSubmersion =
-            Mathf.Clamp01(totalSubmergedArea / (body.Width * body.Height));
+            usingLegacyFallback
+                ? Mathf.Clamp01(
+                    totalSubmergedArea /
+                    Mathf.Max(
+                        body.Width *
+                        body.Height,
+                        0.000001f))
+                : Mathf.Clamp01(
+                    totalSubmergedArea /
+                    totalContributorArea);
 
         // --- Apply averaged wave impulse ---
-        if (_activeExposure.AllowsWaveMomentumCoupling && accumulatedSubmergedWidth > 0f)
+        if (_activeExposure.AllowsWaveMomentumCoupling &&
+            accumulatedSubmergedWidth > 0f)
         {
-            float avgX = accumulatedImpulseX / accumulatedSubmergedWidth;
-            float netImpulse = accumulatedImpulse / accumulatedSubmergedWidth * 0.8f;
+            float avgX =
+                accumulatedImpulseX /
+                accumulatedSubmergedWidth;
 
-            waveManager.AddImpulse(avgX, netImpulse, accumulatedSubmergedWidth * 0.5f);
-            body.AddForce(Vector2.down * (netImpulse / Time.fixedDeltaTime));
+            float netImpulse =
+                accumulatedImpulse /
+                accumulatedSubmergedWidth *
+                0.8f;
+
+            waveManager.AddImpulse(
+                avgX,
+                netImpulse,
+                accumulatedSubmergedWidth *
+                0.5f);
+
+            body.AddForce(
+                Vector2.down *
+                (netImpulse /
+                 Time.fixedDeltaTime));
         }
+    }
+
+    /// <summary>
+    /// Builds the geometry that actually displaces water.
+    ///
+    /// Boat:
+    /// - every authoritative floodable Compartment contributes its full polygon;
+    /// - structural CompartmentBoundaryAuthoring with Floor/Wall/Roof roles
+    ///   contributes the exact collider footprint 1:1.
+    ///
+    /// Non-Boat objects, or Boats without any valid contributors, retain the
+    /// original Width x Height rectangle behavior.
+    /// </summary>
+    private List<Vector2[]> BuildWorldBuoyancyContributorPolygons(
+        IForceBody forceBody,
+        out float totalArea,
+        out bool usingLegacyFallback)
+    {
+        List<Vector2[]> polygons =
+            new List<Vector2[]>();
+
+        totalArea =
+            0f;
+
+        usingLegacyFallback =
+            false;
+
+        if (forceBody == null)
+            return polygons;
+
+        if (bodySource is Boat boat)
+        {
+            AddCompartmentBuoyancyPolygons(
+                boat,
+                polygons,
+                ref totalArea);
+
+            AddStructuralBoundaryBuoyancyPolygons(
+                boat,
+                polygons,
+                ref totalArea);
+        }
+
+        // Preserve the original simple-buoyancy path for crates, loose items,
+        // other IForceBody implementations, and legacy/simple Boats with no
+        // compartment or structural contributor geometry.
+        if (polygons.Count == 0 ||
+            totalArea <= 0.000001f)
+        {
+            usingLegacyFallback =
+                true;
+
+            polygons.Clear();
+            totalArea = 0f;
+
+            Vector2[] fallback =
+                BuildFallbackWorldRectangle(
+                    forceBody);
+
+            float fallbackArea =
+                PolygonArea(
+                    fallback);
+
+            if (fallbackArea > 0.000001f)
+            {
+                polygons.Add(
+                    fallback);
+
+                totalArea =
+                    fallbackArea;
+            }
+        }
+
+        return polygons;
+    }
+
+    private void AddCompartmentBuoyancyPolygons(
+        Boat boat,
+        List<Vector2[]> polygons,
+        ref float totalArea)
+    {
+        if (boat == null ||
+            polygons == null ||
+            boat.Compartments == null)
+        {
+            return;
+        }
+
+        HashSet<Compartment> seen =
+            new HashSet<Compartment>();
+
+        for (int i = 0;
+             i < boat.Compartments.Count;
+             i++)
+        {
+            Compartment compartment =
+                boat.Compartments[i];
+
+            if (compartment == null ||
+                !seen.Add(
+                    compartment))
+            {
+                continue;
+            }
+
+            Vector2[] worldCorners =
+                compartment.GetWorldCorners();
+
+            if (worldCorners == null ||
+                worldCorners.Length < 3)
+            {
+                continue;
+            }
+
+            float area =
+                PolygonArea(
+                    worldCorners);
+
+            if (area <= 0.000001f)
+                continue;
+
+            polygons.Add(
+                worldCorners);
+
+            totalArea +=
+                area;
+        }
+    }
+
+    private void AddStructuralBoundaryBuoyancyPolygons(
+        Boat boat,
+        List<Vector2[]> polygons,
+        ref float totalArea)
+    {
+        if (boat == null ||
+            polygons == null)
+        {
+            return;
+        }
+
+        EnsureBoundaryContributorCache(
+            boat);
+
+        if (cachedBoundaryContributors == null)
+            return;
+
+        for (int i = 0;
+             i < cachedBoundaryContributors.Length;
+             i++)
+        {
+            CompartmentBoundaryAuthoring boundary =
+                cachedBoundaryContributors[i];
+
+            if (!IsStructuralBuoyancyBoundary(
+                    boundary))
+            {
+                continue;
+            }
+
+            Collider2D col =
+                boundary.Collider;
+
+            if (col == null ||
+                !col.enabled ||
+                !col.gameObject.activeInHierarchy)
+            {
+                continue;
+            }
+
+            AddColliderWorldPolygons(
+                col,
+                polygons,
+                ref totalArea);
+        }
+    }
+
+    private void EnsureBoundaryContributorCache(
+        Boat boat)
+    {
+        bool shouldRefresh =
+            cachedContributorBoat !=
+                boat ||
+            cachedBoundaryContributors ==
+                null;
+
+#if UNITY_EDITOR
+        // In edit mode, authoring changes need to show up immediately in gizmos.
+        if (!Application.isPlaying)
+            shouldRefresh = true;
+#endif
+
+        if (!shouldRefresh)
+            return;
+
+        cachedContributorBoat =
+            boat;
+
+        cachedBoundaryContributors =
+            boat.GetComponentsInChildren<CompartmentBoundaryAuthoring>(
+                true);
+    }
+
+    private static bool IsStructuralBuoyancyBoundary(
+        CompartmentBoundaryAuthoring boundary)
+    {
+        if (boundary == null)
+            return false;
+
+        // CountsAsBoundary controls compartment detection/sealing, not whether
+        // the physical structural material itself displaces water.
+        return
+            boundary.HasRole(
+                CompartmentBoundaryRole.Floor) ||
+            boundary.HasRole(
+                CompartmentBoundaryRole.Wall) ||
+            boundary.HasRole(
+                CompartmentBoundaryRole.Roof);
+    }
+
+    private void AddColliderWorldPolygons(
+        Collider2D col,
+        List<Vector2[]> polygons,
+        ref float totalArea)
+    {
+        if (col == null ||
+            polygons == null)
+        {
+            return;
+        }
+
+        if (col is BoxCollider2D box)
+        {
+            Vector2[] world =
+                BuildBoxColliderWorldPolygon(
+                    box);
+
+            float area =
+                PolygonArea(
+                    world);
+
+            if (area > 0.000001f)
+            {
+                polygons.Add(
+                    world);
+
+                totalArea +=
+                    area;
+            }
+
+            return;
+        }
+
+        if (col is PolygonCollider2D polygon)
+        {
+            int pathCount =
+                polygon.pathCount;
+
+            for (int pathIndex = 0;
+                 pathIndex < pathCount;
+                 pathIndex++)
+            {
+                Vector2[] localPath =
+                    polygon.GetPath(
+                        pathIndex);
+
+                if (localPath == null ||
+                    localPath.Length < 3)
+                {
+                    continue;
+                }
+
+                Vector2[] world =
+                    new Vector2[
+                        localPath.Length];
+
+                for (int i = 0;
+                     i < localPath.Length;
+                     i++)
+                {
+                    Vector2 local =
+                        localPath[i] +
+                        polygon.offset;
+
+                    world[i] =
+                        polygon.transform.TransformPoint(
+                            local);
+                }
+
+                float area =
+                    PolygonArea(
+                        world);
+
+                if (area <= 0.000001f)
+                    continue;
+
+                polygons.Add(
+                    world);
+
+                totalArea +=
+                    area;
+            }
+        }
+
+        // Structural authoring currently uses BoxCollider2D. Other Collider2D
+        // shapes intentionally contribute nothing here until they have an exact
+        // polygon conversion rather than a misleading world-bounds rectangle.
+    }
+
+    private static Vector2[] BuildBoxColliderWorldPolygon(
+        BoxCollider2D box)
+    {
+        Vector2 half =
+            box.size *
+            0.5f;
+
+        Vector2 offset =
+            box.offset;
+
+        Vector2[] local =
+        {
+            offset +
+            new Vector2(
+                -half.x,
+                -half.y),
+
+            offset +
+            new Vector2(
+                -half.x,
+                 half.y),
+
+            offset +
+            new Vector2(
+                 half.x,
+                 half.y),
+
+            offset +
+            new Vector2(
+                 half.x,
+                -half.y)
+        };
+
+        Vector2[] world =
+            new Vector2[
+                local.Length];
+
+        for (int i = 0;
+             i < local.Length;
+             i++)
+        {
+            world[i] =
+                box.transform.TransformPoint(
+                    local[i]);
+        }
+
+        return world;
+    }
+
+    private Vector2[] BuildFallbackWorldRectangle(
+        IForceBody forceBody)
+    {
+        Vector2 localCenter =
+            Vector2.zero;
+
+        if (bodySource is Boat boat)
+        {
+            localCenter =
+                boat.GeometryLocalCenter;
+        }
+
+        Vector2[] localPoly =
+        {
+            new Vector2(
+                localCenter.x -
+                    forceBody.Width *
+                    0.5f,
+                localCenter.y -
+                    forceBody.Height *
+                    0.5f),
+
+            new Vector2(
+                localCenter.x -
+                    forceBody.Width *
+                    0.5f,
+                localCenter.y +
+                    forceBody.Height *
+                    0.5f),
+
+            new Vector2(
+                localCenter.x +
+                    forceBody.Width *
+                    0.5f,
+                localCenter.y +
+                    forceBody.Height *
+                    0.5f),
+
+            new Vector2(
+                localCenter.x +
+                    forceBody.Width *
+                    0.5f,
+                localCenter.y -
+                    forceBody.Height *
+                    0.5f)
+        };
+
+        Vector2[] worldPoly =
+            new Vector2[
+                localPoly.Length];
+
+        for (int i = 0;
+             i < localPoly.Length;
+             i++)
+        {
+            worldPoly[i] =
+                LocalToWorld(
+                    forceBody,
+                    localPoly[i]);
+        }
+
+        return worldPoly;
     }
 
     private List<Vector2> ClipPolygonWithWave(Vector2[] polygon)
@@ -341,8 +904,14 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
         return output;
     }
 
-    float PolygonArea(List<Vector2> poly)
+    float PolygonArea(IReadOnlyList<Vector2> poly)
     {
+        if (poly == null ||
+            poly.Count < 3)
+        {
+            return 0f;
+        }
+
         float area = 0f;
         int count = poly.Count;
 
@@ -634,92 +1203,72 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
-        if (bodySource == null) return;
+        if (bodySource == null)
+            return;
 
-        IForceBody body = bodySource as IForceBody;
-        if (body == null || body.rb == null || waveManager == null) return;
+        IForceBody forceBody =
+            bodySource as IForceBody;
 
-        // --- Local hull (rectangle for now) ---
-        Vector2 localCenter = Vector2.zero;
-
-        if (bodySource is Boat boat)
-            localCenter = boat.GeometryLocalCenter;
-
-        Vector2[] localHull =
+        if (forceBody == null ||
+            forceBody.rb == null)
         {
-            new Vector2(localCenter.x - body.Width * 0.5f, localCenter.y - body.Height * 0.5f),
-            new Vector2(localCenter.x - body.Width * 0.5f, localCenter.y + body.Height * 0.5f),
-            new Vector2(localCenter.x + body.Width * 0.5f, localCenter.y + body.Height * 0.5f),
-            new Vector2(localCenter.x + body.Width * 0.5f, localCenter.y - body.Height * 0.5f),
-        };
-
-        // --- World hull ---
-        Vector2[] worldHull = new Vector2[localHull.Length];
-        for (int i = 0; i < localHull.Length; i++)
-            worldHull[i] = LocalToWorld(body, localHull[i]);
-
-        // Draw full hull
-        Gizmos.color = Color.gray;
-        for (int i = 0; i < worldHull.Length; i++)
-            Gizmos.DrawLine(worldHull[i], worldHull[(i + 1) % worldHull.Length]);
-
-        // --- Submerged polygon ---
-        List<Vector2> submergedPoly = ClipPolygonWithWave(worldHull);
-
-        if (submergedPoly.Count < 3) return;
-
-        Gizmos.color = Color.cyan;
-        for (int i = 0; i < submergedPoly.Count; i++)
-            Gizmos.DrawLine(submergedPoly[i], submergedPoly[(i + 1) % submergedPoly.Count]);
-
-        // --- X range of submerged polygon ---
-        float minX = float.MaxValue;
-        float maxX = float.MinValue;
-        foreach (var pt in submergedPoly)
-        {
-            minX = Mathf.Min(minX, pt.x);
-            maxX = Mathf.Max(maxX, pt.x);
+            return;
         }
 
-        float sliceWidth = (maxX - minX) / Mathf.Max(sliceCount, 1);
+        ResolveWaveRefs();
 
-        // --- Draw vertical slices ---
-        for (int i = 0; i < sliceCount; i++)
-        {
-            float xLeft = minX + i * sliceWidth;
-            float xRight = xLeft + sliceWidth;
+        if (waveManager == null)
+            return;
 
-            List<Vector2> slicePoly =
-                ClipPolygonBetweenXPlanes(submergedPoly, xLeft, xRight);
+        // Gizmos always visualize ocean exposure. Boat hull buoyancy is ocean
+        // authoritative, while simple items keep their normal water-context
+        // behavior at runtime.
+        _activeExposure =
+            BoatWaterExposure.Ocean();
 
-            if (slicePoly.Count < 3)
-                continue;
+        List<Vector2[]> contributorPolygons =
+            BuildWorldBuoyancyContributorPolygons(
+                forceBody,
+                out _,
+                out _);
 
-            // Draw slice outline
-            Gizmos.color = Color.yellow;
-            for (int j = 0; j < slicePoly.Count; j++)
-                Gizmos.DrawLine(slicePoly[j], slicePoly[(j + 1) % slicePoly.Count]);
+        if (contributorPolygons.Count == 0)
+            return;
 
-            // Draw centroid
-            float area = PolygonArea(slicePoly);
-            if (area > 0f)
-            {
-                Vector2 centroid =
-                    PolygonCentroid(
-                        slicePoly,
-                        area);
+        Color contributorOutline =
+            new Color(
+                0.02f,
+                0.10f,
+                0.38f,
+                1f);
 
-                Gizmos.color =
-                    Color.blue;
+        Color submergedOutline =
+            new Color(
+                0.05f,
+                0.32f,
+                0.72f,
+                1f);
 
-                Gizmos.DrawSphere(
-                    centroid,
-                    0.05f);
-            }
-        }
+        Color sliceOutline =
+            new Color(
+                0.01f,
+                0.07f,
+                0.30f,
+                1f);
 
-        // --- Draw water surface reference ---
-        Gizmos.color = Color.red;
+        Color sliceFill =
+            new Color(
+                0.01f,
+                0.09f,
+                0.42f,
+                0.22f);
+
+        Color centroidColor =
+            new Color(
+                0.10f,
+                0.78f,
+                1f,
+                1f);
 
         float drawMinX =
             float.PositiveInfinity;
@@ -727,30 +1276,223 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
         float drawMaxX =
             float.NegativeInfinity;
 
-        for (int i = 0;
-             i < worldHull.Length;
-             i++)
+        for (int contributorIndex = 0;
+             contributorIndex < contributorPolygons.Count;
+             contributorIndex++)
         {
-            drawMinX =
-                Mathf.Min(
-                    drawMinX,
-                    worldHull[i].x);
+            Vector2[] worldPoly =
+                contributorPolygons[
+                    contributorIndex];
 
-            drawMaxX =
+            if (worldPoly == null ||
+                worldPoly.Length < 3)
+            {
+                continue;
+            }
+
+            Gizmos.color =
+                contributorOutline;
+
+            for (int i = 0;
+                 i < worldPoly.Length;
+                 i++)
+            {
+                Vector2 a =
+                    worldPoly[i];
+
+                Vector2 b =
+                    worldPoly[
+                        (i + 1) %
+                        worldPoly.Length];
+
+                Gizmos.DrawLine(
+                    a,
+                    b);
+
+                drawMinX =
+                    Mathf.Min(
+                        drawMinX,
+                        a.x);
+
+                drawMaxX =
+                    Mathf.Max(
+                        drawMaxX,
+                        a.x);
+            }
+
+            List<Vector2> submergedPoly =
+                ClipPolygonWithWave(
+                    worldPoly);
+
+            if (submergedPoly.Count < 3)
+                continue;
+
+            Gizmos.color =
+                submergedOutline;
+
+            for (int i = 0;
+                 i < submergedPoly.Count;
+                 i++)
+            {
+                Gizmos.DrawLine(
+                    submergedPoly[i],
+                    submergedPoly[
+                        (i + 1) %
+                        submergedPoly.Count]);
+            }
+
+            float minX =
+                float.MaxValue;
+
+            float maxX =
+                float.MinValue;
+
+            foreach (Vector2 pt in submergedPoly)
+            {
+                minX =
+                    Mathf.Min(
+                        minX,
+                        pt.x);
+
+                maxX =
+                    Mathf.Max(
+                        maxX,
+                        pt.x);
+            }
+
+            float submergedWidth =
+                maxX -
+                minX;
+
+            if (submergedWidth <= 0.000001f)
+                continue;
+
+            float sliceWidth =
+                submergedWidth /
                 Mathf.Max(
-                    drawMaxX,
-                    worldHull[i].x);
+                    sliceCount,
+                    1);
+
+            for (int i = 0;
+                 i < sliceCount;
+                 i++)
+            {
+                float xLeft =
+                    minX +
+                    i *
+                    sliceWidth;
+
+                float xRight =
+                    xLeft +
+                    sliceWidth;
+
+                List<Vector2> slicePoly =
+                    ClipPolygonBetweenXPlanes(
+                        submergedPoly,
+                        xLeft,
+                        xRight);
+
+                if (slicePoly.Count < 3)
+                    continue;
+
+                Vector3[] fillPoints =
+                    new Vector3[
+                        slicePoly.Count];
+
+                for (int j = 0;
+                     j < slicePoly.Count;
+                     j++)
+                {
+                    fillPoints[j] =
+                        slicePoly[j];
+                }
+
+                UnityEditor.Handles.color =
+                    sliceFill;
+
+                UnityEditor.Handles.DrawAAConvexPolygon(
+                    fillPoints);
+
+                Gizmos.color =
+                    sliceOutline;
+
+                for (int j = 0;
+                     j < slicePoly.Count;
+                     j++)
+                {
+                    Gizmos.DrawLine(
+                        slicePoly[j],
+                        slicePoly[
+                            (j + 1) %
+                            slicePoly.Count]);
+                }
+
+                float area =
+                    PolygonArea(
+                        slicePoly);
+
+                if (area > 0f)
+                {
+                    Vector2 centroid =
+                        PolygonCentroid(
+                            slicePoly,
+                            area);
+
+                    Gizmos.color =
+                        centroidColor;
+
+                    Gizmos.DrawSphere(
+                        centroid,
+                        0.05f);
+                }
+            }
         }
 
-        const int steps = 16;
-        Vector2 prev = new Vector2(drawMinX, waveManager.SampleSurfaceY(drawMinX));
-
-        for (int i = 1; i <= steps; i++)
+        if (float.IsNaN(drawMinX) ||
+            float.IsNaN(drawMaxX) ||
+            float.IsInfinity(drawMinX) ||
+            float.IsInfinity(drawMaxX) ||
+            drawMaxX <= drawMinX)
         {
-            float x = Mathf.Lerp(drawMinX, drawMaxX, i / (float)steps);
-            Vector2 curr = new Vector2(x, waveManager.SampleSurfaceY(x));
-            Gizmos.DrawLine(prev, curr);
-            prev = curr;
+            return;
+        }
+
+        // --- Draw water surface reference ---
+        Gizmos.color =
+            Color.red;
+
+        const int steps =
+            24;
+
+        Vector2 prev =
+            new Vector2(
+                drawMinX,
+                waveManager.SampleSurfaceY(
+                    drawMinX));
+
+        for (int i = 1;
+             i <= steps;
+             i++)
+        {
+            float x =
+                Mathf.Lerp(
+                    drawMinX,
+                    drawMaxX,
+                    i /
+                    (float)steps);
+
+            Vector2 curr =
+                new Vector2(
+                    x,
+                    waveManager.SampleSurfaceY(
+                        x));
+
+            Gizmos.DrawLine(
+                prev,
+                curr);
+
+            prev =
+                curr;
         }
     }
 #endif

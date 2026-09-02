@@ -231,6 +231,7 @@ MonoBehaviour:
   hullLayerName: Hull
   groundLayerName: Ground
   worldLedgeLayerName: WorldLedge
+  ghostCollisionLayerName: GhostCollision
   verboseLogging: 0
 --- !u!114 &-1145900039046892594
 MonoBehaviour:
@@ -354,8 +355,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5cc12ff57ca8414b9993d63ebb70291, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 1.4
-  height: 1.4
+  width: 1.5
+  height: 1.5
 --- !u!114 &-8434105766481387384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,6 +369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d25d72d0396500e4c803080c99afb5b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  verboseDiagnostics: 1
 --- !u!1 &6747998717389050764
 GameObject:
   m_ObjectHideFlags: 0
