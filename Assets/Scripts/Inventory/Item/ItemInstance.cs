@@ -23,6 +23,18 @@ public sealed class ItemInstance
             ? definition.UnitMass
             : 0f;
 
+    public float UnitExposedVolumeContribution =>
+        definition != null
+            ? definition.UnitExposedVolumeContribution
+            : 0f;
+
+    /// <summary>
+    /// Extra player displacement represented by this stack while it is physically
+    /// exposed (held/equipped). Storage location decides whether this value is used.
+    /// </summary>
+    public float ExposedVolumeContribution =>
+        Mathf.Max(0f, UnitExposedVolumeContribution * Quantity);
+
     public float OwnMass =>
         Mathf.Max(0f, UnitMass * Quantity);
 

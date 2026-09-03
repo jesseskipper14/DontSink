@@ -14,8 +14,16 @@ public class ForceSystem : MonoBehaviour
 
     private void Awake()
     {
-        // Preserve existing behavior for now, but make the ambiguity visible.
-        body = GetComponent<IForceBody>();
+        body = ResolveAuthoritativeBody();
+
+        if (body == null)
+        {
+            Debug.LogError(
+                $"[ForceSystem:{name}] No IForceBody authority found.",
+                this);
+            enabled = false;
+            return;
+        }
 
         allProviders.Clear();
         allProviders.AddRange(
@@ -30,6 +38,33 @@ public class ForceSystem : MonoBehaviour
 
         if (verboseDiagnostics)
             LogConfiguration();
+    }
+
+    /// <summary>
+    /// Explicit body-authority rule:
+    /// - Boat remains authoritative for Boat physics/mass/geometry.
+    /// - Otherwise ForceBody2D is authoritative for generic/player/simple bodies.
+    /// - A different IForceBody is only a compatibility fallback when neither exists.
+    ///
+    /// This removes component-order authority from GetComponent&lt;IForceBody&gt;().
+    /// </summary>
+    private IForceBody ResolveAuthoritativeBody()
+    {
+        Boat boat =
+            GetComponent<Boat>();
+
+        if (boat != null)
+            return boat;
+
+        ForceBody2D forceBody =
+            GetComponent<ForceBody2D>();
+
+        if (forceBody != null)
+            return forceBody;
+
+        return GetComponents<MonoBehaviour>()
+            .OfType<IForceBody>()
+            .FirstOrDefault();
     }
 
     private void FixedUpdate()

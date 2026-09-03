@@ -5,12 +5,13 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Rigidbody2D))]
-public sealed class PlayerLoadState : MonoBehaviour
+public sealed class PlayerLoadState : MonoBehaviour, IVolumeContribution
 {
     [Header("Refs")]
     [SerializeField] private PlayerInventory inventory;
     [SerializeField] private PlayerEquipment equipment;
     [SerializeField] private PlayerAttributeState attributes;
+    [SerializeField] private ForceBody2D forceBody;
 
     [Header("Fallbacks")]
     [Tooltip("Used only if the attribute profile has no EncumbranceCapacity entry.")]
@@ -22,6 +23,7 @@ public sealed class PlayerLoadState : MonoBehaviour
     private readonly HashSet<ItemInstance> _topLevelItems = new();
     private readonly HashSet<ItemInstance> _subscribedItems = new();
     private readonly HashSet<ItemInstance> _massTraversalVisited = new();
+    private readonly HashSet<ItemInstance> _exposedVolumeVisited = new();
 
     private Rigidbody2D _rb;
     private int _lastBuffVersion = int.MinValue;
@@ -46,6 +48,19 @@ public sealed class PlayerLoadState : MonoBehaviour
     /// vehicles/boats while preserving a stable locomotion Rigidbody mass.
     /// </summary>
     public float TotalPhysicalMass { get; private set; }
+
+    /// <summary>
+    /// Additional displacement volume from items that are physically exposed on
+    /// the player. Only actual equipment anchors count, including Hands. Hotbar
+    /// storage and items nested inside containers do not contribute.
+    /// </summary>
+    public float ExposedVolumeContribution { get; private set; }
+
+    /// <summary>
+    /// IVolumeContribution hook consumed by ForceBody2D. Carried mass intentionally
+    /// remains separate from personal buoyancy; this only contributes exposed volume.
+    /// </summary>
+    public float VolumeContribution => ExposedVolumeContribution;
 
     /// <summary>
     /// Gameplay carrying capacity resolved through PlayerAttributeState, so
@@ -87,6 +102,9 @@ public sealed class PlayerLoadState : MonoBehaviour
     {
         ResolveRefs();
 
+        if (forceBody != null)
+            forceBody.RegisterVolumeContribution(this);
+
         if (inventory != null)
             inventory.InventoryChanged += HandleInventoryChanged;
 
@@ -99,6 +117,9 @@ public sealed class PlayerLoadState : MonoBehaviour
 
     private void OnDisable()
     {
+        if (forceBody != null)
+            forceBody.UnregisterVolumeContribution(this);
+
         if (inventory != null)
             inventory.InventoryChanged -= HandleInventoryChanged;
 
@@ -143,6 +164,9 @@ public sealed class PlayerLoadState : MonoBehaviour
         float nextCarriedMass =
             CalculateCarriedMass();
 
+        float nextExposedVolume =
+            CalculateExposedVolumeContribution();
+
         float nextCapacity =
             attributes != null
                 ? Mathf.Max(
@@ -164,11 +188,13 @@ public sealed class PlayerLoadState : MonoBehaviour
             !Mathf.Approximately(BodyMass, nextBodyMass) ||
             !Mathf.Approximately(CarriedMass, nextCarriedMass) ||
             !Mathf.Approximately(TotalPhysicalMass, nextTotalMass) ||
+            !Mathf.Approximately(ExposedVolumeContribution, nextExposedVolume) ||
             !Mathf.Approximately(EncumbranceCapacity, nextCapacity);
 
         BodyMass = nextBodyMass;
         CarriedMass = nextCarriedMass;
         TotalPhysicalMass = nextTotalMass;
+        ExposedVolumeContribution = nextExposedVolume;
         EncumbranceCapacity = nextCapacity;
 
         _lastBuffVersion =
@@ -187,6 +213,7 @@ public sealed class PlayerLoadState : MonoBehaviour
                 $"body={BodyMass:F3}, " +
                 $"carried={CarriedMass:F3}, " +
                 $"total={TotalPhysicalMass:F3}, " +
+                $"exposedVolume={ExposedVolumeContribution:F3}, " +
                 $"capacity={EncumbranceCapacity:F3}, " +
                 $"ratio={(float.IsInfinity(LoadRatio) ? "INF" : LoadRatio.ToString("F3"))}, " +
                 $"over={IsOverCapacity}",
@@ -253,6 +280,40 @@ public sealed class PlayerLoadState : MonoBehaviour
         }
 
         return total;
+    }
+
+    private float CalculateExposedVolumeContribution()
+    {
+        _exposedVolumeVisited.Clear();
+
+        if (equipment == null)
+            return 0f;
+
+        float total = 0f;
+
+        for (int i = 0;
+             i < EquipmentAnchorSlots.Length;
+             i++)
+        {
+            ItemInstance item =
+                equipment.Get(
+                    EquipmentAnchorSlots[i]);
+
+            if (item == null ||
+                item.Definition == null ||
+                item.Quantity <= 0 ||
+                !_exposedVolumeVisited.Add(item))
+            {
+                continue;
+            }
+
+            total +=
+                Mathf.Max(
+                    0f,
+                    item.ExposedVolumeContribution);
+        }
+
+        return Mathf.Max(0f, total);
     }
 
     private void HandleInventoryChanged()
@@ -368,6 +429,14 @@ public sealed class PlayerLoadState : MonoBehaviour
         if (_rb == null)
             _rb = GetComponent<Rigidbody2D>();
 
+        if (forceBody == null)
+        {
+            forceBody =
+                GetComponent<ForceBody2D>() ??
+                GetComponentInChildren<ForceBody2D>(true) ??
+                GetComponentInParent<ForceBody2D>();
+        }
+
         if (inventory == null)
         {
             inventory =
@@ -404,6 +473,7 @@ public sealed class PlayerLoadState : MonoBehaviour
             $"BODY={BodyMass:F3} " +
             $"CARRIED={CarriedMass:F3} " +
             $"TOTAL={TotalPhysicalMass:F3} " +
+            $"EXPOSED_VOLUME={ExposedVolumeContribution:F3} " +
             $"CAPACITY={EncumbranceCapacity:F3} " +
             $"LOAD={(float.IsInfinity(LoadRatio) ? "INF" : (LoadRatio * 100f).ToString("F1") + "%")} " +
             $"OVER={IsOverCapacity}",

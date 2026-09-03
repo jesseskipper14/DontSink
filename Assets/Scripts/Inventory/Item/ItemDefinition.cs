@@ -88,6 +88,9 @@ public sealed class ItemDefinition : ScriptableObject
     [Tooltip("Canonical mass of ONE unit of this item. This is the source of truth for portable-item mass in inventory, containers, and spawned world objects.")]
     [SerializeField, Min(0f)] private float unitMass = 1f;
 
+    [Tooltip("Additional displacement volume contributed by ONE unit while the item is physically exposed on the player (held or equipped). Items merely stored in inventory/containers do not contribute this volume.")]
+    [SerializeField, Min(0f)] private float unitExposedVolumeContribution = 0f;
+
     [Header("Stacking")]
     [Min(1)]
     [SerializeField] private int maxStack = 1;
@@ -184,6 +187,7 @@ public sealed class ItemDefinition : ScriptableObject
     public ItemCategoryFlags ItemCategories => itemCategories;
     public bool IsSacred => (itemCategories & ItemCategoryFlags.Sacred) != 0;
     public float UnitMass => Mathf.Max(0f, unitMass);
+    public float UnitExposedVolumeContribution => Mathf.Max(0f, unitExposedVolumeContribution);
     public int MaxStack => Mathf.Max(1, maxStack);
 
     public bool HasCharges => hasCharges;
@@ -291,6 +295,7 @@ public sealed class ItemDefinition : ScriptableObject
     private void OnValidate()
     {
         unitMass = Mathf.Max(0f, unitMass);
+        unitExposedVolumeContribution = Mathf.Max(0f, unitExposedVolumeContribution);
         maxStack = Mathf.Max(1, maxStack);
         maxCharges = Mathf.Max(1, maxCharges);
         containerSlotCount = Mathf.Max(0, containerSlotCount);

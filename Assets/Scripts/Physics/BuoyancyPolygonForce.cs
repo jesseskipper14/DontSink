@@ -46,15 +46,32 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
             Debug.LogError("PhysicsGlobals not found!");
         }
 
-        body = bodySource as IForceBody;
+        body = ResolveAuthoritativeBodySource();
         if (body == null)
         {
-            Debug.LogError("BuoyancyForce bodySource does not implement IForceBody");
+            Debug.LogError("BuoyancyForce could not resolve an authoritative IForceBody");
             enabled = false;
             return;
         }
 
         ResolveWaveRefs();
+    }
+
+    private IForceBody ResolveAuthoritativeBodySource()
+    {
+        // Boat owns its specialized mass/geometry authority. For every generic
+        // body, ForceBody2D owns dimensions/volume even if a legacy component
+        // on the same GameObject also implements IForceBody.
+        if (bodySource is Boat configuredBoat)
+            return configuredBoat;
+
+        ForceBody2D forceBody =
+            GetComponent<ForceBody2D>();
+
+        if (forceBody != null)
+            return forceBody;
+
+        return bodySource as IForceBody;
     }
 
     public void ApplyForces(IForceBody body)
@@ -92,6 +109,17 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
         }
 
         float totalSubmergedArea = 0f;
+
+        // The fallback polygon describes the body's submersion geometry.
+        // ForceBody2D.Volume is the authoritative displacement amount, so extra
+        // volume contributions scale displacement without changing the visible/
+        // collision dimensions or the geometric submerged fraction. Boat
+        // contributor geometry already represents real displacement 1:1.
+        float fallbackDisplacementScale =
+            usingLegacyFallback
+                ? Mathf.Max(0f, body.Volume) /
+                  Mathf.Max(totalContributorArea, 0.000001f)
+                : 1f;
 
         float accumulatedImpulse = 0f;
         float accumulatedImpulseX = 0f;
@@ -201,7 +229,8 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
 
                 // --- Buoyant force ---
                 float sliceVolume =
-                    area; // 2D: area acts as volume proxy
+                    area *
+                    fallbackDisplacementScale;
 
                 float sliceForce =
                     sliceVolume *
@@ -303,7 +332,7 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
 
                         float waterMass =
                             physicsGlobals.WaterDensity *
-                            area;
+                            sliceVolume;
 
                         float totalMass =
                             bodyMassSlice +
@@ -344,17 +373,12 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
             }
         }
 
+        // Submersion is geometric. Added displacement volume changes how much
+        // water the body displaces, not how much of its authored shape is wet.
         lastTotalSubmersion =
-            usingLegacyFallback
-                ? Mathf.Clamp01(
-                    totalSubmergedArea /
-                    Mathf.Max(
-                        body.Width *
-                        body.Height,
-                        0.000001f))
-                : Mathf.Clamp01(
-                    totalSubmergedArea /
-                    totalContributorArea);
+            Mathf.Clamp01(
+                totalSubmergedArea /
+                totalContributorArea);
 
         // --- Apply averaged wave impulse ---
         if (_activeExposure.AllowsWaveMomentumCoupling &&
@@ -410,7 +434,7 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
         if (forceBody == null)
             return polygons;
 
-        if (bodySource is Boat boat)
+        if (forceBody is Boat boat)
         {
             AddCompartmentBuoyancyPolygons(
                 boat,
@@ -1207,7 +1231,7 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
             return;
 
         IForceBody forceBody =
-            bodySource as IForceBody;
+            ResolveAuthoritativeBodySource();
 
         if (forceBody == null ||
             forceBody.rb == null)
