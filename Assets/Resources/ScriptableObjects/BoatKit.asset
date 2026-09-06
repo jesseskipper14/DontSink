@@ -43,4 +43,6 @@ MonoBehaviour:
   HardpointRudder: {fileID: 3363453043375993549, guid: 0a20a366b93b6304482c0eed57273ff4, type: 3}
   HardpointKeel: {fileID: 3363453043375993549, guid: bad6f9c80edfc0d4a86ae4a05da4a405, type: 3}
   HardpointAnchor: {fileID: 3363453043375993549, guid: 19413a15f86016641997bae68bffcd01, type: 3}
+  HardpointWinch: {fileID: 3363453043375993549, guid: 36beee25e9bea0b48ae50160c809977f, type: 3}
+  HardpointTetherPayload: {fileID: 3363453043375993549, guid: 0b8a27ca81c3c484b80d0edce4d4a480, type: 3}
   BoatVisibilityZone: {fileID: 5848625884918575200, guid: a7e7abe4b3c39b64697381881a96965a, type: 3}

@@ -240,13 +240,23 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
         CharacterIntent intent = localCharacterIntentSource.Current;
 
-        float vertical = GetVerticalIntent(intent);
-        float horizontal = intent.MoveX;
+        ResolveLadderRelativeIntent(
+            _activeLadder,
+            intent,
+            out float alongLadder,
+            out float acrossLadder);
 
-        RequestLadderExertion(vertical, horizontal);
+        RequestLadderExertion(
+            alongLadder,
+            acrossLadder);
 
-        float verticalAuthority = GetVerticalClimbAuthority(vertical);
-        float horizontalAuthority = GetHorizontalClimbAuthority(horizontal);
+        float verticalAuthority =
+            GetVerticalClimbAuthority(
+                alongLadder);
+
+        float horizontalAuthority =
+            GetHorizontalClimbAuthority(
+                acrossLadder);
 
         // Per-ladder authored speed remains the baseline. Player attributes apply
         // a global multiplier on top, so buffs/debuffs can affect climbing without
@@ -260,7 +270,7 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         float centerLocalX = GetClimbCenterLocalX(ladderFrame);
 
         proposedLocalPos.y +=
-            vertical *
+            alongLadder *
             _activeLadder.ClimbSpeed *
             climbSpeedMultiplier *
             verticalAuthority *
@@ -269,14 +279,14 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         ApplyHorizontalLadderMovement(
             ref proposedLocalPos,
             centerLocalX,
-            horizontal,
+            acrossLadder,
             horizontalAuthority,
             climbSpeedMultiplier);
 
         float localXDistanceFromCenter = Mathf.Abs(proposedLocalPos.x - centerLocalX);
         if (allowHorizontalMovementWhileClimbing && localXDistanceFromCenter > maxAttachedLocalXDistance)
         {
-            DetachSideways(horizontal, ladderFrame);
+            DetachSideways(acrossLadder, ladderFrame);
             return;
         }
 
@@ -307,7 +317,7 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
         _rb.linearVelocity = Vector2.zero;
 
-        HandleAutoExit(vertical, horizontal);
+        HandleAutoExit(alongLadder, acrossLadder);
     }
 
     public bool CanBeginClimb(LadderZone ladder)
@@ -344,8 +354,10 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
         if (alignRotationToLadderWhileClimbing)
         {
-            float ladderRot = ladder.transform.eulerAngles.z;
-            _rb.rotation = ladderRot;
+            _rb.rotation =
+                GetNearestGravityUprightLadderRotation(
+                    ladder.transform);
+
             _rb.angularVelocity = 0f;
         }
 
@@ -402,17 +414,29 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         if (best == null)
             return;
 
-        CharacterIntent intent = localCharacterIntentSource.Current;
-        float vertical = GetVerticalIntent(intent);
+        CharacterIntent intent =
+            localCharacterIntentSource.Current;
 
-        if (Mathf.Abs(vertical) <= implicitInputDeadzone)
+        ResolveLadderRelativeIntent(
+            best,
+            intent,
+            out float alongLadder,
+            out _);
+
+        if (Mathf.Abs(alongLadder) <= implicitInputDeadzone)
             return;
 
         if (best.RequireInteractToClimb)
             return;
 
-        if (vertical < 0f && !best.AllowImplicitDownClimb)
+        // Preserve the authored meaning of "implicit down": holding the player's
+        // world-down/S intent to enter. The ladder's own local top/bottom may be
+        // inverted after a capsize.
+        if (GetWorldVerticalIntent(intent) < 0f &&
+            !best.AllowImplicitDownClimb)
+        {
             return;
+        }
 
         TryBeginClimb(best);
     }
@@ -497,11 +521,29 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             if (!CanAccessLadderByBoatContext(ladder))
                 continue;
 
-            Vector2 closestPoint = ladder.GetClosestInteractionPoint(playerPos);
-            float distance = Vector2.Distance(playerPos, closestPoint);
+            Vector2 closestPoint =
+                ladder.GetClosestInteractionPoint(
+                    playerPos);
 
-            float climbCenterDx = Mathf.Abs(playerPos.x - ladder.ClimbCenter.position.x);
-            float score = distance + climbCenterDx * 0.05f;
+            float distance =
+                Vector2.Distance(
+                    playerPos,
+                    closestPoint);
+
+            Vector2 ladderRight =
+                ((Vector2)ladder.transform.right).normalized;
+
+            float acrossCenterDistance =
+                Mathf.Abs(
+                    Vector2.Dot(
+                        playerPos -
+                        (Vector2)ladder.ClimbCenter.position,
+                        ladderRight));
+
+            float score =
+                distance +
+                acrossCenterDistance *
+                0.05f;
 
             if (score < bestScore)
             {
@@ -595,20 +637,36 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             : LadderZone.BoatAccessMode.ExteriorOnly;
     }
 
-    private void HandleAutoExit(float vertical, float horizontal)
+    private void HandleAutoExit(
+        float alongLadder,
+        float acrossLadder)
     {
         if (_activeLadder == null)
             return;
 
-        if (!_activeLadder.TryGetWorldYBounds(out float minY, out float maxY))
+        if (!_activeLadder.TryGetLocalClimbBounds(
+                out float minLocalY,
+                out float maxLocalY))
+        {
             return;
+        }
 
-        Vector2 pos = _rb.position;
+        float localY =
+            _ladderLocalClimbPosition.y;
 
-        bool atTop = pos.y >= (maxY - _activeLadder.TopExitMargin);
-        bool atBottom = pos.y <= (minY + _activeLadder.BottomExitMargin);
+        bool atTop =
+            localY >=
+            (maxLocalY -
+             _activeLadder.TopExitMargin);
 
-        if (_activeLadder.AllowTopExit && atTop && vertical > 0.01f)
+        bool atBottom =
+            localY <=
+            (minLocalY +
+             _activeLadder.BottomExitMargin);
+
+        if (_activeLadder.AllowTopExit &&
+            atTop &&
+            alongLadder > 0.01f)
         {
             if (_activeLadder.TopExitPoint != null)
                 _rb.position = _activeLadder.TopExitPoint.position;
@@ -617,7 +675,9 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             return;
         }
 
-        if (_activeLadder.AllowBottomExit && atBottom && vertical < -0.01f)
+        if (_activeLadder.AllowBottomExit &&
+            atBottom &&
+            alongLadder < -0.01f)
         {
             if (_activeLadder.BottomExitPoint != null)
                 _rb.position = _activeLadder.BottomExitPoint.position;
@@ -626,14 +686,15 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             return;
         }
 
-        if (groundedExitsAtTopOrBottom && motor != null)
+        if (groundedExitsAtTopOrBottom &&
+            motor != null)
         {
             motor.UpdateGrounded();
 
             if (motor.IsGrounded &&
                 (atTop || atBottom) &&
-                Mathf.Abs(vertical) <= 0.01f &&
-                Mathf.Abs(horizontal) > 0.01f)
+                Mathf.Abs(alongLadder) <= 0.01f &&
+                Mathf.Abs(acrossLadder) > 0.01f)
             {
                 EndClimb(keepVelocity: false);
             }
@@ -1009,15 +1070,71 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
     private void AlignRotationToLadder(Transform ladderFrame)
     {
-        float targetRot = ladderFrame.eulerAngles.z;
+        float targetRot =
+            GetNearestGravityUprightLadderRotation(
+                ladderFrame);
 
-        float snappedRot = Mathf.LerpAngle(
-            _rb.rotation,
-            targetRot,
-            1f - Mathf.Exp(-rotationSnapSpeed * Time.fixedDeltaTime));
+        float snappedRot =
+            Mathf.LerpAngle(
+                _rb.rotation,
+                targetRot,
+                1f - Mathf.Exp(
+                    -rotationSnapSpeed *
+                    Time.fixedDeltaTime));
 
-        _rb.MoveRotation(snappedRot);
+        _rb.MoveRotation(
+            snappedRot);
+
         _rb.angularVelocity = 0f;
+    }
+
+    /// <summary>
+    /// A ladder axis is physically equivalent at rotation R and R + 180 degrees.
+    /// Choose whichever orientation keeps the player's head closer to opposite
+    /// gravity, so a capsized ladder does not require Steve to climb upside down.
+    /// </summary>
+    private static float GetNearestGravityUprightLadderRotation(
+        Transform ladderFrame)
+    {
+        if (ladderFrame == null)
+            return 0f;
+
+        float authoredRotation =
+            ladderFrame.eulerAngles.z;
+
+        float alternateRotation =
+            authoredRotation +
+            180f;
+
+        Vector2 gravity =
+            Physics2D.gravity;
+
+        Vector2 desiredUp =
+            gravity.sqrMagnitude > 0.000001f
+                ? -gravity.normalized
+                : Vector2.up;
+
+        float gravityUprightRotation =
+            Vector2.SignedAngle(
+                Vector2.up,
+                desiredUp);
+
+        float authoredError =
+            Mathf.Abs(
+                Mathf.DeltaAngle(
+                    gravityUprightRotation,
+                    authoredRotation));
+
+        float alternateError =
+            Mathf.Abs(
+                Mathf.DeltaAngle(
+                    gravityUprightRotation,
+                    alternateRotation));
+
+        return
+            alternateError < authoredError
+                ? alternateRotation
+                : authoredRotation;
     }
 
     private float GetClimbCenterLocalX(Transform ladderFrame)
@@ -1062,11 +1179,80 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             multiplier);
     }
 
-    private float GetVerticalIntent(CharacterIntent intent)
+    private float GetWorldVerticalIntent(CharacterIntent intent)
     {
-        float up = intent.ClimbUpHeld ? 1f : 0f;
-        float down = intent.ClimbDownHeld ? 1f : 0f;
+        float up =
+            intent.ClimbUpHeld
+                ? 1f
+                : 0f;
+
+        float down =
+            intent.ClimbDownHeld
+                ? 1f
+                : 0f;
+
         return up - down;
+    }
+
+    /// <summary>
+    /// Converts screen/world-relative player directional intent into the ladder's
+    /// current local movement axes.
+    ///
+    /// Along-ladder movement uses both horizontal and vertical world intent, so:
+    /// - upright ladder: W/S climbs;
+    /// - inverted ladder: W/S still moves world-up/world-down correctly;
+    /// - sideways ladder: A/D traverses it.
+    ///
+    /// Across-ladder shimmy remains sourced from horizontal intent, but is projected
+    /// onto ladder-right so A/D continues to mean screen-left/screen-right instead of
+    /// silently reversing when the boat flips.
+    /// </summary>
+    private void ResolveLadderRelativeIntent(
+        LadderZone ladder,
+        CharacterIntent intent,
+        out float alongLadder,
+        out float acrossLadder)
+    {
+        alongLadder = 0f;
+        acrossLadder = 0f;
+
+        if (ladder == null)
+            return;
+
+        Vector2 ladderUp =
+            ((Vector2)ladder.transform.up).normalized;
+
+        Vector2 ladderRight =
+            ((Vector2)ladder.transform.right).normalized;
+
+        Vector2 worldIntent =
+            new Vector2(
+                Mathf.Clamp(
+                    intent.MoveX,
+                    -1f,
+                    1f),
+                GetWorldVerticalIntent(
+                    intent));
+
+        alongLadder =
+            Mathf.Clamp(
+                Vector2.Dot(
+                    worldIntent,
+                    ladderUp),
+                -1f,
+                1f);
+
+        // Preserve the existing A/D shimmy concept while making its actual world
+        // direction stable as the ladder rotates. When the ladder becomes horizontal,
+        // A/D naturally transfers almost entirely into along-ladder movement.
+        acrossLadder =
+            Mathf.Clamp(
+                intent.MoveX *
+                Vector2.Dot(
+                    Vector2.right,
+                    ladderRight),
+                -1f,
+                1f);
     }
 
     private void RequestLadderExertion(float vertical, float horizontal)

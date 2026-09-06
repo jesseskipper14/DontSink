@@ -372,7 +372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOn: 0
-  thrust: 25
+  thrust: 50
   fuelContainerDefinition: {fileID: 11400000, guid: d756ee9f3d518f54f8ed69a09a0155c8, type: 2}
   fuelBurnRatePerSecond: 0.1
   maxThrottleBurnMultiplier: 2.5

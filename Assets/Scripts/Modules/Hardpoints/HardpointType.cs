@@ -11,5 +11,9 @@ public enum HardpointType
     // Appended to preserve the serialized integer values of all existing types.
     Rudder = 7,
     Keel = 8,
-    Anchor = 9
+    Anchor = 9,
+
+    // Appended to preserve the serialized integer values of all existing types.
+    Winch = 10,
+    TetherPayload = 11
 }

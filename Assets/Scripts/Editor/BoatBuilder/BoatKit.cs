@@ -50,6 +50,8 @@ public class BoatKit : ScriptableObject
     public GameObject HardpointRudder;
     public GameObject HardpointKeel;
     public GameObject HardpointAnchor;
+    public GameObject HardpointWinch;
+    public GameObject HardpointTetherPayload;
 
     [Header("Visibility")]
     public GameObject BoatVisibilityZone;

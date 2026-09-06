@@ -100,6 +100,11 @@ MonoBehaviour:
   baseMass: 30
   mass: 1
   baseLocalCenterOfMass: {x: 0, y: 0}
+  drawMassContributionGizmos: 0
+  mysteryOscillationLog: 0
+  mysteryOscillationLogEveryFixedTick: 0
+  mysteryOscillationMinimumForceMagnitude: 0
+  mysteryOscillationMinimumTorqueMagnitude: 0
   width: 20
   height: 5
   volume: 1
@@ -172,6 +177,8 @@ MonoBehaviour:
   currentProfile:
     maxTurnAngle: 0
     turnEfficiency: 0
+    lateralDisturbanceResistance: 0
+    yawDisturbanceResistance: 0
 --- !u!114 &7097834975048569350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,9 +265,17 @@ MonoBehaviour:
   routeMaxHeadingDegrees: 15
   routeProgressCorridor: 45
   routeAdherencePathWidth: 15
-  recentCourseQualityDistance: 40
+  recentCourseQualityDistance: 25
   courseNeutralQuality: 0.65
   routeCoverageAhead: 1200
+  environmentalDisturbance:
+    minimumWaveAmplitude: 0.5
+    waveAmplitudeForFullSeverity: 10
+    waveTravelDirection: {x: 0, y: -1}
+    maxLateralAcceleration: 0.85
+    lateralVelocityDamping: 0.225
+    maxYawAngularAccelerationDegrees: 42
+  environmentalAngularVelocityCeilingDegrees: 72
 --- !u!114 &-1052176336710423377
 MonoBehaviour:
   m_ObjectHideFlags: 0

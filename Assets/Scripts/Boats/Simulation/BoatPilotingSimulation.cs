@@ -65,17 +65,31 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     [SerializeField, Min(1f)] private float recentCourseQualityDistance = 40f;
 
     [Tooltip("Recent course quality above this becomes Handling Efficiency. Below this becomes Course Instability. " +
-             "Phase 1 only measures both values; it does not apply buffs or penalties yet.")]
+             "Course Instability now drives navigation-certainty loss; Handling Efficiency remains diagnostic.")]
     [SerializeField, Range(0.05f, 0.95f)] private float courseNeutralQuality = 0.65f;
 
     [Tooltip("How far ahead in navigation-world Y the simulation keeps route geometry generated.")]
     [SerializeField, Min(100f)] private float routeCoverageAhead = 1200f;
 
+    [Header("Celestial Recovery Prototype")]
+    [Tooltip("Minimum original-route distance ahead of the current projected position where a successful positional fix tries to rejoin.")]
+    [SerializeField, Min(5f)] private float recoveryMinimumRejoinLeadDistance = 60f;
+
+    [Tooltip("Additional route-ahead distance per unit the boat is displaced from the original route. Larger values make very lost recoveries broader and more gradual.")]
+    [SerializeField, Min(0f)] private float recoveryRejoinLeadPerOffRouteUnit = 0.65f;
+
+    [Tooltip("Approximate world-space spacing between sampled points on the generated recovery curve.")]
+    [SerializeField, Min(2f)] private float recoveryCurvePointSpacing = 10f;
+
     [Header("Environmental Disturbance Prototype")]
-    [Tooltip("Temporary wave-amplitude-driven lateral/yaw disturbance. Keel resistance and instability amplification come later.")]
+    [Tooltip("Continuous physical-wave-phase-driven lateral/yaw disturbance. Installed handling resistance attenuates the resulting accelerations.")]
     [SerializeField]
     private PilotingEnvironmentalDisturbance environmentalDisturbance =
         new PilotingEnvironmentalDisturbance();
+
+    [Tooltip("Environmental yaw is allowed more angular-velocity headroom than ordinary rudder steering so a strong sea shove can visibly throw the bow off course.")]
+    [SerializeField, Min(1f)]
+    private float environmentalAngularVelocityCeilingDegrees = 72f;
 
     private object _controlOwner;
     private BoatControlIntent _currentIntent;
@@ -89,8 +103,11 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     private float _physicalTravelDelta;
 
     private IWaveService _waveService;
+
     private Vector2 _environmentNavigationVelocity;
-    private float _environmentYawVelocityKickDegrees;
+    private Vector2 _environmentLateralAcceleration;
+    private float _environmentYawAngularAccelerationDegrees;
+    private float _physicalWaveLoad01;
 
     private Vector2 _lastPhysicalPosition;
     private bool _hasLastPhysicalPosition;
@@ -111,6 +128,8 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     public BoatHandlingProfile HandlingProfile => _handlingProfile;
     public bool HasSteering => _handlingProfile.HasSteering;
     public float MaxRudderDegrees => _handlingProfile.MaxTurnAngle;
+    public float LateralDisturbanceResistance => _handlingProfile.LateralDisturbanceResistance;
+    public float YawDisturbanceResistance => _handlingProfile.YawDisturbanceResistance;
 
     public int InstalledPropulsionSources => _installedPropulsionSources;
     public int ActivePropulsionSources => _activePropulsionSources;
@@ -130,13 +149,14 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
 
     public float EnvironmentalWaveAmplitude => environmentalDisturbance != null ? environmentalDisturbance.CurrentWaveAmplitude : 0f;
     public float EnvironmentalSeverity01 => environmentalDisturbance != null ? environmentalDisturbance.Severity01 : 0f;
+    public float EnvironmentalPhysicalWaveLoad01 => _physicalWaveLoad01;
     public float EnvironmentalBeamExposure01 => environmentalDisturbance != null ? environmentalDisturbance.BeamExposure01 : 0f;
     public float EnvironmentalEncounterBroadsideDegrees => environmentalDisturbance != null ? environmentalDisturbance.EncounterBroadsideDegrees : 0f;
     public Vector2 EnvironmentalNavigationVelocity => _environmentNavigationVelocity;
-    public Vector2 LastEnvironmentalLateralVelocityKick => environmentalDisturbance != null ? environmentalDisturbance.LastLateralVelocityKick : Vector2.zero;
-    public float LastEnvironmentalYawVelocityKickDegrees => environmentalDisturbance != null ? environmentalDisturbance.LastYawVelocityKickDegrees : 0f;
-    public int EnvironmentalPulseCount => environmentalDisturbance != null ? environmentalDisturbance.PulseCount : 0;
-    public float EnvironmentalSecondsUntilNextPulse => environmentalDisturbance != null ? environmentalDisturbance.SecondsUntilNextPulse : 0f;
+    public Vector2 EnvironmentalLateralAcceleration => _environmentLateralAcceleration;
+    public float EnvironmentalYawAngularAccelerationDegrees => _environmentYawAngularAccelerationDegrees;
+    public float EnvironmentalWaveFrequency => _waveService != null ? Mathf.Max(0f, _waveService.Frequency) : 0f;
+    public float EnvironmentalWaveSpeed => _waveService != null ? Mathf.Max(0f, _waveService.Speed) : 0f;
 
     private void Reset()
     {
@@ -184,6 +204,24 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
         courseNeutralQuality = Mathf.Clamp(courseNeutralQuality, 0.05f, 0.95f);
         routeCoverageAhead = Mathf.Max(100f, routeCoverageAhead);
 
+        recoveryMinimumRejoinLeadDistance =
+            Mathf.Max(
+                5f,
+                recoveryMinimumRejoinLeadDistance);
+
+        recoveryRejoinLeadPerOffRouteUnit =
+            Mathf.Max(
+                0f,
+                recoveryRejoinLeadPerOffRouteUnit);
+
+        recoveryCurvePointSpacing =
+            Mathf.Max(
+                2f,
+                recoveryCurvePointSpacing);
+
+        if (environmentalAngularVelocityCeilingDegrees <= 0f)
+            environmentalAngularVelocityCeilingDegrees = 72f;
+
         if (sceneForwardAxis.sqrMagnitude <= 0.000001f)
             sceneForwardAxis = Vector2.right;
     }
@@ -230,6 +268,37 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     public bool HasControlAuthority(object owner)
     {
         return owner != null && ReferenceEquals(_controlOwner, owner);
+    }
+
+    /// <summary>
+    /// Applies the downstream gameplay result of a successful celestial position
+    /// fix. The current debug HUD button calls this directly; the future star-map
+    /// alignment minigame should call the same operation after a valid match.
+    /// </summary>
+    public bool TryApplySuccessfulCelestialFix()
+    {
+        InitializeRouteGuidanceIfNeeded();
+
+        if (state == null ||
+            _routeGuidance == null ||
+            !_routeGuidance.IsInitialized)
+        {
+            return false;
+        }
+
+        if (_routeGuidance.NavigationCertainty01 >=
+            0.9999f)
+        {
+            return false;
+        }
+
+        return
+            _routeGuidance.TryRecoverKnownPosition(
+                state.NavigationPosition,
+                state.HeadingDegrees,
+                recoveryMinimumRejoinLeadDistance,
+                recoveryRejoinLeadPerOffRouteUnit,
+                recoveryCurvePointSpacing);
     }
 
     /// <summary>
@@ -636,15 +705,15 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
                 : 0f;
 
         float angularVelocity =
-            state.AngularVelocityDegrees +
-            _environmentYawVelocityKickDegrees;
+            state.AngularVelocityDegrees;
 
         float angularAcceleration =
             rudderAngleAuthority *
             rudderAngularAcceleration *
             _handlingProfile.TurnEfficiency *
             rudderAuthority01 *
-            travelSign;
+            travelSign +
+            _environmentYawAngularAccelerationDegrees;
 
         angularVelocity +=
             angularAcceleration *
@@ -655,11 +724,24 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
                 -angularWaterDrag *
                 dt);
 
+        float environmentalAngularCeiling =
+            environmentalAngularVelocityCeilingDegrees > 0.0001f
+                ? environmentalAngularVelocityCeilingDegrees
+                : 72f;
+
+        float angularVelocityLimit =
+            environmentalDisturbance != null &&
+            environmentalDisturbance.Severity01 > 0.0001f
+                ? Mathf.Max(
+                    maxAngularVelocityDegrees,
+                    environmentalAngularCeiling)
+                : maxAngularVelocityDegrees;
+
         angularVelocity =
             Mathf.Clamp(
                 angularVelocity,
-                -maxAngularVelocityDegrees,
-                maxAngularVelocityDegrees);
+                -angularVelocityLimit,
+                angularVelocityLimit);
 
         float heading =
             state.HeadingDegrees +
@@ -690,13 +772,20 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
             angularVelocity);
     }
 
-    private void AdvanceEnvironmentalDisturbance(float dt)
+    private void AdvanceEnvironmentalDisturbance(
+        float dt)
     {
-        _environmentNavigationVelocity = Vector2.zero;
-        _environmentYawVelocityKickDegrees = 0f;
+        _environmentLateralAcceleration =
+            Vector2.zero;
+
+        _environmentYawAngularAccelerationDegrees =
+            0f;
 
         if (environmentalDisturbance == null)
-            environmentalDisturbance = new PilotingEnvironmentalDisturbance();
+        {
+            environmentalDisturbance =
+                new PilotingEnvironmentalDisturbance();
+        }
 
         ResolveWaveService();
 
@@ -705,37 +794,201 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
                 ? GameState.I.activeTravel
                 : null;
 
-        bool hasActiveVoyage = activeTravel != null;
-        int seed =
-            hasActiveVoyage && activeTravel.seed != 0
-                ? activeTravel.seed ^ unchecked((int)0x05EA51DE)
-                : routePrototypeSeed ^ unchecked((int)0x05EA51DE);
-
-        environmentalDisturbance.EnsureSeed(seed);
+        bool hasActiveVoyage =
+            activeTravel != null;
 
         float waveAmplitude =
             _waveService != null
-                ? Mathf.Max(0f, _waveService.Amplitude)
+                ? Mathf.Max(
+                    0f,
+                    _waveService.Amplitude)
                 : 0f;
 
+        _physicalWaveLoad01 =
+            SamplePhysicalWaveLoad01(
+                hasActiveVoyage &&
+                waveAmplitude > 0.0001f);
+
         environmentalDisturbance.Tick(
-            dt,
             hasActiveVoyage,
             waveAmplitude,
-            state != null ? state.HeadingDegrees : 0f,
-            out _environmentYawVelocityKickDegrees);
+            state != null
+                ? state.HeadingDegrees
+                : 0f,
+            _physicalWaveLoad01,
+            out Vector2 rawLateralAcceleration,
+            out float rawYawAngularAccelerationDegrees);
 
-        _environmentNavigationVelocity =
-            environmentalDisturbance.NavigationDriftVelocity;
+        float lateralResistance =
+            Mathf.Clamp01(
+                _handlingProfile.LateralDisturbanceResistance);
+
+        float yawResistance =
+            Mathf.Clamp01(
+                _handlingProfile.YawDisturbanceResistance);
+
+        _environmentLateralAcceleration =
+            rawLateralAcceleration *
+            (1f - lateralResistance);
+
+        _environmentYawAngularAccelerationDegrees =
+            rawYawAngularAccelerationDegrees *
+            (1f - yawResistance);
+
+        if (!hasActiveVoyage)
+        {
+            _environmentNavigationVelocity =
+                Vector2.zero;
+
+            return;
+        }
+
+        // Continuous load:
+        // acceleration -> accumulated lateral velocity -> exponential damping.
+        _environmentNavigationVelocity +=
+            _environmentLateralAcceleration *
+            dt;
+
+        float lateralDamping =
+            environmentalDisturbance.LateralVelocityDamping;
+
+        _environmentNavigationVelocity *=
+            Mathf.Exp(
+                -lateralDamping *
+                dt);
+    }
+
+    /// <summary>
+    /// Samples one current physical wavelength around the boat and maps the
+    /// surface directly beneath the boat between the local trough and crest.
+    ///
+    /// Result:
+    ///   0 = physical trough
+    ///   1 = physical crest
+    ///
+    /// The disturbance system therefore follows the actual WaveField phase rather
+    /// than running a second timer or merely guessing from frequency.
+    /// </summary>
+    private float SamplePhysicalWaveLoad01(
+        bool samplingEnabled)
+    {
+        if (!samplingEnabled ||
+            _waveService == null ||
+            boat == null ||
+            boat.rb == null)
+        {
+            return 0f;
+        }
+
+        float frequency =
+            Mathf.Max(
+                0f,
+                _waveService.Frequency);
+
+        if (frequency <= 0.0001f)
+            return 0f;
+
+        float wavelength =
+            2f /
+            frequency;
+
+        if (wavelength <= 0.0001f)
+            return 0f;
+
+        float boatWorldX =
+            boat.rb.position.x;
+
+        float currentSurfaceY =
+            _waveService.SampleHeightAtWorldXWrapped(
+                boatWorldX);
+
+        float minimumSurfaceY =
+            float.PositiveInfinity;
+
+        float maximumSurfaceY =
+            float.NegativeInfinity;
+
+        const int sampleCount = 24;
+
+        float halfWavelength =
+            wavelength *
+            0.5f;
+
+        for (int i = 0;
+             i < sampleCount;
+             i++)
+        {
+            float t =
+                sampleCount > 1
+                    ? i /
+                      (float)(sampleCount - 1)
+                    : 0.5f;
+
+            float sampleX =
+                boatWorldX +
+                Mathf.Lerp(
+                    -halfWavelength,
+                    halfWavelength,
+                    t);
+
+            float sampleSurfaceY =
+                _waveService.SampleHeightAtWorldXWrapped(
+                    sampleX);
+
+            minimumSurfaceY =
+                Mathf.Min(
+                    minimumSurfaceY,
+                    sampleSurfaceY);
+
+            maximumSurfaceY =
+                Mathf.Max(
+                    maximumSurfaceY,
+                    sampleSurfaceY);
+        }
+
+        float localWaveRange =
+            maximumSurfaceY -
+            minimumSurfaceY;
+
+        if (localWaveRange <= 0.0001f)
+            return 0f;
+
+        return Mathf.Clamp01(
+            Mathf.InverseLerp(
+                minimumSurfaceY,
+                maximumSurfaceY,
+                currentSurfaceY));
     }
 
     private void ResolveWaveService()
     {
-        if (_waveService != null)
+        IWaveService currentService =
+            ServiceRoot.Instance != null
+                ? ServiceRoot.Instance.WaveManager
+                : null;
+
+        if (ReferenceEquals(
+                _waveService,
+                currentService))
+        {
             return;
-        if (ServiceRoot.Instance == null)
-            return;
-        _waveService = ServiceRoot.Instance.WaveManager;
+        }
+
+        _waveService =
+            currentService;
+
+        // A replaced service may represent a different physical sea.
+        _environmentNavigationVelocity =
+            Vector2.zero;
+
+        _environmentLateralAcceleration =
+            Vector2.zero;
+
+        _environmentYawAngularAccelerationDegrees =
+            0f;
+
+        _physicalWaveLoad01 =
+            0f;
     }
 
     private void RefreshHandlingProfile()
@@ -766,7 +1019,9 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
         _physicalTravelDelta = 0f;
         _physicalForwardSpeed = 0f;
         _environmentNavigationVelocity = Vector2.zero;
-        _environmentYawVelocityKickDegrees = 0f;
+        _environmentLateralAcceleration = Vector2.zero;
+        _environmentYawAngularAccelerationDegrees = 0f;
+        _physicalWaveLoad01 = 0f;
     }
 
     private Vector2 GetSceneForwardAxis()

@@ -46,6 +46,11 @@ public sealed class PilotingWaveRenderer
 
     private float _organicPresentationTime;
 
+    // Tracks live wave-condition changes while the helm remains open.
+    // Existing virtual bands are continuously re-spaced around the boat rather
+    // than preserving the spacing that happened to exist when Begin() ran.
+    private float _lastWaveSpacing;
+
     private Texture2D _waveFieldTexture;
     private Color32[] _waveFieldPixels;
     private float[] _columnWaveCrestYs;
@@ -162,6 +167,9 @@ public sealed class PilotingWaveRenderer
         InitializeVirtualWaveSet(
             seed,
             navigationPosition);
+
+        _lastWaveSpacing =
+            GetWaveSpacing();
     }
 
     public void Tick(
@@ -190,6 +198,13 @@ public sealed class PilotingWaveRenderer
         _organicPresentationTime +=
             dt;
 
+        float currentSpacing =
+            GetWaveSpacing();
+
+        ApplyLiveSpacingChange(
+            currentSpacing,
+            navigationPosition.y);
+
         float waveWorldSpeed =
             GetWaveWorldSpeed();
 
@@ -206,6 +221,71 @@ public sealed class PilotingWaveRenderer
         }
 
         MaintainVirtualWaveCoverage();
+
+        _lastWaveSpacing =
+            currentSpacing;
+    }
+
+    /// <summary>
+    /// Weather may change frequency while the helm is already open. Re-space the
+    /// existing virtual bands around the current boat position so the visible sea
+    /// follows the live IWaveService instead of preserving Begin()-time spacing.
+    ///
+    /// Because WaveManager transitions frequency gradually, this rescale is also
+    /// gradual and does not require throwing away/re-seeding the visible ocean.
+    /// </summary>
+    private void ApplyLiveSpacingChange(
+        float currentSpacing,
+        float anchorY)
+    {
+        if (currentSpacing <= 0.0001f)
+        {
+            _virtualWaves.Clear();
+            return;
+        }
+
+        if (_lastWaveSpacing <= 0.0001f)
+        {
+            if (_virtualWaves.Count == 0)
+            {
+                AddVirtualWave(
+                    anchorY +
+                    currentSpacing);
+            }
+
+            return;
+        }
+
+        float ratio =
+            currentSpacing /
+            _lastWaveSpacing;
+
+        if (Mathf.Abs(
+                ratio -
+                1f) <=
+            0.0001f)
+        {
+            return;
+        }
+
+        for (int i = 0;
+             i < _virtualWaves.Count;
+             i++)
+        {
+            VirtualWaveBand wave =
+                _virtualWaves[i];
+
+            float offsetFromBoat =
+                wave.worldY -
+                anchorY;
+
+            wave.worldY =
+                anchorY +
+                offsetFromBoat *
+                ratio;
+        }
+
+        InvalidateTexture();
     }
 
     public void Draw(
@@ -253,6 +333,7 @@ public sealed class PilotingWaveRenderer
         _waveFieldTextureValid = false;
 
         _virtualWaves.Clear();
+        _lastWaveSpacing = 0f;
     }
 
     private void InitializeVirtualWaveSet(

@@ -237,7 +237,63 @@ public sealed class PilotingHudRenderer
                 $"{(route.IsInsideProgressCorridor ? "TRACKING" : "FARTHEST PAUSED")}");
 
             y +=
-                line + 4f;
+                line;
+
+            string navigationKnowledgeState =
+                route.IsLost
+                    ? "LOST"
+                    : route.IsRecovering
+                        ? "RECOVERING"
+                        : route.NavigationCertainty01 < 0.999f
+                            ? "UNCERTAIN"
+                            : "KNOWN";
+
+            GUI.Label(
+                new Rect(
+                    x,
+                    y,
+                    labelWidth,
+                    line),
+                $"FIX      Certainty {route.NavigationCertainty01 * 100f:0.0}%   " +
+                $"{navigationKnowledgeState}" +
+                (route.IsRecovering
+                    ? $"   Rejoin {route.RecoveryRejoinRouteDistance:0.0}"
+                    : string.Empty));
+
+            y +=
+                line + 2f;
+
+            bool previousEnabled =
+                GUI.enabled;
+
+            GUI.enabled =
+                route.NavigationCertainty01 <
+                0.9999f;
+
+            if (GUI.Button(
+                    new Rect(
+                        x,
+                        y,
+                        150f,
+                        22f),
+                    "CELESTIAL FIX"))
+            {
+                simulation.TryApplySuccessfulCelestialFix();
+            }
+
+            GUI.enabled =
+                previousEnabled;
+
+            GUI.Label(
+                new Rect(
+                    x + 160f,
+                    y + 2f,
+                    labelWidth - 160f,
+                    line),
+                "(DEBUG successful star-map match)");
+
+            y +=
+                26f;
         }
 
         GUI.Label(
@@ -284,14 +340,15 @@ public sealed class PilotingHudRenderer
                 labelWidth,
                 line),
             $"DISTURB  Severity {simulation.EnvironmentalSeverity01 * 100f:0}%   " +
+            $"Wave load {simulation.EnvironmentalPhysicalWaveLoad01 * 100f:0}%   " +
             $"Beam {simulation.EnvironmentalBeamExposure01 * 100f:0}%   " +
-            $"Angle {simulation.EnvironmentalEncounterBroadsideDegrees:0}°   " +
-            $"Pulses {simulation.EnvironmentalPulseCount}");
+            $"Angle {simulation.EnvironmentalEncounterBroadsideDegrees:0}°");
 
         y +=
             line;
 
-        Vector2 lastLateralKick = simulation.LastEnvironmentalLateralVelocityKick;
+        Vector2 lateralAcceleration =
+            simulation.EnvironmentalLateralAcceleration;
 
         GUI.Label(
             new Rect(
@@ -301,9 +358,8 @@ public sealed class PilotingHudRenderer
                 line),
             $"DRIFT    Vel ({simulation.EnvironmentalNavigationVelocity.x:+0.00;-0.00;0.00}," +
             $"{simulation.EnvironmentalNavigationVelocity.y:+0.00;-0.00;0.00})   " +
-            $"Last Lat {lastLateralKick.magnitude:0.00}   " +
-            $"Last Yaw {simulation.LastEnvironmentalYawVelocityKickDegrees:+0.0;-0.0;0.0}°/s   " +
-            $"Next {simulation.EnvironmentalSecondsUntilNextPulse:0.0}s");
+            $"Lat accel {lateralAcceleration.magnitude:0.00}   " +
+            $"Yaw accel {simulation.EnvironmentalYawAngularAccelerationDegrees:+0.0;-0.0;0.0}°/s²");
 
         y +=
             line;

@@ -871,6 +871,24 @@ public class BoatBuilderWindow : EditorWindow
 
         EditorGUILayout.Space(3);
 
+        EditorGUILayout.LabelField("Tether Connections", EditorStyles.miniBoldLabel);
+        EditorGUILayout.HelpBox(
+            "Select ONE Winch hardpoint and ONE Tether Payload hardpoint, then link them. " +
+            "The link belongs to the hardpoints, so swapping/upgrading installed modules preserves the wiring.",
+            MessageType.Info);
+        DrawWrappedActionButtons(
+            new ActionButtonDef("Link Selected Winch ↔ Payload", () =>
+            {
+                BoatBuilderSceneTools.LinkSelectedWinchWithPayload();
+            }),
+            new ActionButtonDef("Unlink Selected Tether", () =>
+            {
+                BoatBuilderSceneTools.UnlinkSelectedTether();
+            })
+        );
+
+        EditorGUILayout.Space(3);
+
         EditorGUILayout.LabelField("Hardpoints / Modules", EditorStyles.miniBoldLabel);
         DrawWrappedActionButtons(
             new ActionButtonDef("Validate Controllers", () =>
@@ -1202,6 +1220,8 @@ public class BoatBuilderWindow : EditorWindow
             HardpointType.Rudder => "rudder",
             HardpointType.Keel => "keel",
             HardpointType.Anchor => "anchor",
+            HardpointType.Winch => "winch",
+            HardpointType.TetherPayload => "payload",
             _ => "hardpoint"
         };
     }
@@ -1241,7 +1261,9 @@ public class BoatBuilderWindow : EditorWindow
                prefix == "helm" ||
                prefix == "rudder" ||
                prefix == "keel" ||
-               prefix == "anchor";
+               prefix == "anchor" ||
+               prefix == "winch" ||
+               prefix == "payload";
     }
 
     private void ApplyShellVisibilityToCurrentRoot()

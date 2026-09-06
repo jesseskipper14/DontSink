@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &407402607779668740
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5609604445218538491}
+  m_Layer: 3
+  m_Name: COM
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5609604445218538491
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 407402607779668740}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.8, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9126828244924666281}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1389772637482977797
 GameObject:
   m_ObjectHideFlags: 0
@@ -165,6 +196,7 @@ GameObject:
   - component: {fileID: -788460587395443}
   - component: {fileID: 4174918693384909282}
   - component: {fileID: 3592821839624725825}
+  - component: {fileID: -2825957318934577680}
   m_Layer: 3
   m_Name: BasicAnchor_Installed
   m_TagString: Untagged
@@ -189,6 +221,7 @@ Transform:
   - {fileID: 7475546025739489731}
   - {fileID: 4693907460653047433}
   - {fileID: 8257903097564535626}
+  - {fileID: 5609604445218538491}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &969393013364831257
@@ -385,6 +418,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   category: 0
+--- !u!114 &-2825957318934577680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8130874790704986176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03cb6b90f1cdedc4f805ebf37e5b0831, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tetherAnchor: {fileID: 0}
+  state: 0
+  holdingForceNewtons: 8000
+  validSeafloorLayers:
+    serializedVersion: 2
+    m_Bits: 8192
+  minimumGroundNormalY: 0.25
+  centerOfMassPoint: {fileID: 5609604445218538491}
 --- !u!1 &8721630635941789182
 GameObject:
   m_ObjectHideFlags: 0

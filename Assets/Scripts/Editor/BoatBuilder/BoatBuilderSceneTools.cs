@@ -126,6 +126,7 @@ public static partial class BoatBuilderSceneTools
         view.wantsMouseMove = true;
 
         DrawSelectedHardpointControllerLinks();
+        DrawSelectedTetherLinks();
 
         if (!IsPlacementEnabled)
         {
@@ -587,6 +588,14 @@ public static partial class BoatBuilderSceneTools
             HardpointType.Anchor => kit.HardpointAnchor != null
                 ? kit.HardpointAnchor
                 : kit.HardpointUtility,
+            HardpointType.Winch => kit.HardpointWinch != null
+                ? kit.HardpointWinch
+                : kit.HardpointUtility,
+            HardpointType.TetherPayload => kit.HardpointTetherPayload != null
+                ? kit.HardpointTetherPayload
+                : (kit.HardpointAnchor != null
+                    ? kit.HardpointAnchor
+                    : kit.HardpointUtility),
 
             _ => null
         };

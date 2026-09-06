@@ -144,6 +144,106 @@ public sealed class LadderZone : MonoBehaviour, IInteractable, IInteractionPoint
         return true;
     }
 
+    /// <summary>
+    /// Returns the ladder collider's longitudinal bounds in ladder-local Y.
+    /// Unlike world-space Y bounds, these remain correct when the ladder/boat rotates.
+    /// </summary>
+    public bool TryGetLocalClimbBounds(out float minLocalY, out float maxLocalY)
+    {
+        minLocalY = 0f;
+        maxLocalY = 0f;
+
+        if (_collider == null)
+            _collider = GetComponent<Collider2D>();
+
+        if (_collider == null)
+        {
+            Log("TryGetLocalClimbBounds failed because no Collider2D was found.");
+            return false;
+        }
+
+        if (_collider is BoxCollider2D box)
+        {
+            Vector2 half = box.size * 0.5f;
+            Vector2 offset = box.offset;
+
+            Vector2[] localCorners =
+            {
+                offset + new Vector2(-half.x, -half.y),
+                offset + new Vector2(-half.x,  half.y),
+                offset + new Vector2( half.x,  half.y),
+                offset + new Vector2( half.x, -half.y)
+            };
+
+            minLocalY = float.PositiveInfinity;
+            maxLocalY = float.NegativeInfinity;
+
+            for (int i = 0; i < localCorners.Length; i++)
+            {
+                Vector3 world =
+                    box.transform.TransformPoint(
+                        localCorners[i]);
+
+                float ladderLocalY =
+                    transform.InverseTransformPoint(
+                        world).y;
+
+                minLocalY =
+                    Mathf.Min(
+                        minLocalY,
+                        ladderLocalY);
+
+                maxLocalY =
+                    Mathf.Max(
+                        maxLocalY,
+                        ladderLocalY);
+            }
+
+            return
+                !float.IsInfinity(minLocalY) &&
+                !float.IsInfinity(maxLocalY) &&
+                maxLocalY >= minLocalY;
+        }
+
+        // Generic fallback for unusual ladder collider types. Collider2D.bounds is
+        // world-axis-aligned, so this can be slightly conservative on rotated shapes,
+        // but BoxCollider2D is the authored ladder path and remains exact above.
+        Bounds bounds = _collider.bounds;
+
+        Vector3[] worldCorners =
+        {
+            new Vector3(bounds.min.x, bounds.min.y, transform.position.z),
+            new Vector3(bounds.min.x, bounds.max.y, transform.position.z),
+            new Vector3(bounds.max.x, bounds.max.y, transform.position.z),
+            new Vector3(bounds.max.x, bounds.min.y, transform.position.z)
+        };
+
+        minLocalY = float.PositiveInfinity;
+        maxLocalY = float.NegativeInfinity;
+
+        for (int i = 0; i < worldCorners.Length; i++)
+        {
+            float ladderLocalY =
+                transform.InverseTransformPoint(
+                    worldCorners[i]).y;
+
+            minLocalY =
+                Mathf.Min(
+                    minLocalY,
+                    ladderLocalY);
+
+            maxLocalY =
+                Mathf.Max(
+                    maxLocalY,
+                    ladderLocalY);
+        }
+
+        return
+            !float.IsInfinity(minLocalY) &&
+            !float.IsInfinity(maxLocalY) &&
+            maxLocalY >= minLocalY;
+    }
+
     private void Log(string message)
     {
         if (!debugLogs)
@@ -167,10 +267,26 @@ public sealed class LadderZone : MonoBehaviour, IInteractable, IInteractionPoint
         var c = ClimbCenter;
         Gizmos.DrawWireSphere(c.position, 0.08f);
 
-        if (TryGetWorldYBounds(out float minY, out float maxY))
+        if (TryGetLocalClimbBounds(out float minLocalY, out float maxLocalY))
         {
-            Vector3 a = new Vector3(c.position.x, minY, c.position.z);
-            Vector3 b = new Vector3(c.position.x, maxY, c.position.z);
+            Vector3 centerLocal =
+                transform.InverseTransformPoint(
+                    c.position);
+
+            Vector3 a =
+                transform.TransformPoint(
+                    new Vector3(
+                        centerLocal.x,
+                        minLocalY,
+                        centerLocal.z));
+
+            Vector3 b =
+                transform.TransformPoint(
+                    new Vector3(
+                        centerLocal.x,
+                        maxLocalY,
+                        centerLocal.z));
+
             Gizmos.DrawLine(a, b);
         }
 

@@ -129,9 +129,21 @@ public sealed class InstalledModule : MonoBehaviour, IMassContribution
                 ? storage.ContentsMass
                 : 0f;
 
+        float additionalMass =
+            0f;
+
+        MonoBehaviour[] behaviours =
+            GetComponents<MonoBehaviour>();
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is IInstalledModuleAdditionalMass source)
+                additionalMass += Mathf.Max(0f, source.AdditionalInstalledMass);
+        }
+
         return Mathf.Max(
             0f,
-            baseMass + contentsMass);
+            baseMass + contentsMass + additionalMass);
     }
 
     private void ResolveRigidbody()

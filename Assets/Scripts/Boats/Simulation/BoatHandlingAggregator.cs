@@ -65,8 +65,14 @@ public sealed class BoatHandlingAggregator : MonoBehaviour
 
     /// <summary>
     /// Recomputes the profile from currently installed active contributors.
-    /// Max turn angle uses the best active supported angle.
-    /// Turn efficiency sums active steering authority.
+    ///
+    /// Steering:
+    /// - max turn angle uses the best active supported angle
+    /// - turn efficiency sums active steering authority
+    ///
+    /// Environmental resistance:
+    /// - active contributions combine with diminishing returns
+    /// - e.g. two 30% contributors produce 51% total resistance, not 60%
     /// </summary>
     public BoatHandlingProfile RefreshProfile()
     {
@@ -75,12 +81,15 @@ public sealed class BoatHandlingAggregator : MonoBehaviour
 
         float maxTurnAngle = 0f;
         float turnEfficiency = 0f;
+        float lateralDisturbanceResistance = 0f;
+        float yawDisturbanceResistance = 0f;
 
         if (hardpoints != null)
         {
             for (int i = 0; i < hardpoints.Length; i++)
             {
-                Hardpoint hardpoint = hardpoints[i];
+                Hardpoint hardpoint =
+                    hardpoints[i];
 
                 if (hardpoint == null ||
                     !hardpoint.HasInstalledModule ||
@@ -90,27 +99,49 @@ public sealed class BoatHandlingAggregator : MonoBehaviour
                 }
 
                 moduleComponents.Clear();
-                hardpoint.InstalledModule.GetComponents(moduleComponents);
 
-                for (int j = 0; j < moduleComponents.Count; j++)
+                hardpoint.InstalledModule.GetComponents(
+                    moduleComponents);
+
+                for (int j = 0;
+                     j < moduleComponents.Count;
+                     j++)
                 {
-                    MonoBehaviour component = moduleComponents[j];
+                    MonoBehaviour component =
+                        moduleComponents[j];
 
-                    if (!(component is IBoatHandlingContributor contributor))
+                    if (component == null)
                         continue;
 
-                    if (!contributor.IsHandlingContributionActive)
-                        continue;
+                    if (component is IBoatHandlingContributor steeringContributor &&
+                        steeringContributor.IsHandlingContributionActive)
+                    {
+                        maxTurnAngle =
+                            Mathf.Max(
+                                maxTurnAngle,
+                                Mathf.Max(
+                                    0f,
+                                    steeringContributor.MaxTurnAngleContribution));
 
-                    maxTurnAngle =
-                        Mathf.Max(
-                            maxTurnAngle,
-                            Mathf.Max(0f, contributor.MaxTurnAngleContribution));
+                        turnEfficiency +=
+                            Mathf.Max(
+                                0f,
+                                steeringContributor.TurnEfficiencyContribution);
+                    }
 
-                    turnEfficiency +=
-                        Mathf.Max(
-                            0f,
-                            contributor.TurnEfficiencyContribution);
+                    if (component is IBoatDisturbanceResistanceContributor resistanceContributor &&
+                        resistanceContributor.IsHandlingContributionActive)
+                    {
+                        lateralDisturbanceResistance =
+                            CombineResistance(
+                                lateralDisturbanceResistance,
+                                resistanceContributor.LateralDisturbanceResistanceContribution);
+
+                        yawDisturbanceResistance =
+                            CombineResistance(
+                                yawDisturbanceResistance,
+                                resistanceContributor.YawDisturbanceResistanceContribution);
+                    }
                 }
             }
         }
@@ -118,9 +149,33 @@ public sealed class BoatHandlingAggregator : MonoBehaviour
         currentProfile =
             new BoatHandlingProfile(
                 maxTurnAngle,
-                turnEfficiency);
+                turnEfficiency,
+                lateralDisturbanceResistance,
+                yawDisturbanceResistance);
 
         return currentProfile;
+    }
+
+    /// <summary>
+    /// Combines independent resistance contributions without allowing multiple
+    /// modules to exceed 100% resistance through simple addition.
+    /// </summary>
+    private static float CombineResistance(
+        float currentResistance,
+        float addedResistance)
+    {
+        float current =
+            Mathf.Clamp01(
+                currentResistance);
+
+        float added =
+            Mathf.Clamp01(
+                addedResistance);
+
+        return
+            1f -
+            (1f - current) *
+            (1f - added);
     }
 
     private void ResolveBoat()

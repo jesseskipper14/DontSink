@@ -171,6 +171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   configureOneWayPlatformOnReset: 1
   surfaceArc: 160
+  orientOneWaySurfaceAgainstGravity: 1
   autoSyncConnectionOpeningCollider: 1
   resizableSegment: {fileID: 6924750630641131329}
   connectionOpeningCollider: {fileID: 9084259175966858194}

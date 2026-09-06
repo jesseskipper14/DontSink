@@ -2,58 +2,82 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// Temporary simulation-owned sea disturbance model.
-/// Wave amplitude is only a loose severity proxy until the weather/wave pass.
-/// Produces navigation-space lateral drift and discrete yaw-velocity kicks.
+/// Simulation-owned sea disturbance model.
+///
+/// The physical WaveField supplies a continuously sampled trough-to-crest load.
+/// This class converts that load into navigation-space lateral acceleration and
+/// yaw angular acceleration based on sea severity and the boat's orientation.
+///
+/// It deliberately does not apply discrete "wave kicks".
 /// </summary>
 [Serializable]
 public sealed class PilotingEnvironmentalDisturbance
 {
     [Header("Temporary Severity Proxy")]
-    [SerializeField, Min(0f)] private float minimumWaveAmplitude = 0.5f;
-    [SerializeField, Min(0.01f)] private float waveAmplitudeForFullSeverity = 10f;
+    [SerializeField, Min(0f)]
+    private float minimumWaveAmplitude = 0.5f;
+
+    [SerializeField, Min(0.01f)]
+    private float waveAmplitudeForFullSeverity = 10f;
 
     [Header("Sea Direction")]
     [Tooltip("Navigation-space wave travel direction. Default down-screen means a north-facing boat meets head seas.")]
-    [SerializeField] private Vector2 waveTravelDirection = Vector2.down;
+    [SerializeField]
+    private Vector2 waveTravelDirection = Vector2.down;
 
-    [Header("Pulse Timing")]
-    [SerializeField, Min(0.05f)] private float maxPulseInterval = 4.5f;
-    [SerializeField, Min(0.05f)] private float minPulseInterval = 0.9f;
-    [SerializeField] private Vector2 pulseIntervalRandomMultiplier = new Vector2(0.75f, 1.25f);
+    [Header("Continuous Lateral Load")]
+    [Tooltip("Maximum navigation-space lateral acceleration at full storm severity, full beam exposure, and physical wave crest.")]
+    [SerializeField, Min(0f)]
+    private float maxLateralAcceleration = 0.85f;
 
-    [Header("Lateral Disturbance")]
-    [SerializeField, Min(0f)] private float maxLateralVelocityKick = 2.4f;
-    [SerializeField, Min(0f)] private float lateralVelocityDrag = 1.35f;
+    [Tooltip("Exponential damping applied to accumulated environmental lateral velocity. Higher values shed sideways drift faster.")]
+    [SerializeField, Min(0f)]
+    private float lateralVelocityDamping = 0.225f;
 
-    [Header("Yaw Disturbance")]
-    [SerializeField, Min(0f)] private float maxYawVelocityKickDegrees = 16f;
+    [Header("Continuous Yaw Load")]
+    [Tooltip("Maximum yaw angular acceleration in degrees/sec^2 at full storm severity, full beam exposure, and physical wave crest.")]
+    [SerializeField, Min(0f)]
+    private float maxYawAngularAccelerationDegrees = 42f;
 
-    [Header("Pulse Variation")]
-    [SerializeField] private Vector2 pulseStrengthRandomMultiplier = new Vector2(0.75f, 1.25f);
-
-    private System.Random _random;
-    private int _activeSeed;
-    private bool _hasSeed;
-    private float _secondsUntilNextPulse;
-    private Vector2 _navigationDriftVelocity;
     private float _currentWaveAmplitude;
     private float _severity01;
+    private float _waveLoad01;
+
+    private float _signedBeamComponent;
     private float _beamExposure01;
     private float _encounterBroadsideDegrees;
-    private Vector2 _lastLateralVelocityKick;
-    private float _lastYawVelocityKickDegrees;
-    private int _pulseCount;
 
-    public float CurrentWaveAmplitude => _currentWaveAmplitude;
-    public float Severity01 => _severity01;
-    public float BeamExposure01 => _beamExposure01;
-    public float EncounterBroadsideDegrees => _encounterBroadsideDegrees;
-    public Vector2 NavigationDriftVelocity => _navigationDriftVelocity;
-    public Vector2 LastLateralVelocityKick => _lastLateralVelocityKick;
-    public float LastYawVelocityKickDegrees => _lastYawVelocityKickDegrees;
-    public int PulseCount => _pulseCount;
-    public float SecondsUntilNextPulse => Mathf.Max(0f, _secondsUntilNextPulse);
+    private Vector2 _currentLateralAcceleration;
+    private float _currentYawAngularAccelerationDegrees;
+
+    public float CurrentWaveAmplitude =>
+        _currentWaveAmplitude;
+
+    public float Severity01 =>
+        _severity01;
+
+    /// <summary>
+    /// 0 = sampled physical trough, 1 = sampled physical crest.
+    /// </summary>
+    public float WaveLoad01 =>
+        _waveLoad01;
+
+    public float BeamExposure01 =>
+        _beamExposure01;
+
+    public float EncounterBroadsideDegrees =>
+        _encounterBroadsideDegrees;
+
+    public Vector2 CurrentLateralAcceleration =>
+        _currentLateralAcceleration;
+
+    public float CurrentYawAngularAccelerationDegrees =>
+        _currentYawAngularAccelerationDegrees;
+
+    public float LateralVelocityDamping =>
+        Mathf.Max(
+            0f,
+            lateralVelocityDamping);
 
     public Vector2 WaveTravelDirection
     {
@@ -61,129 +85,163 @@ public sealed class PilotingEnvironmentalDisturbance
         {
             if (waveTravelDirection.sqrMagnitude <= 0.000001f)
                 return Vector2.down;
+
             return waveTravelDirection.normalized;
         }
     }
 
-    public void EnsureSeed(int seed)
+    /// <summary>
+    /// Converts the current physical wave-phase load into continuous environmental
+    /// accelerations. The caller integrates them and applies installed-module
+    /// resistance.
+    /// </summary>
+    public void Tick(
+        bool disturbanceEnabled,
+        float waveAmplitude,
+        float headingDegrees,
+        float physicalWaveLoad01,
+        out Vector2 lateralAcceleration,
+        out float yawAngularAccelerationDegrees)
     {
-        if (_hasSeed && _activeSeed == seed)
-            return;
+        _currentWaveAmplitude =
+            Mathf.Max(
+                0f,
+                waveAmplitude);
 
-        _activeSeed = seed;
-        _hasSeed = true;
-        _random = new System.Random(seed);
-        _secondsUntilNextPulse = 0f;
-        _navigationDriftVelocity = Vector2.zero;
-        _lastLateralVelocityKick = Vector2.zero;
-        _lastYawVelocityKickDegrees = 0f;
-        _pulseCount = 0;
-    }
+        _waveLoad01 =
+            disturbanceEnabled
+                ? Mathf.Clamp01(
+                    physicalWaveLoad01)
+                : 0f;
 
-    public void Tick(float dt, bool disturbanceEnabled, float waveAmplitude, float headingDegrees, out float yawVelocityKickDegrees)
-    {
-        yawVelocityKickDegrees = 0f;
-        if (dt <= 0f)
-            return;
+        RefreshEncounterState(
+            headingDegrees);
 
-        _currentWaveAmplitude = Mathf.Max(0f, waveAmplitude);
-        RefreshEncounterState(headingDegrees);
-        _navigationDriftVelocity *= Mathf.Exp(-Mathf.Max(0f, lateralVelocityDrag) * dt);
+        _severity01 =
+            disturbanceEnabled
+                ? EvaluateSeverity01(
+                    _currentWaveAmplitude)
+                : 0f;
 
-        if (!disturbanceEnabled)
+        _currentLateralAcceleration =
+            Vector2.zero;
+
+        _currentYawAngularAccelerationDegrees =
+            0f;
+
+        if (_severity01 <= 0.0001f ||
+            _waveLoad01 <= 0.0001f ||
+            _beamExposure01 <= 0.0001f)
         {
-            _severity01 = 0f;
-            _secondsUntilNextPulse = 0f;
-            _navigationDriftVelocity = Vector2.zero;
+            lateralAcceleration =
+                Vector2.zero;
+
+            yawAngularAccelerationDegrees =
+                0f;
+
             return;
         }
 
-        _severity01 = EvaluateSeverity01(_currentWaveAmplitude);
-        if (_severity01 <= 0.0001f)
-        {
-            _secondsUntilNextPulse = 0f;
-            return;
-        }
+        Vector2 forward =
+            HeadingToForward(
+                headingDegrees);
 
-        _secondsUntilNextPulse -= dt;
-        if (_secondsUntilNextPulse > 0f)
-            return;
+        Vector2 right =
+            new Vector2(
+                forward.y,
+                -forward.x);
 
-        GeneratePulse(headingDegrees, out yawVelocityKickDegrees);
-        ScheduleNextPulse();
+        float effectiveLoad =
+            _severity01 *
+            _waveLoad01;
+
+        _currentLateralAcceleration =
+            right *
+            _signedBeamComponent *
+            Mathf.Max(
+                0f,
+                maxLateralAcceleration) *
+            effectiveLoad;
+
+        // Deterministic sign: broadside seas now create a learnable yaw tendency
+        // instead of choosing a random left/right kick at every crest.
+        //
+        // With the current heading convention this tends to turn the bow toward
+        // the wave-travel direction. Exact real-world yaw depends heavily on hull
+        // shape/loading, so this remains a gameplay-facing handling abstraction.
+        _currentYawAngularAccelerationDegrees =
+            _signedBeamComponent *
+            Mathf.Max(
+                0f,
+                maxYawAngularAccelerationDegrees) *
+            effectiveLoad;
+
+        lateralAcceleration =
+            _currentLateralAcceleration;
+
+        yawAngularAccelerationDegrees =
+            _currentYawAngularAccelerationDegrees;
     }
 
-    private void GeneratePulse(float headingDegrees, out float yawVelocityKickDegrees)
+    private void RefreshEncounterState(
+        float headingDegrees)
     {
-        yawVelocityKickDegrees = 0f;
+        Vector2 forward =
+            HeadingToForward(
+                headingDegrees);
 
-        Vector2 forward = HeadingToForward(headingDegrees);
-        Vector2 right = new Vector2(forward.y, -forward.x);
-        float signedBeamComponent = Mathf.Clamp(Vector2.Dot(WaveTravelDirection, right), -1f, 1f);
+        Vector2 right =
+            new Vector2(
+                forward.y,
+                -forward.x);
 
-        _beamExposure01 = Mathf.Abs(signedBeamComponent);
-        _encounterBroadsideDegrees = Mathf.Asin(Mathf.Clamp01(_beamExposure01)) * Mathf.Rad2Deg;
+        _signedBeamComponent =
+            Mathf.Clamp(
+                Vector2.Dot(
+                    WaveTravelDirection,
+                    right),
+                -1f,
+                1f);
 
-        float strengthRandom = Mathf.Max(0f, RandomRange(pulseStrengthRandomMultiplier.x, pulseStrengthRandomMultiplier.y));
-        float effectiveStrength = _severity01 * _beamExposure01 * strengthRandom;
+        _beamExposure01 =
+            Mathf.Abs(
+                _signedBeamComponent);
 
-        Vector2 lateralKick =
-            right * signedBeamComponent * Mathf.Max(0f, maxLateralVelocityKick) * _severity01 * strengthRandom;
-
-        _navigationDriftVelocity += lateralKick;
-        _lastLateralVelocityKick = lateralKick;
-
-        if (effectiveStrength > 0.0001f)
-        {
-            float yawPolarity = Random01() < 0.5f ? -1f : 1f;
-            yawVelocityKickDegrees =
-                yawPolarity * Mathf.Max(0f, maxYawVelocityKickDegrees) * effectiveStrength;
-        }
-
-        _lastYawVelocityKickDegrees = yawVelocityKickDegrees;
-        _pulseCount++;
+        _encounterBroadsideDegrees =
+            Mathf.Asin(
+                Mathf.Clamp01(
+                    _beamExposure01)) *
+            Mathf.Rad2Deg;
     }
 
-    private void RefreshEncounterState(float headingDegrees)
+    private float EvaluateSeverity01(
+        float waveAmplitude)
     {
-        Vector2 forward = HeadingToForward(headingDegrees);
-        Vector2 right = new Vector2(forward.y, -forward.x);
-        float signedBeamComponent = Mathf.Clamp(Vector2.Dot(WaveTravelDirection, right), -1f, 1f);
-        _beamExposure01 = Mathf.Abs(signedBeamComponent);
-        _encounterBroadsideDegrees = Mathf.Asin(Mathf.Clamp01(_beamExposure01)) * Mathf.Rad2Deg;
+        float minimum =
+            Mathf.Max(
+                0f,
+                minimumWaveAmplitude);
+
+        float full =
+            Mathf.Max(
+                minimum + 0.0001f,
+                waveAmplitudeForFullSeverity);
+
+        return Mathf.InverseLerp(
+            minimum,
+            full,
+            waveAmplitude);
     }
 
-    private float EvaluateSeverity01(float waveAmplitude)
+    private static Vector2 HeadingToForward(
+        float headingDegrees)
     {
-        float minimum = Mathf.Max(0f, minimumWaveAmplitude);
-        float full = Mathf.Max(minimum + 0.0001f, waveAmplitudeForFullSeverity);
-        return Mathf.InverseLerp(minimum, full, waveAmplitude);
-    }
+        float radians =
+            headingDegrees *
+            Mathf.Deg2Rad;
 
-    private void ScheduleNextPulse()
-    {
-        float low = Mathf.Max(0.05f, minPulseInterval);
-        float high = Mathf.Max(low, maxPulseInterval);
-        float baseInterval = Mathf.Lerp(high, low, _severity01);
-        float multiplier = Mathf.Max(0.05f, RandomRange(pulseIntervalRandomMultiplier.x, pulseIntervalRandomMultiplier.y));
-        _secondsUntilNextPulse = Mathf.Max(0.05f, baseInterval * multiplier);
-    }
-
-    private float Random01()
-    {
-        if (_random == null)
-            _random = new System.Random(_activeSeed);
-        return (float)_random.NextDouble();
-    }
-
-    private float RandomRange(float a, float b)
-    {
-        return Mathf.Lerp(Mathf.Min(a, b), Mathf.Max(a, b), Random01());
-    }
-
-    private static Vector2 HeadingToForward(float headingDegrees)
-    {
-        float radians = headingDegrees * Mathf.Deg2Rad;
-        return new Vector2(Mathf.Sin(radians), Mathf.Cos(radians));
+        return new Vector2(
+            Mathf.Sin(radians),
+            Mathf.Cos(radians));
     }
 }

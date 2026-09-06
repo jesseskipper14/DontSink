@@ -85,29 +85,79 @@ public class WaveManager : MonoBehaviour, IWaveService
     // =========================
     // Initialization
     // =========================
-    public void Initialize(IWeatherService weather, WaveField wave)
+    public void Initialize(
+        IWeatherService weather,
+        WaveField wave)
     {
-        weatherService = weather;
-        waveField = wave;
+        bool weatherChanged =
+            !ReferenceEquals(
+                weatherService,
+                weather);
 
-        weatherService.OnWaveAmplitudeChanged += OnWeatherAmplitudeChanged;
-        weatherService.OnWaveFrequencyChanged += OnWeatherFrequencyChanged;
-        weatherService.OnWaveSpeedChanged += OnWeatherSpeedChanged;
+        if (weatherChanged)
+        {
+            UnsubscribeFromWeather();
 
-        // Sync immediately
-        SetAmplitudeImmediate(weatherService.WaveAmplitude);
-        SetFrequencyImmediate(weatherService.WaveFrequency);
-        SetSpeedImmediate(weatherService.WaveSpeed);
+            weatherService =
+                weather;
+
+            SubscribeToWeather();
+
+            // A genuinely new weather authority needs an immediate state sync.
+            // Rebinding only the scene WaveField must NOT restart/snapshot the
+            // current weather transition.
+            if (weatherService != null)
+            {
+                SetAmplitudeImmediate(
+                    weatherService.WaveAmplitude);
+
+                SetFrequencyImmediate(
+                    weatherService.WaveFrequency);
+
+                SetSpeedImmediate(
+                    weatherService.WaveSpeed);
+            }
+        }
+
+        waveField =
+            wave;
+
+        ApplyCurrentStateToWaveField();
     }
 
     private void OnDestroy()
     {
-        if (weatherService != null)
-        {
-            weatherService.OnWaveAmplitudeChanged -= OnWeatherAmplitudeChanged;
-            weatherService.OnWaveFrequencyChanged -= OnWeatherFrequencyChanged;
-            weatherService.OnWaveSpeedChanged -= OnWeatherSpeedChanged;
-        }
+        UnsubscribeFromWeather();
+    }
+
+    private void SubscribeToWeather()
+    {
+        if (weatherService == null)
+            return;
+
+        weatherService.OnWaveAmplitudeChanged +=
+            OnWeatherAmplitudeChanged;
+
+        weatherService.OnWaveFrequencyChanged +=
+            OnWeatherFrequencyChanged;
+
+        weatherService.OnWaveSpeedChanged +=
+            OnWeatherSpeedChanged;
+    }
+
+    private void UnsubscribeFromWeather()
+    {
+        if (weatherService == null)
+            return;
+
+        weatherService.OnWaveAmplitudeChanged -=
+            OnWeatherAmplitudeChanged;
+
+        weatherService.OnWaveFrequencyChanged -=
+            OnWeatherFrequencyChanged;
+
+        weatherService.OnWaveSpeedChanged -=
+            OnWeatherSpeedChanged;
     }
 
     private void Awake()
@@ -129,13 +179,7 @@ public class WaveManager : MonoBehaviour, IWaveService
         if (autoFindWaveField && waveField == null)
             waveField = FindFirstObjectByType<WaveField>();
 
-        // Apply to wave field
-        if (waveField != null)
-        {
-            waveField.amplitude = amplitude;
-            waveField.frequency = frequency;
-            waveField.speed = speed;
-        }
+        ApplyCurrentStateToWaveField();
 
         // Debug triggers
         if (debugSetWave)
@@ -145,6 +189,21 @@ public class WaveManager : MonoBehaviour, IWaveService
             SetFrequency(debugFrequency, transitionDuration);
             SetSpeed(debugSpeed, transitionDuration);
         }
+    }
+
+    private void ApplyCurrentStateToWaveField()
+    {
+        if (waveField == null)
+            return;
+
+        waveField.amplitude =
+            amplitude;
+
+        waveField.frequency =
+            frequency;
+
+        waveField.speed =
+            speed;
     }
 
     // =========================

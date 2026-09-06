@@ -164,6 +164,7 @@ GameObject:
   - component: {fileID: 4852340979861053125}
   - component: {fileID: -788460587395443}
   - component: {fileID: 4174918693384909282}
+  - component: {fileID: 9095738246632746934}
   m_Layer: 3
   m_Name: BasicKeel_Installed
   m_TagString: Untagged
@@ -371,6 +372,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moduleAnchor: {fileID: 8851162932041584786}
+--- !u!114 &9095738246632746934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8130874790704986176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 166d5fd5a6276014c8c3f80f906af02d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lateralDisturbanceResistance: 0.5
+  yawDisturbanceResistance: 0.5
 --- !u!1 &8721630635941789182
 GameObject:
   m_ObjectHideFlags: 0

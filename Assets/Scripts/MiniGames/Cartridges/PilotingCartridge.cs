@@ -17,6 +17,7 @@ public sealed class PilotingCartridge :
     private readonly PilotChairInteractable _sourceStation;
 
     private readonly PilotingWaveRenderer _waveRenderer;
+    private readonly PilotingWaterMotionRenderer _waterMotionRenderer;
     private readonly PilotingRouteRenderer _routeRenderer;
     private readonly PilotingHudRenderer _hudRenderer;
 
@@ -25,6 +26,7 @@ public sealed class PilotingCartridge :
     private bool _debugMenuOpen;
 
     private Vector2 _cameraCenter;
+    private Vector2 _cameraCourseLookAhead;
 
     private float _visibleWorldHeight;
     private bool _zoomLocked;
@@ -36,6 +38,20 @@ public sealed class PilotingCartridge :
     private const float DesiredBoatScreenY01 = 0.72f;
     private const float CameraFollowSharpnessX = 0.75f;
     private const float CameraFollowSharpnessY = 2.75f;
+
+    // Presentation-only course reveal. This is deliberately NOT shake.
+    // The camera looks toward the boat's actual unwanted lateral trajectory
+    // and anticipates strong yaw so the pilot can immediately read
+    // "that is where I am actually going."
+    private const float CameraCourseLookAheadSharpness = 3.5f;
+    private const float CameraLateralRevealDeadzoneSpeed = 0.35f;
+    private const float CameraLateralRevealFullSpeed = 6f;
+    private const float CameraMaxLateralRevealFractionOfHeight = 0.22f;
+    private const float CameraYawRevealDeadzoneDegreesPerSecond = 4f;
+    private const float CameraYawRevealFullDegreesPerSecond = 42f;
+    private const float CameraYawPredictionSeconds = 1.15f;
+    private const float CameraMaxYawRevealFractionOfHeight = 0.10f;
+    private const float CameraMaxCombinedRevealFractionOfHeight = 0.24f;
 
     private const float BoatWorldWidth = 1.5f;
     private const float BoatWorldHeight = 2.6f;
@@ -142,6 +158,9 @@ public sealed class PilotingCartridge :
                 troughFlatFraction,
                 waveTextureRefreshHz);
 
+        _waterMotionRenderer =
+            new PilotingWaterMotionRenderer();
+
         _routeRenderer =
             new PilotingRouteRenderer();
 
@@ -213,9 +232,17 @@ public sealed class PilotingCartridge :
                 position.y +
                 cameraYOffset);
 
+        _cameraCourseLookAhead =
+            Vector2.zero;
+
         _waveRenderer.Begin(
             _ctx.seed,
             position,
+            _cameraCenter,
+            _visibleWorldHeight);
+
+        _waterMotionRenderer.Begin(
+            _ctx.seed,
             _cameraCenter,
             _visibleWorldHeight);
     }
@@ -244,6 +271,11 @@ public sealed class PilotingCartridge :
 
             UpdateCamera(
                 dt);
+
+            _waterMotionRenderer.Tick(
+                dt,
+                _cameraCenter,
+                _visibleWorldHeight);
         }
 
         return Running();
@@ -268,6 +300,7 @@ public sealed class PilotingCartridge :
             null;
 
         _waveRenderer.End();
+        _waterMotionRenderer.End();
     }
 
     public void DrawOverlayGUI(
@@ -352,6 +385,9 @@ public sealed class PilotingCartridge :
                 _visibleWorldHeight);
 
         _waveRenderer.Draw(
+            view);
+
+        _waterMotionRenderer.Draw(
             view);
 
         _routeRenderer.Draw(
@@ -454,15 +490,37 @@ public sealed class PilotingCartridge :
         Vector2 position =
             _state.NavigationPosition;
 
+        // Keep the old follow behavior as the calm baseline. Course reveal is a
+        // separate presentation offset so it can react much faster than the
+        // deliberately lazy lateral camera follow.
+        Vector2 baseCameraCenter =
+            _cameraCenter -
+            _cameraCourseLookAhead;
+
+        Vector2 desiredCourseLookAhead =
+            CalculateCourseRevealLookAhead();
+
+        float courseAlpha =
+            1f -
+            Mathf.Exp(
+                -CameraCourseLookAheadSharpness *
+                dt);
+
+        _cameraCourseLookAhead =
+            Vector2.Lerp(
+                _cameraCourseLookAhead,
+                desiredCourseLookAhead,
+                courseAlpha);
+
         float xAlpha =
             1f -
             Mathf.Exp(
                 -CameraFollowSharpnessX *
                 dt);
 
-        _cameraCenter.x =
+        baseCameraCenter.x =
             Mathf.Lerp(
-                _cameraCenter.x,
+                baseCameraCenter.x,
                 position.x,
                 xAlpha);
 
@@ -485,11 +543,130 @@ public sealed class PilotingCartridge :
                 -CameraFollowSharpnessY *
                 dt);
 
-        _cameraCenter.y =
+        baseCameraCenter.y =
             Mathf.Lerp(
-                _cameraCenter.y,
+                baseCameraCenter.y,
                 desiredCameraY,
                 yAlpha);
+
+        _cameraCenter =
+            baseCameraCenter +
+            _cameraCourseLookAhead;
+    }
+
+    private Vector2 CalculateCourseRevealLookAhead()
+    {
+        if (_state == null)
+            return Vector2.zero;
+
+        Vector2 headingForward =
+            HeadingToForward(
+                _state.HeadingDegrees);
+
+        Vector2 navigationVelocity =
+            _state.NavigationVelocity;
+
+        // Only the sideways component relative to the bow gets the large
+        // trajectory reveal. Ordinary forward motion keeps the familiar framing.
+        float alongHeadingSpeed =
+            Vector2.Dot(
+                navigationVelocity,
+                headingForward);
+
+        Vector2 lateralCourseVelocity =
+            navigationVelocity -
+            headingForward *
+            alongHeadingSpeed;
+
+        float lateralSpeed =
+            lateralCourseVelocity.magnitude;
+
+        float lateral01 =
+            Mathf.InverseLerp(
+                CameraLateralRevealDeadzoneSpeed,
+                CameraLateralRevealFullSpeed,
+                lateralSpeed);
+
+        lateral01 =
+            Mathf.SmoothStep(
+                0f,
+                1f,
+                lateral01);
+
+        float maxLateralReveal =
+            _visibleWorldHeight *
+            CameraMaxLateralRevealFractionOfHeight;
+
+        Vector2 lateralReveal =
+            lateralSpeed > 0.0001f
+                ? lateralCourseVelocity.normalized *
+                  maxLateralReveal *
+                  lateral01
+                : Vector2.zero;
+
+        float angularVelocity =
+            _state.AngularVelocityDegrees;
+
+        float yaw01 =
+            Mathf.InverseLerp(
+                CameraYawRevealDeadzoneDegreesPerSecond,
+                CameraYawRevealFullDegreesPerSecond,
+                Mathf.Abs(
+                    angularVelocity));
+
+        yaw01 =
+            Mathf.SmoothStep(
+                0f,
+                1f,
+                yaw01);
+
+        float predictedHeading =
+            _state.HeadingDegrees +
+            angularVelocity *
+            CameraYawPredictionSeconds;
+
+        Vector2 predictedForward =
+            HeadingToForward(
+                predictedHeading);
+
+        Vector2 yawDirectionDelta =
+            predictedForward -
+            headingForward;
+
+        float maxYawReveal =
+            _visibleWorldHeight *
+            CameraMaxYawRevealFractionOfHeight;
+
+        Vector2 yawReveal =
+            yawDirectionDelta *
+            maxYawReveal *
+            yaw01;
+
+        Vector2 combined =
+            lateralReveal +
+            yawReveal;
+
+        float maxCombinedReveal =
+            _visibleWorldHeight *
+            CameraMaxCombinedRevealFractionOfHeight;
+
+        return Vector2.ClampMagnitude(
+            combined,
+            maxCombinedReveal);
+    }
+
+    private static Vector2 HeadingToForward(
+        float headingDegrees)
+    {
+        float radians =
+            headingDegrees *
+            Mathf.Deg2Rad;
+
+        return new Vector2(
+            Mathf.Sin(
+                radians),
+            Mathf.Cos(
+                radians));
     }
 
     private void DrawWaterReferenceGrid(

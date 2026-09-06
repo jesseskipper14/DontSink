@@ -69,6 +69,16 @@ public static partial class BoatBuilderSceneTools
         hardpointSO.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(hardpoint);
 
+        if (selectedType == HardpointType.Winch)
+        {
+            TetherWinchLink tetherLink = placed.GetComponent<TetherWinchLink>();
+            if (tetherLink == null)
+                tetherLink = Undo.AddComponent<TetherWinchLink>(placed);
+
+            if (tetherLink != null)
+                tetherLink.EditorSetOwner(hardpoint);
+        }
+
         var interactable = placed.GetComponent<HardpointInteractable>();
         if (interactable != null)
         {
@@ -118,6 +128,8 @@ public static partial class BoatBuilderSceneTools
             HardpointType.Rudder => "rudder",
             HardpointType.Keel => "keel",
             HardpointType.Anchor => "anchor",
+            HardpointType.Winch => "winch",
+            HardpointType.TetherPayload => "payload",
             _ => "hardpoint"
         };
     }
@@ -814,6 +826,256 @@ public static partial class BoatBuilderSceneTools
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
 
         Debug.Log($"[BoatBuilder] Applied starting modules. Applied={applied}, Skipped={skipped}");
+    }
+
+    public static void LinkSelectedWinchWithPayload()
+    {
+        Hardpoint[] selected = GetSelectedHardpointsIncludingChildren();
+
+        if (selected == null || selected.Length != 2)
+        {
+            Debug.LogWarning(
+                "[BoatBuilder] Select exactly ONE Winch hardpoint and ONE Tether Payload hardpoint, then click Link Selected Winch ↔ Payload.");
+            return;
+        }
+
+        Hardpoint winch = null;
+        Hardpoint payload = null;
+
+        for (int i = 0; i < selected.Length; i++)
+        {
+            Hardpoint hp = selected[i];
+            if (hp == null)
+                continue;
+
+            if (HardpointAcceptsType(hp, HardpointType.Winch))
+                winch = hp;
+
+            if (HardpointAcceptsType(hp, HardpointType.TetherPayload) ||
+                HardpointAcceptsType(hp, HardpointType.Anchor))
+            {
+                payload = hp;
+            }
+        }
+
+        if (winch == null || payload == null || winch == payload)
+        {
+            Debug.LogWarning(
+                "[BoatBuilder] Selection must contain one Winch hardpoint and one Tether Payload/legacy Anchor hardpoint.");
+            return;
+        }
+
+        Boat winchBoat = winch.GetComponentInParent<Boat>();
+        Boat payloadBoat = payload.GetComponentInParent<Boat>();
+
+        if (winchBoat != null && payloadBoat != null && winchBoat != payloadBoat)
+        {
+            Debug.LogWarning(
+                "[BoatBuilder] Cannot link a winch to a payload hardpoint on a different boat.",
+                winch);
+            return;
+        }
+
+        Transform root = winchBoat != null
+            ? winchBoat.transform
+            : winch.transform.root;
+
+        if (root != null)
+        {
+            TetherWinchLink[] existingLinks =
+                root.GetComponentsInChildren<TetherWinchLink>(true);
+
+            for (int i = 0; i < existingLinks.Length; i++)
+            {
+                TetherWinchLink existing = existingLinks[i];
+                if (existing == null || existing.LinkedPayloadHardpoint != payload)
+                    continue;
+
+                Hardpoint existingOwner = existing.OwnerWinchHardpoint;
+                if (existingOwner == winch)
+                    continue;
+
+                Undo.RecordObject(existing, "Reassign Tether Payload Link");
+                existing.Unlink();
+                EditorUtility.SetDirty(existing);
+            }
+        }
+
+        TetherWinchLink link = winch.GetComponent<TetherWinchLink>();
+        if (link == null)
+            link = Undo.AddComponent<TetherWinchLink>(winch.gameObject);
+
+        if (link == null)
+            return;
+
+        Undo.RecordObject(link, "Link Winch To Tether Payload");
+        link.EditorSetOwner(winch);
+
+        if (!link.TryLink(payload))
+        {
+            Debug.LogWarning(
+                $"[BoatBuilder] Failed to link winch '{winch.HardpointId}' to payload '{payload.HardpointId}'.",
+                winch);
+            return;
+        }
+
+        EditorUtility.SetDirty(link);
+        EditorUtility.SetDirty(winch);
+        EditorUtility.SetDirty(payload);
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+
+        Debug.Log(
+            $"[BoatBuilder] Linked winch '{winch.HardpointId}' ↔ payload '{payload.HardpointId}'.",
+            winch);
+
+        SceneView.RepaintAll();
+    }
+
+    public static void UnlinkSelectedTether()
+    {
+        TetherWinchLink target = null;
+        UnityEngine.Object[] selected = Selection.objects;
+
+        if (selected != null)
+        {
+            for (int i = 0; i < selected.Length && target == null; i++)
+            {
+                Hardpoint hp = null;
+
+                if (selected[i] is GameObject go)
+                    hp = go.GetComponentInParent<Hardpoint>();
+                else if (selected[i] is Component c)
+                    hp = c.GetComponentInParent<Hardpoint>();
+
+                if (hp == null)
+                    continue;
+
+                target = hp.GetComponent<TetherWinchLink>();
+                if (target != null)
+                    break;
+
+                Boat boat = hp.GetComponentInParent<Boat>();
+                Transform root = boat != null ? boat.transform : hp.transform.root;
+                if (root == null)
+                    continue;
+
+                TetherWinchLink[] links = root.GetComponentsInChildren<TetherWinchLink>(true);
+                for (int j = 0; j < links.Length; j++)
+                {
+                    if (links[j] != null && links[j].LinkedPayloadHardpoint == hp)
+                    {
+                        target = links[j];
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (target == null || !target.HasLinkedPayload)
+        {
+            Debug.LogWarning(
+                "[BoatBuilder] Select a linked Winch hardpoint or its linked Tether Payload hardpoint to unlink it.");
+            return;
+        }
+
+        string winchId = target.OwnerWinchHardpoint != null
+            ? target.OwnerWinchHardpoint.HardpointId
+            : "Winch";
+        string payloadId = target.LinkedPayloadHardpoint != null
+            ? target.LinkedPayloadHardpoint.HardpointId
+            : "Payload";
+
+        Undo.RecordObject(target, "Unlink Tether Payload");
+        target.Unlink();
+        EditorUtility.SetDirty(target);
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+
+        Debug.Log($"[BoatBuilder] Unlinked winch '{winchId}' from payload '{payloadId}'.");
+        SceneView.RepaintAll();
+    }
+
+    private static bool HardpointAcceptsType(Hardpoint hardpoint, HardpointType type)
+    {
+        if (hardpoint == null)
+            return false;
+
+        HardpointType[] accepted = hardpoint.GetAcceptedTypes();
+        for (int i = 0; i < accepted.Length; i++)
+        {
+            if (accepted[i] == type)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static void DrawSelectedTetherLinks()
+    {
+        UnityEngine.Object[] selected = Selection.objects;
+        if (selected == null || selected.Length == 0)
+            return;
+
+        HashSet<TetherWinchLink> drawn = new HashSet<TetherWinchLink>();
+
+        for (int i = 0; i < selected.Length; i++)
+        {
+            Hardpoint selectedHardpoint = null;
+
+            if (selected[i] is GameObject go)
+                selectedHardpoint = go.GetComponentInParent<Hardpoint>();
+            else if (selected[i] is Component c)
+                selectedHardpoint = c.GetComponentInParent<Hardpoint>();
+
+            if (selectedHardpoint == null)
+                continue;
+
+            TetherWinchLink direct = selectedHardpoint.GetComponent<TetherWinchLink>();
+            if (direct != null && direct.HasLinkedPayload && drawn.Add(direct))
+                DrawTetherLink(direct);
+
+            Boat boat = selectedHardpoint.GetComponentInParent<Boat>();
+            Transform root = boat != null ? boat.transform : selectedHardpoint.transform.root;
+            if (root == null)
+                continue;
+
+            TetherWinchLink[] links = root.GetComponentsInChildren<TetherWinchLink>(true);
+            for (int j = 0; j < links.Length; j++)
+            {
+                TetherWinchLink link = links[j];
+                if (link == null || link.LinkedPayloadHardpoint != selectedHardpoint)
+                    continue;
+
+                if (drawn.Add(link))
+                    DrawTetherLink(link);
+            }
+        }
+    }
+
+    private static void DrawTetherLink(TetherWinchLink link)
+    {
+        if (link == null || link.OwnerWinchHardpoint == null || link.LinkedPayloadHardpoint == null)
+            return;
+
+        Hardpoint winch = link.OwnerWinchHardpoint;
+        Hardpoint payload = link.LinkedPayloadHardpoint;
+
+        Vector3 a = winch.ModuleAnchor != null
+            ? winch.ModuleAnchor.position
+            : winch.transform.position;
+        Vector3 b = payload.ModuleAnchor != null
+            ? payload.ModuleAnchor.position
+            : payload.transform.position;
+
+        Color oldColor = Handles.color;
+        Handles.color = new Color(1f, 0.68f, 0.18f, 0.95f);
+        Handles.DrawAAPolyLine(4f, a, b);
+
+        Handles.color = new Color(1f, 0.68f, 0.18f, 0.35f);
+        Handles.DrawSolidDisc(a, Vector3.forward, 0.08f);
+        Handles.DrawSolidDisc(b, Vector3.forward, 0.08f);
+        Handles.color = oldColor;
+
+        Handles.Label(Vector3.Lerp(a, b, 0.5f), "Tether Link");
     }
 
     private static void DrawSelectedHardpointControllerLinks()

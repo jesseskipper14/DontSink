@@ -353,6 +353,14 @@ public sealed class Hardpoint : MonoBehaviour
         if (!HasInstalledModule)
             return false;
 
+        if (!CanRemoveInstalledModule(out string removalBlockReason))
+        {
+            Debug.LogWarning(
+                $"[Hardpoint] Cannot remove module from '{HardpointId}': {removalBlockReason}",
+                this);
+            return false;
+        }
+
         removedDefinition = installedModule.Definition;
 
         if (installedModule != null)
@@ -371,6 +379,33 @@ public sealed class Hardpoint : MonoBehaviour
         installedModule = null;
         StateChanged?.Invoke(this);
         return removedDefinition != null;
+    }
+
+    private bool CanRemoveInstalledModule(out string reason)
+    {
+        reason = null;
+
+        if (installedModule == null)
+            return true;
+
+        MonoBehaviour[] behaviours =
+            installedModule.GetComponents<MonoBehaviour>();
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is not IInstalledModuleRemovalGuard guard)
+                continue;
+
+            if (guard.CanRemoveInstalledModule(out reason))
+                continue;
+
+            if (string.IsNullOrWhiteSpace(reason))
+                reason = $"{behaviours[i].GetType().Name} blocked removal.";
+
+            return false;
+        }
+
+        return true;
     }
 
     private void ResolvePlacementMarkerRenderer()
@@ -463,6 +498,14 @@ public sealed class Hardpoint : MonoBehaviour
         if (installedModule == null)
         {
             Debug.LogWarning($"[Hardpoint] '{name}' has no installed module to uninstall.", this);
+            return false;
+        }
+
+        if (!CanRemoveInstalledModule(out string removalBlockReason))
+        {
+            Debug.LogWarning(
+                $"[Hardpoint] Cannot uninstall module from '{HardpointId}': {removalBlockReason}",
+                this);
             return false;
         }
 

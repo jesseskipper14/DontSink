@@ -2228,6 +2228,8 @@ MonoBehaviour:
   currentProfile:
     maxTurnAngle: 0
     turnEfficiency: 0
+    lateralDisturbanceResistance: 0
+    yawDisturbanceResistance: 0
 --- !u!114 &8729887695823119932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2334,17 +2336,17 @@ MonoBehaviour:
   recentCourseQualityDistance: 40
   courseNeutralQuality: 0.65
   routeCoverageAhead: 1200
+  recoveryMinimumRejoinLeadDistance: 60
+  recoveryRejoinLeadPerOffRouteUnit: 0.65
+  recoveryCurvePointSpacing: 10
   environmentalDisturbance:
     minimumWaveAmplitude: 0.5
     waveAmplitudeForFullSeverity: 10
     waveTravelDirection: {x: 0, y: -1}
-    maxPulseInterval: 4.5
-    minPulseInterval: 0.9
-    pulseIntervalRandomMultiplier: {x: 0.75, y: 1.25}
-    maxLateralVelocityKick: 2.4
-    lateralVelocityDrag: 1.35
-    maxYawVelocityKickDegrees: 16
-    pulseStrengthRandomMultiplier: {x: 0.75, y: 1.25}
+    maxLateralAcceleration: 0.85
+    lateralVelocityDamping: 0.225
+    maxYawAngularAccelerationDegrees: 42
+  environmentalAngularVelocityCeilingDegrees: 72
 --- !u!114 &8770378431793843376
 MonoBehaviour:
   m_ObjectHideFlags: 0
