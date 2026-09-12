@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "Module/Module Definition")]
 public sealed class ModuleDefinition : ScriptableObject
@@ -16,8 +17,10 @@ public sealed class ModuleDefinition : ScriptableObject
     [Header("Inventory Link")]
     [SerializeField] private ItemDefinition itemDefinition;
 
-    [Header("Storage")]
-    [SerializeField] private StorageModuleDefinition storage = new StorageModuleDefinition();
+    [Header("Installed Storage (available after this module is installed)")]
+    [Tooltip("Defines storage provided by the INSTALLED module. This is separate from portable-container settings on the module item's ItemDefinition.")]
+    [FormerlySerializedAs("storage")]
+    [SerializeField] private StorageModuleDefinition installedStorage = new StorageModuleDefinition();
 
     public string ModuleId => moduleId;
     public string DisplayName => displayName;
@@ -30,10 +33,12 @@ public sealed class ModuleDefinition : ScriptableObject
     public ItemDefinition ItemDefinition => itemDefinition;
     public HardpointType[] AllowedHardpointTypes => allowedHardpointTypes;
 
-    public StorageModuleDefinition Storage => storage;
-    public bool HasStorage => storage != null && storage.HasStorage;
-    public bool IsFixedStorage => HasStorage && storage.IsFixedStorage;
-    public bool IsContainerRack => HasStorage && storage.IsContainerRack;
+    public StorageModuleDefinition InstalledStorage => installedStorage;
+    // Compatibility alias used by existing runtime code.
+    public StorageModuleDefinition Storage => installedStorage;
+    public bool HasStorage => installedStorage != null && installedStorage.HasStorage;
+    public bool IsFixedStorage => HasStorage && installedStorage.IsFixedStorage;
+    public bool IsContainerRack => HasStorage && installedStorage.IsContainerRack;
 
     public bool CanInstallOn(HardpointType hardpointType)
     {
@@ -52,8 +57,8 @@ public sealed class ModuleDefinition : ScriptableObject
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        if (storage == null)
-            storage = new StorageModuleDefinition();
+        if (installedStorage == null)
+            installedStorage = new StorageModuleDefinition();
     }
 #endif
 }

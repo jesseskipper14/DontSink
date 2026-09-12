@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -5,7 +6,6 @@ using UnityEngine;
 public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IInstalledModuleRemovalGuard, IInstalledModuleAdditionalMass
 {
     [Header("Rigging")]
-    [SerializeField] private Transform lineAnchor;
     [SerializeField] private TetherLineCatalog lineCatalog;
     [SerializeField, Min(1)] private int lineSlotCount = 1;
 
@@ -30,9 +30,19 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
     private Hardpoint _ownerHardpoint;
     private TetherWinchLink _link;
     private TetherConstraint2D _constraint;
-    private Rigidbody2D _boatBody;
-    private TetherPayloadModule _payload;
+    private TetherDeploymentModule _deployment;
+    private TetherPayload _payload;
     private ItemContainerState _subscribedLineContainer;
+
+    private const float SegmentBoundaryEpsilonMeters = 0.001f;
+
+    private struct CutLineLossPlanEntry
+    {
+        public int SlotIndex;
+        public ItemInstance ExpectedInstance;
+        public int QuantityToRemove;
+        public float SegmentLengthMeters;
+    }
 
     public ItemContainerState LineContainer
     {
@@ -66,7 +76,7 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
     public float CurrentDistance => _constraint != null ? _constraint.CurrentDistance : 0f;
     public bool IsOverWorkingLoad => _constraint != null && _constraint.IsOverWorkingLoad;
     public bool IsOverBreakingLoad => _constraint != null && _constraint.IsOverBreakingLoad;
-    public bool HasDeployedPayload => _payload != null && !_payload.IsStowed;
+    public bool HasDeployedPayload => _deployment != null && _deployment.HasDeployedPayload;
 
     private void Awake()
     {
@@ -81,12 +91,23 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
 
     private void FixedUpdate()
     {
-        if (_payload == null || _payload.IsStowed || _payload.IsCutLoose)
+        RefreshDeploymentRuntimeRefs();
+
+        if (_deployment == null ||
+            !_deployment.HasDeployedPayload ||
+            _payload == null ||
+            _constraint == null)
+        {
+            if (command != WinchCommand.Stop)
+                command = WinchCommand.Stop;
+
             return;
+        }
 
         float available = AvailableLineMeters;
         if (available <= 0f)
         {
+            _deployment.EndPayloadRetrieval();
             command = WinchCommand.Stop;
             return;
         }
@@ -94,36 +115,57 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         switch (command)
         {
             case WinchCommand.Lower:
+                _deployment.EndPayloadRetrieval();
+
                 deployedLength = Mathf.Min(
                     available,
                     deployedLength + reelSpeedMetersPerSecond * Time.fixedDeltaTime);
                 break;
 
             case WinchCommand.Raise:
-                float speedScale = ratedPullNewtons <= 0f || CurrentTension <= ratedPullNewtons
-                    ? 1f
-                    : 0f;
+                // Raise is authoritative retrieval intent for the entire time
+                // this command remains active. Reasserting it each physics step
+                // makes the behavior deterministic even if another caller touched
+                // retrieval state between command changes.
+                _deployment.BeginPayloadRetrieval();
+
+                float speedScale =
+                    ratedPullNewtons <= 0f ||
+                    CurrentTension <= ratedPullNewtons
+                        ? 1f
+                        : 0f;
 
                 deployedLength = Mathf.Max(
                     minimumDeployedLength,
-                    deployedLength - reelSpeedMetersPerSecond * speedScale * Time.fixedDeltaTime);
+                    deployedLength -
+                    reelSpeedMetersPerSecond *
+                    speedScale *
+                    Time.fixedDeltaTime);
 
-                _payload.BeginRetrieving();
                 TryAutoDock();
                 break;
 
             case WinchCommand.QuickRelease:
+                _deployment.EndPayloadRetrieval();
+
                 float target = Mathf.Min(
                     available,
-                    Mathf.Max(deployedLength, CurrentDistance + quickReleaseSlackMeters));
+                    Mathf.Max(
+                        deployedLength,
+                        CurrentDistance + quickReleaseSlackMeters));
+
                 deployedLength = target;
                 break;
         }
 
-        if (_constraint != null)
+        if (_constraint != null &&
+            _deployment != null &&
+            _deployment.HasDeployedPayload)
         {
             _constraint.SetDeployedLength(deployedLength);
-            _constraint.SetLineRatings(WorkingLoadNewtons, BreakingLoadNewtons);
+            _constraint.SetLineRatings(
+                WorkingLoadNewtons,
+                BreakingLoadNewtons);
         }
     }
 
@@ -136,33 +178,95 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
 
     public void OnRemoved()
     {
-        if (_constraint != null)
-            _constraint.Detach();
+        _deployment?.EndPayloadRetrieval();
+
+        command = WinchCommand.Stop;
+        _deployment = null;
+        _payload = null;
+        _constraint = null;
     }
 
     public bool TryLower()
     {
-        if (!EnsurePayloadBoundForDeployment())
+        if (!EnsureDeploymentBound())
             return false;
 
-        if (AvailableLineMeters <= 0f)
+        float available = AvailableLineMeters;
+        if (available <= 0f)
         {
-            Debug.LogWarning($"[Winch:{name}] Cannot lower: no valid tether line is loaded.", this);
+            Debug.LogWarning(
+                $"[Winch:{name}] Cannot lower: no valid tether line is loaded.",
+                this);
+
             return false;
         }
 
-        if (_payload.IsStowed)
+        if (!_deployment.HasDeployedPayload)
         {
-            if (!_payload.BeginDeploy())
+            if (!_deployment.HasStoredPayload)
+            {
+                Debug.LogWarning(
+                    $"[Winch:{name}] Cannot lower: linked tether deployment module has no stored payload.",
+                    this);
+
                 return false;
+            }
 
+            if (!_deployment.TryDeployStoredPayload(out TetherPayload payload) ||
+                payload == null)
+            {
+                return false;
+            }
+
+            _payload = payload;
+            _constraint = _deployment.TetherConstraint;
+
+            if (_constraint == null ||
+                !_constraint.IsAttached)
+            {
+                Debug.LogWarning(
+                    $"[Winch:{name}] Payload deployed, but its TetherConstraint2D is not attached.",
+                    this);
+
+                return false;
+            }
+
+            // TetherDeploymentModule creates the physical payload and performs
+            // the initial bind. The winch now becomes authoritative for payout.
             deployedLength = Mathf.Clamp(
-                Mathf.Max(minimumDeployedLength, CurrentPayloadDistance()),
+                Mathf.Max(
+                    minimumDeployedLength,
+                    _constraint.DeployedLength),
                 minimumDeployedLength,
-                AvailableLineMeters);
+                available);
 
-            BindConstraint();
-            _payload.MarkSuspended();
+            _constraint.SetDeployedLength(deployedLength);
+            _constraint.SetLineRatings(
+                WorkingLoadNewtons,
+                BreakingLoadNewtons);
+        }
+        else
+        {
+            RefreshDeploymentRuntimeRefs();
+
+            if (_payload == null ||
+                _constraint == null ||
+                !_constraint.IsAttached)
+            {
+                Debug.LogWarning(
+                    $"[Winch:{name}] Linked deployment reports a deployed payload, " +
+                    "but the payload/constraint could not be resolved.",
+                    this);
+
+                return false;
+            }
+
+            // If something else adjusted the constraint while stopped,
+            // resume from the actual current deployed length.
+            deployedLength = Mathf.Clamp(
+                _constraint.DeployedLength,
+                minimumDeployedLength,
+                available);
         }
 
         command = WinchCommand.Lower;
@@ -171,36 +275,78 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
 
     public bool TryRaise()
     {
-        if (!EnsurePayloadBoundForDeployment())
+        if (!EnsureDeploymentBound())
             return false;
 
-        if (_payload.IsStowed)
+        RefreshDeploymentRuntimeRefs();
+
+        if (!_deployment.HasDeployedPayload ||
+            _payload == null)
         {
             command = WinchCommand.Stop;
             return true;
         }
 
-        if (_payload.IsCutLoose)
-            return false;
+        if (_constraint == null ||
+            !_constraint.IsAttached)
+        {
+            Debug.LogWarning(
+                $"[Winch:{name}] Cannot raise: deployed payload has no attached TetherConstraint2D.",
+                this);
 
-        BindConstraint();
+            return false;
+        }
+
+        float available = AvailableLineMeters;
+        if (available <= 0f)
+        {
+            Debug.LogWarning(
+                $"[Winch:{name}] Cannot raise: no valid tether line is loaded.",
+                this);
+
+            return false;
+        }
+
+        deployedLength = Mathf.Clamp(
+            _constraint.DeployedLength,
+            minimumDeployedLength,
+            available);
+
+        // Raising is an explicit player intent to dislodge/retrieve the payload.
+        // Anchors use this signal to release their world-space hold before line
+        // length begins decreasing.
+        _deployment.BeginPayloadRetrieval();
+
         command = WinchCommand.Raise;
-        _payload.BeginRetrieving();
         return true;
     }
 
     public void Stop()
     {
+        _deployment?.EndPayloadRetrieval();
         command = WinchCommand.Stop;
     }
 
     public bool QuickRelease()
     {
-        if (!EnsurePayloadBoundForDeployment())
+        if (!EnsureDeploymentBound())
             return false;
 
-        if (_payload.IsStowed && !TryLower())
+        if (!_deployment.HasDeployedPayload &&
+            !TryLower())
+        {
             return false;
+        }
+
+        RefreshDeploymentRuntimeRefs();
+
+        if (_payload == null ||
+            _constraint == null)
+        {
+            return false;
+        }
+
+        _deployment.EndPayloadRetrieval();
 
         command = WinchCommand.QuickRelease;
         return true;
@@ -208,21 +354,217 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
 
     public bool CutLine()
     {
-        if (_payload == null || _payload.IsStowed || _payload.IsCutLoose)
+        if (!EnsureDeploymentBound())
             return false;
 
-        command = WinchCommand.Stop;
+        RefreshDeploymentRuntimeRefs();
 
-        if (_constraint != null)
-            _constraint.Detach();
+        if (_deployment == null ||
+            !_deployment.HasDeployedPayload)
+        {
+            command =
+                WinchCommand.Stop;
 
-        _payload.CutLoose();
+            return false;
+        }
+
+        float constraintLength =
+            _constraint != null
+                ? _constraint.DeployedLength
+                : 0f;
+
+        float cutLength =
+            Mathf.Max(
+                minimumDeployedLength,
+                Mathf.Max(
+                    deployedLength,
+                    constraintLength));
+
+        if (!TryBuildCutLineLossPlan(
+                cutLength,
+                out List<CutLineLossPlanEntry> lossPlan,
+                out float coveredLength))
+        {
+            Debug.LogWarning(
+                $"[Winch:{name}] Cannot cut line safely: deployed length is {cutLength:F2} m, " +
+                $"but valid loaded line only covers {coveredLength:F2} m in slot order. " +
+                "No payload or line state was changed.",
+                this);
+
+            return false;
+        }
+
+        _deployment.EndPayloadRetrieval();
+
+        if (!_deployment.TryCutLooseDeployedPayload(
+                out WorldItem releasedWorldItem) ||
+            releasedWorldItem == null)
+        {
+            return false;
+        }
+
+        ApplyCutLineLossPlan(lossPlan);
+
+        command =
+            WinchCommand.Stop;
+
+        deployedLength =
+            0f;
+
+        _payload =
+            null;
+
+        _constraint =
+            _deployment.TetherConstraint;
+
         return true;
+    }
+
+    private bool TryBuildCutLineLossPlan(
+        float cutLengthMeters,
+        out List<CutLineLossPlanEntry> plan,
+        out float coveredLengthMeters)
+    {
+        EnsureLineContainer();
+
+        plan =
+            new List<CutLineLossPlanEntry>();
+
+        coveredLengthMeters =
+            0f;
+
+        if (lineCatalog == null ||
+            lineContainer == null ||
+            cutLengthMeters <= 0f)
+        {
+            return false;
+        }
+
+        float remaining =
+            cutLengthMeters;
+
+        for (int i = 0;
+             i < lineContainer.SlotCount &&
+             remaining > SegmentBoundaryEpsilonMeters;
+             i++)
+        {
+            InventorySlot slot =
+                lineContainer.GetSlot(i);
+
+            if (slot == null ||
+                slot.IsEmpty ||
+                slot.Instance == null ||
+                slot.Instance.Definition == null)
+            {
+                continue;
+            }
+
+            ItemInstance instance =
+                slot.Instance;
+
+            if (!lineCatalog.TryGet(
+                    instance.Definition,
+                    out TetherLineCatalog.Entry entry) ||
+                entry == null)
+            {
+                continue;
+            }
+
+            float segmentLength =
+                Mathf.Max(0f, entry.LengthMeters);
+
+            if (segmentLength <= 0f)
+                continue;
+
+            int availableQuantity =
+                Mathf.Max(0, instance.Quantity);
+
+            int quantityToRemove = 0;
+
+            while (quantityToRemove < availableQuantity &&
+                   remaining > SegmentBoundaryEpsilonMeters)
+            {
+                quantityToRemove++;
+                coveredLengthMeters += segmentLength;
+                remaining -= segmentLength;
+            }
+
+            if (quantityToRemove <= 0)
+                continue;
+
+            plan.Add(
+                new CutLineLossPlanEntry
+                {
+                    SlotIndex = i,
+                    ExpectedInstance = instance,
+                    QuantityToRemove = quantityToRemove,
+                    SegmentLengthMeters = segmentLength
+                });
+        }
+
+        return remaining <= SegmentBoundaryEpsilonMeters;
+    }
+
+    private void ApplyCutLineLossPlan(
+        List<CutLineLossPlanEntry> plan)
+    {
+        if (plan == null ||
+            plan.Count == 0 ||
+            lineContainer == null)
+        {
+            return;
+        }
+
+        float lostLength = 0f;
+        int lostSegments = 0;
+
+        for (int i = 0; i < plan.Count; i++)
+        {
+            CutLineLossPlanEntry entry = plan[i];
+            InventorySlot slot = lineContainer.GetSlot(entry.SlotIndex);
+
+            if (slot == null ||
+                slot.IsEmpty ||
+                slot.Instance == null ||
+                !ReferenceEquals(slot.Instance, entry.ExpectedInstance))
+            {
+                Debug.LogError(
+                    $"[Winch:{name}] Cut-line loss plan changed unexpectedly at slot {entry.SlotIndex}. " +
+                    "The payload is already released, so this slot was left untouched.",
+                    this);
+                continue;
+            }
+
+            ItemInstance instance = slot.Instance;
+            int quantityToRemove =
+                Mathf.Min(entry.QuantityToRemove, Mathf.Max(0, instance.Quantity));
+
+            if (quantityToRemove <= 0)
+                continue;
+
+            instance.RemoveQuantity(quantityToRemove);
+            lostSegments += quantityToRemove;
+            lostLength += entry.SegmentLengthMeters * quantityToRemove;
+
+            if (instance.IsDepleted())
+                slot.Clear();
+        }
+
+        lineContainer.NotifyChanged();
+        _installedModule?.RefreshMassFromDefinitionAndContents();
+
+        Debug.Log(
+            $"[Winch:{name}] Cut line released payload and sacrificed {lostSegments} loaded segment(s) " +
+            $"covering {lostLength:F2} m in sequential slot order.",
+            this);
     }
 
     public bool CanRemoveInstalledModule(out string reason)
     {
-        if (_payload != null && !_payload.IsStowed)
+        RefreshDeploymentRuntimeRefs();
+
+        if (_deployment != null &&
+            _deployment.HasDeployedPayload)
         {
             reason = "Winch still has a deployed payload. Retrieve/stow it before removing the winch.";
             return false;
@@ -297,102 +639,177 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         lineContainer?.NotifyChanged();
     }
 
+    public void RestorePersistentTetherRuntime(
+        float restoredDeployedLengthMeters)
+    {
+        command =
+            WinchCommand.Stop;
+
+        CacheRefs();
+        RefreshDeploymentRuntimeRefs();
+
+        if (_deployment == null ||
+            !_deployment.HasDeployedPayload ||
+            _constraint == null)
+        {
+            deployedLength =
+                0f;
+
+            return;
+        }
+
+        float restored =
+            Mathf.Max(
+                minimumDeployedLength,
+                restoredDeployedLengthMeters);
+
+        float available =
+            AvailableLineMeters;
+
+        if (available > 0f)
+        {
+            restored =
+                Mathf.Min(
+                    available,
+                    restored);
+        }
+
+        deployedLength =
+            restored;
+
+        _deployment.EndPayloadRetrieval();
+
+        _constraint.SetDeployedLength(
+            deployedLength);
+
+        _constraint.SetLineRatings(
+            WorkingLoadNewtons,
+            BreakingLoadNewtons);
+    }
+
     private void CacheRefs()
     {
         if (_installedModule == null)
             _installedModule = GetComponent<InstalledModule>();
 
-        if (_ownerHardpoint == null && _installedModule != null)
-            _ownerHardpoint = _installedModule.OwnerHardpoint;
+        if (_ownerHardpoint == null &&
+            _installedModule != null)
+        {
+            _ownerHardpoint =
+                _installedModule.OwnerHardpoint;
+        }
 
         if (_ownerHardpoint != null)
         {
             if (_link == null)
-                _link = _ownerHardpoint.GetComponent<TetherWinchLink>();
+            {
+                _link =
+                    _ownerHardpoint.GetComponent<TetherWinchLink>();
+            }
 
-            if (_boatBody == null)
-                _boatBody = _ownerHardpoint.GetComponentInParent<Rigidbody2D>();
         }
 
-        if (_constraint == null)
-            _constraint = GetComponent<TetherConstraint2D>();
-
-        if (_constraint == null)
-            _constraint = gameObject.AddComponent<TetherConstraint2D>();
+        RefreshDeploymentRuntimeRefs();
     }
 
-    private bool EnsurePayloadBoundForDeployment()
+    private bool EnsureDeploymentBound()
     {
         CacheRefs();
 
         if (_link == null)
         {
-            Debug.LogWarning($"[Winch:{name}] No TetherWinchLink exists on owner hardpoint.", this);
+            Debug.LogWarning(
+                $"[Winch:{name}] No TetherWinchLink exists on owner hardpoint.",
+                this);
+
             return false;
         }
 
-        if (!_link.TryGetPayload(out TetherPayloadModule payload) || payload == null)
+        if (!_link.TryGetDeploymentModule(
+                out TetherDeploymentModule deployment) ||
+            deployment == null)
         {
-            Debug.LogWarning($"[Winch:{name}] Linked payload hardpoint has no TetherPayloadModule installed.", this);
+            Debug.LogWarning(
+                $"[Winch:{name}] Linked hardpoint has no TetherDeploymentModule installed.",
+                this);
+
+            _deployment = null;
+            _payload = null;
+            _constraint = null;
             return false;
         }
 
-        _payload = payload;
+        _deployment = deployment;
+        _constraint = _deployment.TetherConstraint;
+        _payload = _deployment.DeployedPayload;
+
+        if (_constraint == null)
+        {
+            Debug.LogWarning(
+                $"[Winch:{name}] Linked TetherDeploymentModule has no TetherConstraint2D.",
+                this);
+
+            return false;
+        }
+
         return true;
     }
 
-    private void BindConstraint()
+    private void RefreshDeploymentRuntimeRefs()
     {
-        if (_constraint == null || _payload == null)
+        if (_link != null &&
+            _link.TryGetDeploymentModule(
+                out TetherDeploymentModule linkedDeployment) &&
+            linkedDeployment != null)
+        {
+            _deployment = linkedDeployment;
+        }
+
+        if (_deployment == null)
+        {
+            _payload = null;
+            _constraint = null;
             return;
+        }
 
-        _constraint.Bind(
-            lineAnchor != null ? lineAnchor : transform,
-            _boatBody,
-            _payload,
-            Mathf.Max(minimumDeployedLength, deployedLength),
-            WorkingLoadNewtons,
-            BreakingLoadNewtons);
-    }
+        _constraint =
+            _deployment.TetherConstraint;
 
-    private float CurrentPayloadDistance()
-    {
-        if (_payload == null)
-            return minimumDeployedLength;
-
-        Vector2 start = lineAnchor != null ? lineAnchor.position : transform.position;
-        Vector2 end = _payload.TetherAnchor.position;
-        return Vector2.Distance(start, end);
+        _payload =
+            _deployment.DeployedPayload;
     }
 
     private void TryAutoDock()
     {
-        if (_payload == null || _payload.IsStowed || _payload.IsCutLoose)
+        if (_deployment == null ||
+            !_deployment.HasDeployedPayload ||
+            _payload == null)
+        {
+            return;
+        }
+
+        WorldItem deployedWorldItem =
+            _deployment.DeployedWorldItem;
+
+        if (deployedWorldItem == null)
             return;
 
-        ResolveOwnerHardpoint();
-        if (_payload.OwnerHardpoint == null)
-            return;
-
-        float distanceToDock = _payload.DistanceToStowPose;
+        float distanceToDock =
+            Vector2.Distance(
+                deployedWorldItem.transform.position,
+                _deployment.PayloadHangPoint.position);
 
         if (distanceToDock > dockingDistance)
             return;
 
-        _payload.BeginDocking();
+        if (!_deployment.TryRecallDeployedPayload())
+            return;
 
-        if (_payload.TryStow())
-        {
-            command = WinchCommand.Stop;
-            deployedLength = 0f;
-            _constraint?.Detach();
-        }
-    }
+        command = WinchCommand.Stop;
+        deployedLength = 0f;
 
-    private void ResolveOwnerHardpoint()
-    {
-        if (_ownerHardpoint == null && _installedModule != null)
-            _ownerHardpoint = _installedModule.OwnerHardpoint;
+        _payload = null;
+        _constraint = _deployment.TetherConstraint;
     }
 
     public void NotifyLineContainerChanged()
@@ -451,32 +868,68 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         if (lineCatalog == null || lineContainer == null)
             return 0f;
 
-        float length = 0f;
-        bool foundAny = false;
+        float totalLength = 0f;
+        float remainingDeployed = Mathf.Max(0f, deployedLength);
+        bool foundDeployedSegment = false;
         float weakestWorking = float.PositiveInfinity;
         float weakestBreaking = float.PositiveInfinity;
 
         for (int i = 0; i < lineContainer.SlotCount; i++)
         {
             InventorySlot slot = lineContainer.GetSlot(i);
-            if (slot == null || slot.IsEmpty || slot.Instance == null || slot.Instance.Definition == null)
+
+            if (slot == null ||
+                slot.IsEmpty ||
+                slot.Instance == null ||
+                slot.Instance.Definition == null)
+            {
+                continue;
+            }
+
+            ItemInstance instance = slot.Instance;
+
+            if (!lineCatalog.TryGet(
+                    instance.Definition,
+                    out TetherLineCatalog.Entry entry) ||
+                entry == null)
+            {
+                continue;
+            }
+
+            float segmentLength = Mathf.Max(0f, entry.LengthMeters);
+            int quantity = Mathf.Max(0, instance.Quantity);
+
+            if (segmentLength <= 0f || quantity <= 0)
                 continue;
 
-            if (!lineCatalog.TryGet(slot.Instance.Definition, out TetherLineCatalog.Entry entry) || entry == null)
-                continue;
+            totalLength += segmentLength * quantity;
 
-            foundAny = true;
-            length += entry.LengthMeters * slot.Instance.Quantity;
-            weakestWorking = Mathf.Min(weakestWorking, entry.WorkingLoadNewtons);
-            weakestBreaking = Mathf.Min(weakestBreaking, entry.BreakingLoadNewtons);
+            for (int unit = 0;
+                 unit < quantity &&
+                 remainingDeployed > SegmentBoundaryEpsilonMeters;
+                 unit++)
+            {
+                foundDeployedSegment = true;
+                weakestWorking = Mathf.Min(weakestWorking, entry.WorkingLoadNewtons);
+                weakestBreaking = Mathf.Min(weakestBreaking, entry.BreakingLoadNewtons);
+                remainingDeployed -= segmentLength;
+            }
         }
 
-        if (!foundAny)
-            return 0f;
+        if (foundDeployedSegment)
+        {
+            workingLoad =
+                float.IsPositiveInfinity(weakestWorking)
+                    ? 0f
+                    : weakestWorking;
 
-        workingLoad = float.IsPositiveInfinity(weakestWorking) ? 0f : weakestWorking;
-        breakingLoad = float.IsPositiveInfinity(weakestBreaking) ? 0f : weakestBreaking;
-        return Mathf.Max(0f, length);
+            breakingLoad =
+                float.IsPositiveInfinity(weakestBreaking)
+                    ? 0f
+                    : weakestBreaking;
+        }
+
+        return Mathf.Max(0f, totalLength);
     }
 
 #if UNITY_EDITOR

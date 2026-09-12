@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entries:
   - itemDefinition: {fileID: 11400000, guid: 5834004e1afeba54ebb693e07c4c43b6, type: 2}
-    lengthMeters: 20
-    workingLoadNewtons: 5000
-    breakingLoadNewtons: 7500
+    lengthMeters: 50
+    workingLoadNewtons: 50
+    breakingLoadNewtons: 75
+  - itemDefinition: {fileID: 11400000, guid: d071409922b6df84da2878709903c8b8, type: 2}
+    lengthMeters: 50
+    workingLoadNewtons: 100
+    breakingLoadNewtons: 150

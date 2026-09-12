@@ -41,11 +41,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BandSharpness: 2.5
-    - _EdgeDarkening: 0.25
+    - _BandSharpness: 0.8
+    - _EdgeDarkening: 1
     - _EnableExternalAlpha: 0
-    - _Repeat: 18
-    - _Twist: 1.5
+    - _Repeat: 5
+    - _Twist: 1
     - _ZWrite: 0
     m_Colors:
     - _BaseColor: {r: 0.58, g: 0.42999998, b: 0.24999997, a: 1}

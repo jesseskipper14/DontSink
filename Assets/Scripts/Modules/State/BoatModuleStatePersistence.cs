@@ -15,6 +15,8 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = false;
 
+    public ItemDefinitionCatalog ItemCatalog => itemCatalog;
+
     private void Awake()
     {
         if (boat == null)

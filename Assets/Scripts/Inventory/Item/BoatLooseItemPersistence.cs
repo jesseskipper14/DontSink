@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [DisallowMultipleComponent]
 public sealed class BoatLooseItemPersistence : MonoBehaviour
@@ -40,8 +41,18 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
                 continue;
 
             WorldItem worldItem = owned.GetComponent<WorldItem>();
-            if (worldItem == null || worldItem.Instance == null)
+            if (worldItem == null ||
+                worldItem.Instance == null ||
+                worldItem.Instance.Definition == null)
+            {
                 continue;
+            }
+
+            if (worldItem.Instance.Definition.WorldPersistence ==
+                WorldItemPersistencePolicy.Never)
+            {
+                continue;
+            }
 
             ItemInstanceSnapshot itemSnapshot = worldItem.Instance.ToSnapshot();
             if (itemSnapshot == null)
@@ -107,18 +118,29 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
             });
         }
 
-        Log($"CaptureManifest complete | count={manifest.looseItems.Count}");
+        CapturePersistentWorldItems(
+            manifest);
+
+        Log(
+            $"CaptureManifest complete | boatLoose={manifest.looseItems.Count} " +
+            $"persistentWorld={(manifest.persistentWorldItems != null ? manifest.persistentWorldItems.Count : 0)}");
 
         return manifest;
     }
 
     public void RestoreManifest(BoatLooseItemManifest manifest)
     {
-        if (manifest == null || manifest.looseItems == null)
+        if (manifest == null)
         {
-            Log("RestoreManifest skipped: manifest/null list.");
+            Log("RestoreManifest skipped: manifest is null.");
             return;
         }
+
+        if (manifest.looseItems == null)
+            manifest.looseItems = new List<BoatLooseItemSnapshot>();
+
+        if (manifest.persistentWorldItems == null)
+            manifest.persistentWorldItems = new List<PersistentWorldItemSnapshot>();
 
         if (boat == null || itemRegistry == null || itemCatalog == null)
         {
@@ -137,6 +159,9 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
         {
             RestoreLooseItem(manifest.looseItems[i]);
         }
+
+        RestorePersistentWorldItems(
+            manifest);
 
         Log("RestoreManifest END");
     }
@@ -194,6 +219,399 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
             $"Restored loose item | itemId='{snapshot.item.itemId}' " +
             $"instanceId='{snapshot.item.instanceId}' " +
             $"boatId='{boat.BoatInstanceId}' pos={worldPos}");
+    }
+
+    private void CapturePersistentWorldItems(
+        BoatLooseItemManifest manifest)
+    {
+        if (manifest == null)
+            return;
+
+        if (manifest.persistentWorldItems == null)
+        {
+            manifest.persistentWorldItems =
+                new List<PersistentWorldItemSnapshot>();
+        }
+
+        PersistentWorldItemSnapshot contextTemplate =
+            BuildCurrentWorldContextTemplate();
+
+        List<PersistentWorldItemSnapshot> merged =
+            new List<PersistentWorldItemSnapshot>();
+
+        // Carry forward persistent items belonging to OTHER contexts. The current
+        // context is replaced from live scene state below, which naturally removes
+        // snapshots for items that were picked up/recovered since the last save.
+        BoatLooseItemManifest previousManifest =
+            GameState.I != null &&
+            GameState.I.boat != null
+                ? GameState.I.boat.looseItems
+                : null;
+
+        if (previousManifest?.persistentWorldItems != null)
+        {
+            for (int i = 0;
+                 i < previousManifest.persistentWorldItems.Count;
+                 i++)
+            {
+                PersistentWorldItemSnapshot old =
+                    previousManifest.persistentWorldItems[i];
+
+                if (old == null ||
+                    old.item == null)
+                {
+                    continue;
+                }
+
+                if (IsSameWorldContext(
+                        old,
+                        contextTemplate))
+                {
+                    continue;
+                }
+
+                merged.Add(
+                    old);
+            }
+        }
+
+        HashSet<string> capturedInstanceIds =
+            new HashSet<string>();
+
+        WorldItem[] worldItems =
+            FindObjectsByType<WorldItem>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+
+        for (int i = 0;
+             i < worldItems.Length;
+             i++)
+        {
+            WorldItem worldItem =
+                worldItems[i];
+
+            if (worldItem == null ||
+                worldItem.Instance == null ||
+                worldItem.Instance.Definition == null)
+            {
+                continue;
+            }
+
+            if (worldItem.gameObject.scene !=
+                gameObject.scene)
+            {
+                continue;
+            }
+
+            if (worldItem.Instance.Definition.WorldPersistence !=
+                WorldItemPersistencePolicy.PersistentWorld)
+            {
+                continue;
+            }
+
+            BoatOwnedItem owned =
+                worldItem.GetComponent<BoatOwnedItem>();
+
+            if (owned != null &&
+                owned.IsOwnedByBoat)
+            {
+                // While aboard, ordinary boat-loose persistence owns this item.
+                // This avoids a second snapshot for the same ItemInstance.
+                continue;
+            }
+
+            ItemInstanceSnapshot itemSnapshot =
+                worldItem.Instance.ToSnapshot();
+
+            if (itemSnapshot == null ||
+                string.IsNullOrWhiteSpace(
+                    itemSnapshot.instanceId))
+            {
+                continue;
+            }
+
+            if (!capturedInstanceIds.Add(
+                    itemSnapshot.instanceId))
+            {
+                continue;
+            }
+
+            merged.Add(
+                new PersistentWorldItemSnapshot
+                {
+                    version =
+                        1,
+
+                    item =
+                        itemSnapshot,
+
+                    contextKind =
+                        contextTemplate.contextKind,
+
+                    sceneName =
+                        contextTemplate.sceneName,
+
+                    nodeStableId =
+                        contextTemplate.nodeStableId,
+
+                    routeFromNodeId =
+                        contextTemplate.routeFromNodeId,
+
+                    routeToNodeId =
+                        contextTemplate.routeToNodeId,
+
+                    routeSeed =
+                        contextTemplate.routeSeed,
+
+                    worldPosition =
+                        worldItem.transform.position,
+
+                    worldRotationZ =
+                        worldItem.transform.eulerAngles.z
+                });
+        }
+
+        manifest.persistentWorldItems =
+            merged;
+    }
+
+    private void RestorePersistentWorldItems(
+        BoatLooseItemManifest manifest)
+    {
+        if (manifest?.persistentWorldItems == null ||
+            itemCatalog == null)
+        {
+            return;
+        }
+
+        PersistentWorldItemSnapshot currentContext =
+            BuildCurrentWorldContextTemplate();
+
+        HashSet<string> liveInstanceIds =
+            CollectLiveWorldItemInstanceIds();
+
+        for (int i = 0;
+             i < manifest.persistentWorldItems.Count;
+             i++)
+        {
+            PersistentWorldItemSnapshot snapshot =
+                manifest.persistentWorldItems[i];
+
+            if (snapshot == null ||
+                snapshot.item == null ||
+                !IsSameWorldContext(
+                    snapshot,
+                    currentContext))
+            {
+                continue;
+            }
+
+            if (!string.IsNullOrWhiteSpace(
+                    snapshot.item.instanceId) &&
+                liveInstanceIds.Contains(
+                    snapshot.item.instanceId))
+            {
+                continue;
+            }
+
+            ItemInstance item =
+                ItemInstance.FromSnapshot(
+                    snapshot.item,
+                    itemCatalog);
+
+            if (item == null ||
+                item.Definition == null ||
+                item.Definition.WorldPersistence !=
+                    WorldItemPersistencePolicy.PersistentWorld)
+            {
+                continue;
+            }
+
+            WorldItem prefab =
+                item.Definition.WorldPrefab;
+
+            if (prefab == null)
+            {
+                Debug.LogWarning(
+                    $"[BoatLooseItemPersistence:{name}] Cannot restore persistent world item " +
+                    $"itemId='{snapshot.item.itemId}': no WorldPrefab.",
+                    this);
+
+                continue;
+            }
+
+            WorldItem spawned =
+                Instantiate(
+                    prefab,
+                    snapshot.worldPosition,
+                    Quaternion.Euler(
+                        0f,
+                        0f,
+                        snapshot.worldRotationZ));
+
+            if (spawned == null)
+                continue;
+
+            spawned.Initialize(
+                item);
+
+            BoatOwnedItem owned =
+                spawned.GetComponent<BoatOwnedItem>();
+
+            if (owned != null)
+                owned.ClearOwnership();
+
+            TetherPayload tetherPayload =
+                spawned.GetComponent<TetherPayload>();
+
+            if (tetherPayload != null)
+            {
+                tetherPayload.SetTetherCollisionLayerActive(
+                    false);
+            }
+
+            if (!string.IsNullOrWhiteSpace(
+                    snapshot.item.instanceId))
+            {
+                liveInstanceIds.Add(
+                    snapshot.item.instanceId);
+            }
+
+            Log(
+                $"Restored persistent world item | itemId='{snapshot.item.itemId}' " +
+                $"instanceId='{snapshot.item.instanceId}' pos={snapshot.worldPosition}");
+        }
+    }
+
+    private PersistentWorldItemSnapshot BuildCurrentWorldContextTemplate()
+    {
+        PersistentWorldItemSnapshot context =
+            new PersistentWorldItemSnapshot
+            {
+                sceneName =
+                    SceneManager.GetActiveScene().name
+            };
+
+        GameState gs =
+            GameState.I;
+
+        if (gs?.activeTravel != null)
+        {
+            context.contextKind =
+                PersistentWorldItemContextKind.Route;
+
+            context.routeFromNodeId =
+                gs.activeTravel.fromNodeStableId;
+
+            context.routeToNodeId =
+                gs.activeTravel.toNodeStableId;
+
+            context.routeSeed =
+                gs.activeTravel.seed;
+
+            return context;
+        }
+
+        if (gs?.player != null &&
+            !string.IsNullOrWhiteSpace(
+                gs.player.currentNodeId))
+        {
+            context.contextKind =
+                PersistentWorldItemContextKind.Node;
+
+            context.nodeStableId =
+                gs.player.currentNodeId;
+
+            return context;
+        }
+
+        context.contextKind =
+            PersistentWorldItemContextKind.Scene;
+
+        return context;
+    }
+
+    private static bool IsSameWorldContext(
+        PersistentWorldItemSnapshot a,
+        PersistentWorldItemSnapshot b)
+    {
+        if (a == null ||
+            b == null ||
+            a.contextKind != b.contextKind)
+        {
+            return false;
+        }
+
+        if (!string.Equals(
+                a.sceneName,
+                b.sceneName,
+                System.StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        switch (a.contextKind)
+        {
+            case PersistentWorldItemContextKind.Node:
+                return string.Equals(
+                    a.nodeStableId,
+                    b.nodeStableId,
+                    System.StringComparison.Ordinal);
+
+            case PersistentWorldItemContextKind.Route:
+                return
+                    a.routeSeed ==
+                        b.routeSeed &&
+                    string.Equals(
+                        a.routeFromNodeId,
+                        b.routeFromNodeId,
+                        System.StringComparison.Ordinal) &&
+                    string.Equals(
+                        a.routeToNodeId,
+                        b.routeToNodeId,
+                        System.StringComparison.Ordinal);
+
+            default:
+                return true;
+        }
+    }
+
+    private static HashSet<string> CollectLiveWorldItemInstanceIds()
+    {
+        HashSet<string> ids =
+            new HashSet<string>();
+
+        WorldItem[] worldItems =
+            FindObjectsByType<WorldItem>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+
+        for (int i = 0;
+             i < worldItems.Length;
+             i++)
+        {
+            WorldItem worldItem =
+                worldItems[i];
+
+            if (worldItem == null ||
+                worldItem.Instance == null)
+            {
+                continue;
+            }
+
+            ItemInstanceSnapshot snapshot =
+                worldItem.Instance.ToSnapshot();
+
+            if (snapshot != null &&
+                !string.IsNullOrWhiteSpace(
+                    snapshot.instanceId))
+            {
+                ids.Add(
+                    snapshot.instanceId);
+            }
+        }
+
+        return ids;
     }
 
     private bool TryRestoreMoneyChestSlotSecured(

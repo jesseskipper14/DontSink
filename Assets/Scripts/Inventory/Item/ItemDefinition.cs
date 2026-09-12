@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Survival.Buffs;
 
 [System.Flags]
@@ -150,14 +151,35 @@ public sealed class ItemDefinition : ScriptableObject
     [Min(0f)]
     [SerializeField] private float externalAirMaxAirBonus = 0f;
 
-    [Header("Container")]
-    [SerializeField] private bool isContainer;
+    [Header("Portable Container (this item itself stores other items)")]
+    [Tooltip("Enable only when THIS portable item is itself a container, such as a backpack, toolbox, or crate.")]
+    [FormerlySerializedAs("isContainer")]
+    [SerializeField] private bool isPortableContainer;
+
+    [Tooltip("Number of storage slots inside this portable item.")]
+    [FormerlySerializedAs("containerSlotCount")]
     [Min(0)]
-    [SerializeField] private int containerSlotCount = 0;
+    [SerializeField] private int portableContainerSlotCount = 0;
+
+    [Tooltip("Number of columns used when displaying this portable item's contents.")]
+    [FormerlySerializedAs("containerColumnCount")]
     [Min(1)]
-    [SerializeField] private int containerColumnCount = 4;
-    [SerializeField] private ItemCategoryFlags allowedContainerCategories = ItemCategoryFlags.None;
-    [SerializeField] private int containerTier = 0;
+    [SerializeField] private int portableContainerColumnCount = 4;
+
+    [Header("Portable Container - Accepted Items")]
+    [Tooltip("If enabled, this portable container accepts any item that passes its normal nesting rules.")]
+    [SerializeField] private bool portableContainerAcceptsAnyItem = false;
+
+    [Tooltip("Items matching ANY of these categories are accepted. Leave None if categories should not grant acceptance.")]
+    [FormerlySerializedAs("allowedContainerCategories")]
+    [SerializeField] private ItemCategoryFlags portableContainerAllowedCategories = ItemCategoryFlags.None;
+
+    [Tooltip("Specific ItemDefinitions that are accepted even if their category is not allowed. Useful for special-purpose containers.")]
+    [SerializeField] private List<ItemDefinition> explicitlyAllowedPortableContainerItems = new();
+
+    [Tooltip("Prevents equal-or-higher-tier containers from being nested inside this portable container.")]
+    [FormerlySerializedAs("containerTier")]
+    [SerializeField] private int portableContainerTier = 0;
 
     [Header("Pickup")]
     [SerializeField] private PickupInteractionMode pickupMode = PickupInteractionMode.Instant;
@@ -180,6 +202,14 @@ public sealed class ItemDefinition : ScriptableObject
 
     [Header("World")]
     [SerializeField] private WorldItem worldPrefab;
+
+    [Tooltip(
+        "Controls whether a physical WorldItem survives scene/save transitions when it is not in inventory. " +
+        "BoatOnly is the safe default for normal items. PersistentWorld is for recoverable important objects " +
+        "such as anchors, diving bells, and expensive salvage hardware.")]
+    [SerializeField]
+    private WorldItemPersistencePolicy worldPersistence =
+        WorldItemPersistencePolicy.BoatOnly;
 
     public string ItemId => itemId;
     public string DisplayName => string.IsNullOrWhiteSpace(displayName) ? name : displayName;
@@ -251,30 +281,83 @@ public sealed class ItemDefinition : ScriptableObject
         return false;
     }
 
-    public bool IsContainer => isContainer && containerSlotCount > 0;
-    public int ContainerSlotCount => IsContainer ? Mathf.Max(1, containerSlotCount) : 0;
-    public int ContainerColumnCount => Mathf.Max(1, containerColumnCount);
-    public ItemCategoryFlags AllowedContainerCategories => allowedContainerCategories;
-    public int ContainerTier => Mathf.Max(0, containerTier);
+    // Clearer portable-container names.
+    public bool IsPortableContainer =>
+        isPortableContainer &&
+        portableContainerSlotCount > 0;
+
+    public int PortableContainerSlotCount =>
+        IsPortableContainer
+            ? Mathf.Max(1, portableContainerSlotCount)
+            : 0;
+
+    public int PortableContainerColumnCount =>
+        Mathf.Max(1, portableContainerColumnCount);
+
+    public bool PortableContainerAcceptsAnyItem =>
+        portableContainerAcceptsAnyItem;
+
+    public ItemCategoryFlags PortableContainerAllowedCategories =>
+        portableContainerAllowedCategories;
+
+    public IReadOnlyList<ItemDefinition> ExplicitlyAllowedPortableContainerItems =>
+        explicitlyAllowedPortableContainerItems;
+
+    public int PortableContainerTier =>
+        Mathf.Max(0, portableContainerTier);
+
+    // Compatibility aliases used by the existing inventory/container code.
+    public bool IsContainer => IsPortableContainer;
+    public int ContainerSlotCount => PortableContainerSlotCount;
+    public int ContainerColumnCount => PortableContainerColumnCount;
+    public ItemCategoryFlags AllowedContainerCategories => PortableContainerAllowedCategories;
+    public int ContainerTier => PortableContainerTier;
     public PreferredDisplacedDestination PreferredDisplacedDestination => preferredDisplacedDestination;
     public IReadOnlyList<BottomBarSlotType> DisallowedParentSlots => disallowedParentSlots;
     public WorldItem WorldPrefab => worldPrefab;
+    public WorldItemPersistencePolicy WorldPersistence => worldPersistence;
 
     public bool CanContainerAccept(ItemDefinition incoming)
     {
-        if (!IsContainer || incoming == null)
+        if (!IsPortableContainer || incoming == null)
             return false;
 
-        if (allowedContainerCategories == ItemCategoryFlags.None)
+        bool accepted =
+            portableContainerAcceptsAnyItem ||
+            IsExplicitlyAllowedPortableContainerItem(incoming) ||
+            (portableContainerAllowedCategories != ItemCategoryFlags.None &&
+             (portableContainerAllowedCategories & incoming.ItemCategories) != 0);
+
+        if (!accepted)
             return false;
 
-        if ((allowedContainerCategories & incoming.ItemCategories) == 0)
+        // Preserve the existing anti-container-recursion/tier rule.
+        if (incoming.IsContainer &&
+            incoming.ContainerTier >= ContainerTier)
+        {
             return false;
-
-        if (incoming.IsContainer && incoming.ContainerTier >= ContainerTier)
-            return false;
+        }
 
         return true;
+    }
+
+    private bool IsExplicitlyAllowedPortableContainerItem(ItemDefinition incoming)
+    {
+        if (incoming == null ||
+            explicitlyAllowedPortableContainerItems == null)
+        {
+            return false;
+        }
+
+        for (int i = 0;
+             i < explicitlyAllowedPortableContainerItems.Count;
+             i++)
+        {
+            if (explicitlyAllowedPortableContainerItems[i] == incoming)
+                return true;
+        }
+
+        return false;
     }
 
     public bool IsAllowedInParentSlot(BottomBarSlotType parentSlot)
@@ -298,8 +381,8 @@ public sealed class ItemDefinition : ScriptableObject
         unitExposedVolumeContribution = Mathf.Max(0f, unitExposedVolumeContribution);
         maxStack = Mathf.Max(1, maxStack);
         maxCharges = Mathf.Max(1, maxCharges);
-        containerSlotCount = Mathf.Max(0, containerSlotCount);
-        containerColumnCount = Mathf.Max(1, containerColumnCount);
+        portableContainerSlotCount = Mathf.Max(0, portableContainerSlotCount);
+        portableContainerColumnCount = Mathf.Max(1, portableContainerColumnCount);
         pickupHoldDuration = Mathf.Max(0.05f, pickupHoldDuration);
 
         chargeUsePerSecond = Mathf.Max(0f, chargeUsePerSecond);
@@ -313,12 +396,16 @@ public sealed class ItemDefinition : ScriptableObject
         if (IsContainer)
             maxStack = 1;
 
-        containerTier = Mathf.Max(0, containerTier);
+        portableContainerTier = Mathf.Max(0, portableContainerTier);
 
-        if (!IsContainer)
+        if (!IsPortableContainer)
         {
-            allowedContainerCategories = ItemCategoryFlags.None;
-            containerTier = 0;
+            portableContainerAcceptsAnyItem = false;
+            portableContainerAllowedCategories = ItemCategoryFlags.None;
+            portableContainerTier = 0;
+
+            if (explicitlyAllowedPortableContainerItems != null)
+                explicitlyAllowedPortableContainerItems.Clear();
         }
 
         if (!hasCharges)

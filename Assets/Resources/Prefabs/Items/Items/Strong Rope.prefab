@@ -1,5 +1,73 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6889915487197069556
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6686923432888897088}
+  - component: {fileID: 7859936533270339369}
+  m_Layer: 10
+  m_Name: InteractionCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6686923432888897088
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6889915487197069556}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6415755432460154699}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &7859936533270339369
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6889915487197069556}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.8
 --- !u!1 &7571194650393018128
 GameObject:
   m_ObjectHideFlags: 0
@@ -16,8 +84,9 @@ GameObject:
   - component: {fileID: 6831831925101136781}
   - component: {fileID: -5666289955406433938}
   - component: {fileID: 7655103505737600733}
+  - component: {fileID: 923266326423437298}
   m_Layer: 10
-  m_Name: Rope
+  m_Name: Strong Rope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,6 +106,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6298247239454974913}
+  - {fileID: 6686923432888897088}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2788753477155534010
@@ -81,9 +151,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1165509675
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Sprite: {fileID: 5915552919383038655, guid: b3fdd21d834e4d644b086c3c545e01ad, type: 3}
+  m_Sprite: {fileID: 4357466381534752692, guid: ce83f0c49046b4945b99bd75a7a66d88, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -128,7 +198,7 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.5, y: -0.5}
   m_Radius: 0.2
 --- !u!50 &5263012356571068860
 Rigidbody2D:
@@ -214,6 +284,7 @@ MonoBehaviour:
   hullLayerName: Hull
   groundLayerName: Ground
   worldLedgeLayerName: WorldLedge
+  ghostCollisionLayerName: GhostCollision
   verboseLogging: 0
 --- !u!114 &7655103505737600733
 MonoBehaviour:
@@ -236,6 +307,42 @@ MonoBehaviour:
   restoreOriginalSortingOnUnowned: 1
   restoreOriginalGameObjectLayerOnUnowned: 1
   verboseLogging: 0
+--- !u!58 &923266326423437298
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571194650393018128}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.5, y: 0.5}
+  m_Radius: 0.2
 --- !u!1 &9130302141471108845
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,10 +417,10 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1165509675
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: -1
-  m_Sprite: {fileID: 5915552919383038655, guid: b3fdd21d834e4d644b086c3c545e01ad, type: 3}
-  m_Color: {r: 0.49381453, g: 0.59341216, b: 0.764151, a: 1}
+  m_Sprite: {fileID: 4357466381534752692, guid: ce83f0c49046b4945b99bd75a7a66d88, type: 3}
+  m_Color: {r: 0.3218227, g: 0.49116948, b: 0.6037736, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

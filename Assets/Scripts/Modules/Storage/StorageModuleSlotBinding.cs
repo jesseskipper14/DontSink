@@ -17,14 +17,37 @@ public sealed class StorageModuleSlotBinding : IInventorySlotBinding
 
     public ItemInstance GetItem()
     {
-        storageModule?.EnsureContainer();
-        return storageModule?.ContainerState?.GetSlot(slotIndex)?.Instance;
+        if (storageModule == null)
+            return null;
+
+        TetherDeploymentModule tetherDeployment =
+            storageModule.GetComponent<TetherDeploymentModule>();
+
+        if (tetherDeployment != null &&
+            tetherDeployment.TryGetReservedPayloadForSlot(
+                slotIndex,
+                out ItemInstance reservedPayload))
+        {
+            return reservedPayload;
+        }
+
+        storageModule.EnsureContainer();
+        return storageModule.ContainerState?.GetSlot(slotIndex)?.Instance;
     }
 
     public ItemInstance RemoveItem()
     {
         if (storageModule == null)
             return null;
+
+        TetherDeploymentModule tetherDeployment =
+            storageModule.GetComponent<TetherDeploymentModule>();
+
+        if (tetherDeployment != null &&
+            tetherDeployment.IsPayloadSlotReserved(slotIndex))
+        {
+            return null;
+        }
 
         storageModule.EnsureContainer();
 

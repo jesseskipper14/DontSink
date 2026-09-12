@@ -16,7 +16,9 @@ public sealed class TetherWinchLink : MonoBehaviour
     }
 
     public Hardpoint LinkedPayloadHardpoint => linkedPayloadHardpoint;
+    public Hardpoint LinkedDeploymentHardpoint => linkedPayloadHardpoint;
     public bool HasLinkedPayload => linkedPayloadHardpoint != null;
+    public bool HasLinkedDeployment => linkedPayloadHardpoint != null;
 
     private void Reset()
     {
@@ -59,14 +61,15 @@ public sealed class TetherWinchLink : MonoBehaviour
         linkedPayloadHardpoint = null;
     }
 
-    public bool TryGetPayload(out TetherPayloadModule payload)
+    public bool TryGetDeploymentModule(out TetherDeploymentModule deployment)
     {
-        payload = null;
+        deployment = null;
 
         if (linkedPayloadHardpoint == null)
             return false;
 
-        return linkedPayloadHardpoint.TryGetInstalledModuleComponent(out payload) && payload != null;
+        return linkedPayloadHardpoint.TryGetInstalledModuleComponent(out deployment) &&
+               deployment != null;
     }
 
     private void ResolveOwner()

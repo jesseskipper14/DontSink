@@ -27,6 +27,27 @@ public sealed class SceneTransitionController : MonoBehaviour
         Log($"Awake | nodeScene='{nodeSceneName}' | boatScene='{boatSceneName}'");
     }
 
+    public bool CanDepartCurrentScene(out string reason)
+    {
+        GameState gs = GameState.I;
+        if (gs == null)
+        {
+            reason = "GameState is unavailable.";
+            return false;
+        }
+
+        Boat boat = FindCurrentBoat(gs);
+
+        if (!BoatDepartureGate.CanDepart(boat, out reason))
+        {
+            LogWarning($"Departure blocked | {reason}");
+            return false;
+        }
+
+        reason = null;
+        return true;
+    }
+
     public void StartTravelToBoatScene(
         string fromNodeStableId,
         string toNodeStableId,
@@ -34,12 +55,20 @@ public sealed class SceneTransitionController : MonoBehaviour
         float routeLength,
         string boatInstanceId,
         string boatPrefabGuid)
-        //System.Collections.Generic.List<CargoManifest.Snapshot> cargoManifest)
+    //System.Collections.Generic.List<CargoManifest.Snapshot> cargoManifest)
     {
         GameState gs = GameState.I;
         if (gs == null)
         {
             LogError("StartTravelToBoatScene failed because GameState is null.");
+            return;
+        }
+
+        if (!CanDepartCurrentScene(out string departureBlockReason))
+        {
+            ReportDepartureBlocked(
+                $"StartTravelToBoatScene from='{fromNodeStableId}' to='{toNodeStableId}'",
+                departureBlockReason);
             return;
         }
 
@@ -64,14 +93,25 @@ public sealed class SceneTransitionController : MonoBehaviour
             routeLength,
             boatInstanceId,
             boatPrefabGuid);
-            //payloadCargo);
+        //payloadCargo);
 
         gs.BeginTravel(payload);
+
+        string sourceName =
+            GameMessageLocationResolver.ResolveDisplayName(
+                fromNodeStableId);
+
+        string destinationName =
+            GameMessageLocationResolver.ResolveDisplayName(
+                toNodeStableId);
+
+        GameMessageService.PostInfo(
+            $"Travel started: {sourceName} → {destinationName}.");
 
         Log(
             $"StartTravelToBoatScene | from={fromNodeStableId} | to={toNodeStableId} " +
             $"| seed={seed} | routeLength={routeLength} | boatId={boatInstanceId} ");
-            //$"| boatGuid={boatPrefabGuid} | cargoCount={(payloadCargo != null ? payloadCargo.Count : 0)}");
+        //$"| boatGuid={boatPrefabGuid} | cargoCount={(payloadCargo != null ? payloadCargo.Count : 0)}");
 
         SceneManager.LoadScene(boatSceneName);
     }
@@ -92,6 +132,14 @@ public sealed class SceneTransitionController : MonoBehaviour
             return;
         }
 
+        if (!CanDepartCurrentScene(out string departureBlockReason))
+        {
+            ReportDepartureBlocked(
+                "CompleteTravelToDestination",
+                departureBlockReason);
+            return;
+        }
+
         SaveCurrentPlayerLoadout();
         CapturePlayerSceneContext(gs, "CompleteTravelToDestination");
         SaveCurrentBoatState(
@@ -100,8 +148,17 @@ public sealed class SceneTransitionController : MonoBehaviour
             payload.toNodeStableId,
             MoneyChestLossContext.Route);
 
-        gs.player.currentNodeId = payload.toNodeStableId;
+        string destinationName =
+            GameMessageLocationResolver.ResolveDisplayName(
+                payload.toNodeStableId);
+
+        gs.player.currentNodeId =
+            payload.toNodeStableId;
+
         gs.ClearTravel();
+
+        GameMessageService.PostInfo(
+            $"Arrived at {destinationName}.");
 
         Log($"CompleteTravelToDestination | currentNodeId={gs.player.currentNodeId}");
         SceneManager.LoadScene(nodeSceneName);
@@ -123,6 +180,14 @@ public sealed class SceneTransitionController : MonoBehaviour
             return;
         }
 
+        if (!CanDepartCurrentScene(out string departureBlockReason))
+        {
+            ReportDepartureBlocked(
+                "AbortTravelToSource",
+                departureBlockReason);
+            return;
+        }
+
         SaveCurrentPlayerLoadout();
         CapturePlayerSceneContext(gs, "AbortTravelToSource");
         SaveCurrentBoatState(
@@ -131,11 +196,36 @@ public sealed class SceneTransitionController : MonoBehaviour
             payload.toNodeStableId,
             MoneyChestLossContext.Route);
 
-        gs.player.currentNodeId = payload.fromNodeStableId;
+        string sourceName =
+            GameMessageLocationResolver.ResolveDisplayName(
+                payload.fromNodeStableId);
+
+        gs.player.currentNodeId =
+            payload.fromNodeStableId;
+
         gs.ClearTravel();
+
+        GameMessageService.PostInfo(
+            $"Returned to {sourceName}.");
 
         Log($"AbortTravelToSource | currentNodeId={gs.player.currentNodeId}");
         SceneManager.LoadScene(nodeSceneName);
+    }
+
+    public void ReportDepartureBlocked(
+        string context,
+        string reason)
+    {
+        string safeReason =
+            string.IsNullOrWhiteSpace(reason)
+                ? "Departure is currently blocked."
+                : reason.Trim();
+
+        LogWarning(
+            $"Departure blocked | context='{context}' | {safeReason}");
+
+        GameMessageService.PostWarning(
+            $"Cannot depart: {safeReason}");
     }
 
     public bool SaveCurrentPlayerLoadout()
@@ -241,6 +331,7 @@ public sealed class SceneTransitionController : MonoBehaviour
 
         CaptureLooseItems(gs, boat);
         CaptureModulesAndPower(gs, boat);
+        CaptureTetherState(gs, boat);
         CaptureCompartments(gs, boat);
         CaptureAccessStates(gs, boat);
         CaptureBoatTransform(gs, boat);
@@ -363,6 +454,37 @@ public sealed class SceneTransitionController : MonoBehaviour
 
         int moduleCount = modules?.modules != null ? modules.modules.Count : -1;
         Log($"CaptureModulesAndPower | moduleCount={moduleCount} | power={(power != null ? $"{power.currentPower:F1}/{power.maxPower:F1}" : "NULL")}");
+    }
+
+    private void CaptureTetherState(
+        GameState gs,
+        Boat boat)
+    {
+        if (gs == null ||
+            boat == null)
+        {
+            return;
+        }
+
+        BoatTetherStatePersistence persistence =
+            boat.GetComponent<BoatTetherStatePersistence>();
+
+        if (persistence == null)
+            persistence =
+                boat.gameObject
+                    .AddComponent<BoatTetherStatePersistence>();
+
+        BoatTetherStateManifest manifest =
+            persistence.CaptureManifest();
+
+        gs.SetBoatTetherState(
+            manifest,
+            $"Captured from boat '{boat.name}'");
+
+        Log(
+            $"CaptureTetherState | " +
+            $"winches={(manifest?.winches != null ? manifest.winches.Count : -1)} " +
+            $"deployments={(manifest?.deployments != null ? manifest.deployments.Count : -1)}");
     }
 
     private void CaptureCompartments(GameState gs, Boat boat)

@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
-  m_Name: item_anchor_basic
+  m_Name: item_anchor_hole_basic
   m_EditorClassIdentifier: 
-  itemId: item_anchor_basic
-  displayName: Basic Anchor
-  icon: {fileID: 8097277784629573537, guid: 85e537cabc1629149b1ca8582d5e799f, type: 3}
+  itemId: item_anchor_hole_basic
+  displayName: Basic Anchor Hole
+  icon: {fileID: 7755926931582595544, guid: ccf88bf3588b5ca498a75e1c83b076ae, type: 3}
   itemCategories: 2048
   toolCapabilities: []
   consumesContainedChargesWhileUsed: 0
   chargeSourceCategories: 1024
   chargeUsePerSecond: 0
   minimumChargeToUse: 1
-  unitMass: 4
+  unitMass: 1
   unitExposedVolumeContribution: 0
   maxStack: 1
   hasCharges: 0

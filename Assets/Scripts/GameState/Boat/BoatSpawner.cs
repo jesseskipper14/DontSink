@@ -61,6 +61,7 @@ public sealed class BoatSpawner : MonoBehaviour
         AssignBoatIdentity(gs, boatGO);
         RestoreBoatTransform(gs, boatGO);
         RestoreModulesAndPower(gs, boatGO);
+        RestoreTetherState(gs, boatGO);
         RestoreCompartments(gs, boatGO);
         RestoreAccessStates(gs, boatGO);
         //RestoreCargo(gs, boatGO);
@@ -361,6 +362,69 @@ public sealed class BoatSpawner : MonoBehaviour
         Log("RestoreModulesAndPower END");
     }
 
+    private void RestoreTetherState(
+        GameState gs,
+        GameObject boatGO)
+    {
+        Log(
+            "RestoreTetherState BEGIN");
+
+        if (gs == null)
+        {
+            LogWarning(
+                "RestoreTetherState skipped: GameState is NULL.");
+
+            return;
+        }
+
+        if (boatGO == null)
+        {
+            LogWarning(
+                "RestoreTetherState skipped: boatGO is NULL.");
+
+            return;
+        }
+
+        BoatTetherStateManifest manifest =
+            gs.boat != null
+                ? gs.boat.tetherState
+                : null;
+
+        int winchCount =
+            manifest?.winches != null
+                ? manifest.winches.Count
+                : 0;
+
+        int deploymentCount =
+            manifest?.deployments != null
+                ? manifest.deployments.Count
+                : 0;
+
+        Log(
+            $"RestoreTetherState resolved | winches={winchCount} deployments={deploymentCount}");
+
+        if (manifest == null)
+        {
+            Log(
+                "RestoreTetherState: no manifest to restore.");
+
+            return;
+        }
+
+        BoatTetherStatePersistence persistence =
+            boatGO.GetComponent<BoatTetherStatePersistence>();
+
+        if (persistence == null)
+            persistence =
+                boatGO.AddComponent<BoatTetherStatePersistence>();
+
+        persistence.RestoreManifest(
+            manifest);
+
+        Log(
+            "RestoreTetherState END");
+    }
+
     private void RestoreCompartments(GameState gs, GameObject boatGO)
     {
         Log("RestoreCompartments BEGIN");
@@ -450,16 +514,38 @@ public sealed class BoatSpawner : MonoBehaviour
 
         BoatLooseItemManifest manifest = gs.boat != null ? gs.boat.looseItems : null;
 
+        int boatLooseCount =
+            manifest?.looseItems != null
+                ? manifest.looseItems.Count
+                : 0;
+
+        int persistentWorldCount =
+            manifest?.persistentWorldItems != null
+                ? manifest.persistentWorldItems.Count
+                : 0;
+
         Log(
             $"RestoreLooseItems resolved manifest={(manifest != null ? "OK" : "NULL")} " +
-            $"| count={(manifest?.looseItems != null ? manifest.looseItems.Count : -1)}");
+            $"| boatLoose={boatLooseCount} " +
+            $"| persistentWorld={persistentWorldCount}");
 
-        if (manifest == null || manifest.looseItems == null || manifest.looseItems.Count == 0)
+        if (manifest == null)
         {
-            Log("RestoreLooseItems: no loose items to restore.");
+            Log("RestoreLooseItems: no manifest to restore.");
             return;
         }
 
+        if (boatLooseCount == 0 &&
+            persistentWorldCount == 0)
+        {
+            Log("RestoreLooseItems: manifest contains no items to restore.");
+            return;
+        }
+
+        // TODO(Persistence ownership): Persistent-world item restoration does not conceptually
+        // belong to BoatSpawner / BoatLooseItemPersistence. Once cut-line persistence is stable,
+        // split independent world restoration into a scene-level coordinator/service and leave
+        // BoatSpawner responsible only for boat-specific state.
         BoatLooseItemPersistence persistence = boatGO.GetComponent<BoatLooseItemPersistence>();
         if (persistence == null)
         {

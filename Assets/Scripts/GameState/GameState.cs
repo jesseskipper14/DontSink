@@ -45,7 +45,8 @@ public sealed class GameState : MonoBehaviour
         boatPrefabGuid = "",
         boatInstanceId = "boat_001",
         //cargo = new List<CargoManifest.Snapshot>(),
-        looseItems = new BoatLooseItemManifest()
+        looseItems = new BoatLooseItemManifest(),
+        tetherState = new BoatTetherStateManifest()
     };
 
     private void Awake()
@@ -176,6 +177,9 @@ public sealed class GameState : MonoBehaviour
 
             if (boat.looseItems == null)
                 LogWarning("BoatSaveState looseItems is NULL.");
+
+            if (boat.tetherState == null)
+                LogWarning("BoatSaveState tetherState is NULL.");
         }
 
         LogState("SetBoatSaveState END");
@@ -196,6 +200,29 @@ public sealed class GameState : MonoBehaviour
         boat.looseItems = manifest ?? new BoatLooseItemManifest();
 
         LogState($"SetBoatLooseItems reason='{reason}'");
+    }
+
+    public void SetBoatTetherState(
+        BoatTetherStateManifest manifest,
+        string reason = "")
+    {
+        EnsureBoatStateDefaults();
+
+        if (boat == null)
+        {
+            Debug.LogWarning(
+                $"[GameState:{name}] SetBoatTetherState failed because boat state is NULL. reason='{reason}'",
+                this);
+
+            return;
+        }
+
+        boat.tetherState =
+            manifest ??
+            new BoatTetherStateManifest();
+
+        LogState(
+            $"SetBoatTetherState reason='{reason}'");
     }
 
     public void SetBoatAccessStates(BoatAccessStateManifest manifest, string reason = "")
@@ -287,7 +314,8 @@ public sealed class GameState : MonoBehaviour
                 boatPrefabGuid = "",
                 boatInstanceId = "boat_001",
                 //cargo = new List<CargoManifest.Snapshot>(),
-                looseItems = new BoatLooseItemManifest()
+                looseItems = new BoatLooseItemManifest(),
+                tetherState = new BoatTetherStateManifest()
             };
 
             return;
@@ -298,6 +326,9 @@ public sealed class GameState : MonoBehaviour
 
         if (boat.looseItems == null)
             boat.looseItems = new BoatLooseItemManifest();
+
+        if (boat.tetherState == null)
+            boat.tetherState = new BoatTetherStateManifest();
 
         if (boat.moduleStates == null)
             boat.moduleStates = new BoatModuleStateManifest();
@@ -333,7 +364,8 @@ public sealed class GameState : MonoBehaviour
             $"boatInstanceId='{state.boatInstanceId}', " +
             $"boatPrefabGuid='{state.boatPrefabGuid}', " +
             //$"cargoCount={(state.cargo != null ? state.cargo.Count : -1)}, " +
-            $"looseItems={(state.looseItems != null ? DescribeLooseItems(state.looseItems) : "NULL")}";
+            $"looseItems={(state.looseItems != null ? DescribeLooseItems(state.looseItems) : "NULL")}, " +
+            $"tether={(state.tetherState != null ? DescribeTetherState(state.tetherState) : "NULL")}";
     }
 
     private string DescribeLooseItems(BoatLooseItemManifest manifest)
@@ -342,6 +374,18 @@ public sealed class GameState : MonoBehaviour
             return "NULL";
 
         return $"version={manifest.version}, count={(manifest.looseItems != null ? manifest.looseItems.Count : -1)}";
+    }
+
+    private string DescribeTetherState(
+        BoatTetherStateManifest manifest)
+    {
+        if (manifest == null)
+            return "NULL";
+
+        return
+            $"version={manifest.version}, " +
+            $"winches={(manifest.winches != null ? manifest.winches.Count : -1)}, " +
+            $"deployments={(manifest.deployments != null ? manifest.deployments.Count : -1)}";
     }
 
     private void Log(string msg)
@@ -492,6 +536,7 @@ public sealed class BoatSaveState
 
     //public List<CargoManifest.Snapshot> cargo;
     public BoatLooseItemManifest looseItems;
+    public BoatTetherStateManifest tetherState;
 
     public BoatModuleStateManifest moduleStates;
     public BoatPowerSnapshot power;

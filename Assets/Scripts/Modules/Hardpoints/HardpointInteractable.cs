@@ -134,6 +134,16 @@ public sealed class HardpointInteractable :
         if (!CanAccessHardpointByContext(context))
             return;
 
+        if (TryGetRemovalBlockingTetherDeployment(out TetherDeploymentModule blockingDeployment))
+        {
+            Debug.Log(
+                $"[HardpointInteractable] Cannot remove module while tether payload is deployed " +
+                $"from '{blockingDeployment.name}'. Stow the payload first.",
+                this);
+
+            return;
+        }
+
         if (InstalledModuleHasContents())
         {
             Debug.Log("[HardpointInteractable] Cannot remove module while it contains items.", this);
@@ -307,6 +317,12 @@ public sealed class HardpointInteractable :
             return "Open Helm";
         }
 
+        if (hardpoint.InstalledModule != null &&
+            hardpoint.InstalledModule.GetComponent<WinchModule>() != null)
+        {
+            return "Open Winch";
+        }
+
         return "Open Module";
     }
 
@@ -317,6 +333,9 @@ public sealed class HardpointInteractable :
 
         if (hardpoint != null && hardpoint.HasInstalledModule)
         {
+            if (TryGetRemovalBlockingTetherDeployment(out _))
+                return "Remove Module (Stow Payload First)";
+
             if (InstalledModuleHasContents())
                 return "Remove Module (Empty First)";
 
@@ -483,6 +502,29 @@ public sealed class HardpointInteractable :
             }
 
             helmRunner.OpenForHardpoint(
+                hardpoint);
+
+            return;
+        }
+
+        if (hardpoint != null &&
+            hardpoint.HasInstalledModule &&
+            hardpoint.InstalledModule != null &&
+            hardpoint.InstalledModule.GetComponent<WinchModule>() != null)
+        {
+            WinchOverlayRunner winchRunner =
+                FindFirstObjectByType<WinchOverlayRunner>();
+
+            if (winchRunner == null)
+            {
+                Debug.LogWarning(
+                    "[HardpointInteractable] No WinchOverlayRunner found.",
+                    this);
+
+                return;
+            }
+
+            winchRunner.OpenForHardpoint(
                 hardpoint);
 
             return;
@@ -720,6 +762,57 @@ public sealed class HardpointInteractable :
             return false;
 
         return hardpoint != null && hardpoint.CanInstall(moduleDefinition);
+    }
+
+    private bool TryGetRemovalBlockingTetherDeployment(
+        out TetherDeploymentModule deployment)
+    {
+        deployment = null;
+
+        if (hardpoint == null ||
+            !hardpoint.HasInstalledModule ||
+            hardpoint.InstalledModule == null)
+        {
+            return false;
+        }
+
+        InstalledModule installed =
+            hardpoint.InstalledModule;
+
+        // Deployment scaffolding owns the deployed WorldItem even though its
+        // StorageModule payload slot is temporarily empty.
+        if (installed.TryGetComponent(
+                out TetherDeploymentModule localDeployment) &&
+            localDeployment != null &&
+            localDeployment.HasDeployedPayload)
+        {
+            deployment =
+                localDeployment;
+
+            return true;
+        }
+
+        // A winch is also not removable while the deployment module it is
+        // actively rigged to still has a payload hanging from the line.
+        if (installed.GetComponent<WinchModule>() != null)
+        {
+            TetherWinchLink link =
+                hardpoint.GetComponent<TetherWinchLink>();
+
+            if (link != null &&
+                link.TryGetDeploymentModule(
+                    out TetherDeploymentModule linkedDeployment) &&
+                linkedDeployment != null &&
+                linkedDeployment.HasDeployedPayload)
+            {
+                deployment =
+                    linkedDeployment;
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private bool InstalledModuleHasContents()

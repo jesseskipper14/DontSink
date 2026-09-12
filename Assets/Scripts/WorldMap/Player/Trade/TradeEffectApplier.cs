@@ -233,6 +233,13 @@ public static class TradeEffectApplier
             fee,
             finalDelta);
 
+        // Central authoritative success point for all normal market trades.
+        // Keeping this here means NodeScene and BoatScene runners do not each
+        // need their own duplicate message-feed wiring.
+        GameMessageTradeReporter.Report(
+            receipt,
+            null);
+
         return true;
     }
 

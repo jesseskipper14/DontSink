@@ -38,8 +38,13 @@ public sealed class WinchLineSlotBinding : IInventorySlotBinding
     {
         displaced = incoming;
 
-        if (winch == null || incoming == null || !winch.CanAcceptLine(incoming))
+        if (winch == null ||
+            incoming == null ||
+            incoming.Quantity != 1 ||
+            !winch.CanAcceptLine(incoming))
+        {
             return false;
+        }
 
         InventorySlot slot = winch.LineContainer?.GetSlot(slotIndex);
         if (slot == null)
@@ -54,6 +59,10 @@ public sealed class WinchLineSlotBinding : IInventorySlotBinding
 
     public bool CanAccept(ItemInstance incoming)
     {
-        return winch != null && incoming != null && winch.CanAcceptLine(incoming);
+        return
+            winch != null &&
+            incoming != null &&
+            incoming.Quantity == 1 &&
+            winch.CanAcceptLine(incoming);
     }
 }

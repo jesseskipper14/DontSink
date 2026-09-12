@@ -268,6 +268,9 @@ MonoBehaviour:
   recentCourseQualityDistance: 25
   courseNeutralQuality: 0.65
   routeCoverageAhead: 1200
+  recoveryMinimumRejoinLeadDistance: 60
+  recoveryRejoinLeadPerOffRouteUnit: 0.65
+  recoveryCurvePointSpacing: 10
   environmentalDisturbance:
     minimumWaveAmplitude: 0.5
     waveAmplitudeForFullSeverity: 10
@@ -431,7 +434,7 @@ MonoBehaviour:
   boat: {fileID: 6897017861151174155}
   boatRoot: {fileID: 9137842763216339877}
   targetCamera: {fileID: 0}
-  active: 1
+  active: 0
   mode: 0
   mouseButton: 0
   shiftClickRemoves: 1
@@ -456,7 +459,7 @@ MonoBehaviour:
   logMouseKey: 290
   respectGameplayInputBlocker: 1
   ignoreClicksWhenPointerOverUI: 0
-  showOverlay: 1
+  showOverlay: 0
   overlayPosition: {x: 15, y: 200}
   overlaySize: {x: 520, y: 170}
   toggleOverlayKey: 291

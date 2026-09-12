@@ -93,13 +93,9 @@ public sealed class StorageModule : MonoBehaviour, IInstalledModuleLifecycle
 
         StorageModuleDefinition storage = def.Storage;
 
-        if (storage.IsFixedStorage)
-            return true;
-
-        if (storage.IsContainerRack)
-            return CanRackAcceptItem(storage, item);
-
-        return false;
+        // Installed storage policy is authored on ModuleDefinition.Storage.
+        // This runtime component owns state and delegates acceptance decisions.
+        return storage.CanAcceptItem(item.Definition);
     }
 
     public bool HasAnyContents()
@@ -118,24 +114,6 @@ public sealed class StorageModule : MonoBehaviour, IInstalledModuleLifecycle
         return false;
     }
 
-    private bool CanRackAcceptItem(StorageModuleDefinition storage, ItemInstance item)
-    {
-        ItemDefinition itemDef = item.Definition;
-
-        if (itemDef == null)
-            return false;
-
-        bool isPortableContainer = itemDef.IsContainer;
-        bool isCargo = (itemDef.ItemCategories & ItemCategoryFlags.Cargo) != 0;
-
-        if (isPortableContainer && storage.AcceptsPortableContainers)
-            return true;
-
-        if (isCargo && storage.AcceptsCargoCrates)
-            return true;
-
-        return false;
-    }
 
     private ModuleDefinition GetModuleDefinition()
     {
@@ -201,6 +179,18 @@ public sealed class StorageModule : MonoBehaviour, IInstalledModuleLifecycle
     {
         if (item == null)
             return false;
+
+        // A tether deployment module may temporarily remove its payload
+        // ItemInstance from the physical storage slot while the WorldItem is
+        // deployed. That slot is still logically reserved for that payload.
+        TetherDeploymentModule tetherDeployment =
+            GetComponent<TetherDeploymentModule>();
+
+        if (tetherDeployment != null &&
+            tetherDeployment.IsPayloadSlotReserved(slotIndex))
+        {
+            return false;
+        }
 
         return CanAcceptItem(item);
     }

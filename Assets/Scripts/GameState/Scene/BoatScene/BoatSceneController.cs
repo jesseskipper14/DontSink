@@ -236,8 +236,6 @@ public sealed class BoatSceneController : MonoBehaviour
         if (_completed)
             return;
 
-        _completed = true;
-
         SceneTransitionController transition = SceneTransitionController.I;
         if (transition == null)
         {
@@ -245,10 +243,13 @@ public sealed class BoatSceneController : MonoBehaviour
                 "[BoatSceneController] SceneTransitionController missing on abort. " +
                 "Cannot safely persist/transition. Add SceneTransitionController to bootstrap.",
                 this);
-            _completed = false;
             return;
         }
 
+        if (!TryPassDepartureGate(transition, "Return to source"))
+            return;
+
+        _completed = true;
         transition.AbortTravelToSource();
     }
 
@@ -257,8 +258,6 @@ public sealed class BoatSceneController : MonoBehaviour
         if (_completed)
             return;
 
-        _completed = true;
-
         SceneTransitionController transition = SceneTransitionController.I;
         if (transition == null)
         {
@@ -266,11 +265,43 @@ public sealed class BoatSceneController : MonoBehaviour
                 "[BoatSceneController] SceneTransitionController missing on completion. " +
                 "Cannot safely persist/transition. Add SceneTransitionController to bootstrap.",
                 this);
-            _completed = false;
             return;
         }
 
+        if (!TryPassDepartureGate(transition, "Travel completion"))
+            return;
+
+        _completed = true;
         transition.CompleteTravelToDestination();
+    }
+
+    private bool TryPassDepartureGate(
+        SceneTransitionController transition,
+        string actionLabel)
+    {
+        if (transition == null)
+            return false;
+
+        if (transition.CanDepartCurrentScene(out string reason))
+            return true;
+
+        LogWarning($"{actionLabel} blocked | {reason}");
+        transition.ReportDepartureBlocked(actionLabel, reason);
+        ShowDepartureBlocked(reason);
+        return false;
+    }
+
+    private void ShowDepartureBlocked(string reason)
+    {
+        EnsureDockingPanel();
+
+        DockTrigger trigger = _activeDockInRange;
+        if (dockingPanel == null || trigger == null)
+            return;
+
+        dockingPanel.Show(
+            $"Cannot depart: {reason}",
+            onDock: () => ConfirmDock(trigger));
     }
 
     [ContextMenu("DEBUG: Dock to Source (Abort Travel)")]
@@ -297,6 +328,14 @@ public sealed class BoatSceneController : MonoBehaviour
         }
 
         CompleteTravelToDestination();
+    }
+
+    private void LogWarning(string msg)
+    {
+        if (!verboseLogging)
+            return;
+
+        Debug.LogWarning($"[BoatSceneController] {msg}", this);
     }
 
     private void Log(string msg)
