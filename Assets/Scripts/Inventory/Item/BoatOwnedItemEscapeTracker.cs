@@ -10,6 +10,7 @@ public sealed class BoatOwnedItemEscapeTracker : MonoBehaviour
 
     private Boat _cachedBoat;
     private BoatItemContainmentZone _cachedZone;
+    private DivingBellContainedItem _bellContainedItem;
 
     // One loud failure per Boat, not one per loose item. A cargo spill should not
     // produce 300 modal screams because the same boat is misconfigured once.
@@ -21,6 +22,8 @@ public sealed class BoatOwnedItemEscapeTracker : MonoBehaviour
     {
         if (ownedItem == null)
             ownedItem = GetComponent<BoatOwnedItem>();
+
+        ResolveBellContainment();
     }
 
     private void Update()
@@ -28,6 +31,29 @@ public sealed class BoatOwnedItemEscapeTracker : MonoBehaviour
         if (ownedItem == null || !ownedItem.IsOwnedByBoat)
         {
             _outsideTimer = 0f;
+            return;
+        }
+
+        ResolveBellContainment();
+
+        if (_bellContainedItem != null &&
+            _bellContainedItem.IsContainedInBell)
+        {
+            _outsideTimer = 0f;
+
+            DivingBellOccupancy bell =
+                _bellContainedItem.CurrentBell;
+
+            // Docked bell cargo is still physically supported by the boat, so it
+            // may contribute directly to boat mass/COM for now.
+            //
+            // Once deployed, ownership remains intact but direct boat mass support
+            // stops. A later passenger/cargo mass pass can transfer that load to
+            // the bell itself without double-counting it on the boat.
+            ownedItem.SetPhysicallyContainedByOwningBoat(
+                bell != null &&
+                bell.IsDocked);
+
             return;
         }
 
@@ -166,6 +192,15 @@ public sealed class BoatOwnedItemEscapeTracker : MonoBehaviour
         // can create absurd COM values and destabilize the entire boat simulation.
         Debug.Break();
 #endif
+    }
+
+    private void ResolveBellContainment()
+    {
+        if (_bellContainedItem == null)
+        {
+            _bellContainedItem =
+                GetComponent<DivingBellContainedItem>();
+        }
     }
 
     private bool TryGetOwningBoat(out Boat boat)

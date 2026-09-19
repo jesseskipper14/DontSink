@@ -117,6 +117,28 @@ public sealed class WorldItemContainerInteractable :
 
     private bool CanAccessByBoatContext(in InteractContext context)
     {
+        DivingBellContainedItem bellContained =
+            GetComponent<DivingBellContainedItem>() ??
+            GetComponentInParent<DivingBellContainedItem>();
+
+        if (bellContained != null &&
+            bellContained.IsContainedInBell)
+        {
+            DivingBellOccupancy bell =
+                bellContained.CurrentBell;
+
+            bool sameBellOccupant =
+                bell != null &&
+                context.InteractorGO != null &&
+                bell.Contains(
+                    context.InteractorGO);
+
+            Log(
+                $"Access by diving-bell context | bell='{(bell != null ? bell.name : "NULL")}' ok={sameBellOccupant}");
+
+            return sameBellOccupant;
+        }
+
         if (!requireMatchingBoatBoardingContext)
             return true;
 

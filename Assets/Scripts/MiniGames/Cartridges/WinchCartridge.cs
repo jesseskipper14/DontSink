@@ -3,7 +3,9 @@ using MiniGames;
 
 /// <summary>
 /// Dedicated Winch cartridge.
-/// Presentation and user intent only; WinchModule remains runtime authority.
+/// Presentation and command-intent emission only for winch controls;
+/// WinchModule remains runtime authority.
+/// Line-slot inventory transfer UI is intentionally unchanged in this pass.
 /// </summary>
 public sealed class WinchCartridge :
     IMiniGameCartridge,
@@ -456,69 +458,111 @@ public sealed class WinchCartridge :
 
     private void TryLower()
     {
-        if (_winch == null)
-            return;
-
-        bool ok =
-            _winch.TryLower();
-
-        _statusNote =
-            ok
-                ? "LOWER COMMAND ACCEPTED"
-                : "LOWER COMMAND REJECTED";
+        EmitControlIntent(
+            WinchControlIntent.Lower);
     }
 
     private void TryRaise()
     {
-        if (_winch == null)
-            return;
-
-        bool ok =
-            _winch.TryRaise();
-
-        _statusNote =
-            ok
-                ? "RAISE COMMAND ACCEPTED"
-                : "RAISE COMMAND REJECTED";
+        EmitControlIntent(
+            WinchControlIntent.Raise);
     }
 
     private void Stop()
     {
-        if (_winch == null)
-            return;
-
-        _winch.Stop();
-
-        _statusNote =
-            "WINCH STOPPED";
+        EmitControlIntent(
+            WinchControlIntent.Stop);
     }
 
     private void QuickRelease()
     {
-        if (_winch == null)
-            return;
-
-        bool ok =
-            _winch.QuickRelease();
-
-        _statusNote =
-            ok
-                ? "BRAKE RELEASED"
-                : "QUICK RELEASE REJECTED";
+        EmitControlIntent(
+            WinchControlIntent.QuickRelease);
     }
 
     private void CutLine()
     {
-        if (_winch == null)
-            return;
+        EmitControlIntent(
+            WinchControlIntent.CutLine);
+    }
 
-        bool ok =
-            _winch.CutLine();
+    private void EmitControlIntent(
+        WinchControlIntent intent)
+    {
+        if (_ctx == null ||
+            _ctx.emitEffect == null)
+        {
+            _statusNote =
+                "WINCH CONTROL ROUTER UNAVAILABLE";
+
+            return;
+        }
+
+        WinchControlIntentPayload payload =
+            new WinchControlIntentPayload
+            {
+                version =
+                    WinchControlIntentPayload.CurrentVersion,
+
+                intent =
+                    intent
+            };
 
         _statusNote =
-            ok
-                ? "LINE CUT | PAYLOAD RELEASED"
-                : "CUT LINE REJECTED";
+            $"{intent.ToString().ToUpperInvariant()} REQUESTED";
+
+        _ctx.emitEffect.Invoke(
+            new MiniGameEffect
+            {
+                kind =
+                    MiniGameEffectKind.Control,
+
+                system =
+                    WinchControlIntentPayload.EffectSystem,
+
+                targetId =
+                    _ctx.targetId,
+
+                value01 =
+                    1f,
+
+                quality01 =
+                    1f,
+
+                durationSeconds =
+                    0f,
+
+                v2 =
+                    Vector2.zero,
+
+                payloadJson =
+                    JsonUtility.ToJson(
+                        payload)
+            });
+    }
+
+    /// <summary>
+    /// Result callback from the authoritative control router.
+    /// The cartridge displays the result but never applies winch state itself.
+    /// </summary>
+    public void NotifyControlIntentApplied(
+        WinchControlIntent intent,
+        bool success,
+        string message)
+    {
+        if (!string.IsNullOrWhiteSpace(
+                message))
+        {
+            _statusNote =
+                message;
+
+            return;
+        }
+
+        _statusNote =
+            success
+                ? $"{intent.ToString().ToUpperInvariant()} ACCEPTED"
+                : $"{intent.ToString().ToUpperInvariant()} REJECTED";
     }
 
     private enum PlayerLineSourceKind

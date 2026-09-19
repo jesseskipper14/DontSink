@@ -72,15 +72,100 @@ public sealed class Hardpoint : MonoBehaviour
         }
     }
 
-    public bool CanInstall(ModuleDefinition moduleDefinition)
+    /// <summary>
+    /// Lightweight compatibility check used by prompt/UI discovery.
+    ///
+    /// Important: structural support is deliberately NOT checked here. A module
+    /// that fits this hardpoint should still expose its Install action so the
+    /// player can attempt the install and receive a useful failure reason.
+    ///
+    /// Authoritative support validation happens inside TryInstall().
+    /// </summary>
+    public bool CanInstall(
+        ModuleDefinition moduleDefinition)
     {
+        return
+            CanInstall(
+                moduleDefinition,
+                out _);
+    }
+
+    public bool CanInstall(
+        ModuleDefinition moduleDefinition,
+        out string reason)
+    {
+        reason =
+            null;
+
         if (moduleDefinition == null)
+        {
+            reason =
+                "Module definition is null.";
+
             return false;
+        }
 
         if (HasInstalledModule)
-            return false;
+        {
+            reason =
+                "Hardpoint already has an installed module.";
 
-        return ModuleMatchesAcceptedTypes(moduleDefinition);
+            return false;
+        }
+
+        if (!ModuleMatchesAcceptedTypes(
+                moduleDefinition))
+        {
+            reason =
+                $"Module '{moduleDefinition.DisplayName}' is not compatible with hardpoint types: " +
+                $"{GetAcceptedTypesText()}.";
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Full authoritative install validation, including boat support.
+    /// </summary>
+    public bool CanInstallAuthoritatively(
+        ModuleDefinition moduleDefinition,
+        out string reason)
+    {
+        if (!CanInstall(
+                moduleDefinition,
+                out reason))
+        {
+            return false;
+        }
+
+        if (!moduleDefinition.RequiresBoatSupport)
+            return true;
+
+        HardpointSupportFootprint support =
+            GetComponent<HardpointSupportFootprint>();
+
+        if (support == null)
+        {
+            support =
+                GetComponentInChildren<HardpointSupportFootprint>(
+                    true);
+        }
+
+        if (support == null)
+        {
+            reason =
+                $"Requires {moduleDefinition.RequiredBoatSupportWidth:0.##} m of boat support, " +
+                "but this hardpoint has no support footprint.";
+
+            return false;
+        }
+
+        return
+            support.TryValidateModuleSupport(
+                moduleDefinition,
+                out reason);
     }
 
     public bool ModuleMatchesAcceptedTypes(ModuleDefinition moduleDefinition)
@@ -291,8 +376,32 @@ public sealed class Hardpoint : MonoBehaviour
     {
         spawnedModule = null;
 
-        if (!CanInstall(moduleDefinition))
+        if (!CanInstallAuthoritatively(
+                moduleDefinition,
+                out string installBlockReason))
+        {
+            if (!string.IsNullOrWhiteSpace(
+                    installBlockReason))
+            {
+                string warning =
+                    $"Cannot install {moduleDefinition?.DisplayName ?? "module"}: " +
+                    installBlockReason;
+
+                Debug.LogWarning(
+                    $"[Hardpoint:{HardpointId}] {warning}",
+                    this);
+
+                if (Application.isPlaying &&
+                    moduleDefinition != null &&
+                    moduleDefinition.RequiresBoatSupport)
+                {
+                    GameMessageService.PostWarning(
+                        warning);
+                }
+            }
+
             return false;
+        }
 
         if (moduleDefinition.InstalledPrefab == null)
         {
@@ -429,12 +538,15 @@ public sealed class Hardpoint : MonoBehaviour
             return false;
         }
 
-        if (!ModuleMatchesAcceptedTypes(startingModuleDefinition))
+        if (!CanInstallAuthoritatively(
+                startingModuleDefinition,
+                out string installBlockReason))
         {
             Debug.LogWarning(
-                $"[Hardpoint] Cannot install starting module '{startingModuleDefinition.DisplayName}' on '{name}'. " +
-                $"Hardpoint accepts: {GetAcceptedTypesText()}",
+                $"[Hardpoint] Cannot install starting module '{startingModuleDefinition.DisplayName}' " +
+                $"on '{name}': {installBlockReason}",
                 this);
+
             return false;
         }
 

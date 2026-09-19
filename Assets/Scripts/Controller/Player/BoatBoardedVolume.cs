@@ -57,9 +57,32 @@ public sealed class BoatBoardedVolume : MonoBehaviour
             return;
 
         // Only unboard if they were boarded to THIS boat.
-        if (boarding.IsBoarded && boarding.CurrentBoatRoot == boatRoot)
+        if (boarding.IsBoarded &&
+            boarding.CurrentBoatRoot == boatRoot)
         {
-            other.transform.SetParent(null, worldPositionStays: true);
+            Physics2D.SyncTransforms();
+
+            Vector2 playerPoint =
+                ResolvePlayerReferencePoint(
+                    boarding);
+
+            // One child collider can exit while the player's physical center is
+            // still legitimately inside this boat. Do not let that transient exit
+            // callback tear down the entire boat context.
+            if (TryFindContainingVolume(
+                    playerPoint,
+                    out BoatBoardedVolume containingVolume) &&
+                containingVolume != null &&
+                containingVolume.BoatRoot == boatRoot)
+            {
+                boarding.RefreshCurrentBoatVisualState();
+                return;
+            }
+
+            boarding.transform.SetParent(
+                null,
+                worldPositionStays: true);
+
             boarding.Unboard();
         }
     }
@@ -114,9 +137,41 @@ public sealed class BoatBoardedVolume : MonoBehaviour
         return TryFindContainingVolume(chest.transform.position, out volume);
     }
 
+    public static bool TryFindContainingVolume(
+        PlayerBoardingState boarding,
+        out BoatBoardedVolume volume)
+    {
+        if (boarding == null)
+        {
+            volume = null;
+            return false;
+        }
+
+        return
+            TryFindContainingVolume(
+                ResolvePlayerReferencePoint(
+                    boarding),
+                out volume);
+    }
+
     public static bool IsInsideAnyVolume(Vector2 worldPoint)
     {
         return TryFindContainingVolume(worldPoint, out _);
+    }
+
+    private static Vector2 ResolvePlayerReferencePoint(
+        PlayerBoardingState boarding)
+    {
+        if (boarding == null)
+            return Vector2.zero;
+
+        Rigidbody2D rb =
+            boarding.GetComponent<Rigidbody2D>();
+
+        if (rb != null)
+            return rb.worldCenterOfMass;
+
+        return boarding.transform.position;
     }
 
     public static bool IsInsideAnyVolume(MoneyChestState chest)

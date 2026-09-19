@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public sealed class BoatLooseItemManifest
 {
-    public int version = 2;
+    public int version = 3;
 
     [SerializeReference]
     public List<BoatLooseItemSnapshot> looseItems = new();

@@ -265,8 +265,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -2135464765
-  m_SortingLayer: 7
+  m_SortingLayerID: -1870559867
+  m_SortingLayer: 3
   m_SortingOrder: 110
   m_Sprite: {fileID: -8518987619575090350, guid: 861f1ac3f15953648b70b0a7cc4e7bcf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -437,12 +437,14 @@ MonoBehaviour:
   minimumDeployedLength: 0.2
   dockingDistance: 0.45
   quickReleaseSlackMeters: 0.25
+  spoolTransitionSeconds: 0.5
   lineContainer:
     slotCount: 0
     columnCount: 0
     slots: []
   command: 0
   deployedLength: 0
+  currentLineSpeedMetersPerSecond: 0
   debugLineItem: {fileID: 11400000, guid: 5834004e1afeba54ebb693e07c4c43b6, type: 2}
   references:
     version: 2

@@ -4,7 +4,7 @@ using UnityEngine;
 [Serializable]
 public sealed class BoatLooseItemSnapshot
 {
-    public int version = 2;
+    public int version = 3;
 
     public string owningBoatInstanceId;
 
@@ -16,6 +16,14 @@ public sealed class BoatLooseItemSnapshot
 
     public string sceneHint;
     public bool wasSleeping;
+
+    // v3: optional physical diving-bell containment context.
+    // Ordinary boat-local pose above remains as a safe fallback for legacy saves
+    // or if the referenced bell cannot be reconstructed.
+    public bool wasContainedInDivingBell;
+    public string divingBellPayloadInstanceId;
+    public Vector2 divingBellLocalPosition;
+    public float divingBellLocalRotationZ;
 
     // Secured cargo/item state.
     public bool isSecured;

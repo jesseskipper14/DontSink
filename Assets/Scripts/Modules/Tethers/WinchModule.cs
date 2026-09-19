@@ -16,10 +16,20 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
     [SerializeField, Min(0.01f)] private float dockingDistance = 0.45f;
     [SerializeField, Min(0f)] private float quickReleaseSlackMeters = 0.25f;
 
+    [Tooltip(
+        "How long the controlled winch takes to transition from its current line speed " +
+        "to a new commanded speed. This models spool/brake inertia so Stop and Raise do " +
+        "not instantaneously arrest a free-spooling payload.")]
+    [SerializeField, Min(0f)] private float spoolTransitionSeconds = 0.5f;
+
     [Header("Runtime")]
     [SerializeField] private ItemContainerState lineContainer;
     [SerializeField] private WinchCommand command = WinchCommand.Stop;
     [SerializeField] private float deployedLength;
+
+    [Tooltip(
+        "Signed line speed in meters/second. Positive = paying out, negative = reeling in.")]
+    [SerializeField] private float currentLineSpeedMetersPerSecond;
 
 #if UNITY_EDITOR
     [Header("Debug")]
@@ -34,7 +44,13 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
     private TetherPayload _payload;
     private ItemContainerState _subscribedLineContainer;
 
+    private bool _spoolTransitionActive;
+    private float _spoolTransitionStartSpeed;
+    private float _spoolTransitionTargetSpeed;
+    private float _spoolTransitionElapsed;
+
     private const float SegmentBoundaryEpsilonMeters = 0.001f;
+    private const float SpoolSpeedEpsilon = 0.001f;
 
     private struct CutLineLossPlanEntry
     {
@@ -74,6 +90,7 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
     }
     public float CurrentTension => _constraint != null ? _constraint.CurrentTension : 0f;
     public float CurrentDistance => _constraint != null ? _constraint.CurrentDistance : 0f;
+    public float CurrentLineSpeedMetersPerSecond => currentLineSpeedMetersPerSecond;
     public bool IsOverWorkingLoad => _constraint != null && _constraint.IsOverWorkingLoad;
     public bool IsOverBreakingLoad => _constraint != null && _constraint.IsOverBreakingLoad;
     public bool HasDeployedPayload => _deployment != null && _deployment.HasDeployedPayload;
@@ -93,6 +110,16 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
     {
         RefreshDeploymentRuntimeRefs();
 
+        if (_constraint != null &&
+            _constraint.TryConsumeBreak(
+                out float breakTension))
+        {
+            HandleTetherBreak(
+                breakTension);
+
+            return;
+        }
+
         if (_deployment == null ||
             !_deployment.HasDeployedPayload ||
             _payload == null ||
@@ -101,6 +128,7 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
             if (command != WinchCommand.Stop)
                 command = WinchCommand.Stop;
 
+            ResetSpoolMotion();
             return;
         }
 
@@ -109,53 +137,111 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         {
             _deployment.EndPayloadRetrieval();
             command = WinchCommand.Stop;
+            ResetSpoolMotion();
             return;
         }
+
+        float dt =
+            Mathf.Max(
+                0f,
+                Time.fixedDeltaTime);
 
         switch (command)
         {
             case WinchCommand.Lower:
-                _deployment.EndPayloadRetrieval();
+                {
+                    EnsureSpoolTarget(
+                        Mathf.Max(
+                            0f,
+                            reelSpeedMetersPerSecond));
 
-                deployedLength = Mathf.Min(
-                    available,
-                    deployedLength + reelSpeedMetersPerSecond * Time.fixedDeltaTime);
-                break;
+                    TickSpoolTransition(dt);
+                    RefreshRetrievalIntentForActualSpoolMotion();
+                    ApplyControlledSpoolMotion(available, dt);
+
+                    if (currentLineSpeedMetersPerSecond < -SpoolSpeedEpsilon)
+                        TryAutoDock();
+
+                    break;
+                }
 
             case WinchCommand.Raise:
-                // Raise is authoritative retrieval intent for the entire time
-                // this command remains active. Reasserting it each physics step
-                // makes the behavior deterministic even if another caller touched
-                // retrieval state between command changes.
-                _deployment.BeginPayloadRetrieval();
+                {
+                    // Rated pull limits active hauling, but the brake can still slow a
+                    // free-spooling payload toward zero instead of freezing line length
+                    // in one physics step.
+                    bool canActivelyHaul =
+                        ratedPullNewtons <= 0f ||
+                        CurrentTension <= ratedPullNewtons;
 
-                float speedScale =
-                    ratedPullNewtons <= 0f ||
-                    CurrentTension <= ratedPullNewtons
-                        ? 1f
-                        : 0f;
+                    float targetSpeed =
+                        canActivelyHaul
+                            ? -Mathf.Max(
+                                0f,
+                                reelSpeedMetersPerSecond)
+                            : 0f;
 
-                deployedLength = Mathf.Max(
-                    minimumDeployedLength,
-                    deployedLength -
-                    reelSpeedMetersPerSecond *
-                    speedScale *
-                    Time.fixedDeltaTime);
+                    EnsureSpoolTarget(targetSpeed);
+                    TickSpoolTransition(dt);
 
-                TryAutoDock();
-                break;
+                    // Raise is explicit retrieval intent even while the drum is still
+                    // braking through a positive payout speed.
+                    _deployment.BeginPayloadRetrieval();
+
+                    ApplyControlledSpoolMotion(available, dt);
+
+                    if (currentLineSpeedMetersPerSecond <= SpoolSpeedEpsilon)
+                        TryAutoDock();
+
+                    break;
+                }
 
             case WinchCommand.QuickRelease:
-                _deployment.EndPayloadRetrieval();
+                {
+                    _deployment.EndPayloadRetrieval();
+                    CancelSpoolTransition();
 
-                float target = Mathf.Min(
-                    available,
-                    Mathf.Max(
-                        deployedLength,
-                        CurrentDistance + quickReleaseSlackMeters));
+                    float previousLength =
+                        deployedLength;
 
-                deployedLength = target;
-                break;
+                    float target =
+                        Mathf.Min(
+                            available,
+                            Mathf.Max(
+                                deployedLength,
+                                CurrentDistance + quickReleaseSlackMeters));
+
+                    deployedLength =
+                        target;
+
+                    currentLineSpeedMetersPerSecond =
+                        dt > 0f
+                            ? Mathf.Max(
+                                0f,
+                                (deployedLength - previousLength) / dt)
+                            : 0f;
+
+                    break;
+                }
+
+            case WinchCommand.Stop:
+            default:
+                {
+                    EnsureSpoolTarget(0f);
+                    TickSpoolTransition(dt);
+
+                    // If Stop was pressed while line was still physically reeling in,
+                    // keep retrieval-aware payloads released until the drum actually
+                    // reaches zero speed. This avoids re-latching an anchor while the
+                    // spool is still coasting inward.
+                    RefreshRetrievalIntentForActualSpoolMotion();
+                    ApplyControlledSpoolMotion(available, dt);
+
+                    if (currentLineSpeedMetersPerSecond < -SpoolSpeedEpsilon)
+                        TryAutoDock();
+
+                    break;
+                }
         }
 
         if (_constraint != null &&
@@ -181,9 +267,93 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         _deployment?.EndPayloadRetrieval();
 
         command = WinchCommand.Stop;
+        ResetSpoolMotion();
         _deployment = null;
         _payload = null;
         _constraint = null;
+    }
+
+    /// <summary>
+    /// Authoritative entry point for external winch control requests.
+    /// UI, local input, and future network/host routing should request an intent
+    /// here rather than directly mutating command, deployed length, or spool state.
+    /// </summary>
+    public bool TryApplyControlIntent(
+        WinchControlIntent intent,
+        out string message)
+    {
+        switch (intent)
+        {
+            case WinchControlIntent.Lower:
+                {
+                    bool ok =
+                        TryLower();
+
+                    message =
+                        ok
+                            ? "LOWER COMMAND ACCEPTED"
+                            : "LOWER COMMAND REJECTED";
+
+                    return ok;
+                }
+
+            case WinchControlIntent.Stop:
+                {
+                    Stop();
+
+                    message =
+                        "WINCH STOPPED";
+
+                    return true;
+                }
+
+            case WinchControlIntent.Raise:
+                {
+                    bool ok =
+                        TryRaise();
+
+                    message =
+                        ok
+                            ? "RAISE COMMAND ACCEPTED"
+                            : "RAISE COMMAND REJECTED";
+
+                    return ok;
+                }
+
+            case WinchControlIntent.QuickRelease:
+                {
+                    bool ok =
+                        QuickRelease();
+
+                    message =
+                        ok
+                            ? "BRAKE RELEASED"
+                            : "QUICK RELEASE REJECTED";
+
+                    return ok;
+                }
+
+            case WinchControlIntent.CutLine:
+                {
+                    bool ok =
+                        CutLine();
+
+                    message =
+                        ok
+                            ? "LINE CUT | PAYLOAD RELEASED"
+                            : "CUT LINE REJECTED";
+
+                    return ok;
+                }
+
+            default:
+                {
+                    message =
+                        $"UNKNOWN WINCH CONTROL INTENT: {intent}";
+
+                    return false;
+                }
+        }
     }
 
     public bool TryLower()
@@ -270,6 +440,11 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         }
 
         command = WinchCommand.Lower;
+        StartSpoolTransition(
+            Mathf.Max(
+                0f,
+                reelSpeedMetersPerSecond));
+
         return true;
     }
 
@@ -284,6 +459,7 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
             _payload == null)
         {
             command = WinchCommand.Stop;
+            ResetSpoolMotion();
             return true;
         }
 
@@ -318,13 +494,18 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         _deployment.BeginPayloadRetrieval();
 
         command = WinchCommand.Raise;
+        StartSpoolTransition(
+            -Mathf.Max(
+                0f,
+                reelSpeedMetersPerSecond));
+
         return true;
     }
 
     public void Stop()
     {
-        _deployment?.EndPayloadRetrieval();
         command = WinchCommand.Stop;
+        StartSpoolTransition(0f);
     }
 
     public bool QuickRelease()
@@ -349,6 +530,7 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         _deployment.EndPayloadRetrieval();
 
         command = WinchCommand.QuickRelease;
+        CancelSpoolTransition();
         return true;
     }
 
@@ -408,6 +590,8 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         command =
             WinchCommand.Stop;
 
+        ResetSpoolMotion();
+
         deployedLength =
             0f;
 
@@ -418,6 +602,100 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
             _deployment.TetherConstraint;
 
         return true;
+    }
+
+    private void HandleTetherBreak(
+        float breakTension)
+    {
+        float breakingLoadAtFailure =
+            BreakingLoadNewtons;
+
+        float constraintLength =
+            _constraint != null
+                ? _constraint.DeployedLength
+                : 0f;
+
+        float lostLineLength =
+            Mathf.Max(
+                minimumDeployedLength,
+                Mathf.Max(
+                    deployedLength,
+                    constraintLength));
+
+        bool hasLossPlan =
+            TryBuildCutLineLossPlan(
+                lostLineLength,
+                out List<CutLineLossPlanEntry> lossPlan,
+                out float coveredLength);
+
+        _deployment?.EndPayloadRetrieval();
+        command = WinchCommand.Stop;
+        ResetSpoolMotion();
+
+        bool released =
+            _deployment != null &&
+            _deployment.TryCutLooseDeployedPayload(
+                out WorldItem releasedWorldItem) &&
+            releasedWorldItem != null;
+
+        if (released &&
+            hasLossPlan)
+        {
+            // V1 overload semantics intentionally match manual Cut Line:
+            // every whole loaded segment needed to cover the deployed length
+            // is sacrificed in sequential slot order. We do not invent a
+            // fractional rope remnant or a hidden break position.
+            ApplyCutLineLossPlan(
+                lossPlan);
+        }
+        else if (released &&
+                 !hasLossPlan)
+        {
+            Debug.LogError(
+                $"[Winch:{name}] Tether physically broke, but the loaded line no longer " +
+                $"covers the deployed length ({lostLineLength:F2} m deployed vs " +
+                $"{coveredLength:F2} m valid line found). Payload was released, but line " +
+                "inventory was left untouched to avoid deleting unrelated items.",
+                this);
+        }
+
+        float reportedTension =
+            Mathf.Max(
+                breakTension,
+                breakingLoadAtFailure);
+
+        if (released)
+        {
+            GameMessageService.PostWarning(
+                breakingLoadAtFailure > 0f
+                    ? $"Tether snapped under {reportedTension:n0} N of load " +
+                      $"(breaking load {breakingLoadAtFailure:n0} N)."
+                    : "Tether snapped.");
+
+            Debug.LogWarning(
+                $"[Winch:{name}] Tether snapped | tension={reportedTension:F1} N " +
+                $"| breakingLoad={breakingLoadAtFailure:F1} N " +
+                $"| deployedLength={lostLineLength:F2} m.",
+                this);
+        }
+        else
+        {
+            GameMessageService.PostWarning(
+                "Tether joint snapped, but payload release state could not be reconciled.");
+
+            Debug.LogError(
+                $"[Winch:{name}] Tether joint broke but TetherDeploymentModule could not " +
+                "release the deployed payload cleanly.",
+                this);
+        }
+
+        deployedLength = 0f;
+        _payload = null;
+
+        _constraint =
+            _deployment != null
+                ? _deployment.TetherConstraint
+                : null;
     }
 
     private bool TryBuildCutLineLossPlan(
@@ -645,6 +923,8 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         command =
             WinchCommand.Stop;
 
+        ResetSpoolMotion();
+
         CacheRefs();
         RefreshDeploymentRuntimeRefs();
 
@@ -806,10 +1086,250 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
             return;
 
         command = WinchCommand.Stop;
+        ResetSpoolMotion();
         deployedLength = 0f;
 
         _payload = null;
         _constraint = _deployment.TetherConstraint;
+    }
+
+    private void StartSpoolTransition(
+        float targetSpeed)
+    {
+        targetSpeed =
+            SanitizeLineSpeed(
+                targetSpeed);
+
+        float duration =
+            Mathf.Max(
+                0f,
+                spoolTransitionSeconds);
+
+        if (duration <= 0.0001f ||
+            Mathf.Abs(
+                currentLineSpeedMetersPerSecond -
+                targetSpeed) <= SpoolSpeedEpsilon)
+        {
+            currentLineSpeedMetersPerSecond =
+                targetSpeed;
+
+            _spoolTransitionStartSpeed =
+                targetSpeed;
+
+            _spoolTransitionTargetSpeed =
+                targetSpeed;
+
+            _spoolTransitionElapsed =
+                0f;
+
+            _spoolTransitionActive =
+                false;
+
+            return;
+        }
+
+        _spoolTransitionStartSpeed =
+            currentLineSpeedMetersPerSecond;
+
+        _spoolTransitionTargetSpeed =
+            targetSpeed;
+
+        _spoolTransitionElapsed =
+            0f;
+
+        _spoolTransitionActive =
+            true;
+    }
+
+    private void EnsureSpoolTarget(
+        float targetSpeed)
+    {
+        targetSpeed =
+            SanitizeLineSpeed(
+                targetSpeed);
+
+        if (_spoolTransitionActive)
+        {
+            if (Mathf.Abs(
+                    _spoolTransitionTargetSpeed -
+                    targetSpeed) <= SpoolSpeedEpsilon)
+            {
+                return;
+            }
+
+            StartSpoolTransition(
+                targetSpeed);
+
+            return;
+        }
+
+        if (Mathf.Abs(
+                currentLineSpeedMetersPerSecond -
+                targetSpeed) <= SpoolSpeedEpsilon)
+        {
+            currentLineSpeedMetersPerSecond =
+                targetSpeed;
+
+            return;
+        }
+
+        StartSpoolTransition(
+            targetSpeed);
+    }
+
+    private void TickSpoolTransition(
+        float dt)
+    {
+        if (!_spoolTransitionActive)
+            return;
+
+        float duration =
+            Mathf.Max(
+                0f,
+                spoolTransitionSeconds);
+
+        if (duration <= 0.0001f)
+        {
+            currentLineSpeedMetersPerSecond =
+                _spoolTransitionTargetSpeed;
+
+            _spoolTransitionActive =
+                false;
+
+            return;
+        }
+
+        _spoolTransitionElapsed +=
+            Mathf.Max(
+                0f,
+                dt);
+
+        float t =
+            Mathf.Clamp01(
+                _spoolTransitionElapsed /
+                duration);
+
+        currentLineSpeedMetersPerSecond =
+            Mathf.Lerp(
+                _spoolTransitionStartSpeed,
+                _spoolTransitionTargetSpeed,
+                t);
+
+        if (t >= 1f)
+        {
+            currentLineSpeedMetersPerSecond =
+                _spoolTransitionTargetSpeed;
+
+            _spoolTransitionActive =
+                false;
+        }
+    }
+
+    private void ApplyControlledSpoolMotion(
+        float availableLineMeters,
+        float dt)
+    {
+        if (dt <= 0f)
+            return;
+
+        float minLength =
+            Mathf.Max(
+                0.01f,
+                minimumDeployedLength);
+
+        float maxLength =
+            Mathf.Max(
+                minLength,
+                availableLineMeters);
+
+        float nextLength =
+            deployedLength +
+            currentLineSpeedMetersPerSecond *
+            dt;
+
+        deployedLength =
+            Mathf.Clamp(
+                nextLength,
+                minLength,
+                maxLength);
+
+        bool blockedAtMinimum =
+            currentLineSpeedMetersPerSecond < 0f &&
+            deployedLength <= minLength + SegmentBoundaryEpsilonMeters;
+
+        bool blockedAtMaximum =
+            currentLineSpeedMetersPerSecond > 0f &&
+            deployedLength >= maxLength - SegmentBoundaryEpsilonMeters;
+
+        if (blockedAtMinimum ||
+            blockedAtMaximum)
+        {
+            currentLineSpeedMetersPerSecond =
+                0f;
+
+            CancelSpoolTransition();
+        }
+    }
+
+    private void RefreshRetrievalIntentForActualSpoolMotion()
+    {
+        if (_deployment == null)
+            return;
+
+        if (currentLineSpeedMetersPerSecond <
+            -SpoolSpeedEpsilon)
+        {
+            _deployment.BeginPayloadRetrieval();
+        }
+        else
+        {
+            _deployment.EndPayloadRetrieval();
+        }
+    }
+
+    private void CancelSpoolTransition()
+    {
+        _spoolTransitionActive =
+            false;
+
+        _spoolTransitionStartSpeed =
+            currentLineSpeedMetersPerSecond;
+
+        _spoolTransitionTargetSpeed =
+            currentLineSpeedMetersPerSecond;
+
+        _spoolTransitionElapsed =
+            0f;
+    }
+
+    private void ResetSpoolMotion()
+    {
+        currentLineSpeedMetersPerSecond =
+            0f;
+
+        _spoolTransitionActive =
+            false;
+
+        _spoolTransitionStartSpeed =
+            0f;
+
+        _spoolTransitionTargetSpeed =
+            0f;
+
+        _spoolTransitionElapsed =
+            0f;
+    }
+
+    private static float SanitizeLineSpeed(
+        float speed)
+    {
+        if (float.IsNaN(speed) ||
+            float.IsInfinity(speed))
+        {
+            return 0f;
+        }
+
+        return speed;
     }
 
     public void NotifyLineContainerChanged()

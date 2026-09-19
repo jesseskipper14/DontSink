@@ -523,7 +523,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   followBody: {fileID: 134015770593356340}
-  sourceRoots: []
+  sourceRoots:
+  - {fileID: 0}
+  - {fileID: 0}
   ghostLayerName: GhostCollision
   overrideMaterial: {fileID: 0}
   syncSourceChanges: 1

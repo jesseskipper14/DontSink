@@ -19,7 +19,37 @@ public sealed class EquipmentSlotBinding : IInventorySlotBinding
 
     public ItemInstance RemoveItem()
     {
-        return equipment?.Remove(slotType);
+        if (equipment == null)
+            return null;
+
+        ItemInstance current =
+            equipment.Get(
+                slotType);
+
+        if (slotType ==
+                BottomBarSlotType.Hands &&
+            current != null)
+        {
+            HandheldSoundingLineController sounder =
+                FindSoundingLineController();
+
+            if (sounder != null &&
+                sounder.IsActiveDeployedSounder(
+                    current))
+            {
+                // Dragging a physically deployed sounder out of Hands is not a
+                // magical inventory teleport. Release the already-visible
+                // physical proxy into the world and report no draggable item.
+                sounder.TryReleaseDeployedSounderToWorld(
+                    current,
+                    out _);
+
+                return null;
+            }
+        }
+
+        return equipment.Remove(
+            slotType);
     }
 
     public bool TryPlaceItem(ItemInstance incoming, out ItemInstance displaced)
@@ -51,7 +81,52 @@ public sealed class EquipmentSlotBinding : IInventorySlotBinding
             return false;
         }
 
-        return equipment.TryPlace(slotType, incoming, out displaced);
+        if (slotType ==
+                BottomBarSlotType.Hands &&
+            current != null)
+        {
+            HandheldSoundingLineController sounder =
+                FindSoundingLineController();
+
+            if (sounder != null &&
+                sounder.IsActiveDeployedSounder(
+                    current))
+            {
+                if (!sounder.TryReleaseDeployedSounderToWorld(
+                        current,
+                        out _))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return equipment.TryPlace(
+            slotType,
+            incoming,
+            out displaced);
+    }
+
+    private HandheldSoundingLineController FindSoundingLineController()
+    {
+        if (equipment == null)
+            return null;
+
+        HandheldSoundingLineController controller =
+            equipment.GetComponent<HandheldSoundingLineController>();
+
+        if (controller != null)
+            return controller;
+
+        controller =
+            equipment.GetComponentInParent<HandheldSoundingLineController>();
+
+        if (controller != null)
+            return controller;
+
+        return
+            equipment.GetComponentInChildren<HandheldSoundingLineController>(
+                true);
     }
 
     public bool CanAccept(ItemInstance incoming)

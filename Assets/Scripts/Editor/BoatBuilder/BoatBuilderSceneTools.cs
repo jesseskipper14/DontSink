@@ -340,8 +340,24 @@ public static partial class BoatBuilderSceneTools
                     _ctx.HardpointRenameObjectToId,
                     _ctx.HardpointStartingModuleDefinition);
 
-                if (boatRoot != null && !TryValidatePlacedHardpointAgainstCargo(placed, boatRoot))
-                    placed = null;
+                if (boatRoot != null &&
+                    !TryValidatePlacedHardpointAgainstCargo(
+                        placed,
+                        boatRoot))
+                {
+                    placed =
+                        null;
+                }
+
+                if (placed != null &&
+                    boatRoot != null &&
+                    !TryValidatePlacedHardpointSupport(
+                        placed,
+                        boatRoot))
+                {
+                    placed =
+                        null;
+                }
             }
 
             if (placed != null && _ctx.ActiveTool == BoatBuilderWindow.Tool.MoneyChestSlot)

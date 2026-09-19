@@ -208,6 +208,26 @@ public sealed class PlayerInventory : MonoBehaviour
         if (!equipped.Definition.Droppable || equipped.Definition.WorldPrefab == null)
             return false;
 
+        if (selectedSlot ==
+            BottomBarSlotType.Hands)
+        {
+            HandheldSoundingLineController sounder =
+                FindSoundingLineController();
+
+            if (sounder != null &&
+                sounder.IsActiveDeployedSounder(
+                    equipped))
+            {
+                // The deployed proxy is already the correct physical object at
+                // the correct world position. Promote THAT object instead of
+                // spawning a duplicate beside the player.
+                return
+                    sounder.TryReleaseDeployedSounderToWorld(
+                        equipped,
+                        out _);
+            }
+        }
+
         equipment.Remove(selectedSlot);
 
         if (!WorldItemDropUtility.TryDrop(equipped, worldPosition, DropActor, out _))
@@ -218,6 +238,28 @@ public sealed class PlayerInventory : MonoBehaviour
         }
 
         return true;
+    }
+
+    private HandheldSoundingLineController FindSoundingLineController()
+    {
+        if (equipment == null)
+            return null;
+
+        HandheldSoundingLineController controller =
+            equipment.GetComponent<HandheldSoundingLineController>();
+
+        if (controller != null)
+            return controller;
+
+        controller =
+            equipment.GetComponentInParent<HandheldSoundingLineController>();
+
+        if (controller != null)
+            return controller;
+
+        return
+            equipment.GetComponentInChildren<HandheldSoundingLineController>(
+                true);
     }
 
     public bool TryDropHotbarSlot(int index, int quantity, Vector3 worldPosition)

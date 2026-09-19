@@ -1,34 +1,58 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class BoatOwnedItemVisualPolicy : MonoBehaviour
+public sealed class BoatOwnedItemVisualPolicy :
+    MonoBehaviour
 {
     [Header("Refs")]
     [SerializeField] private BoatOwnedItem ownedItem;
 
     [Header("Renderer Search")]
-    [SerializeField] private bool includeInactiveRenderers = true;
+    [SerializeField]
+    private bool includeInactiveRenderers =
+        true;
 
     [Header("Boat-Owned Sorting Layer")]
-    [SerializeField] private string boatOwnedSortingLayer = "BoatItem";
-    [SerializeField] private int boatOwnedSortingOrder = 0;
+    [SerializeField]
+    private string boatOwnedSortingLayer =
+        "BoatItem";
+
+    [SerializeField]
+    private int boatOwnedSortingOrder =
+        0;
 
     [Header("Boat-Owned GameObject Layer")]
-    [Tooltip("GameObject layer used for boat-owned loose items so BoatVisualStateController/camera masks can hide/show them with boat visuals.")]
-    [SerializeField] private string boatOwnedGameObjectLayer = "Hull";
+    [Tooltip(
+        "GameObject layer used for boat-owned loose items so boat visual/camera " +
+        "systems can present them with the boat.")]
+    [SerializeField]
+    private string boatOwnedGameObjectLayer =
+        "Hull";
 
-    [Tooltip("If true, applies the GameObject layer to this object and all children.")]
-    [SerializeField] private bool applyGameObjectLayerToChildren = true;
+    [Tooltip(
+        "If true, applies the GameObject layer to this object and all children.")]
+    [SerializeField]
+    private bool applyGameObjectLayerToChildren =
+        true;
 
     [Header("Unowned Restore")]
-    [Tooltip("If true, restores each renderer's original sorting layer/order when ownership is cleared.")]
-    [SerializeField] private bool restoreOriginalSortingOnUnowned = true;
+    [Tooltip(
+        "If true, restores each renderer's original sorting layer/order when " +
+        "ownership is cleared.")]
+    [SerializeField]
+    private bool restoreOriginalSortingOnUnowned =
+        true;
 
-    [Tooltip("If true, restores original GameObject layers when ownership is cleared.")]
-    [SerializeField] private bool restoreOriginalGameObjectLayerOnUnowned = true;
+    [Tooltip(
+        "If true, restores original GameObject layers when ownership is cleared.")]
+    [SerializeField]
+    private bool restoreOriginalGameObjectLayerOnUnowned =
+        true;
 
     [Header("Debug")]
-    [SerializeField] private bool verboseLogging = false;
+    [SerializeField]
+    private bool verboseLogging =
+        false;
 
     private SpriteRenderer[] _spriteRenderers;
     private string[] _originalSortingLayers;
@@ -49,7 +73,10 @@ public sealed class BoatOwnedItemVisualPolicy : MonoBehaviour
         Cache();
 
         if (ownedItem != null)
-            ownedItem.OwnershipChanged += OnOwnershipChanged;
+        {
+            ownedItem.OwnershipChanged +=
+                OnOwnershipChanged;
+        }
 
         ApplyNow();
     }
@@ -57,10 +84,14 @@ public sealed class BoatOwnedItemVisualPolicy : MonoBehaviour
     private void OnDisable()
     {
         if (ownedItem != null)
-            ownedItem.OwnershipChanged -= OnOwnershipChanged;
+        {
+            ownedItem.OwnershipChanged -=
+                OnOwnershipChanged;
+        }
     }
 
-    private void OnOwnershipChanged(BoatOwnedItem item)
+    private void OnOwnershipChanged(
+        BoatOwnedItem item)
     {
         ApplyNow();
     }
@@ -69,7 +100,21 @@ public sealed class BoatOwnedItemVisualPolicy : MonoBehaviour
     {
         Cache();
 
-        bool boatOwned = ownedItem != null && ownedItem.IsOwnedByBoat;
+        DivingBellContainedItem bellContained =
+            GetComponent<DivingBellContainedItem>();
+
+        if (bellContained != null &&
+            bellContained.IsContainedInBell)
+        {
+            // Bell containment is the more-specific presentation context.
+            // Do not let boat ownership flatten the item back onto Hull/BoatItem.
+            bellContained.ReapplyVisualContext();
+            return;
+        }
+
+        bool boatOwned =
+            ownedItem != null &&
+            ownedItem.IsOwnedByBoat;
 
         if (boatOwned)
         {
@@ -87,98 +132,158 @@ public sealed class BoatOwnedItemVisualPolicy : MonoBehaviour
 
     private void ApplyBoatOwnedSorting()
     {
-        if (string.IsNullOrWhiteSpace(boatOwnedSortingLayer))
+        if (string.IsNullOrWhiteSpace(
+                boatOwnedSortingLayer))
+        {
             return;
+        }
 
-        int layerId = SortingLayer.NameToID(boatOwnedSortingLayer);
-        if (layerId == 0 && boatOwnedSortingLayer != "Default")
+        int layerId =
+            SortingLayer.NameToID(
+                boatOwnedSortingLayer);
+
+        if (layerId == 0 &&
+            boatOwnedSortingLayer != "Default")
         {
             LogWarning(
                 $"Sorting layer '{boatOwnedSortingLayer}' may not exist. " +
-                "Unity returned layer id 0. Check Project Settings > Tags and Layers > Sorting Layers.");
+                "Unity returned layer id 0.");
         }
 
-        for (int i = 0; i < _spriteRenderers.Length; i++)
+        for (int i = 0;
+             i < _spriteRenderers.Length;
+             i++)
         {
-            SpriteRenderer sr = _spriteRenderers[i];
+            SpriteRenderer sr =
+                _spriteRenderers[i];
+
             if (sr == null)
                 continue;
 
-            sr.sortingLayerName = boatOwnedSortingLayer;
-            sr.sortingOrder = boatOwnedSortingOrder;
+            sr.sortingLayerName =
+                boatOwnedSortingLayer;
+
+            sr.sortingOrder =
+                boatOwnedSortingOrder;
         }
 
-        Log($"Applied boat-owned sorting layer '{boatOwnedSortingLayer}' order={boatOwnedSortingOrder}.");
+        Log(
+            $"Applied boat-owned sorting layer '{boatOwnedSortingLayer}' " +
+            $"order={boatOwnedSortingOrder}.");
     }
 
     private void ApplyBoatOwnedGameObjectLayer()
     {
-        if (string.IsNullOrWhiteSpace(boatOwnedGameObjectLayer))
+        if (string.IsNullOrWhiteSpace(
+                boatOwnedGameObjectLayer))
+        {
             return;
+        }
 
-        int layer = LayerMask.NameToLayer(boatOwnedGameObjectLayer);
+        int layer =
+            LayerMask.NameToLayer(
+                boatOwnedGameObjectLayer);
+
         if (layer < 0)
         {
-            LogWarning($"GameObject layer '{boatOwnedGameObjectLayer}' does not exist.");
+            LogWarning(
+                $"GameObject layer '{boatOwnedGameObjectLayer}' does not exist.");
+
             return;
         }
 
         if (_layerTargets == null)
             return;
 
-        for (int i = 0; i < _layerTargets.Length; i++)
+        for (int i = 0;
+             i < _layerTargets.Length;
+             i++)
         {
-            Transform t = _layerTargets[i];
-            if (t == null)
+            Transform target =
+                _layerTargets[i];
+
+            if (target == null)
                 continue;
 
-            t.gameObject.layer = layer;
+            target.gameObject.layer =
+                layer;
         }
 
-        Log($"Applied boat-owned GameObject layer '{boatOwnedGameObjectLayer}' to {_layerTargets.Length} object(s).");
+        Log(
+            $"Applied boat-owned GameObject layer '{boatOwnedGameObjectLayer}' " +
+            $"to {_layerTargets.Length} object(s).");
     }
 
     private void RestoreOriginalSorting()
     {
-        if (_spriteRenderers == null || _originalSortingLayers == null || _originalSortingOrders == null)
-            return;
-
-        int count = Mathf.Min(
-            _spriteRenderers.Length,
-            Mathf.Min(_originalSortingLayers.Length, _originalSortingOrders.Length));
-
-        for (int i = 0; i < count; i++)
+        if (_spriteRenderers == null ||
+            _originalSortingLayers == null ||
+            _originalSortingOrders == null)
         {
-            SpriteRenderer sr = _spriteRenderers[i];
+            return;
+        }
+
+        int count =
+            Mathf.Min(
+                _spriteRenderers.Length,
+                Mathf.Min(
+                    _originalSortingLayers.Length,
+                    _originalSortingOrders.Length));
+
+        for (int i = 0;
+             i < count;
+             i++)
+        {
+            SpriteRenderer sr =
+                _spriteRenderers[i];
+
             if (sr == null)
                 continue;
 
-            if (!string.IsNullOrWhiteSpace(_originalSortingLayers[i]))
-                sr.sortingLayerName = _originalSortingLayers[i];
+            if (!string.IsNullOrWhiteSpace(
+                    _originalSortingLayers[i]))
+            {
+                sr.sortingLayerName =
+                    _originalSortingLayers[i];
+            }
 
-            sr.sortingOrder = _originalSortingOrders[i];
+            sr.sortingOrder =
+                _originalSortingOrders[i];
         }
 
-        Log("Restored original sorting.");
+        Log(
+            "Restored original sorting.");
     }
 
     private void RestoreOriginalGameObjectLayers()
     {
-        if (_layerTargets == null || _originalGameObjectLayers == null)
-            return;
-
-        int count = Mathf.Min(_layerTargets.Length, _originalGameObjectLayers.Length);
-
-        for (int i = 0; i < count; i++)
+        if (_layerTargets == null ||
+            _originalGameObjectLayers == null)
         {
-            Transform t = _layerTargets[i];
-            if (t == null)
-                continue;
-
-            t.gameObject.layer = _originalGameObjectLayers[i];
+            return;
         }
 
-        Log("Restored original GameObject layers.");
+        int count =
+            Mathf.Min(
+                _layerTargets.Length,
+                _originalGameObjectLayers.Length);
+
+        for (int i = 0;
+             i < count;
+             i++)
+        {
+            Transform target =
+                _layerTargets[i];
+
+            if (target == null)
+                continue;
+
+            target.gameObject.layer =
+                _originalGameObjectLayers[i];
+        }
+
+        Log(
+            "Restored original GameObject layers.");
     }
 
     private void Cache()
@@ -187,62 +292,102 @@ public sealed class BoatOwnedItemVisualPolicy : MonoBehaviour
             return;
 
         if (ownedItem == null)
-            ownedItem = GetComponent<BoatOwnedItem>();
-
-        _spriteRenderers = GetComponentsInChildren<SpriteRenderer>(includeInactiveRenderers);
-
-        _originalSortingLayers = new string[_spriteRenderers.Length];
-        _originalSortingOrders = new int[_spriteRenderers.Length];
-
-        for (int i = 0; i < _spriteRenderers.Length; i++)
         {
-            SpriteRenderer sr = _spriteRenderers[i];
+            ownedItem =
+                GetComponent<BoatOwnedItem>();
+        }
+
+        _spriteRenderers =
+            GetComponentsInChildren<SpriteRenderer>(
+                includeInactiveRenderers);
+
+        _originalSortingLayers =
+            new string[_spriteRenderers.Length];
+
+        _originalSortingOrders =
+            new int[_spriteRenderers.Length];
+
+        for (int i = 0;
+             i < _spriteRenderers.Length;
+             i++)
+        {
+            SpriteRenderer sr =
+                _spriteRenderers[i];
+
             if (sr == null)
                 continue;
 
-            _originalSortingLayers[i] = sr.sortingLayerName;
-            _originalSortingOrders[i] = sr.sortingOrder;
+            _originalSortingLayers[i] =
+                sr.sortingLayerName;
+
+            _originalSortingOrders[i] =
+                sr.sortingOrder;
         }
 
-        _layerTargets = applyGameObjectLayerToChildren
-            ? GetComponentsInChildren<Transform>(includeInactiveRenderers)
-            : new[] { transform };
+        _layerTargets =
+            applyGameObjectLayerToChildren
+                ? GetComponentsInChildren<Transform>(
+                    includeInactiveRenderers)
+                : new[] { transform };
 
-        _originalGameObjectLayers = new int[_layerTargets.Length];
+        _originalGameObjectLayers =
+            new int[_layerTargets.Length];
 
-        for (int i = 0; i < _layerTargets.Length; i++)
+        for (int i = 0;
+             i < _layerTargets.Length;
+             i++)
         {
-            Transform t = _layerTargets[i];
-            _originalGameObjectLayers[i] = t != null ? t.gameObject.layer : gameObject.layer;
+            Transform target =
+                _layerTargets[i];
+
+            _originalGameObjectLayers[i] =
+                target != null
+                    ? target.gameObject.layer
+                    : gameObject.layer;
         }
 
-        _cached = true;
+        _cached =
+            true;
     }
 
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        if (string.IsNullOrWhiteSpace(boatOwnedSortingLayer))
-            boatOwnedSortingLayer = "BoatItem";
+        if (string.IsNullOrWhiteSpace(
+                boatOwnedSortingLayer))
+        {
+            boatOwnedSortingLayer =
+                "BoatItem";
+        }
 
-        if (string.IsNullOrWhiteSpace(boatOwnedGameObjectLayer))
-            boatOwnedGameObjectLayer = "Hull";
+        if (string.IsNullOrWhiteSpace(
+                boatOwnedGameObjectLayer))
+        {
+            boatOwnedGameObjectLayer =
+                "Hull";
+        }
     }
 #endif
 
-    private void Log(string msg)
+    private void Log(
+        string msg)
     {
         if (!verboseLogging)
             return;
 
-        Debug.Log($"[BoatOwnedItemVisualPolicy:{name}] {msg}", this);
+        Debug.Log(
+            $"[BoatOwnedItemVisualPolicy:{name}] {msg}",
+            this);
     }
 
-    private void LogWarning(string msg)
+    private void LogWarning(
+        string msg)
     {
         if (!verboseLogging)
             return;
 
-        Debug.LogWarning($"[BoatOwnedItemVisualPolicy:{name}] {msg}", this);
+        Debug.LogWarning(
+            $"[BoatOwnedItemVisualPolicy:{name}] {msg}",
+            this);
     }
 }

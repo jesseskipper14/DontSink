@@ -27,14 +27,14 @@ TagManager:
   - GhostCollision
   - Ground
   - TetherPayload
-  - 
-  - 
+  - BellInterior
+  - BellLedge
   - Player
   - BoatItem
   - HatchLedge
   - UnderwaterResource
   - WorldLedge
-  - 
+  - BellItem
   - 
   - 
   - 

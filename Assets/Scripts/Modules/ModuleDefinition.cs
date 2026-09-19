@@ -14,6 +14,14 @@ public sealed class ModuleDefinition : ScriptableObject
     [Header("Visual / Runtime")]
     [SerializeField] private GameObject installedPrefab;
 
+    [Header("Boat Support")]
+    [Tooltip(
+        "Minimum horizontal span of supported boat structure required beneath the hardpoint " +
+        "for this module to be installed. 0 = no boat-support requirement. " +
+        "The actual support probe is authored by HardpointSupportFootprint on the hardpoint.")]
+    [Min(0f)]
+    [SerializeField] private float requiredBoatSupportWidth = 0f;
+
     [Header("Inventory Link")]
     [SerializeField] private ItemDefinition itemDefinition;
 
@@ -25,6 +33,15 @@ public sealed class ModuleDefinition : ScriptableObject
     public string ModuleId => moduleId;
     public string DisplayName => displayName;
     public GameObject InstalledPrefab => installedPrefab;
+    public float RequiredBoatSupportWidth =>
+        Mathf.Max(
+            0f,
+            requiredBoatSupportWidth);
+
+    public bool RequiresBoatSupport =>
+        RequiredBoatSupportWidth >
+        0.001f;
+
     // Compatibility alias. ItemDefinition is the single authored source of truth.
     public float BaseMass =>
         itemDefinition != null
@@ -57,6 +74,11 @@ public sealed class ModuleDefinition : ScriptableObject
 #if UNITY_EDITOR
     private void OnValidate()
     {
+        requiredBoatSupportWidth =
+            Mathf.Max(
+                0f,
+                requiredBoatSupportWidth);
+
         if (installedStorage == null)
             installedStorage = new StorageModuleDefinition();
     }

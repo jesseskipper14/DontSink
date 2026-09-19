@@ -41,10 +41,12 @@ GameObject:
   m_Component:
   - component: {fileID: 2570626459409445710}
   - component: {fileID: 7362520341730155692}
+  - component: {fileID: 2625696029987183493}
   - component: {fileID: 5916164892976296465}
   - component: {fileID: 9203517043623545370}
-  - component: {fileID: 2625696029987183493}
   - component: {fileID: -4748308568153189089}
+  - component: {fileID: -1099276149790574835}
+  - component: {fileID: 1532257027686136870}
   - component: {fileID: 9004001681567577942}
   m_Layer: 3
   m_Name: HardpointTetherPayload
@@ -69,7 +71,6 @@ Transform:
   - {fileID: 5749776059437223907}
   - {fileID: 9141116475110502253}
   - {fileID: 7434404790526906763}
-  - {fileID: 2490805043456013262}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7362520341730155692
@@ -127,6 +128,42 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!58 &2625696029987183493
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3363453043375993549}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 1
 --- !u!114 &5916164892976296465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -172,42 +209,6 @@ MonoBehaviour:
   exteriorModule: 0
   pickupMode: 1
   pickupHoldDuration: 2
---- !u!58 &2625696029987183493
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3363453043375993549}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 1
 --- !u!114 &-4748308568153189089
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,6 +225,51 @@ MonoBehaviour:
   size: {x: 3, y: 3}
   localOffset: {x: 0, y: 1}
   drawGizmo: 1
+--- !u!114 &-1099276149790574835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3363453043375993549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b724400baacd684bbae25113605baf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enforceSupport: 1
+  localProbeOffset: {x: 0, y: -0.1}
+  maximumSupportDrop: 0.35
+  sampleSpacing: 0.2
+  edgeInset: 0.02
+  supportLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  includeTriggerSurfaces: 0
+  requireSameBoat: 1
+  drawGizmo: 1
+  verboseLogging: 0
+--- !u!114 &1532257027686136870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3363453043375993549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35ae6c9882036be40ab15d02e3bba6ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hardpoint: {fileID: 0}
+  support: {fileID: 0}
+  worldCamera: {fileID: 0}
+  hoverColliders: []
+  lineWidth: 0.045
+  zOffset: -0.05
+  validColor: {r: 0.15, g: 1, b: 0.25, a: 0.95}
+  invalidColor: {r: 1, g: 0.15, b: 0.1, a: 0.95}
+  verboseLogging: 0
 --- !u!114 &9004001681567577942
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -316,47 +362,3 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2570626459409445710}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8535708394466914769
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2490805043456013262}
-  - component: {fileID: 3345297871367407969}
-  m_Layer: 0
-  m_Name: TetherExitPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2490805043456013262
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8535708394466914769}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.00000023841858, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2570626459409445710}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3345297871367407969
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8535708394466914769}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c381e3214491b443a2bc6d151a4d674, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

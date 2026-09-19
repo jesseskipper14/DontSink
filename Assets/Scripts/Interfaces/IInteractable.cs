@@ -1,5 +1,19 @@
 using UnityEngine;
 
+
+/// <summary>
+/// Optional per-interactor filter that can reject interaction targets before
+/// hover scoring or action execution. Multiple filters are ANDed together.
+/// This is intentionally actor-local so multiplayer players may have different
+/// interaction contexts at the same time.
+/// </summary>
+public interface IInteractionTargetFilter
+{
+    bool AllowsInteractionTarget(
+        MonoBehaviour targetOwner,
+        in InteractContext context);
+}
+
 public interface IInteractable
 {
     /// Higher wins. Use this to prefer chairs over random colliders, etc.

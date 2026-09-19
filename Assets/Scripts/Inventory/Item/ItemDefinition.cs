@@ -20,7 +20,8 @@ public enum ItemCategoryFlags
     Utility = 1 << 10,
     Module = 1 << 11,
     Cargo = 1 << 12,
-    Sacred = 1 << 13
+    Sacred = 1 << 13,
+    Ballast = 1 << 14
 }
 
 public enum PickupInteractionMode
@@ -166,6 +167,13 @@ public sealed class ItemDefinition : ScriptableObject
     [Min(1)]
     [SerializeField] private int portableContainerColumnCount = 4;
 
+    [Tooltip(
+        "Maximum quantity allowed in EACH slot of this portable container. " +
+        "0 = use the incoming item's normal Max Stack. " +
+        "Set to 1 for one-item-per-slot containers such as a handheld sounding line.")]
+    [Min(0)]
+    [SerializeField] private int portableContainerMaxQuantityPerSlot = 0;
+
     [Header("Portable Container - Accepted Items")]
     [Tooltip("If enabled, this portable container accepts any item that passes its normal nesting rules.")]
     [SerializeField] private bool portableContainerAcceptsAnyItem = false;
@@ -294,6 +302,14 @@ public sealed class ItemDefinition : ScriptableObject
     public int PortableContainerColumnCount =>
         Mathf.Max(1, portableContainerColumnCount);
 
+    /// <summary>
+    /// Per-slot quantity cap for this portable container.
+    /// 0 means "no extra container cap" and therefore uses the incoming
+    /// item's normal MaxStack.
+    /// </summary>
+    public int PortableContainerMaxQuantityPerSlot =>
+        Mathf.Max(0, portableContainerMaxQuantityPerSlot);
+
     public bool PortableContainerAcceptsAnyItem =>
         portableContainerAcceptsAnyItem;
 
@@ -310,6 +326,7 @@ public sealed class ItemDefinition : ScriptableObject
     public bool IsContainer => IsPortableContainer;
     public int ContainerSlotCount => PortableContainerSlotCount;
     public int ContainerColumnCount => PortableContainerColumnCount;
+    public int ContainerMaxQuantityPerSlot => PortableContainerMaxQuantityPerSlot;
     public ItemCategoryFlags AllowedContainerCategories => PortableContainerAllowedCategories;
     public int ContainerTier => PortableContainerTier;
     public PreferredDisplacedDestination PreferredDisplacedDestination => preferredDisplacedDestination;
@@ -383,6 +400,7 @@ public sealed class ItemDefinition : ScriptableObject
         maxCharges = Mathf.Max(1, maxCharges);
         portableContainerSlotCount = Mathf.Max(0, portableContainerSlotCount);
         portableContainerColumnCount = Mathf.Max(1, portableContainerColumnCount);
+        portableContainerMaxQuantityPerSlot = Mathf.Max(0, portableContainerMaxQuantityPerSlot);
         pickupHoldDuration = Mathf.Max(0.05f, pickupHoldDuration);
 
         chargeUsePerSecond = Mathf.Max(0f, chargeUsePerSecond);
@@ -402,6 +420,7 @@ public sealed class ItemDefinition : ScriptableObject
         {
             portableContainerAcceptsAnyItem = false;
             portableContainerAllowedCategories = ItemCategoryFlags.None;
+            portableContainerMaxQuantityPerSlot = 0;
             portableContainerTier = 0;
 
             if (explicitlyAllowedPortableContainerItems != null)

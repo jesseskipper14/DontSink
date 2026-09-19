@@ -72,12 +72,22 @@ public sealed class ItemVendorSellService : MonoBehaviour
         MoneyService.AddMoney(payout);
 
         string label = ItemVendorSellValueUtility.GetItemLabel(removedItem);
-        message = $"Sold {label} for ${payout:n0}.";
+        int soldQuantity = Mathf.Max(1, removedItem.Quantity);
+
+        message = soldQuantity > 1
+            ? $"Sold {soldQuantity}x {label} for ${payout:n0}."
+            : $"Sold {label} for ${payout:n0}.";
 
         if (!string.IsNullOrWhiteSpace(removeMessage))
             message += $" {removeMessage}";
 
         Log(message);
+
+        GameMessageService.PostInfo(
+            soldQuantity > 1
+                ? $"Sold {soldQuantity}x {label} for ${payout:n0}."
+                : $"Sold {label} for ${payout:n0}.");
+
         return true;
     }
 

@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
+  m_Name: item_sounding_weight
+  m_EditorClassIdentifier: 
+  itemId: item_sounding_weight
+  displayName: Sounding Weight
+  icon: {fileID: -9192905464875555505, guid: 63eeeaad2ddb94443a1072fd54303044, type: 3}
+  itemCategories: 6
+  toolCapabilities:
+  - {fileID: 11400000, guid: 87bdba1b5c8a1664ab1a487b45122023, type: 2}
+  consumesContainedChargesWhileUsed: 0
+  chargeSourceCategories: 1026
+  chargeUsePerSecond: 0
+  minimumChargeToUse: 1
+  unitMass: 0.2
+  unitExposedVolumeContribution: 0
+  maxStack: 1
+  hasCharges: 0
+  maxCharges: 1
+  stowableInInventory: 1
+  droppable: 1
+  tradable: 1
+  basePrice: 10
+  canBeSoldByItemVendors: 1
+  canBeBoughtByItemVendors: 1
+  defaultVendorBuyMultiplier: 0.25
+  vendorAvailability:
+    useNodeRestrictions: 0
+    allowedNodeArchetypes: []
+    blockedNodeArchetypes: []
+    minProsperity: 0
+    minTradeRating: 0
+    minSecurity: 0
+    minStability: 0
+  disallowedParentSlots: 
+  preferredDisplacedDestination: 2
+  equipSlot: 0
+  occupiedEquipSlots: 
+  wearableVisualSprite: {fileID: 0}
+  equippedBuffs: []
+  providesExternalAir: 0
+  externalAirSupplyPerSecond: 0
+  externalAirChargeUsePerSecond: 0
+  externalAirMaxAirBonus: 0
+  isPortableContainer: 1
+  portableContainerSlotCount: 4
+  portableContainerColumnCount: 2
+  portableContainerMaxQuantityPerSlot: 1
+  portableContainerAcceptsAnyItem: 0
+  portableContainerAllowedCategories: 0
+  explicitlyAllowedPortableContainerItems:
+  - {fileID: 11400000, guid: 5834004e1afeba54ebb693e07c4c43b6, type: 2}
+  - {fileID: 11400000, guid: d071409922b6df84da2878709903c8b8, type: 2}
+  portableContainerTier: 0
+  pickupMode: 0
+  pickupHoldDuration: 0.4
+  isModule: 0
+  moduleDefinition: {fileID: 0}
+  soldByBoatVendors: 0
+  worldPrefab: {fileID: 61859146187821167, guid: 3e7e6d48ba995344bb264e73179f2e1f, type: 3}
+  worldPersistence: 0

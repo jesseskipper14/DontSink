@@ -25,6 +25,12 @@ public sealed class GhostCollisionProxy : MonoBehaviour
     [Tooltip("Only ordinary non-trigger Collider2Ds below these roots that are attached to Follow Body are mirrored. Colliders driven by effectors (for example one-way HatchLedge platforms) are intentionally left real and are not ghosted.")]
     [SerializeField] private Transform[] sourceRoots;
 
+    [Tooltip(
+        "If Source Roots is empty at runtime, automatically find structural children named " +
+        "_Hull and _Deck beneath the authoritative body. This is useful for newly spawned " +
+        "boats whose runtime hierarchy does not exist when the source prefab/root is authored.")]
+    [SerializeField] private bool autoResolveBoatStructuralRoots = true;
+
     [Header("Ghost Layer")]
     [Tooltip("Runtime proxy colliders are placed on this Unity physics layer.")]
     [SerializeField] private string ghostLayerName = "GhostCollision";
@@ -50,6 +56,8 @@ public sealed class GhostCollisionProxy : MonoBehaviour
     private readonly List<ProxyColliderBinding> _bindings = new();
     private readonly List<Collider2D> _sourceColliders = new();
     private readonly List<Collider2D> _proxyColliders = new();
+
+    private bool _retryBuildOnStart;
 
     private static readonly List<GhostCollisionProxy> _activeProxies = new();
 
@@ -93,11 +101,45 @@ public sealed class GhostCollisionProxy : MonoBehaviour
         if (!Application.isPlaying)
             return;
 
-        if (BuildRuntimeProxy())
+        ResolveFollowBody();
+        ResolveSourceRootsIfNeeded();
+
+        // During Instantiate(), OnEnable can run before a newly created boat has
+        // finished constructing/parenting its structural hierarchy. Do a quiet
+        // first attempt, then retry once in Start after the spawning call finishes.
+        if (BuildRuntimeProxy(
+                warnWhenNoSources: false))
+        {
+            RegisterActiveProxy(this);
+            ActiveProxySetChanged?.Invoke();
+            _retryBuildOnStart = false;
+        }
+        else
+        {
+            _retryBuildOnStart = true;
+        }
+    }
+
+    private void Start()
+    {
+        if (!Application.isPlaying ||
+            IsBuilt ||
+            !_retryBuildOnStart)
+        {
+            return;
+        }
+
+        ResolveFollowBody();
+        ResolveSourceRootsIfNeeded();
+
+        if (BuildRuntimeProxy(
+                warnWhenNoSources: true))
         {
             RegisterActiveProxy(this);
             ActiveProxySetChanged?.Invoke();
         }
+
+        _retryBuildOnStart = false;
     }
 
     private void OnDisable()
@@ -164,8 +206,11 @@ public sealed class GhostCollisionProxy : MonoBehaviour
 
         DestroyRuntimeProxy();
 
+        ResolveSourceRootsIfNeeded();
+
         bool rebuilt =
-            BuildRuntimeProxy();
+            BuildRuntimeProxy(
+                warnWhenNoSources: true);
 
         if (rebuilt)
             RegisterActiveProxy(this);
@@ -174,9 +219,11 @@ public sealed class GhostCollisionProxy : MonoBehaviour
             ActiveProxySetChanged?.Invoke();
     }
 
-    private bool BuildRuntimeProxy()
+    private bool BuildRuntimeProxy(
+        bool warnWhenNoSources = true)
     {
         ResolveFollowBody();
+        ResolveSourceRootsIfNeeded();
 
         if (followBody == null)
         {
@@ -203,10 +250,15 @@ public sealed class GhostCollisionProxy : MonoBehaviour
 
         if (_sourceColliders.Count == 0)
         {
-            Debug.LogWarning(
-                $"[GhostCollisionProxy:{name}] No usable non-trigger source colliders found. " +
-                "Assign structural source roots such as _Hull and _Deck.",
-                this);
+            if (warnWhenNoSources)
+            {
+                Debug.LogWarning(
+                    $"[GhostCollisionProxy:{name}] No usable non-trigger source colliders found. " +
+                    "Source roots are auto-resolved from _Hull/_Deck when possible; " +
+                    "otherwise assign structural Source Roots explicitly.",
+                    this);
+            }
+
             return false;
         }
 
@@ -344,6 +396,112 @@ public sealed class GhostCollisionProxy : MonoBehaviour
     {
         if (followBody == null)
             followBody = GetComponent<Rigidbody2D>();
+    }
+
+    private void ResolveSourceRootsIfNeeded()
+    {
+        if (!autoResolveBoatStructuralRoots)
+            return;
+
+        bool hasUsableAssignedRoot =
+            false;
+
+        if (sourceRoots != null)
+        {
+            for (int i = 0;
+                 i < sourceRoots.Length;
+                 i++)
+            {
+                if (sourceRoots[i] != null)
+                {
+                    hasUsableAssignedRoot =
+                        true;
+
+                    break;
+                }
+            }
+        }
+
+        if (hasUsableAssignedRoot)
+            return;
+
+        Transform searchRoot =
+            followBody != null
+                ? followBody.transform
+                : transform;
+
+        if (searchRoot == null)
+            return;
+
+        Transform[] all =
+            searchRoot.GetComponentsInChildren<Transform>(
+                true);
+
+        List<Transform> resolved =
+            new List<Transform>();
+
+        AddNamedStructuralRoot(
+            all,
+            resolved,
+            "_Hull");
+
+        AddNamedStructuralRoot(
+            all,
+            resolved,
+            "_Deck");
+
+        if (resolved.Count == 0)
+            return;
+
+        sourceRoots =
+            resolved.ToArray();
+
+        Log(
+            $"Auto-resolved structural Source Roots: " +
+            $"{string.Join(", ", resolved.ConvertAll(t => t != null ? t.name : "NULL"))}");
+    }
+
+    private static void AddNamedStructuralRoot(
+        Transform[] all,
+        List<Transform> resolved,
+        string targetName)
+    {
+        if (all == null ||
+            resolved == null ||
+            string.IsNullOrWhiteSpace(
+                targetName))
+        {
+            return;
+        }
+
+        for (int i = 0;
+             i < all.Length;
+             i++)
+        {
+            Transform candidate =
+                all[i];
+
+            if (candidate == null ||
+                !string.Equals(
+                    candidate.name,
+                    targetName,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (!resolved.Contains(
+                    candidate))
+            {
+                resolved.Add(
+                    candidate);
+            }
+
+            // Boat structure should have only one canonical root of each name.
+            // Stop at the first exact match so a nested prefab named "_Hull"
+            // cannot silently expand the ghost source set.
+            return;
+        }
     }
 
     private void GatherSourceColliders()

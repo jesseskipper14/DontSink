@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 448474240523413715}
   - component: {fileID: 5673681725850549010}
   - component: {fileID: -9011886402141120778}
+  - component: {fileID: 4916208140355589712}
   m_Layer: 10
   m_Name: BasicChest
   m_TagString: Untagged
@@ -83,7 +84,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1165509675
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_Sprite: {fileID: 6926221435173647156, guid: 901eb17371bbf9e4b9101116dc72899f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -264,6 +265,7 @@ MonoBehaviour:
   hullLayerName: Hull
   groundLayerName: Ground
   worldLedgeLayerName: WorldLedge
+  ghostCollisionLayerName: GhostCollision
   verboseLogging: 0
 --- !u!114 &-9011886402141120778
 MonoBehaviour:
@@ -286,6 +288,32 @@ MonoBehaviour:
   restoreOriginalSortingOnUnowned: 1
   restoreOriginalGameObjectLayerOnUnowned: 1
   verboseLogging: 0
+--- !u!114 &4916208140355589712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571194650393018128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4891c78d5bbad5748a7408ab20a82515, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bellItemLayerName: BellItem
+  interiorLayerName: BellInterior
+  ledgeLayerName: BellLedge
+  sortingOrderAboveBellInterior: 7
+  secondsOutsideBeforeClearing: 0.15
+  otherBellIsolationRefreshSeconds: 0.5
+  verboseLogging: 0
+  currentBell: {fileID: 0}
+  containmentVolume: {fileID: 0}
+  outsideSeconds: 0
+  ignoredOtherBellPairCount: 0
+  resolvedBellItemLayer: -1
+  resolvedBellSortingLayer: 
+  resolvedBellItemSortingOrder: 0
 --- !u!1 &9130302141471108845
 GameObject:
   m_ObjectHideFlags: 0
@@ -360,7 +388,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1165509675
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: -1
   m_Sprite: {fileID: 6926221435173647156, guid: 901eb17371bbf9e4b9101116dc72899f, type: 3}
   m_Color: {r: 0.49381453, g: 0.59341216, b: 0.764151, a: 1}

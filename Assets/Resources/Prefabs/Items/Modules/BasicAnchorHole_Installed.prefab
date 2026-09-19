@@ -499,10 +499,12 @@ MonoBehaviour:
   payloadHangPoint: {fileID: 2056573557452705157}
   tetherExitPoint: {fileID: 2244527422794193482}
   tetherConstraint: {fileID: 7187124118525404290}
-  initialDeployedLength: 1
+  initialDeployedLength: 0.05
+  restoreCollisionSkinMeters: 0.02
   storedPayloadVisualRenderer: {fileID: 0}
   storedPayloadVisualScale: 1
   storedPayloadSortingOrderOffset: 0
+  deploymentState: 0
   deployedWorldItem: {fileID: 0}
 --- !u!114 &7187124118525404290
 MonoBehaviour:
@@ -519,24 +521,13 @@ MonoBehaviour:
   lineRenderer: {fileID: 6842432513037919890}
   visualSlackSagPerMeter: 0.05
   maxVisualSag: 2
-  showPayoutMarkers: 0
-  payoutMarkerSpacing: 0.5
-  payoutMarkerHalfLength: 0.045
-  payoutMarkerWidthMultiplier: 1.35
-  payoutMarkerSortingOrderOffset: 1
-  payoutMarkerColor: {r: 0.35, g: 0.35, b: 0.35, a: 1}
-  reversePayoutMarkerDirection: 0
-  maxPayoutMarkerCount: 128
   _attached: 0
   _deployedLength: 0
   _currentDistance: 0
   _slack: 0
   _currentTension: 0
-  _appliedTension: 0
   _workingLoad: 0
   _breakingLoad: 0
-  _payoutMarkerPhase: 0
-  _renderedRopeLength: 0
 --- !u!114 &-1261390962955333027
 MonoBehaviour:
   m_ObjectHideFlags: 0

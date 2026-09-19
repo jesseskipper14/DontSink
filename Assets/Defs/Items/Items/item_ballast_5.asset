@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
+  m_Name: item_ballast_5
+  m_EditorClassIdentifier: 
+  itemId: item_ballast_5
+  displayName: Ballast 5 Lbs
+  icon: {fileID: 3339002913691297480, guid: 0dc0fe16b072fa24ea2293a797610d17, type: 3}
+  itemCategories: 16384
+  toolCapabilities: []
+  consumesContainedChargesWhileUsed: 0
+  chargeSourceCategories: 1024
+  chargeUsePerSecond: 0
+  minimumChargeToUse: 1
+  unitMass: 5
+  unitExposedVolumeContribution: 0
+  maxStack: 2
+  hasCharges: 0
+  maxCharges: 1
+  stowableInInventory: 1
+  droppable: 1
+  tradable: 1
+  basePrice: 10
+  canBeSoldByItemVendors: 1
+  canBeBoughtByItemVendors: 1
+  defaultVendorBuyMultiplier: 0.25
+  vendorAvailability:
+    useNodeRestrictions: 0
+    allowedNodeArchetypes: []
+    blockedNodeArchetypes: []
+    minProsperity: 0
+    minTradeRating: 0
+    minSecurity: 0
+    minStability: 0
+  disallowedParentSlots: 
+  preferredDisplacedDestination: 2
+  equipSlot: 0
+  occupiedEquipSlots: 
+  wearableVisualSprite: {fileID: 0}
+  equippedBuffs: []
+  providesExternalAir: 0
+  externalAirSupplyPerSecond: 0
+  externalAirChargeUsePerSecond: 0
+  externalAirMaxAirBonus: 0
+  isPortableContainer: 0
+  portableContainerSlotCount: 0
+  portableContainerColumnCount: 4
+  portableContainerMaxQuantityPerSlot: 0
+  portableContainerAcceptsAnyItem: 0
+  portableContainerAllowedCategories: 0
+  explicitlyAllowedPortableContainerItems: []
+  portableContainerTier: 0
+  pickupMode: 0
+  pickupHoldDuration: 0.4
+  isModule: 0
+  moduleDefinition: {fileID: 0}
+  soldByBoatVendors: 0
+  worldPrefab: {fileID: 61859146187821167, guid: fda867ae1ce428941bf3cc30e44e5d22, type: 3}
+  worldPersistence: 0

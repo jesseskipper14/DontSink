@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -47,6 +48,9 @@ public class Interactor2D : MonoBehaviour
 
     private IInteractionIntentSource intentSource;
 
+    private readonly List<IInteractionTargetFilter> _interactionTargetFilters =
+        new List<IInteractionTargetFilter>();
+
     private IPickupInteractable _activeHoldPickupTarget;
     private float _activeHoldPickupElapsed;
     private bool _holdPickupTriggered;
@@ -77,6 +81,8 @@ public class Interactor2D : MonoBehaviour
             Debug.LogError("Interactor2D requires IInteractionIntentSource (e.g., LocalInteractionIntentSource).", this);
             enabled = false;
         }
+
+        RefreshInteractionTargetFilters();
     }
 
     private void Update()
@@ -120,6 +126,28 @@ public class Interactor2D : MonoBehaviour
         }
 
         HandlePickupIntent(intent, ctx);
+    }
+
+    /// <summary>
+    /// Rebuild actor-local interaction filters. Call when a runtime context is
+    /// added/removed, such as entering or leaving a diving bell.
+    /// </summary>
+    public void RefreshInteractionTargetFilters()
+    {
+        _interactionTargetFilters.Clear();
+
+        MonoBehaviour[] behaviours =
+            GetComponentsInParent<MonoBehaviour>(
+                true);
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is IInteractionTargetFilter filter &&
+                !_interactionTargetFilters.Contains(filter))
+            {
+                _interactionTargetFilters.Add(filter);
+            }
+        }
     }
 
     // ---------------------------------------------------------------------
@@ -399,7 +427,7 @@ public class Interactor2D : MonoBehaviour
         if (!ctx.HasAimWorld)
             return false;
 
-        Collider2D[] hits = GetMouseHoverHits(ctx.AimWorld);
+        Collider2D[] hits = GetMouseHoverHits(ctx.AimWorld, ctx);
         if (hits == null || hits.Length == 0)
             return false;
 
@@ -433,12 +461,19 @@ public class Interactor2D : MonoBehaviour
         return best.IsValid;
     }
 
-    private static bool PassesHoverSelectionPolicy(
+    private bool PassesHoverSelectionPolicy(
         in InteractionHoverTarget target,
         in InteractContext ctx)
     {
         if (!target.IsValid)
             return false;
+
+        if (!PassesInteractionTargetFilters(
+                target.Owner,
+                ctx))
+        {
+            return false;
+        }
 
         // Explicit owner policy remains authoritative.
         if (target.Owner is IInteractionPromptDisplayPolicyProvider displayPolicy &&
@@ -538,10 +573,12 @@ public class Interactor2D : MonoBehaviour
         return false;
     }
 
-    private Collider2D[] GetMouseHoverHits(Vector2 mouseWorld)
+    private Collider2D[] GetMouseHoverHits(
+        Vector2 mouseWorld,
+        in InteractContext ctx)
     {
         Collider2D[] pointHits = Physics2D.OverlapPointAll(mouseWorld, interactableMask);
-        if (ContainsMouseUsefulTarget(pointHits))
+        if (ContainsMouseUsefulTarget(pointHits, ctx))
             return pointHits;
 
         if (mouseHoverRadius <= 0f)
@@ -554,15 +591,29 @@ public class Interactor2D : MonoBehaviour
         return pointHits;
     }
 
-    private bool ContainsMouseUsefulTarget(Collider2D[] hits)
+    private bool ContainsMouseUsefulTarget(
+        Collider2D[] hits,
+        in InteractContext ctx)
     {
         if (hits == null || hits.Length == 0)
             return false;
 
         for (int i = 0; i < hits.Length; i++)
         {
-            if (hits[i] != null && TryBuildMouseHoverTarget(hits[i], out _))
+            if (hits[i] == null ||
+                !TryBuildMouseHoverTarget(
+                    hits[i],
+                    out InteractionHoverTarget target))
+            {
+                continue;
+            }
+
+            if (PassesHoverSelectionPolicy(
+                    target,
+                    ctx))
+            {
                 return true;
+            }
         }
 
         return false;
@@ -600,6 +651,35 @@ public class Interactor2D : MonoBehaviour
         return priority;
     }
 
+    private bool PassesInteractionTargetFilters(
+        MonoBehaviour targetOwner,
+        in InteractContext ctx)
+    {
+        if (_interactionTargetFilters.Count == 0)
+            return true;
+
+        for (int i = _interactionTargetFilters.Count - 1; i >= 0; i--)
+        {
+            IInteractionTargetFilter filter =
+                _interactionTargetFilters[i];
+
+            if (filter == null)
+            {
+                _interactionTargetFilters.RemoveAt(i);
+                continue;
+            }
+
+            if (!filter.AllowsInteractionTarget(
+                    targetOwner,
+                    ctx))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     // ---------------------------------------------------------------------
     // Legacy fallback resolution
     // ---------------------------------------------------------------------
@@ -614,6 +694,7 @@ public class Interactor2D : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(ctx.Origin, ctx.AimDir, rayDistance, interactableMask);
             if (hit.collider != null &&
                 TryGetInteractable(hit.collider, out IInteractable interactable) &&
+                PassesInteractionTargetFilters(interactable as MonoBehaviour, ctx) &&
                 interactable.CanInteract(ctx))
             {
                 best = interactable;
@@ -626,6 +707,9 @@ public class Interactor2D : MonoBehaviour
         {
             Collider2D col = hits[i];
             if (!TryGetInteractable(col, out IInteractable interactable))
+                continue;
+
+            if (!PassesInteractionTargetFilters(interactable as MonoBehaviour, ctx))
                 continue;
 
             if (!interactable.CanInteract(ctx))
@@ -652,6 +736,7 @@ public class Interactor2D : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(ctx.Origin, ctx.AimDir, rayDistance, interactableMask);
             if (hit.collider != null &&
                 TryGetPickupInteractable(hit.collider, out IPickupInteractable pickup) &&
+                PassesInteractionTargetFilters(pickup as MonoBehaviour, ctx) &&
                 pickup.CanPickup(ctx))
             {
                 best = pickup;
@@ -664,6 +749,9 @@ public class Interactor2D : MonoBehaviour
         {
             Collider2D col = hits[i];
             if (!TryGetPickupInteractable(col, out IPickupInteractable pickup))
+                continue;
+
+            if (!PassesInteractionTargetFilters(pickup as MonoBehaviour, ctx))
                 continue;
 
             if (!pickup.CanPickup(ctx))
@@ -690,6 +778,7 @@ public class Interactor2D : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(ctx.Origin, ctx.AimDir, rayDistance, interactableMask);
             if (hit.collider != null &&
                 TryGetUnsecureInteractable(hit.collider, out IUnsecureInteractable unsecure) &&
+                PassesInteractionTargetFilters(unsecure as MonoBehaviour, ctx) &&
                 unsecure.CanUnsecure(ctx))
             {
                 best = unsecure;
@@ -702,6 +791,9 @@ public class Interactor2D : MonoBehaviour
         {
             Collider2D col = hits[i];
             if (!TryGetUnsecureInteractable(col, out IUnsecureInteractable unsecure))
+                continue;
+
+            if (!PassesInteractionTargetFilters(unsecure as MonoBehaviour, ctx))
                 continue;
 
             if (!unsecure.CanUnsecure(ctx))

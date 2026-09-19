@@ -111,6 +111,13 @@ public sealed class WorldItem :
             return false;
         }
 
+        if (IsInteractorOccupyingThisBell(
+                context))
+        {
+            Log("CanPickup FAIL: interactor is occupying this diving bell");
+            return false;
+        }
+
         BoatSecuredItem secured = GetComponent<BoatSecuredItem>();
         if (secured != null && secured.IsSecured)
         {
@@ -148,6 +155,10 @@ public sealed class WorldItem :
     public void Pickup(in InteractContext context)
     {
         if (itemInstance == null || itemInstance.Definition == null || itemInstance.Quantity <= 0)
+            return;
+
+        if (IsInteractorOccupyingThisBell(
+                context))
             return;
 
         if (!CanAccessByBoatContext(context))
@@ -190,8 +201,45 @@ public sealed class WorldItem :
             highlightObject.SetActive(highlighted);
     }
 
+    private bool IsInteractorOccupyingThisBell(
+        in InteractContext context)
+    {
+        if (context.InteractorGO == null)
+            return false;
+
+        DivingBellOccupancy bell =
+            GetComponent<DivingBellOccupancy>() ??
+            GetComponentInParent<DivingBellOccupancy>();
+
+        return
+            bell != null &&
+            bell.Contains(
+                context.InteractorGO);
+    }
+
     private bool CanAccessByBoatContext(in InteractContext context)
     {
+        DivingBellContainedItem bellContained =
+            GetComponent<DivingBellContainedItem>();
+
+        if (bellContained != null &&
+            bellContained.IsContainedInBell)
+        {
+            DivingBellOccupancy bell =
+                bellContained.CurrentBell;
+
+            bool sameBellOccupant =
+                bell != null &&
+                context.InteractorGO != null &&
+                bell.Contains(
+                    context.InteractorGO);
+
+            Log(
+                $"Access by diving-bell context | bell='{(bell != null ? bell.name : "NULL")}' ok={sameBellOccupant}");
+
+            return sameBellOccupant;
+        }
+
         if (!requireMatchingBoatBoardingContext)
             return true;
 

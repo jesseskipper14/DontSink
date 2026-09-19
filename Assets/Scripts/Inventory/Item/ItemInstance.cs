@@ -336,58 +336,13 @@ public sealed class ItemInstance
 
     public bool TryInsertIntoContainer(ItemInstance incoming, out ItemInstance remainder)
     {
-        remainder = incoming;
-
-        if (!CanAcceptIntoContainer(incoming))
-            return false;
-
-        if (incoming == null || containerState == null)
-            return false;
-
-        bool changed = false;
-
-        for (int i = 0; i < containerState.SlotCount; i++)
-        {
-            InventorySlot slot = containerState.GetSlot(i);
-            if (slot == null || slot.IsEmpty || slot.Instance == null)
-                continue;
-
-            if (!slot.Instance.CanStackWith(incoming))
-                continue;
-
-            int moved = slot.Instance.AddQuantity(incoming.Quantity);
-            if (moved > 0)
-            {
-                incoming.RemoveQuantity(moved);
-                changed = true;
-            }
-
-            if (incoming.IsDepleted())
-            {
-                remainder = null;
-                containerState.NotifyChanged();
-                return true;
-            }
-        }
-
-        for (int i = 0; i < containerState.SlotCount; i++)
-        {
-            InventorySlot slot = containerState.GetSlot(i);
-            if (slot == null || !slot.IsEmpty)
-                continue;
-
-            slot.Set(incoming);
-            remainder = null;
-            changed = true;
-            containerState.NotifyChanged();
-            return true;
-        }
-
-        if (changed)
-            containerState.NotifyChanged();
-
-        remainder = incoming;
-        return false;
+        // Keep one authoritative portable-container placement path.
+        // This ensures per-slot quantity caps, stacking, partial insertion,
+        // and future container rules cannot diverge between callers.
+        return ContainerPlacementUtility.TryAutoInsert(
+            this,
+            incoming,
+            out remainder);
     }
 
     public void ForceSetInstanceIdForRestore(string newInstanceId)

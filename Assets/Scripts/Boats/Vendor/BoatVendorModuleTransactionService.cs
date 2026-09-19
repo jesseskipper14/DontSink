@@ -120,6 +120,10 @@ public sealed class BoatVendorModuleTransactionService : MonoBehaviour
         {
             message = $"Bought {itemDef.DisplayName} for ${price:n0}. {deliveryMessage}";
             Log(message);
+
+            GameMessageService.PostInfo(
+                $"Purchased {itemDef.DisplayName} for ${price:n0}.");
+
             return true;
         }
 
@@ -229,12 +233,25 @@ public sealed class BoatVendorModuleTransactionService : MonoBehaviour
             ? removedItem.Definition.DisplayName
             : removedItem.Definition.ItemId;
 
-        message = $"Sold {label} for ${payout:n0}.";
+        int soldQuantity =
+            Mathf.Max(
+                1,
+                removedItem.Quantity);
+
+        message = soldQuantity > 1
+            ? $"Sold {soldQuantity}x {label} for ${payout:n0}."
+            : $"Sold {label} for ${payout:n0}.";
 
         if (!string.IsNullOrWhiteSpace(removeMessage))
             message += $" {removeMessage}";
 
         Log(message);
+
+        GameMessageService.PostInfo(
+            soldQuantity > 1
+                ? $"Sold {soldQuantity}x {label} for ${payout:n0}."
+                : $"Sold {label} for ${payout:n0}.");
+
         return true;
     }
 

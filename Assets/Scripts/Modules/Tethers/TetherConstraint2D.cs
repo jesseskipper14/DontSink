@@ -21,6 +21,10 @@ public sealed class TetherConstraint2D : MonoBehaviour
     private Rigidbody2D _startBody;
     private TetherPayload _payload;
     private DistanceJoint2D _runtimeJoint;
+    private TetherJointBreakRelay2D _breakRelay;
+
+    private bool _breakPending;
+    private float _pendingBreakTension;
 
     public bool IsAttached =>
         _attached &&
@@ -32,8 +36,10 @@ public sealed class TetherConstraint2D : MonoBehaviour
     public float CurrentDistance => _currentDistance;
     public float Slack => _slack;
 
-    // Retained because WinchModule / future line-failure work already consume it.
-    // In the current Unity joint setup this has been observed to report zero.
+    // Tension is sampled from Unity's solved Joint2D reaction force.
+    // Sampling happens after physics as well as before the next fixed step so
+    // the value is useful to UI / winch logic instead of being read only while
+    // the solver is between steps.
     public float CurrentTension => _currentTension;
     public float AppliedTension => _currentTension;
 
@@ -44,6 +50,24 @@ public sealed class TetherConstraint2D : MonoBehaviour
     public bool IsOverBreakingLoad =>
         _breakingLoad > 0f &&
         _currentTension > _breakingLoad;
+
+    /// <summary>
+    /// Consumes a solver-owned DistanceJoint2D break notification.
+    /// The break is latched until the owning WinchModule has had a chance to
+    /// release the payload and reconcile line inventory.
+    /// </summary>
+    public bool TryConsumeBreak(out float breakTension)
+    {
+        breakTension = 0f;
+
+        if (!_breakPending)
+            return false;
+
+        breakTension = Mathf.Max(0f, _pendingBreakTension);
+        _breakPending = false;
+        _pendingBreakTension = 0f;
+        return true;
+    }
 
     private void Awake()
     {
@@ -110,18 +134,42 @@ public sealed class TetherConstraint2D : MonoBehaviour
         _runtimeJoint.maxDistanceOnly = true;
         _runtimeJoint.connectedBody = _startBody;
 
+        _runtimeJoint.breakAction = JointBreakAction2D.Disable;
+        ApplyJointBreakSettings();
+
+        _breakRelay =
+            payloadBody.GetComponent<TetherJointBreakRelay2D>();
+
+        if (_breakRelay == null)
+        {
+            _breakRelay =
+                payloadBody.gameObject.AddComponent<TetherJointBreakRelay2D>();
+        }
+
+        _breakRelay.Bind(
+            this,
+            _runtimeJoint);
+
         UpdateJointAnchors();
 
         _runtimeJoint.distance = _deployedLength;
         _attached = true;
 
-        UpdateRuntimeMeasurements();
+        UpdateGeometryMeasurements();
+        SampleReactionForce();
         SetRendererVisible(true);
     }
 
     public void Detach()
     {
         _attached = false;
+        _breakPending = false;
+        _pendingBreakTension = 0f;
+
+        if (_breakRelay != null)
+            _breakRelay.Unbind(this);
+
+        _breakRelay = null;
 
         if (_runtimeJoint != null)
         {
@@ -151,16 +199,40 @@ public sealed class TetherConstraint2D : MonoBehaviour
     {
         _workingLoad = Mathf.Max(0f, workingLoad);
         _breakingLoad = Mathf.Max(_workingLoad, breakingLoad);
+        ApplyJointBreakSettings();
+    }
+
+    private void ApplyJointBreakSettings()
+    {
+        if (_runtimeJoint == null)
+            return;
+
+        _runtimeJoint.breakForce =
+            _breakingLoad > 0f
+                ? _breakingLoad
+                : Mathf.Infinity;
     }
 
     private void FixedUpdate()
     {
+        // With breakAction=Disable, a solver break leaves the runtime joint
+        // present but disabled. The relay normally catches the callback first;
+        // this is a defensive fallback in case another component interfered.
+        if (_attached &&
+            _runtimeJoint != null &&
+            !_runtimeJoint.enabled)
+        {
+            NotifyRuntimeJointBroken(
+                _runtimeJoint);
+
+            return;
+        }
+
         if (!_attached ||
             _startAnchor == null ||
             _payload == null ||
             _payload.Rigidbody == null ||
-            _runtimeJoint == null ||
-            !_runtimeJoint.enabled)
+            _runtimeJoint == null)
         {
             if (_attached)
                 Detach();
@@ -168,12 +240,28 @@ public sealed class TetherConstraint2D : MonoBehaviour
             return;
         }
 
+        // Read the previous solved step BEFORE changing anchors/distance.
+        // Mutating joint configuration first can discard the very reaction data
+        // we are trying to observe.
+        SampleReactionForce();
+
         UpdateJointAnchors();
 
         if (!Mathf.Approximately(_runtimeJoint.distance, _deployedLength))
             _runtimeJoint.distance = _deployedLength;
 
-        UpdateRuntimeMeasurements();
+        UpdateGeometryMeasurements();
+    }
+
+    private void Update()
+    {
+        if (!IsAttached)
+            return;
+
+        // Update runs after the physics step(s) for the rendered frame, so this
+        // is the important sampling point for HUD/readout purposes.
+        UpdateGeometryMeasurements();
+        SampleReactionForce();
     }
 
     private void UpdateJointAnchors()
@@ -198,11 +286,12 @@ public sealed class TetherConstraint2D : MonoBehaviour
                 : _startAnchor.position;
     }
 
-    private void UpdateRuntimeMeasurements()
+    private void UpdateGeometryMeasurements()
     {
         if (_startAnchor == null || _payload == null)
         {
-            ResetMeasurements();
+            _currentDistance = 0f;
+            _slack = 0f;
             return;
         }
 
@@ -211,16 +300,68 @@ public sealed class TetherConstraint2D : MonoBehaviour
 
         _currentDistance = Vector2.Distance(start, end);
         _slack = Mathf.Max(0f, _deployedLength - _currentDistance);
+    }
 
-        if (_runtimeJoint != null && _runtimeJoint.enabled)
+    private void SampleReactionForce()
+    {
+        if (_runtimeJoint == null ||
+            !_runtimeJoint.enabled)
         {
-            _currentTension =
-                _runtimeJoint.GetReactionForce(Time.fixedDeltaTime).magnitude;
+            return;
         }
-        else
+
+        float tension =
+            _runtimeJoint.reactionForce.magnitude;
+
+        // Keep the explicit timestep API as a fallback. In Unity 6 the
+        // reactionForce property is the preferred solved-state read, but both
+        // values represent the same joint reaction in Newtons.
+        if (tension <= 0.0001f)
         {
-            _currentTension = 0f;
+            tension =
+                _runtimeJoint.GetReactionForce(
+                    Time.fixedDeltaTime).magnitude;
         }
+
+        _currentTension =
+            Mathf.Max(
+                0f,
+                tension);
+    }
+
+    internal void NotifyRuntimeJointBroken(
+        Joint2D brokenJoint)
+    {
+        if (brokenJoint == null ||
+            _runtimeJoint == null ||
+            brokenJoint != _runtimeJoint ||
+            _breakPending)
+        {
+            return;
+        }
+
+        float breakTension =
+            brokenJoint.reactionForce.magnitude;
+
+        if (breakTension <= 0.0001f)
+        {
+            breakTension =
+                brokenJoint.GetReactionForce(
+                    Time.fixedDeltaTime).magnitude;
+        }
+
+        _currentTension =
+            Mathf.Max(
+                _currentTension,
+                breakTension);
+
+        _pendingBreakTension =
+            _currentTension;
+
+        _breakPending = true;
+        _attached = false;
+
+        SetRendererVisible(false);
     }
 
     private void ResetMeasurements()
@@ -240,6 +381,7 @@ public sealed class TetherConstraint2D : MonoBehaviour
             return;
         }
 
+        SampleReactionForce();
         UpdateLineVisual();
         SetRendererVisible(true);
     }

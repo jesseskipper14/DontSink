@@ -125,6 +125,10 @@ public sealed class ItemVendorPurchaseService : MonoBehaviour
         {
             message = $"Bought {itemDef.DisplayName} for ${price}. {deliveryMessage}";
             Log(message);
+
+            GameMessageService.PostInfo(
+                $"Purchased {itemDef.DisplayName} for ${price:n0}.");
+
             return true;
         }
 

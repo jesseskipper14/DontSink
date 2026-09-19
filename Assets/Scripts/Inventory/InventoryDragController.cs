@@ -30,6 +30,12 @@ public sealed class InventoryDragController : MonoBehaviour
     private InventorySlotUI sourceSlot;
     private bool isDragging;
 
+    // A deployed sounding line is special: while the UI drag is in progress,
+    // the ItemInstance stays authoritatively in Hands. We only release it into
+    // the world if the player actually completes the drag away from Hands.
+    private bool _draggingDeployedSounder;
+    private HandheldSoundingLineController _deployedSounderController;
+
     private readonly List<RaycastResult> _raycastResults = new();
 
     public bool IsDragging => isDragging;
@@ -118,6 +124,12 @@ public sealed class InventoryDragController : MonoBehaviour
             return;
         }
 
+        if (TryBeginDeployedSounderDrag(
+                slot))
+        {
+            return;
+        }
+
         ItemInstance item = slot.RemoveItem();
         if (item == null || item.Definition == null)
         {
@@ -169,6 +181,36 @@ public sealed class InventoryDragController : MonoBehaviour
         ItemInstance working = draggedItem;
 
         Log($"EndDrag BEGIN | source={DescribeSlot(sourceSlot)} | target={DescribeSlot(target)} | item={DescribeItem(working)}");
+
+        if (_draggingDeployedSounder)
+        {
+            // Dropping it back onto its own Hands slot is just a cancelled drag.
+            if (target == sourceSlot)
+            {
+                Cleanup();
+                return;
+            }
+
+            if (_deployedSounderController != null &&
+                _deployedSounderController.IsActiveDeployedSounder(
+                    working) &&
+                _deployedSounderController.TryReleaseDeployedSounderToWorld(
+                    working,
+                    out _))
+            {
+                Log(
+                    "EndDrag | deployed sounding line released at its existing physical proxy position.");
+
+                Cleanup();
+                return;
+            }
+
+            LogWarning(
+                "EndDrag | deployed sounding-line release failed; item remains in Hands.");
+
+            Cleanup();
+            return;
+        }
 
         if (target != null)
         {
@@ -242,9 +284,25 @@ public sealed class InventoryDragController : MonoBehaviour
                     return;
                 }
 
-                draggedItem = remainder;
+                // A world target may intentionally accept only part of a stack.
+                // The dragged stack originated from sourceSlot, which is normally
+                // empty for the duration of the drag, so return the remainder there
+                // automatically instead of leaving a stranded partial stack attached
+                // to the cursor after the mouse button has already been released.
+                if (TryResolvePartialWorldDepositRemainder(remainder))
+                {
+                    Cleanup();
+                    return;
+                }
+
+                // Absolute safety fallback: never destroy or silently lose an item if
+                // the original slot disappeared and the normal displaced-item resolver
+                // also has nowhere legal to put it. Keep the remainder in the active
+                // drag only in that exceptional case.
                 ShowVisual(draggedItem);
-                Log($"EndDrag | partial deposit into world target | remainder={DescribeItem(draggedItem)}");
+                LogWarning(
+                    $"EndDrag | partial world deposit succeeded, but remainder could not be auto-resolved; " +
+                    $"keeping drag active | remainder={DescribeItem(draggedItem)}");
                 return;
             }
 
@@ -271,6 +329,75 @@ public sealed class InventoryDragController : MonoBehaviour
     public bool IsDraggingFrom(InventorySlotUI slot)
     {
         return isDragging && sourceSlot == slot;
+    }
+
+    private bool TryBeginDeployedSounderDrag(
+        InventorySlotUI slot)
+    {
+        if (slot == null ||
+            slot.SlotType !=
+                BottomBarSlotType.Hands ||
+            inventory == null ||
+            inventory.Equipment == null)
+        {
+            return false;
+        }
+
+        ItemInstance held =
+            inventory.Equipment.Get(
+                BottomBarSlotType.Hands);
+
+        if (held == null ||
+            held.Definition == null)
+        {
+            return false;
+        }
+
+        HandheldSoundingLineController controller =
+            inventory.GetComponent<HandheldSoundingLineController>();
+
+        if (controller == null)
+        {
+            controller =
+                inventory.GetComponentInParent<HandheldSoundingLineController>();
+        }
+
+        if (controller == null)
+        {
+            controller =
+                inventory.GetComponentInChildren<HandheldSoundingLineController>(
+                    true);
+        }
+
+        if (controller == null ||
+            !controller.IsActiveDeployedSounder(
+                held))
+        {
+            return false;
+        }
+
+        draggedItem =
+            held;
+
+        sourceSlot =
+            slot;
+
+        isDragging =
+            true;
+
+        _draggingDeployedSounder =
+            true;
+
+        _deployedSounderController =
+            controller;
+
+        ShowVisual(
+            held);
+
+        Log(
+            $"BeginDrag | deployed sounding line remains in Hands until drag commits | item={DescribeItem(held)}");
+
+        return true;
     }
 
     private InventorySlotUI FindTargetSlotUnderMouse()
@@ -368,6 +495,13 @@ public sealed class InventoryDragController : MonoBehaviour
         draggedItem = null;
         sourceSlot = null;
         isDragging = false;
+
+        _draggingDeployedSounder =
+            false;
+
+        _deployedSounderController =
+            null;
+
         HideVisual();
 
         playerInventoryUI?.RefreshDragPreview(null);
@@ -395,6 +529,28 @@ public sealed class InventoryDragController : MonoBehaviour
     {
         if (!isDragging || draggedItem == null || target == null)
             return false;
+
+        if (_draggingDeployedSounder)
+        {
+            if (target == sourceSlot)
+            {
+                Cleanup();
+                return true;
+            }
+
+            bool released =
+                _deployedSounderController != null &&
+                _deployedSounderController.IsActiveDeployedSounder(
+                    draggedItem) &&
+                _deployedSounderController.TryReleaseDeployedSounderToWorld(
+                    draggedItem,
+                    out _);
+
+            if (released)
+                Cleanup();
+
+            return released;
+        }
 
         if (draggedItem.Quantity <= 0)
             return false;
@@ -447,6 +603,13 @@ public sealed class InventoryDragController : MonoBehaviour
 
         Log($"CancelDrag | item={DescribeItem(draggedItem)} | source={DescribeSlot(sourceSlot)}");
 
+        if (_draggingDeployedSounder)
+        {
+            // We never removed it from Hands, so cancelling needs no inventory rollback.
+            Cleanup();
+            return;
+        }
+
         bool restored = false;
 
         if (draggedItem != null && sourceSlot != null && sourceSlot.isActiveAndEnabled && sourceSlot.gameObject.activeInHierarchy)
@@ -491,6 +654,22 @@ public sealed class InventoryDragController : MonoBehaviour
     {
         if (!isDragging || draggedItem == null)
             return false;
+
+        if (_draggingDeployedSounder)
+        {
+            bool released =
+                _deployedSounderController != null &&
+                _deployedSounderController.IsActiveDeployedSounder(
+                    draggedItem) &&
+                _deployedSounderController.TryReleaseDeployedSounderToWorld(
+                    draggedItem,
+                    out _);
+
+            if (released)
+                Cleanup();
+
+            return released;
+        }
 
         if (draggedItem.Quantity == 1)
         {
@@ -577,6 +756,48 @@ public sealed class InventoryDragController : MonoBehaviour
         bool ok = target.TryAcceptWorldDrop(item, out remainder);
         Log($"TryDepositDraggedItemIntoWorldTarget | item={DescribeItem(item)} | ok={ok} | remainder={DescribeItem(remainder)}");
         return ok;
+    }
+
+    /// <summary>
+    /// Resolves the unaccepted portion of a partial world-target deposit.
+    /// Prefer the exact slot the drag originated from; if that is no longer a
+    /// legal destination, fall back to the project's existing displaced-item
+    /// resolver. Returns true only when the remainder is fully accounted for.
+    /// </summary>
+    private bool TryResolvePartialWorldDepositRemainder(ItemInstance remainder)
+    {
+        if (remainder == null || remainder.IsDepleted())
+            return true;
+
+        ItemInstance unresolved = remainder;
+
+        if (sourceSlot != null)
+        {
+            if (sourceSlot.TryPlaceItem(unresolved, out ItemInstance returned))
+            {
+                Log(
+                    $"Partial world deposit | returned remainder to source | " +
+                    $"source={DescribeSlot(sourceSlot)} | returned={DescribeItem(returned)}");
+
+                if (returned == null || returned.IsDepleted())
+                    return true;
+
+                unresolved = returned;
+            }
+        }
+
+        if (displacedItemResolver != null &&
+            displacedItemResolver.TryResolve(unresolved, sourceSlot))
+        {
+            Log(
+                $"Partial world deposit | displaced-item resolver accepted remainder | " +
+                $"item={DescribeItem(unresolved)}");
+
+            return true;
+        }
+
+        draggedItem = unresolved;
+        return false;
     }
 
     private void Log(string msg)

@@ -12,6 +12,8 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
     [SerializeField] private string groundLayerName = "Ground";
     [SerializeField] private string worldLedgeLayerName = "WorldLedge";
     [SerializeField] private string ghostCollisionLayerName = "GhostCollision";
+    [SerializeField] private string bellInteriorLayerName = "BellInterior";
+    [SerializeField] private string bellLedgeLayerName = "BellLedge";
 
     [Header("Sprite Sorting")]
     [SerializeField] private string boardedSortingLayerName = "BoatPlayer";
@@ -25,6 +27,15 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
 
     public bool IsBoarded { get; private set; }
     public Transform CurrentBoatRoot { get; private set; }
+
+    public bool HasCollisionContextOverride =>
+        _collisionOverrideActive &&
+        _collisionOverrideOwner != null;
+
+    public Object CollisionContextOverrideOwner =>
+        HasCollisionContextOverride
+            ? _collisionOverrideOwner
+            : null;
 
     // Boarding context and physical support are deliberately separate.
     //
@@ -77,6 +88,8 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
     private int _groundLayer;
     private int _worldLedgeLayer;
     private int _ghostCollisionLayer;
+    private int _bellInteriorLayer;
+    private int _bellLedgeLayer;
 
     private int _hullBit;
     private int _boatItemBit;
@@ -84,8 +97,20 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
     private int _groundBit;
     private int _worldLedgeBit;
     private int _ghostCollisionBit;
+    private int _bellInteriorBit;
+    private int _bellLedgeBit;
+    private int _bellCollisionBits;
 
     private int _nonBoatWorldBits;
+
+    // Generic temporary per-player collision-context override.
+    // The diving bell uses this now; future vehicle/interior contexts can reuse it.
+    private Object _collisionOverrideOwner;
+    private bool _collisionOverrideActive;
+    private LayerMask _collisionOverrideAllowedLayers;
+    private LayerMask _collisionOverrideGroundMask;
+    private int _excludeLayersBeforeCollisionOverride;
+    private LayerMask _groundMaskBeforeCollisionOverride;
 
     private LayerMask _boardedGroundMask;
     private LayerMask _unboardedGroundMask;
@@ -145,6 +170,18 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
 
         ClearGhostCollisionPairs();
         UnregisterMassContribution();
+
+        if (_collisionOverrideActive)
+        {
+            if (_rb != null)
+                _rb.excludeLayers = _excludeLayersBeforeCollisionOverride;
+
+            if (_motor != null)
+                _motor.groundMask = _groundMaskBeforeCollisionOverride;
+
+            _collisionOverrideOwner = null;
+            _collisionOverrideActive = false;
+        }
     }
 
     public void Board(Transform boatRoot)
@@ -159,11 +196,7 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
         ApplyMask();
         ApplySpriteSorting();
 
-        if (CurrentBoatRoot != null &&
-            CurrentBoatRoot.TryGetComponent(out BoatVisualStateController visuals))
-        {
-            visuals.RefreshZonesForPlayer(this);
-        }
+        RefreshCurrentBoatVisualState();
     }
 
     public void Unboard()
@@ -178,11 +211,140 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
         ApplyMask();
         ApplySpriteSorting();
 
-        if (oldBoatRoot != null &&
-            oldBoatRoot.TryGetComponent(out BoatVisualStateController visuals))
-        {
+        BoatVisualStateController visuals =
+            ResolveBoatVisualController(
+                oldBoatRoot);
+
+        if (visuals != null)
             visuals.ForceRefreshForPlayer(this);
+    }
+
+    /// <summary>
+    /// Temporarily replaces this player's physical collision context.
+    ///
+    /// allowedCollisionLayers means exactly what it says: while the override is
+    /// active, the Rigidbody2D excludes every physics layer EXCEPT these layers.
+    /// groundMaskOverride becomes CharacterMotor2D.groundMask.
+    ///
+    /// Only the owner that acquired the override may release it.
+    /// </summary>
+    public bool TrySetCollisionContextOverride(
+        Object owner,
+        LayerMask allowedCollisionLayers,
+        LayerMask groundMaskOverride,
+        out string reason)
+    {
+        reason = null;
+
+        if (owner == null)
+        {
+            reason = "Collision override owner is null.";
+            return false;
         }
+
+        if (_rb == null || _motor == null)
+        {
+            reason = "Player collision components are unavailable.";
+            return false;
+        }
+
+        if (_collisionOverrideActive &&
+            _collisionOverrideOwner != null &&
+            !ReferenceEquals(_collisionOverrideOwner, owner))
+        {
+            reason =
+                $"Player collision context is already owned by '{_collisionOverrideOwner.name}'.";
+            return false;
+        }
+
+        if (!_collisionOverrideActive)
+        {
+            _excludeLayersBeforeCollisionOverride =
+                _rb.excludeLayers;
+
+            _groundMaskBeforeCollisionOverride =
+                _motor.groundMask;
+        }
+
+        _collisionOverrideOwner =
+            owner;
+
+        _collisionOverrideActive =
+            true;
+
+        _collisionOverrideAllowedLayers =
+            allowedCollisionLayers;
+
+        _collisionOverrideGroundMask =
+            groundMaskOverride;
+
+        ApplyMask();
+        return true;
+    }
+
+    public bool ClearCollisionContextOverride(
+        Object owner)
+    {
+        if (!_collisionOverrideActive)
+            return true;
+
+        if (owner == null ||
+            _collisionOverrideOwner == null ||
+            !ReferenceEquals(_collisionOverrideOwner, owner))
+        {
+            return false;
+        }
+
+        _collisionOverrideOwner = null;
+        _collisionOverrideActive = false;
+
+        if (_rb != null)
+            _rb.excludeLayers = _excludeLayersBeforeCollisionOverride;
+
+        if (_motor != null)
+            _motor.groundMask = _groundMaskBeforeCollisionOverride;
+
+        // Re-evaluate the player's current boat/world state instead of merely
+        // restoring stale bits from the moment the override began.
+        ApplyMask();
+        return true;
+    }
+
+    /// <summary>
+    /// Rebuild sprite sorting from the authoritative current boarding state.
+    /// Restores both original sorting layers and orders before applying boarded sorting.
+    /// </summary>
+    public void ReapplyCurrentPresentation()
+    {
+        if (_spriteRenderers == null ||
+            _spriteRenderers.Length == 0)
+        {
+            CacheSpriteRenderers();
+        }
+
+        RestoreOriginalSortingLayers();
+
+        if (IsBoarded)
+            ApplyBoardedSortingLayer();
+    }
+
+    /// <summary>
+    /// Re-scan BoatVisibilityZone overlaps for the currently boarded boat.
+    /// </summary>
+    public void RefreshCurrentBoatVisualState()
+    {
+        if (!IsBoarded ||
+            CurrentBoatRoot == null)
+        {
+            return;
+        }
+
+        BoatVisualStateController visuals =
+            ResolveBoatVisualController(
+                CurrentBoatRoot);
+
+        if (visuals != null)
+            visuals.RefreshZonesForPlayer(this);
     }
 
     [ContextMenu("Reapply Collision Mask")]
@@ -203,6 +365,8 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
         _groundLayer = LayerMask.NameToLayer(groundLayerName);
         _worldLedgeLayer = LayerMask.NameToLayer(worldLedgeLayerName);
         _ghostCollisionLayer = LayerMask.NameToLayer(ghostCollisionLayerName);
+        _bellInteriorLayer = LayerMask.NameToLayer(bellInteriorLayerName);
+        _bellLedgeLayer = LayerMask.NameToLayer(bellLedgeLayerName);
 
         if (_hullLayer < 0)
             Debug.LogError($"Layer '{hullLayerName}' not found.", this);
@@ -227,12 +391,24 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
         if (_ghostCollisionLayer < 0)
             Debug.LogError($"Layer '{ghostCollisionLayerName}' not found.", this);
 
+        if (_bellInteriorLayer < 0)
+            Debug.LogError($"Layer '{bellInteriorLayerName}' not found.", this);
+
+        if (_bellLedgeLayer < 0)
+            Debug.LogError($"Layer '{bellLedgeLayerName}' not found.", this);
+
         _hullBit = LayerBitOrZero(_hullLayer);
         _boatItemBit = LayerBitOrZero(_boatItemLayer);
         _hatchLedgeBit = LayerBitOrZero(_hatchLedgeLayer);
         _groundBit = LayerBitOrZero(_groundLayer);
         _worldLedgeBit = LayerBitOrZero(_worldLedgeLayer);
         _ghostCollisionBit = LayerBitOrZero(_ghostCollisionLayer);
+        _bellInteriorBit = LayerBitOrZero(_bellInteriorLayer);
+        _bellLedgeBit = LayerBitOrZero(_bellLedgeLayer);
+
+        _bellCollisionBits =
+            _bellInteriorBit |
+            _bellLedgeBit;
     }
 
     private void BuildMasks()
@@ -255,6 +431,45 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
         if (_rb == null || _motor == null)
             return;
 
+        // UnityEngine.Object becomes == null after its owner is destroyed.
+        // If that happens, fail safe back to the ordinary player collision state.
+        if (_collisionOverrideActive &&
+            _collisionOverrideOwner == null)
+        {
+            _collisionOverrideActive = false;
+            _rb.excludeLayers = _excludeLayersBeforeCollisionOverride;
+            _motor.groundMask = _groundMaskBeforeCollisionOverride;
+        }
+
+        if (_collisionOverrideActive &&
+            _collisionOverrideOwner != null)
+        {
+            // Collision matrix remains globally authoritative. This per-body mask
+            // narrows the player's physical world to the requested context only.
+            _rb.excludeLayers =
+                ~_collisionOverrideAllowedLayers.value;
+
+            _motor.groundMask =
+                _collisionOverrideGroundMask;
+
+            // Do NOT tear down the player's existing GhostCollisionProxy pair routing here.
+            // The per-body exclude mask already blocks GhostCollision while the bell override
+            // is active. Preserving the pair configuration means ordinary boarded collision
+            // resumes cleanly when the override is released.
+            if (logMaskChanges)
+            {
+                Debug.Log(
+                    $"[PlayerBoardingState:{name}] ApplyMask COLLISION OVERRIDE " +
+                    $"owner={_collisionOverrideOwner.name} " +
+                    $"allowed={_collisionOverrideAllowedLayers.value} " +
+                    $"excludeLayers={_rb.excludeLayers.value} " +
+                    $"groundMask={_motor.groundMask.value}",
+                    this);
+            }
+
+            return;
+        }
+
         GhostCollisionProxy ownerGhost =
             ResolveCurrentGhostProxy();
 
@@ -269,6 +484,10 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
         // BoatItem is for loose boat-owned items/cargo, not player body blocking.
         // Optional because early layer cleanup may not have populated/created it yet.
         mask |= _boatItemBit;
+
+        // Bell collision geometry is opt-in through a per-player collision context.
+        // Ordinary players outside bells should pass through it completely.
+        mask |= _bellCollisionBits;
 
         if (IsBoarded)
         {
@@ -482,17 +701,17 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
 
     private void ApplySpriteSorting()
     {
-        if (_spriteRenderers == null || _spriteRenderers.Length == 0)
+        if (_spriteRenderers == null ||
+            _spriteRenderers.Length == 0)
+        {
             CacheSpriteRenderers();
+        }
+
+        if (restoreOriginalSortingLayersOnUnboard)
+            RestoreOriginalSortingLayers();
 
         if (IsBoarded)
-        {
             ApplyBoardedSortingLayer();
-        }
-        else if (restoreOriginalSortingLayersOnUnboard)
-        {
-            RestoreOriginalSortingLayers();
-        }
     }
 
     private void ApplyBoardedSortingLayer()
@@ -537,6 +756,23 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
 
             sr.sortingOrder = _originalSortingOrders[i];
         }
+    }
+
+    private BoatVisualStateController ResolveBoatVisualController(
+        Transform boatRoot)
+    {
+        if (boatRoot == null)
+            return null;
+
+        BoatVisualStateController direct =
+            boatRoot.GetComponent<BoatVisualStateController>();
+
+        if (direct != null)
+            return direct;
+
+        return
+            boatRoot.GetComponentInChildren<BoatVisualStateController>(
+                true);
     }
 
     private static int LayerBitOrZero(int layer)

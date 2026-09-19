@@ -12,6 +12,13 @@ public class TetherPayload : MonoBehaviour
     [Tooltip("Point on this physical item where the tether attaches. Falls back to this transform.")]
     [SerializeField] private Transform tetherAnchor;
 
+    [Header("Collision Scope")]
+    [Tooltip(
+        "Optional selective collision scope. If present, ONLY colliders authored in " +
+        "that scope are moved onto the TetherPayload layer while deployed. " +
+        "If absent, legacy behavior remains: every child Collider2D is switched.")]
+    [SerializeField] private TetherPayloadCollisionScope collisionScope;
+
     [Header("Runtime Debug")]
     [SerializeField] private bool usingTetherPayloadLayer;
     [SerializeField] private int tetherPayloadLayerIndex = -1;
@@ -19,6 +26,7 @@ public class TetherPayload : MonoBehaviour
 
     private WorldItem _worldItem;
     private Rigidbody2D _rb;
+    private TetherPayloadDock _activeDock;
 
     private readonly Dictionary<GameObject, int> _originalColliderLayers =
         new Dictionary<GameObject, int>();
@@ -30,10 +38,28 @@ public class TetherPayload : MonoBehaviour
 
     public WorldItem WorldItem => _worldItem;
     public Rigidbody2D Rigidbody => _rb;
+    public TetherPayloadDock ActiveDock => _activeDock;
 
     public bool UsingTetherPayloadLayer => usingTetherPayloadLayer;
     public int TetherPayloadLayerIndex => tetherPayloadLayerIndex;
     public int SwitchedColliderObjects => switchedColliderObjects;
+
+
+    /// <summary>
+    /// Dock ownership is payload-local, never global. A payload may be claimed by
+    /// only one dock at a time, which keeps simultaneous multiplayer/boat docking
+    /// operations independent.
+    /// </summary>
+    internal void SetActiveDock(TetherPayloadDock dock)
+    {
+        _activeDock = dock;
+    }
+
+    internal void ClearActiveDock(TetherPayloadDock dock)
+    {
+        if (ReferenceEquals(_activeDock, dock))
+            _activeDock = null;
+    }
 
     protected virtual void Awake()
     {
@@ -47,13 +73,24 @@ public class TetherPayload : MonoBehaviour
 
         if (_rb == null)
             _rb = GetComponent<Rigidbody2D>();
+
+        if (collisionScope == null)
+        {
+            collisionScope =
+                GetComponent<TetherPayloadCollisionScope>() ??
+                GetComponentInChildren<TetherPayloadCollisionScope>(true);
+        }
     }
 
     /// <summary>
-    /// While tethered, move every Collider2D-bearing GameObject on this payload
+    /// While tethered, move the payload's EXTERNAL tether collision geometry
     /// onto the dedicated TetherPayload physics layer.
     ///
-    /// When disabled, restore each collider object's original layer.
+    /// Backward compatibility:
+    /// - no TetherPayloadCollisionScope = legacy "all child colliders" behavior;
+    /// - scope present = ONLY colliders explicitly selected by that scope.
+    ///
+    /// When disabled, restore each switched collider object's original layer.
     /// The Physics 2D Layer Collision Matrix is therefore authoritative for
     /// what tethered payloads can collide with.
     /// </summary>
@@ -84,12 +121,38 @@ public class TetherPayload : MonoBehaviour
             return false;
         }
 
-        Collider2D[] colliders =
-            GetComponentsInChildren<Collider2D>(true);
+        CacheRefs();
+
+        List<Collider2D> colliders =
+            new List<Collider2D>();
+
+        if (collisionScope != null)
+        {
+            collisionScope.CollectTetherCollisionColliders(
+                colliders);
+
+            if (colliders.Count == 0)
+            {
+                Debug.LogError(
+                    $"[TetherPayload:{name}] Selective TetherPayloadCollisionScope is present " +
+                    "but contains no usable colliders. Refusing to fall back to all child colliders.",
+                    this);
+
+                return false;
+            }
+        }
+        else
+        {
+            Collider2D[] legacyColliders =
+                GetComponentsInChildren<Collider2D>(true);
+
+            if (legacyColliders != null)
+                colliders.AddRange(legacyColliders);
+        }
 
         _originalColliderLayers.Clear();
 
-        for (int i = 0; i < colliders.Length; i++)
+        for (int i = 0; i < colliders.Count; i++)
         {
             Collider2D collider =
                 colliders[i];

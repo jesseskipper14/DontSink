@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f09bf4be73b727846b74f99b05bdebab, type: 3}
+  m_Name: module_diving_base_basic
+  m_EditorClassIdentifier: 
+  moduleId: diving_base_basic
+  displayName: Basic Diving Base
+  allowedHardpointTypes: 0b000000
+  installedPrefab: {fileID: 8130874790704986176, guid: a8646e95ca3f9bd45abb7bb8c0c898bf, type: 3}
+  requiredBoatSupportWidth: 7
+  itemDefinition: {fileID: 11400000, guid: 70e01b17379827141924af94f61fa035, type: 2}
+  installedStorage:
+    mode: 1
+    slotCount: 1
+    columnCount: 1
+    acceptanceMode: 2
+    allowedItemCategories: 0
+    explicitlyAllowedItems:
+    - {fileID: 11400000, guid: 11b36399f0d28a84d9b13b79e679ebc4, type: 2}
+    acceptsPortableContainers: 0
+    acceptsCargoCrates: 0
+    countsAsSecuredStorage: 0
+    looseFailureChance: 0
