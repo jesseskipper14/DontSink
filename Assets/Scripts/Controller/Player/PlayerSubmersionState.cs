@@ -48,6 +48,11 @@ public sealed class PlayerSubmersionState : MonoBehaviour
     public BoatWaterExposureKind LastExposureKind { get; private set; } = BoatWaterExposureKind.None;
     public Compartment LastCompartment { get; private set; }
 
+    public bool UsingDivingBellWaterContext { get; private set; }
+    public Vector2 BottomWorldPosition => GetBottomWorld();
+    public Vector2 HeadWorldPosition => GetTopWorld();
+
+    private PlayerBellOccupantState _bellOccupantState;
     private ISubmersionProvider[] _providers;
 
     private bool _lastInWater;
@@ -96,6 +101,8 @@ public sealed class PlayerSubmersionState : MonoBehaviour
 
         if (!usedContext)
         {
+            UsingDivingBellWaterContext = false;
+
             if (fallbackToProvidersWhenNoContext)
                 resolved = ResolveProviderSubmersion();
             else
@@ -118,6 +125,20 @@ public sealed class PlayerSubmersionState : MonoBehaviour
         Vector2 bottom = GetBottomWorld();
         Vector2 top = GetTopWorld();
         Vector2 probe = (bottom + top) * 0.5f;
+
+        UsingDivingBellWaterContext = false;
+
+        // Bell occupancy is a stronger local environment than ordinary boat/ocean
+        // context. A deployed bell occupant is intentionally unboarded, so without
+        // this check the player would be treated as immersed in the global ocean
+        // even while standing in the trapped-air pocket.
+        if (TryResolveDivingBellSubmersion(
+                bottom,
+                top,
+                out submersion01))
+        {
+            return true;
+        }
 
         if (!TryResolveExposure(probe, out BoatWaterExposure exposure))
             return false;
@@ -159,6 +180,65 @@ public sealed class PlayerSubmersionState : MonoBehaviour
                 submersion01 = 0f;
                 return true;
         }
+    }
+
+    private bool TryResolveDivingBellSubmersion(
+        Vector2 bottomWorld,
+        Vector2 topWorld,
+        out float submersion01)
+    {
+        submersion01 =
+            0f;
+
+        ResolveBellOccupancyRef();
+
+        if (_bellOccupantState == null ||
+            !_bellOccupantState.IsInsideBell ||
+            _bellOccupantState.CurrentBell == null)
+        {
+            return false;
+        }
+
+        DivingBellOccupancy bell =
+            _bellOccupantState.CurrentBell;
+
+        DivingBellAirVolume airVolume =
+            bell.GetComponent<DivingBellAirVolume>() ??
+            bell.GetComponentInChildren<DivingBellAirVolume>(true);
+
+        if (airVolume == null)
+            return false;
+
+        submersion01 =
+            airVolume.GetOccupantSubmersion01(
+                _bellOccupantState.gameObject,
+                bottomWorld,
+                topWorld);
+
+        UsingDivingBellWaterContext =
+            true;
+
+        LastExposureKind =
+            BoatWaterExposureKind.None;
+
+        LastCompartment =
+            null;
+
+        LogContext(
+            $"diving bell='{bell.name}' surfaceY={airVolume.WaterSurfaceWorldY:0.00} " +
+            $"fill={airVolume.WaterFill01:0.00} sub={submersion01:0.00}");
+
+        return true;
+    }
+
+    private void ResolveBellOccupancyRef()
+    {
+        if (_bellOccupantState != null)
+            return;
+
+        _bellOccupantState =
+            GetComponentInParent<PlayerBellOccupantState>() ??
+            GetComponentInChildren<PlayerBellOccupantState>(true);
     }
 
     private bool TryResolveExposure(Vector2 probeWorld, out BoatWaterExposure exposure)
@@ -273,6 +353,7 @@ public sealed class PlayerSubmersionState : MonoBehaviour
                 GetComponentInChildren<PlayerBoardingState>(true);
         }
 
+        ResolveBellOccupancyRef();
         ResolveWaveRef();
     }
 
@@ -296,6 +377,7 @@ public sealed class PlayerSubmersionState : MonoBehaviour
         Debug.Log(
             $"[PlayerSubmersionState:{name}] InWater={inWater} Swimming={swimming} " +
             $"Submersion={Submersion01:0.00} Context={usedContext} Exposure={LastExposureKind} " +
+            $"BellWater={UsingDivingBellWaterContext} " +
             $"Compartment={DescribeCompartment(LastCompartment)}",
             this);
 

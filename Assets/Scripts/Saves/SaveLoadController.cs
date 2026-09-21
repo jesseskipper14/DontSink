@@ -124,6 +124,34 @@ public sealed class SaveLoadController : MonoBehaviour
         return SaveAutosave("Autosave Before Exit");
     }
 
+    /// <summary>
+    /// Prepares live scene-bound gameplay objects that must detach from temporary
+    /// runtime hierarchies before the scene is unloaded or the application exits.
+    /// Currently this is primarily diving-bell occupancy.
+    /// </summary>
+    public int PrepareForSceneExit(string reason)
+    {
+        SceneTransitionController transition = SceneTransitionController.I;
+
+        if (transition == null)
+            transition = FindAnyObjectByType<SceneTransitionController>(FindObjectsInactive.Include);
+
+        if (transition == null)
+        {
+            if (verboseLogging)
+            {
+                Debug.LogWarning(
+                    $"[SaveLoadController:{name}] PrepareForSceneExit skipped because no SceneTransitionController was found. reason='{reason}'",
+                    this);
+            }
+
+            return 0;
+        }
+
+        return transition.PrepareDivingBellOccupantsForSceneTransition(
+            $"SaveLoadController scene exit: {reason}");
+    }
+
     public void OpenSaveFolder()
     {
         SaveGameService.OpenSaveFolderInExplorer();

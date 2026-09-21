@@ -5,12 +5,25 @@ public sealed class WorldItemContainerInteractable :
     MonoBehaviour,
     IInteractable,
     IInteractPromptProvider,
-    IInteractionLabelProvider
+    IInteractionLabelProvider,
+    IInteractionColliderScope
 {
     [SerializeField] private WorldItem worldItem;
     [SerializeField] private float maxDistance = 1.5f;
     [SerializeField] private int interactionPriority = 5;
     [SerializeField] private Transform promptAnchor;
+
+    [Header("Collider Targeting")]
+    [Tooltip(
+        "If enabled, ONLY the explicitly assigned colliders may resolve this container interaction. " +
+        "Use this for composite WorldItems such as the diving bell so structural/safety child colliders " +
+        "do not impersonate the root container interaction.")]
+    [SerializeField] private bool restrictToInteractionColliders = false;
+
+    [Tooltip(
+        "Exact colliders that are allowed to represent this container interaction when restriction is enabled. " +
+        "An empty list intentionally means the interaction cannot be targeted.")]
+    [SerializeField] private Collider2D[] interactionColliders;
 
     [Header("Boat Access")]
     [Tooltip("If true, world containers that belong to a Boat can only be opened by players boarded on that same boat.")]
@@ -109,6 +122,31 @@ public sealed class WorldItemContainerInteractable :
         return promptAnchor != null ? promptAnchor : transform;
     }
 
+    public bool AllowsInteractionCollider(Collider2D sourceCollider)
+    {
+        if (!restrictToInteractionColliders)
+            return true;
+
+        if (sourceCollider == null ||
+            interactionColliders == null ||
+            interactionColliders.Length == 0)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < interactionColliders.Length; i++)
+        {
+            Collider2D allowed = interactionColliders[i];
+            if (allowed != null &&
+                ReferenceEquals(allowed, sourceCollider))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private bool IsInRange(in InteractContext context)
     {
         float dist = Vector2.Distance(context.Origin, transform.position);
@@ -117,6 +155,27 @@ public sealed class WorldItemContainerInteractable :
 
     private bool CanAccessByBoatContext(in InteractContext context)
     {
+        // The bell's OWN root container is an interior fixture. It must never be
+        // opened from the surrounding boat/world just because the physical bell
+        // is boat-owned, nearby, or currently docked. Exact bell occupancy is the
+        // authority for this special composite WorldItem.
+        DivingBellOccupancy owningBell =
+            GetComponent<DivingBellOccupancy>() ??
+            GetComponentInParent<DivingBellOccupancy>();
+
+        if (owningBell != null)
+        {
+            bool sameBellOccupant =
+                context.InteractorGO != null &&
+                owningBell.Contains(
+                    context.InteractorGO);
+
+            Log(
+                $"Access by owning diving-bell context | bell='{owningBell.name}' ok={sameBellOccupant}");
+
+            return sameBellOccupant;
+        }
+
         DivingBellContainedItem bellContained =
             GetComponent<DivingBellContainedItem>() ??
             GetComponentInParent<DivingBellContainedItem>();

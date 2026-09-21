@@ -81,18 +81,14 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
 
     private void OnDisable()
     {
-        SetRendererGroupEnabled(
-            exteriorRenderers,
-            true);
+        RestoreBellRendererVisibility();
 
         RestoreAllTrackedOccupants();
     }
 
     private void OnDestroy()
     {
-        SetRendererGroupEnabled(
-            exteriorRenderers,
-            true);
+        RestoreBellRendererVisibility();
 
         RestoreAllTrackedOccupants();
     }
@@ -162,7 +158,7 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
 
             if (source == null)
             {
-                RefreshLocalExteriorVisibility();
+                RefreshLocalVisibility();
                 return;
             }
 
@@ -227,7 +223,7 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
             layerId,
             occupantTargetOrder);
 
-        RefreshLocalExteriorVisibility();
+        RefreshLocalVisibility();
     }
 
     private bool TryResolveDeployedSorting(
@@ -287,10 +283,10 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
         localViewingPlayer =
             player;
 
-        RefreshLocalExteriorVisibility();
+        RefreshLocalVisibility();
     }
 
-    private void RefreshLocalExteriorVisibility()
+    private void RefreshLocalVisibility()
     {
         ResolveLocalViewingPlayer();
 
@@ -311,6 +307,14 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
             localBellState.IsInside(
                 occupancy);
 
+        SetRendererGroupEnabled(
+            interiorRenderers,
+            true);
+
+        SetRendererGroupEnabled(
+            floorRenderers,
+            true);
+
         bool exteriorVisible =
             !hideExteriorForLocalOccupant ||
             !localViewerInsideBell;
@@ -318,6 +322,21 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
         SetRendererGroupEnabled(
             exteriorRenderers,
             exteriorVisible);
+    }
+
+    private void RestoreBellRendererVisibility()
+    {
+        SetRendererGroupEnabled(
+            interiorRenderers,
+            true);
+
+        SetRendererGroupEnabled(
+            floorRenderers,
+            true);
+
+        SetRendererGroupEnabled(
+            exteriorRenderers,
+            true);
     }
 
     private void ResolveLocalViewingPlayer()

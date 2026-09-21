@@ -226,27 +226,90 @@ public sealed class BoatSpawner : MonoBehaviour
             return;
         }
 
-        BoatTransformSnapshot snapshot = gs.boat != null ? gs.boat.transformState : null;
+        BoatTransformSnapshot snapshot =
+            gs.boat != null
+                ? gs.boat.transformState
+                : null;
+
         if (snapshot == null)
         {
             Log("RestoreBoatTransform skipped: no saved transform state.");
             return;
         }
 
-        Vector3 p = boatGO.transform.position;
-        p.y = snapshot.worldY;
-        boatGO.transform.position = p;
+        string currentSceneName =
+            boatGO.scene.IsValid()
+                ? boatGO.scene.name
+                : null;
 
-        Rigidbody2D rb = boatGO.GetComponent<Rigidbody2D>();
+        bool restoreExactPose =
+            snapshot.version >= 2 &&
+            snapshot.hasWorldPose &&
+            !string.IsNullOrWhiteSpace(snapshot.sceneName) &&
+            snapshot.sceneName == currentSceneName;
+
+        Vector3 restoredPosition =
+            boatGO.transform.position;
+
+        float restoredRotationZ =
+            boatGO.transform.eulerAngles.z;
+
+        if (restoreExactPose)
+        {
+            // Save/load back into the same scene should reproduce the exact physical
+            // boat pose. This also keeps boat-relative tether/item snapshots aligned.
+            restoredPosition.x =
+                snapshot.worldPosition.x;
+
+            restoredPosition.y =
+                snapshot.worldPosition.y;
+
+            restoredRotationZ =
+                snapshot.worldRotationZ;
+        }
+        else
+        {
+            // Legacy saves and ordinary transitions into a different scene keep the
+            // existing contract: the destination spawn point owns X/rotation while
+            // the saved vertical placement is carried across.
+            restoredPosition.y =
+                snapshot.worldY;
+        }
+
+        boatGO.transform.SetPositionAndRotation(
+            restoredPosition,
+            Quaternion.Euler(
+                0f,
+                0f,
+                restoredRotationZ));
+
+        Rigidbody2D rb =
+            boatGO.GetComponent<Rigidbody2D>();
+
         if (rb != null)
         {
+            rb.position =
+                new Vector2(
+                    restoredPosition.x,
+                    restoredPosition.y);
+
+            rb.rotation =
+                restoredRotationZ;
+
             // Prevent inherited spawn/drop momentum from causing the freshly restored boat
             // to belly-flop itself into the sea like a dramatic idiot.
             rb.linearVelocity = Vector2.zero;
             rb.angularVelocity = 0f;
         }
 
-        Log($"RestoreBoatTransform END | restored worldY={snapshot.worldY:F3}");
+        Physics2D.SyncTransforms();
+
+        Log(
+            restoreExactPose
+                ? $"RestoreBoatTransform END | exact same-scene pose " +
+                  $"scene='{currentSceneName}' pos={restoredPosition} rotZ={restoredRotationZ:F3}"
+                : $"RestoreBoatTransform END | legacy/cross-scene worldY={snapshot.worldY:F3} " +
+                  $"savedScene='{snapshot.sceneName}' currentScene='{currentSceneName}'");
     }
 
     private string ResolveBoatInstanceId(GameState gs, out string source)

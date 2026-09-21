@@ -64,5 +64,5 @@ MonoBehaviour:
   isModule: 0
   moduleDefinition: {fileID: 0}
   soldByBoatVendors: 0
-  worldPrefab: {fileID: 61859146187821167, guid: fda867ae1ce428941bf3cc30e44e5d22, type: 3}
+  worldPrefab: {fileID: 61859146187821167, guid: dbcbf16319aaa8547b92687f08740f23, type: 3}
   worldPersistence: 0

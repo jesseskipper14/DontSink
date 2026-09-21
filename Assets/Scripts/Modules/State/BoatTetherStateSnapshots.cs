@@ -4,7 +4,7 @@ using UnityEngine;
 [System.Serializable]
 public sealed class BoatTetherStateManifest
 {
-    public int version = 1;
+    public int version = 2;
 
     public List<BoatWinchStateSnapshot> winches = new();
     public List<BoatTetherDeploymentSnapshot> deployments = new();
@@ -25,7 +25,8 @@ public sealed class BoatWinchStateSnapshot
 [System.Serializable]
 public sealed class BoatTetherDeploymentSnapshot
 {
-    public int version = 1;
+    // v2 adds optional diving-bell trapped-air state.
+    public int version = 2;
 
     public string deploymentHardpointId;
 
@@ -41,4 +42,15 @@ public sealed class BoatTetherDeploymentSnapshot
 
     // Diagnostic only. Runtime physics re-evaluates bottom/holding state after restore.
     public TetherDeploymentState savedDeploymentState;
+
+    // v2: optional runtime state for a deployed diving-bell payload.
+    // CompressedAirVolume01 / WaterFill01 / waterline are deliberately NOT saved;
+    // they are derived from trapped air + the payload's restored depth on the next physics step.
+    public bool hasDivingBellAirState;
+
+    [Range(0f, 1f)]
+    public float divingBellTrappedAirMoles01 = 1f;
+
+    [Range(0f, 1f)]
+    public float divingBellAirQuality01 = 1f;
 }

@@ -524,6 +524,47 @@ public class Interactor2D : MonoBehaviour
                 continue;
             }
 
+            bool foundInteractionOwner = true;
+
+            if (interact != null &&
+                !AllowsInteractionCollider(interact, col))
+            {
+                interact = null;
+            }
+
+            if (pickup != null &&
+                !AllowsInteractionCollider(pickup, col))
+            {
+                pickup = null;
+            }
+
+            if (unsecure != null &&
+                !AllowsInteractionCollider(unsecure, col))
+            {
+                unsecure = null;
+            }
+
+            if (toggle != null &&
+                !AllowsInteractionCollider(toggle, col))
+            {
+                toggle = null;
+            }
+
+            // A scoped owner explicitly rejected this source collider. Do not climb
+            // above it and reinterpret the same structural/safety collider as some
+            // unrelated ancestor interaction.
+            if (foundInteractionOwner &&
+                interact == null &&
+                pickup == null &&
+                unsecure == null &&
+                toggle == null)
+            {
+                DebugMousePickup(
+                    $"ColliderScope rejected collider={DescribeCollider(col)} at ownerTransform='{current.name}'");
+
+                return false;
+            }
+
             MonoBehaviour owner = interact as MonoBehaviour;
             if (owner == null) owner = pickup as MonoBehaviour;
             if (owner == null) owner = unsecure as MonoBehaviour;
@@ -955,10 +996,25 @@ public class Interactor2D : MonoBehaviour
 
         interactable = col.GetComponent<IInteractable>();
         if (interactable != null)
-            return true;
+        {
+            if (AllowsInteractionCollider(interactable, col))
+                return true;
+
+            interactable = null;
+            return false;
+        }
 
         interactable = col.GetComponentInParent<IInteractable>();
-        return interactable != null;
+        if (interactable == null)
+            return false;
+
+        if (!AllowsInteractionCollider(interactable, col))
+        {
+            interactable = null;
+            return false;
+        }
+
+        return true;
     }
 
     private bool TryGetPickupInteractable(Collider2D col, out IPickupInteractable pickup)
@@ -970,10 +1026,25 @@ public class Interactor2D : MonoBehaviour
 
         pickup = col.GetComponent<IPickupInteractable>();
         if (pickup != null)
-            return true;
+        {
+            if (AllowsInteractionCollider(pickup, col))
+                return true;
+
+            pickup = null;
+            return false;
+        }
 
         pickup = col.GetComponentInParent<IPickupInteractable>();
-        return pickup != null;
+        if (pickup == null)
+            return false;
+
+        if (!AllowsInteractionCollider(pickup, col))
+        {
+            pickup = null;
+            return false;
+        }
+
+        return true;
     }
 
     private bool TryGetUnsecureInteractable(Collider2D col, out IUnsecureInteractable unsecure)
@@ -985,10 +1056,35 @@ public class Interactor2D : MonoBehaviour
 
         unsecure = col.GetComponent<IUnsecureInteractable>();
         if (unsecure != null)
-            return true;
+        {
+            if (AllowsInteractionCollider(unsecure, col))
+                return true;
+
+            unsecure = null;
+            return false;
+        }
 
         unsecure = col.GetComponentInParent<IUnsecureInteractable>();
-        return unsecure != null;
+        if (unsecure == null)
+            return false;
+
+        if (!AllowsInteractionCollider(unsecure, col))
+        {
+            unsecure = null;
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool AllowsInteractionCollider(
+        object target,
+        Collider2D sourceCollider)
+    {
+        if (target is IInteractionColliderScope scope)
+            return scope.AllowsInteractionCollider(sourceCollider);
+
+        return true;
     }
 
     private static int GetUnsecurePriority(IUnsecureInteractable unsecure)

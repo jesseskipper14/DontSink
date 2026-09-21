@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -82,6 +83,29 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
                     out string bellPayloadInstanceId,
                     out Vector2 bellLocalPosition,
                     out float bellLocalRotationZ);
+
+            DivingBellContainedItem liveBellMarker =
+                worldItem.GetComponent<DivingBellContainedItem>();
+
+            if (liveBellMarker != null)
+            {
+                DivingBellOccupancy liveBell =
+                    liveBellMarker.CurrentBell;
+
+                string captureMessage =
+                    $"CAPTURE | item='{worldItem.name}' itemId='{itemSnapshot.itemId}' " +
+                    $"instanceId='{itemSnapshot.instanceId}' marker=YES " +
+                    $"isContained={liveBellMarker.IsContainedInBell} " +
+                    $"currentBell='{(liveBell != null ? liveBell.name : "NULL")}' " +
+                    $"savedAsBellItem={hasBellContext} " +
+                    $"payloadInstanceId='{(hasBellContext ? bellPayloadInstanceId : "NULL")}' " +
+                    $"bellLocalPos={bellLocalPosition} bellLocalRotZ={bellLocalRotationZ:0.###}";
+
+                if (hasBellContext)
+                    BellDiagnostic(captureMessage);
+                else
+                    BellDiagnosticWarning(captureMessage);
+            }
 
             // Bell containment is a physical loose-item context, not ordinary boat securing.
             // Do not persist contradictory securing state if an item somehow still has a stale
@@ -209,6 +233,16 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
             return;
         }
 
+        if (snapshot.wasContainedInDivingBell)
+        {
+            BellDiagnostic(
+                $"RESTORE SNAPSHOT | itemId='{snapshot.item.itemId}' " +
+                $"instanceId='{snapshot.item.instanceId}' savedAsBellItem=TRUE " +
+                $"payloadInstanceId='{snapshot.divingBellPayloadInstanceId}' " +
+                $"bellLocalPos={snapshot.divingBellLocalPosition} " +
+                $"bellLocalRotZ={snapshot.divingBellLocalRotationZ:0.###}");
+        }
+
         Vector3 worldPos = boat.transform.TransformPoint(snapshot.localPosition);
         Quaternion worldRot = boat.transform.rotation * Quaternion.Euler(0f, 0f, snapshot.localRotationZ);
 
@@ -232,13 +266,19 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
                         0f,
                         0f,
                         snapshot.divingBellLocalRotationZ);
+
+                BellDiagnostic(
+                    $"RESTORE RESOLVE | itemId='{snapshot.item.itemId}' " +
+                    $"instanceId='{snapshot.item.instanceId}' matchedBell='{restoredBell.name}' " +
+                    $"payloadInstanceId='{snapshot.divingBellPayloadInstanceId}' " +
+                    $"spawnWorldPos={worldPos}");
             }
             else
             {
-                LogWarning(
-                    $"BellItem restore fallback | itemId='{snapshot.item.itemId}' " +
+                BellDiagnosticWarning(
+                    $"RESTORE RESOLVE FAILED | itemId='{snapshot.item.itemId}' " +
                     $"instanceId='{snapshot.item.instanceId}' expectedBellPayload='{snapshot.divingBellPayloadInstanceId}'. " +
-                    "Referenced bell was not available; using saved boat-local pose.");
+                    $"Using saved boat-local pose. Deployments: {DescribeTetherDeployments()}");
             }
         }
 
@@ -255,6 +295,21 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
                 spawned,
                 owned,
                 restoredBell);
+
+        if (snapshot.wasContainedInDivingBell &&
+            verboseLogging)
+        {
+            LogRestoredBellItemState(
+                "RESTORE RESULT",
+                spawned,
+                restoredBell,
+                restoredBellContainment);
+
+            StartCoroutine(
+                LogRestoredBellItemStateDeferred(
+                    spawned,
+                    restoredBell));
+        }
 
         if (snapshot.isSecured &&
             !restoredBellContainment)
@@ -323,9 +378,10 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
             string.IsNullOrWhiteSpace(
                 bellPayloadItem.InstanceId))
         {
-            LogWarning(
-                $"BellItem capture fallback | item='{worldItem.name}' is contained in bell '{bell.name}', " +
-                "but no owning tether payload ItemInstance could be resolved. Saving ordinary boat-local pose only.");
+            BellDiagnosticWarning(
+                $"CAPTURE FAILED | item='{worldItem.name}' bell='{bell.name}' " +
+                "could not resolve an owning tether payload ItemInstance. " +
+                $"Saving ordinary boat-local pose only. Deployments: {DescribeTetherDeployments()}");
 
             return false;
         }
@@ -505,9 +561,10 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
         if (!contained.AssignToBell(
                 bell))
         {
-            LogWarning(
-                $"BellItem restore failed | item='{spawned.name}' resolved bell='{bell.name}', " +
-                "but DivingBellContainedItem.AssignToBell rejected the restore. Item remains ordinary boat-owned loose cargo.");
+            BellDiagnosticWarning(
+                $"RESTORE ASSIGN FAILED | item='{spawned.name}' resolvedBell='{bell.name}', " +
+                "but DivingBellContainedItem.AssignToBell returned false. " +
+                $"layer='{LayerMask.LayerToName(spawned.gameObject.layer)}'.");
 
             return false;
         }
@@ -1007,6 +1064,205 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
         BoatOwnedItemVisualPolicy visualPolicy = spawned.GetComponent<BoatOwnedItemVisualPolicy>();
         if (visualPolicy == null)
             visualPolicy = spawned.gameObject.AddComponent<BoatOwnedItemVisualPolicy>();
+    }
+
+    private void LogRestoredBellItemState(
+        string stage,
+        WorldItem spawned,
+        DivingBellOccupancy expectedBell,
+        bool assignmentSucceeded)
+    {
+        if (spawned == null)
+        {
+            BellDiagnosticWarning(
+                $"{stage} | spawned item is NULL.");
+            return;
+        }
+
+        DivingBellContainedItem contained =
+            spawned.GetComponent<DivingBellContainedItem>();
+
+        DivingBellOccupancy actualBell =
+            contained != null
+                ? contained.CurrentBell
+                : null;
+
+        GhostCollisionProxy ghost =
+            actualBell != null
+                ? actualBell.GetComponent<GhostCollisionProxy>() ??
+                  actualBell.GetComponentInChildren<GhostCollisionProxy>(true)
+                : null;
+
+        Rigidbody2D rb =
+            spawned.GetComponent<Rigidbody2D>();
+
+        string message =
+            $"{stage} | item='{spawned.name}' assignSuccess={assignmentSucceeded} " +
+            $"component={(contained != null ? "YES" : "NO")} " +
+            $"isContained={(contained != null && contained.IsContainedInBell)} " +
+            $"expectedBell='{(expectedBell != null ? expectedBell.name : "NULL")}' " +
+            $"actualBell='{(actualBell != null ? actualBell.name : "NULL")}' " +
+            $"layer='{LayerMask.LayerToName(spawned.gameObject.layer)}'({spawned.gameObject.layer}) " +
+            $"ghost={(ghost != null ? ghost.name : "NULL")} " +
+            $"ghostBuilt={(ghost != null && ghost.IsBuilt)} " +
+            $"rbType={(rb != null ? rb.bodyType.ToString() : "NULL")} " +
+            $"simulated={(rb != null && rb.simulated)} " +
+            $"pos={spawned.transform.position}";
+
+        if (assignmentSucceeded &&
+            contained != null &&
+            contained.IsContainedInBell &&
+            actualBell != null)
+        {
+            BellDiagnostic(message);
+        }
+        else
+        {
+            BellDiagnosticWarning(message);
+        }
+    }
+
+    private IEnumerator LogRestoredBellItemStateDeferred(
+        WorldItem spawned,
+        DivingBellOccupancy expectedBell)
+    {
+        yield return null;
+
+        if (spawned == null)
+        {
+            BellDiagnosticWarning(
+                "AFTER 1 FRAME | restored BellItem was destroyed.");
+            yield break;
+        }
+
+        DivingBellContainedItem contained =
+            spawned.GetComponent<DivingBellContainedItem>();
+
+        LogRestoredBellItemState(
+            "AFTER 1 FRAME",
+            spawned,
+            expectedBell,
+            contained != null &&
+            contained.IsContainedInBell);
+
+        yield return new WaitForFixedUpdate();
+
+        if (spawned == null)
+        {
+            BellDiagnosticWarning(
+                "AFTER FIXED UPDATE | restored BellItem was destroyed.");
+            yield break;
+        }
+
+        contained =
+            spawned.GetComponent<DivingBellContainedItem>();
+
+        LogRestoredBellItemState(
+            "AFTER FIXED UPDATE",
+            spawned,
+            expectedBell,
+            contained != null &&
+            contained.IsContainedInBell);
+
+        yield return new WaitForSeconds(
+            0.25f);
+
+        if (spawned == null)
+        {
+            BellDiagnosticWarning(
+                "AFTER 0.25s | restored BellItem was destroyed.");
+            yield break;
+        }
+
+        contained =
+            spawned.GetComponent<DivingBellContainedItem>();
+
+        LogRestoredBellItemState(
+            "AFTER 0.25s",
+            spawned,
+            expectedBell,
+            contained != null &&
+            contained.IsContainedInBell);
+    }
+
+    private string DescribeTetherDeployments()
+    {
+        if (boat == null)
+            return "boat=NULL";
+
+        TetherDeploymentModule[] deployments =
+            boat.GetComponentsInChildren<TetherDeploymentModule>(
+                true);
+
+        if (deployments == null ||
+            deployments.Length == 0)
+        {
+            return "none";
+        }
+
+        List<string> parts =
+            new List<string>();
+
+        for (int i = 0;
+             i < deployments.Length;
+             i++)
+        {
+            TetherDeploymentModule deployment =
+                deployments[i];
+
+            if (deployment == null)
+            {
+                parts.Add(
+                    $"[{i}]=NULL");
+                continue;
+            }
+
+            ItemInstance reserved =
+                deployment.ReservedPayloadItem;
+
+            ItemInstance stored =
+                deployment.StoredPayload;
+
+            DivingBellOccupancy deployedBell =
+                ResolveBellOccupancy(
+                    deployment.DeployedWorldItem);
+
+            DivingBellOccupancy dockedBell =
+                ResolveBellOccupancy(
+                    deployment.DockedPhysicalWorldItem);
+
+            parts.Add(
+                $"[{i}] '{deployment.name}' state={deployment.DeploymentState} " +
+                $"reservedId='{(reserved != null ? reserved.InstanceId : "NULL")}' " +
+                $"storedId='{(stored != null ? stored.InstanceId : "NULL")}' " +
+                $"deployedBell='{(deployedBell != null ? deployedBell.name : "NULL")}' " +
+                $"dockedBell='{(dockedBell != null ? dockedBell.name : "NULL")}'");
+        }
+
+        return
+            string.Join(
+                "; ",
+                parts);
+    }
+
+    private void BellDiagnostic(string msg)
+    {
+        if (!verboseLogging)
+            return;
+
+        Debug.Log(
+            $"[BellItemPersistence:{name}] {msg}",
+            this);
+    }
+
+    private void BellDiagnosticWarning(string msg)
+    {
+        if (!verboseLogging)
+            return;
+
+        Debug.LogWarning(
+            $"[BellItemPersistence:{name}] {msg}",
+            this);
     }
 
     private void Log(string msg)

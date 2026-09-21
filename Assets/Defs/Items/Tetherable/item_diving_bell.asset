@@ -31,7 +31,7 @@ MonoBehaviour:
   tradable: 1
   basePrice: 100
   canBeSoldByItemVendors: 0
-  canBeBoughtByItemVendors: 0
+  canBeBoughtByItemVendors: 1
   defaultVendorBuyMultiplier: 0.25
   vendorAvailability:
     useNodeRestrictions: 0

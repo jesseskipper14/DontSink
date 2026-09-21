@@ -260,6 +260,16 @@ public static class SaveGameService
         if (gs == null)
             return new SaveGameResult(false, "GameState.I is null after ensuring singletons.", path);
 
+        // The current live scene is about to unload. If the player is physically
+        // parented inside a diving bell, detach them while that hierarchy is still
+        // fully active. Waiting for DivingBellOccupancy.OnDisable is too late.
+        SceneTransitionController transition = SceneTransitionController.I;
+        if (transition != null)
+        {
+            transition.PrepareDivingBellOccupantsForSceneTransition(
+                $"SaveGameService.LoadSlot slot='{slotId}'");
+        }
+
         ApplyPayloadToGameState(gs, file.payload);
 
         SceneManager.LoadScene(nodeSceneName);

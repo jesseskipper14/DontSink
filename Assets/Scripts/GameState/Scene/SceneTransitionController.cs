@@ -113,6 +113,9 @@ public sealed class SceneTransitionController : MonoBehaviour
             $"| seed={seed} | routeLength={routeLength} | boatId={boatInstanceId} ");
         //$"| boatGuid={boatPrefabGuid} | cargoCount={(payloadCargo != null ? payloadCargo.Count : 0)}");
 
+        PrepareDivingBellOccupantsForSceneTransition(
+            "StartTravelToBoatScene");
+
         SceneManager.LoadScene(boatSceneName);
     }
 
@@ -161,6 +164,10 @@ public sealed class SceneTransitionController : MonoBehaviour
             $"Arrived at {destinationName}.");
 
         Log($"CompleteTravelToDestination | currentNodeId={gs.player.currentNodeId}");
+
+        PrepareDivingBellOccupantsForSceneTransition(
+            "CompleteTravelToDestination");
+
         SceneManager.LoadScene(nodeSceneName);
     }
 
@@ -209,7 +216,61 @@ public sealed class SceneTransitionController : MonoBehaviour
             $"Returned to {sourceName}.");
 
         Log($"AbortTravelToSource | currentNodeId={gs.player.currentNodeId}");
+
+        PrepareDivingBellOccupantsForSceneTransition(
+            "AbortTravelToSource");
+
         SceneManager.LoadScene(nodeSceneName);
+    }
+
+    /// <summary>
+    /// Detaches diving-bell occupants while the live scene hierarchy is still active.
+    /// Call this immediately before any scene unload or application exit path that may
+    /// destroy an occupied bell. OnDisable is too late for safe Transform reparenting.
+    /// </summary>
+    public int PrepareDivingBellOccupantsForSceneTransition(
+        string reason)
+    {
+        DivingBellOccupancy[] bells =
+            Object.FindObjectsByType<DivingBellOccupancy>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+
+        if (bells == null ||
+            bells.Length == 0)
+        {
+            return 0;
+        }
+
+        int ejectedCount =
+            0;
+
+        for (int i = 0;
+             i < bells.Length;
+             i++)
+        {
+            DivingBellOccupancy bell =
+                bells[i];
+
+            if (bell == null ||
+                !bell.HasOccupants)
+            {
+                continue;
+            }
+
+            ejectedCount +=
+                bell.EmergencyEjectAllOccupants(
+                    $"Scene transition: {reason}");
+        }
+
+        if (ejectedCount > 0)
+        {
+            Log(
+                $"PrepareDivingBellOccupantsForSceneTransition | " +
+                $"reason='{reason}' ejected={ejectedCount}");
+        }
+
+        return ejectedCount;
     }
 
     public void ReportDepartureBlocked(
@@ -538,17 +599,46 @@ public sealed class SceneTransitionController : MonoBehaviour
         if (gs == null || boat == null)
             return;
 
+        Vector3 worldPosition =
+            boat.transform.position;
+
+        string sceneName =
+            boat.gameObject.scene.IsValid()
+                ? boat.gameObject.scene.name
+                : SceneManager.GetActiveScene().name;
+
         BoatTransformSnapshot snapshot = new BoatTransformSnapshot
         {
-            version = 1,
-            worldY = boat.transform.position.y
+            version = 2,
+
+            // Preserve the original v1 field because normal NodeScene <-> BoatScene
+            // transitions intentionally keep only vertical placement while the
+            // destination scene remains authoritative for X/rotation.
+            worldY =
+                worldPosition.y,
+
+            hasWorldPose =
+                true,
+
+            sceneName =
+                sceneName,
+
+            worldPosition =
+                new Vector2(
+                    worldPosition.x,
+                    worldPosition.y),
+
+            worldRotationZ =
+                boat.transform.eulerAngles.z
         };
 
         gs.SetBoatTransformState(
             snapshot,
             $"Captured from boat '{boat.name}'");
 
-        Log($"CaptureBoatTransform | worldY={snapshot.worldY:F3}");
+        Log(
+            $"CaptureBoatTransform | scene='{snapshot.sceneName}' " +
+            $"pos={snapshot.worldPosition} rotZ={snapshot.worldRotationZ:F3}");
     }
 
     private void CapturePlayerSceneContext(GameState gs, string reason)

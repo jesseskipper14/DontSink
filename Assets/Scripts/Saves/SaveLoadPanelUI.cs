@@ -391,7 +391,7 @@ public sealed class SaveLoadPanelUI : MonoBehaviour, IEscapeClosable
     {
         if (saveLoad == null)
         {
-            SceneManager.LoadScene(mainMenuSceneName);
+            ReturnToMainMenuNow(mainMenuSceneName);
             return;
         }
 
@@ -404,10 +404,10 @@ public sealed class SaveLoadPanelUI : MonoBehaviour, IEscapeClosable
                 primary: () =>
                 {
                     if (TrySaveAutosaveBeforeExit())
-                        SceneManager.LoadScene(mainMenuSceneName);
+                        ReturnToMainMenuNow(mainMenuSceneName);
                 },
                 secondaryLabel: "Leave Without Saving",
-                secondary: () => SceneManager.LoadScene(mainMenuSceneName),
+                secondary: () => ReturnToMainMenuNow(mainMenuSceneName),
                 cancelLabel: "Cancel");
 
             return;
@@ -417,7 +417,7 @@ public sealed class SaveLoadPanelUI : MonoBehaviour, IEscapeClosable
             "Return to Main Menu?",
             "Current voyage progress will be lost. Return anyway?",
             "Return",
-            primary: () => SceneManager.LoadScene(mainMenuSceneName),
+            primary: () => ReturnToMainMenuNow(mainMenuSceneName),
             secondaryLabel: null,
             secondary: null,
             cancelLabel: "Cancel");
@@ -726,8 +726,37 @@ public sealed class SaveLoadPanelUI : MonoBehaviour, IEscapeClosable
         return utc;
     }
 
+    private void ReturnToMainMenuNow(string mainMenuSceneName)
+    {
+        PrepareForSceneExit("Return to main menu");
+        SceneManager.LoadScene(mainMenuSceneName);
+    }
+
+    private void PrepareForSceneExit(string reason)
+    {
+        if (saveLoad != null)
+        {
+            saveLoad.PrepareForSceneExit(reason);
+            return;
+        }
+
+        // Defensive fallback for a misconfigured panel. Do not let a missing
+        // SaveLoadController turn scene teardown back into a parented-player trap.
+        SceneTransitionController transition = SceneTransitionController.I;
+        if (transition == null)
+            transition = FindAnyObjectByType<SceneTransitionController>(FindObjectsInactive.Include);
+
+        if (transition != null)
+        {
+            transition.PrepareDivingBellOccupantsForSceneTransition(
+                $"SaveLoadPanelUI scene exit: {reason}");
+        }
+    }
+
     private void QuitNow()
     {
+        PrepareForSceneExit("Quit game");
+
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else

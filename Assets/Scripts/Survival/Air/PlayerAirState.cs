@@ -78,12 +78,25 @@ namespace Survival.Vitals
 
         public bool IsUnderwater { get; set; }
 
+        [Header("Diving Bell Ambient Context")]
+        [Tooltip(
+            "When enabled, a player occupying a DivingBellAirVolume uses that bell's " +
+            "internal waterline and trapped-air quality instead of the global ocean " +
+            "surface for ambient breathing.")]
+        [SerializeField] private bool useDivingBellAmbientContext = true;
+
+        private PlayerBellOccupantState _bellOccupantState;
+        private PlayerSubmersionState _submersionState;
+        private bool _divingBellAmbientOverrideActive;
+
         void Awake()
         {
             if (!attributes)
                 attributes = GetComponent<PlayerAttributeState>();
 
             if (!exertion) exertion = GetComponent<PlayerExertionEnergyState>();
+
+            ResolveDivingBellContextRefs();
 
             RebuildSources();
             RecomputeMaxAir();
@@ -107,11 +120,19 @@ namespace Survival.Vitals
 
             RecomputeMaxAir();
 
-            // Track surface time
-            // Poll sources first, because sources may update IsUnderwater.
+            // Establish bell ambient context BEFORE polling sources, then reassert it
+            // after every source. Legacy ambient sources are allowed to update
+            // IsUnderwater, so without this guard component order could make a scuba
+            // source consume tank air while Steve's head is actually in a bell air pocket.
+            ApplyDivingBellAmbientContext();
+
             float sourceFlow = 0f;
             for (int i = 0; i < _sources.Count; i++)
+            {
+                ApplyDivingBellAmbientContext();
                 sourceFlow += _sources[i].GetAirFlowPerSecond(this, dt);
+                ApplyDivingBellAmbientContext();
+            }
 
             _lastSourceFlowPerSecond = sourceFlow;
 
@@ -164,6 +185,100 @@ namespace Survival.Vitals
             CurrentState = ComputeState(lungGasQuality01);
         }
 
+        private bool ApplyDivingBellAmbientContext()
+        {
+            if (!useDivingBellAmbientContext)
+            {
+                ClearDivingBellAmbientQualityOverride();
+                return false;
+            }
+
+            ResolveDivingBellContextRefs();
+
+            if (_bellOccupantState == null ||
+                !_bellOccupantState.IsInsideBell ||
+                _bellOccupantState.CurrentBell == null)
+            {
+                ClearDivingBellAmbientQualityOverride();
+                return false;
+            }
+
+            DivingBellOccupancy bell =
+                _bellOccupantState.CurrentBell;
+
+            DivingBellAirVolume bellAir =
+                bell.GetComponent<DivingBellAirVolume>() ??
+                bell.GetComponentInChildren<DivingBellAirVolume>(true);
+
+            if (bellAir == null)
+            {
+                ClearDivingBellAmbientQualityOverride();
+                return false;
+            }
+
+            Vector2 headWorld =
+                _submersionState != null
+                    ? _submersionState.HeadWorldPosition
+                    : (Vector2)_bellOccupantState.transform.position;
+
+            if (!bellAir.TryResolveBreathingEnvironment(
+                    _bellOccupantState.gameObject,
+                    headWorld,
+                    out bool headUnderwater,
+                    out float ambientQuality01))
+            {
+                ClearDivingBellAmbientQualityOverride();
+                return false;
+            }
+
+            IsUnderwater =
+                headUnderwater;
+
+            // Bell air quality only applies while the player's head is actually in
+            // the air pocket. If submerged, tank/source quality remains the ordinary
+            // clean-air value used by the existing source model.
+            oxygenQuality01 =
+                headUnderwater
+                    ? 1f
+                    : Mathf.Clamp01(ambientQuality01);
+
+            _divingBellAmbientOverrideActive =
+                true;
+
+            return true;
+        }
+
+        private void ResolveDivingBellContextRefs()
+        {
+            if (_bellOccupantState == null)
+            {
+                _bellOccupantState =
+                    GetComponentInParent<PlayerBellOccupantState>() ??
+                    GetComponentInChildren<PlayerBellOccupantState>(true);
+            }
+
+            if (_submersionState == null)
+            {
+                _submersionState =
+                    GetComponentInParent<PlayerSubmersionState>() ??
+                    GetComponentInChildren<PlayerSubmersionState>(true);
+            }
+        }
+
+        private void ClearDivingBellAmbientQualityOverride()
+        {
+            if (!_divingBellAmbientOverrideActive)
+                return;
+
+            _divingBellAmbientOverrideActive =
+                false;
+
+            // Bell air is the only ambient-quality override in this pass. Return
+            // to the existing clean ambient/source default when that context ends.
+            oxygenQuality01 =
+                1f;
+        }
+
         private void RecomputeMaxAir()
         {
             float max = attributes != null
@@ -200,6 +315,7 @@ namespace Survival.Vitals
             _timeSinceSurfaced = 999f;
             CanOxygenate = true;
             oxygenQuality01 = 1f;
+            _divingBellAmbientOverrideActive = false;
             CurrentState = AirState.HighQuality;
         }
     }

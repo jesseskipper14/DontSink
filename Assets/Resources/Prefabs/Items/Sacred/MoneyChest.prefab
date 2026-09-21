@@ -232,6 +232,7 @@ MonoBehaviour:
   hullLayerName: Hull
   groundLayerName: Ground
   worldLedgeLayerName: WorldLedge
+  ghostCollisionLayerName: GhostCollision
   verboseLogging: 0
 --- !u!114 &-9011886402141120778
 MonoBehaviour:
@@ -446,6 +447,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d25d72d0396500e4c803080c99afb5b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  verboseDiagnostics: 0
 --- !u!114 &6682532121877033045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -460,9 +462,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chest: {fileID: 3024619308643295648}
   rb: {fileID: 5263012356571068860}
-  emptyMass: 0.5
+  worldItem: {fileID: 0}
   massPerMoneyUnit: 0.0018
-  maxMass: 72
+  maxTotalMass: 5
   referenceSinkBalance: 500
   adjustCenterOfMass: 0
   emptyCenterOfMass: {x: 0, y: 0}

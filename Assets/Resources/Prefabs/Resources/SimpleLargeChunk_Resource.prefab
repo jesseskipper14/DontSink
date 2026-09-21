@@ -77,7 +77,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1261396243
-  m_SortingLayer: 11
+  m_SortingLayer: 12
   m_SortingOrder: 0
   m_Sprite: {fileID: 7066316719681330716, guid: b7c4e41216536d14d9b09e0cf245c6fc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -116,7 +116,7 @@ MonoBehaviour:
   hoverNameRange: 5
   actionRange: 2
   interactionPriority: 2
-  pickupPriority: 70
+  pickupPriority: 20
   debugHarvest: 1
 --- !u!61 &3518783890890877072
 BoxCollider2D:
@@ -238,7 +238,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1261396243
-  m_SortingLayer: 11
+  m_SortingLayer: 12
   m_SortingOrder: -1
   m_Sprite: {fileID: 7066316719681330716, guid: b7c4e41216536d14d9b09e0cf245c6fc, type: 3}
   m_Color: {r: 0.49381453, g: 0.59341216, b: 0.764151, a: 1}

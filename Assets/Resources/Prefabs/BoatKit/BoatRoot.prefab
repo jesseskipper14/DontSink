@@ -509,7 +509,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d25d72d0396500e4c803080c99afb5b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  verboseDiagnostics: 1
+  verboseDiagnostics: 0
 --- !u!114 &2420544858002852228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -526,6 +526,7 @@ MonoBehaviour:
   sourceRoots:
   - {fileID: 0}
   - {fileID: 0}
+  autoResolveBoatStructuralRoots: 1
   ghostLayerName: GhostCollision
   overrideMaterial: {fileID: 0}
   syncSourceChanges: 1

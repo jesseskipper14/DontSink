@@ -10,10 +10,12 @@ using UnityEngine;
 /// - register any number of occupants;
 /// - keep bell occupancy separate from PlayerBoardingState;
 /// - move an entering player to InteriorEntryPoint;
-/// - allow front-door exit only while docked;
-/// - restore the player's pre-bell hierarchy parent on front exit.
+/// - allow front-door access while docked;
+/// - allow bottom-opening access while deployed/undocked;
+/// - restore the player's pre-bell hierarchy parent on front exit;
+/// - return bottom-exiting occupants to world space.
 ///
-/// This pass deliberately does NOT change player collision rules.
+/// Collision and presentation remain delegated to the existing bell context systems.
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(TetherPayload))]
@@ -28,6 +30,14 @@ public sealed class DivingBellOccupancy :
     [Tooltip(
         "Where a player is placed after leaving through the front while the bell is docked.")]
     [SerializeField] private Transform frontExitPoint;
+
+    [Tooltip(
+        "Where a player is placed immediately after entering through the bottom opening while the bell is deployed.")]
+    [SerializeField] private Transform bottomInteriorPoint;
+
+    [Tooltip(
+        "Where a player is placed immediately after leaving through the bottom opening while the bell is deployed.")]
+    [SerializeField] private Transform bottomExteriorPoint;
 
     [Header("Transfer")]
     [Tooltip(
@@ -57,7 +67,7 @@ public sealed class DivingBellOccupancy :
 
     [Tooltip(
         "Front exit is only allowed while this physical bell is captured by a TetherPayloadDock. " +
-        "Underwater/suspended exit will later use the bottom opening instead.")]
+        "Underwater/suspended access uses the bottom opening instead.")]
     [SerializeField]
     private bool requireDockedForFrontExit =
         true;
@@ -70,8 +80,8 @@ public sealed class DivingBellOccupancy :
     [SerializeField] private bool ejectOccupantsOnDisable = true;
 
     [Tooltip(
-        "Optional explicit emergency eject point. While docked, Front Exit Point is used if this is blank. " +
-        "For a future deployed bell this can point at the bottom opening.")]
+        "Optional explicit emergency eject point. While docked, Front Exit Point is used if this is blank; " +
+        "while deployed, Bottom Exterior Point is preferred.")]
     [SerializeField] private Transform emergencyEjectPoint;
 
     [Tooltip(
@@ -105,6 +115,12 @@ public sealed class DivingBellOccupancy :
         frontExitPoint != null
             ? frontExitPoint
             : transform;
+
+    public Transform BottomInteriorPoint =>
+        bottomInteriorPoint;
+
+    public Transform BottomExteriorPoint =>
+        bottomExteriorPoint;
 
     public int OccupantCount
     {
@@ -155,47 +171,74 @@ public sealed class DivingBellOccupancy :
 
     private void OnDisable()
     {
-        if (ejectOccupantsOnDisable &&
-            HasOccupants)
+        if (!HasOccupants)
+            return;
+
+        if (!ejectOccupantsOnDisable)
         {
-            EmergencyEjectAllOccupants(
-                "Diving bell became unavailable.");
+            ClearOccupantStateWithoutHierarchyMutation();
+            return;
         }
-        else
-        {
-            // Defensive state cleanup for scene teardown when ejection is explicitly disabled.
-            for (int i = 0;
-                 i < occupants.Count;
-                 i++)
-            {
-                PlayerBellOccupantState state =
-                    occupants[i];
 
-                if (state != null)
-                {
-                    ApplyInteractionContext(
-                        state,
-                        active: false);
-
-                    state.ClearIfOwnedBy(
-                        this);
-                }
-            }
-
-            occupants.Clear();
-        }
+        // IMPORTANT:
+        // Unity forbids Transform.SetParent while this GameObject (or one of its
+        // parents) is in the middle of activation/deactivation. OnDisable is
+        // therefore already too late to safely emergency-eject a parented player.
+        //
+        // Every intentional bell teardown path must call
+        // EmergencyEjectAllOccupants BEFORE SetActive(false), Destroy, or scene
+        // teardown begins. SceneTransitionController already does this for scene
+        // loads, and TetherDeploymentModule does it for payload destruction.
+        //
+        // Preserve occupancy here instead of corrupting hierarchy/state during a
+        // temporary disable. If this is an unexpected permanent destruction,
+        // OnDestroy will report it and defensively clear the stale state.
+        Debug.LogWarning(
+            $"[DivingBellOccupancy:{name}] Bell became disabled while still occupied. " +
+            "Occupants cannot be safely reparented from OnDisable. " +
+            "The caller must invoke EmergencyEjectAllOccupants BEFORE disabling/destroying the bell.\n" +
+            System.Environment.StackTrace,
+            this);
     }
 
     private void OnDestroy()
     {
-        // Normally OnDisable performs the ejection first. This second guard
-        // protects unusual direct-destruction paths and is intentionally idempotent.
-        if (ejectOccupantsOnDisable &&
-            HasOccupants)
+        if (!HasOccupants)
+            return;
+
+        // At this point hierarchy mutation is no longer safe. Known destruction
+        // paths pre-eject before teardown, so reaching this branch means some
+        // future/unknown caller destroyed an occupied bell without preparation.
+        Debug.LogError(
+            $"[DivingBellOccupancy:{name}] Bell was destroyed while still occupied. " +
+            "A teardown caller skipped EmergencyEjectAllOccupants before destruction. " +
+            "Clearing bell occupancy state defensively; the teardown caller must be fixed.",
+            this);
+
+        ClearOccupantStateWithoutHierarchyMutation();
+    }
+
+    private void ClearOccupantStateWithoutHierarchyMutation()
+    {
+        for (int i = 0;
+             i < occupants.Count;
+             i++)
         {
-            EmergencyEjectAllOccupants(
-                "Diving bell was destroyed.");
+            PlayerBellOccupantState state =
+                occupants[i];
+
+            if (state == null)
+                continue;
+
+            ApplyInteractionContext(
+                state,
+                active: false);
+
+            state.ClearIfOwnedBy(
+                this);
         }
+
+        occupants.Clear();
     }
 
     /// <summary>
@@ -515,6 +558,307 @@ public sealed class DivingBellOccupancy :
     }
 
     /// <summary>
+    /// Returns true when the player may enter this bell through the deployed
+    /// bottom opening.
+    ///
+    /// Bottom access is intentionally the inverse of the front door:
+    ///     docked   -> front access
+    ///     undocked -> bottom access
+    /// </summary>
+    public bool CanEnterBottom(
+        GameObject playerObject,
+        out string reason)
+    {
+        reason =
+            null;
+
+        ResolveRefs();
+
+        if (playerObject == null)
+        {
+            reason =
+                "Missing player.";
+
+            return false;
+        }
+
+        if (IsDocked)
+        {
+            reason =
+                "Bottom entry is unavailable while the diving bell is docked.";
+
+            return false;
+        }
+
+        if (bottomInteriorPoint == null)
+        {
+            reason =
+                "Diving bell bottom interior point is not configured.";
+
+            return false;
+        }
+
+        GameObject playerRoot =
+            ResolvePlayerRoot(
+                playerObject);
+
+        if (playerRoot == null)
+        {
+            reason =
+                "Could not resolve player root.";
+
+            return false;
+        }
+
+        PlayerBellOccupantState existingState =
+            ResolveOccupantState(
+                playerRoot,
+                createIfMissing: false);
+
+        if (existingState != null &&
+            existingState.IsInsideBell)
+        {
+            if (existingState.IsInside(
+                    this))
+            {
+                reason =
+                    "Player is already inside this diving bell.";
+            }
+            else
+            {
+                reason =
+                    "Player is already inside another diving bell.";
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public bool TryEnterBottom(
+        GameObject playerObject,
+        out string message)
+    {
+        message =
+            null;
+
+        if (!CanEnterBottom(
+                playerObject,
+                out message))
+        {
+            return false;
+        }
+
+        GameObject playerRoot =
+            ResolvePlayerRoot(
+                playerObject);
+
+        if (playerRoot == null)
+        {
+            message =
+                "Could not resolve player root.";
+
+            return false;
+        }
+
+        PlayerBellOccupantState state =
+            ResolveOccupantState(
+                playerRoot,
+                createIfMissing: true);
+
+        if (state == null ||
+            !state.TryBeginOccupancy(
+                this))
+        {
+            message =
+                "Could not enter diving bell.";
+
+            return false;
+        }
+
+        if (!occupants.Contains(
+                state))
+        {
+            occupants.Add(
+                state);
+        }
+
+        ApplyInteractionContext(
+            state,
+            active: true);
+
+        if (parentOccupantsToBell)
+        {
+            state.transform.SetParent(
+                transform,
+                worldPositionStays: true);
+        }
+
+        SnapPlayer(
+            state.gameObject,
+            bottomInteriorPoint,
+            alignBodyCenterToTarget: true);
+
+        Physics2D.SyncTransforms();
+
+        OccupantEntered?.Invoke(
+            this,
+            state);
+
+        message =
+            "Entered diving bell through bottom opening.";
+
+        return true;
+    }
+
+    public bool CanExitBottom(
+        GameObject playerObject,
+        out string reason)
+    {
+        reason =
+            null;
+
+        ResolveRefs();
+
+        GameObject playerRoot =
+            ResolvePlayerRoot(
+                playerObject);
+
+        if (playerRoot == null)
+        {
+            reason =
+                "Could not resolve player root.";
+
+            return false;
+        }
+
+        PlayerBellOccupantState state =
+            ResolveOccupantState(
+                playerRoot,
+                createIfMissing: false);
+
+        if (state == null ||
+            !state.IsInside(
+                this))
+        {
+            reason =
+                "Player is not inside this diving bell.";
+
+            return false;
+        }
+
+        if (IsDocked)
+        {
+            reason =
+                "Bottom exit is unavailable while the diving bell is docked.";
+
+            return false;
+        }
+
+        if (bottomExteriorPoint == null)
+        {
+            reason =
+                "Diving bell bottom exterior point is not configured.";
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public bool TryExitBottom(
+        GameObject playerObject,
+        out string message)
+    {
+        message =
+            null;
+
+        if (!CanExitBottom(
+                playerObject,
+                out message))
+        {
+            return false;
+        }
+
+        GameObject playerRoot =
+            ResolvePlayerRoot(
+                playerObject);
+
+        PlayerBellOccupantState state =
+            ResolveOccupantState(
+                playerRoot,
+                createIfMissing: false);
+
+        if (state == null)
+        {
+            message =
+                "Missing diving-bell occupant state.";
+
+            return false;
+        }
+
+        occupants.Remove(
+            state);
+
+        // Bottom exit always returns the player to the world. Do NOT restore
+        // ParentBeforeBell here: an occupant may have entered through the front
+        // while docked, then ridden the bell down. In that case ParentBeforeBell
+        // is the boat hierarchy and restoring it underwater would reattach the
+        // player to a boat that may be far above.
+        state.EndOccupancy(
+            this);
+
+        ApplyInteractionContext(
+            state,
+            active: false);
+
+        state.transform.SetParent(
+            null,
+            worldPositionStays: true);
+
+        SnapPlayer(
+            state.gameObject,
+            bottomExteriorPoint,
+            alignBodyCenterToTarget: true);
+
+        // Preserve the physically sensible linear motion of the bell at the
+        // moment of exit. The swim motor becomes authoritative immediately after.
+        Rigidbody2D playerBody =
+            state.GetComponent<Rigidbody2D>();
+
+        Rigidbody2D bellBody =
+            tetherPayload != null
+                ? tetherPayload.Rigidbody
+                : GetComponent<Rigidbody2D>();
+
+        if (playerBody != null)
+        {
+            playerBody.linearVelocity =
+                bellBody != null
+                    ? bellBody.linearVelocity
+                    : Vector2.zero;
+
+            playerBody.angularVelocity =
+                0f;
+        }
+
+        Physics2D.SyncTransforms();
+
+        ResolveBottomExitWorldContext(
+            state);
+
+        OccupantExited?.Invoke(
+            this,
+            state);
+
+        message =
+            "Left diving bell through bottom opening.";
+
+        return true;
+    }
+
+    /// <summary>
     /// Emergency-release one specific occupant.
     ///
     /// Used by containment/safety systems when a player physically escapes the bell
@@ -742,6 +1086,40 @@ public sealed class DivingBellOccupancy :
     }
 
     /// <summary>
+    /// Bottom exit is semantically a world exit, never a boat re-entry.
+    /// A deployed bell may still overlap an intentionally generous boarded volume
+    /// while hanging over the rail or just below the hull. Do not let that overlap
+    /// silently convert the swimmer back into a boarded player.
+    /// </summary>
+    private void ResolveBottomExitWorldContext(
+        PlayerBellOccupantState state)
+    {
+        if (state == null)
+            return;
+
+        PlayerBoardingState boarding =
+            state.GetComponent<PlayerBoardingState>() ??
+            state.GetComponentInChildren<PlayerBoardingState>(
+                true);
+
+        if (boarding == null)
+            return;
+
+        if (boarding.IsBoarded)
+        {
+            boarding.Unboard();
+            return;
+        }
+
+        // The player may already have been unboarded when the bell deployed.
+        // Reapply the ordinary world context now; DivingBellCollisionContext will
+        // release its higher-priority ghost override on OccupantExited immediately
+        // after this method returns.
+        boarding.ReapplyCollisionMask();
+        boarding.ReapplyCurrentPresentation();
+    }
+
+    /// <summary>
     /// After leaving the bell, resolve boat boarding from the player's actual
     /// final physical location rather than trusting stale pre-bell state.
     /// </summary>
@@ -846,8 +1224,17 @@ public sealed class DivingBellOccupancy :
             return frontExitPoint.position;
         }
 
+        if (!IsDocked &&
+            bottomExteriorPoint != null)
+        {
+            return bottomExteriorPoint.position;
+        }
+
         if (frontExitPoint != null)
             return frontExitPoint.position;
+
+        if (bottomExteriorPoint != null)
+            return bottomExteriorPoint.position;
 
         return transform.position;
     }
@@ -1213,6 +1600,34 @@ public sealed class DivingBellOccupancy :
 
             Gizmos.DrawSphere(
                 frontExitPoint.position,
+                0.08f);
+        }
+
+        if (bottomInteriorPoint != null)
+        {
+            Gizmos.color =
+                new Color(
+                    0.2f,
+                    1f,
+                    0.85f,
+                    0.95f);
+
+            Gizmos.DrawSphere(
+                bottomInteriorPoint.position,
+                0.08f);
+        }
+
+        if (bottomExteriorPoint != null)
+        {
+            Gizmos.color =
+                new Color(
+                    0.2f,
+                    0.55f,
+                    1f,
+                    0.95f);
+
+            Gizmos.DrawSphere(
+                bottomExteriorPoint.position,
                 0.08f);
         }
     }

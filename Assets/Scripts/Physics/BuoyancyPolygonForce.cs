@@ -1147,6 +1147,13 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
         if (boatBodyAlwaysUsesOcean && bodySource is Boat)
             return TryResolveOceanExposure(out exposure);
 
+        // Diving-bell occupancy is a more specific local water context than the
+        // surrounding ocean or owning boat. A deployed bell occupant is
+        // intentionally unboarded, so without this branch the generic fallback
+        // below would incorrectly apply ocean buoyancy inside the trapped-air pocket.
+        if (TryResolveDivingBellExposure(out exposure))
+            return true;
+
         BoatWaterContextResolver resolver = explicitWaterContext;
 
         if (resolver == null)
@@ -1156,6 +1163,91 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
             return true;
 
         return TryResolveOceanExposure(out exposure);
+    }
+
+    private bool TryResolveDivingBellExposure(out BoatWaterExposure exposure)
+    {
+        exposure = default;
+
+        if (bodySource == null)
+            return false;
+
+        DivingBellOccupancy bell =
+            ResolveDivingBellForSubject();
+
+        if (bell == null)
+            return false;
+
+        DivingBellAirVolume airVolume =
+            bell.GetComponent<DivingBellAirVolume>() ??
+            bell.GetComponentInChildren<DivingBellAirVolume>(true);
+
+        if (airVolume == null)
+            return false;
+
+        const float dryEpsilon = 0.0001f;
+        const float fullThreshold = 0.9999f;
+
+        if (airVolume.WaterFill01 <= dryEpsilon)
+        {
+            // Reuse the existing dry-local-context semantics. The Compartment
+            // reference is intentionally null because this water belongs to a bell.
+            exposure =
+                BoatWaterExposure.DryInterior(null);
+
+            return true;
+        }
+
+        if (airVolume.WaterFill01 >= fullThreshold ||
+            airVolume.CompressedAirVolume01 <= dryEpsilon)
+        {
+            exposure =
+                BoatWaterExposure.CompartmentFull(
+                    null,
+                    airVolume.WaterSurfaceWorldY);
+
+            return true;
+        }
+
+        exposure =
+            BoatWaterExposure.CompartmentPartial(
+                null,
+                airVolume.WaterSurfaceWorldY);
+
+        return true;
+    }
+
+    private DivingBellOccupancy ResolveDivingBellForSubject()
+    {
+        if (bodySource == null)
+            return null;
+
+        // Player path. Exact occupancy wins over the surrounding boat/ocean.
+        PlayerBellOccupantState playerBellState =
+            bodySource.GetComponentInParent<PlayerBellOccupantState>() ??
+            bodySource.GetComponentInChildren<PlayerBellOccupantState>(true);
+
+        if (playerBellState != null &&
+            playerBellState.IsInsideBell &&
+            playerBellState.CurrentBell != null)
+        {
+            return playerBellState.CurrentBell;
+        }
+
+        // Loose BellItem path. Cargo/items physically inside a dry bell must not
+        // continue receiving open-ocean buoyancy either.
+        DivingBellContainedItem containedItem =
+            bodySource.GetComponentInParent<DivingBellContainedItem>() ??
+            bodySource.GetComponentInChildren<DivingBellContainedItem>(true);
+
+        if (containedItem != null &&
+            containedItem.IsContainedInBell &&
+            containedItem.CurrentBell != null)
+        {
+            return containedItem.CurrentBell;
+        }
+
+        return null;
     }
 
     private bool TryResolveOceanExposure(out BoatWaterExposure exposure)

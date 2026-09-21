@@ -550,9 +550,17 @@ public sealed class BoatSaveState
 [System.Serializable]
 public sealed class BoatTransformSnapshot
 {
-    public int version = 1;
+    // v1 stored only worldY. v2 adds an exact pose that is valid only in the
+    // scene/context it was captured from. Keeping worldY preserves the existing
+    // cross-scene spawn behavior and compatibility with older saves.
+    public int version = 2;
 
     public float worldY;
+
+    public bool hasWorldPose;
+    public string sceneName;
+    public Vector2 worldPosition;
+    public float worldRotationZ;
 }
 
 [System.Serializable]

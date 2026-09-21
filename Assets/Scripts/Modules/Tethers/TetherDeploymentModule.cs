@@ -44,6 +44,11 @@ public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLife
         "so a saved anchor cannot respawn inside the seabed.")]
     [SerializeField, Min(0f)] private float restoreCollisionSkinMeters = 0.02f;
 
+    [Tooltip(
+        "How long a restored deployed tether ignores breaking-load accumulation while physics settles. " +
+        "The tether joint remains physically active during this window.")]
+    [SerializeField, Min(0f)] private float restoreTetherBreakProtectionSeconds = 0.5f;
+
     [Header("Stored Payload Visual")]
     [Tooltip("Optional dumb visual used while the payload ItemInstance is stored. " +
              "If left empty, one is created automatically under PayloadHangPoint at runtime.")]
@@ -230,6 +235,25 @@ public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLife
         CancelPendingPhysicalRecall(restoreTetherIfPossible: false);
         SetDeploymentState(TetherDeploymentState.Stowed);
         SuppressStoredPayloadVisual();
+    }
+
+    /// <summary>
+    /// Immediately reconciles the runtime stored-payload shell with the current
+    /// StorageModule container state.
+    ///
+    /// Persistence can replace StorageModule.ContainerState during BoatSpawner.Start.
+    /// This component may still be subscribed to the previous container until its
+    /// first Update, which is too late for loose BellItems restored later in that
+    /// same Start call. Calling this after storage restore guarantees a stowed
+    /// physical payload shell exists before dependent loose-item restoration runs.
+    /// </summary>
+    public void RefreshStoredPayloadAfterStorageRestore()
+    {
+        CacheRefs();
+        BindContainer();
+        SyncStoredPhysicalPayload();
+        RefreshStoredPayloadVisual();
+        RefreshDeploymentState();
     }
 
     public bool TryGetStoredPayload(out ItemInstance item)
@@ -503,6 +527,10 @@ public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLife
 
         if (worldItemToDestroy != null)
         {
+            EmergencyEjectDivingBellOccupantsBeforeTeardown(
+                worldItemToDestroy,
+                "Tether payload was recalled and is being destroyed.");
+
             worldItemToDestroy.gameObject.SetActive(false);
             Destroy(worldItemToDestroy.gameObject);
         }
@@ -696,6 +724,10 @@ public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLife
 
         if (doomed != null)
         {
+            EmergencyEjectDivingBellOccupantsBeforeTeardown(
+                doomed,
+                "Stored physical tether payload is being removed.");
+
             doomed.gameObject.SetActive(
                 false);
 
@@ -704,8 +736,31 @@ public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLife
         }
     }
 
+    private static void EmergencyEjectDivingBellOccupantsBeforeTeardown(
+        WorldItem worldItem,
+        string reason)
+    {
+        if (worldItem == null)
+            return;
+
+        DivingBellOccupancy occupancy =
+            worldItem.GetComponent<DivingBellOccupancy>() ??
+            worldItem.GetComponentInChildren<DivingBellOccupancy>(
+                true);
+
+        if (occupancy == null ||
+            !occupancy.HasOccupants)
+        {
+            return;
+        }
+
+        occupancy.EmergencyEjectAllOccupants(
+            reason);
+    }
+
     private bool TryDeployStoredPhysicalPayload(
-        out TetherPayload payload)
+        out TetherPayload payload,
+        bool allowCapturingDockClaim = false)
     {
         payload =
             null;
@@ -748,13 +803,25 @@ public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLife
         payload =
             dockedPhysicalWorldItem.GetComponent<TetherPayload>();
 
+        bool shellIsDocked =
+            payload != null &&
+            payloadDock != null &&
+            payloadDock.IsDocked(payload);
+
+        bool shellIsCapturingForRestore =
+            allowCapturingDockClaim &&
+            payload != null &&
+            payloadDock != null &&
+            payloadDock.IsCapturing(payload);
+
         if (payload == null ||
             payloadDock == null ||
-            !payloadDock.IsDocked(payload))
+            (!shellIsDocked &&
+             !shellIsCapturingForRestore))
         {
             Debug.LogError(
                 $"[TetherDeploymentModule:{name}] Cannot deploy '{item.Definition.DisplayName}': " +
-                "its physical shell is not docked.",
+                "its physical shell is neither docked nor an allowed restore-time capture.",
                 this);
 
             payload =
@@ -1397,8 +1464,15 @@ public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLife
 
         storageModule.ContainerState.NotifyChanged();
 
-        if (!TryDeployStoredPayload(
-                out payload) ||
+        bool deployedSuccessfully =
+            keepStoredPayloadPhysical
+                ? TryDeployStoredPhysicalPayload(
+                    out payload,
+                    allowCapturingDockClaim: true)
+                : TryDeployStoredPayload(
+                    out payload);
+
+        if (!deployedSuccessfully ||
             payload == null ||
             deployedWorldItem == null)
         {
@@ -1424,10 +1498,21 @@ public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLife
 
             Physics2D.SyncTransforms();
 
+            // Live stored physical payloads (diving bells/cages) begin restore at their
+            // authored dock on the boat. Sweeping that shell from the dock toward the
+            // saved world pose can immediately hit the boat's own hull and incorrectly
+            // leave the payload near the dock, after which gravity merely drops it back
+            // onto the restored tether length. For these payloads the snapshot pose is
+            // authoritative: restore it directly before the first physics step.
+            //
+            // Non-live stored payloads (for example ordinary anchors spawned only when
+            // deployed) keep the conservative sweep used to avoid restoring into terrain.
             safeWorldPosition =
-                ResolveSafeRestoredWorldPosition(
-                    rb,
-                    worldPosition);
+                keepStoredPayloadPhysical
+                    ? worldPosition
+                    : ResolveSafeRestoredWorldPosition(
+                        rb,
+                        worldPosition);
 
             rb.position =
                 safeWorldPosition;
@@ -1437,6 +1522,17 @@ public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLife
 
             rb.angularVelocity =
                 0f;
+
+            // Rigidbody2D pose writes can reach the Transform hierarchy on the next
+            // physics synchronization. DivingBellAirVolume samples a CHILD transform
+            // very early in FixedUpdate, so make the restored world pose visible to
+            // the whole hierarchy immediately rather than allowing one dock-position
+            // atmosphere sample to erase persisted trapped-air state.
+            deployedWorldItem.transform.SetPositionAndRotation(
+                safeWorldPosition,
+                worldRotation);
+
+            Physics2D.SyncTransforms();
 
             rb.WakeUp();
         }
@@ -1453,6 +1549,9 @@ public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLife
                 Mathf.Max(
                     0.05f,
                     deployedLengthMeters));
+
+            tetherConstraint.BeginBreakProtection(
+                restoreTetherBreakProtectionSeconds);
         }
 
         RefreshStoredPayloadVisual();

@@ -192,11 +192,18 @@ public sealed class BoatTetherStatePersistence : MonoBehaviour
                     deployment.TetherExitPoint.position,
                     worldItem.transform.position);
 
+        DivingBellAirVolume bellAir =
+            worldItem.GetComponent<DivingBellAirVolume>() ??
+            worldItem.GetComponentInChildren<DivingBellAirVolume>(true);
+
+        bool hasDivingBellAirState =
+            bellAir != null;
+
         manifest.deployments.Add(
             new BoatTetherDeploymentSnapshot
             {
                 version =
-                    1,
+                    2,
 
                 deploymentHardpointId =
                     hardpoint.HardpointId,
@@ -216,7 +223,20 @@ public sealed class BoatTetherStatePersistence : MonoBehaviour
                         deployedLength),
 
                 savedDeploymentState =
-                    deployment.DeploymentState
+                    deployment.DeploymentState,
+
+                hasDivingBellAirState =
+                    hasDivingBellAirState,
+
+                divingBellTrappedAirMoles01 =
+                    hasDivingBellAirState
+                        ? bellAir.TrappedAirMoles01
+                        : 1f,
+
+                divingBellAirQuality01 =
+                    hasDivingBellAirState
+                        ? bellAir.AirQuality01
+                        : 1f
             });
     }
 
@@ -442,11 +462,49 @@ public sealed class BoatTetherStatePersistence : MonoBehaviour
                 continue;
             }
 
+            RestoreDivingBellAirState(
+                snapshot,
+                restoredPayload);
+
             RestoreLinkedWinchRuntime(
                 hardpoints,
                 snapshot.deploymentHardpointId,
                 snapshot.deployedLengthMeters);
         }
+    }
+
+    private void RestoreDivingBellAirState(
+        BoatTetherDeploymentSnapshot snapshot,
+        TetherPayload restoredPayload)
+    {
+        if (snapshot == null ||
+            restoredPayload == null ||
+            !snapshot.hasDivingBellAirState)
+        {
+            return;
+        }
+
+        DivingBellAirVolume bellAir =
+            restoredPayload.GetComponent<DivingBellAirVolume>() ??
+            restoredPayload.GetComponentInChildren<DivingBellAirVolume>(true);
+
+        if (bellAir == null)
+        {
+            LogWarning(
+                $"Saved deployment '{snapshot.deploymentHardpointId}' carries diving-bell air state, " +
+                "but the restored payload has no DivingBellAirVolume. Leaving prefab/runtime defaults intact.");
+
+            return;
+        }
+
+        bellAir.RestoreRuntimeState(
+            snapshot.divingBellTrappedAirMoles01,
+            snapshot.divingBellAirQuality01);
+
+        Log(
+            $"Restored diving-bell air state on '{snapshot.deploymentHardpointId}' | " +
+            $"moles={snapshot.divingBellTrappedAirMoles01:F3} " +
+            $"quality={snapshot.divingBellAirQuality01:F3}");
     }
 
     private void RestoreLinkedWinchRuntime(

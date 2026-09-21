@@ -1,0 +1,14519 @@
+# Scene Hierarchy Diagnostics Report
+
+Generated Local: `2026-09-20 14:32:29`
+Generated UTC: `2026-09-20T19:32:29.2380578Z`
+Unity: `6000.0.65f1`
+Project: `Don't Sink`
+Play Mode: `False`
+
+## Scene Summary
+
+| Scene | Path | Build Index | Loaded | Dirty | Objects | Components | DDOL |
+|---|---|---:|---:|---:|---:|---:|---:|
+| `BoatBuilderScene` | `Assets/Scenes/BoatBuilderScene.unity` | -1 | True | True | 357 | 1078 | False |
+
+Total Objects: `357`
+Total Components: `1078`
+Missing Scripts: `0`
+Stable ID Entries: `7`
+Duplicate Stable ID Groups: `2`
+
+## Suspicion Report
+
+### Duplicate Stable IDs
+
+- Stable ID `money_chest_slot_01` appears `3` times:
+  - `BoatBuilderScene` `TestBoat_10_Compartment_Flooding/_Gameplay/money_chest_slot_01` `MoneyChestSecureSlot.stableId`
+  - `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder/_Gameplay/money_chest_slot_01` `MoneyChestSecureSlot.stableId`
+  - `BoatBuilderScene` `TestBoat_12_Tethers/_Gameplay/money_chest_slot_01` `MoneyChestSecureSlot.stableId`
+- Stable ID `4f49fe7fe8634909bff3a211e7e07fe7` appears `3` times:
+  - `BoatBuilderScene` `TestBoat_10_Compartment_Flooding/_Cargo/CargoBayFloor/CargoBayZone` `BoatSecureZone.stableId`
+  - `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder/_Cargo/CargoBayFloor/CargoBayZone` `BoatSecureZone.stableId`
+  - `BoatBuilderScene` `TestBoat_12_Tethers/_Cargo/CargoBayFloor/CargoBayZone` `BoatSecureZone.stableId`
+
+### Duplicate Singleton-Like Components
+
+- `BoatItemRegistry` appears `3` times:
+  - `BoatBuilderScene` `TestBoat_10_Compartment_Flooding`
+  - `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder`
+  - `BoatBuilderScene` `TestBoat_12_Tethers`
+
+### Debug / Temp / Test Named Objects or Components
+
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `Transform`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `Rigidbody2D`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `Boat`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BoatAccessStatePersistence`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BoatAutoRegister`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BoatCompartmentStatePersistence`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BoatHandlingAggregator`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BoatIdentity`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BoatItemRegistry`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BoatLooseItemPersistence`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BoatModuleStatePersistence`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BoatPhysicsContactDiagnostics`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BoatPilotingSimulation`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BoatPilotingState`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BoatPowerState`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BoatRootMarker`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BoatSecuringDebugImpulse`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BoatVisualStateController`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BoatWaterContextResolver`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `BuoyancyPolygonForce`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `CompartmentFloodGameClickTool`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `DragForce`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `ForceBody2D`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `ForceSystem`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `RightingTorqueForce`
+- `BoatBuilderScene` `TestBoat_10_Compartment_Flooding` `ThrottleForce`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `Transform`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `Rigidbody2D`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `Boat`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `BoatAccessStatePersistence`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `BoatAutoRegister`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `BoatCompartmentStatePersistence`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `BoatHandlingAggregator`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `BoatIdentity`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `BoatItemRegistry`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `BoatLooseItemPersistence`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `BoatModuleStatePersistence`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `BoatPilotingSimulation`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `BoatPilotingState`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `BoatPowerState`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `BoatRootMarker`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `BoatSecuringDebugImpulse`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `BoatVisualStateController`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `BoatWaterContextResolver`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `BuoyancyPolygonForce`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `CompartmentFloodGameClickTool`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `DragForce`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `ForceBody2D`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `ForceSystem`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `GhostCollisionProxy`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `HardpointVisibilityController`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `RightingTorqueForce`
+- `BoatBuilderScene` `TestBoat_11_Keel_Anchor_Rudder` `ThrottleForce`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `Transform`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `Rigidbody2D`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `Boat`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `BoatAccessStatePersistence`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `BoatAutoRegister`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `BoatCompartmentStatePersistence`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `BoatHandlingAggregator`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `BoatIdentity`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `BoatItemRegistry`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `BoatLooseItemPersistence`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `BoatModuleStatePersistence`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `BoatPilotingSimulation`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `BoatPilotingState`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `BoatPowerState`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `BoatRootMarker`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `BoatSecuringDebugImpulse`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `BoatVisualStateController`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `BoatWaterContextResolver`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `BuoyancyPolygonForce`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `CompartmentFloodGameClickTool`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `DragForce`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `ForceBody2D`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `ForceSystem`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `GhostCollisionProxy`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `HardpointVisibilityController`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `RightingTorqueForce`
+- `BoatBuilderScene` `TestBoat_12_Tethers` `ThrottleForce`
+
+## Component Type Summary
+
+- `Transform`: `357`
+- `SpriteRenderer`: `107`
+- `BoxCollider2D`: `106`
+- `ResizableSegment2D`: `40`
+- `BoatBuilderSurfaceSnapAuthoring`: `30`
+- `CompartmentBoundaryAuthoring`: `27`
+- `Hardpoint`: `22`
+- `HardpointInteractable`: `22`
+- `HardpointReservedFootprint`: `22`
+- `CircleCollider2D`: `20`
+- `BoatVisualMarker`: `14`
+- `PlayerSpawnPoint`: `12`
+- `FloorSegmentAuthoring`: `10`
+- `Rigidbody2D`: `9`
+- `WallSegmentAuthoring`: `9`
+- `BoatVisibilityZone`: `8`
+- `SplitSpanRecord`: `7`
+- `WorldItem`: `7`
+- `InstalledModule`: `6`
+- `InstalledModuleAnchor`: `6`
+- `CompartmentLinkAuthoring`: `5`
+- `CompartmentLinkRuntimeLink`: `5`
+- `MeshFilter`: `5`
+- `MeshRenderer`: `5`
+- `DivingBellWinchControlButton`: `5`
+- `BuoyancyPolygonForce`: `4`
+- `DragForce`: `4`
+- `ForceBody2D`: `4`
+- `ForceSystem`: `4`
+- `HatchAuthoring`: `4`
+- `HatchRuntime`: `4`
+- `HatchInteractable`: `4`
+- `SpanRepairBlocker`: `4`
+- `PlatformEffector2D`: `4`
+- `HatchLedge`: `4`
+- `Compartment`: `4`
+- `CompartmentRectAuthoring`: `4`
+- `CompartmentWaterRenderer`: `4`
+- `SortingLayerSetter`: `4`
+- `LadderZone`: `4`
+- `LadderAutoFitAuthoring`: `4`
+- `DeckBoardZone`: `4`
+- `BoatSecureZone`: `4`
+- `TetherWinchLink`: `4`
+- `Boat`: `3`
+- `BoatAccessStatePersistence`: `3`
+- `BoatAutoRegister`: `3`
+- `BoatCompartmentStatePersistence`: `3`
+- `BoatHandlingAggregator`: `3`
+- `BoatIdentity`: `3`
+- `BoatItemRegistry`: `3`
+- `BoatLooseItemPersistence`: `3`
+- `BoatModuleStatePersistence`: `3`
+- `BoatPilotingSimulation`: `3`
+- `BoatPilotingState`: `3`
+- `BoatPowerState`: `3`
+- `BoatRootMarker`: `3`
+- `BoatSecuringDebugImpulse`: `3`
+- `BoatVisualStateController`: `3`
+- `BoatWaterContextResolver`: `3`
+- `CompartmentFloodGameClickTool`: `3`
+- `RightingTorqueForce`: `3`
+- `ThrottleForce`: `3`
+- `PilotChairInteractable`: `3`
+- `SeatController2D`: `3`
+- `BoatBoardedVolume`: `3`
+- `BoatBoardingInteractable`: `3`
+- `MapTableInteractable`: `3`
+- `MoneyChestSecureSlot`: `3`
+- `CargoZoneFloorAuthoring`: `3`
+- `GhostCollisionProxy`: `3`
+- `WallSplitRecord`: `2`
+- `BoatOwnedItem`: `2`
+- `BoatOwnedItemLayerPolicy`: `2`
+- `BoatOwnedItemVisualPolicy`: `2`
+- `EngineModule`: `2`
+- `HardpointVisibilityController`: `2`
+- `HardpointSupportFootprint`: `2`
+- `HardpointSupportHoverPreview`: `2`
+- `BoatItemContainmentZone`: `2`
+- `DivingBellBallastSlot`: `2`
+- `Camera`: `1`
+- `AudioListener`: `1`
+- `UniversalAdditionalCameraData`: `1`
+- `BoatPhysicsContactDiagnostics`: `1`
+- `DoorAuthoring`: `1`
+- `DoorInteractable`: `1`
+- `DoorRuntime`: `1`
+- `WallRepairBlocker`: `1`
+- `ClosedDoorPlayerSeparator`: `1`
+- `StorageModule`: `1`
+- `StorageModuleWorldDropTarget`: `1`
+- `StorageRackVisualSlots`: `1`
+- `PumpModule`: `1`
+- `HelmModule`: `1`
+- `WinchModule`: `1`
+- `WorldItemContainerDropTarget`: `1`
+- `WorldItemContainerInteractable`: `1`
+- `DivingBellAirVolume`: `1`
+- `DivingBellAngularDamping`: `1`
+- `DivingBellBallastSystem`: `1`
+- `DivingBellCollisionContext`: `1`
+- `DivingBellDeploymentContext`: `1`
+- `DivingBellMassAggregator`: `1`
+- `DivingBellOccupancy`: `1`
+- `DivingBellOceanPresentationBridge`: `1`
+- `DivingBellVisualPresentation`: `1`
+- `DivingBellWinchControlPanel`: `1`
+- `TetherPayload`: `1`
+- `TetherPayloadCollisionScope`: `1`
+- `DivingBellLocalAirPocketCompositePrototype`: `1`
+- `DivingBellBoardInteractable`: `1`
+- `DivingBellOccupantContainmentGuard`: `1`
+- `DivingBellBallastReleaseButton`: `1`
+- `DivingBellBottomInteractable`: `1`
+- `DivingBellInternalWaterRenderer`: `1`
+
+## Important Components
+
+- `Boat` in `BoatBuilderScene` at `TestBoat_10_Compartment_Flooding`
+- `Boat` in `BoatBuilderScene` at `TestBoat_11_Keel_Anchor_Rudder`
+- `Boat` in `BoatBuilderScene` at `TestBoat_12_Tethers`
+
+## Full Hierarchy
+
+### Scene: `BoatBuilderScene`
+
+- `BasicDivingBell` | path=`BasicDivingBell` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+  - Transform:
+    - localPosition: `0, 0, 0`
+    - worldPosition: `0, 0, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `SpriteRenderer` index=1 enabled=`True`
+      - `m_CastShadows` (Enum) = `Off`
+      - `m_ReceiveShadows` (Boolean) = `False`
+      - `m_DynamicOccludee` (Boolean) = `True`
+      - `m_StaticShadowCaster` (Boolean) = `False`
+      - `m_MotionVectors` (Enum) = `Per Object Motion`
+      - `m_LightProbeUsage` (Integer) = `1`
+      - `m_ReflectionProbeUsage` (Integer) = `1`
+      - `m_RayTracingMode` (Integer) = `0`
+      - `m_RayTraceProcedural` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+      - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+      - `m_SmallMeshCulling` (Boolean) = `True`
+      - `m_RenderingLayerMask` (Integer) = `1`
+      - `m_RendererPriority` (Integer) = `0`
+      - `m_Materials` (Generic) = `array size=1`
+      - `m_Sprite` (ObjectReference) = `DivingBell_Exterior_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/DivingBell_Exterior_Sprite.gif'`
+      - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+      - `m_FlipX` (Boolean) = `False`
+      - `m_FlipY` (Boolean) = `False`
+      - `m_DrawMode` (Enum) = `Simple`
+      - `m_Size` (Vector2) = `(1.00, 1.00)`
+      - `m_AdaptiveModeThreshold` (Float) = `0.5`
+      - `m_SpriteTileMode` (Enum) = `Continuous`
+      - `m_MaskInteraction` (Enum) = `None`
+      - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Rigidbody2D` index=2 enabled=`n/a`
+      - `m_BodyType` (Enum) = `Dynamic`
+      - `m_Simulated` (Boolean) = `True`
+      - `m_UseFullKinematicContacts` (Boolean) = `False`
+      - `m_UseAutoMass` (Boolean) = `False`
+      - `m_Mass` (Float) = `10`
+      - `m_LinearDamping` (Float) = `0`
+      - `m_AngularDamping` (Float) = `0.05`
+      - `m_GravityScale` (Float) = `1`
+      - `m_IncludeLayers` (LayerMask) = `0`
+      - `m_ExcludeLayers` (LayerMask) = `0`
+      - `m_Interpolate` (Enum) = `None`
+      - `m_SleepingMode` (Enum) = `Start Awake`
+      - `m_CollisionDetection` (Enum) = `Discrete`
+      - `m_Constraints` (Integer) = `0`
+    - `WorldItem` index=3 enabled=`True`
+      - `m_Script` (ObjectReference) = `WorldItem (MonoScript) asset='Assets/Scripts/Inventory/Item/WorldItem.cs'`
+      - `itemInstance` (ManagedReference) = `null`
+      - `interactionPriority` (Integer) = `10`
+      - `maxPickupDistance` (Float) = `3`
+      - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='BasicDivingBell/PromptAnchor'`
+      - `highlightObject` (ObjectReference) = `Highlight (GameObject) scenePath='BasicDivingBell/Highlight'`
+      - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+      - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+    - `WorldItemContainerDropTarget` index=4 enabled=`True`
+      - `m_Script` (ObjectReference) = `WorldItemContainerDropTarget (MonoScript) asset='Assets/Scripts/Inventory/Item/WorldItemContainerDropTarget.cs'`
+      - `worldItem` (ObjectReference) = `BasicDivingBell (WorldItem) scenePath='BasicDivingBell'`
+      - `maxDepositDistance` (Float) = `2.25`
+      - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+      - `allowAccessWhenNotPartOfBoat` (Boolean) = `False`
+      - `verboseLogging` (Boolean) = `False`
+    - `WorldItemContainerInteractable` index=5 enabled=`True`
+      - `m_Script` (ObjectReference) = `WorldItemContainerInteractable (MonoScript) asset='Assets/Scripts/Inventory/Item/WorldItemContainerInteractable.cs'`
+      - `worldItem` (ObjectReference) = `BasicDivingBell (WorldItem) scenePath='BasicDivingBell'`
+      - `maxDistance` (Float) = `3`
+      - `interactionPriority` (Integer) = `5`
+      - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='BasicDivingBell/PromptAnchor'`
+      - `restrictToInteractionColliders` (Boolean) = `True`
+      - `interactionColliders` (Generic) = `array size=3`
+      - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+      - `allowAccessWhenNotPartOfBoat` (Boolean) = `False`
+      - `autoCloseDistance` (Float) = `2.25`
+      - `verboseLogging` (Boolean) = `False`
+    - `BoatOwnedItem` index=6 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatOwnedItem (MonoScript) asset='Assets/Scripts/Inventory/Item/BoatOwnedItem.cs'`
+      - `owningBoatInstanceId` (String) = ``
+      - `registered` (Boolean) = `False`
+    - `BoatOwnedItemLayerPolicy` index=7 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatOwnedItemLayerPolicy (MonoScript) asset='Assets/Scripts/Inventory/Item/BoatOwnedItemLayerPolicy.cs'`
+      - `hullLayerName` (String) = `Hull`
+      - `groundLayerName` (String) = `Ground`
+      - `worldLedgeLayerName` (String) = `WorldLedge`
+      - `ghostCollisionLayerName` (String) = `GhostCollision`
+      - `verboseLogging` (Boolean) = `False`
+    - `BoatOwnedItemVisualPolicy` index=8 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatOwnedItemVisualPolicy (MonoScript) asset='Assets/Scripts/Inventory/Item/BoatOwnedItemVisualPolicy.cs'`
+      - `includeInactiveRenderers` (Boolean) = `True`
+      - `boatOwnedSortingLayer` (String) = `BoatView`
+      - `boatOwnedSortingOrder` (Integer) = `130`
+      - `boatOwnedGameObjectLayer` (String) = `BoatView`
+      - `applyGameObjectLayerToChildren` (Boolean) = `True`
+      - `restoreOriginalSortingOnUnowned` (Boolean) = `True`
+      - `restoreOriginalGameObjectLayerOnUnowned` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+    - `BuoyancyPolygonForce` index=9 enabled=`True`
+      - `m_Script` (ObjectReference) = `BuoyancyPolygonForce (MonoScript) asset='Assets/Scripts/Physics/BuoyancyPolygonForce.cs'`
+      - `bodySource` (ObjectReference) = `BasicDivingBell (ForceBody2D) scenePath='BasicDivingBell'`
+      - `useBoatWaterContext` (Boolean) = `True`
+      - `boatBodyAlwaysUsesOcean` (Boolean) = `True`
+      - `sliceCount` (Integer) = `1`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `50`
+    - `DragForce` index=10 enabled=`True`
+      - `m_Script` (ObjectReference) = `DragForce (MonoScript) asset='Assets/Scripts/Physics/DragForce.cs'`
+      - `submersionSource` (ObjectReference) = `BasicDivingBell (BuoyancyPolygonForce) scenePath='BasicDivingBell'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `100`
+    - `ForceBody2D` index=11 enabled=`True`
+      - `m_Script` (ObjectReference) = `ForceBody2D (MonoScript) asset='Assets/Scripts/Physics/ForceBody2D.cs'`
+      - `width` (Float) = `2`
+      - `height` (Float) = `1`
+    - `ForceSystem` index=12 enabled=`True`
+      - `m_Script` (ObjectReference) = `ForceSystem (MonoScript) asset='Assets/Scripts/Physics/ForceSystem.cs'`
+      - `verboseDiagnostics` (Boolean) = `False`
+    - `GhostCollisionProxy` index=13 enabled=`True`
+      - `m_Script` (ObjectReference) = `GhostCollisionProxy (MonoScript) asset='Assets/Scripts/Physics/GhostCollisionProxy.cs'`
+      - `followBody` (ObjectReference) = `BasicDivingBell (Rigidbody2D) scenePath='BasicDivingBell'`
+      - `sourceRoots` (Generic) = `array size=4`
+      - `autoResolveBoatStructuralRoots` (Boolean) = `False`
+      - `ghostLayerName` (String) = `GhostCollision`
+      - `syncSourceChanges` (Boolean) = `True`
+      - `showRuntimeProxyInHierarchy` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+    - `DivingBellAirVolume` index=14 enabled=`True`
+      - `m_Script` (ObjectReference) = `DivingBellAirVolume (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellAirVolume.cs'`
+      - `airCeilingPoint` (ObjectReference) = `Ceiling (Transform) scenePath='BasicDivingBell/InteriorCollider/Ceiling'`
+      - `chamberCollider` (ObjectReference) = `InteriorSafetyVolume (BoxCollider2D) scenePath='BasicDivingBell/InteriorSafetyVolume'`
+      - `keepWaterSurfaceVisualWorldHorizontal` (Boolean) = `True`
+      - `atmosphericPressureKPa` (Float) = `101.325`
+      - `waterPressureKPaPerMeter` (Float) = `9.807`
+      - `pressureCompressionScale` (Float) = `0.65`
+      - `openingSubmergeEpsilonMeters` (Float) = `0.02`
+      - `pressureSolveIterations` (Integer) = `4`
+      - `ventStartTiltDegrees` (Float) = `55`
+      - `fullVentTiltDegrees` (Float) = `105`
+      - `fullVentAirMolesPerSecond` (Float) = `0.65`
+      - `qualityLossPerBreathingOccupantPerSecond` (Float) = `0.002`
+      - `atmosphericQualityRecoveryPerSecond` (Float) = `1.5`
+      - `breathingHeadClearanceMeters` (Float) = `0.03`
+      - `restoredAtmosphereEqualizationGraceSeconds` (Float) = `0.25`
+      - `maxAirDisplacementVolume` (Float) = `0`
+      - `trappedAirMoles01` (Float) = `1`
+      - `compressedAirVolume01` (Float) = `1`
+      - `waterFill01` (Float) = `0`
+      - `airQuality01` (Float) = `1`
+      - `oceanSurfaceWorldY` (Float) = `0`
+      - `waterSurfaceWorldY` (Float) = `0`
+      - `currentTiltDegrees` (Float) = `0`
+      - `openingSubmerged` (Boolean) = `False`
+      - `venting` (Boolean) = `False`
+      - `breathingOccupantCount` (Integer) = `0`
+      - `restoredAtmosphereEqualizationGraceRemaining` (Float) = `0`
+    - `DivingBellAngularDamping` index=15 enabled=`True`
+      - `m_Script` (ObjectReference) = `DivingBellAngularDamping (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellAngularDamping.cs'`
+      - `physicsAuthority` (Boolean) = `True`
+      - `bellBody` (ObjectReference) = `BasicDivingBell (Rigidbody2D) scenePath='BasicDivingBell'`
+      - `occupancy` (ObjectReference) = `BasicDivingBell (DivingBellOccupancy) scenePath='BasicDivingBell'`
+      - `buoyancy` (ObjectReference) = `BasicDivingBell (BuoyancyPolygonForce) scenePath='BasicDivingBell'`
+      - `airDampingPerSecond` (Float) = `3`
+      - `submergedDampingPerSecond` (Float) = `10`
+      - `maxDampingTorque` (Float) = `100`
+      - `currentSubmergedFraction` (Float) = `0`
+      - `currentDampingPerSecond` (Float) = `0`
+      - `lastAppliedTorque` (Float) = `0`
+    - `DivingBellBallastSystem` index=16 enabled=`True`
+      - `m_Script` (ObjectReference) = `DivingBellBallastSystem (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellBallastSystem.cs'`
+      - `stateAuthority` (Boolean) = `True`
+      - `occupancy` (ObjectReference) = `BasicDivingBell (DivingBellOccupancy) scenePath='BasicDivingBell'`
+      - `acceptedBallastCategory` (Enum) = `Ballast`
+      - `resolvedPayloadItem` (Generic) = `<generic>`
+      - `payloadContainerReady` (Boolean) = `False`
+      - `totalBallastMass` (Float) = `0`
+      - `lastStatus` (String) = ``
+      - `verboseLogging` (Boolean) = `False`
+    - `DivingBellCollisionContext` index=17 enabled=`True`
+      - `m_Script` (ObjectReference) = `DivingBellCollisionContext (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellCollisionContext.cs'`
+      - `occupancy` (ObjectReference) = `BasicDivingBell (DivingBellOccupancy) scenePath='BasicDivingBell'`
+      - `ghostCollisionLayerName` (String) = `GhostCollision`
+      - `verboseLogging` (Boolean) = `False`
+      - `trackedOccupants` (Integer) = `0`
+      - `bellGhostReady` (Boolean) = `False`
+      - `resolvedGhostLayer` (Integer) = `-1`
+    - `DivingBellDeploymentContext` index=18 enabled=`True`
+      - `m_Script` (ObjectReference) = `DivingBellDeploymentContext (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellDeploymentContext.cs'`
+      - `occupancy` (ObjectReference) = `BasicDivingBell (DivingBellOccupancy) scenePath='BasicDivingBell'`
+      - `lastObservedDocked` (Boolean) = `False`
+      - `hasObservedDockState` (Boolean) = `False`
+      - `reconciledOccupantCount` (Integer) = `0`
+      - `verboseLogging` (Boolean) = `False`
+    - `DivingBellMassAggregator` index=19 enabled=`True`
+      - `m_Script` (ObjectReference) = `DivingBellMassAggregator (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellMassAggregator.cs'`
+      - `physicsAuthority` (Boolean) = `True`
+      - `hasDryBaseline` (Boolean) = `False`
+      - `dryMass` (Float) = `0`
+      - `dryLocalCenterOfMass` (Vector2) = `(0.00, 0.00)`
+      - `dryInertia` (Float) = `0`
+      - `aggregationActive` (Boolean) = `False`
+      - `occupantContributionCount` (Integer) = `0`
+      - `cargoContributionCount` (Integer) = `0`
+      - `ballastContributionCount` (Integer) = `0`
+      - `occupantMassTotal` (Float) = `0`
+      - `cargoMassTotal` (Float) = `0`
+      - `ballastMassTotal` (Float) = `0`
+      - `aggregateMass` (Float) = `0`
+      - `aggregateLocalCenterOfMass` (Vector2) = `(0.00, 0.00)`
+      - `aggregateInertia` (Float) = `0`
+      - `drawCenterOfMassGizmos` (Boolean) = `True`
+      - `gizmoRadius` (Float) = `0.08`
+    - `DivingBellOccupancy` index=20 enabled=`True`
+      - `m_Script` (ObjectReference) = `DivingBellOccupancy (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellOccupancy.cs'`
+      - `interiorEntryPoint` (ObjectReference) = `InteriorEntryPoint (Transform) scenePath='BasicDivingBell/InteriorEntryPoint'`
+      - `frontExitPoint` (ObjectReference) = `FrontExitPoint (Transform) scenePath='BasicDivingBell/FrontExitPoint'`
+      - `bottomInteriorPoint` (ObjectReference) = `BottomInteriorPoint (Transform) scenePath='BasicDivingBell/BottomInteriorPoint'`
+      - `bottomExteriorPoint` (ObjectReference) = `BottomExteriorPoint (Transform) scenePath='BasicDivingBell/BottomExteriorPoint'`
+      - `parentOccupantsToBell` (Boolean) = `True`
+      - `zeroVelocityOnTransfer` (Boolean) = `True`
+      - `centerPlayerBodyOnInteriorEntry` (Boolean) = `True`
+      - `requireDockedForFrontBoard` (Boolean) = `True`
+      - `requireDockedForFrontExit` (Boolean) = `True`
+      - `ejectOccupantsOnDisable` (Boolean) = `True`
+      - `inheritBellVelocityOnEmergencyEject` (Boolean) = `True`
+      - `tetherPayload` (ObjectReference) = `BasicDivingBell (TetherPayload) scenePath='BasicDivingBell'`
+      - `occupants` (Generic) = `array size=0`
+    - `DivingBellOceanPresentationBridge` index=21 enabled=`True`
+      - `m_Script` (ObjectReference) = `DivingBellOceanPresentationBridge (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellOceanPresentationBridge.cs'`
+      - `onlyOverrideWhenOpeningSubmerged` (Boolean) = `True`
+      - `bellInteriorOceanMode` (Enum) = `Boarded Interior`
+      - `localViewerInsideBell` (Boolean) = `False`
+      - `bellNeedsOceanOverride` (Boolean) = `False`
+      - `presentationOverrideActive` (Boolean) = `False`
+      - `verboseLogging` (Boolean) = `False`
+    - `DivingBellVisualPresentation` index=22 enabled=`True`
+      - `m_Script` (ObjectReference) = `DivingBellVisualPresentation (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellVisualPresentation.cs'`
+      - `occupancy` (ObjectReference) = `BasicDivingBell (DivingBellOccupancy) scenePath='BasicDivingBell'`
+      - `interiorRenderers` (Generic) = `array size=8`
+      - `floorRenderers` (Generic) = `array size=5`
+      - `exteriorRenderers` (Generic) = `array size=1`
+      - `interiorOrderOffset` (Integer) = `5`
+      - `occupantOrderOffset` (Integer) = `15`
+      - `exteriorOrderOffset` (Integer) = `25`
+      - `deployedSortingLayerName` (String) = `BoatForehull`
+      - `deployedBaseOrder` (Integer) = `130`
+      - `hideExteriorForLocalOccupant` (Boolean) = `True`
+      - `hideDockedBellWhileViewingBoatInterior` (Boolean) = `True`
+      - `resolvedSortingLayer` (String) = `BoatForehull`
+      - `resolvedBaseOrder` (Integer) = `130`
+      - `resolvedBellDocked` (Boolean) = `False`
+      - `usingDeployedSorting` (Boolean) = `True`
+      - `localViewerInsideBell` (Boolean) = `False`
+      - `hiddenByHostBoatInteriorView` (Boolean) = `False`
+    - `DivingBellWinchControlPanel` index=23 enabled=`True`
+      - `m_Script` (ObjectReference) = `DivingBellWinchControlPanel (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DIvingBellWinchControlPanel.cs'`
+      - `occupancy` (ObjectReference) = `BasicDivingBell (DivingBellOccupancy) scenePath='BasicDivingBell'`
+      - `allowDangerousIntents` (Boolean) = `True`
+      - `lastResolveMessage` (String) = ``
+      - `lastControlMessage` (String) = ``
+      - `verboseLogging` (Boolean) = `False`
+    - `TetherPayload` index=24 enabled=`True`
+      - `m_Script` (ObjectReference) = `TetherPayload (MonoScript) asset='Assets/Scripts/Modules/Tethers/TetherPayload.cs'`
+      - `tetherAnchor` (ObjectReference) = `TetherAnchor (Transform) scenePath='BasicDivingBell/TetherAnchor'`
+      - `usingTetherPayloadLayer` (Boolean) = `False`
+      - `tetherPayloadLayerIndex` (Integer) = `-1`
+      - `switchedColliderObjects` (Integer) = `0`
+    - `TetherPayloadCollisionScope` index=25 enabled=`True`
+      - `m_Script` (ObjectReference) = `TetherPayloadCollisionScope (MonoScript) asset='Assets/Scripts/Modules/Tethers/TetherPayloadCollisionScope.cs'`
+      - `collisionRoots` (Generic) = `array size=1`
+      - `explicitColliders` (Generic) = `array size=0`
+      - `includeTriggerColliders` (Boolean) = `False`
+      - `lastCollectedColliderCount` (Integer) = `1`
+    - `DivingBellLocalAirPocketCompositePrototype` index=26 enabled=`True`
+      - `m_Script` (ObjectReference) = `DivingBellLocalAirPocketCompositePrototype (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellLocalAirPocketCompositePrototype.cs'`
+      - `compositeSortingLayerName` (String) = `FrontWater`
+      - `compositeBaseOrder` (Integer) = `20`
+      - `onlyWhileOpeningSubmerged` (Boolean) = `True`
+      - `suppressLegacyOceanBridgeWhileActive` (Boolean) = `True`
+      - `includeContainedBellItems` (Boolean) = `True`
+      - `prototypeActive` (Boolean) = `False`
+      - `compositedRendererCount` (Integer) = `0`
+      - `legacyBridgeSuppressed` (Boolean) = `False`
+      - `verboseLogging` (Boolean) = `False`
+  - `BallastLeft` | path=`BasicDivingBell/BallastLeft` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `-2, -2.1, 0`
+      - worldPosition: `-2, -2.1, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(-2.00, -2.10, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `BoxCollider2D` index=1 enabled=`True`
+        - `m_Density` (Float) = `1`
+        - `m_IncludeLayers` (LayerMask) = `0`
+        - `m_ExcludeLayers` (LayerMask) = `0`
+        - `m_LayerOverridePriority` (Integer) = `0`
+        - `m_ForceSendLayers` (LayerMask) = `-1`
+        - `m_ForceReceiveLayers` (LayerMask) = `-1`
+        - `m_ContactCaptureLayers` (LayerMask) = `-1`
+        - `m_CallbackLayers` (LayerMask) = `-1`
+        - `m_IsTrigger` (Boolean) = `True`
+        - `m_UsedByEffector` (Boolean) = `False`
+        - `m_CompositeOperation` (Enum) = `None`
+        - `m_CompositeOrder` (Integer) = `0`
+        - `m_Offset` (Vector2) = `(0.00, 0.00)`
+        - `m_AutoTiling` (Boolean) = `False`
+        - `m_Size` (Vector2) = `(2.50, 2.50)`
+        - `m_EdgeRadius` (Float) = `0`
+      - `DivingBellBallastSlot` index=2 enabled=`True`
+        - `m_Script` (ObjectReference) = `DivingBellBallastSlot (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellBallastSlot.cs'`
+        - `slotIndex` (Integer) = `0`
+        - `ballastSystem` (ObjectReference) = `BasicDivingBell (DivingBellBallastSystem) scenePath='BasicDivingBell'`
+        - `contributionPoint` (ObjectReference) = `BallastLeft (Transform) scenePath='BasicDivingBell/BallastLeft'`
+        - `dumpPoint` (ObjectReference) = `DumpPoint (Transform) scenePath='BasicDivingBell/BallastLeft/DumpPoint'`
+        - `ballastRenderer` (ObjectReference) = `BallastLeft (SpriteRenderer) scenePath='BasicDivingBell/BallastLeft'`
+        - `preferWorldPrefabSprite` (Boolean) = `True`
+        - `interactionPriority` (Integer) = `75`
+        - `actionRange` (Float) = `3`
+        - `maxDepositDistance` (Float) = `4`
+        - `promptAnchor` (ObjectReference) = `BallastLeft (Transform) scenePath='BasicDivingBell/BallastLeft'`
+        - `verboseLogging` (Boolean) = `True`
+      - `SpriteRenderer` index=3 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+    - `ContributionPoint` | path=`BasicDivingBell/BallastLeft/ContributionPoint` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `-2, -2.1, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `DumpPoint` | path=`BasicDivingBell/BallastLeft/DumpPoint` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `-2, -2.1, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `VisualSlot` | path=`BasicDivingBell/BallastLeft/VisualSlot` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `-2, -2.1, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 0.6, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 0.60, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Ballast_Slot_Visual_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Ballast_Slot_Visual_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+  - `BallastRight` | path=`BasicDivingBell/BallastRight` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `2, -2.1, 0`
+      - worldPosition: `2, -2.1, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(2.00, -2.10, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `BoxCollider2D` index=1 enabled=`True`
+        - `m_Density` (Float) = `1`
+        - `m_IncludeLayers` (LayerMask) = `0`
+        - `m_ExcludeLayers` (LayerMask) = `0`
+        - `m_LayerOverridePriority` (Integer) = `0`
+        - `m_ForceSendLayers` (LayerMask) = `-1`
+        - `m_ForceReceiveLayers` (LayerMask) = `-1`
+        - `m_ContactCaptureLayers` (LayerMask) = `-1`
+        - `m_CallbackLayers` (LayerMask) = `-1`
+        - `m_IsTrigger` (Boolean) = `True`
+        - `m_UsedByEffector` (Boolean) = `False`
+        - `m_CompositeOperation` (Enum) = `None`
+        - `m_CompositeOrder` (Integer) = `0`
+        - `m_Offset` (Vector2) = `(0.00, 0.00)`
+        - `m_AutoTiling` (Boolean) = `False`
+        - `m_Size` (Vector2) = `(2.50, 2.50)`
+        - `m_EdgeRadius` (Float) = `0`
+      - `DivingBellBallastSlot` index=2 enabled=`True`
+        - `m_Script` (ObjectReference) = `DivingBellBallastSlot (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellBallastSlot.cs'`
+        - `slotIndex` (Integer) = `1`
+        - `ballastSystem` (ObjectReference) = `BasicDivingBell (DivingBellBallastSystem) scenePath='BasicDivingBell'`
+        - `contributionPoint` (ObjectReference) = `BallastRight (Transform) scenePath='BasicDivingBell/BallastRight'`
+        - `dumpPoint` (ObjectReference) = `DumpPoint (Transform) scenePath='BasicDivingBell/BallastRight/DumpPoint'`
+        - `ballastRenderer` (ObjectReference) = `BallastRight (SpriteRenderer) scenePath='BasicDivingBell/BallastRight'`
+        - `preferWorldPrefabSprite` (Boolean) = `True`
+        - `interactionPriority` (Integer) = `75`
+        - `actionRange` (Float) = `3`
+        - `maxDepositDistance` (Float) = `4`
+        - `promptAnchor` (ObjectReference) = `BallastRight (Transform) scenePath='BasicDivingBell/BallastRight'`
+        - `verboseLogging` (Boolean) = `False`
+      - `SpriteRenderer` index=3 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+    - `ContributionPoint` | path=`BasicDivingBell/BallastRight/ContributionPoint` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `2, -2.1, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `DumpPoint` | path=`BasicDivingBell/BallastRight/DumpPoint` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `2, -2.1, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `VisualSlot` | path=`BasicDivingBell/BallastRight/VisualSlot` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `2, -2.1, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 0.6, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 0.60, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Ballast_Slot_Visual_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Ballast_Slot_Visual_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+  - `BottomExteriorPoint` | path=`BasicDivingBell/BottomExteriorPoint` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, -3, 0`
+      - worldPosition: `0, -3, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, -3.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `BottomInteriorPoint` | path=`BasicDivingBell/BottomInteriorPoint` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `BottomOpeningInteractable` | path=`BasicDivingBell/BottomOpeningInteractable` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, -2, 0`
+      - worldPosition: `0, -2, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, -2.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `BoxCollider2D` index=1 enabled=`True`
+        - `m_Density` (Float) = `1`
+        - `m_IncludeLayers` (LayerMask) = `0`
+        - `m_ExcludeLayers` (LayerMask) = `0`
+        - `m_LayerOverridePriority` (Integer) = `0`
+        - `m_ForceSendLayers` (LayerMask) = `-1`
+        - `m_ForceReceiveLayers` (LayerMask) = `-1`
+        - `m_ContactCaptureLayers` (LayerMask) = `-1`
+        - `m_CallbackLayers` (LayerMask) = `-1`
+        - `m_IsTrigger` (Boolean) = `False`
+        - `m_UsedByEffector` (Boolean) = `False`
+        - `m_CompositeOperation` (Enum) = `None`
+        - `m_CompositeOrder` (Integer) = `0`
+        - `m_Offset` (Vector2) = `(0.00, 0.00)`
+        - `m_AutoTiling` (Boolean) = `False`
+        - `m_Size` (Vector2) = `(6.00, 1.00)`
+        - `m_EdgeRadius` (Float) = `0`
+      - `DivingBellBottomInteractable` index=2 enabled=`True`
+        - `m_Script` (ObjectReference) = `DivingBellBottomInteractable (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellBottomInteractable.cs'`
+        - `priority` (Integer) = `10`
+        - `maxUseDistance` (Float) = `2`
+        - `occupancy` (ObjectReference) = `BasicDivingBell (DivingBellOccupancy) scenePath='BasicDivingBell'`
+        - `promptAnchor` (ObjectReference) = `BottomOpeningInteractable (Transform) scenePath='BasicDivingBell/BottomOpeningInteractable'`
+        - `enterPrompt` (String) = `Enter Diving Bell`
+        - `exitPrompt` (String) = `Exit Diving Bell`
+        - `verboseLogging` (Boolean) = `False`
+  - `COM` | path=`BasicDivingBell/COM` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, -0.8, 0`
+      - worldPosition: `0, -0.8, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, -0.80, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `ContainerInteractionTrigger` | path=`BasicDivingBell/ContainerInteractionTrigger` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, -2, 0`
+      - worldPosition: `0, -2, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, -2.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `BoxCollider2D` index=1 enabled=`True`
+        - `m_Density` (Float) = `1`
+        - `m_IncludeLayers` (LayerMask) = `0`
+        - `m_ExcludeLayers` (LayerMask) = `0`
+        - `m_LayerOverridePriority` (Integer) = `0`
+        - `m_ForceSendLayers` (LayerMask) = `-1`
+        - `m_ForceReceiveLayers` (LayerMask) = `-1`
+        - `m_ContactCaptureLayers` (LayerMask) = `-1`
+        - `m_CallbackLayers` (LayerMask) = `-1`
+        - `m_IsTrigger` (Boolean) = `True`
+        - `m_UsedByEffector` (Boolean) = `False`
+        - `m_CompositeOperation` (Enum) = `None`
+        - `m_CompositeOrder` (Integer) = `0`
+        - `m_Offset` (Vector2) = `(0.00, 0.00)`
+        - `m_AutoTiling` (Boolean) = `False`
+        - `m_Size` (Vector2) = `(6.00, 2.00)`
+        - `m_EdgeRadius` (Float) = `0`
+  - `DoorCollider` | path=`BasicDivingBell/DoorCollider` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `-1.7, 0, 0`
+      - worldPosition: `-1.7, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(-1.70, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `BoxCollider2D` index=1 enabled=`True`
+        - `m_Density` (Float) = `1`
+        - `m_IncludeLayers` (LayerMask) = `0`
+        - `m_ExcludeLayers` (LayerMask) = `0`
+        - `m_LayerOverridePriority` (Integer) = `0`
+        - `m_ForceSendLayers` (LayerMask) = `-1`
+        - `m_ForceReceiveLayers` (LayerMask) = `-1`
+        - `m_ContactCaptureLayers` (LayerMask) = `-1`
+        - `m_CallbackLayers` (LayerMask) = `-1`
+        - `m_IsTrigger` (Boolean) = `False`
+        - `m_UsedByEffector` (Boolean) = `False`
+        - `m_CompositeOperation` (Enum) = `None`
+        - `m_CompositeOrder` (Integer) = `0`
+        - `m_Offset` (Vector2) = `(-0.06, 0.40)`
+        - `m_AutoTiling` (Boolean) = `False`
+        - `m_Size` (Vector2) = `(2.10, 3.30)`
+        - `m_EdgeRadius` (Float) = `0`
+      - `DivingBellBoardInteractable` index=2 enabled=`True`
+        - `m_Script` (ObjectReference) = `DivingBellBoardInteractable (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellBoardInteractable.cs'`
+        - `priority` (Integer) = `20`
+        - `maxUseDistance` (Float) = `3`
+        - `occupancy` (ObjectReference) = `BasicDivingBell (DivingBellOccupancy) scenePath='BasicDivingBell'`
+        - `promptAnchor` (ObjectReference) = `DoorCollider (Transform) scenePath='BasicDivingBell/DoorCollider'`
+        - `boardPrompt` (String) = `Board Diving Bell`
+        - `exitPrompt` (String) = `Leave Diving Bell`
+        - `verboseLogging` (Boolean) = `False`
+  - `ExternalCollider` | path=`BasicDivingBell/ExternalCollider` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0.065`
+      - worldPosition: `0, 0, 0.065`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.07)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `BoxCollider2D` index=1 enabled=`True`
+        - `m_Density` (Float) = `1`
+        - `m_IncludeLayers` (LayerMask) = `0`
+        - `m_ExcludeLayers` (LayerMask) = `0`
+        - `m_LayerOverridePriority` (Integer) = `0`
+        - `m_ForceSendLayers` (LayerMask) = `-1`
+        - `m_ForceReceiveLayers` (LayerMask) = `-1`
+        - `m_ContactCaptureLayers` (LayerMask) = `-1`
+        - `m_CallbackLayers` (LayerMask) = `-1`
+        - `m_IsTrigger` (Boolean) = `False`
+        - `m_UsedByEffector` (Boolean) = `False`
+        - `m_CompositeOperation` (Enum) = `None`
+        - `m_CompositeOrder` (Integer) = `0`
+        - `m_Offset` (Vector2) = `(0.00, 0.50)`
+        - `m_AutoTiling` (Boolean) = `False`
+        - `m_Size` (Vector2) = `(6.50, 4.50)`
+        - `m_EdgeRadius` (Float) = `0`
+  - `FrontExitPoint` | path=`BasicDivingBell/FrontExitPoint` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `-1.7, 0, 0`
+      - worldPosition: `-1.7, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(-1.70, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `Highlight` | path=`BasicDivingBell/Highlight` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Highlight` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1.1, 1.1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.10, 1.10, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SpriteRenderer` index=1 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_Sprite` (ObjectReference) = `DivingBell_Interior_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/DivingBell_Interior_Sprite.gif'`
+        - `m_Color` (Color) = `RGBA(0.494, 0.593, 0.764, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+  - `InteriorCollider` | path=`BasicDivingBell/InteriorCollider` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `Ceiling` | path=`BasicDivingBell/InteriorCollider/Ceiling` | activeSelf=True | activeInHierarchy=True | layer=`BellInterior` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `0, 0, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 2.50)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(6.50, 0.20)`
+          - `m_EdgeRadius` (Float) = `0`
+    - `LeftWall` | path=`BasicDivingBell/InteriorCollider/LeftWall` | activeSelf=True | activeInHierarchy=True | layer=`BellInterior` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-3.2, 0, 0`
+        - worldPosition: `-3.2, 0, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-3.20, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(0.20, 5.50)`
+          - `m_EdgeRadius` (Float) = `0`
+    - `RightWall` | path=`BasicDivingBell/InteriorCollider/RightWall` | activeSelf=True | activeInHierarchy=True | layer=`BellInterior` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `3.2, 0, 0`
+        - worldPosition: `3.2, 0, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(3.20, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(0.20, 5.50)`
+          - `m_EdgeRadius` (Float) = `0`
+  - `InteriorEntryPoint` | path=`BasicDivingBell/InteriorEntryPoint` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `-1.7, 0, 0`
+      - worldPosition: `-1.7, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(-1.70, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `InteriorFloor` | path=`BasicDivingBell/InteriorFloor` | activeSelf=True | activeInHierarchy=True | layer=`BellLedge` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, -1.55, 0`
+      - worldPosition: `0, -1.55, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, -1.55, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `BoxCollider2D` index=1 enabled=`True`
+        - `m_Density` (Float) = `1`
+        - `m_IncludeLayers` (LayerMask) = `0`
+        - `m_ExcludeLayers` (LayerMask) = `0`
+        - `m_LayerOverridePriority` (Integer) = `0`
+        - `m_ForceSendLayers` (LayerMask) = `-1`
+        - `m_ForceReceiveLayers` (LayerMask) = `-1`
+        - `m_ContactCaptureLayers` (LayerMask) = `-1`
+        - `m_CallbackLayers` (LayerMask) = `-1`
+        - `m_IsTrigger` (Boolean) = `False`
+        - `m_UsedByEffector` (Boolean) = `False`
+        - `m_CompositeOperation` (Enum) = `None`
+        - `m_CompositeOrder` (Integer) = `0`
+        - `m_Offset` (Vector2) = `(0.00, 0.00)`
+        - `m_AutoTiling` (Boolean) = `False`
+        - `m_Size` (Vector2) = `(6.50, 0.20)`
+        - `m_EdgeRadius` (Float) = `0`
+    - `InteriorFloorSprite` | path=`BasicDivingBell/InteriorFloor/InteriorFloorSprite` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `0, -1.55, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `LedgeMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/LedgeMetal_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Sliced`
+          - `m_Size` (Vector2) = `(6.20, 0.30)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+  - `InteriorSafetyVolume` | path=`BasicDivingBell/InteriorSafetyVolume` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `BoxCollider2D` index=1 enabled=`True`
+        - `m_Density` (Float) = `1`
+        - `m_IncludeLayers` (LayerMask) = `0`
+        - `m_ExcludeLayers` (LayerMask) = `0`
+        - `m_LayerOverridePriority` (Integer) = `0`
+        - `m_ForceSendLayers` (LayerMask) = `-1`
+        - `m_ForceReceiveLayers` (LayerMask) = `-1`
+        - `m_ContactCaptureLayers` (LayerMask) = `-1`
+        - `m_CallbackLayers` (LayerMask) = `-1`
+        - `m_IsTrigger` (Boolean) = `True`
+        - `m_UsedByEffector` (Boolean) = `False`
+        - `m_CompositeOperation` (Enum) = `None`
+        - `m_CompositeOrder` (Integer) = `0`
+        - `m_Offset` (Vector2) = `(0.00, 0.50)`
+        - `m_AutoTiling` (Boolean) = `False`
+        - `m_Size` (Vector2) = `(6.50, 4.00)`
+        - `m_EdgeRadius` (Float) = `0`
+      - `DivingBellOccupantContainmentGuard` index=2 enabled=`True`
+        - `m_Script` (ObjectReference) = `DIvingBellOccupantContainmentGuard (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DIvingBellOccupantContainmentGuard.cs'`
+        - `occupancy` (ObjectReference) = `BasicDivingBell (DivingBellOccupancy) scenePath='BasicDivingBell'`
+        - `containmentVolume` (ObjectReference) = `InteriorSafetyVolume (BoxCollider2D) scenePath='BasicDivingBell/InteriorSafetyVolume'`
+        - `outsideGraceSeconds` (Float) = `0.05`
+        - `emergencyEjectWhenOutside` (Boolean) = `True`
+        - `verboseLogging` (Boolean) = `False`
+  - `InteriorSprite` | path=`BasicDivingBell/InteriorSprite` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `SpriteRenderer` index=1 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_Sprite` (ObjectReference) = `DivingBell_Interior_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/DivingBell_Interior_Sprite.gif'`
+        - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(0.98, 0.76)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+  - `InternalWaterFill` | path=`BasicDivingBell/InternalWaterFill` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MeshFilter` index=1 enabled=`n/a`
+      - `MeshRenderer` index=2 enabled=`True`
+        - `m_CastShadows` (Enum) = `On`
+        - `m_ReceiveShadows` (Boolean) = `True`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `2`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+      - `DivingBellInternalWaterRenderer` index=3 enabled=`True`
+        - `m_Script` (ObjectReference) = `DivingBellInternalWaterRenderer (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellInternalWaterRenderer.cs'`
+        - `airVolume` (ObjectReference) = `BasicDivingBell (DivingBellAirVolume) scenePath='BasicDivingBell'`
+        - `chamberCollider` (ObjectReference) = `InteriorSafetyVolume (BoxCollider2D) scenePath='BasicDivingBell/InteriorSafetyVolume'`
+        - `visualPresentation` (ObjectReference) = `BasicDivingBell (DivingBellVisualPresentation) scenePath='BasicDivingBell'`
+        - `fallbackWaterColor` (Color) = `RGBA(0.100, 0.400, 0.900, 0.550)`
+        - `sortingOrderAboveBellInterior` (Integer) = `10`
+        - `renderInFrontOfAllBellContent` (Boolean) = `True`
+        - `frontWaterSortingOrderOffset` (Integer) = `20`
+        - `fallbackSortingLayerName` (String) = `WorldItem`
+        - `fallbackSortingOrder` (Integer) = `0`
+        - `visibleWaterFillEpsilon` (Float) = `0.001`
+        - `renderedWaterSurfaceWorldY` (Float) = `0`
+        - `renderedVertexCount` (Integer) = `0`
+        - `resolvedSortingOrder` (Integer) = `155`
+        - `verboseLogging` (Boolean) = `False`
+  - `PromptAnchor` | path=`BasicDivingBell/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `ReleaseBallastButton` | path=`BasicDivingBell/ReleaseBallastButton` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `-2.3, 2, 0`
+      - worldPosition: `-2.3, 2, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 0.3, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(-2.30, 2.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 0.30, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `BoxCollider2D` index=1 enabled=`True`
+        - `m_Density` (Float) = `1`
+        - `m_IncludeLayers` (LayerMask) = `0`
+        - `m_ExcludeLayers` (LayerMask) = `0`
+        - `m_LayerOverridePriority` (Integer) = `0`
+        - `m_ForceSendLayers` (LayerMask) = `-1`
+        - `m_ForceReceiveLayers` (LayerMask) = `-1`
+        - `m_ContactCaptureLayers` (LayerMask) = `-1`
+        - `m_CallbackLayers` (LayerMask) = `-1`
+        - `m_IsTrigger` (Boolean) = `True`
+        - `m_UsedByEffector` (Boolean) = `False`
+        - `m_CompositeOperation` (Enum) = `None`
+        - `m_CompositeOrder` (Integer) = `0`
+        - `m_Offset` (Vector2) = `(0.00, 0.00)`
+        - `m_AutoTiling` (Boolean) = `False`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_EdgeRadius` (Float) = `0`
+      - `DivingBellBallastReleaseButton` index=2 enabled=`True`
+        - `m_Script` (ObjectReference) = `DivingBellBallastReleaseButton (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellBallastReleaseButton.cs'`
+        - `ballastSystem` (ObjectReference) = `BasicDivingBell (DivingBellBallastSystem) scenePath='BasicDivingBell'`
+        - `interactionPriority` (Integer) = `90`
+        - `maxUseDistance` (Float) = `4`
+        - `promptAnchor` (ObjectReference) = `ReleaseBallastButton (Transform) scenePath='BasicDivingBell/ReleaseBallastButton'`
+        - `verboseLogging` (Boolean) = `False`
+      - `SpriteRenderer` index=3 enabled=`True`
+        - `m_CastShadows` (Enum) = `Off`
+        - `m_ReceiveShadows` (Boolean) = `False`
+        - `m_DynamicOccludee` (Boolean) = `True`
+        - `m_StaticShadowCaster` (Boolean) = `False`
+        - `m_MotionVectors` (Enum) = `Per Object Motion`
+        - `m_LightProbeUsage` (Integer) = `1`
+        - `m_ReflectionProbeUsage` (Integer) = `1`
+        - `m_RayTracingMode` (Integer) = `0`
+        - `m_RayTraceProcedural` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+        - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+        - `m_SmallMeshCulling` (Boolean) = `True`
+        - `m_RenderingLayerMask` (Integer) = `1`
+        - `m_RendererPriority` (Integer) = `0`
+        - `m_Materials` (Generic) = `array size=1`
+        - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Assets/Resources/Sprites/HullBlock_Sprite.png'`
+        - `m_Color` (Color) = `RGBA(0.000, 0.178, 1.000, 1.000)`
+        - `m_FlipX` (Boolean) = `False`
+        - `m_FlipY` (Boolean) = `False`
+        - `m_DrawMode` (Enum) = `Simple`
+        - `m_Size` (Vector2) = `(1.00, 1.00)`
+        - `m_AdaptiveModeThreshold` (Float) = `0.5`
+        - `m_SpriteTileMode` (Enum) = `Continuous`
+        - `m_MaskInteraction` (Enum) = `None`
+        - `m_SpriteSortPoint` (Enum) = `Center`
+  - `SlotAnchor` | path=`BasicDivingBell/SlotAnchor` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `TetherAnchor` | path=`BasicDivingBell/TetherAnchor` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 2.5, 0`
+      - worldPosition: `0, 2.5, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 2.50, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `WinchControls` | path=`BasicDivingBell/WinchControls` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `Cut Line` | path=`BasicDivingBell/WinchControls/Cut Line` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `2.4, -0.8, 0`
+        - worldPosition: `2.4, -0.8, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `0.6, 0.6, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(2.40, -0.80, 0.00)`
+          - `m_LocalScale` (Vector3) = `(0.60, 0.60, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `DivingBellWinchControlButton` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `DivingBellWinchControlButton (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellWinchControlButton.cs'`
+          - `intent` (Enum) = `Cut Line`
+          - `panel` (ObjectReference) = `BasicDivingBell (DivingBellWinchControlPanel) scenePath='BasicDivingBell'`
+          - `interactionPriority` (Integer) = `85`
+          - `maxUseDistance` (Float) = `4`
+          - `promptAnchor` (ObjectReference) = `Cut Line (Transform) scenePath='BasicDivingBell/WinchControls/Cut Line'`
+          - `verboseLogging` (Boolean) = `False`
+        - `SpriteRenderer` index=3 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Assets/Resources/Sprites/SkyBox.png'`
+          - `m_Color` (Color) = `RGBA(1.000, 0.000, 0.138, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Lower` | path=`BasicDivingBell/WinchControls/Lower` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `2.4, 0, 0`
+        - worldPosition: `2.4, 0, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 0.3, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(2.40, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 0.30, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `DivingBellWinchControlButton` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `DivingBellWinchControlButton (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellWinchControlButton.cs'`
+          - `intent` (Enum) = `Lower`
+          - `panel` (ObjectReference) = `BasicDivingBell (DivingBellWinchControlPanel) scenePath='BasicDivingBell'`
+          - `interactionPriority` (Integer) = `85`
+          - `maxUseDistance` (Float) = `3`
+          - `promptAnchor` (ObjectReference) = `Lower (Transform) scenePath='BasicDivingBell/WinchControls/Lower'`
+          - `verboseLogging` (Boolean) = `False`
+        - `SpriteRenderer` index=3 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Assets/Resources/Sprites/SkyBox.png'`
+          - `m_Color` (Color) = `RGBA(1.000, 0.524, 0.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Raise` | path=`BasicDivingBell/WinchControls/Raise` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `2.4, 1, 0`
+        - worldPosition: `2.4, 1, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 0.3, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(2.40, 1.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 0.30, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `DivingBellWinchControlButton` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `DivingBellWinchControlButton (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellWinchControlButton.cs'`
+          - `intent` (Enum) = `Raise`
+          - `panel` (ObjectReference) = `BasicDivingBell (DivingBellWinchControlPanel) scenePath='BasicDivingBell'`
+          - `interactionPriority` (Integer) = `85`
+          - `maxUseDistance` (Float) = `3`
+          - `promptAnchor` (ObjectReference) = `Raise (Transform) scenePath='BasicDivingBell/WinchControls/Raise'`
+          - `verboseLogging` (Boolean) = `False`
+        - `SpriteRenderer` index=3 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Assets/Resources/Sprites/SkyBox.png'`
+          - `m_Color` (Color) = `RGBA(0.192, 0.689, 0.198, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Release` | path=`BasicDivingBell/WinchControls/Release` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `2.4, 1.8, 0`
+        - worldPosition: `2.4, 1.8, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `0.6, 0.6, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(2.40, 1.80, 0.00)`
+          - `m_LocalScale` (Vector3) = `(0.60, 0.60, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `DivingBellWinchControlButton` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `DivingBellWinchControlButton (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellWinchControlButton.cs'`
+          - `intent` (Enum) = `Quick Release`
+          - `panel` (ObjectReference) = `BasicDivingBell (DivingBellWinchControlPanel) scenePath='BasicDivingBell'`
+          - `interactionPriority` (Integer) = `85`
+          - `maxUseDistance` (Float) = `3`
+          - `promptAnchor` (ObjectReference) = `Release (Transform) scenePath='BasicDivingBell/WinchControls/Release'`
+          - `verboseLogging` (Boolean) = `False`
+        - `SpriteRenderer` index=3 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Assets/Resources/Sprites/SkyBox.png'`
+          - `m_Color` (Color) = `RGBA(1.000, 0.000, 0.961, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Stop` | path=`BasicDivingBell/WinchControls/Stop` | activeSelf=True | activeInHierarchy=True | layer=`WorldItem` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `2.4, 0.5, 0`
+        - worldPosition: `2.4, 0.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 0.3, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(2.40, 0.50, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 0.30, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `DivingBellWinchControlButton` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `DivingBellWinchControlButton (MonoScript) asset='Assets/Scripts/Modules/Tethers/DIvingBell/DivingBellWinchControlButton.cs'`
+          - `intent` (Enum) = `Stop`
+          - `panel` (ObjectReference) = `BasicDivingBell (DivingBellWinchControlPanel) scenePath='BasicDivingBell'`
+          - `interactionPriority` (Integer) = `85`
+          - `maxUseDistance` (Float) = `3`
+          - `promptAnchor` (ObjectReference) = `Stop (Transform) scenePath='BasicDivingBell/WinchControls/Stop'`
+          - `verboseLogging` (Boolean) = `False`
+        - `SpriteRenderer` index=3 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Square (Sprite) asset='Assets/Resources/Sprites/SkyBox.png'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+- `Main Camera` | path=`Main Camera` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`MainCamera` | static=False
+  - Transform:
+    - localPosition: `57.12, 15.96, -10`
+    - worldPosition: `57.12, 15.96, -10`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(57.12, 15.96, -10.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `Camera` index=1 enabled=`True`
+      - `m_ClearFlags` (Enum) = `Skybox`
+      - `m_BackGroundColor` (Color) = `RGBA(0.192, 0.302, 0.475, 0.000)`
+      - `m_projectionMatrixMode` (Integer) = `1`
+      - `m_GateFitMode` (Integer) = `2`
+      - `m_FOVAxisMode` (Integer) = `0`
+      - `m_Iso` (Integer) = `200`
+      - `m_ShutterSpeed` (Float) = `0.005`
+      - `m_Aperture` (Float) = `16`
+      - `m_FocusDistance` (Float) = `10`
+      - `m_FocalLength` (Float) = `50`
+      - `m_BladeCount` (Integer) = `5`
+      - `m_Curvature` (Vector2) = `(2.00, 11.00)`
+      - `m_BarrelClipping` (Float) = `0.25`
+      - `m_Anamorphism` (Float) = `0`
+      - `m_SensorSize` (Vector2) = `(36.00, 24.00)`
+      - `m_LensShift` (Vector2) = `(0.00, 0.00)`
+      - `m_NormalizedViewPortRect` (Rect) = `(x:0.00, y:0.00, width:1.00, height:1.00)`
+      - `near clip plane` (Float) = `0.3`
+      - `far clip plane` (Float) = `1000`
+      - `field of view` (Float) = `60`
+      - `orthographic` (Boolean) = `True`
+      - `orthographic size` (Float) = `5`
+      - `m_Depth` (Float) = `-1`
+      - `m_CullingMask` (LayerMask) = `-1`
+      - `m_RenderingPath` (Enum) = `Use Graphics Settings`
+      - `m_TargetDisplay` (Integer) = `0`
+      - `m_TargetEye` (Integer) = `3`
+      - `m_HDR` (Boolean) = `True`
+      - `m_AllowMSAA` (Boolean) = `True`
+      - `m_AllowDynamicResolution` (Boolean) = `False`
+      - `m_ForceIntoRT` (Boolean) = `False`
+      - `m_OcclusionCulling` (Boolean) = `True`
+      - `m_StereoConvergence` (Float) = `10`
+      - `m_StereoSeparation` (Float) = `0.022`
+    - `AudioListener` index=2 enabled=`True`
+    - `UniversalAdditionalCameraData` index=3 enabled=`True`
+      - `m_Script` (ObjectReference) = `UniversalAdditionalCameraData (MonoScript) asset='Packages/com.unity.render-pipelines.universal/Runtime/UniversalAdditionalCameraData.cs'`
+      - `m_RenderShadows` (Boolean) = `True`
+      - `m_RequiresDepthTextureOption` (Enum) = `Use settings from Render Pipeline Asset`
+      - `m_RequiresOpaqueTextureOption` (Enum) = `Use settings from Render Pipeline Asset`
+      - `m_CameraType` (Enum) = `Base`
+      - `m_Cameras` (Generic) = `array size=0`
+      - `m_RendererIndex` (Integer) = `-1`
+      - `m_VolumeLayerMask` (LayerMask) = `1`
+      - `m_VolumeFrameworkUpdateModeOption` (Enum) = `Use Pipeline Settings`
+      - `m_RenderPostProcessing` (Boolean) = `False`
+      - `m_Antialiasing` (Enum) = `No Anti-aliasing`
+      - `m_AntialiasingQuality` (Enum) = `High`
+      - `m_StopNaN` (Boolean) = `False`
+      - `m_Dithering` (Boolean) = `False`
+      - `m_ClearDepth` (Boolean) = `True`
+      - `m_AllowXRRendering` (Boolean) = `True`
+      - `m_AllowHDROutput` (Boolean) = `True`
+      - `m_UseScreenCoordOverride` (Boolean) = `False`
+      - `m_ScreenSizeOverride` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+      - `m_ScreenCoordScaleBias` (Vector4) = `(0.00, 0.00, 0.00, 0.00)`
+      - `m_RequiresDepthTexture` (Boolean) = `False`
+      - `m_RequiresColorTexture` (Boolean) = `False`
+      - `m_TaaSettings` (Generic) = `<generic>`
+- `TestBoat_10_Compartment_Flooding` | path=`TestBoat_10_Compartment_Flooding` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`PlayerBoat` | static=False
+  - Transform:
+    - localPosition: `56.469, 0.087, 0`
+    - worldPosition: `56.469, 0.087, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(56.47, 0.09, 0.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `Rigidbody2D` index=1 enabled=`n/a`
+      - `m_BodyType` (Enum) = `Dynamic`
+      - `m_Simulated` (Boolean) = `True`
+      - `m_UseFullKinematicContacts` (Boolean) = `False`
+      - `m_UseAutoMass` (Boolean) = `False`
+      - `m_Mass` (Float) = `1`
+      - `m_LinearDamping` (Float) = `0`
+      - `m_AngularDamping` (Float) = `0.05`
+      - `m_GravityScale` (Float) = `1`
+      - `m_IncludeLayers` (LayerMask) = `1024`
+      - `m_ExcludeLayers` (LayerMask) = `0`
+      - `m_Interpolate` (Enum) = `Interpolate`
+      - `m_SleepingMode` (Enum) = `Start Awake`
+      - `m_CollisionDetection` (Enum) = `Discrete`
+      - `m_Constraints` (Integer) = `0`
+    - `Boat` index=2 enabled=`True`
+      - `m_Script` (ObjectReference) = `Boat (MonoScript) asset='Assets/Scripts/Boats/Boat.cs'`
+      - `baseMass` (Float) = `70`
+      - `mass` (Float) = `1`
+      - `baseLocalCenterOfMass` (Vector2) = `(0.00, 3.89)`
+      - `drawMassContributionGizmos` (Boolean) = `False`
+      - `mysteryOscillationLog` (Boolean) = `False`
+      - `mysteryOscillationLogEveryFixedTick` (Boolean) = `False`
+      - `mysteryOscillationMinimumForceMagnitude` (Float) = `0`
+      - `mysteryOscillationMinimumTorqueMagnitude` (Float) = `0`
+      - `width` (Float) = `21`
+      - `height` (Float) = `9.225`
+      - `volume` (Float) = `193.725`
+      - `geometryLocalCenter` (Vector2) = `(0.00, 3.89)`
+      - `throttleInput` (Float) = `0`
+      - `throttleForce` (Float) = `1`
+      - `Compartments` (Generic) = `array size=2`
+      - `Connections` (Generic) = `array size=1`
+      - `boatInstanceId` (String) = ``
+    - `BoatAccessStatePersistence` index=3 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatAccessStatePersistence (MonoScript) asset='Assets/Scripts/Boats/BoatAccessStatePersistence.cs'`
+      - `warnForMissingIds` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+    - `BoatAutoRegister` index=4 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatAutoRegister (MonoScript) asset='Assets/Scripts/GameState/Boat/BoatAutoRegister.cs'`
+    - `BoatCompartmentStatePersistence` index=5 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatCompartmentStatePersistence (MonoScript) asset='Assets/Scripts/Boats/Compartments/BoatCompartmentStatePersistence.cs'`
+      - `boat` (ObjectReference) = `TestBoat_10_Compartment_Flooding (Boat) scenePath='TestBoat_10_Compartment_Flooding'`
+      - `validateIdsOnStart` (Boolean) = `True`
+      - `warnForMissingIds` (Boolean) = `True`
+      - `warnForDuplicateIds` (Boolean) = `True`
+      - `warningsIgnoreVerboseLogging` (Boolean) = `True`
+      - `restoreByFractionWhenMaxAreaChanged` (Boolean) = `True`
+      - `maxAreaMismatchTolerance` (Float) = `0.001`
+      - `verboseLogging` (Boolean) = `False`
+    - `BoatHandlingAggregator` index=6 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatHandlingAggregator (MonoScript) asset='Assets/Scripts/Boats/Simulation/BoatHandlingAggregator.cs'`
+      - `boat` (ObjectReference) = `TestBoat_10_Compartment_Flooding (Boat) scenePath='TestBoat_10_Compartment_Flooding'`
+      - `currentProfile` (Generic) = `<generic>`
+    - `BoatIdentity` index=7 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatIdentity (MonoScript) asset='Assets/Scripts/GameState/Boat/BoatIdentity.cs'`
+    - `BoatItemRegistry` index=8 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatItemRegistry (MonoScript) asset='Assets/Scripts/Inventory/Item/BoatItemRegistry.cs'`
+    - `BoatLooseItemPersistence` index=9 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatLooseItemPersistence (MonoScript) asset='Assets/Scripts/Inventory/Item/BoatLooseItemPersistence.cs'`
+      - `boat` (ObjectReference) = `TestBoat_10_Compartment_Flooding (Boat) scenePath='TestBoat_10_Compartment_Flooding'`
+      - `itemCatalog` (ObjectReference) = `itemCatalog (ItemDefinitionCatalog) asset='Assets/Defs/Items/Catalogs/itemCatalog.asset'`
+      - `verboseLogging` (Boolean) = `False`
+    - `BoatModuleStatePersistence` index=10 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatModuleStatePersistence (MonoScript) asset='Assets/Scripts/Modules/State/BoatModuleStatePersistence.cs'`
+      - `itemCatalog` (ObjectReference) = `itemCatalog (ItemDefinitionCatalog) asset='Assets/Defs/Items/Catalogs/itemCatalog.asset'`
+      - `moduleDefinitions` (Generic) = `array size=0`
+      - `verboseLogging` (Boolean) = `False`
+    - `BoatPhysicsContactDiagnostics` index=11 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatPhysicsContactDiagnostics (MonoScript) asset='Assets/Scripts/Boats/Simulation/BoatPhysicsContactDiagnostics.cs'`
+      - `boat` (ObjectReference) = `TestBoat_10_Compartment_Flooding (Boat) scenePath='TestBoat_10_Compartment_Flooding'`
+      - `logBodyInventoryOnStart` (Boolean) = `False`
+      - `logContacts` (Boolean) = `False`
+      - `interval` (Float) = `0.5`
+      - `maxContactsPerBody` (Integer) = `12`
+    - `BoatPilotingSimulation` index=12 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatPilotingSimulation (MonoScript) asset='Assets/Scripts/Boats/Simulation/BoatPilotingSimulation.cs'`
+      - `state` (ObjectReference) = `TestBoat_10_Compartment_Flooding (BoatPilotingState) scenePath='TestBoat_10_Compartment_Flooding'`
+      - `throttleForce` (ObjectReference) = `TestBoat_10_Compartment_Flooding (ThrottleForce) scenePath='TestBoat_10_Compartment_Flooding'`
+      - `sceneForwardAxis` (Vector2) = `(1.00, 0.00)`
+      - `throttleTravelPerSecond` (Float) = `0.45`
+      - `referenceRudderAngleDegrees` (Float) = `35`
+      - `rudderTravelDegreesPerSecond` (Float) = `55`
+      - `rudderAngularAcceleration` (Float) = `34`
+      - `angularWaterDrag` (Float) = `1.9`
+      - `maxAngularVelocityDegrees` (Float) = `42`
+      - `fullRudderAuthoritySpeed` (Float) = `2.5`
+      - `routePrototypeSeed` (Integer) = `17357`
+      - `routePointSpacing` (Float) = `10`
+      - `routeMaxHeadingDegrees` (Float) = `15`
+      - `routeProgressCorridor` (Float) = `45`
+      - `routeAdherencePathWidth` (Float) = `15`
+      - `recentCourseQualityDistance` (Float) = `40`
+      - `courseNeutralQuality` (Float) = `0.65`
+      - `routeCoverageAhead` (Float) = `1200`
+      - `recoveryMinimumRejoinLeadDistance` (Float) = `60`
+      - `recoveryRejoinLeadPerOffRouteUnit` (Float) = `0.65`
+      - `recoveryCurvePointSpacing` (Float) = `10`
+      - `environmentalDisturbance` (Generic) = `<generic>`
+      - `environmentalAngularVelocityCeilingDegrees` (Float) = `72`
+    - `BoatPilotingState` index=13 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatPilotingState (MonoScript) asset='Assets/Scripts/Boats/Simulation/BoatPilotingState.cs'`
+      - `throttle01` (Float) = `0`
+      - `rudderDegrees` (Float) = `0`
+      - `navigationPosition` (Vector2) = `(0.00, 0.00)`
+      - `navigationVelocity` (Vector2) = `(0.00, 0.00)`
+      - `headingDegrees` (Float) = `0`
+      - `angularVelocityDegrees` (Float) = `0`
+    - `BoatPowerState` index=14 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatPowerState (MonoScript) asset='Assets/Scripts/Boats/BoatPowerState.cs'`
+      - `currentPower` (Float) = `0`
+      - `maxPower` (Float) = `1000`
+    - `BoatRootMarker` index=15 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatRootMarker (MonoScript) asset='Assets/Scripts/Boats/BoatRootMarker.cs'`
+    - `BoatSecuringDebugImpulse` index=16 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatSecuringDebugImpulse (MonoScript) asset='Assets/Scripts/Debug/BoatSecuringDebugImpulse.cs'`
+      - `listenForKey` (Boolean) = `True`
+      - `triggerKey` (Enum) = `I`
+      - `targetRigidbody` (ObjectReference) = `TestBoat_10_Compartment_Flooding (Rigidbody2D) scenePath='TestBoat_10_Compartment_Flooding'`
+      - `applyPhysicsImpulse` (Boolean) = `True`
+      - `impulse` (Vector2) = `(10.00, 0.00)`
+      - `affectSecuredCargo` (Boolean) = `True`
+      - `securingImpactSeverity01` (Float) = `0.4`
+      - `breakLooseCargoImpulse` (Vector2) = `(5.00, 0.00)`
+      - `onlyAffectThisBoat` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `True`
+    - `BoatVisualStateController` index=17 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatVisualStateController (MonoScript) asset='Assets/Scripts/Boats/BoatVisualStateController.cs'`
+      - `exteriorRoot` (ObjectReference) = `_Exterior (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Exterior'`
+      - `interiorRoot` (ObjectReference) = `_Interior (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Interior'`
+      - `exteriorDeckRoot` (ObjectReference) = `_Deck (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Deck'`
+      - `hullRoot` (ObjectReference) = `_Hull (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Hull'`
+      - `defaultBoardedMode` (Enum) = `Boarded Exterior Deck`
+      - `unboardedMode` (Enum) = `Unboarded Exterior`
+      - `hideInteriorWhenUnboarded` (Boolean) = `False`
+      - `hideInteriorOnExteriorDeck` (Boolean) = `False`
+      - `hideExteriorWhenInterior` (Boolean) = `True`
+      - `hideDeckWhenInterior` (Boolean) = `False`
+      - `includeInactiveRenderers` (Boolean) = `True`
+      - `showCompartmentWaterInInterior` (Boolean) = `True`
+      - `showCompartmentWaterInTransition` (Boolean) = `True`
+      - `hideByCameraMaskWhenInterior` (LayerMask) = `2100224`
+      - `autoFindMainCamera` (Boolean) = `True`
+      - `logVisibility` (Boolean) = `False`
+    - `BoatWaterContextResolver` index=18 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatWaterContextResolver (MonoScript) asset='Assets/Scripts/Boats/BoatWaterContextResolver.cs'`
+      - `boat` (ObjectReference) = `TestBoat_10_Compartment_Flooding (Boat) scenePath='TestBoat_10_Compartment_Flooding'`
+      - `dryWaterFractionEpsilon` (Float) = `0.003`
+      - `fullCompartmentThreshold01` (Float) = `0.999`
+      - `treatFullyFloodedBoatAsOcean` (Boolean) = `True`
+      - `fullCompartmentSurfacePadding` (Float) = `0.5`
+      - `includeInactiveCompartments` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+    - `BuoyancyPolygonForce` index=19 enabled=`True`
+      - `m_Script` (ObjectReference) = `BuoyancyPolygonForce (MonoScript) asset='Assets/Scripts/Physics/BuoyancyPolygonForce.cs'`
+      - `bodySource` (ObjectReference) = `TestBoat_10_Compartment_Flooding (Boat) scenePath='TestBoat_10_Compartment_Flooding'`
+      - `useBoatWaterContext` (Boolean) = `True`
+      - `boatBodyAlwaysUsesOcean` (Boolean) = `True`
+      - `sliceCount` (Integer) = `10`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `50`
+    - `CompartmentFloodGameClickTool` index=20 enabled=`True`
+      - `m_Script` (ObjectReference) = `CompartmentFloodGameClickTool (MonoScript) asset='Assets/Scripts/Debug/CompartmentFloodGameClickTool.cs'`
+      - `boat` (ObjectReference) = `TestBoat_10_Compartment_Flooding (Boat) scenePath='TestBoat_10_Compartment_Flooding'`
+      - `boatRoot` (ObjectReference) = `TestBoat_10_Compartment_Flooding (Transform) scenePath='TestBoat_10_Compartment_Flooding'`
+      - `active` (Boolean) = `False`
+      - `mode` (Enum) = `Add`
+      - `mouseButton` (Integer) = `0`
+      - `shiftClickRemoves` (Boolean) = `True`
+      - `amount` (Float) = `5`
+      - `decreaseAmountKey` (Enum) = `Comma`
+      - `increaseAmountKey` (Enum) = `Period`
+      - `amountSmallStep` (Float) = `0.5`
+      - `amountLargeStep` (Float) = `2.5`
+      - `amountPresets` (Generic) = `array size=5`
+      - `setFraction01` (Float) = `0.5`
+      - `toggleActiveKey` (Enum) = `F11`
+      - `addModeKey` (Enum) = `Alpha 1`
+      - `removeModeKey` (Enum) = `Alpha 2`
+      - `setModeKey` (Enum) = `Alpha 3`
+      - `emptyModeKey` (Enum) = `Alpha 4`
+      - `fillModeKey` (Enum) = `Alpha 5`
+      - `logMouseKey` (Enum) = `F9`
+      - `respectGameplayInputBlocker` (Boolean) = `True`
+      - `ignoreClicksWhenPointerOverUI` (Boolean) = `False`
+      - `showOverlay` (Boolean) = `False`
+      - `overlayPosition` (Vector2) = `(12.00, 120.00)`
+      - `overlaySize` (Vector2) = `(520.00, 170.00)`
+      - `toggleOverlayKey` (Enum) = `F10`
+      - `overlayDraggable` (Boolean) = `True`
+      - `ignoreFloodClicksOverOverlay` (Boolean) = `True`
+      - `logClicks` (Boolean) = `False`
+      - `logMisses` (Boolean) = `False`
+      - `logMouseWhenPressed` (Boolean) = `False`
+    - `DragForce` index=21 enabled=`True`
+      - `m_Script` (ObjectReference) = `DragForce (MonoScript) asset='Assets/Scripts/Physics/DragForce.cs'`
+      - `submersionSource` (ObjectReference) = `TestBoat_10_Compartment_Flooding (BuoyancyPolygonForce) scenePath='TestBoat_10_Compartment_Flooding'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `100`
+    - `ForceBody2D` index=22 enabled=`True`
+      - `m_Script` (ObjectReference) = `ForceBody2D (MonoScript) asset='Assets/Scripts/Physics/ForceBody2D.cs'`
+      - `width` (Float) = `1`
+      - `height` (Float) = `1`
+    - `ForceSystem` index=23 enabled=`True`
+      - `m_Script` (ObjectReference) = `ForceSystem (MonoScript) asset='Assets/Scripts/Physics/ForceSystem.cs'`
+      - `verboseDiagnostics` (Boolean) = `True`
+    - `RightingTorqueForce` index=24 enabled=`True`
+      - `m_Script` (ObjectReference) = `RightingTorqueForce (MonoScript) asset='Assets/Scripts/Physics/RightingTorqueForce.cs'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `60`
+    - `ThrottleForce` index=25 enabled=`True`
+      - `m_Script` (ObjectReference) = `ThrottleForce (MonoScript) asset='Assets/Scripts/Physics/ThrottleForce.cs'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `250`
+      - `verboseDiagnostics` (Boolean) = `False`
+      - `diagnosticInterval` (Float) = `0.5`
+  - `_Cargo` | path=`TestBoat_10_Compartment_Flooding/_Cargo` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `56.469, 0.087, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `BoatCleat` | path=`TestBoat_10_Compartment_Flooding/_Cargo/BoatCleat` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-8.5, 6.55, 0`
+        - worldPosition: `47.969, 6.637, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-8.50, 6.55, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `BoatCleat_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatCleat_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.86, 0.30)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoxCollider2D` index=2 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.90)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(3.00, 2.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `BoatSecureZone` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatSecureZone (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatSecureZone.cs'`
+          - `stableId` (String) = `c43c25387d47457aaa1c24a275312076`
+          - `zoneKind` (Enum) = `Tie Down Anchor`
+          - `capacityMode` (Enum) = `Fixed`
+          - `fixedCapacity` (Integer) = `1`
+          - `areaPerSlot` (Float) = `2`
+          - `maxAreaBasedCapacity` (Integer) = `24`
+          - `acceptsCargo` (Boolean) = `True`
+          - `acceptsNonCargo` (Boolean) = `False`
+          - `allowStackedCargo` (Boolean) = `False`
+          - `zoneQualityMultiplier` (Float) = `0.85`
+          - `passiveDecayMultiplier` (Float) = `1.15`
+          - `impactProtection01` (Float) = `0.2`
+          - `slots` (Generic) = `array size=1`
+          - `directSupportColliders` (Generic) = `array size=0`
+          - `supportProbeLayerMask` (LayerMask) = `262152`
+          - `supportVerticalTolerance` (Float) = `0.12`
+          - `supportProbeHeight` (Float) = `0.06`
+          - `supportHorizontalInset` (Float) = `0.03`
+          - `verboseLogging` (Boolean) = `False`
+        - `BoatBuilderSurfaceSnapAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `1.5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+    - `CargoBayFloor` | path=`TestBoat_10_Compartment_Flooding/_Cargo/CargoBayFloor` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 6.08, 0`
+        - worldPosition: `56.469, 6.167, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 6.08, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `ResizableSegment2D` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `CargoBayFloor (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Cargo/CargoBayFloor'`
+          - `boxCollider` (ObjectReference) = `CargoBayFloor (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Cargo/CargoBayFloor'`
+          - `width` (Float) = `7.5`
+          - `height` (Float) = `1`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CargoZoneFloorAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `CargoZoneFloorAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/CargoZoneFloorAuthoring.cs'`
+          - `secureZone` (ObjectReference) = `CargoBayZone (BoatSecureZone) scenePath='TestBoat_10_Compartment_Flooding/_Cargo/CargoBayFloor/CargoBayZone'`
+          - `floorCollider` (ObjectReference) = `CargoBayFloor (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Cargo/CargoBayFloor'`
+          - `secureZoneCollider` (ObjectReference) = `CargoBayZone (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Cargo/CargoBayFloor/CargoBayZone'`
+          - `floorRenderer` (ObjectReference) = `CargoBayFloor (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Cargo/CargoBayFloor'`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `autoFindFloorRenderer` (Boolean) = `True`
+          - `autoFitFloorColliderToSourceWidth` (Boolean) = `True`
+          - `floorColliderHeight` (Float) = `0.12`
+          - `floorColliderTopYOffset` (Float) = `-0.2`
+          - `heightMode` (Enum) = `Fixed`
+          - `fixedZoneHeight` (Float) = `2`
+          - `bottomOffsetFromFloorTop` (Float) = `0.05`
+          - `horizontalPadding` (Float) = `0.05`
+          - `allowStackedCargo` (Boolean) = `False`
+          - `autoRefreshInEditor` (Boolean) = `True`
+        - `SpriteRenderer` index=3 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `CargoZoneFloor_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/CargoZoneFloor_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Tiled`
+          - `m_Size` (Vector2) = `(7.50, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoxCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.24)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(7.50, 1.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `BoatBuilderSurfaceSnapAuthoring` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Top`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0.18`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `1.5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `-1`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `CargoBayZone` | path=`TestBoat_10_Compartment_Flooding/_Cargo/CargoBayFloor/CargoBayZone` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `56.469, 6.167, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 1.35)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(7.40, 2.00)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `BoatSecureZone` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `BoatSecureZone (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatSecureZone.cs'`
+            - `stableId` (String) = `4f49fe7fe8634909bff3a211e7e07fe7`
+            - `zoneKind` (Enum) = `Cargo Bay`
+            - `capacityMode` (Enum) = `Area Based`
+            - `fixedCapacity` (Integer) = `2`
+            - `areaPerSlot` (Float) = `2`
+            - `maxAreaBasedCapacity` (Integer) = `24`
+            - `acceptsCargo` (Boolean) = `True`
+            - `acceptsNonCargo` (Boolean) = `False`
+            - `allowStackedCargo` (Boolean) = `False`
+            - `zoneQualityMultiplier` (Float) = `1`
+            - `passiveDecayMultiplier` (Float) = `0.75`
+            - `impactProtection01` (Float) = `0.35`
+            - `slots` (Generic) = `array size=7`
+            - `directSupportColliders` (Generic) = `array size=1`
+            - `supportProbeLayerMask` (LayerMask) = `262152`
+            - `supportVerticalTolerance` (Float) = `0.12`
+            - `supportProbeHeight` (Float) = `0.06`
+            - `supportHorizontalInset` (Float) = `0.03`
+            - `verboseLogging` (Boolean) = `False`
+  - `_Deck` | path=`TestBoat_10_Compartment_Flooding/_Deck` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `56.469, 0.087, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `Chair_Metal` | path=`TestBoat_10_Compartment_Flooding/_Deck/Chair_Metal` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `2.19, 1.73, 0`
+        - worldPosition: `58.659, 1.817, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `0.3, 0.3, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(2.19, 1.73, 0.00)`
+          - `m_LocalScale` (Vector3) = `(0.30, 0.30, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Chair_Metal (Sprite) asset='Assets/Resources/Sprites/BoatKit/Chair_Metal.png'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `True`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoxCollider2D` index=2 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(4.00, 7.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `PilotChairInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `PilotChairInteractable (MonoScript) asset='Assets/Scripts/Parts/PilotChairInteractable.cs'`
+          - `pilotStationId` (String) = ``
+          - `priority` (Integer) = `100`
+          - `maxUseDistance` (Float) = `1.5`
+          - `escapePriority` (Integer) = `900`
+          - `seatController` (ObjectReference) = `Chair_Metal (SeatController2D) scenePath='TestBoat_10_Compartment_Flooding/_Deck/Chair_Metal'`
+          - `seatPoint` (ObjectReference) = `Seat (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Deck/Chair_Metal/Seat'`
+          - `pinOccupantToSeat` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+        - `SeatController2D` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `SeatController2D (MonoScript) asset='Assets/Scripts/Controller/Player/SeatController2D.cs'`
+          - `seatPoint` (ObjectReference) = `Chair_Metal (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Deck/Chair_Metal'`
+          - `pinOccupantToSeat` (Boolean) = `True`
+          - `zeroVelocityWhilePinned` (Boolean) = `True`
+          - `ejectWhenSeatPointUnderwater` (Boolean) = `True`
+          - `underwaterProbePoint` (ObjectReference) = `WaterEjectLevel (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Deck/Chair_Metal/WaterEjectLevel'`
+          - `underwaterDepthTolerance` (Float) = `0.05`
+          - `underwaterGraceSeconds` (Float) = `3`
+          - `autoAssignExplicitWaterContext` (Boolean) = `True`
+          - `fallbackToOceanWhenNotPartOfBoat` (Boolean) = `True`
+          - `logEjections` (Boolean) = `False`
+        - `BoatBuilderSurfaceSnapAuthoring` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `1.5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `-1`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `Seat` | path=`TestBoat_10_Compartment_Flooding/_Deck/Chair_Metal/Seat` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 1, 0`
+          - worldPosition: `58.659, 2.117, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 1.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `WaterEjectLevel` | path=`TestBoat_10_Compartment_Flooding/_Deck/Chair_Metal/WaterEjectLevel` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 2, 0`
+          - worldPosition: `58.659, 2.417, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 2.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `DeckSegment_Wooden_Repaired_01` | path=`TestBoat_10_Compartment_Flooding/_Deck/DeckSegment_Wooden_Repaired_01` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-8.237, 6, 0`
+        - worldPosition: `48.232, 6.087, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-8.24, 6.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(4.53, 0.80)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `FloorSegmentAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `FloorSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Segments/FloorSegmentAuthoring.cs'`
+          - `floorCollider` (ObjectReference) = `DeckSegment_Wooden_Repaired_01 (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Deck/DeckSegment_Wooden_Repaired_01'`
+          - `spriteRenderer` (ObjectReference) = `DeckSegment_Sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Deck/DeckSegment_Wooden_Repaired_01/DeckSegment_Sprite'`
+          - `resizableSegment` (ObjectReference) = `DeckSegment_Wooden_Repaired_01 (ResizableSegment2D) scenePath='TestBoat_10_Compartment_Flooding/_Deck/DeckSegment_Wooden_Repaired_01'`
+          - `width` (Float) = `4.525`
+          - `height` (Float) = `0.8`
+        - `ResizableSegment2D` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `DeckSegment_Sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Deck/DeckSegment_Wooden_Repaired_01/DeckSegment_Sprite'`
+          - `boxCollider` (ObjectReference) = `DeckSegment_Wooden_Repaired_01 (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Deck/DeckSegment_Wooden_Repaired_01'`
+          - `width` (Float) = `4.525`
+          - `height` (Float) = `0.8`
+          - `resizeAxis` (Enum) = `Horizontal`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `-1`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+        - `SplitSpanRecord` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `SplitSpanRecord (MonoScript) asset='Assets/Scripts/Parts/Segments/SplitSpanRecord.cs'`
+          - `spanId` (String) = `b86677a917e84c1fb99c68bc881ad96e`
+          - `originalLocalStartX` (Float) = `-10.5`
+          - `originalLocalEndX` (Float) = `10.5`
+          - `originalLocalCenterY` (Float) = `6`
+          - `isSplitFragment` (Boolean) = `False`
+          - `splitDepth` (Integer) = `0`
+          - `sourceKind` (String) = `Floor`
+          - `spanRoot` (ObjectReference) = `_Deck (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Deck'`
+      - `DeckSegment_Sprite` | path=`TestBoat_10_Compartment_Flooding/_Deck/DeckSegment_Wooden_Repaired_01/DeckSegment_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `48.232, 6.087, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatSegmentWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatSegmentWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(4.53, 0.80)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+    - `DeckSegment_Wooden_Repaired_02` | path=`TestBoat_10_Compartment_Flooding/_Deck/DeckSegment_Wooden_Repaired_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `3.238, 6, 0`
+        - worldPosition: `59.707, 6.087, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(3.24, 6.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(14.53, 0.80)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `FloorSegmentAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `FloorSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Segments/FloorSegmentAuthoring.cs'`
+          - `floorCollider` (ObjectReference) = `DeckSegment_Wooden_Repaired_02 (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Deck/DeckSegment_Wooden_Repaired_02'`
+          - `spriteRenderer` (ObjectReference) = `DeckSegment_Sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Deck/DeckSegment_Wooden_Repaired_02/DeckSegment_Sprite'`
+          - `resizableSegment` (ObjectReference) = `DeckSegment_Wooden_Repaired_02 (ResizableSegment2D) scenePath='TestBoat_10_Compartment_Flooding/_Deck/DeckSegment_Wooden_Repaired_02'`
+          - `width` (Float) = `14.525`
+          - `height` (Float) = `0.8`
+        - `ResizableSegment2D` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `DeckSegment_Sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Deck/DeckSegment_Wooden_Repaired_02/DeckSegment_Sprite'`
+          - `boxCollider` (ObjectReference) = `DeckSegment_Wooden_Repaired_02 (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Deck/DeckSegment_Wooden_Repaired_02'`
+          - `width` (Float) = `14.525`
+          - `height` (Float) = `0.8`
+          - `resizeAxis` (Enum) = `Horizontal`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `-1`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+        - `SplitSpanRecord` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `SplitSpanRecord (MonoScript) asset='Assets/Scripts/Parts/Segments/SplitSpanRecord.cs'`
+          - `spanId` (String) = `b86677a917e84c1fb99c68bc881ad96e`
+          - `originalLocalStartX` (Float) = `-10.5`
+          - `originalLocalEndX` (Float) = `10.5`
+          - `originalLocalCenterY` (Float) = `6`
+          - `isSplitFragment` (Boolean) = `False`
+          - `splitDepth` (Integer) = `0`
+          - `sourceKind` (String) = `Floor`
+          - `spanRoot` (ObjectReference) = `_Deck (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Deck'`
+      - `DeckSegment_Sprite` | path=`TestBoat_10_Compartment_Flooding/_Deck/DeckSegment_Wooden_Repaired_02/DeckSegment_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `59.707, 6.087, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatSegmentWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatSegmentWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(14.53, 0.80)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+    - `hatch_01` | path=`TestBoat_10_Compartment_Flooding/_Deck/hatch_01` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-5, 6, 0`
+        - worldPosition: `51.469, 6.087, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-5.00, 6.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `HatchAuthoring` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `HatchAuthoring (MonoScript) asset='Assets/Scripts/Parts/Hatch/HatchAuthoring.cs'`
+          - `frameRenderer` (ObjectReference) = `Frame (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Deck/hatch_01/Frame'`
+          - `closedRenderer` (ObjectReference) = `Closed (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Deck/hatch_01/Closed'`
+          - `openRenderer` (ObjectReference) = `Open (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Deck/hatch_01/Open'`
+          - `blockingCollider` (ObjectReference) = `Blocker (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Deck/hatch_01/Blocker'`
+          - `ledgeCollider` (ObjectReference) = `Ledge (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Deck/hatch_01/Ledge'`
+          - `openingWidth` (Float) = `1.95`
+          - `frameWidth` (Float) = `1.95`
+          - `startsOpen` (Boolean) = `False`
+          - `hatchId` (String) = `hatch_01`
+        - `HatchRuntime` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `HatchRuntime (MonoScript) asset='Assets/Scripts/Parts/Hatch/HatchRuntime.cs'`
+          - `authoring` (ObjectReference) = `hatch_01 (HatchAuthoring) scenePath='TestBoat_10_Compartment_Flooding/_Deck/hatch_01'`
+          - `isOpen` (Boolean) = `False`
+          - `enableLedgeWhenOpen` (Boolean) = `True`
+          - `closeObstructionMask` (LayerMask) = `131080`
+          - `triggersBlockClosing` (Boolean) = `False`
+          - `ignoreOwnColliders` (Boolean) = `True`
+          - `ignoreSameBoatRoot` (Boolean) = `False`
+          - `vibrateOnDeniedClose` (Boolean) = `True`
+          - `deniedVibrationDuration` (Float) = `0.3`
+          - `deniedVibrationDistance` (Float) = `0.07`
+          - `deniedVibrationFrequency` (Float) = `36`
+          - `logDeniedClose` (Boolean) = `True`
+        - `HatchInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HatchInteractable (MonoScript) asset='Assets/Scripts/Parts/Hatch/HatchInteractable.cs'`
+          - `hatchRuntime` (ObjectReference) = `hatch_01 (HatchRuntime) scenePath='TestBoat_10_Compartment_Flooding/_Deck/hatch_01'`
+          - `promptAnchor` (ObjectReference) = `hatch_01 (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Deck/hatch_01'`
+          - `interactionPriority` (Integer) = `30`
+          - `allowInteractWhenOpen` (Boolean) = `True`
+          - `allowInteractWhenClosed` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+        - `SpanRepairBlocker` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `SpanRepairBlocker (MonoScript) asset='Assets/Scripts/Parts/Segments/SpanRepairBlocker.cs'`
+          - `spanId` (String) = `b86677a917e84c1fb99c68bc881ad96e`
+          - `localStartX` (Float) = `-5.975`
+          - `localEndX` (Float) = `-4.025`
+          - `blockerKind` (String) = `Hatch`
+          - `spanRoot` (ObjectReference) = `_Deck (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Deck'`
+      - `Blocker` | path=`TestBoat_10_Compartment_Flooding/_Deck/hatch_01/Blocker` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.669`
+          - worldPosition: `51.469, 6.087, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `False`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(1.90, 0.70)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `CompartmentBoundaryAuthoring` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+            - `roles` (Enum) = `Hatch`
+            - `countsAsBoundary` (Boolean) = `False`
+            - `isOpeningCarrier` (Boolean) = `True`
+            - `openingId` (String) = ``
+      - `Closed` | path=`TestBoat_10_Compartment_Flooding/_Deck/hatch_01/Closed` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0.55, 0.669`
+          - worldPosition: `51.469, 6.637, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.55, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `HatchClosedMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/HatchClosedMetal_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `CompartmentLink` | path=`TestBoat_10_Compartment_Flooding/_Deck/hatch_01/CompartmentLink` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `51.469, 6.087, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(2.00, 1.00)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `CompartmentLinkAuthoring` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentLinkAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentLinkAuthoring.cs'`
+            - `linkId` (String) = `CompartmentLink`
+            - `boat` (ObjectReference) = `TestBoat_10_Compartment_Flooding (Boat) scenePath='TestBoat_10_Compartment_Flooding'`
+            - `hatchRuntime` (ObjectReference) = `hatch_01 (HatchRuntime) scenePath='TestBoat_10_Compartment_Flooding/_Deck/hatch_01'`
+            - `openingCollider` (ObjectReference) = `CompartmentLink (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Deck/hatch_01/CompartmentLink'`
+            - `linkType` (Enum) = `Hatch`
+            - `sampleOffset` (Float) = `0.6`
+            - `autoResolveInEditor` (Boolean) = `False`
+            - `flowCoefficient` (Float) = `0.2`
+            - `externalSourceType` (Enum) = `Sea Breach`
+            - `externalRate` (Float) = `0.1`
+          - `CompartmentLinkRuntimeLink` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentLinkRuntimeLink (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentLinkRuntimeLink.cs'`
+            - `hatchRuntime` (ObjectReference) = `hatch_01 (HatchRuntime) scenePath='TestBoat_10_Compartment_Flooding/_Deck/hatch_01'`
+            - `linkAuthoring` (ObjectReference) = `CompartmentLink (CompartmentLinkAuthoring) scenePath='TestBoat_10_Compartment_Flooding/_Deck/hatch_01/CompartmentLink'`
+            - `logWarnings` (Boolean) = `False`
+            - `logStateChanges` (Boolean) = `False`
+          - `CompartmentBoundaryAuthoring` index=4 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+            - `roles` (Enum) = `Hatch`
+            - `countsAsBoundary` (Boolean) = `True`
+            - `isOpeningCarrier` (Boolean) = `False`
+            - `openingId` (String) = ``
+      - `Frame` | path=`TestBoat_10_Compartment_Flooding/_Deck/hatch_01/Frame` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.669`
+          - worldPosition: `51.469, 6.087, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `FramePieceMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/FramePieceMetal_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `InteractionTrigger` | path=`TestBoat_10_Compartment_Flooding/_Deck/hatch_01/InteractionTrigger` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.669`
+          - worldPosition: `51.469, 6.087, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.50)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(2.00, 3.00)`
+            - `m_EdgeRadius` (Float) = `0`
+      - `Ledge` | path=`TestBoat_10_Compartment_Flooding/_Deck/hatch_01/Ledge` | activeSelf=True | activeInHierarchy=True | layer=`HatchLedge` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.669`
+          - worldPosition: `51.469, 6.087, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`False`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `False`
+            - `m_UsedByEffector` (Boolean) = `True`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.20)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(1.90, 0.20)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `PlatformEffector2D` index=2 enabled=`True`
+            - `m_UseColliderMask` (Boolean) = `False`
+            - `m_ColliderMask` (LayerMask) = `-1`
+            - `m_RotationalOffset` (Float) = `0`
+            - `m_UseOneWay` (Boolean) = `True`
+            - `m_UseOneWayGrouping` (Boolean) = `True`
+            - `m_SurfaceArc` (Float) = `160`
+            - `m_UseSideFriction` (Boolean) = `False`
+            - `m_UseSideBounce` (Boolean) = `False`
+            - `m_SideArc` (Float) = `1`
+          - `HatchLedge` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `HatchLedge (MonoScript) asset='Assets/Scripts/Parts/Hatch/HatchLedge.cs'`
+            - `configureOneWayPlatformOnReset` (Boolean) = `True`
+            - `surfaceArc` (Float) = `160`
+            - `orientOneWaySurfaceAgainstGravity` (Boolean) = `True`
+            - `autoSyncConnectionOpeningCollider` (Boolean) = `True`
+            - `openingWidthPadding` (Float) = `0`
+            - `openingHeight` (Float) = `0.5`
+            - `openingVerticalOffset` (Float) = `0`
+      - `Open` | path=`TestBoat_10_Compartment_Flooding/_Deck/hatch_01/Open` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 1.2, 0.669`
+          - worldPosition: `51.469, 7.287, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 1.20, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`False`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `HatchOpenMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/HatchOpenMetal_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+  - `_Exterior` | path=`TestBoat_10_Compartment_Flooding/_Exterior` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `56.469, 0.087, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `BoatShell_Wooden` | path=`TestBoat_10_Compartment_Flooding/_Exterior/BoatShell_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 3, 0`
+        - worldPosition: `56.469, 3.087, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 3.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoatVisualMarker` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisualMarker (MonoScript) asset='Assets/Scripts/Boats/BoatVisualMarker.cs'`
+          - `category` (Enum) = `Exterior Shell`
+        - `ResizableSegment2D` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `BoatShell_Sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Exterior/BoatShell_Wooden/BoatShell_Sprite'`
+          - `boxCollider` (ObjectReference) = `BoatShell_Wooden (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Exterior/BoatShell_Wooden'`
+          - `width` (Float) = `20`
+          - `height` (Float) = `6`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `BoxCollider2D` index=3 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(20.00, 6.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `WallSegmentAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `WallSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Walls/WallSegmentAuthoring.cs'`
+          - `wallCollider` (ObjectReference) = `BoatShell_Wooden (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Exterior/BoatShell_Wooden'`
+          - `spriteRenderer` (ObjectReference) = `BoatShell_Sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Exterior/BoatShell_Wooden/BoatShell_Sprite'`
+          - `resizableSegment` (ObjectReference) = `BoatShell_Wooden (ResizableSegment2D) scenePath='TestBoat_10_Compartment_Flooding/_Exterior/BoatShell_Wooden'`
+          - `width` (Float) = `20`
+          - `height` (Float) = `6`
+      - `BoatShell_Sprite` | path=`TestBoat_10_Compartment_Flooding/_Exterior/BoatShell_Wooden/BoatShell_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.064`
+          - worldPosition: `56.469, 3.087, 0.064`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.06)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `MetalHull_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/MetalHull_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(20.00, 6.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+  - `_Gameplay` | path=`TestBoat_10_Compartment_Flooding/_Gameplay` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `56.469, 0.087, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `BoardingDoor_Wooden` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/BoardingDoor_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`BoardingArea` | static=False
+      - Transform:
+        - localPosition: `-8, 4, 0`
+        - worldPosition: `48.469, 4.087, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-8.00, 4.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `BoatHatchWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatHatchWooden_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoxCollider2D` index=2 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(3.00, 3.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `BoatBoardingInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBoardingInteractable (MonoScript) asset='Assets/Scripts/Parts/BoatBoardingInteractable.cs'`
+          - `priority` (Integer) = `30`
+          - `maxUseDistance` (Float) = `3`
+          - `boardPoint` (ObjectReference) = `BoardingDoor_Wooden (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/BoardingDoor_Wooden'`
+          - `parentPlayerToBoat` (Boolean) = `True`
+          - `postSnapNudge` (Vector2) = `(0.00, 0.00)`
+          - `requireHoldToBoard` (Boolean) = `True`
+          - `boardHoldKey` (Enum) = `E`
+          - `boardHoldSeconds` (Float) = `0.35`
+          - `showBoardHoldProgressInPrompt` (Boolean) = `True`
+          - `suppressInstantBoardInteract` (Boolean) = `True`
+          - `requireHoldToUnboard` (Boolean) = `True`
+          - `unboardHoldKey` (Enum) = `E`
+          - `unboardHoldSeconds` (Float) = `0.65`
+          - `showUnboardHoldProgressInPrompt` (Boolean) = `True`
+          - `suppressInstantUnboardInteract` (Boolean) = `True`
+          - `fadeWhenPlayerFar` (Boolean) = `True`
+          - `fadeRenderers` (Generic) = `array size=1`
+          - `fadeOnlyWhenBoardedInterior` (Boolean) = `True`
+          - `fadeNearDistance` (Float) = `1.2`
+          - `nearAlpha` (Float) = `1`
+          - `farAlpha` (Float) = `0.1`
+          - `fadeSpeed` (Float) = `12`
+          - `useInteractDistanceForFade` (Boolean) = `True`
+          - `debugHold` (Boolean) = `False`
+    - `DeckBoardZone` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/DeckBoardZone` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0.031, 8.663, 0`
+        - worldPosition: `56.5, 8.75, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.03, 8.66, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(20.00, 4.50)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `ResizableSegment2D` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `boxCollider` (ObjectReference) = `DeckBoardZone (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/DeckBoardZone'`
+          - `width` (Float) = `20`
+          - `height` (Float) = `4.5`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `DeckBoardZone` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `DeckBoardZone (MonoScript) asset='Assets/Scripts/Boats/DeckBoardZone.cs'`
+          - `priority` (Integer) = `1`
+          - `holdSeconds` (Float) = `0.5`
+          - `primaryHoldKey` (Enum) = `E`
+          - `allowSecondaryHoldKey` (Boolean) = `False`
+          - `secondaryHoldKey` (Enum) = `W`
+          - `snapToBoardPoint` (Boolean) = `False`
+          - `zeroVelocityOnBoard` (Boolean) = `True`
+          - `requireUnboarded` (Boolean) = `True`
+          - `onlyBoardClosestEligiblePlayer` (Boolean) = `True`
+          - `promptText` (String) = `Board Deck`
+          - `includeHoldKeyInPrompt` (Boolean) = `True`
+          - `includeProgressInPrompt` (Boolean) = `True`
+          - `debugLog` (Boolean) = `False`
+    - `locker_02` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `7, 1.045, 0`
+        - worldPosition: `63.469, 1.132, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(7.00, 1.04, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `locker_02`
+          - `hardpointType` (Enum) = `Storage`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint'`
+          - `moduleAnchor` (ObjectReference) = `ModuleBottomAnchor (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/ModuleBottomAnchor'`
+          - `controllers` (Generic) = `array size=0`
+          - `startingModuleDefinition` (ObjectReference) = `module_small_rack (ModuleDefinition) asset='Assets/Defs/Modules/module_small_rack.asset'`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+          - `installedModule` (ObjectReference) = `SmallRack_Installed(Clone) (InstalledModule) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)'`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `locker_02 (Hardpoint) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_02'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `False`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `ModuleBottomAnchor` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `63.469, 1.132, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `63.469, 1.132, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SmallRack_Installed(Clone)` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 1.5, 0.074`
+            - worldPosition: `63.469, 2.632, 0.074`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 1.50, 0.07)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `SpriteRenderer` index=1 enabled=`True`
+              - `m_CastShadows` (Enum) = `Off`
+              - `m_ReceiveShadows` (Boolean) = `False`
+              - `m_DynamicOccludee` (Boolean) = `True`
+              - `m_StaticShadowCaster` (Boolean) = `False`
+              - `m_MotionVectors` (Enum) = `Per Object Motion`
+              - `m_LightProbeUsage` (Integer) = `1`
+              - `m_ReflectionProbeUsage` (Integer) = `1`
+              - `m_RayTracingMode` (Integer) = `0`
+              - `m_RayTraceProcedural` (Boolean) = `False`
+              - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+              - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+              - `m_SmallMeshCulling` (Boolean) = `True`
+              - `m_RenderingLayerMask` (Integer) = `1`
+              - `m_RendererPriority` (Integer) = `0`
+              - `m_Materials` (Generic) = `array size=1`
+              - `m_Sprite` (ObjectReference) = `SmallRack_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/SmallRack_Sprite.gif'`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_FlipX` (Boolean) = `False`
+              - `m_FlipY` (Boolean) = `False`
+              - `m_DrawMode` (Enum) = `Simple`
+              - `m_Size` (Vector2) = `(1.00, 1.00)`
+              - `m_AdaptiveModeThreshold` (Float) = `0.5`
+              - `m_SpriteTileMode` (Enum) = `Continuous`
+              - `m_MaskInteraction` (Enum) = `None`
+              - `m_SpriteSortPoint` (Enum) = `Center`
+            - `WorldItem` index=2 enabled=`True`
+              - `m_Script` (ObjectReference) = `WorldItem (MonoScript) asset='Assets/Scripts/Inventory/Item/WorldItem.cs'`
+              - `itemInstance` (ManagedReference) = `null`
+              - `interactionPriority` (Integer) = `10`
+              - `maxPickupDistance` (Float) = `1.5`
+              - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)/PromptAnchor'`
+              - `highlightObject` (ObjectReference) = `Highlight (GameObject) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)/Highlight'`
+              - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+              - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+              - `verboseLogging` (Boolean) = `False`
+            - `BoatOwnedItem` index=3 enabled=`True`
+              - `m_Script` (ObjectReference) = `BoatOwnedItem (MonoScript) asset='Assets/Scripts/Inventory/Item/BoatOwnedItem.cs'`
+              - `owningBoatInstanceId` (String) = ``
+              - `registered` (Boolean) = `False`
+            - `BoatOwnedItemLayerPolicy` index=4 enabled=`True`
+              - `m_Script` (ObjectReference) = `BoatOwnedItemLayerPolicy (MonoScript) asset='Assets/Scripts/Inventory/Item/BoatOwnedItemLayerPolicy.cs'`
+              - `ownedItem` (ObjectReference) = `SmallRack_Installed(Clone) (BoatOwnedItem) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)'`
+              - `hullLayerName` (String) = `Hull`
+              - `groundLayerName` (String) = `Ground`
+              - `worldLedgeLayerName` (String) = `WorldLedge`
+              - `ghostCollisionLayerName` (String) = `GhostCollision`
+              - `verboseLogging` (Boolean) = `False`
+            - `BoatOwnedItemVisualPolicy` index=5 enabled=`True`
+              - `m_Script` (ObjectReference) = `BoatOwnedItemVisualPolicy (MonoScript) asset='Assets/Scripts/Inventory/Item/BoatOwnedItemVisualPolicy.cs'`
+              - `ownedItem` (ObjectReference) = `SmallRack_Installed(Clone) (BoatOwnedItem) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)'`
+              - `includeInactiveRenderers` (Boolean) = `True`
+              - `boatOwnedSortingLayer` (String) = `BoatItem`
+              - `boatOwnedSortingOrder` (Integer) = `0`
+              - `boatOwnedGameObjectLayer` (String) = `Hull`
+              - `applyGameObjectLayerToChildren` (Boolean) = `True`
+              - `restoreOriginalSortingOnUnowned` (Boolean) = `True`
+              - `restoreOriginalGameObjectLayerOnUnowned` (Boolean) = `True`
+              - `verboseLogging` (Boolean) = `False`
+            - `InstalledModule` index=6 enabled=`True`
+              - `m_Script` (ObjectReference) = `InstalledModule (MonoScript) asset='Assets/Scripts/Modules/InstalledModule.cs'`
+              - `definition` (ObjectReference) = `module_small_rack (ModuleDefinition) asset='Assets/Defs/Modules/module_small_rack.asset'`
+              - `ownerHardpoint` (ObjectReference) = `locker_02 (Hardpoint) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_02'`
+            - `StorageModule` index=7 enabled=`True`
+              - `m_Script` (ObjectReference) = `StorageModule (MonoScript) asset='Assets/Scripts/Modules/Storage/StorageModule.cs'`
+              - `installedModule` (ObjectReference) = `SmallRack_Installed(Clone) (InstalledModule) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)'`
+              - `containerState` (Generic) = `<generic>`
+            - `StorageModuleWorldDropTarget` index=8 enabled=`True`
+              - `m_Script` (ObjectReference) = `StorageModuleWorldDropTarget (MonoScript) asset='Assets/Scripts/Modules/Storage/StorageModuleWorldDropTarget.cs'`
+              - `verboseLogging` (Boolean) = `False`
+            - `BoxCollider2D` index=9 enabled=`True`
+              - `m_Density` (Float) = `1`
+              - `m_IncludeLayers` (LayerMask) = `0`
+              - `m_ExcludeLayers` (LayerMask) = `0`
+              - `m_LayerOverridePriority` (Integer) = `0`
+              - `m_ForceSendLayers` (LayerMask) = `-1`
+              - `m_ForceReceiveLayers` (LayerMask) = `-1`
+              - `m_ContactCaptureLayers` (LayerMask) = `-1`
+              - `m_CallbackLayers` (LayerMask) = `-1`
+              - `m_IsTrigger` (Boolean) = `True`
+              - `m_UsedByEffector` (Boolean) = `False`
+              - `m_CompositeOperation` (Enum) = `None`
+              - `m_CompositeOrder` (Integer) = `0`
+              - `m_Offset` (Vector2) = `(0.00, 0.00)`
+              - `m_AutoTiling` (Boolean) = `False`
+              - `m_Size` (Vector2) = `(4.00, 3.72)`
+              - `m_EdgeRadius` (Float) = `0`
+            - `StorageRackVisualSlots` index=10 enabled=`True`
+              - `m_Script` (ObjectReference) = `StorageRackVisualSlots (MonoScript) asset='Assets/Scripts/Modules/Storage/StorageRackVisualSlots.cs'`
+              - `storageModule` (ObjectReference) = `SmallRack_Installed(Clone) (StorageModule) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)'`
+              - `anchorRoot` (ObjectReference) = `SmallRack_Installed(Clone) (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)'`
+              - `autoGenerateAnchorsIfMissing` (Boolean) = `True`
+              - `gridOrigin` (Vector2) = `(-0.90, -0.90)`
+              - `gridSpacing` (Vector2) = `(1.80, 1.80)`
+              - `visualScale` (Float) = `1`
+              - `sortingOrderOffset` (Integer) = `5`
+              - `onlyForContainerRack` (Boolean) = `True`
+              - `showCargoLabels` (Boolean) = `True`
+              - `cargoLabelLocalOffset` (Vector3) = `(0.00, 0.00, -0.01)`
+              - `cargoLabelFontSize` (Float) = `3`
+              - `cargoLabelMaxCharacters` (Integer) = `14`
+              - `cargoLabelSortingOrderOffset` (Integer) = `2`
+              - `generatedInteractableLayerName` (String) = `Interactable`
+              - `verboseLogging` (Boolean) = `False`
+            - `InstalledModuleAnchor` index=11 enabled=`True`
+              - `m_Script` (ObjectReference) = `InstalledModuleAnchor (MonoScript) asset='Assets/Scripts/Modules/InstalledModuleAnchor.cs'`
+              - `moduleAnchor` (ObjectReference) = `ModuleBottomAnchor (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)/ModuleBottomAnchor'`
+          - `Highlight` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)/Highlight` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Highlight` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `63.469, 2.632, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1.1, 1.1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.10, 1.10, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `SpriteRenderer` index=1 enabled=`True`
+                - `m_CastShadows` (Enum) = `Off`
+                - `m_ReceiveShadows` (Boolean) = `False`
+                - `m_DynamicOccludee` (Boolean) = `True`
+                - `m_StaticShadowCaster` (Boolean) = `False`
+                - `m_MotionVectors` (Enum) = `Per Object Motion`
+                - `m_LightProbeUsage` (Integer) = `1`
+                - `m_ReflectionProbeUsage` (Integer) = `1`
+                - `m_RayTracingMode` (Integer) = `0`
+                - `m_RayTraceProcedural` (Boolean) = `False`
+                - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+                - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+                - `m_SmallMeshCulling` (Boolean) = `True`
+                - `m_RenderingLayerMask` (Integer) = `1`
+                - `m_RendererPriority` (Integer) = `0`
+                - `m_Materials` (Generic) = `array size=1`
+                - `m_Sprite` (ObjectReference) = `SmallRack_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/SmallRack_Sprite.gif'`
+                - `m_Color` (Color) = `RGBA(0.494, 0.593, 0.764, 1.000)`
+                - `m_FlipX` (Boolean) = `False`
+                - `m_FlipY` (Boolean) = `False`
+                - `m_DrawMode` (Enum) = `Simple`
+                - `m_Size` (Vector2) = `(1.00, 1.00)`
+                - `m_AdaptiveModeThreshold` (Float) = `0.5`
+                - `m_SpriteTileMode` (Enum) = `Continuous`
+                - `m_MaskInteraction` (Enum) = `None`
+                - `m_SpriteSortPoint` (Enum) = `Center`
+          - `ModuleBottomAnchor` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, -1.5, -0.074`
+              - worldPosition: `63.469, 1.132, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, -1.50, -0.07)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `PromptAnchor` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 5, 0`
+              - worldPosition: `63.469, 7.632, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `8, 8, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 5.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(8.00, 8.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `Slot_00_Auto` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)/Slot_00_Auto` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `-0.9, -0.9, 0`
+              - worldPosition: `62.569, 1.732, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(-0.90, -0.90, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `Slot_01_Auto` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)/Slot_01_Auto` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0.9, -0.9, 0`
+              - worldPosition: `64.369, 1.732, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.90, -0.90, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `Slot_02_Auto` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)/Slot_02_Auto` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `-0.9, 0.9, 0`
+              - worldPosition: `62.569, 3.532, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(-0.90, 0.90, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `Slot_03_Auto` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/MountPoint/SmallRack_Installed(Clone)/Slot_03_Auto` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0.9, 0.9, 0`
+              - worldPosition: `64.369, 3.532, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.90, 0.90, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_02/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `63.469, 1.132, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `locker_03` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_03` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-8.469, 1.045, 0`
+        - worldPosition: `48, 1.132, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-8.47, 1.05, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `locker_03`
+          - `hardpointType` (Enum) = `Engine`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_03/MountPoint'`
+          - `controllers` (Generic) = `array size=0`
+          - `startingModuleDefinition` (ObjectReference) = `module_engine_basic (ModuleDefinition) asset='Assets/Defs/Modules/module_engine_basic.asset'`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+          - `installedModule` (ObjectReference) = `BasicEngine_Installed(Clone) (InstalledModule) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_03/MountPoint/BasicEngine_Installed(Clone)'`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `locker_03 (Hardpoint) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_03'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_03/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `False`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `ModuleBottomAnchor` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_03/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `48, 1.132, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_03/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `48, 1.132, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BasicEngine_Installed(Clone)` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_03/MountPoint/BasicEngine_Installed(Clone)` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0.3, 0.074`
+            - worldPosition: `48, 1.432, 0.074`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.30, 0.07)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `SpriteRenderer` index=1 enabled=`True`
+              - `m_CastShadows` (Enum) = `Off`
+              - `m_ReceiveShadows` (Boolean) = `False`
+              - `m_DynamicOccludee` (Boolean) = `True`
+              - `m_StaticShadowCaster` (Boolean) = `False`
+              - `m_MotionVectors` (Enum) = `Per Object Motion`
+              - `m_LightProbeUsage` (Integer) = `1`
+              - `m_ReflectionProbeUsage` (Integer) = `1`
+              - `m_RayTracingMode` (Integer) = `0`
+              - `m_RayTraceProcedural` (Boolean) = `False`
+              - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+              - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+              - `m_SmallMeshCulling` (Boolean) = `True`
+              - `m_RenderingLayerMask` (Integer) = `1`
+              - `m_RendererPriority` (Integer) = `0`
+              - `m_Materials` (Generic) = `array size=1`
+              - `m_Sprite` (ObjectReference) = `BasicEngine_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BasicEngine_Sprite.gif'`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_FlipX` (Boolean) = `False`
+              - `m_FlipY` (Boolean) = `False`
+              - `m_DrawMode` (Enum) = `Simple`
+              - `m_Size` (Vector2) = `(1.00, 1.00)`
+              - `m_AdaptiveModeThreshold` (Float) = `0.5`
+              - `m_SpriteTileMode` (Enum) = `Continuous`
+              - `m_MaskInteraction` (Enum) = `None`
+              - `m_SpriteSortPoint` (Enum) = `Center`
+            - `BoxCollider2D` index=2 enabled=`True`
+              - `m_Density` (Float) = `1`
+              - `m_IncludeLayers` (LayerMask) = `0`
+              - `m_ExcludeLayers` (LayerMask) = `0`
+              - `m_LayerOverridePriority` (Integer) = `0`
+              - `m_ForceSendLayers` (LayerMask) = `-1`
+              - `m_ForceReceiveLayers` (LayerMask) = `-1`
+              - `m_ContactCaptureLayers` (LayerMask) = `-1`
+              - `m_CallbackLayers` (LayerMask) = `-1`
+              - `m_IsTrigger` (Boolean) = `False`
+              - `m_UsedByEffector` (Boolean) = `False`
+              - `m_CompositeOperation` (Enum) = `None`
+              - `m_CompositeOrder` (Integer) = `0`
+              - `m_Offset` (Vector2) = `(0.00, 0.00)`
+              - `m_AutoTiling` (Boolean) = `False`
+              - `m_Size` (Vector2) = `(0.28, 0.28)`
+              - `m_EdgeRadius` (Float) = `0`
+            - `Rigidbody2D` index=3 enabled=`n/a`
+              - `m_BodyType` (Enum) = `Kinematic`
+              - `m_Simulated` (Boolean) = `False`
+              - `m_UseFullKinematicContacts` (Boolean) = `False`
+              - `m_UseAutoMass` (Boolean) = `False`
+              - `m_Mass` (Float) = `1`
+              - `m_LinearDamping` (Float) = `0`
+              - `m_AngularDamping` (Float) = `0.05`
+              - `m_GravityScale` (Float) = `1`
+              - `m_IncludeLayers` (LayerMask) = `0`
+              - `m_ExcludeLayers` (LayerMask) = `0`
+              - `m_Interpolate` (Enum) = `None`
+              - `m_SleepingMode` (Enum) = `Start Awake`
+              - `m_CollisionDetection` (Enum) = `Discrete`
+              - `m_Constraints` (Integer) = `0`
+            - `WorldItem` index=4 enabled=`True`
+              - `m_Script` (ObjectReference) = `WorldItem (MonoScript) asset='Assets/Scripts/Inventory/Item/WorldItem.cs'`
+              - `itemInstance` (ManagedReference) = `null`
+              - `interactionPriority` (Integer) = `10`
+              - `maxPickupDistance` (Float) = `3`
+              - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_03/MountPoint/BasicEngine_Installed(Clone)/PromptAnchor'`
+              - `highlightObject` (ObjectReference) = `Highlight (GameObject) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_03/MountPoint/BasicEngine_Installed(Clone)/Highlight'`
+              - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+              - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+              - `verboseLogging` (Boolean) = `True`
+            - `InstalledModule` index=5 enabled=`True`
+              - `m_Script` (ObjectReference) = `InstalledModule (MonoScript) asset='Assets/Scripts/Modules/InstalledModule.cs'`
+              - `definition` (ObjectReference) = `module_engine_basic (ModuleDefinition) asset='Assets/Defs/Modules/module_engine_basic.asset'`
+              - `ownerHardpoint` (ObjectReference) = `locker_03 (Hardpoint) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_03'`
+            - `EngineModule` index=6 enabled=`True`
+              - `m_Script` (ObjectReference) = `EngineModule (MonoScript) asset='Assets/Scripts/Modules/EngineModule.cs'`
+              - `isOn` (Boolean) = `False`
+              - `thrust` (Float) = `25`
+              - `fuelContainerDefinition` (ObjectReference) = `item_fuel_container_small (ItemDefinition) asset='Assets/Defs/Items/Items/item_fuel_container_small.asset'`
+              - `fuelBurnRatePerSecond` (Float) = `0.1`
+              - `maxThrottleBurnMultiplier` (Float) = `2.5`
+              - `allowBoatPowerFallback` (Boolean) = `True`
+              - `idlePowerDemandPerSecond` (Float) = `0.5`
+              - `maxThrottlePowerDemandMultiplier` (Float) = `2`
+              - `fuelContainerItem` (ManagedReference) = `Assembly-CSharp ItemInstance`
+            - `InstalledModuleAnchor` index=7 enabled=`True`
+              - `m_Script` (ObjectReference) = `InstalledModuleAnchor (MonoScript) asset='Assets/Scripts/Modules/InstalledModuleAnchor.cs'`
+              - `moduleAnchor` (ObjectReference) = `ModuleBottomAnchor (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/locker_03/MountPoint/BasicEngine_Installed(Clone)/ModuleBottomAnchor'`
+          - `Highlight` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_03/MountPoint/BasicEngine_Installed(Clone)/Highlight` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Highlight` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `48, 1.432, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1.1, 1.1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.10, 1.10, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `SpriteRenderer` index=1 enabled=`True`
+                - `m_CastShadows` (Enum) = `Off`
+                - `m_ReceiveShadows` (Boolean) = `False`
+                - `m_DynamicOccludee` (Boolean) = `True`
+                - `m_StaticShadowCaster` (Boolean) = `False`
+                - `m_MotionVectors` (Enum) = `Per Object Motion`
+                - `m_LightProbeUsage` (Integer) = `1`
+                - `m_ReflectionProbeUsage` (Integer) = `1`
+                - `m_RayTracingMode` (Integer) = `0`
+                - `m_RayTraceProcedural` (Boolean) = `False`
+                - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+                - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+                - `m_SmallMeshCulling` (Boolean) = `True`
+                - `m_RenderingLayerMask` (Integer) = `1`
+                - `m_RendererPriority` (Integer) = `0`
+                - `m_Materials` (Generic) = `array size=1`
+                - `m_Sprite` (ObjectReference) = `BasicEngine_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BasicEngine_Sprite.gif'`
+                - `m_Color` (Color) = `RGBA(0.494, 0.593, 0.764, 1.000)`
+                - `m_FlipX` (Boolean) = `False`
+                - `m_FlipY` (Boolean) = `False`
+                - `m_DrawMode` (Enum) = `Simple`
+                - `m_Size` (Vector2) = `(1.00, 1.00)`
+                - `m_AdaptiveModeThreshold` (Float) = `0.5`
+                - `m_SpriteTileMode` (Enum) = `Continuous`
+                - `m_MaskInteraction` (Enum) = `None`
+                - `m_SpriteSortPoint` (Enum) = `Center`
+          - `ModuleBottomAnchor` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_03/MountPoint/BasicEngine_Installed(Clone)/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, -0.3, -0.074`
+              - worldPosition: `48, 1.132, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `0.125, 0.125, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, -0.30, -0.07)`
+                - `m_LocalScale` (Vector3) = `(0.13, 0.13, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `PromptAnchor` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_03/MountPoint/BasicEngine_Installed(Clone)/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `48, 1.432, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SlotAnchor` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_03/MountPoint/BasicEngine_Installed(Clone)/SlotAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `48, 1.432, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/locker_03/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `48, 1.132, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `MapTable` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/MapTable` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `5.361, 7.196, 0`
+        - worldPosition: `61.83, 7.283, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(5.36, 7.20, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `BoatMapTable_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatMapTable_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `MapTableInteractable` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `MapTableInteractable (MonoScript) asset='Assets/Scripts/Parts/MapTableInteractable.cs'`
+          - `priority` (Integer) = `40`
+          - `maxUseDistance` (Float) = `2`
+          - `toggle` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+        - `BoxCollider2D` index=3 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(2.00, 2.00)`
+          - `m_EdgeRadius` (Float) = `0`
+    - `money_chest_slot_01` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/money_chest_slot_01` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-2.969, 1.363, 0`
+        - worldPosition: `53.5, 1.45, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-2.97, 1.36, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `MoneyChestSecureSlot` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `MoneyChestSecureSlot (MonoScript) asset='Assets/Scripts/MoneyChest/MoneyChestSecureSlot.cs'`
+          - `stableId` (String) = `money_chest_slot_01`
+          - `chestAnchor` (ObjectReference) = `ChestAnchor (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Gameplay/money_chest_slot_01/ChestAnchor'`
+          - `moneyChestItemDefinition` (ObjectReference) = `item_money_chest (ItemDefinition) asset='Assets/Defs/Items/Sacred/item_money_chest.asset'`
+          - `interactionPriority` (Integer) = `20`
+          - `actionRange` (Float) = `1.75`
+          - `nearbyChestSearchRadius` (Float) = `1.5`
+          - `acceptsReplacementSpawns` (Boolean) = `True`
+          - `logDebugMessages` (Boolean) = `False`
+        - `SpriteRenderer` index=2 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `MoneyChestAnchor_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/MoneyChestAnchor_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 0.51)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoatBuilderSurfaceSnapAuthoring` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `4`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `ChestAnchor` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/money_chest_slot_01/ChestAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0.8, 0`
+          - worldPosition: `53.5, 2.25, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.80, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `InteractionCollider` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/money_chest_slot_01/InteractionCollider` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `53.5, 1.45, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.50)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(3.00, 2.00)`
+            - `m_EdgeRadius` (Float) = `0`
+    - `PlayerSpawnPoint` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/PlayerSpawnPoint` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-8.134, 3.601, 0`
+        - worldPosition: `48.335, 3.688, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-8.13, 3.60, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `PlayerSpawnPoint` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `PlayerSpawnPoint (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerSpawnPoint.cs'`
+          - `slotIndex` (Integer) = `-1`
+          - `weight` (Integer) = `0`
+    - `PlayerSpawnPoint` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/PlayerSpawnPoint` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-4.956, 3.679, 0`
+        - worldPosition: `51.514, 3.766, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-4.96, 3.68, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `PlayerSpawnPoint` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `PlayerSpawnPoint (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerSpawnPoint.cs'`
+          - `slotIndex` (Integer) = `-1`
+          - `weight` (Integer) = `0`
+    - `PlayerSpawnPoint` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/PlayerSpawnPoint` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-2.038, 3.627, 0`
+        - worldPosition: `54.432, 3.714, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-2.04, 3.63, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `PlayerSpawnPoint` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `PlayerSpawnPoint (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerSpawnPoint.cs'`
+          - `slotIndex` (Integer) = `-1`
+          - `weight` (Integer) = `0`
+    - `PlayerSpawnPoint` | path=`TestBoat_10_Compartment_Flooding/_Gameplay/PlayerSpawnPoint` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `2, 3.731, 0`
+        - worldPosition: `58.47, 3.818, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(2.00, 3.73, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `PlayerSpawnPoint` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `PlayerSpawnPoint (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerSpawnPoint.cs'`
+          - `slotIndex` (Integer) = `-1`
+          - `weight` (Integer) = `0`
+  - `_Hull` | path=`TestBoat_10_Compartment_Flooding/_Hull` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `56.469, 0.087, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `BoatWall_Wooden` | path=`TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `10, 3, 0`
+        - worldPosition: `66.469, 3.087, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(10.00, 3.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(0.82, 7.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `ResizableSegment2D` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `BoatWall_Sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden/BoatWall_Sprite'`
+          - `boxCollider` (ObjectReference) = `BoatWall_Wooden (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden'`
+          - `width` (Float) = `0.82`
+          - `height` (Float) = `7`
+          - `resizeAxis` (Enum) = `Vertical`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `Wall`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+        - `WallSegmentAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `WallSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Walls/WallSegmentAuthoring.cs'`
+          - `wallCollider` (ObjectReference) = `BoatWall_Wooden (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden'`
+          - `spriteRenderer` (ObjectReference) = `BoatWall_Sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden/BoatWall_Sprite'`
+          - `resizableSegment` (ObjectReference) = `BoatWall_Wooden (ResizableSegment2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden'`
+          - `width` (Float) = `0.82`
+          - `height` (Float) = `7`
+    - `BoatWall_Wooden` | path=`TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-10, 3, 0`
+        - worldPosition: `46.469, 3.087, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-10.00, 3.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(0.82, 7.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `ResizableSegment2D` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `BoatWall_Sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden/BoatWall_Sprite'`
+          - `boxCollider` (ObjectReference) = `BoatWall_Wooden (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden'`
+          - `width` (Float) = `0.82`
+          - `height` (Float) = `7`
+          - `resizeAxis` (Enum) = `Vertical`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `Wall`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+        - `WallSegmentAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `WallSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Walls/WallSegmentAuthoring.cs'`
+          - `wallCollider` (ObjectReference) = `BoatWall_Wooden (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden'`
+          - `spriteRenderer` (ObjectReference) = `BoatWall_Sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden/BoatWall_Sprite'`
+          - `resizableSegment` (ObjectReference) = `BoatWall_Wooden (ResizableSegment2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden'`
+          - `width` (Float) = `0.82`
+          - `height` (Float) = `7`
+      - `BoatWall_Sprite` | path=`TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden/BoatWall_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `66.469, 3.087, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatWallWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatWallWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(0.575, 0.575, 0.575, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(0.82, 7.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `BoatWall_Sprite` | path=`TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden/BoatWall_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `46.469, 3.087, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatWallWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatWallWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(0.575, 0.575, 0.575, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(0.82, 7.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+    - `BoatWall_Wooden_Bottom` | path=`TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden_Bottom` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0.113, 0`
+        - worldPosition: `56.469, 0.2, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.11, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(0.82, 1.23)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `ResizableSegment2D` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `BoatWall_Sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden_Bottom/BoatWall_Sprite'`
+          - `boxCollider` (ObjectReference) = `BoatWall_Wooden_Bottom (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden_Bottom'`
+          - `width` (Float) = `0.82`
+          - `height` (Float) = `1.225`
+          - `resizeAxis` (Enum) = `Vertical`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `Wall`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+        - `WallSegmentAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `WallSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Walls/WallSegmentAuthoring.cs'`
+          - `wallCollider` (ObjectReference) = `BoatWall_Wooden_Bottom (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden_Bottom'`
+          - `spriteRenderer` (ObjectReference) = `BoatWall_Sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden_Bottom/BoatWall_Sprite'`
+          - `resizableSegment` (ObjectReference) = `BoatWall_Wooden_Bottom (ResizableSegment2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden_Bottom'`
+          - `width` (Float) = `0.82`
+          - `height` (Float) = `1.225`
+        - `WallSplitRecord` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `WallSplitRecord (MonoScript) asset='Assets/Scripts/Parts/Walls/WallSplitRecord.cs'`
+          - `spanId` (String) = `40b5711667434c4ea2df5cf9e87cdc0c`
+          - `originalLocalBottomY` (Float) = `-0.5`
+          - `originalLocalTopY` (Float) = `6.5`
+          - `originalLocalCenterX` (Float) = `0`
+          - `isSplitFragment` (Boolean) = `True`
+          - `splitDepth` (Integer) = `1`
+          - `sourceKind` (String) = `Wall`
+          - `spanRoot` (ObjectReference) = `_Hull (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Hull'`
+      - `BoatWall_Sprite` | path=`TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden_Bottom/BoatWall_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `56.469, 0.2, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatWallWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatWallWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(0.575, 0.575, 0.575, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(0.82, 1.23)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+    - `BoatWall_Wooden_Top` | path=`TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden_Top` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 4.743, 0`
+        - worldPosition: `56.469, 4.83, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 4.74, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(0.82, 3.52)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `ResizableSegment2D` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `BoatWall_Sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden_Top/BoatWall_Sprite'`
+          - `boxCollider` (ObjectReference) = `BoatWall_Wooden_Top (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden_Top'`
+          - `width` (Float) = `0.82`
+          - `height` (Float) = `3.515`
+          - `resizeAxis` (Enum) = `Vertical`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `Wall`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+        - `WallSegmentAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `WallSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Walls/WallSegmentAuthoring.cs'`
+          - `wallCollider` (ObjectReference) = `BoatWall_Wooden_Top (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden_Top'`
+          - `spriteRenderer` (ObjectReference) = `BoatWall_Sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden_Top/BoatWall_Sprite'`
+          - `resizableSegment` (ObjectReference) = `BoatWall_Wooden_Top (ResizableSegment2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden_Top'`
+          - `width` (Float) = `0.82`
+          - `height` (Float) = `3.515`
+        - `WallSplitRecord` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `WallSplitRecord (MonoScript) asset='Assets/Scripts/Parts/Walls/WallSplitRecord.cs'`
+          - `spanId` (String) = `40b5711667434c4ea2df5cf9e87cdc0c`
+          - `originalLocalBottomY` (Float) = `-0.5`
+          - `originalLocalTopY` (Float) = `6.5`
+          - `originalLocalCenterX` (Float) = `0`
+          - `isSplitFragment` (Boolean) = `True`
+          - `splitDepth` (Integer) = `1`
+          - `sourceKind` (String) = `Wall`
+          - `spanRoot` (ObjectReference) = `_Hull (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Hull'`
+      - `BoatWall_Sprite` | path=`TestBoat_10_Compartment_Flooding/_Hull/BoatWall_Wooden_Top/BoatWall_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `56.469, 4.83, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatWallWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatWallWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(0.575, 0.575, 0.575, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(0.82, 3.52)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+    - `door_01` | path=`TestBoat_10_Compartment_Flooding/_Hull/door_01` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 1.855, 0`
+        - worldPosition: `56.469, 1.942, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 1.86, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `DoorAuthoring` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `DoorAuthoring (MonoScript) asset='Assets/Scripts/Parts/Door/DoorAuthoring.cs'`
+          - `closedRenderer` (ObjectReference) = `Closed (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Hull/door_01/Closed'`
+          - `openRenderer` (ObjectReference) = `Open (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Hull/door_01/Open'`
+          - `blockingCollider` (ObjectReference) = `Blocker (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/door_01/Blocker'`
+          - `openingHeight` (Float) = `2`
+          - `deriveOpeningHeightFromBlockingCollider` (Boolean) = `True`
+          - `builderOpeningClearance` (Float) = `0.03`
+          - `startsOpen` (Boolean) = `False`
+          - `doorId` (String) = `door_01`
+        - `DoorInteractable` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `DoorInteractable (MonoScript) asset='Assets/Scripts/Parts/Door/DoorInteractable.cs'`
+          - `doorRuntime` (ObjectReference) = `door_01 (DoorRuntime) scenePath='TestBoat_10_Compartment_Flooding/_Hull/door_01'`
+          - `promptAnchor` (ObjectReference) = `door_01 (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Hull/door_01'`
+          - `interactionPriority` (Integer) = `20`
+          - `allowInteractWhenOpen` (Boolean) = `True`
+          - `allowInteractWhenClosed` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+        - `DoorRuntime` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `DoorRuntime (MonoScript) asset='Assets/Scripts/Parts/Door/DoorRuntime.cs'`
+          - `authoring` (ObjectReference) = `door_01 (DoorAuthoring) scenePath='TestBoat_10_Compartment_Flooding/_Hull/door_01'`
+          - `isOpen` (Boolean) = `False`
+          - `closeObstructionMask` (LayerMask) = `131080`
+          - `triggersBlockClosing` (Boolean) = `False`
+          - `ignoreOwnColliders` (Boolean) = `True`
+          - `ignoreSameBoatRoot` (Boolean) = `False`
+          - `vibrateOnDeniedClose` (Boolean) = `True`
+          - `deniedVibrationDuration` (Float) = `0.3`
+          - `deniedVibrationDistance` (Float) = `0.1`
+          - `deniedVibrationFrequency` (Float) = `36`
+          - `logDeniedClose` (Boolean) = `False`
+        - `WallRepairBlocker` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `WallRepairBlocker (MonoScript) asset='Assets/Scripts/Parts/Walls/WallRepairBlocker.cs'`
+          - `spanId` (String) = `40b5711667434c4ea2df5cf9e87cdc0c`
+          - `spanRoot` (ObjectReference) = `_Hull (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Hull'`
+          - `localBottomY` (Float) = `0.725`
+          - `localTopY` (Float) = `2.985`
+          - `blockerKind` (String) = `Door`
+      - `Blocker` | path=`TestBoat_10_Compartment_Flooding/_Hull/door_01/Blocker` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `56.469, 1.942, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `False`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(0.70, 2.20)`
+            - `m_EdgeRadius` (Float) = `0`
+      - `Closed` | path=`TestBoat_10_Compartment_Flooding/_Hull/door_01/Closed` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `56.469, 1.942, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatDoorClosed_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatDoorClosed_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `CompartmentLink` | path=`TestBoat_10_Compartment_Flooding/_Hull/door_01/CompartmentLink` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `56.469, 1.942, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(2.00, 1.00)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `CompartmentLinkAuthoring` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentLinkAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentLinkAuthoring.cs'`
+            - `linkId` (String) = `door_01`
+            - `boat` (ObjectReference) = `TestBoat_10_Compartment_Flooding (Boat) scenePath='TestBoat_10_Compartment_Flooding'`
+            - `doorRuntime` (ObjectReference) = `door_01 (DoorRuntime) scenePath='TestBoat_10_Compartment_Flooding/_Hull/door_01'`
+            - `openingCollider` (ObjectReference) = `Blocker (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/door_01/Blocker'`
+            - `linkType` (Enum) = `Door`
+            - `sampleOffset` (Float) = `0.6`
+            - `autoResolveInEditor` (Boolean) = `False`
+            - `flowCoefficient` (Float) = `0.1`
+            - `externalSourceType` (Enum) = `Sea Breach`
+            - `externalRate` (Float) = `0.1`
+          - `CompartmentLinkRuntimeLink` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentLinkRuntimeLink (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentLinkRuntimeLink.cs'`
+            - `doorRuntime` (ObjectReference) = `door_01 (DoorRuntime) scenePath='TestBoat_10_Compartment_Flooding/_Hull/door_01'`
+            - `linkAuthoring` (ObjectReference) = `CompartmentLink (CompartmentLinkAuthoring) scenePath='TestBoat_10_Compartment_Flooding/_Hull/door_01/CompartmentLink'`
+            - `logWarnings` (Boolean) = `False`
+            - `logStateChanges` (Boolean) = `False`
+          - `CompartmentBoundaryAuthoring` index=4 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+            - `roles` (Enum) = `-1`
+            - `countsAsBoundary` (Boolean) = `True`
+            - `isOpeningCarrier` (Boolean) = `False`
+            - `openingId` (String) = ``
+      - `InteractionTrigger` | path=`TestBoat_10_Compartment_Flooding/_Hull/door_01/InteractionTrigger` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `56.469, 1.942, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(3.00, 4.00)`
+            - `m_EdgeRadius` (Float) = `0`
+      - `Open` | path=`TestBoat_10_Compartment_Flooding/_Hull/door_01/Open` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `-0.5, 0, 0`
+          - worldPosition: `55.969, 1.942, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(-0.50, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`False`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatDoorOpen_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatDoorOpen_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `PlayerSeparator` | path=`TestBoat_10_Compartment_Flooding/_Hull/door_01/PlayerSeparator` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `56.469, 1.942, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(1.00, 3.00)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `ClosedDoorPlayerSeparator` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `ClosedDoorPlayerSeparator (MonoScript) asset='Assets/Scripts/Parts/Door/ClosedDoorPlayerSeparator.cs'`
+            - `doorRuntime` (ObjectReference) = `door_01 (DoorRuntime) scenePath='TestBoat_10_Compartment_Flooding/_Hull/door_01'`
+            - `separatorTrigger` (ObjectReference) = `PlayerSeparator (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/door_01/PlayerSeparator'`
+            - `blockingCollider` (ObjectReference) = `Blocker (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/door_01/Blocker'`
+            - `playerMask` (LayerMask) = `131072`
+            - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+            - `localDoorNormal` (Vector2) = `(1.00, 0.00)`
+            - `invertNormal` (Boolean) = `False`
+            - `zeroVelocityIntoDoor` (Boolean) = `True`
+            - `pushAwayDistance` (Float) = `0.025`
+            - `overlapEscapeDistance` (Float) = `0.06`
+            - `minIntoDoorSpeed` (Float) = `0.01`
+            - `logCorrections` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_10_Compartment_Flooding/_Hull/door_01/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `56.469, 1.942, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `HullSegment_Wooden` | path=`TestBoat_10_Compartment_Flooding/_Hull/HullSegment_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 0, 0`
+        - worldPosition: `56.469, 0.087, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(21.00, 1.45)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `FloorSegmentAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `FloorSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Segments/FloorSegmentAuthoring.cs'`
+          - `floorCollider` (ObjectReference) = `HullSegment_Wooden (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/HullSegment_Wooden'`
+          - `spriteRenderer` (ObjectReference) = `HullSegment_Sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Hull/HullSegment_Wooden/HullSegment_Sprite'`
+          - `resizableSegment` (ObjectReference) = `HullSegment_Wooden (ResizableSegment2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/HullSegment_Wooden'`
+          - `width` (Float) = `21`
+          - `height` (Float) = `1.45`
+        - `ResizableSegment2D` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `HullSegment_Sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Hull/HullSegment_Wooden/HullSegment_Sprite'`
+          - `boxCollider` (ObjectReference) = `HullSegment_Wooden (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Hull/HullSegment_Wooden'`
+          - `width` (Float) = `21`
+          - `height` (Float) = `1.45`
+          - `resizeAxis` (Enum) = `Horizontal`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `-1`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+      - `HullSegment_Sprite` | path=`TestBoat_10_Compartment_Flooding/_Hull/HullSegment_Wooden/HullSegment_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `56.469, 0.087, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatSegmentWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatSegmentWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(0.585, 0.585, 0.585, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(21.00, 1.45)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+  - `_Interior` | path=`TestBoat_10_Compartment_Flooding/_Interior` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `56.469, 0.087, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `CompartmentInterior_Wooden` | path=`TestBoat_10_Compartment_Flooding/_Interior/CompartmentInterior_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-5, 3.055, 0`
+        - worldPosition: `51.469, 3.142, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-5.00, 3.06, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `Compartment` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `Compartment (MonoScript) asset='Assets/Scripts/Boats/Compartments/Compartment.cs'`
+          - `compartmentId` (String) = `compartment_01`
+          - `compartmentName` (String) = ``
+          - `p0` (Vector2) = `(-4.75, 2.63)`
+          - `p1` (Vector2) = `(4.75, 2.63)`
+          - `p2` (Vector2) = `(4.75, -2.63)`
+          - `p3` (Vector2) = `(-4.75, -2.63)`
+          - `localCorners` (Generic) = `array size=4`
+          - `waterArea` (Float) = `0`
+          - `minAirFraction` (Float) = `0.2`
+          - `airIntegrity` (Float) = `1`
+          - `airLeakRate` (Float) = `0`
+          - `externalWaterSources` (Generic) = `array size=2`
+        - `CompartmentRectAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentRectAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentRectAuthoring.cs'`
+          - `width` (Integer) = `38`
+          - `height` (Integer) = `21`
+          - `cellSize` (Float) = `0.25`
+          - `centerOffsetCells` (Vector2Int) = `(0, 0)`
+          - `compartment` (ObjectReference) = `CompartmentInterior_Wooden (Compartment) scenePath='TestBoat_10_Compartment_Flooding/_Interior/CompartmentInterior_Wooden'`
+          - `boxCollider` (ObjectReference) = `CompartmentInterior_Wooden (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Interior/CompartmentInterior_Wooden'`
+          - `resizableSegment` (ObjectReference) = `CompartmentInterior_Wooden (ResizableSegment2D) scenePath='TestBoat_10_Compartment_Flooding/_Interior/CompartmentInterior_Wooden'`
+          - `visibilityZone` (ObjectReference) = `CompartmentInterior_Wooden (BoatVisibilityZone) scenePath='TestBoat_10_Compartment_Flooding/_Interior/CompartmentInterior_Wooden'`
+          - `ensureBoxCollider2D` (Boolean) = `True`
+          - `colliderIsTrigger` (Boolean) = `True`
+          - `allowResizableSegmentToDriveSize` (Boolean) = `True`
+          - `preserveWaterFractionOnResize` (Boolean) = `True`
+        - `CompartmentWaterRenderer` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentWaterRenderer (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentWaterRenderer.cs'`
+          - `sortingLayerName` (String) = `BoatView`
+          - `sortingOrder` (Integer) = `25`
+          - `waterColor` (Color) = `RGBA(0.100, 0.400, 0.900, 0.600)`
+        - `BoxCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(9.50, 5.25)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `MeshFilter` index=5 enabled=`n/a`
+        - `MeshRenderer` index=6 enabled=`True`
+          - `m_CastShadows` (Enum) = `On`
+          - `m_ReceiveShadows` (Boolean) = `True`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `2`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+        - `ResizableSegment2D` index=7 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `compartment_sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Interior/CompartmentInterior_Wooden/compartment_sprite'`
+          - `boxCollider` (ObjectReference) = `CompartmentInterior_Wooden (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Interior/CompartmentInterior_Wooden'`
+          - `width` (Float) = `9.5`
+          - `height` (Float) = `5.25`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `SortingLayerSetter` index=8 enabled=`True`
+          - `m_Script` (ObjectReference) = `SortingLayerSetter (MonoScript) asset='Assets/Scripts/Camera/SortingLayerSetter.cs'`
+          - `sortingLayerName` (String) = `BoatForehull`
+          - `sortingOrder` (Integer) = `99`
+        - `BoatVisibilityZone` index=9 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisibilityZone (MonoScript) asset='Assets/Scripts/Boats/BoatVisibilityZone.cs'`
+          - `mode` (Enum) = `Boarded Interior`
+          - `controller` (ObjectReference) = `TestBoat_10_Compartment_Flooding (BoatVisualStateController) scenePath='TestBoat_10_Compartment_Flooding'`
+          - `priority` (Integer) = `100`
+          - `logEvents` (Boolean) = `False`
+        - `BoatVisualMarker` index=10 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisualMarker (MonoScript) asset='Assets/Scripts/Boats/BoatVisualMarker.cs'`
+          - `category` (Enum) = `Interior`
+    - `CompartmentInterior_Wooden` | path=`TestBoat_10_Compartment_Flooding/_Interior/CompartmentInterior_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `5, 3.055, 0`
+        - worldPosition: `61.469, 3.142, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(5.00, 3.06, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `Compartment` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `Compartment (MonoScript) asset='Assets/Scripts/Boats/Compartments/Compartment.cs'`
+          - `compartmentId` (String) = `compartment_02`
+          - `compartmentName` (String) = ``
+          - `p0` (Vector2) = `(-4.75, 2.63)`
+          - `p1` (Vector2) = `(4.75, 2.63)`
+          - `p2` (Vector2) = `(4.75, -2.63)`
+          - `p3` (Vector2) = `(-4.75, -2.63)`
+          - `localCorners` (Generic) = `array size=4`
+          - `waterArea` (Float) = `0`
+          - `minAirFraction` (Float) = `0.2`
+          - `airIntegrity` (Float) = `1`
+          - `airLeakRate` (Float) = `0`
+          - `externalWaterSources` (Generic) = `array size=0`
+        - `CompartmentRectAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentRectAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentRectAuthoring.cs'`
+          - `width` (Integer) = `38`
+          - `height` (Integer) = `21`
+          - `cellSize` (Float) = `0.25`
+          - `centerOffsetCells` (Vector2Int) = `(0, 0)`
+          - `compartment` (ObjectReference) = `CompartmentInterior_Wooden (Compartment) scenePath='TestBoat_10_Compartment_Flooding/_Interior/CompartmentInterior_Wooden'`
+          - `boxCollider` (ObjectReference) = `CompartmentInterior_Wooden (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Interior/CompartmentInterior_Wooden'`
+          - `resizableSegment` (ObjectReference) = `CompartmentInterior_Wooden (ResizableSegment2D) scenePath='TestBoat_10_Compartment_Flooding/_Interior/CompartmentInterior_Wooden'`
+          - `visibilityZone` (ObjectReference) = `CompartmentInterior_Wooden (BoatVisibilityZone) scenePath='TestBoat_10_Compartment_Flooding/_Interior/CompartmentInterior_Wooden'`
+          - `ensureBoxCollider2D` (Boolean) = `True`
+          - `colliderIsTrigger` (Boolean) = `True`
+          - `allowResizableSegmentToDriveSize` (Boolean) = `True`
+          - `preserveWaterFractionOnResize` (Boolean) = `True`
+        - `CompartmentWaterRenderer` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentWaterRenderer (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentWaterRenderer.cs'`
+          - `sortingLayerName` (String) = `BoatView`
+          - `sortingOrder` (Integer) = `25`
+          - `waterColor` (Color) = `RGBA(0.100, 0.400, 0.900, 0.600)`
+        - `BoxCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(9.50, 5.25)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `MeshFilter` index=5 enabled=`n/a`
+        - `MeshRenderer` index=6 enabled=`True`
+          - `m_CastShadows` (Enum) = `On`
+          - `m_ReceiveShadows` (Boolean) = `True`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `2`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+        - `ResizableSegment2D` index=7 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `compartment_sprite (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Interior/CompartmentInterior_Wooden/compartment_sprite'`
+          - `boxCollider` (ObjectReference) = `CompartmentInterior_Wooden (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Interior/CompartmentInterior_Wooden'`
+          - `width` (Float) = `9.5`
+          - `height` (Float) = `5.25`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `SortingLayerSetter` index=8 enabled=`True`
+          - `m_Script` (ObjectReference) = `SortingLayerSetter (MonoScript) asset='Assets/Scripts/Camera/SortingLayerSetter.cs'`
+          - `sortingLayerName` (String) = `BoatForehull`
+          - `sortingOrder` (Integer) = `99`
+        - `BoatVisibilityZone` index=9 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisibilityZone (MonoScript) asset='Assets/Scripts/Boats/BoatVisibilityZone.cs'`
+          - `mode` (Enum) = `Boarded Interior`
+          - `controller` (ObjectReference) = `TestBoat_10_Compartment_Flooding (BoatVisualStateController) scenePath='TestBoat_10_Compartment_Flooding'`
+          - `priority` (Integer) = `100`
+          - `logEvents` (Boolean) = `False`
+        - `BoatVisualMarker` index=10 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisualMarker (MonoScript) asset='Assets/Scripts/Boats/BoatVisualMarker.cs'`
+          - `category` (Enum) = `Interior`
+      - `compartment_sprite` | path=`TestBoat_10_Compartment_Flooding/_Interior/CompartmentInterior_Wooden/compartment_sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `51.469, 3.142, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `ChatGPT Image Feb 1, 2026, 08_19_31 PM_0 (Sprite) asset='Assets/Resources/Sprites/BoatKit/CompartmentBackground_Wooden_1.png'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(9.50, 5.25)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `compartment_sprite` | path=`TestBoat_10_Compartment_Flooding/_Interior/CompartmentInterior_Wooden/compartment_sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `61.469, 3.142, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `ChatGPT Image Feb 1, 2026, 08_19_31 PM_0 (Sprite) asset='Assets/Resources/Sprites/BoatKit/CompartmentBackground_Wooden_1.png'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(9.50, 5.25)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Ladder` | path=`TestBoat_10_Compartment_Flooding/_Interior/Ladder` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-5, 4.5, 0`
+        - worldPosition: `51.469, 4.587, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-5.00, 4.50, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `LadderMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/LadderMetal_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Tiled`
+          - `m_Size` (Vector2) = `(1.28, 8.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoxCollider2D` index=2 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(1.28, 8.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `LadderZone` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `LadderZone (MonoScript) asset='Assets/Scripts/Controller/Player/Ladders/LadderZone.cs'`
+          - `climbSpeed` (Float) = `6`
+          - `snapToCenterSpeed` (Float) = `18`
+          - `requireInteractToClimb` (Boolean) = `True`
+          - `allowImplicitDownClimb` (Boolean) = `True`
+          - `allowTopExit` (Boolean) = `True`
+          - `allowBottomExit` (Boolean) = `True`
+          - `topExitMargin` (Float) = `0.15`
+          - `bottomExitMargin` (Float) = `0.15`
+          - `topExitPoint` (ObjectReference) = `Top (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Interior/Ladder/Top'`
+          - `bottomExitPoint` (ObjectReference) = `Bottom (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Interior/Ladder/Bottom'`
+          - `interactionPriority` (Integer) = `25`
+          - `maxInteractDistance` (Float) = `1.5`
+          - `climbCenter` (ObjectReference) = `Middle (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Interior/Ladder/Middle'`
+          - `boatAccessMode` (Enum) = `Auto`
+          - `debugLogs` (Boolean) = `False`
+        - `ResizableSegment2D` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `Ladder (SpriteRenderer) scenePath='TestBoat_10_Compartment_Flooding/_Interior/Ladder'`
+          - `boxCollider` (ObjectReference) = `Ladder (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Interior/Ladder'`
+          - `width` (Float) = `1.28`
+          - `height` (Float) = `8`
+          - `resizeAxis` (Enum) = `Vertical`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `1`
+        - `LadderAutoFitAuthoring` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `LadderAutoFitAuthoring (MonoScript) asset='Assets/Scripts/Controller/Player/Ladders/LadderAutoFitAuthoring.cs'`
+          - `resizable` (ObjectReference) = `Ladder (ResizableSegment2D) scenePath='TestBoat_10_Compartment_Flooding/_Interior/Ladder'`
+          - `ladderCollider` (ObjectReference) = `Ladder (BoxCollider2D) scenePath='TestBoat_10_Compartment_Flooding/_Interior/Ladder'`
+          - `top` (ObjectReference) = `Top (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Interior/Ladder/Top'`
+          - `middle` (ObjectReference) = `Middle (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Interior/Ladder/Middle'`
+          - `bottom` (ObjectReference) = `Bottom (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Interior/Ladder/Bottom'`
+          - `topExitPoint` (ObjectReference) = `TopExit (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Interior/Ladder/TopExit'`
+          - `bottomExitPoint` (ObjectReference) = `BottomExit (Transform) scenePath='TestBoat_10_Compartment_Flooding/_Interior/Ladder/BottomExit'`
+          - `topInset` (Float) = `0.05`
+          - `bottomInset` (Float) = `0.05`
+          - `topExitLocalOffset` (Vector2) = `(0.00, 0.35)`
+          - `bottomExitLocalOffset` (Vector2) = `(0.00, 0.15)`
+          - `autoApplyInEditor` (Boolean) = `True`
+      - `Bottom` | path=`TestBoat_10_Compartment_Flooding/_Interior/Ladder/Bottom` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -3.95, 0`
+          - worldPosition: `51.469, 0.637, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -3.95, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `BottomExit` | path=`TestBoat_10_Compartment_Flooding/_Interior/Ladder/BottomExit` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -3.8, 0`
+          - worldPosition: `51.469, 0.787, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -3.80, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `Middle` | path=`TestBoat_10_Compartment_Flooding/_Interior/Ladder/Middle` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `51.469, 4.587, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `Top` | path=`TestBoat_10_Compartment_Flooding/_Interior/Ladder/Top` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 3.95, 0`
+          - worldPosition: `51.469, 8.537, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 3.95, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `TopExit` | path=`TestBoat_10_Compartment_Flooding/_Interior/Ladder/TopExit` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 4.3, 0`
+          - worldPosition: `51.469, 8.887, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 4.30, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `_Volumes` | path=`TestBoat_10_Compartment_Flooding/_Volumes` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `56.469, 0.087, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `BoardedVolume` | path=`TestBoat_10_Compartment_Flooding/_Volumes/BoardedVolume` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`PlayerBoat` | static=False
+      - Transform:
+        - localPosition: `0, 6.388, 0`
+        - worldPosition: `56.469, 6.475, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 6.39, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(21.00, 14.23)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `BoatBoardedVolume` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBoardedVolume (MonoScript) asset='Assets/Scripts/Controller/Player/BoatBoardedVolume.cs'`
+- `TestBoat_11_Keel_Anchor_Rudder` | path=`TestBoat_11_Keel_Anchor_Rudder` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`PlayerBoat` | static=False
+  - Transform:
+    - localPosition: `57.12, 15.96, 0`
+    - worldPosition: `57.12, 15.96, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(57.12, 15.96, 0.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `Rigidbody2D` index=1 enabled=`n/a`
+      - `m_BodyType` (Enum) = `Dynamic`
+      - `m_Simulated` (Boolean) = `True`
+      - `m_UseFullKinematicContacts` (Boolean) = `False`
+      - `m_UseAutoMass` (Boolean) = `False`
+      - `m_Mass` (Float) = `1`
+      - `m_LinearDamping` (Float) = `0`
+      - `m_AngularDamping` (Float) = `0.05`
+      - `m_GravityScale` (Float) = `1`
+      - `m_IncludeLayers` (LayerMask) = `1024`
+      - `m_ExcludeLayers` (LayerMask) = `0`
+      - `m_Interpolate` (Enum) = `Interpolate`
+      - `m_SleepingMode` (Enum) = `Start Awake`
+      - `m_CollisionDetection` (Enum) = `Discrete`
+      - `m_Constraints` (Integer) = `0`
+    - `Boat` index=2 enabled=`True`
+      - `m_Script` (ObjectReference) = `Boat (MonoScript) asset='Assets/Scripts/Boats/Boat.cs'`
+      - `baseMass` (Float) = `30`
+      - `mass` (Float) = `1`
+      - `baseLocalCenterOfMass` (Vector2) = `(0.00, -1.57)`
+      - `drawMassContributionGizmos` (Boolean) = `False`
+      - `mysteryOscillationLog` (Boolean) = `False`
+      - `mysteryOscillationLogEveryFixedTick` (Boolean) = `False`
+      - `mysteryOscillationMinimumForceMagnitude` (Float) = `0`
+      - `mysteryOscillationMinimumTorqueMagnitude` (Float) = `0`
+      - `width` (Float) = `24.82`
+      - `height` (Float) = `7.314`
+      - `volume` (Float) = `181.531`
+      - `geometryLocalCenter` (Vector2) = `(0.00, -1.57)`
+      - `throttleInput` (Float) = `0`
+      - `throttleForce` (Float) = `1`
+      - `Compartments` (Generic) = `array size=2`
+      - `Connections` (Generic) = `array size=0`
+      - `boatInstanceId` (String) = ``
+    - `BoatAccessStatePersistence` index=3 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatAccessStatePersistence (MonoScript) asset='Assets/Scripts/Boats/BoatAccessStatePersistence.cs'`
+      - `warnForMissingIds` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+    - `BoatAutoRegister` index=4 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatAutoRegister (MonoScript) asset='Assets/Scripts/GameState/Boat/BoatAutoRegister.cs'`
+    - `BoatCompartmentStatePersistence` index=5 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatCompartmentStatePersistence (MonoScript) asset='Assets/Scripts/Boats/Compartments/BoatCompartmentStatePersistence.cs'`
+      - `boat` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (Boat) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+      - `validateIdsOnStart` (Boolean) = `True`
+      - `warnForMissingIds` (Boolean) = `True`
+      - `warnForDuplicateIds` (Boolean) = `True`
+      - `warningsIgnoreVerboseLogging` (Boolean) = `True`
+      - `restoreByFractionWhenMaxAreaChanged` (Boolean) = `True`
+      - `maxAreaMismatchTolerance` (Float) = `0.001`
+      - `verboseLogging` (Boolean) = `False`
+    - `BoatHandlingAggregator` index=6 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatHandlingAggregator (MonoScript) asset='Assets/Scripts/Boats/Simulation/BoatHandlingAggregator.cs'`
+      - `boat` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (Boat) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+      - `currentProfile` (Generic) = `<generic>`
+    - `BoatIdentity` index=7 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatIdentity (MonoScript) asset='Assets/Scripts/GameState/Boat/BoatIdentity.cs'`
+    - `BoatItemRegistry` index=8 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatItemRegistry (MonoScript) asset='Assets/Scripts/Inventory/Item/BoatItemRegistry.cs'`
+    - `BoatLooseItemPersistence` index=9 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatLooseItemPersistence (MonoScript) asset='Assets/Scripts/Inventory/Item/BoatLooseItemPersistence.cs'`
+      - `boat` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (Boat) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+      - `itemCatalog` (ObjectReference) = `itemCatalog (ItemDefinitionCatalog) asset='Assets/Defs/Items/Catalogs/itemCatalog.asset'`
+      - `verboseLogging` (Boolean) = `True`
+    - `BoatModuleStatePersistence` index=10 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatModuleStatePersistence (MonoScript) asset='Assets/Scripts/Modules/State/BoatModuleStatePersistence.cs'`
+      - `itemCatalog` (ObjectReference) = `itemCatalog (ItemDefinitionCatalog) asset='Assets/Defs/Items/Catalogs/itemCatalog.asset'`
+      - `moduleDefinitions` (Generic) = `array size=0`
+      - `verboseLogging` (Boolean) = `False`
+    - `BoatPilotingSimulation` index=11 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatPilotingSimulation (MonoScript) asset='Assets/Scripts/Boats/Simulation/BoatPilotingSimulation.cs'`
+      - `state` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (BoatPilotingState) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+      - `boat` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (Boat) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+      - `throttleForce` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (ThrottleForce) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+      - `sceneForwardAxis` (Vector2) = `(1.00, 0.00)`
+      - `throttleTravelPerSecond` (Float) = `0.1`
+      - `referenceRudderAngleDegrees` (Float) = `35`
+      - `rudderTravelDegreesPerSecond` (Float) = `10`
+      - `rudderAngularAcceleration` (Float) = `34`
+      - `angularWaterDrag` (Float) = `1.9`
+      - `maxAngularVelocityDegrees` (Float) = `42`
+      - `fullRudderAuthoritySpeed` (Float) = `2.5`
+      - `routePrototypeSeed` (Integer) = `17357`
+      - `routePointSpacing` (Float) = `10`
+      - `routeMaxHeadingDegrees` (Float) = `15`
+      - `routeProgressCorridor` (Float) = `45`
+      - `routeAdherencePathWidth` (Float) = `15`
+      - `recentCourseQualityDistance` (Float) = `25`
+      - `courseNeutralQuality` (Float) = `0.65`
+      - `routeCoverageAhead` (Float) = `1200`
+      - `recoveryMinimumRejoinLeadDistance` (Float) = `60`
+      - `recoveryRejoinLeadPerOffRouteUnit` (Float) = `0.65`
+      - `recoveryCurvePointSpacing` (Float) = `10`
+      - `environmentalDisturbance` (Generic) = `<generic>`
+      - `environmentalAngularVelocityCeilingDegrees` (Float) = `72`
+    - `BoatPilotingState` index=12 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatPilotingState (MonoScript) asset='Assets/Scripts/Boats/Simulation/BoatPilotingState.cs'`
+      - `throttle01` (Float) = `0`
+      - `rudderDegrees` (Float) = `0`
+      - `navigationPosition` (Vector2) = `(0.00, 0.00)`
+      - `navigationVelocity` (Vector2) = `(0.00, 0.00)`
+      - `headingDegrees` (Float) = `0`
+      - `angularVelocityDegrees` (Float) = `0`
+    - `BoatPowerState` index=13 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatPowerState (MonoScript) asset='Assets/Scripts/Boats/BoatPowerState.cs'`
+      - `currentPower` (Float) = `0`
+      - `maxPower` (Float) = `1000`
+    - `BoatRootMarker` index=14 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatRootMarker (MonoScript) asset='Assets/Scripts/Boats/BoatRootMarker.cs'`
+    - `BoatSecuringDebugImpulse` index=15 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatSecuringDebugImpulse (MonoScript) asset='Assets/Scripts/Debug/BoatSecuringDebugImpulse.cs'`
+      - `listenForKey` (Boolean) = `True`
+      - `triggerKey` (Enum) = `I`
+      - `targetRigidbody` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (Rigidbody2D) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+      - `applyPhysicsImpulse` (Boolean) = `True`
+      - `impulse` (Vector2) = `(10.00, 0.00)`
+      - `affectSecuredCargo` (Boolean) = `True`
+      - `securingImpactSeverity01` (Float) = `0.4`
+      - `breakLooseCargoImpulse` (Vector2) = `(5.00, 0.00)`
+      - `onlyAffectThisBoat` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `True`
+    - `BoatVisualStateController` index=16 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatVisualStateController (MonoScript) asset='Assets/Scripts/Boats/BoatVisualStateController.cs'`
+      - `exteriorRoot` (ObjectReference) = `_Exterior (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Exterior'`
+      - `interiorRoot` (ObjectReference) = `_Interior (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior'`
+      - `exteriorDeckRoot` (ObjectReference) = `_Deck (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck'`
+      - `hullRoot` (ObjectReference) = `_Hull (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Hull'`
+      - `defaultBoardedMode` (Enum) = `Boarded Exterior Deck`
+      - `unboardedMode` (Enum) = `Unboarded Exterior`
+      - `hideInteriorWhenUnboarded` (Boolean) = `False`
+      - `hideInteriorOnExteriorDeck` (Boolean) = `False`
+      - `hideExteriorWhenInterior` (Boolean) = `True`
+      - `hideDeckWhenInterior` (Boolean) = `False`
+      - `includeInactiveRenderers` (Boolean) = `True`
+      - `showCompartmentWaterInInterior` (Boolean) = `True`
+      - `showCompartmentWaterInTransition` (Boolean) = `True`
+      - `hideByCameraMaskWhenInterior` (LayerMask) = `2100224`
+      - `autoFindMainCamera` (Boolean) = `True`
+      - `logVisibility` (Boolean) = `False`
+    - `BoatWaterContextResolver` index=17 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatWaterContextResolver (MonoScript) asset='Assets/Scripts/Boats/BoatWaterContextResolver.cs'`
+      - `boat` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (Boat) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+      - `dryWaterFractionEpsilon` (Float) = `0.003`
+      - `fullCompartmentThreshold01` (Float) = `0.999`
+      - `treatFullyFloodedBoatAsOcean` (Boolean) = `True`
+      - `fullCompartmentSurfacePadding` (Float) = `0.5`
+      - `includeInactiveCompartments` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+    - `BuoyancyPolygonForce` index=18 enabled=`True`
+      - `m_Script` (ObjectReference) = `BuoyancyPolygonForce (MonoScript) asset='Assets/Scripts/Physics/BuoyancyPolygonForce.cs'`
+      - `bodySource` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (Boat) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+      - `useBoatWaterContext` (Boolean) = `True`
+      - `boatBodyAlwaysUsesOcean` (Boolean) = `True`
+      - `sliceCount` (Integer) = `10`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `50`
+    - `CompartmentFloodGameClickTool` index=19 enabled=`True`
+      - `m_Script` (ObjectReference) = `CompartmentFloodGameClickTool (MonoScript) asset='Assets/Scripts/Debug/CompartmentFloodGameClickTool.cs'`
+      - `boat` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (Boat) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+      - `boatRoot` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+      - `active` (Boolean) = `False`
+      - `mode` (Enum) = `Add`
+      - `mouseButton` (Integer) = `0`
+      - `shiftClickRemoves` (Boolean) = `True`
+      - `amount` (Float) = `0.25`
+      - `decreaseAmountKey` (Enum) = `Comma`
+      - `increaseAmountKey` (Enum) = `Period`
+      - `amountSmallStep` (Float) = `0.25`
+      - `amountLargeStep` (Float) = `2.5`
+      - `amountPresets` (Generic) = `array size=5`
+      - `setFraction01` (Float) = `0.5`
+      - `toggleActiveKey` (Enum) = `F11`
+      - `addModeKey` (Enum) = `Alpha 1`
+      - `removeModeKey` (Enum) = `Alpha 2`
+      - `setModeKey` (Enum) = `Alpha 3`
+      - `emptyModeKey` (Enum) = `Alpha 4`
+      - `fillModeKey` (Enum) = `Alpha 5`
+      - `logMouseKey` (Enum) = `F9`
+      - `respectGameplayInputBlocker` (Boolean) = `True`
+      - `ignoreClicksWhenPointerOverUI` (Boolean) = `False`
+      - `showOverlay` (Boolean) = `False`
+      - `overlayPosition` (Vector2) = `(15.00, 200.00)`
+      - `overlaySize` (Vector2) = `(520.00, 170.00)`
+      - `toggleOverlayKey` (Enum) = `F10`
+      - `overlayDraggable` (Boolean) = `True`
+      - `ignoreFloodClicksOverOverlay` (Boolean) = `True`
+      - `logClicks` (Boolean) = `False`
+      - `logMisses` (Boolean) = `False`
+      - `logMouseWhenPressed` (Boolean) = `False`
+    - `DragForce` index=20 enabled=`True`
+      - `m_Script` (ObjectReference) = `DragForce (MonoScript) asset='Assets/Scripts/Physics/DragForce.cs'`
+      - `submersionSource` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (BuoyancyPolygonForce) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `100`
+    - `ForceBody2D` index=21 enabled=`True`
+      - `m_Script` (ObjectReference) = `ForceBody2D (MonoScript) asset='Assets/Scripts/Physics/ForceBody2D.cs'`
+      - `width` (Float) = `1`
+      - `height` (Float) = `1`
+    - `ForceSystem` index=22 enabled=`True`
+      - `m_Script` (ObjectReference) = `ForceSystem (MonoScript) asset='Assets/Scripts/Physics/ForceSystem.cs'`
+      - `verboseDiagnostics` (Boolean) = `True`
+    - `GhostCollisionProxy` index=23 enabled=`True`
+      - `m_Script` (ObjectReference) = `GhostCollisionProxy (MonoScript) asset='Assets/Scripts/Physics/GhostCollisionProxy.cs'`
+      - `followBody` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (Rigidbody2D) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+      - `sourceRoots` (Generic) = `array size=2`
+      - `autoResolveBoatStructuralRoots` (Boolean) = `True`
+      - `ghostLayerName` (String) = `GhostCollision`
+      - `syncSourceChanges` (Boolean) = `True`
+      - `showRuntimeProxyInHierarchy` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+    - `HardpointVisibilityController` index=24 enabled=`True`
+      - `m_Script` (ObjectReference) = `HardpointVisibiiityController (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointVisibiiityController.cs'`
+      - `boat` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (Boat) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+      - `revealAll` (Boolean) = `False`
+      - `compatibleColor` (Color) = `RGBA(0.000, 1.000, 0.000, 1.000)`
+      - `incompatibleColor` (Color) = `RGBA(1.000, 0.000, 0.000, 1.000)`
+      - `activeSortingOrder` (Integer) = `32000`
+      - `overrideActiveSortingLayer` (Boolean) = `False`
+      - `activeSortingLayerName` (String) = ``
+      - `pulseVisibleMarkers` (Boolean) = `True`
+      - `pulseCyclesPerSecond` (Float) = `1.5`
+      - `pulseMinAlpha` (Float) = `0.55`
+      - `pulseMaxAlpha` (Float) = `1`
+      - `logRefresh` (Boolean) = `False`
+    - `RightingTorqueForce` index=25 enabled=`True`
+      - `m_Script` (ObjectReference) = `RightingTorqueForce (MonoScript) asset='Assets/Scripts/Physics/RightingTorqueForce.cs'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `60`
+    - `ThrottleForce` index=26 enabled=`True`
+      - `m_Script` (ObjectReference) = `ThrottleForce (MonoScript) asset='Assets/Scripts/Physics/ThrottleForce.cs'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `250`
+      - `verboseDiagnostics` (Boolean) = `False`
+      - `diagnosticInterval` (Float) = `0.5`
+  - `_Cargo` | path=`TestBoat_11_Keel_Anchor_Rudder/_Cargo` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `57.12, 15.96, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `CargoBayFloor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Cargo/CargoBayFloor` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `6, 0.08, 0`
+        - worldPosition: `63.12, 16.04, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(6.00, 0.08, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `ResizableSegment2D` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `CargoBayFloor (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Cargo/CargoBayFloor'`
+          - `boxCollider` (ObjectReference) = `CargoBayFloor (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Cargo/CargoBayFloor'`
+          - `width` (Float) = `7.5`
+          - `height` (Float) = `1`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CargoZoneFloorAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `CargoZoneFloorAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/CargoZoneFloorAuthoring.cs'`
+          - `secureZone` (ObjectReference) = `CargoBayZone (BoatSecureZone) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Cargo/CargoBayFloor/CargoBayZone'`
+          - `floorCollider` (ObjectReference) = `CargoBayFloor (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Cargo/CargoBayFloor'`
+          - `secureZoneCollider` (ObjectReference) = `CargoBayZone (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Cargo/CargoBayFloor/CargoBayZone'`
+          - `floorRenderer` (ObjectReference) = `CargoBayFloor (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Cargo/CargoBayFloor'`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `autoFindFloorRenderer` (Boolean) = `True`
+          - `autoFitFloorColliderToSourceWidth` (Boolean) = `True`
+          - `floorColliderHeight` (Float) = `0.12`
+          - `floorColliderTopYOffset` (Float) = `-0.2`
+          - `heightMode` (Enum) = `Fixed`
+          - `fixedZoneHeight` (Float) = `2`
+          - `bottomOffsetFromFloorTop` (Float) = `0.05`
+          - `horizontalPadding` (Float) = `0.05`
+          - `allowStackedCargo` (Boolean) = `False`
+          - `autoRefreshInEditor` (Boolean) = `True`
+        - `SpriteRenderer` index=3 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `CargoZoneFloor_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/CargoZoneFloor_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Tiled`
+          - `m_Size` (Vector2) = `(7.50, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoxCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.24)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(7.50, 1.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `BoatBuilderSurfaceSnapAuthoring` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Top`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0.18`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `1.5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `-1`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `CargoBayZone` | path=`TestBoat_11_Keel_Anchor_Rudder/_Cargo/CargoBayFloor/CargoBayZone` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `63.12, 16.04, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 1.35)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(7.40, 2.00)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `BoatSecureZone` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `BoatSecureZone (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatSecureZone.cs'`
+            - `stableId` (String) = `4f49fe7fe8634909bff3a211e7e07fe7`
+            - `zoneKind` (Enum) = `Cargo Bay`
+            - `capacityMode` (Enum) = `Area Based`
+            - `fixedCapacity` (Integer) = `2`
+            - `areaPerSlot` (Float) = `2`
+            - `maxAreaBasedCapacity` (Integer) = `24`
+            - `acceptsCargo` (Boolean) = `True`
+            - `acceptsNonCargo` (Boolean) = `False`
+            - `allowStackedCargo` (Boolean) = `False`
+            - `zoneQualityMultiplier` (Float) = `1`
+            - `passiveDecayMultiplier` (Float) = `0.75`
+            - `impactProtection01` (Float) = `0.35`
+            - `slots` (Generic) = `array size=7`
+            - `directSupportColliders` (Generic) = `array size=1`
+            - `supportProbeLayerMask` (LayerMask) = `262152`
+            - `supportVerticalTolerance` (Float) = `0.12`
+            - `supportProbeHeight` (Float) = `0.06`
+            - `supportHorizontalInset` (Float) = `0.03`
+            - `verboseLogging` (Boolean) = `False`
+  - `_Deck` | path=`TestBoat_11_Keel_Anchor_Rudder/_Deck` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `57.12, 15.96, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `DeckSegment_Wooden_Left` | path=`TestBoat_11_Keel_Anchor_Rudder/_Deck/DeckSegment_Wooden_Left` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-9.488, 0, 0`
+        - worldPosition: `47.633, 15.96, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-9.49, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(5.03, 0.80)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `FloorSegmentAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `FloorSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Segments/FloorSegmentAuthoring.cs'`
+          - `floorCollider` (ObjectReference) = `DeckSegment_Wooden_Left (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/DeckSegment_Wooden_Left'`
+          - `spriteRenderer` (ObjectReference) = `DeckSegment_Sprite (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/DeckSegment_Wooden_Left/DeckSegment_Sprite'`
+          - `resizableSegment` (ObjectReference) = `DeckSegment_Wooden_Left (ResizableSegment2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/DeckSegment_Wooden_Left'`
+          - `width` (Float) = `5.025`
+          - `height` (Float) = `0.8`
+        - `ResizableSegment2D` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `DeckSegment_Sprite (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/DeckSegment_Wooden_Left/DeckSegment_Sprite'`
+          - `boxCollider` (ObjectReference) = `DeckSegment_Wooden_Left (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/DeckSegment_Wooden_Left'`
+          - `width` (Float) = `5.025`
+          - `height` (Float) = `0.8`
+          - `resizeAxis` (Enum) = `Horizontal`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `-1`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+        - `SplitSpanRecord` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `SplitSpanRecord (MonoScript) asset='Assets/Scripts/Parts/Segments/SplitSpanRecord.cs'`
+          - `spanId` (String) = `0c9b771057dd4de78d66dfd10ecbae1b`
+          - `originalLocalStartX` (Float) = `-12`
+          - `originalLocalEndX` (Float) = `12`
+          - `originalLocalCenterY` (Float) = `0`
+          - `isSplitFragment` (Boolean) = `False`
+          - `splitDepth` (Integer) = `0`
+          - `sourceKind` (String) = `Floor`
+          - `spanRoot` (ObjectReference) = `_Deck (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck'`
+      - `DeckSegment_Sprite` | path=`TestBoat_11_Keel_Anchor_Rudder/_Deck/DeckSegment_Wooden_Left/DeckSegment_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `47.633, 15.96, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatSegmentWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatSegmentWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(5.03, 0.80)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+    - `DeckSegment_Wooden_Right` | path=`TestBoat_11_Keel_Anchor_Rudder/_Deck/DeckSegment_Wooden_Right` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `3.488, 0, 0`
+        - worldPosition: `60.608, 15.96, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(3.49, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(17.03, 0.80)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `FloorSegmentAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `FloorSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Segments/FloorSegmentAuthoring.cs'`
+          - `floorCollider` (ObjectReference) = `DeckSegment_Wooden_Right (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/DeckSegment_Wooden_Right'`
+          - `spriteRenderer` (ObjectReference) = `DeckSegment_Sprite (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/DeckSegment_Wooden_Right/DeckSegment_Sprite'`
+          - `resizableSegment` (ObjectReference) = `DeckSegment_Wooden_Right (ResizableSegment2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/DeckSegment_Wooden_Right'`
+          - `width` (Float) = `17.025`
+          - `height` (Float) = `0.8`
+        - `ResizableSegment2D` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `DeckSegment_Sprite (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/DeckSegment_Wooden_Right/DeckSegment_Sprite'`
+          - `boxCollider` (ObjectReference) = `DeckSegment_Wooden_Right (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/DeckSegment_Wooden_Right'`
+          - `width` (Float) = `17.025`
+          - `height` (Float) = `0.8`
+          - `resizeAxis` (Enum) = `Horizontal`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `-1`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+        - `SplitSpanRecord` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `SplitSpanRecord (MonoScript) asset='Assets/Scripts/Parts/Segments/SplitSpanRecord.cs'`
+          - `spanId` (String) = `0c9b771057dd4de78d66dfd10ecbae1b`
+          - `originalLocalStartX` (Float) = `-12`
+          - `originalLocalEndX` (Float) = `12`
+          - `originalLocalCenterY` (Float) = `0`
+          - `isSplitFragment` (Boolean) = `True`
+          - `splitDepth` (Integer) = `1`
+          - `sourceKind` (String) = `Floor`
+          - `spanRoot` (ObjectReference) = `_Deck (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck'`
+      - `DeckSegment_Sprite` | path=`TestBoat_11_Keel_Anchor_Rudder/_Deck/DeckSegment_Wooden_Right/DeckSegment_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `60.608, 15.96, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatSegmentWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatSegmentWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(17.03, 0.80)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+    - `hatch_01` | path=`TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-6, 0, 0`
+        - worldPosition: `51.12, 15.96, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-6.00, 0.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `HatchAuthoring` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `HatchAuthoring (MonoScript) asset='Assets/Scripts/Parts/Hatch/HatchAuthoring.cs'`
+          - `frameRenderer` (ObjectReference) = `Frame (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01/Frame'`
+          - `closedRenderer` (ObjectReference) = `Closed (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01/Closed'`
+          - `openRenderer` (ObjectReference) = `Open (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01/Open'`
+          - `blockingCollider` (ObjectReference) = `Blocker (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01/Blocker'`
+          - `ledgeCollider` (ObjectReference) = `Ledge (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01/Ledge'`
+          - `openingWidth` (Float) = `1.95`
+          - `frameWidth` (Float) = `1.95`
+          - `startsOpen` (Boolean) = `False`
+          - `hatchId` (String) = `hatch_01`
+        - `HatchRuntime` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `HatchRuntime (MonoScript) asset='Assets/Scripts/Parts/Hatch/HatchRuntime.cs'`
+          - `authoring` (ObjectReference) = `hatch_01 (HatchAuthoring) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01'`
+          - `isOpen` (Boolean) = `False`
+          - `enableLedgeWhenOpen` (Boolean) = `True`
+          - `closeObstructionMask` (LayerMask) = `131080`
+          - `triggersBlockClosing` (Boolean) = `False`
+          - `ignoreOwnColliders` (Boolean) = `True`
+          - `ignoreSameBoatRoot` (Boolean) = `False`
+          - `vibrateOnDeniedClose` (Boolean) = `True`
+          - `deniedVibrationDuration` (Float) = `0.3`
+          - `deniedVibrationDistance` (Float) = `0.07`
+          - `deniedVibrationFrequency` (Float) = `36`
+          - `logDeniedClose` (Boolean) = `True`
+        - `HatchInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HatchInteractable (MonoScript) asset='Assets/Scripts/Parts/Hatch/HatchInteractable.cs'`
+          - `hatchRuntime` (ObjectReference) = `hatch_01 (HatchRuntime) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01'`
+          - `promptAnchor` (ObjectReference) = `hatch_01 (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01'`
+          - `interactionPriority` (Integer) = `30`
+          - `allowInteractWhenOpen` (Boolean) = `True`
+          - `allowInteractWhenClosed` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+        - `SpanRepairBlocker` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `SpanRepairBlocker (MonoScript) asset='Assets/Scripts/Parts/Segments/SpanRepairBlocker.cs'`
+          - `spanId` (String) = `0c9b771057dd4de78d66dfd10ecbae1b`
+          - `localStartX` (Float) = `-6.975`
+          - `localEndX` (Float) = `-5.025`
+          - `blockerKind` (String) = `Hatch`
+          - `spanRoot` (ObjectReference) = `_Deck (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck'`
+      - `Blocker` | path=`TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01/Blocker` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.669`
+          - worldPosition: `51.12, 15.96, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `False`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(1.90, 0.70)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `CompartmentBoundaryAuthoring` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+            - `roles` (Enum) = `Hatch`
+            - `countsAsBoundary` (Boolean) = `False`
+            - `isOpeningCarrier` (Boolean) = `True`
+            - `openingId` (String) = ``
+      - `Closed` | path=`TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01/Closed` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0.55, 0.669`
+          - worldPosition: `51.12, 16.51, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.55, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `HatchClosedMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/HatchClosedMetal_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `CompartmentLink` | path=`TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01/CompartmentLink` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `51.12, 15.96, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(2.00, 1.00)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `CompartmentLinkAuthoring` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentLinkAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentLinkAuthoring.cs'`
+            - `linkId` (String) = `CompartmentLink`
+            - `hatchRuntime` (ObjectReference) = `hatch_01 (HatchRuntime) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01'`
+            - `openingCollider` (ObjectReference) = `CompartmentLink (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01/CompartmentLink'`
+            - `linkType` (Enum) = `Hatch`
+            - `sampleOffset` (Float) = `0.6`
+            - `autoResolveInEditor` (Boolean) = `False`
+            - `flowCoefficient` (Float) = `0.2`
+            - `externalSourceType` (Enum) = `Sea Breach`
+            - `externalRate` (Float) = `0.1`
+          - `CompartmentLinkRuntimeLink` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentLinkRuntimeLink (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentLinkRuntimeLink.cs'`
+            - `hatchRuntime` (ObjectReference) = `hatch_01 (HatchRuntime) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01'`
+            - `linkAuthoring` (ObjectReference) = `CompartmentLink (CompartmentLinkAuthoring) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01/CompartmentLink'`
+            - `logWarnings` (Boolean) = `False`
+            - `logStateChanges` (Boolean) = `False`
+          - `CompartmentBoundaryAuthoring` index=4 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+            - `roles` (Enum) = `Hatch`
+            - `countsAsBoundary` (Boolean) = `True`
+            - `isOpeningCarrier` (Boolean) = `False`
+            - `openingId` (String) = ``
+      - `Frame` | path=`TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01/Frame` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.669`
+          - worldPosition: `51.12, 15.96, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `FramePieceMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/FramePieceMetal_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `InteractionTrigger` | path=`TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01/InteractionTrigger` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.669`
+          - worldPosition: `51.12, 15.96, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.50)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(2.00, 3.00)`
+            - `m_EdgeRadius` (Float) = `0`
+      - `Ledge` | path=`TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01/Ledge` | activeSelf=True | activeInHierarchy=True | layer=`HatchLedge` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.669`
+          - worldPosition: `51.12, 15.96, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`False`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `False`
+            - `m_UsedByEffector` (Boolean) = `True`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.20)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(1.90, 0.20)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `PlatformEffector2D` index=2 enabled=`True`
+            - `m_UseColliderMask` (Boolean) = `False`
+            - `m_ColliderMask` (LayerMask) = `-1`
+            - `m_RotationalOffset` (Float) = `0`
+            - `m_UseOneWay` (Boolean) = `True`
+            - `m_UseOneWayGrouping` (Boolean) = `True`
+            - `m_SurfaceArc` (Float) = `160`
+            - `m_UseSideFriction` (Boolean) = `False`
+            - `m_UseSideBounce` (Boolean) = `False`
+            - `m_SideArc` (Float) = `1`
+          - `HatchLedge` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `HatchLedge (MonoScript) asset='Assets/Scripts/Parts/Hatch/HatchLedge.cs'`
+            - `configureOneWayPlatformOnReset` (Boolean) = `True`
+            - `surfaceArc` (Float) = `160`
+            - `orientOneWaySurfaceAgainstGravity` (Boolean) = `True`
+            - `autoSyncConnectionOpeningCollider` (Boolean) = `True`
+            - `openingWidthPadding` (Float) = `0`
+            - `openingHeight` (Float) = `0.5`
+            - `openingVerticalOffset` (Float) = `0`
+      - `Open` | path=`TestBoat_11_Keel_Anchor_Rudder/_Deck/hatch_01/Open` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 1.2, 0.669`
+          - worldPosition: `51.12, 17.16, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 1.20, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`False`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `HatchOpenMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/HatchOpenMetal_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+  - `_Exterior` | path=`TestBoat_11_Keel_Anchor_Rudder/_Exterior` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `57.12, 15.96, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `BoatShell_Wooden` | path=`TestBoat_11_Keel_Anchor_Rudder/_Exterior/BoatShell_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, -2.25, 0`
+        - worldPosition: `57.12, 13.71, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, -2.25, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoatVisualMarker` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisualMarker (MonoScript) asset='Assets/Scripts/Boats/BoatVisualMarker.cs'`
+          - `category` (Enum) = `Exterior Shell`
+        - `ResizableSegment2D` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `BoatShell_Sprite (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Exterior/BoatShell_Wooden/BoatShell_Sprite'`
+          - `boxCollider` (ObjectReference) = `BoatShell_Wooden (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Exterior/BoatShell_Wooden'`
+          - `width` (Float) = `24`
+          - `height` (Float) = `4.5`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `BoxCollider2D` index=3 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(24.00, 4.50)`
+          - `m_EdgeRadius` (Float) = `0`
+      - `BoatShell_Sprite` | path=`TestBoat_11_Keel_Anchor_Rudder/_Exterior/BoatShell_Wooden/BoatShell_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.064`
+          - worldPosition: `57.12, 13.71, 0.064`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.06)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `MetalHull_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/MetalHull_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(24.00, 4.50)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+  - `_Gameplay` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `57.12, 15.96, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `anchor_02` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/anchor_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `6, -2, 0`
+        - worldPosition: `63.12, 13.96, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(6.00, -2.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `anchor_02`
+          - `hardpointType` (Enum) = `Anchor`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/anchor_02/MountPoint'`
+          - `placementMarkerRenderer` (ObjectReference) = `anchor_02 (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/anchor_02'`
+          - `controllers` (Generic) = `array size=0`
+          - `startingModuleDefinition` (ObjectReference) = `module_anchor_hole_basic (ModuleDefinition) asset='Assets/Defs/Modules/module_anchor_hole_basic.asset'`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `anchor_02 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/anchor_02'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/anchor_02/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `True`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(1.00, 1.00)`
+          - `localOffset` (Vector2) = `(0.00, 0.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `False`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+        - `BoatVisualMarker` index=7 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisualMarker (MonoScript) asset='Assets/Scripts/Boats/BoatVisualMarker.cs'`
+          - `category` (Enum) = `Exterior Shell`
+      - `ModuleBottomAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/anchor_02/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `63.12, 13.96, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/anchor_02/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `63.12, 13.96, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/anchor_02/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `63.12, 13.96, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `BoardingDoor_Wooden` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/BoardingDoor_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`BoardingArea` | static=False
+      - Transform:
+        - localPosition: `-3.5, -2, 0`
+        - worldPosition: `53.62, 13.96, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-3.50, -2.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `BoatHatchWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatHatchWooden_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoxCollider2D` index=2 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(3.00, 3.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `BoatBoardingInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBoardingInteractable (MonoScript) asset='Assets/Scripts/Parts/BoatBoardingInteractable.cs'`
+          - `priority` (Integer) = `30`
+          - `maxUseDistance` (Float) = `3`
+          - `boardPoint` (ObjectReference) = `BoardingDoor_Wooden (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/BoardingDoor_Wooden'`
+          - `parentPlayerToBoat` (Boolean) = `True`
+          - `postSnapNudge` (Vector2) = `(0.00, 0.00)`
+          - `requireHoldToBoard` (Boolean) = `True`
+          - `boardHoldKey` (Enum) = `E`
+          - `boardHoldSeconds` (Float) = `0.35`
+          - `showBoardHoldProgressInPrompt` (Boolean) = `True`
+          - `suppressInstantBoardInteract` (Boolean) = `True`
+          - `requireHoldToUnboard` (Boolean) = `True`
+          - `unboardHoldKey` (Enum) = `E`
+          - `unboardHoldSeconds` (Float) = `0.65`
+          - `showUnboardHoldProgressInPrompt` (Boolean) = `True`
+          - `suppressInstantUnboardInteract` (Boolean) = `True`
+          - `fadeWhenPlayerFar` (Boolean) = `True`
+          - `fadeRenderers` (Generic) = `array size=1`
+          - `fadeOnlyWhenBoardedInterior` (Boolean) = `True`
+          - `fadeNearDistance` (Float) = `1.2`
+          - `nearAlpha` (Float) = `1`
+          - `farAlpha` (Float) = `0.1`
+          - `fadeSpeed` (Float) = `12`
+          - `useInteractDistanceForFade` (Boolean) = `True`
+          - `debugHold` (Boolean) = `False`
+    - `DeckBoardZone` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/DeckBoardZone` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-7.5, 1.5, 0`
+        - worldPosition: `49.62, 17.46, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-7.50, 1.50, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `ResizableSegment2D` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `boxCollider` (ObjectReference) = `DeckBoardZone (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/DeckBoardZone'`
+          - `width` (Float) = `1`
+          - `height` (Float) = `1`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `DeckBoardZone` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `DeckBoardZone (MonoScript) asset='Assets/Scripts/Boats/DeckBoardZone.cs'`
+          - `priority` (Integer) = `1`
+          - `holdSeconds` (Float) = `0.5`
+          - `primaryHoldKey` (Enum) = `E`
+          - `allowSecondaryHoldKey` (Boolean) = `False`
+          - `secondaryHoldKey` (Enum) = `W`
+          - `snapToBoardPoint` (Boolean) = `False`
+          - `zeroVelocityOnBoard` (Boolean) = `True`
+          - `requireUnboarded` (Boolean) = `True`
+          - `onlyBoardClosestEligiblePlayer` (Boolean) = `True`
+          - `promptText` (String) = `Board Deck`
+          - `includeHoldKeyInPrompt` (Boolean) = `True`
+          - `includeProgressInPrompt` (Boolean) = `True`
+          - `debugLog` (Boolean) = `False`
+    - `DeckBoardZone` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/DeckBoardZone` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 2.5, 0`
+        - worldPosition: `57.12, 18.46, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 2.50, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(24.00, 5.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `ResizableSegment2D` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `boxCollider` (ObjectReference) = `DeckBoardZone (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/DeckBoardZone'`
+          - `width` (Float) = `24`
+          - `height` (Float) = `5`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `DeckBoardZone` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `DeckBoardZone (MonoScript) asset='Assets/Scripts/Boats/DeckBoardZone.cs'`
+          - `priority` (Integer) = `1`
+          - `holdSeconds` (Float) = `0.5`
+          - `primaryHoldKey` (Enum) = `E`
+          - `allowSecondaryHoldKey` (Boolean) = `False`
+          - `secondaryHoldKey` (Enum) = `W`
+          - `snapToBoardPoint` (Boolean) = `False`
+          - `zeroVelocityOnBoard` (Boolean) = `True`
+          - `requireUnboarded` (Boolean) = `True`
+          - `onlyBoardClosestEligiblePlayer` (Boolean) = `True`
+          - `promptText` (String) = `Board Deck`
+          - `includeHoldKeyInPrompt` (Boolean) = `True`
+          - `includeProgressInPrompt` (Boolean) = `True`
+          - `debugLog` (Boolean) = `False`
+    - `engine_01_01` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-10.5, -3.455, 0`
+        - worldPosition: `46.62, 12.505, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-10.50, -3.46, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `engine_01_01`
+          - `hardpointType` (Enum) = `Engine`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01/MountPoint'`
+          - `placementMarkerRenderer` (ObjectReference) = `engine_01_01 (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01'`
+          - `controllers` (Generic) = `array size=0`
+          - `startingModuleDefinition` (ObjectReference) = `module_engine_basic (ModuleDefinition) asset='Assets/Defs/Modules/module_engine_basic.asset'`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+          - `installedModule` (ObjectReference) = `BasicEngine_Installed(Clone) (InstalledModule) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01/MountPoint/BasicEngine_Installed(Clone)'`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `engine_01_01 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `False`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `ModuleBottomAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `46.62, 12.505, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `46.62, 12.505, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BasicEngine_Installed(Clone)` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01/MountPoint/BasicEngine_Installed(Clone)` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0.3, 0.074`
+            - worldPosition: `46.62, 12.805, 0.074`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.30, 0.07)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `SpriteRenderer` index=1 enabled=`True`
+              - `m_CastShadows` (Enum) = `Off`
+              - `m_ReceiveShadows` (Boolean) = `False`
+              - `m_DynamicOccludee` (Boolean) = `True`
+              - `m_StaticShadowCaster` (Boolean) = `False`
+              - `m_MotionVectors` (Enum) = `Per Object Motion`
+              - `m_LightProbeUsage` (Integer) = `1`
+              - `m_ReflectionProbeUsage` (Integer) = `1`
+              - `m_RayTracingMode` (Integer) = `0`
+              - `m_RayTraceProcedural` (Boolean) = `False`
+              - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+              - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+              - `m_SmallMeshCulling` (Boolean) = `True`
+              - `m_RenderingLayerMask` (Integer) = `1`
+              - `m_RendererPriority` (Integer) = `0`
+              - `m_Materials` (Generic) = `array size=1`
+              - `m_Sprite` (ObjectReference) = `BasicEngine_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BasicEngine_Sprite.gif'`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_FlipX` (Boolean) = `False`
+              - `m_FlipY` (Boolean) = `False`
+              - `m_DrawMode` (Enum) = `Simple`
+              - `m_Size` (Vector2) = `(1.00, 1.00)`
+              - `m_AdaptiveModeThreshold` (Float) = `0.5`
+              - `m_SpriteTileMode` (Enum) = `Continuous`
+              - `m_MaskInteraction` (Enum) = `None`
+              - `m_SpriteSortPoint` (Enum) = `Center`
+            - `BoxCollider2D` index=2 enabled=`True`
+              - `m_Density` (Float) = `1`
+              - `m_IncludeLayers` (LayerMask) = `0`
+              - `m_ExcludeLayers` (LayerMask) = `0`
+              - `m_LayerOverridePriority` (Integer) = `0`
+              - `m_ForceSendLayers` (LayerMask) = `-1`
+              - `m_ForceReceiveLayers` (LayerMask) = `-1`
+              - `m_ContactCaptureLayers` (LayerMask) = `-1`
+              - `m_CallbackLayers` (LayerMask) = `-1`
+              - `m_IsTrigger` (Boolean) = `False`
+              - `m_UsedByEffector` (Boolean) = `False`
+              - `m_CompositeOperation` (Enum) = `None`
+              - `m_CompositeOrder` (Integer) = `0`
+              - `m_Offset` (Vector2) = `(0.00, 0.00)`
+              - `m_AutoTiling` (Boolean) = `False`
+              - `m_Size` (Vector2) = `(0.28, 0.28)`
+              - `m_EdgeRadius` (Float) = `0`
+            - `Rigidbody2D` index=3 enabled=`n/a`
+              - `m_BodyType` (Enum) = `Kinematic`
+              - `m_Simulated` (Boolean) = `False`
+              - `m_UseFullKinematicContacts` (Boolean) = `False`
+              - `m_UseAutoMass` (Boolean) = `False`
+              - `m_Mass` (Float) = `1`
+              - `m_LinearDamping` (Float) = `0`
+              - `m_AngularDamping` (Float) = `0.05`
+              - `m_GravityScale` (Float) = `1`
+              - `m_IncludeLayers` (LayerMask) = `0`
+              - `m_ExcludeLayers` (LayerMask) = `0`
+              - `m_Interpolate` (Enum) = `None`
+              - `m_SleepingMode` (Enum) = `Start Awake`
+              - `m_CollisionDetection` (Enum) = `Discrete`
+              - `m_Constraints` (Integer) = `0`
+            - `WorldItem` index=4 enabled=`True`
+              - `m_Script` (ObjectReference) = `WorldItem (MonoScript) asset='Assets/Scripts/Inventory/Item/WorldItem.cs'`
+              - `itemInstance` (ManagedReference) = `null`
+              - `interactionPriority` (Integer) = `10`
+              - `maxPickupDistance` (Float) = `3`
+              - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01/MountPoint/BasicEngine_Installed(Clone)/PromptAnchor'`
+              - `highlightObject` (ObjectReference) = `Highlight (GameObject) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01/MountPoint/BasicEngine_Installed(Clone)/Highlight'`
+              - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+              - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+              - `verboseLogging` (Boolean) = `True`
+            - `InstalledModule` index=5 enabled=`True`
+              - `m_Script` (ObjectReference) = `InstalledModule (MonoScript) asset='Assets/Scripts/Modules/InstalledModule.cs'`
+              - `definition` (ObjectReference) = `module_engine_basic (ModuleDefinition) asset='Assets/Defs/Modules/module_engine_basic.asset'`
+              - `ownerHardpoint` (ObjectReference) = `engine_01_01 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01'`
+            - `EngineModule` index=6 enabled=`True`
+              - `m_Script` (ObjectReference) = `EngineModule (MonoScript) asset='Assets/Scripts/Modules/EngineModule.cs'`
+              - `isOn` (Boolean) = `False`
+              - `thrust` (Float) = `75`
+              - `fuelContainerDefinition` (ObjectReference) = `item_fuel_container_small (ItemDefinition) asset='Assets/Defs/Items/Items/item_fuel_container_small.asset'`
+              - `fuelBurnRatePerSecond` (Float) = `0.1`
+              - `maxThrottleBurnMultiplier` (Float) = `2.5`
+              - `allowBoatPowerFallback` (Boolean) = `True`
+              - `idlePowerDemandPerSecond` (Float) = `0.5`
+              - `maxThrottlePowerDemandMultiplier` (Float) = `2`
+              - `fuelContainerItem` (ManagedReference) = `Assembly-CSharp ItemInstance`
+            - `InstalledModuleAnchor` index=7 enabled=`True`
+              - `m_Script` (ObjectReference) = `InstalledModuleAnchor (MonoScript) asset='Assets/Scripts/Modules/InstalledModuleAnchor.cs'`
+              - `moduleAnchor` (ObjectReference) = `ModuleBottomAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01/MountPoint/BasicEngine_Installed(Clone)/ModuleBottomAnchor'`
+          - `Highlight` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01/MountPoint/BasicEngine_Installed(Clone)/Highlight` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Highlight` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `46.62, 12.805, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1.1, 1.1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.10, 1.10, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `SpriteRenderer` index=1 enabled=`True`
+                - `m_CastShadows` (Enum) = `Off`
+                - `m_ReceiveShadows` (Boolean) = `False`
+                - `m_DynamicOccludee` (Boolean) = `True`
+                - `m_StaticShadowCaster` (Boolean) = `False`
+                - `m_MotionVectors` (Enum) = `Per Object Motion`
+                - `m_LightProbeUsage` (Integer) = `1`
+                - `m_ReflectionProbeUsage` (Integer) = `1`
+                - `m_RayTracingMode` (Integer) = `0`
+                - `m_RayTraceProcedural` (Boolean) = `False`
+                - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+                - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+                - `m_SmallMeshCulling` (Boolean) = `True`
+                - `m_RenderingLayerMask` (Integer) = `1`
+                - `m_RendererPriority` (Integer) = `0`
+                - `m_Materials` (Generic) = `array size=1`
+                - `m_Sprite` (ObjectReference) = `BasicEngine_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BasicEngine_Sprite.gif'`
+                - `m_Color` (Color) = `RGBA(0.494, 0.593, 0.764, 1.000)`
+                - `m_FlipX` (Boolean) = `False`
+                - `m_FlipY` (Boolean) = `False`
+                - `m_DrawMode` (Enum) = `Simple`
+                - `m_Size` (Vector2) = `(1.00, 1.00)`
+                - `m_AdaptiveModeThreshold` (Float) = `0.5`
+                - `m_SpriteTileMode` (Enum) = `Continuous`
+                - `m_MaskInteraction` (Enum) = `None`
+                - `m_SpriteSortPoint` (Enum) = `Center`
+          - `ModuleBottomAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01/MountPoint/BasicEngine_Installed(Clone)/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, -0.3, -0.074`
+              - worldPosition: `46.62, 12.505, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `0.125, 0.125, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, -0.30, -0.07)`
+                - `m_LocalScale` (Vector3) = `(0.13, 0.13, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `PromptAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01/MountPoint/BasicEngine_Installed(Clone)/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `46.62, 12.805, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SlotAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01/MountPoint/BasicEngine_Installed(Clone)/SlotAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `46.62, 12.805, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/engine_01_01/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `46.62, 12.505, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `helm_02` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `3.5, -2, 0`
+        - worldPosition: `60.62, 13.96, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(3.50, -2.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `helm_02`
+          - `hardpointType` (Enum) = `Helm`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02/MountPoint'`
+          - `placementMarkerRenderer` (ObjectReference) = `helm_02 (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02'`
+          - `controllers` (Generic) = `array size=1`
+          - `startingModuleDefinition` (ObjectReference) = `module_helm_basic (ModuleDefinition) asset='Assets/Defs/Modules/module_helm_basic.asset'`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+          - `installedModule` (ObjectReference) = `BasicHelm_Installed(Clone) (InstalledModule) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02/MountPoint/BasicHelm_Installed(Clone)'`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `helm_02 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `False`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(2.00, 2.00)`
+          - `localOffset` (Vector2) = `(0.00, 0.00)`
+          - `drawGizmo` (Boolean) = `True`
+      - `ModuleBottomAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `60.62, 13.96, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `60.62, 13.96, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BasicHelm_Installed(Clone)` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02/MountPoint/BasicHelm_Installed(Clone)` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0, 0.074`
+            - worldPosition: `60.62, 13.96, 0.074`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.07)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `SpriteRenderer` index=1 enabled=`True`
+              - `m_CastShadows` (Enum) = `Off`
+              - `m_ReceiveShadows` (Boolean) = `False`
+              - `m_DynamicOccludee` (Boolean) = `True`
+              - `m_StaticShadowCaster` (Boolean) = `False`
+              - `m_MotionVectors` (Enum) = `Per Object Motion`
+              - `m_LightProbeUsage` (Integer) = `1`
+              - `m_ReflectionProbeUsage` (Integer) = `1`
+              - `m_RayTracingMode` (Integer) = `0`
+              - `m_RayTraceProcedural` (Boolean) = `False`
+              - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+              - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+              - `m_SmallMeshCulling` (Boolean) = `True`
+              - `m_RenderingLayerMask` (Integer) = `1`
+              - `m_RendererPriority` (Integer) = `0`
+              - `m_Materials` (Generic) = `array size=1`
+              - `m_Sprite` (ObjectReference) = `HelmController_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/HelmController_Sprite.gif'`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_FlipX` (Boolean) = `False`
+              - `m_FlipY` (Boolean) = `False`
+              - `m_DrawMode` (Enum) = `Simple`
+              - `m_Size` (Vector2) = `(1.00, 1.00)`
+              - `m_AdaptiveModeThreshold` (Float) = `0.5`
+              - `m_SpriteTileMode` (Enum) = `Continuous`
+              - `m_MaskInteraction` (Enum) = `None`
+              - `m_SpriteSortPoint` (Enum) = `Center`
+            - `BoxCollider2D` index=2 enabled=`True`
+              - `m_Density` (Float) = `1`
+              - `m_IncludeLayers` (LayerMask) = `0`
+              - `m_ExcludeLayers` (LayerMask) = `0`
+              - `m_LayerOverridePriority` (Integer) = `0`
+              - `m_ForceSendLayers` (LayerMask) = `-1`
+              - `m_ForceReceiveLayers` (LayerMask) = `-1`
+              - `m_ContactCaptureLayers` (LayerMask) = `-1`
+              - `m_CallbackLayers` (LayerMask) = `-1`
+              - `m_IsTrigger` (Boolean) = `False`
+              - `m_UsedByEffector` (Boolean) = `False`
+              - `m_CompositeOperation` (Enum) = `None`
+              - `m_CompositeOrder` (Integer) = `0`
+              - `m_Offset` (Vector2) = `(0.00, 0.00)`
+              - `m_AutoTiling` (Boolean) = `False`
+              - `m_Size` (Vector2) = `(2.00, 1.20)`
+              - `m_EdgeRadius` (Float) = `0`
+            - `Rigidbody2D` index=3 enabled=`n/a`
+              - `m_BodyType` (Enum) = `Kinematic`
+              - `m_Simulated` (Boolean) = `False`
+              - `m_UseFullKinematicContacts` (Boolean) = `False`
+              - `m_UseAutoMass` (Boolean) = `False`
+              - `m_Mass` (Float) = `1`
+              - `m_LinearDamping` (Float) = `0`
+              - `m_AngularDamping` (Float) = `0.05`
+              - `m_GravityScale` (Float) = `1`
+              - `m_IncludeLayers` (LayerMask) = `0`
+              - `m_ExcludeLayers` (LayerMask) = `0`
+              - `m_Interpolate` (Enum) = `None`
+              - `m_SleepingMode` (Enum) = `Start Awake`
+              - `m_CollisionDetection` (Enum) = `Discrete`
+              - `m_Constraints` (Integer) = `0`
+            - `WorldItem` index=4 enabled=`True`
+              - `m_Script` (ObjectReference) = `WorldItem (MonoScript) asset='Assets/Scripts/Inventory/Item/WorldItem.cs'`
+              - `itemInstance` (ManagedReference) = `null`
+              - `interactionPriority` (Integer) = `10`
+              - `maxPickupDistance` (Float) = `3`
+              - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02/MountPoint/BasicHelm_Installed(Clone)/PromptAnchor'`
+              - `highlightObject` (ObjectReference) = `Highlight (GameObject) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02/MountPoint/BasicHelm_Installed(Clone)/Highlight'`
+              - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+              - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+              - `verboseLogging` (Boolean) = `True`
+            - `InstalledModule` index=5 enabled=`True`
+              - `m_Script` (ObjectReference) = `InstalledModule (MonoScript) asset='Assets/Scripts/Modules/InstalledModule.cs'`
+              - `definition` (ObjectReference) = `module_helm_basic (ModuleDefinition) asset='Assets/Defs/Modules/module_helm_basic.asset'`
+              - `ownerHardpoint` (ObjectReference) = `helm_02 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02'`
+            - `InstalledModuleAnchor` index=6 enabled=`True`
+              - `m_Script` (ObjectReference) = `InstalledModuleAnchor (MonoScript) asset='Assets/Scripts/Modules/InstalledModuleAnchor.cs'`
+              - `moduleAnchor` (ObjectReference) = `ModuleBottomAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02/MountPoint/BasicHelm_Installed(Clone)/ModuleBottomAnchor'`
+            - `HelmModule` index=7 enabled=`True`
+              - `m_Script` (ObjectReference) = `HelmModule (MonoScript) asset='Assets/Scripts/Modules/Helm/HelmModule.cs'`
+              - `stationConnectionCapacity` (Integer) = `1`
+              - `condition` (Enum) = `Healthy`
+          - `Highlight` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02/MountPoint/BasicHelm_Installed(Clone)/Highlight` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Highlight` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `60.62, 13.96, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1.1, 1.1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.10, 1.10, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `SpriteRenderer` index=1 enabled=`True`
+                - `m_CastShadows` (Enum) = `Off`
+                - `m_ReceiveShadows` (Boolean) = `False`
+                - `m_DynamicOccludee` (Boolean) = `True`
+                - `m_StaticShadowCaster` (Boolean) = `False`
+                - `m_MotionVectors` (Enum) = `Per Object Motion`
+                - `m_LightProbeUsage` (Integer) = `1`
+                - `m_ReflectionProbeUsage` (Integer) = `1`
+                - `m_RayTracingMode` (Integer) = `0`
+                - `m_RayTraceProcedural` (Boolean) = `False`
+                - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+                - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+                - `m_SmallMeshCulling` (Boolean) = `True`
+                - `m_RenderingLayerMask` (Integer) = `1`
+                - `m_RendererPriority` (Integer) = `0`
+                - `m_Materials` (Generic) = `array size=1`
+                - `m_Sprite` (ObjectReference) = `HelmController_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/HelmController_Sprite.gif'`
+                - `m_Color` (Color) = `RGBA(0.494, 0.593, 0.764, 1.000)`
+                - `m_FlipX` (Boolean) = `False`
+                - `m_FlipY` (Boolean) = `False`
+                - `m_DrawMode` (Enum) = `Simple`
+                - `m_Size` (Vector2) = `(1.00, 1.00)`
+                - `m_AdaptiveModeThreshold` (Float) = `0.5`
+                - `m_SpriteTileMode` (Enum) = `Continuous`
+                - `m_MaskInteraction` (Enum) = `None`
+                - `m_SpriteSortPoint` (Enum) = `Center`
+          - `ModuleBottomAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02/MountPoint/BasicHelm_Installed(Clone)/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, -0.074`
+              - worldPosition: `60.62, 13.96, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, -0.07)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `PromptAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02/MountPoint/BasicHelm_Installed(Clone)/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `60.62, 13.96, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SlotAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02/MountPoint/BasicHelm_Installed(Clone)/SlotAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `60.62, 13.96, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `60.62, 13.96, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `keel_02` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/keel_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `7, -5.225, 0`
+        - worldPosition: `64.12, 10.735, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(7.00, -5.23, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `keel_02`
+          - `hardpointType` (Enum) = `Keel`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/keel_02/MountPoint'`
+          - `placementMarkerRenderer` (ObjectReference) = `keel_02 (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/keel_02'`
+          - `controllers` (Generic) = `array size=0`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `keel_02 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/keel_02'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/keel_02/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `True`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Top`
+          - `targetEdge` (Enum) = `Bottom`
+          - `boundsSource` (Enum) = `Renderer And Collider Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `1`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `ModuleBottomAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/keel_02/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `64.12, 10.735, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/keel_02/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `64.12, 10.735, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/keel_02/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `64.12, 10.735, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `MapTable` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/MapTable` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, -3, 0`
+        - worldPosition: `57.12, 12.96, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, -3.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `BoatMapTable_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatMapTable_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `MapTableInteractable` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `MapTableInteractable (MonoScript) asset='Assets/Scripts/Parts/MapTableInteractable.cs'`
+          - `priority` (Integer) = `40`
+          - `maxUseDistance` (Float) = `2`
+          - `toggle` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+        - `BoxCollider2D` index=3 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(2.00, 2.00)`
+          - `m_EdgeRadius` (Float) = `0`
+    - `money_chest_slot_01` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/money_chest_slot_01` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `10, -3.138, 0`
+        - worldPosition: `67.12, 12.823, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(10.00, -3.14, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `MoneyChestSecureSlot` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `MoneyChestSecureSlot (MonoScript) asset='Assets/Scripts/MoneyChest/MoneyChestSecureSlot.cs'`
+          - `stableId` (String) = `money_chest_slot_01`
+          - `chestAnchor` (ObjectReference) = `ChestAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/money_chest_slot_01/ChestAnchor'`
+          - `moneyChestItemDefinition` (ObjectReference) = `item_money_chest (ItemDefinition) asset='Assets/Defs/Items/Sacred/item_money_chest.asset'`
+          - `interactionPriority` (Integer) = `20`
+          - `actionRange` (Float) = `1.75`
+          - `nearbyChestSearchRadius` (Float) = `1.5`
+          - `acceptsReplacementSpawns` (Boolean) = `True`
+          - `logDebugMessages` (Boolean) = `False`
+        - `SpriteRenderer` index=2 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `MoneyChestAnchor_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/MoneyChestAnchor_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 0.51)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoatBuilderSurfaceSnapAuthoring` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `4`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `ChestAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/money_chest_slot_01/ChestAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0.8, 0`
+          - worldPosition: `67.12, 13.623, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.80, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `InteractionCollider` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/money_chest_slot_01/InteractionCollider` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `67.12, 12.823, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.50)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(3.00, 2.00)`
+            - `m_EdgeRadius` (Float) = `0`
+    - `payload_01` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/payload_01` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-10.5, 0.76, 0`
+        - worldPosition: `46.62, 16.72, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-10.50, 0.76, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `CircleCollider2D` index=2 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `Hardpoint` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `payload_01`
+          - `hardpointType` (Enum) = `Tether Payload`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/payload_01/MountPoint'`
+          - `moduleAnchor` (ObjectReference) = `ModuleBottomAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/payload_01/ModuleBottomAnchor'`
+          - `placementMarkerRenderer` (ObjectReference) = `payload_01 (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/payload_01'`
+          - `controllers` (Generic) = `array size=0`
+          - `startingModuleDefinition` (ObjectReference) = `module_diving_base_basic (ModuleDefinition) asset='Assets/Defs/Modules/module_diving_base_basic.asset'`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+        - `HardpointInteractable` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `payload_01 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/payload_01'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/payload_01/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `False`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `HardpointSupportFootprint` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointSupportFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointSupportFootprint.cs'`
+          - `enforceSupport` (Boolean) = `True`
+          - `localProbeOffset` (Vector2) = `(0.00, -0.10)`
+          - `maximumSupportDrop` (Float) = `0.35`
+          - `sampleSpacing` (Float) = `0.2`
+          - `edgeInset` (Float) = `0.02`
+          - `supportLayerMask` (LayerMask) = `0`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireSameBoat` (Boolean) = `True`
+          - `drawGizmo` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+        - `HardpointSupportHoverPreview` index=7 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointSupportHoverPreview (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointSupportHoverPreview.cs'`
+          - `hoverColliders` (Generic) = `array size=0`
+          - `lineWidth` (Float) = `0.045`
+          - `zOffset` (Float) = `-0.05`
+          - `validColor` (Color) = `RGBA(0.150, 1.000, 0.250, 0.950)`
+          - `invalidColor` (Color) = `RGBA(1.000, 0.150, 0.100, 0.950)`
+          - `verboseLogging` (Boolean) = `False`
+        - `BoatBuilderSurfaceSnapAuthoring` index=8 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `ModuleBottomAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/payload_01/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `46.62, 16.72, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/payload_01/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `46.62, 16.72, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/payload_01/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `46.62, 16.72, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `PilotChair_Metal` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/PilotChair_Metal` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `2.5, -2.781, 0`
+        - worldPosition: `59.62, 13.18, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `0.3, 0.3, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(2.50, -2.78, 0.00)`
+          - `m_LocalScale` (Vector3) = `(0.30, 0.30, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Chair_Metal (Sprite) asset='Assets/Resources/Sprites/BoatKit/Chair_Metal.png'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `True`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoxCollider2D` index=2 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(4.00, 7.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `PilotChairInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `PilotChairInteractable (MonoScript) asset='Assets/Scripts/Parts/PilotChairInteractable.cs'`
+          - `pilotStationId` (String) = ``
+          - `priority` (Integer) = `100`
+          - `maxUseDistance` (Float) = `1.5`
+          - `escapePriority` (Integer) = `900`
+          - `seatController` (ObjectReference) = `PilotChair_Metal (SeatController2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/PilotChair_Metal'`
+          - `seatPoint` (ObjectReference) = `Seat (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/PilotChair_Metal/Seat'`
+          - `pinOccupantToSeat` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `helmHardpoint` (ObjectReference) = `helm_02 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/helm_02'`
+        - `SeatController2D` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `SeatController2D (MonoScript) asset='Assets/Scripts/Controller/Player/SeatController2D.cs'`
+          - `seatPoint` (ObjectReference) = `PilotChair_Metal (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/PilotChair_Metal'`
+          - `pinOccupantToSeat` (Boolean) = `True`
+          - `zeroVelocityWhilePinned` (Boolean) = `True`
+          - `ejectWhenSeatPointUnderwater` (Boolean) = `True`
+          - `underwaterProbePoint` (ObjectReference) = `WaterEjectLevel (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/PilotChair_Metal/WaterEjectLevel'`
+          - `underwaterDepthTolerance` (Float) = `0.05`
+          - `underwaterGraceSeconds` (Float) = `3`
+          - `autoAssignExplicitWaterContext` (Boolean) = `True`
+          - `fallbackToOceanWhenNotPartOfBoat` (Boolean) = `True`
+          - `logEjections` (Boolean) = `False`
+        - `BoatBuilderSurfaceSnapAuthoring` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `1.5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `-1`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `Seat` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/PilotChair_Metal/Seat` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 1, 0`
+          - worldPosition: `59.62, 13.48, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 1.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `WaterEjectLevel` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/PilotChair_Metal/WaterEjectLevel` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 2, 0`
+          - worldPosition: `59.62, 13.78, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 2.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `PlayerSpawnPoint` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/PlayerSpawnPoint` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-10, -2, 0`
+        - worldPosition: `47.12, 13.96, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-10.00, -2.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `PlayerSpawnPoint` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `PlayerSpawnPoint (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerSpawnPoint.cs'`
+          - `slotIndex` (Integer) = `-1`
+          - `weight` (Integer) = `0`
+    - `PlayerSpawnPoint` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/PlayerSpawnPoint` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-4.5, -2, 0`
+        - worldPosition: `52.62, 13.96, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-4.50, -2.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `PlayerSpawnPoint` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `PlayerSpawnPoint (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerSpawnPoint.cs'`
+          - `slotIndex` (Integer) = `-1`
+          - `weight` (Integer) = `0`
+    - `PlayerSpawnPoint` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/PlayerSpawnPoint` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, -2, 0`
+        - worldPosition: `57.12, 13.96, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, -2.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `PlayerSpawnPoint` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `PlayerSpawnPoint (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerSpawnPoint.cs'`
+          - `slotIndex` (Integer) = `-1`
+          - `weight` (Integer) = `0`
+    - `PlayerSpawnPoint` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/PlayerSpawnPoint` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `5, -2, 0`
+        - worldPosition: `62.12, 13.96, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(5.00, -2.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `PlayerSpawnPoint` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `PlayerSpawnPoint (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerSpawnPoint.cs'`
+          - `slotIndex` (Integer) = `-1`
+          - `weight` (Integer) = `0`
+    - `pump_01_01` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `6, -3.455, 0`
+        - worldPosition: `63.12, 12.505, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(6.00, -3.46, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `pump_01_01`
+          - `hardpointType` (Enum) = `Pump`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01/MountPoint'`
+          - `placementMarkerRenderer` (ObjectReference) = `pump_01_01 (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01'`
+          - `controllers` (Generic) = `array size=0`
+          - `startingModuleDefinition` (ObjectReference) = `module_pump_basic (ModuleDefinition) asset='Assets/Defs/Modules/module_pump_basic.asset'`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+          - `installedModule` (ObjectReference) = `BasicPump_Installed(Clone) (InstalledModule) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01/MountPoint/BasicPump_Installed(Clone)'`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `pump_01_01 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `False`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `HardpointReservedFootprint` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `InteractionHitbox` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01/InteractionHitbox` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `63.12, 12.505, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 1.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(2.00, 3.00)`
+            - `m_EdgeRadius` (Float) = `0`
+      - `ModuleBottomAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `63.12, 12.505, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `63.12, 12.505, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BasicPump_Installed(Clone)` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01/MountPoint/BasicPump_Installed(Clone)` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 1.3, 0.074`
+            - worldPosition: `63.12, 13.805, 0.074`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 1.30, 0.07)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `SpriteRenderer` index=1 enabled=`True`
+              - `m_CastShadows` (Enum) = `Off`
+              - `m_ReceiveShadows` (Boolean) = `False`
+              - `m_DynamicOccludee` (Boolean) = `True`
+              - `m_StaticShadowCaster` (Boolean) = `False`
+              - `m_MotionVectors` (Enum) = `Per Object Motion`
+              - `m_LightProbeUsage` (Integer) = `1`
+              - `m_ReflectionProbeUsage` (Integer) = `1`
+              - `m_RayTracingMode` (Integer) = `0`
+              - `m_RayTraceProcedural` (Boolean) = `False`
+              - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+              - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+              - `m_SmallMeshCulling` (Boolean) = `True`
+              - `m_RenderingLayerMask` (Integer) = `1`
+              - `m_RendererPriority` (Integer) = `0`
+              - `m_Materials` (Generic) = `array size=1`
+              - `m_Sprite` (ObjectReference) = `BasicPump_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BasicPump_Sprite.gif'`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_FlipX` (Boolean) = `False`
+              - `m_FlipY` (Boolean) = `False`
+              - `m_DrawMode` (Enum) = `Simple`
+              - `m_Size` (Vector2) = `(1.00, 1.00)`
+              - `m_AdaptiveModeThreshold` (Float) = `0.5`
+              - `m_SpriteTileMode` (Enum) = `Continuous`
+              - `m_MaskInteraction` (Enum) = `None`
+              - `m_SpriteSortPoint` (Enum) = `Center`
+            - `BoxCollider2D` index=2 enabled=`True`
+              - `m_Density` (Float) = `1`
+              - `m_IncludeLayers` (LayerMask) = `0`
+              - `m_ExcludeLayers` (LayerMask) = `0`
+              - `m_LayerOverridePriority` (Integer) = `0`
+              - `m_ForceSendLayers` (LayerMask) = `-1`
+              - `m_ForceReceiveLayers` (LayerMask) = `-1`
+              - `m_ContactCaptureLayers` (LayerMask) = `-1`
+              - `m_CallbackLayers` (LayerMask) = `-1`
+              - `m_IsTrigger` (Boolean) = `False`
+              - `m_UsedByEffector` (Boolean) = `False`
+              - `m_CompositeOperation` (Enum) = `None`
+              - `m_CompositeOrder` (Integer) = `0`
+              - `m_Offset` (Vector2) = `(0.00, 0.00)`
+              - `m_AutoTiling` (Boolean) = `False`
+              - `m_Size` (Vector2) = `(2.00, 2.00)`
+              - `m_EdgeRadius` (Float) = `0`
+            - `Rigidbody2D` index=3 enabled=`n/a`
+              - `m_BodyType` (Enum) = `Kinematic`
+              - `m_Simulated` (Boolean) = `False`
+              - `m_UseFullKinematicContacts` (Boolean) = `False`
+              - `m_UseAutoMass` (Boolean) = `False`
+              - `m_Mass` (Float) = `1`
+              - `m_LinearDamping` (Float) = `0`
+              - `m_AngularDamping` (Float) = `0.05`
+              - `m_GravityScale` (Float) = `1`
+              - `m_IncludeLayers` (LayerMask) = `0`
+              - `m_ExcludeLayers` (LayerMask) = `0`
+              - `m_Interpolate` (Enum) = `None`
+              - `m_SleepingMode` (Enum) = `Start Awake`
+              - `m_CollisionDetection` (Enum) = `Discrete`
+              - `m_Constraints` (Integer) = `0`
+            - `WorldItem` index=4 enabled=`True`
+              - `m_Script` (ObjectReference) = `WorldItem (MonoScript) asset='Assets/Scripts/Inventory/Item/WorldItem.cs'`
+              - `itemInstance` (ManagedReference) = `null`
+              - `interactionPriority` (Integer) = `10`
+              - `maxPickupDistance` (Float) = `3`
+              - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01/MountPoint/BasicPump_Installed(Clone)/PromptAnchor'`
+              - `highlightObject` (ObjectReference) = `Highlight (GameObject) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01/MountPoint/BasicPump_Installed(Clone)/Highlight'`
+              - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+              - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+              - `verboseLogging` (Boolean) = `False`
+            - `InstalledModule` index=5 enabled=`True`
+              - `m_Script` (ObjectReference) = `InstalledModule (MonoScript) asset='Assets/Scripts/Modules/InstalledModule.cs'`
+              - `definition` (ObjectReference) = `module_pump_basic (ModuleDefinition) asset='Assets/Defs/Modules/module_pump_basic.asset'`
+              - `ownerHardpoint` (ObjectReference) = `pump_01_01 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01'`
+            - `PumpModule` index=6 enabled=`True`
+              - `m_Script` (ObjectReference) = `PumpModule (MonoScript) asset='Assets/Scripts/Modules/PumpModule.cs'`
+              - `isOn` (Boolean) = `False`
+              - `pumpRatePerSecond` (Float) = `0.35`
+              - `powerDemandPerSecond` (Float) = `1`
+              - `autoResolveCompartment` (Boolean) = `True`
+              - `targetCompartment` (ObjectReference) = `CompartmentInterior_Wooden (Compartment) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/CompartmentInterior_Wooden'`
+              - `debugLogs` (Boolean) = `False`
+            - `InstalledModuleAnchor` index=7 enabled=`True`
+              - `m_Script` (ObjectReference) = `InstalledModuleAnchor (MonoScript) asset='Assets/Scripts/Modules/InstalledModuleAnchor.cs'`
+              - `moduleAnchor` (ObjectReference) = `ModuleBottomAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01/MountPoint/BasicPump_Installed(Clone)/ModuleBottomAnchor'`
+          - `Highlight` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01/MountPoint/BasicPump_Installed(Clone)/Highlight` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Highlight` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `63.12, 13.805, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1.1, 1.1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.10, 1.10, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `SpriteRenderer` index=1 enabled=`True`
+                - `m_CastShadows` (Enum) = `Off`
+                - `m_ReceiveShadows` (Boolean) = `False`
+                - `m_DynamicOccludee` (Boolean) = `True`
+                - `m_StaticShadowCaster` (Boolean) = `False`
+                - `m_MotionVectors` (Enum) = `Per Object Motion`
+                - `m_LightProbeUsage` (Integer) = `1`
+                - `m_ReflectionProbeUsage` (Integer) = `1`
+                - `m_RayTracingMode` (Integer) = `0`
+                - `m_RayTraceProcedural` (Boolean) = `False`
+                - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+                - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+                - `m_SmallMeshCulling` (Boolean) = `True`
+                - `m_RenderingLayerMask` (Integer) = `1`
+                - `m_RendererPriority` (Integer) = `0`
+                - `m_Materials` (Generic) = `array size=1`
+                - `m_Sprite` (ObjectReference) = `BasicPump_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BasicPump_Sprite.gif'`
+                - `m_Color` (Color) = `RGBA(0.494, 0.593, 0.764, 1.000)`
+                - `m_FlipX` (Boolean) = `False`
+                - `m_FlipY` (Boolean) = `False`
+                - `m_DrawMode` (Enum) = `Simple`
+                - `m_Size` (Vector2) = `(1.00, 1.00)`
+                - `m_AdaptiveModeThreshold` (Float) = `0.5`
+                - `m_SpriteTileMode` (Enum) = `Continuous`
+                - `m_MaskInteraction` (Enum) = `None`
+                - `m_SpriteSortPoint` (Enum) = `Center`
+          - `ModuleBottomAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01/MountPoint/BasicPump_Installed(Clone)/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, -1.3, -0.074`
+              - worldPosition: `63.12, 12.505, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, -1.30, -0.07)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `PromptAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01/MountPoint/BasicPump_Installed(Clone)/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `63.12, 13.805, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SlotAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01/MountPoint/BasicPump_Installed(Clone)/SlotAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `63.12, 13.805, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/pump_01_01/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 1, 0`
+          - worldPosition: `63.12, 13.505, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 1.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `rudder_02` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/rudder_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-12.59, -3, 0`
+        - worldPosition: `44.53, 12.96, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-12.59, -3.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `rudder_02`
+          - `hardpointType` (Enum) = `Rudder`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/rudder_02/MountPoint'`
+          - `placementMarkerRenderer` (ObjectReference) = `rudder_02 (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/rudder_02'`
+          - `controllers` (Generic) = `array size=0`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `rudder_02 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/rudder_02'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/rudder_02/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `True`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Right`
+          - `targetEdge` (Enum) = `Left`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `ModuleBottomAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/rudder_02/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `44.53, 12.96, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/rudder_02/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `44.53, 12.96, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/rudder_02/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `44.53, 12.96, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `storage_02` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/storage_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-8, -3.415, 0`
+        - worldPosition: `49.12, 12.545, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-8.00, -3.42, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `storage_02`
+          - `hardpointType` (Enum) = `Storage`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/storage_02/MountPoint'`
+          - `moduleAnchor` (ObjectReference) = `ModuleBottomAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/storage_02/ModuleBottomAnchor'`
+          - `placementMarkerRenderer` (ObjectReference) = `storage_02 (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/storage_02'`
+          - `controllers` (Generic) = `array size=0`
+          - `startingModuleDefinition` (ObjectReference) = `module_small_locker (ModuleDefinition) asset='Assets/Defs/Modules/module_small_locker.asset'`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `storage_02 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/storage_02'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/storage_02/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `False`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `ModuleBottomAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/storage_02/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `49.12, 12.545, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/storage_02/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `49.12, 12.545, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/storage_02/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `49.12, 12.545, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `winch_02` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `11, 0.76, 0`
+        - worldPosition: `68.12, 16.72, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(11.00, 0.76, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `winch_02`
+          - `hardpointType` (Enum) = `Winch`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_02/MountPoint'`
+          - `placementMarkerRenderer` (ObjectReference) = `winch_02 (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_02'`
+          - `controllers` (Generic) = `array size=0`
+          - `startingModuleDefinition` (ObjectReference) = `module_winch_basic (ModuleDefinition) asset='Assets/Defs/Modules/module_winch_basic.asset'`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `winch_02 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_02'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_02/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `False`
+          - `exteriorModule` (Boolean) = `False`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+        - `TetherWinchLink` index=7 enabled=`True`
+          - `m_Script` (ObjectReference) = `TetherWinchLink (MonoScript) asset='Assets/Scripts/Modules/Tethers/TetherWinchLink.cs'`
+          - `ownerWinchHardpoint` (ObjectReference) = `winch_02 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_02'`
+          - `linkedPayloadHardpoint` (ObjectReference) = `anchor_02 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/anchor_02'`
+      - `ModuleBottomAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_02/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `68.12, 16.72, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_02/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `68.12, 16.72, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_02/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `68.12, 16.72, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `winch_03` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-2.5, 0.76, 0`
+        - worldPosition: `54.62, 16.72, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-2.50, 0.76, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `winch_03`
+          - `hardpointType` (Enum) = `Winch`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03/MountPoint'`
+          - `placementMarkerRenderer` (ObjectReference) = `winch_03 (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03'`
+          - `controllers` (Generic) = `array size=0`
+          - `startingModuleDefinition` (ObjectReference) = `module_winch_basic (ModuleDefinition) asset='Assets/Defs/Modules/module_winch_basic.asset'`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+          - `installedModule` (ObjectReference) = `BasicWinch_Installed(Clone) (InstalledModule) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03/MountPoint/BasicWinch_Installed(Clone)'`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `winch_03 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `False`
+          - `exteriorModule` (Boolean) = `False`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+        - `TetherWinchLink` index=7 enabled=`True`
+          - `m_Script` (ObjectReference) = `TetherWinchLink (MonoScript) asset='Assets/Scripts/Modules/Tethers/TetherWinchLink.cs'`
+          - `ownerWinchHardpoint` (ObjectReference) = `winch_03 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03'`
+          - `linkedPayloadHardpoint` (ObjectReference) = `payload_01 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/payload_01'`
+      - `ModuleBottomAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `54.62, 16.72, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `54.62, 16.72, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BasicWinch_Installed(Clone)` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03/MountPoint/BasicWinch_Installed(Clone)` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+          - Transform:
+            - localPosition: `0, 0.3, 0.074`
+            - worldPosition: `54.62, 17.02, 0.074`
+            - localRotationEuler: `0, 0, 0`
+            - worldRotationEuler: `0, 0, 0`
+            - localScale: `1, 1, 1`
+          - Components:
+            - `Transform` index=0 enabled=`n/a`
+              - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+              - `m_LocalPosition` (Vector3) = `(0.00, 0.30, 0.07)`
+              - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+              - `m_ConstrainProportionsScale` (Boolean) = `False`
+            - `SpriteRenderer` index=1 enabled=`True`
+              - `m_CastShadows` (Enum) = `Off`
+              - `m_ReceiveShadows` (Boolean) = `False`
+              - `m_DynamicOccludee` (Boolean) = `True`
+              - `m_StaticShadowCaster` (Boolean) = `False`
+              - `m_MotionVectors` (Enum) = `Per Object Motion`
+              - `m_LightProbeUsage` (Integer) = `1`
+              - `m_ReflectionProbeUsage` (Integer) = `1`
+              - `m_RayTracingMode` (Integer) = `0`
+              - `m_RayTraceProcedural` (Boolean) = `False`
+              - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+              - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+              - `m_SmallMeshCulling` (Boolean) = `True`
+              - `m_RenderingLayerMask` (Integer) = `1`
+              - `m_RendererPriority` (Integer) = `0`
+              - `m_Materials` (Generic) = `array size=1`
+              - `m_Sprite` (ObjectReference) = `BasicWinch_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BasicWinch_Sprite.gif'`
+              - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+              - `m_FlipX` (Boolean) = `False`
+              - `m_FlipY` (Boolean) = `False`
+              - `m_DrawMode` (Enum) = `Simple`
+              - `m_Size` (Vector2) = `(1.00, 1.00)`
+              - `m_AdaptiveModeThreshold` (Float) = `0.5`
+              - `m_SpriteTileMode` (Enum) = `Continuous`
+              - `m_MaskInteraction` (Enum) = `None`
+              - `m_SpriteSortPoint` (Enum) = `Center`
+            - `BoxCollider2D` index=2 enabled=`True`
+              - `m_Density` (Float) = `1`
+              - `m_IncludeLayers` (LayerMask) = `0`
+              - `m_ExcludeLayers` (LayerMask) = `0`
+              - `m_LayerOverridePriority` (Integer) = `0`
+              - `m_ForceSendLayers` (LayerMask) = `-1`
+              - `m_ForceReceiveLayers` (LayerMask) = `-1`
+              - `m_ContactCaptureLayers` (LayerMask) = `-1`
+              - `m_CallbackLayers` (LayerMask) = `-1`
+              - `m_IsTrigger` (Boolean) = `False`
+              - `m_UsedByEffector` (Boolean) = `False`
+              - `m_CompositeOperation` (Enum) = `None`
+              - `m_CompositeOrder` (Integer) = `0`
+              - `m_Offset` (Vector2) = `(0.00, 0.00)`
+              - `m_AutoTiling` (Boolean) = `False`
+              - `m_Size` (Vector2) = `(0.28, 0.28)`
+              - `m_EdgeRadius` (Float) = `0`
+            - `Rigidbody2D` index=3 enabled=`n/a`
+              - `m_BodyType` (Enum) = `Kinematic`
+              - `m_Simulated` (Boolean) = `False`
+              - `m_UseFullKinematicContacts` (Boolean) = `False`
+              - `m_UseAutoMass` (Boolean) = `False`
+              - `m_Mass` (Float) = `1`
+              - `m_LinearDamping` (Float) = `0`
+              - `m_AngularDamping` (Float) = `0.05`
+              - `m_GravityScale` (Float) = `1`
+              - `m_IncludeLayers` (LayerMask) = `0`
+              - `m_ExcludeLayers` (LayerMask) = `0`
+              - `m_Interpolate` (Enum) = `None`
+              - `m_SleepingMode` (Enum) = `Start Awake`
+              - `m_CollisionDetection` (Enum) = `Discrete`
+              - `m_Constraints` (Integer) = `0`
+            - `WorldItem` index=4 enabled=`True`
+              - `m_Script` (ObjectReference) = `WorldItem (MonoScript) asset='Assets/Scripts/Inventory/Item/WorldItem.cs'`
+              - `itemInstance` (ManagedReference) = `null`
+              - `interactionPriority` (Integer) = `10`
+              - `maxPickupDistance` (Float) = `3`
+              - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03/MountPoint/BasicWinch_Installed(Clone)/PromptAnchor'`
+              - `highlightObject` (ObjectReference) = `Highlight (GameObject) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03/MountPoint/BasicWinch_Installed(Clone)/Highlight'`
+              - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+              - `allowAccessWhenNotPartOfBoat` (Boolean) = `False`
+              - `verboseLogging` (Boolean) = `False`
+            - `InstalledModule` index=5 enabled=`True`
+              - `m_Script` (ObjectReference) = `InstalledModule (MonoScript) asset='Assets/Scripts/Modules/InstalledModule.cs'`
+              - `definition` (ObjectReference) = `module_winch_basic (ModuleDefinition) asset='Assets/Defs/Modules/module_winch_basic.asset'`
+              - `ownerHardpoint` (ObjectReference) = `winch_03 (Hardpoint) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03'`
+            - `InstalledModuleAnchor` index=6 enabled=`True`
+              - `m_Script` (ObjectReference) = `InstalledModuleAnchor (MonoScript) asset='Assets/Scripts/Modules/InstalledModuleAnchor.cs'`
+              - `moduleAnchor` (ObjectReference) = `ModuleBottomAnchor (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03/MountPoint/BasicWinch_Installed(Clone)/ModuleBottomAnchor'`
+            - `BoatVisualMarker` index=7 enabled=`True`
+              - `m_Script` (ObjectReference) = `BoatVisualMarker (MonoScript) asset='Assets/Scripts/Boats/BoatVisualMarker.cs'`
+              - `category` (Enum) = `Exterior Deck`
+            - `WinchModule` index=8 enabled=`True`
+              - `m_Script` (ObjectReference) = `WinchModule (MonoScript) asset='Assets/Scripts/Modules/Tethers/WinchModule.cs'`
+              - `lineCatalog` (ObjectReference) = `TetherLineCatalog (TetherLineCatalog) asset='Assets/Resources/Prefabs/Items/Modules/TetherLineCatalog.asset'`
+              - `lineSlotCount` (Integer) = `2`
+              - `reelSpeedMetersPerSecond` (Float) = `1.5`
+              - `ratedPullNewtons` (Float) = `5000`
+              - `minimumDeployedLength` (Float) = `0.2`
+              - `dockingDistance` (Float) = `0.45`
+              - `quickReleaseSlackMeters` (Float) = `0.25`
+              - `spoolTransitionSeconds` (Float) = `0.5`
+              - `lineContainer` (Generic) = `<generic>`
+              - `command` (Enum) = `Stop`
+              - `deployedLength` (Float) = `0`
+              - `currentLineSpeedMetersPerSecond` (Float) = `0`
+              - `debugLineItem` (ObjectReference) = `item_rope (ItemDefinition) asset='Assets/Defs/Items/Items/item_rope.asset'`
+          - `Highlight` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03/MountPoint/BasicWinch_Installed(Clone)/Highlight` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Highlight` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `54.62, 17.02, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1.1, 1.1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.10, 1.10, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+              - `SpriteRenderer` index=1 enabled=`True`
+                - `m_CastShadows` (Enum) = `Off`
+                - `m_ReceiveShadows` (Boolean) = `False`
+                - `m_DynamicOccludee` (Boolean) = `True`
+                - `m_StaticShadowCaster` (Boolean) = `False`
+                - `m_MotionVectors` (Enum) = `Per Object Motion`
+                - `m_LightProbeUsage` (Integer) = `1`
+                - `m_ReflectionProbeUsage` (Integer) = `1`
+                - `m_RayTracingMode` (Integer) = `0`
+                - `m_RayTraceProcedural` (Boolean) = `False`
+                - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+                - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+                - `m_SmallMeshCulling` (Boolean) = `True`
+                - `m_RenderingLayerMask` (Integer) = `1`
+                - `m_RendererPriority` (Integer) = `0`
+                - `m_Materials` (Generic) = `array size=1`
+                - `m_Sprite` (ObjectReference) = `BasicWinch_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BasicWinch_Sprite.gif'`
+                - `m_Color` (Color) = `RGBA(0.494, 0.593, 0.764, 1.000)`
+                - `m_FlipX` (Boolean) = `False`
+                - `m_FlipY` (Boolean) = `False`
+                - `m_DrawMode` (Enum) = `Simple`
+                - `m_Size` (Vector2) = `(1.00, 1.00)`
+                - `m_AdaptiveModeThreshold` (Float) = `0.5`
+                - `m_SpriteTileMode` (Enum) = `Continuous`
+                - `m_MaskInteraction` (Enum) = `None`
+                - `m_SpriteSortPoint` (Enum) = `Center`
+          - `LineAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03/MountPoint/BasicWinch_Installed(Clone)/LineAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `-0.5, 0, 0`
+              - worldPosition: `54.12, 17.02, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(-0.50, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `ModuleBottomAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03/MountPoint/BasicWinch_Installed(Clone)/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, -0.3, -0.074`
+              - worldPosition: `54.62, 16.72, 0`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `0.125, 0.125, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, -0.30, -0.07)`
+                - `m_LocalScale` (Vector3) = `(0.13, 0.13, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `PromptAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03/MountPoint/BasicWinch_Installed(Clone)/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `54.62, 17.02, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SlotAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03/MountPoint/BasicWinch_Installed(Clone)/SlotAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+            - Transform:
+              - localPosition: `0, 0, 0`
+              - worldPosition: `54.62, 17.02, 0.074`
+              - localRotationEuler: `0, 0, 0`
+              - worldRotationEuler: `0, 0, 0`
+              - localScale: `1, 1, 1`
+            - Components:
+              - `Transform` index=0 enabled=`n/a`
+                - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+                - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+                - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+                - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_11_Keel_Anchor_Rudder/_Gameplay/winch_03/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `54.62, 16.72, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `_Hull` | path=`TestBoat_11_Keel_Anchor_Rudder/_Hull` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `57.12, 15.96, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `BoatWall_Wooden` | path=`TestBoat_11_Keel_Anchor_Rudder/_Hull/BoatWall_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-12, -2.25, 0`
+        - worldPosition: `45.12, 13.71, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-12.00, -2.25, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(0.82, 4.50)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `ResizableSegment2D` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `BoatWall_Sprite (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Hull/BoatWall_Wooden/BoatWall_Sprite'`
+          - `boxCollider` (ObjectReference) = `BoatWall_Wooden (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Hull/BoatWall_Wooden'`
+          - `width` (Float) = `0.82`
+          - `height` (Float) = `4.5`
+          - `resizeAxis` (Enum) = `Vertical`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `Wall`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+        - `WallSegmentAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `WallSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Walls/WallSegmentAuthoring.cs'`
+          - `wallCollider` (ObjectReference) = `BoatWall_Wooden (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Hull/BoatWall_Wooden'`
+          - `spriteRenderer` (ObjectReference) = `BoatWall_Sprite (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Hull/BoatWall_Wooden/BoatWall_Sprite'`
+          - `resizableSegment` (ObjectReference) = `BoatWall_Wooden (ResizableSegment2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Hull/BoatWall_Wooden'`
+          - `width` (Float) = `0.82`
+          - `height` (Float) = `4.5`
+    - `BoatWall_Wooden` | path=`TestBoat_11_Keel_Anchor_Rudder/_Hull/BoatWall_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `12, -2.25, 0`
+        - worldPosition: `69.12, 13.71, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(12.00, -2.25, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(0.82, 4.50)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `ResizableSegment2D` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `BoatWall_Sprite (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Hull/BoatWall_Wooden/BoatWall_Sprite'`
+          - `boxCollider` (ObjectReference) = `BoatWall_Wooden (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Hull/BoatWall_Wooden'`
+          - `width` (Float) = `0.82`
+          - `height` (Float) = `4.5`
+          - `resizeAxis` (Enum) = `Vertical`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `Wall`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+        - `WallSegmentAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `WallSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Walls/WallSegmentAuthoring.cs'`
+          - `wallCollider` (ObjectReference) = `BoatWall_Wooden (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Hull/BoatWall_Wooden'`
+          - `spriteRenderer` (ObjectReference) = `BoatWall_Sprite (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Hull/BoatWall_Wooden/BoatWall_Sprite'`
+          - `resizableSegment` (ObjectReference) = `BoatWall_Wooden (ResizableSegment2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Hull/BoatWall_Wooden'`
+          - `width` (Float) = `0.82`
+          - `height` (Float) = `4.5`
+      - `BoatWall_Sprite` | path=`TestBoat_11_Keel_Anchor_Rudder/_Hull/BoatWall_Wooden/BoatWall_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `45.12, 13.71, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatWallWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatWallWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(0.575, 0.575, 0.575, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(0.82, 4.50)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `BoatWall_Sprite` | path=`TestBoat_11_Keel_Anchor_Rudder/_Hull/BoatWall_Wooden/BoatWall_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `69.12, 13.71, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatWallWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatWallWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(0.575, 0.575, 0.575, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(0.82, 4.50)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+    - `HullSegment_Wooden` | path=`TestBoat_11_Keel_Anchor_Rudder/_Hull/HullSegment_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, -4.5, 0`
+        - worldPosition: `57.12, 11.46, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, -4.50, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(24.00, 1.45)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `FloorSegmentAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `FloorSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Segments/FloorSegmentAuthoring.cs'`
+          - `floorCollider` (ObjectReference) = `HullSegment_Wooden (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Hull/HullSegment_Wooden'`
+          - `spriteRenderer` (ObjectReference) = `HullSegment_Sprite (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Hull/HullSegment_Wooden/HullSegment_Sprite'`
+          - `resizableSegment` (ObjectReference) = `HullSegment_Wooden (ResizableSegment2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Hull/HullSegment_Wooden'`
+          - `width` (Float) = `24`
+          - `height` (Float) = `1.45`
+        - `ResizableSegment2D` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `HullSegment_Sprite (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Hull/HullSegment_Wooden/HullSegment_Sprite'`
+          - `boxCollider` (ObjectReference) = `HullSegment_Wooden (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Hull/HullSegment_Wooden'`
+          - `width` (Float) = `24`
+          - `height` (Float) = `1.45`
+          - `resizeAxis` (Enum) = `Horizontal`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `-1`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+      - `HullSegment_Sprite` | path=`TestBoat_11_Keel_Anchor_Rudder/_Hull/HullSegment_Wooden/HullSegment_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `57.12, 11.46, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatSegmentWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatSegmentWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(0.585, 0.585, 0.585, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(24.00, 1.45)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+  - `_Interior` | path=`TestBoat_11_Keel_Anchor_Rudder/_Interior` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `57.12, 15.96, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `CompartmentInterior_Wooden` | path=`TestBoat_11_Keel_Anchor_Rudder/_Interior/CompartmentInterior_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, -2.195, 0`
+        - worldPosition: `57.12, 13.765, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, -2.20, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `Compartment` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `Compartment (MonoScript) asset='Assets/Scripts/Boats/Compartments/Compartment.cs'`
+          - `compartmentId` (String) = `compartment_01`
+          - `compartmentName` (String) = ``
+          - `p0` (Vector2) = `(-11.75, 1.88)`
+          - `p1` (Vector2) = `(11.75, 1.88)`
+          - `p2` (Vector2) = `(11.75, -1.88)`
+          - `p3` (Vector2) = `(-11.75, -1.88)`
+          - `localCorners` (Generic) = `array size=4`
+          - `waterArea` (Float) = `0`
+          - `minAirFraction` (Float) = `0.2`
+          - `airIntegrity` (Float) = `1`
+          - `airLeakRate` (Float) = `0`
+          - `externalWaterSources` (Generic) = `array size=0`
+        - `CompartmentRectAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentRectAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentRectAuthoring.cs'`
+          - `width` (Integer) = `94`
+          - `height` (Integer) = `15`
+          - `cellSize` (Float) = `0.25`
+          - `centerOffsetCells` (Vector2Int) = `(0, 0)`
+          - `compartment` (ObjectReference) = `CompartmentInterior_Wooden (Compartment) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/CompartmentInterior_Wooden'`
+          - `boxCollider` (ObjectReference) = `CompartmentInterior_Wooden (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/CompartmentInterior_Wooden'`
+          - `resizableSegment` (ObjectReference) = `CompartmentInterior_Wooden (ResizableSegment2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/CompartmentInterior_Wooden'`
+          - `visibilityZone` (ObjectReference) = `CompartmentInterior_Wooden (BoatVisibilityZone) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/CompartmentInterior_Wooden'`
+          - `ensureBoxCollider2D` (Boolean) = `True`
+          - `colliderIsTrigger` (Boolean) = `True`
+          - `allowResizableSegmentToDriveSize` (Boolean) = `True`
+          - `preserveWaterFractionOnResize` (Boolean) = `True`
+        - `CompartmentWaterRenderer` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentWaterRenderer (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentWaterRenderer.cs'`
+          - `sortingLayerName` (String) = `BoatView`
+          - `sortingOrder` (Integer) = `25`
+          - `waterColor` (Color) = `RGBA(0.100, 0.400, 0.900, 0.600)`
+        - `BoxCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(23.50, 3.75)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `MeshFilter` index=5 enabled=`n/a`
+        - `MeshRenderer` index=6 enabled=`True`
+          - `m_CastShadows` (Enum) = `On`
+          - `m_ReceiveShadows` (Boolean) = `True`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `2`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+        - `ResizableSegment2D` index=7 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `compartment_sprite (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/CompartmentInterior_Wooden/compartment_sprite'`
+          - `boxCollider` (ObjectReference) = `CompartmentInterior_Wooden (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/CompartmentInterior_Wooden'`
+          - `width` (Float) = `23.5`
+          - `height` (Float) = `3.75`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `SortingLayerSetter` index=8 enabled=`True`
+          - `m_Script` (ObjectReference) = `SortingLayerSetter (MonoScript) asset='Assets/Scripts/Camera/SortingLayerSetter.cs'`
+          - `sortingLayerName` (String) = `BoatForehull`
+          - `sortingOrder` (Integer) = `99`
+        - `BoatVisibilityZone` index=9 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisibilityZone (MonoScript) asset='Assets/Scripts/Boats/BoatVisibilityZone.cs'`
+          - `mode` (Enum) = `Boarded Interior`
+          - `controller` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (BoatVisualStateController) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+          - `priority` (Integer) = `100`
+          - `logEvents` (Boolean) = `False`
+        - `BoatVisualMarker` index=10 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisualMarker (MonoScript) asset='Assets/Scripts/Boats/BoatVisualMarker.cs'`
+          - `category` (Enum) = `Interior`
+      - `compartment_sprite` | path=`TestBoat_11_Keel_Anchor_Rudder/_Interior/CompartmentInterior_Wooden/compartment_sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `57.12, 13.765, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `ChatGPT Image Feb 1, 2026, 08_19_31 PM_0 (Sprite) asset='Assets/Resources/Sprites/BoatKit/CompartmentBackground_Wooden_1.png'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(23.50, 3.75)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Ladder` | path=`TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-6, -1, 0`
+        - worldPosition: `51.12, 14.96, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-6.00, -1.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `LadderMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/LadderMetal_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Tiled`
+          - `m_Size` (Vector2) = `(1.28, 6.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoxCollider2D` index=2 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(1.28, 6.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `LadderZone` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `LadderZone (MonoScript) asset='Assets/Scripts/Controller/Player/Ladders/LadderZone.cs'`
+          - `climbSpeed` (Float) = `6`
+          - `snapToCenterSpeed` (Float) = `18`
+          - `requireInteractToClimb` (Boolean) = `True`
+          - `allowImplicitDownClimb` (Boolean) = `True`
+          - `allowTopExit` (Boolean) = `True`
+          - `allowBottomExit` (Boolean) = `True`
+          - `topExitMargin` (Float) = `0.15`
+          - `bottomExitMargin` (Float) = `0.15`
+          - `topExitPoint` (ObjectReference) = `Top (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder/Top'`
+          - `bottomExitPoint` (ObjectReference) = `Bottom (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder/Bottom'`
+          - `interactionPriority` (Integer) = `25`
+          - `maxInteractDistance` (Float) = `1.5`
+          - `climbCenter` (ObjectReference) = `Middle (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder/Middle'`
+          - `boatAccessMode` (Enum) = `Auto`
+          - `debugLogs` (Boolean) = `False`
+        - `ResizableSegment2D` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `Ladder (SpriteRenderer) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder'`
+          - `boxCollider` (ObjectReference) = `Ladder (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder'`
+          - `width` (Float) = `1.28`
+          - `height` (Float) = `6`
+          - `resizeAxis` (Enum) = `Vertical`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `1`
+        - `LadderAutoFitAuthoring` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `LadderAutoFitAuthoring (MonoScript) asset='Assets/Scripts/Controller/Player/Ladders/LadderAutoFitAuthoring.cs'`
+          - `resizable` (ObjectReference) = `Ladder (ResizableSegment2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder'`
+          - `ladderCollider` (ObjectReference) = `Ladder (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder'`
+          - `top` (ObjectReference) = `Top (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder/Top'`
+          - `middle` (ObjectReference) = `Middle (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder/Middle'`
+          - `bottom` (ObjectReference) = `Bottom (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder/Bottom'`
+          - `topExitPoint` (ObjectReference) = `TopExit (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder/TopExit'`
+          - `bottomExitPoint` (ObjectReference) = `BottomExit (Transform) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder/BottomExit'`
+          - `topInset` (Float) = `0.05`
+          - `bottomInset` (Float) = `0.05`
+          - `topExitLocalOffset` (Vector2) = `(0.00, 0.35)`
+          - `bottomExitLocalOffset` (Vector2) = `(0.00, 0.15)`
+          - `autoApplyInEditor` (Boolean) = `True`
+      - `Bottom` | path=`TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder/Bottom` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -2.95, 0`
+          - worldPosition: `51.12, 12.01, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -2.95, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `BottomExit` | path=`TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder/BottomExit` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -2.8, 0`
+          - worldPosition: `51.12, 12.16, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -2.80, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `Middle` | path=`TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder/Middle` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `51.12, 14.96, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `Top` | path=`TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder/Top` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 2.95, 0`
+          - worldPosition: `51.12, 17.91, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 2.95, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `TopExit` | path=`TestBoat_11_Keel_Anchor_Rudder/_Interior/Ladder/TopExit` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 3.3, 0`
+          - worldPosition: `51.12, 18.26, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 3.30, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `_Volumes` | path=`TestBoat_11_Keel_Anchor_Rudder/_Volumes` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `57.12, 15.96, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `BoardedVolume` | path=`TestBoat_11_Keel_Anchor_Rudder/_Volumes/BoardedVolume` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`PlayerBoat` | static=False
+      - Transform:
+        - localPosition: `0, 0.932, 0`
+        - worldPosition: `57.12, 16.892, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 0.93, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(24.82, 12.31)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `BoatBoardedVolume` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBoardedVolume (MonoScript) asset='Assets/Scripts/Controller/Player/BoatBoardedVolume.cs'`
+    - `BoatItemContainmentZone` | path=`TestBoat_11_Keel_Anchor_Rudder/_Volumes/BoatItemContainmentZone` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-0.27, 0.702, 0`
+        - worldPosition: `56.85, 16.662, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-0.27, 0.70, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(25.56, 12.77)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `BoatItemContainmentZone` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatItemContainmentZone (MonoScript) asset='Assets/Scripts/Inventory/Item/BoatItemContainmentZone.cs'`
+    - `VisibilityZone_BoardedExteriorDeck` | path=`TestBoat_11_Keel_Anchor_Rudder/_Volumes/VisibilityZone_BoardedExteriorDeck` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 2.75, 0`
+        - worldPosition: `57.12, 18.71, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 2.75, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(24.00, 4.50)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `BoatVisibilityZone` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisibilityZone (MonoScript) asset='Assets/Scripts/Boats/BoatVisibilityZone.cs'`
+          - `mode` (Enum) = `Boarded Exterior Deck`
+          - `controller` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (BoatVisualStateController) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+          - `priority` (Integer) = `10`
+          - `logEvents` (Boolean) = `False`
+        - `ResizableSegment2D` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `boxCollider` (ObjectReference) = `VisibilityZone_BoardedExteriorDeck (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Volumes/VisibilityZone_BoardedExteriorDeck'`
+          - `width` (Float) = `24`
+          - `height` (Float) = `4.5`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `BoatVisualMarker` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisualMarker (MonoScript) asset='Assets/Scripts/Boats/BoatVisualMarker.cs'`
+          - `category` (Enum) = `Volume`
+    - `VisibilityZone_BoardedInterior` | path=`TestBoat_11_Keel_Anchor_Rudder/_Volumes/VisibilityZone_BoardedInterior` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, -2, 0`
+        - worldPosition: `57.12, 13.96, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, -2.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(24.00, 4.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `BoatVisibilityZone` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisibilityZone (MonoScript) asset='Assets/Scripts/Boats/BoatVisibilityZone.cs'`
+          - `mode` (Enum) = `Boarded Interior`
+          - `controller` (ObjectReference) = `TestBoat_11_Keel_Anchor_Rudder (BoatVisualStateController) scenePath='TestBoat_11_Keel_Anchor_Rudder'`
+          - `priority` (Integer) = `100`
+          - `logEvents` (Boolean) = `False`
+        - `ResizableSegment2D` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `boxCollider` (ObjectReference) = `VisibilityZone_BoardedInterior (BoxCollider2D) scenePath='TestBoat_11_Keel_Anchor_Rudder/_Volumes/VisibilityZone_BoardedInterior'`
+          - `width` (Float) = `24`
+          - `height` (Float) = `4`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `BoatVisualMarker` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisualMarker (MonoScript) asset='Assets/Scripts/Boats/BoatVisualMarker.cs'`
+          - `category` (Enum) = `Volume`
+- `TestBoat_12_Tethers` | path=`TestBoat_12_Tethers` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`PlayerBoat` | static=False
+  - Transform:
+    - localPosition: `0, 0, 0`
+    - worldPosition: `0, 0, 0`
+    - localRotationEuler: `0, 0, 0`
+    - worldRotationEuler: `0, 0, 0`
+    - localScale: `1, 1, 1`
+  - Components:
+    - `Transform` index=0 enabled=`n/a`
+      - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+      - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+      - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+      - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `Rigidbody2D` index=1 enabled=`n/a`
+      - `m_BodyType` (Enum) = `Dynamic`
+      - `m_Simulated` (Boolean) = `True`
+      - `m_UseFullKinematicContacts` (Boolean) = `False`
+      - `m_UseAutoMass` (Boolean) = `False`
+      - `m_Mass` (Float) = `1`
+      - `m_LinearDamping` (Float) = `0`
+      - `m_AngularDamping` (Float) = `0.05`
+      - `m_GravityScale` (Float) = `1`
+      - `m_IncludeLayers` (LayerMask) = `1024`
+      - `m_ExcludeLayers` (LayerMask) = `0`
+      - `m_Interpolate` (Enum) = `Interpolate`
+      - `m_SleepingMode` (Enum) = `Start Awake`
+      - `m_CollisionDetection` (Enum) = `Discrete`
+      - `m_Constraints` (Integer) = `0`
+    - `Boat` index=2 enabled=`True`
+      - `m_Script` (ObjectReference) = `Boat (MonoScript) asset='Assets/Scripts/Boats/Boat.cs'`
+      - `baseMass` (Float) = `60`
+      - `mass` (Float) = `1`
+      - `baseLocalCenterOfMass` (Vector2) = `(0.00, 2.64)`
+      - `drawMassContributionGizmos` (Boolean) = `False`
+      - `mysteryOscillationLog` (Boolean) = `False`
+      - `mysteryOscillationLogEveryFixedTick` (Boolean) = `False`
+      - `mysteryOscillationMinimumForceMagnitude` (Float) = `0`
+      - `mysteryOscillationMinimumTorqueMagnitude` (Float) = `0`
+      - `width` (Float) = `40.82`
+      - `height` (Float) = `8.725`
+      - `volume` (Float) = `356.155`
+      - `geometryLocalCenter` (Vector2) = `(0.00, 2.64)`
+      - `throttleInput` (Float) = `0`
+      - `throttleForce` (Float) = `1`
+      - `Compartments` (Generic) = `array size=2`
+      - `Connections` (Generic) = `array size=0`
+      - `boatInstanceId` (String) = ``
+    - `BoatAccessStatePersistence` index=3 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatAccessStatePersistence (MonoScript) asset='Assets/Scripts/Boats/BoatAccessStatePersistence.cs'`
+      - `warnForMissingIds` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+    - `BoatAutoRegister` index=4 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatAutoRegister (MonoScript) asset='Assets/Scripts/GameState/Boat/BoatAutoRegister.cs'`
+    - `BoatCompartmentStatePersistence` index=5 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatCompartmentStatePersistence (MonoScript) asset='Assets/Scripts/Boats/Compartments/BoatCompartmentStatePersistence.cs'`
+      - `boat` (ObjectReference) = `TestBoat_12_Tethers (Boat) scenePath='TestBoat_12_Tethers'`
+      - `validateIdsOnStart` (Boolean) = `True`
+      - `warnForMissingIds` (Boolean) = `True`
+      - `warnForDuplicateIds` (Boolean) = `True`
+      - `warningsIgnoreVerboseLogging` (Boolean) = `True`
+      - `restoreByFractionWhenMaxAreaChanged` (Boolean) = `True`
+      - `maxAreaMismatchTolerance` (Float) = `0.001`
+      - `verboseLogging` (Boolean) = `False`
+    - `BoatHandlingAggregator` index=6 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatHandlingAggregator (MonoScript) asset='Assets/Scripts/Boats/Simulation/BoatHandlingAggregator.cs'`
+      - `boat` (ObjectReference) = `TestBoat_12_Tethers (Boat) scenePath='TestBoat_12_Tethers'`
+      - `currentProfile` (Generic) = `<generic>`
+    - `BoatIdentity` index=7 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatIdentity (MonoScript) asset='Assets/Scripts/GameState/Boat/BoatIdentity.cs'`
+    - `BoatItemRegistry` index=8 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatItemRegistry (MonoScript) asset='Assets/Scripts/Inventory/Item/BoatItemRegistry.cs'`
+    - `BoatLooseItemPersistence` index=9 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatLooseItemPersistence (MonoScript) asset='Assets/Scripts/Inventory/Item/BoatLooseItemPersistence.cs'`
+      - `boat` (ObjectReference) = `TestBoat_12_Tethers (Boat) scenePath='TestBoat_12_Tethers'`
+      - `itemCatalog` (ObjectReference) = `itemCatalog (ItemDefinitionCatalog) asset='Assets/Defs/Items/Catalogs/itemCatalog.asset'`
+      - `verboseLogging` (Boolean) = `False`
+    - `BoatModuleStatePersistence` index=10 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatModuleStatePersistence (MonoScript) asset='Assets/Scripts/Modules/State/BoatModuleStatePersistence.cs'`
+      - `itemCatalog` (ObjectReference) = `itemCatalog (ItemDefinitionCatalog) asset='Assets/Defs/Items/Catalogs/itemCatalog.asset'`
+      - `moduleDefinitions` (Generic) = `array size=0`
+      - `verboseLogging` (Boolean) = `False`
+    - `BoatPilotingSimulation` index=11 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatPilotingSimulation (MonoScript) asset='Assets/Scripts/Boats/Simulation/BoatPilotingSimulation.cs'`
+      - `state` (ObjectReference) = `TestBoat_12_Tethers (BoatPilotingState) scenePath='TestBoat_12_Tethers'`
+      - `boat` (ObjectReference) = `TestBoat_12_Tethers (Boat) scenePath='TestBoat_12_Tethers'`
+      - `throttleForce` (ObjectReference) = `TestBoat_12_Tethers (ThrottleForce) scenePath='TestBoat_12_Tethers'`
+      - `sceneForwardAxis` (Vector2) = `(1.00, 0.00)`
+      - `throttleTravelPerSecond` (Float) = `0.1`
+      - `referenceRudderAngleDegrees` (Float) = `35`
+      - `rudderTravelDegreesPerSecond` (Float) = `10`
+      - `rudderAngularAcceleration` (Float) = `34`
+      - `angularWaterDrag` (Float) = `1.9`
+      - `maxAngularVelocityDegrees` (Float) = `42`
+      - `fullRudderAuthoritySpeed` (Float) = `2.5`
+      - `routePrototypeSeed` (Integer) = `17357`
+      - `routePointSpacing` (Float) = `10`
+      - `routeMaxHeadingDegrees` (Float) = `15`
+      - `routeProgressCorridor` (Float) = `45`
+      - `routeAdherencePathWidth` (Float) = `15`
+      - `recentCourseQualityDistance` (Float) = `25`
+      - `courseNeutralQuality` (Float) = `0.65`
+      - `routeCoverageAhead` (Float) = `1200`
+      - `recoveryMinimumRejoinLeadDistance` (Float) = `60`
+      - `recoveryRejoinLeadPerOffRouteUnit` (Float) = `0.65`
+      - `recoveryCurvePointSpacing` (Float) = `10`
+      - `environmentalDisturbance` (Generic) = `<generic>`
+      - `environmentalAngularVelocityCeilingDegrees` (Float) = `72`
+    - `BoatPilotingState` index=12 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatPilotingState (MonoScript) asset='Assets/Scripts/Boats/Simulation/BoatPilotingState.cs'`
+      - `throttle01` (Float) = `0`
+      - `rudderDegrees` (Float) = `0`
+      - `navigationPosition` (Vector2) = `(0.00, 0.00)`
+      - `navigationVelocity` (Vector2) = `(0.00, 0.00)`
+      - `headingDegrees` (Float) = `0`
+      - `angularVelocityDegrees` (Float) = `0`
+    - `BoatPowerState` index=13 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatPowerState (MonoScript) asset='Assets/Scripts/Boats/BoatPowerState.cs'`
+      - `currentPower` (Float) = `0`
+      - `maxPower` (Float) = `1000`
+    - `BoatRootMarker` index=14 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatRootMarker (MonoScript) asset='Assets/Scripts/Boats/BoatRootMarker.cs'`
+    - `BoatSecuringDebugImpulse` index=15 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatSecuringDebugImpulse (MonoScript) asset='Assets/Scripts/Debug/BoatSecuringDebugImpulse.cs'`
+      - `listenForKey` (Boolean) = `True`
+      - `triggerKey` (Enum) = `I`
+      - `targetRigidbody` (ObjectReference) = `TestBoat_12_Tethers (Rigidbody2D) scenePath='TestBoat_12_Tethers'`
+      - `applyPhysicsImpulse` (Boolean) = `True`
+      - `impulse` (Vector2) = `(10.00, 0.00)`
+      - `affectSecuredCargo` (Boolean) = `True`
+      - `securingImpactSeverity01` (Float) = `0.4`
+      - `breakLooseCargoImpulse` (Vector2) = `(5.00, 0.00)`
+      - `onlyAffectThisBoat` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `True`
+    - `BoatVisualStateController` index=16 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatVisualStateController (MonoScript) asset='Assets/Scripts/Boats/BoatVisualStateController.cs'`
+      - `exteriorRoot` (ObjectReference) = `_Exterior (Transform) scenePath='TestBoat_12_Tethers/_Exterior'`
+      - `interiorRoot` (ObjectReference) = `_Interior (Transform) scenePath='TestBoat_12_Tethers/_Interior'`
+      - `exteriorDeckRoot` (ObjectReference) = `_Deck (Transform) scenePath='TestBoat_12_Tethers/_Deck'`
+      - `hullRoot` (ObjectReference) = `_Hull (Transform) scenePath='TestBoat_12_Tethers/_Hull'`
+      - `defaultBoardedMode` (Enum) = `Boarded Exterior Deck`
+      - `unboardedMode` (Enum) = `Unboarded Exterior`
+      - `hideInteriorWhenUnboarded` (Boolean) = `False`
+      - `hideInteriorOnExteriorDeck` (Boolean) = `False`
+      - `hideExteriorWhenInterior` (Boolean) = `True`
+      - `hideDeckWhenInterior` (Boolean) = `False`
+      - `includeInactiveRenderers` (Boolean) = `True`
+      - `showCompartmentWaterInInterior` (Boolean) = `True`
+      - `showCompartmentWaterInTransition` (Boolean) = `True`
+      - `hideByCameraMaskWhenInterior` (LayerMask) = `2100224`
+      - `autoFindMainCamera` (Boolean) = `True`
+      - `logVisibility` (Boolean) = `False`
+    - `BoatWaterContextResolver` index=17 enabled=`True`
+      - `m_Script` (ObjectReference) = `BoatWaterContextResolver (MonoScript) asset='Assets/Scripts/Boats/BoatWaterContextResolver.cs'`
+      - `boat` (ObjectReference) = `TestBoat_12_Tethers (Boat) scenePath='TestBoat_12_Tethers'`
+      - `dryWaterFractionEpsilon` (Float) = `0.003`
+      - `fullCompartmentThreshold01` (Float) = `0.999`
+      - `treatFullyFloodedBoatAsOcean` (Boolean) = `True`
+      - `fullCompartmentSurfacePadding` (Float) = `0.5`
+      - `includeInactiveCompartments` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+    - `BuoyancyPolygonForce` index=18 enabled=`True`
+      - `m_Script` (ObjectReference) = `BuoyancyPolygonForce (MonoScript) asset='Assets/Scripts/Physics/BuoyancyPolygonForce.cs'`
+      - `bodySource` (ObjectReference) = `TestBoat_12_Tethers (Boat) scenePath='TestBoat_12_Tethers'`
+      - `useBoatWaterContext` (Boolean) = `True`
+      - `boatBodyAlwaysUsesOcean` (Boolean) = `True`
+      - `sliceCount` (Integer) = `10`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `50`
+    - `CompartmentFloodGameClickTool` index=19 enabled=`True`
+      - `m_Script` (ObjectReference) = `CompartmentFloodGameClickTool (MonoScript) asset='Assets/Scripts/Debug/CompartmentFloodGameClickTool.cs'`
+      - `boat` (ObjectReference) = `TestBoat_12_Tethers (Boat) scenePath='TestBoat_12_Tethers'`
+      - `boatRoot` (ObjectReference) = `TestBoat_12_Tethers (Transform) scenePath='TestBoat_12_Tethers'`
+      - `active` (Boolean) = `False`
+      - `mode` (Enum) = `Add`
+      - `mouseButton` (Integer) = `0`
+      - `shiftClickRemoves` (Boolean) = `True`
+      - `amount` (Float) = `0.25`
+      - `decreaseAmountKey` (Enum) = `Comma`
+      - `increaseAmountKey` (Enum) = `Period`
+      - `amountSmallStep` (Float) = `0.25`
+      - `amountLargeStep` (Float) = `2.5`
+      - `amountPresets` (Generic) = `array size=5`
+      - `setFraction01` (Float) = `0.5`
+      - `toggleActiveKey` (Enum) = `F11`
+      - `addModeKey` (Enum) = `Alpha 1`
+      - `removeModeKey` (Enum) = `Alpha 2`
+      - `setModeKey` (Enum) = `Alpha 3`
+      - `emptyModeKey` (Enum) = `Alpha 4`
+      - `fillModeKey` (Enum) = `Alpha 5`
+      - `logMouseKey` (Enum) = `F9`
+      - `respectGameplayInputBlocker` (Boolean) = `True`
+      - `ignoreClicksWhenPointerOverUI` (Boolean) = `False`
+      - `showOverlay` (Boolean) = `False`
+      - `overlayPosition` (Vector2) = `(15.00, 200.00)`
+      - `overlaySize` (Vector2) = `(520.00, 170.00)`
+      - `toggleOverlayKey` (Enum) = `F10`
+      - `overlayDraggable` (Boolean) = `True`
+      - `ignoreFloodClicksOverOverlay` (Boolean) = `True`
+      - `logClicks` (Boolean) = `False`
+      - `logMisses` (Boolean) = `False`
+      - `logMouseWhenPressed` (Boolean) = `False`
+    - `DragForce` index=20 enabled=`True`
+      - `m_Script` (ObjectReference) = `DragForce (MonoScript) asset='Assets/Scripts/Physics/DragForce.cs'`
+      - `submersionSource` (ObjectReference) = `TestBoat_12_Tethers (BuoyancyPolygonForce) scenePath='TestBoat_12_Tethers'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `100`
+    - `ForceBody2D` index=21 enabled=`True`
+      - `m_Script` (ObjectReference) = `ForceBody2D (MonoScript) asset='Assets/Scripts/Physics/ForceBody2D.cs'`
+      - `width` (Float) = `1`
+      - `height` (Float) = `1`
+    - `ForceSystem` index=22 enabled=`True`
+      - `m_Script` (ObjectReference) = `ForceSystem (MonoScript) asset='Assets/Scripts/Physics/ForceSystem.cs'`
+      - `verboseDiagnostics` (Boolean) = `False`
+    - `GhostCollisionProxy` index=23 enabled=`True`
+      - `m_Script` (ObjectReference) = `GhostCollisionProxy (MonoScript) asset='Assets/Scripts/Physics/GhostCollisionProxy.cs'`
+      - `followBody` (ObjectReference) = `TestBoat_12_Tethers (Rigidbody2D) scenePath='TestBoat_12_Tethers'`
+      - `sourceRoots` (Generic) = `array size=2`
+      - `autoResolveBoatStructuralRoots` (Boolean) = `True`
+      - `ghostLayerName` (String) = `GhostCollision`
+      - `syncSourceChanges` (Boolean) = `True`
+      - `showRuntimeProxyInHierarchy` (Boolean) = `True`
+      - `verboseLogging` (Boolean) = `False`
+    - `HardpointVisibilityController` index=24 enabled=`True`
+      - `m_Script` (ObjectReference) = `HardpointVisibiiityController (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointVisibiiityController.cs'`
+      - `boat` (ObjectReference) = `TestBoat_12_Tethers (Boat) scenePath='TestBoat_12_Tethers'`
+      - `revealAll` (Boolean) = `False`
+      - `compatibleColor` (Color) = `RGBA(0.000, 1.000, 0.000, 1.000)`
+      - `incompatibleColor` (Color) = `RGBA(1.000, 0.000, 0.000, 1.000)`
+      - `activeSortingOrder` (Integer) = `32000`
+      - `overrideActiveSortingLayer` (Boolean) = `False`
+      - `activeSortingLayerName` (String) = ``
+      - `pulseVisibleMarkers` (Boolean) = `True`
+      - `pulseCyclesPerSecond` (Float) = `1.5`
+      - `pulseMinAlpha` (Float) = `0.55`
+      - `pulseMaxAlpha` (Float) = `1`
+      - `logRefresh` (Boolean) = `False`
+    - `RightingTorqueForce` index=25 enabled=`True`
+      - `m_Script` (ObjectReference) = `RightingTorqueForce (MonoScript) asset='Assets/Scripts/Physics/RightingTorqueForce.cs'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `60`
+    - `ThrottleForce` index=26 enabled=`True`
+      - `m_Script` (ObjectReference) = `ThrottleForce (MonoScript) asset='Assets/Scripts/Physics/ThrottleForce.cs'`
+      - `enabledFlag` (Boolean) = `True`
+      - `priority` (Integer) = `250`
+      - `verboseDiagnostics` (Boolean) = `False`
+      - `diagnosticInterval` (Float) = `0.5`
+  - `_Cargo` | path=`TestBoat_12_Tethers/_Cargo` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `CargoBayFloor` | path=`TestBoat_12_Tethers/_Cargo/CargoBayFloor` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-3, -0.595, 0`
+        - worldPosition: `-3, -0.595, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-3.00, -0.60, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `ResizableSegment2D` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `CargoBayFloor (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Cargo/CargoBayFloor'`
+          - `boxCollider` (ObjectReference) = `CargoBayFloor (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Cargo/CargoBayFloor'`
+          - `width` (Float) = `7.5`
+          - `height` (Float) = `1`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CargoZoneFloorAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `CargoZoneFloorAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/CargoZoneFloorAuthoring.cs'`
+          - `secureZone` (ObjectReference) = `CargoBayZone (BoatSecureZone) scenePath='TestBoat_12_Tethers/_Cargo/CargoBayFloor/CargoBayZone'`
+          - `floorCollider` (ObjectReference) = `CargoBayFloor (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Cargo/CargoBayFloor'`
+          - `secureZoneCollider` (ObjectReference) = `CargoBayZone (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Cargo/CargoBayFloor/CargoBayZone'`
+          - `floorRenderer` (ObjectReference) = `CargoBayFloor (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Cargo/CargoBayFloor'`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `autoFindFloorRenderer` (Boolean) = `True`
+          - `autoFitFloorColliderToSourceWidth` (Boolean) = `True`
+          - `floorColliderHeight` (Float) = `0.12`
+          - `floorColliderTopYOffset` (Float) = `-0.2`
+          - `heightMode` (Enum) = `Fixed`
+          - `fixedZoneHeight` (Float) = `2`
+          - `bottomOffsetFromFloorTop` (Float) = `0.05`
+          - `horizontalPadding` (Float) = `0.05`
+          - `allowStackedCargo` (Boolean) = `False`
+          - `autoRefreshInEditor` (Boolean) = `True`
+        - `SpriteRenderer` index=3 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `CargoZoneFloor_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/CargoZoneFloor_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Tiled`
+          - `m_Size` (Vector2) = `(7.50, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoxCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.24)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(7.50, 1.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `BoatBuilderSurfaceSnapAuthoring` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Top`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0.18`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `1.5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `-1`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `CargoBayZone` | path=`TestBoat_12_Tethers/_Cargo/CargoBayFloor/CargoBayZone` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-3, -0.595, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 1.35)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(7.40, 2.00)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `BoatSecureZone` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `BoatSecureZone (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatSecureZone.cs'`
+            - `stableId` (String) = `4f49fe7fe8634909bff3a211e7e07fe7`
+            - `zoneKind` (Enum) = `Cargo Bay`
+            - `capacityMode` (Enum) = `Area Based`
+            - `fixedCapacity` (Integer) = `2`
+            - `areaPerSlot` (Float) = `2`
+            - `maxAreaBasedCapacity` (Integer) = `24`
+            - `acceptsCargo` (Boolean) = `True`
+            - `acceptsNonCargo` (Boolean) = `False`
+            - `allowStackedCargo` (Boolean) = `False`
+            - `zoneQualityMultiplier` (Float) = `1`
+            - `passiveDecayMultiplier` (Float) = `0.75`
+            - `impactProtection01` (Float) = `0.35`
+            - `slots` (Generic) = `array size=7`
+            - `directSupportColliders` (Generic) = `array size=1`
+            - `supportProbeLayerMask` (LayerMask) = `262152`
+            - `supportVerticalTolerance` (Float) = `0.12`
+            - `supportProbeHeight` (Float) = `0.06`
+            - `supportHorizontalInset` (Float) = `0.03`
+            - `verboseLogging` (Boolean) = `False`
+  - `_Deck` | path=`TestBoat_12_Tethers/_Deck` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `DeckSegment_Wooden_Left` | path=`TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Left` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-18.488, 4.5, 0`
+        - worldPosition: `-18.488, 4.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-18.49, 4.50, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(3.03, 0.80)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `FloorSegmentAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `FloorSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Segments/FloorSegmentAuthoring.cs'`
+          - `floorCollider` (ObjectReference) = `DeckSegment_Wooden_Left (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Left'`
+          - `spriteRenderer` (ObjectReference) = `DeckSegment_Sprite (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Left/DeckSegment_Sprite'`
+          - `resizableSegment` (ObjectReference) = `DeckSegment_Wooden_Left (ResizableSegment2D) scenePath='TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Left'`
+          - `width` (Float) = `3.025`
+          - `height` (Float) = `0.8`
+        - `ResizableSegment2D` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `DeckSegment_Sprite (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Left/DeckSegment_Sprite'`
+          - `boxCollider` (ObjectReference) = `DeckSegment_Wooden_Left (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Left'`
+          - `width` (Float) = `3.025`
+          - `height` (Float) = `0.8`
+          - `resizeAxis` (Enum) = `Horizontal`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `-1`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+        - `SplitSpanRecord` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `SplitSpanRecord (MonoScript) asset='Assets/Scripts/Parts/Segments/SplitSpanRecord.cs'`
+          - `spanId` (String) = `90b1cbd608de4aa38df629d32a76d015`
+          - `originalLocalStartX` (Float) = `-20`
+          - `originalLocalEndX` (Float) = `20`
+          - `originalLocalCenterY` (Float) = `4.5`
+          - `isSplitFragment` (Boolean) = `False`
+          - `splitDepth` (Integer) = `0`
+          - `sourceKind` (String) = `Floor`
+          - `spanRoot` (ObjectReference) = `_Deck (Transform) scenePath='TestBoat_12_Tethers/_Deck'`
+    - `DeckSegment_Wooden_Left` | path=`TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Left` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0.5, 4.5, 0`
+        - worldPosition: `0.5, 4.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.50, 4.50, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(31.05, 0.80)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `FloorSegmentAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `FloorSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Segments/FloorSegmentAuthoring.cs'`
+          - `floorCollider` (ObjectReference) = `DeckSegment_Wooden_Left (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Left'`
+          - `spriteRenderer` (ObjectReference) = `DeckSegment_Sprite (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Left/DeckSegment_Sprite'`
+          - `resizableSegment` (ObjectReference) = `DeckSegment_Wooden_Left (ResizableSegment2D) scenePath='TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Left'`
+          - `width` (Float) = `31.05`
+          - `height` (Float) = `0.8`
+        - `ResizableSegment2D` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `DeckSegment_Sprite (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Left/DeckSegment_Sprite'`
+          - `boxCollider` (ObjectReference) = `DeckSegment_Wooden_Left (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Left'`
+          - `width` (Float) = `31.05`
+          - `height` (Float) = `0.8`
+          - `resizeAxis` (Enum) = `Horizontal`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `-1`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+        - `SplitSpanRecord` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `SplitSpanRecord (MonoScript) asset='Assets/Scripts/Parts/Segments/SplitSpanRecord.cs'`
+          - `spanId` (String) = `90b1cbd608de4aa38df629d32a76d015`
+          - `originalLocalStartX` (Float) = `-20`
+          - `originalLocalEndX` (Float) = `20`
+          - `originalLocalCenterY` (Float) = `4.5`
+          - `isSplitFragment` (Boolean) = `True`
+          - `splitDepth` (Integer) = `1`
+          - `sourceKind` (String) = `Floor`
+          - `spanRoot` (ObjectReference) = `_Deck (Transform) scenePath='TestBoat_12_Tethers/_Deck'`
+      - `DeckSegment_Sprite` | path=`TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Left/DeckSegment_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-18.488, 4.5, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatSegmentWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatSegmentWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(3.03, 0.80)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `DeckSegment_Sprite` | path=`TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Left/DeckSegment_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `0.5, 4.5, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatSegmentWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatSegmentWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(31.05, 0.80)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+    - `DeckSegment_Wooden_Right` | path=`TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Right` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `18.988, 4.5, 0`
+        - worldPosition: `18.988, 4.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(18.99, 4.50, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(2.03, 0.80)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `FloorSegmentAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `FloorSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Segments/FloorSegmentAuthoring.cs'`
+          - `floorCollider` (ObjectReference) = `DeckSegment_Wooden_Right (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Right'`
+          - `spriteRenderer` (ObjectReference) = `DeckSegment_Sprite (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Right/DeckSegment_Sprite'`
+          - `resizableSegment` (ObjectReference) = `DeckSegment_Wooden_Right (ResizableSegment2D) scenePath='TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Right'`
+          - `width` (Float) = `2.025`
+          - `height` (Float) = `0.8`
+        - `ResizableSegment2D` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `DeckSegment_Sprite (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Right/DeckSegment_Sprite'`
+          - `boxCollider` (ObjectReference) = `DeckSegment_Wooden_Right (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Right'`
+          - `width` (Float) = `2.025`
+          - `height` (Float) = `0.8`
+          - `resizeAxis` (Enum) = `Horizontal`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `-1`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+        - `SplitSpanRecord` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `SplitSpanRecord (MonoScript) asset='Assets/Scripts/Parts/Segments/SplitSpanRecord.cs'`
+          - `spanId` (String) = `90b1cbd608de4aa38df629d32a76d015`
+          - `originalLocalStartX` (Float) = `-20`
+          - `originalLocalEndX` (Float) = `20`
+          - `originalLocalCenterY` (Float) = `4.5`
+          - `isSplitFragment` (Boolean) = `True`
+          - `splitDepth` (Integer) = `2`
+          - `sourceKind` (String) = `Floor`
+          - `spanRoot` (ObjectReference) = `_Deck (Transform) scenePath='TestBoat_12_Tethers/_Deck'`
+      - `DeckSegment_Sprite` | path=`TestBoat_12_Tethers/_Deck/DeckSegment_Wooden_Right/DeckSegment_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `18.988, 4.5, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatSegmentWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatSegmentWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(2.03, 0.80)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+    - `hatch_01` | path=`TestBoat_12_Tethers/_Deck/hatch_01` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-16, 4.5, 0`
+        - worldPosition: `-16, 4.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-16.00, 4.50, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `HatchAuthoring` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `HatchAuthoring (MonoScript) asset='Assets/Scripts/Parts/Hatch/HatchAuthoring.cs'`
+          - `frameRenderer` (ObjectReference) = `Frame (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Deck/hatch_01/Frame'`
+          - `closedRenderer` (ObjectReference) = `Closed (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Deck/hatch_01/Closed'`
+          - `openRenderer` (ObjectReference) = `Open (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Deck/hatch_01/Open'`
+          - `blockingCollider` (ObjectReference) = `Blocker (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Deck/hatch_01/Blocker'`
+          - `ledgeCollider` (ObjectReference) = `Ledge (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Deck/hatch_01/Ledge'`
+          - `openingWidth` (Float) = `1.95`
+          - `frameWidth` (Float) = `1.95`
+          - `startsOpen` (Boolean) = `False`
+          - `hatchId` (String) = `hatch_01`
+        - `HatchRuntime` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `HatchRuntime (MonoScript) asset='Assets/Scripts/Parts/Hatch/HatchRuntime.cs'`
+          - `authoring` (ObjectReference) = `hatch_01 (HatchAuthoring) scenePath='TestBoat_12_Tethers/_Deck/hatch_01'`
+          - `isOpen` (Boolean) = `False`
+          - `enableLedgeWhenOpen` (Boolean) = `True`
+          - `closeObstructionMask` (LayerMask) = `131080`
+          - `triggersBlockClosing` (Boolean) = `False`
+          - `ignoreOwnColliders` (Boolean) = `True`
+          - `ignoreSameBoatRoot` (Boolean) = `False`
+          - `vibrateOnDeniedClose` (Boolean) = `True`
+          - `deniedVibrationDuration` (Float) = `0.3`
+          - `deniedVibrationDistance` (Float) = `0.07`
+          - `deniedVibrationFrequency` (Float) = `36`
+          - `logDeniedClose` (Boolean) = `True`
+        - `HatchInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HatchInteractable (MonoScript) asset='Assets/Scripts/Parts/Hatch/HatchInteractable.cs'`
+          - `hatchRuntime` (ObjectReference) = `hatch_01 (HatchRuntime) scenePath='TestBoat_12_Tethers/_Deck/hatch_01'`
+          - `promptAnchor` (ObjectReference) = `hatch_01 (Transform) scenePath='TestBoat_12_Tethers/_Deck/hatch_01'`
+          - `interactionPriority` (Integer) = `30`
+          - `allowInteractWhenOpen` (Boolean) = `True`
+          - `allowInteractWhenClosed` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+        - `SpanRepairBlocker` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `SpanRepairBlocker (MonoScript) asset='Assets/Scripts/Parts/Segments/SpanRepairBlocker.cs'`
+          - `spanId` (String) = `90b1cbd608de4aa38df629d32a76d015`
+          - `localStartX` (Float) = `-16.975`
+          - `localEndX` (Float) = `-15.025`
+          - `blockerKind` (String) = `Hatch`
+          - `spanRoot` (ObjectReference) = `_Deck (Transform) scenePath='TestBoat_12_Tethers/_Deck'`
+      - `Blocker` | path=`TestBoat_12_Tethers/_Deck/hatch_01/Blocker` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.669`
+          - worldPosition: `-16, 4.5, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `False`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(1.90, 0.70)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `CompartmentBoundaryAuthoring` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+            - `roles` (Enum) = `Hatch`
+            - `countsAsBoundary` (Boolean) = `False`
+            - `isOpeningCarrier` (Boolean) = `True`
+            - `openingId` (String) = ``
+      - `Closed` | path=`TestBoat_12_Tethers/_Deck/hatch_01/Closed` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0.55, 0.669`
+          - worldPosition: `-16, 5.05, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.55, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `HatchClosedMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/HatchClosedMetal_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `CompartmentLink` | path=`TestBoat_12_Tethers/_Deck/hatch_01/CompartmentLink` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-16, 4.5, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(2.00, 1.00)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `CompartmentLinkAuthoring` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentLinkAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentLinkAuthoring.cs'`
+            - `linkId` (String) = `CompartmentLink`
+            - `hatchRuntime` (ObjectReference) = `hatch_01 (HatchRuntime) scenePath='TestBoat_12_Tethers/_Deck/hatch_01'`
+            - `openingCollider` (ObjectReference) = `CompartmentLink (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Deck/hatch_01/CompartmentLink'`
+            - `linkType` (Enum) = `Hatch`
+            - `sampleOffset` (Float) = `0.6`
+            - `autoResolveInEditor` (Boolean) = `False`
+            - `flowCoefficient` (Float) = `0.2`
+            - `externalSourceType` (Enum) = `Sea Breach`
+            - `externalRate` (Float) = `0.1`
+          - `CompartmentLinkRuntimeLink` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentLinkRuntimeLink (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentLinkRuntimeLink.cs'`
+            - `hatchRuntime` (ObjectReference) = `hatch_01 (HatchRuntime) scenePath='TestBoat_12_Tethers/_Deck/hatch_01'`
+            - `linkAuthoring` (ObjectReference) = `CompartmentLink (CompartmentLinkAuthoring) scenePath='TestBoat_12_Tethers/_Deck/hatch_01/CompartmentLink'`
+            - `logWarnings` (Boolean) = `False`
+            - `logStateChanges` (Boolean) = `False`
+          - `CompartmentBoundaryAuthoring` index=4 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+            - `roles` (Enum) = `Hatch`
+            - `countsAsBoundary` (Boolean) = `True`
+            - `isOpeningCarrier` (Boolean) = `False`
+            - `openingId` (String) = ``
+      - `Frame` | path=`TestBoat_12_Tethers/_Deck/hatch_01/Frame` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.669`
+          - worldPosition: `-16, 4.5, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `FramePieceMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/FramePieceMetal_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `InteractionTrigger` | path=`TestBoat_12_Tethers/_Deck/hatch_01/InteractionTrigger` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.669`
+          - worldPosition: `-16, 4.5, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.50)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(2.00, 3.00)`
+            - `m_EdgeRadius` (Float) = `0`
+      - `Ledge` | path=`TestBoat_12_Tethers/_Deck/hatch_01/Ledge` | activeSelf=True | activeInHierarchy=True | layer=`HatchLedge` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.669`
+          - worldPosition: `-16, 4.5, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`False`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `False`
+            - `m_UsedByEffector` (Boolean) = `True`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.20)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(1.90, 0.20)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `PlatformEffector2D` index=2 enabled=`True`
+            - `m_UseColliderMask` (Boolean) = `False`
+            - `m_ColliderMask` (LayerMask) = `-1`
+            - `m_RotationalOffset` (Float) = `0`
+            - `m_UseOneWay` (Boolean) = `True`
+            - `m_UseOneWayGrouping` (Boolean) = `True`
+            - `m_SurfaceArc` (Float) = `160`
+            - `m_UseSideFriction` (Boolean) = `False`
+            - `m_UseSideBounce` (Boolean) = `False`
+            - `m_SideArc` (Float) = `1`
+          - `HatchLedge` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `HatchLedge (MonoScript) asset='Assets/Scripts/Parts/Hatch/HatchLedge.cs'`
+            - `configureOneWayPlatformOnReset` (Boolean) = `True`
+            - `surfaceArc` (Float) = `160`
+            - `orientOneWaySurfaceAgainstGravity` (Boolean) = `True`
+            - `autoSyncConnectionOpeningCollider` (Boolean) = `True`
+            - `openingWidthPadding` (Float) = `0`
+            - `openingHeight` (Float) = `0.5`
+            - `openingVerticalOffset` (Float) = `0`
+      - `Open` | path=`TestBoat_12_Tethers/_Deck/hatch_01/Open` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 1.2, 0.669`
+          - worldPosition: `-16, 5.7, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 1.20, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`False`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `HatchOpenMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/HatchOpenMetal_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+    - `hatch_02` | path=`TestBoat_12_Tethers/_Deck/hatch_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `17, 4.5, 0`
+        - worldPosition: `17, 4.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(17.00, 4.50, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `HatchAuthoring` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `HatchAuthoring (MonoScript) asset='Assets/Scripts/Parts/Hatch/HatchAuthoring.cs'`
+          - `frameRenderer` (ObjectReference) = `Frame (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Deck/hatch_02/Frame'`
+          - `closedRenderer` (ObjectReference) = `Closed (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Deck/hatch_02/Closed'`
+          - `openRenderer` (ObjectReference) = `Open (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Deck/hatch_02/Open'`
+          - `blockingCollider` (ObjectReference) = `Blocker (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Deck/hatch_02/Blocker'`
+          - `ledgeCollider` (ObjectReference) = `Ledge (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Deck/hatch_02/Ledge'`
+          - `openingWidth` (Float) = `1.95`
+          - `frameWidth` (Float) = `1.95`
+          - `startsOpen` (Boolean) = `False`
+          - `hatchId` (String) = `hatch_02`
+        - `HatchRuntime` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `HatchRuntime (MonoScript) asset='Assets/Scripts/Parts/Hatch/HatchRuntime.cs'`
+          - `authoring` (ObjectReference) = `hatch_02 (HatchAuthoring) scenePath='TestBoat_12_Tethers/_Deck/hatch_02'`
+          - `isOpen` (Boolean) = `False`
+          - `enableLedgeWhenOpen` (Boolean) = `True`
+          - `closeObstructionMask` (LayerMask) = `131080`
+          - `triggersBlockClosing` (Boolean) = `False`
+          - `ignoreOwnColliders` (Boolean) = `True`
+          - `ignoreSameBoatRoot` (Boolean) = `False`
+          - `vibrateOnDeniedClose` (Boolean) = `True`
+          - `deniedVibrationDuration` (Float) = `0.3`
+          - `deniedVibrationDistance` (Float) = `0.07`
+          - `deniedVibrationFrequency` (Float) = `36`
+          - `logDeniedClose` (Boolean) = `True`
+        - `HatchInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HatchInteractable (MonoScript) asset='Assets/Scripts/Parts/Hatch/HatchInteractable.cs'`
+          - `hatchRuntime` (ObjectReference) = `hatch_02 (HatchRuntime) scenePath='TestBoat_12_Tethers/_Deck/hatch_02'`
+          - `promptAnchor` (ObjectReference) = `hatch_02 (Transform) scenePath='TestBoat_12_Tethers/_Deck/hatch_02'`
+          - `interactionPriority` (Integer) = `30`
+          - `allowInteractWhenOpen` (Boolean) = `True`
+          - `allowInteractWhenClosed` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+        - `SpanRepairBlocker` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `SpanRepairBlocker (MonoScript) asset='Assets/Scripts/Parts/Segments/SpanRepairBlocker.cs'`
+          - `spanId` (String) = `90b1cbd608de4aa38df629d32a76d015`
+          - `localStartX` (Float) = `16.025`
+          - `localEndX` (Float) = `17.975`
+          - `blockerKind` (String) = `Hatch`
+          - `spanRoot` (ObjectReference) = `_Deck (Transform) scenePath='TestBoat_12_Tethers/_Deck'`
+      - `Blocker` | path=`TestBoat_12_Tethers/_Deck/hatch_02/Blocker` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.669`
+          - worldPosition: `17, 4.5, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `False`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(1.90, 0.70)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `CompartmentBoundaryAuthoring` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+            - `roles` (Enum) = `Hatch`
+            - `countsAsBoundary` (Boolean) = `False`
+            - `isOpeningCarrier` (Boolean) = `True`
+            - `openingId` (String) = ``
+      - `Closed` | path=`TestBoat_12_Tethers/_Deck/hatch_02/Closed` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0.55, 0.669`
+          - worldPosition: `17, 5.05, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.55, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `HatchClosedMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/HatchClosedMetal_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `CompartmentLink` | path=`TestBoat_12_Tethers/_Deck/hatch_02/CompartmentLink` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `17, 4.5, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(2.00, 1.00)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `CompartmentLinkAuthoring` index=2 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentLinkAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentLinkAuthoring.cs'`
+            - `linkId` (String) = `CompartmentLink`
+            - `hatchRuntime` (ObjectReference) = `hatch_02 (HatchRuntime) scenePath='TestBoat_12_Tethers/_Deck/hatch_02'`
+            - `openingCollider` (ObjectReference) = `CompartmentLink (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Deck/hatch_02/CompartmentLink'`
+            - `linkType` (Enum) = `Hatch`
+            - `sampleOffset` (Float) = `0.6`
+            - `autoResolveInEditor` (Boolean) = `False`
+            - `flowCoefficient` (Float) = `0.2`
+            - `externalSourceType` (Enum) = `Sea Breach`
+            - `externalRate` (Float) = `0.1`
+          - `CompartmentLinkRuntimeLink` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentLinkRuntimeLink (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentLinkRuntimeLink.cs'`
+            - `hatchRuntime` (ObjectReference) = `hatch_02 (HatchRuntime) scenePath='TestBoat_12_Tethers/_Deck/hatch_02'`
+            - `linkAuthoring` (ObjectReference) = `CompartmentLink (CompartmentLinkAuthoring) scenePath='TestBoat_12_Tethers/_Deck/hatch_02/CompartmentLink'`
+            - `logWarnings` (Boolean) = `False`
+            - `logStateChanges` (Boolean) = `False`
+          - `CompartmentBoundaryAuthoring` index=4 enabled=`True`
+            - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+            - `roles` (Enum) = `Hatch`
+            - `countsAsBoundary` (Boolean) = `True`
+            - `isOpeningCarrier` (Boolean) = `False`
+            - `openingId` (String) = ``
+      - `Frame` | path=`TestBoat_12_Tethers/_Deck/hatch_02/Frame` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.669`
+          - worldPosition: `17, 4.5, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `FramePieceMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/FramePieceMetal_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `InteractionTrigger` | path=`TestBoat_12_Tethers/_Deck/hatch_02/InteractionTrigger` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.669`
+          - worldPosition: `17, 4.5, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.50)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(2.00, 3.00)`
+            - `m_EdgeRadius` (Float) = `0`
+      - `Ledge` | path=`TestBoat_12_Tethers/_Deck/hatch_02/Ledge` | activeSelf=True | activeInHierarchy=True | layer=`HatchLedge` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.669`
+          - worldPosition: `17, 4.5, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`False`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `False`
+            - `m_UsedByEffector` (Boolean) = `True`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.20)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(1.90, 0.20)`
+            - `m_EdgeRadius` (Float) = `0`
+          - `PlatformEffector2D` index=2 enabled=`True`
+            - `m_UseColliderMask` (Boolean) = `False`
+            - `m_ColliderMask` (LayerMask) = `-1`
+            - `m_RotationalOffset` (Float) = `0`
+            - `m_UseOneWay` (Boolean) = `True`
+            - `m_UseOneWayGrouping` (Boolean) = `True`
+            - `m_SurfaceArc` (Float) = `160`
+            - `m_UseSideFriction` (Boolean) = `False`
+            - `m_UseSideBounce` (Boolean) = `False`
+            - `m_SideArc` (Float) = `1`
+          - `HatchLedge` index=3 enabled=`True`
+            - `m_Script` (ObjectReference) = `HatchLedge (MonoScript) asset='Assets/Scripts/Parts/Hatch/HatchLedge.cs'`
+            - `configureOneWayPlatformOnReset` (Boolean) = `True`
+            - `surfaceArc` (Float) = `160`
+            - `orientOneWaySurfaceAgainstGravity` (Boolean) = `True`
+            - `autoSyncConnectionOpeningCollider` (Boolean) = `True`
+            - `openingWidthPadding` (Float) = `0`
+            - `openingHeight` (Float) = `0.5`
+            - `openingVerticalOffset` (Float) = `0`
+      - `Open` | path=`TestBoat_12_Tethers/_Deck/hatch_02/Open` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 1.2, 0.669`
+          - worldPosition: `17, 5.7, 0.669`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 1.20, 0.67)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`False`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `HatchOpenMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/HatchOpenMetal_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Simple`
+            - `m_Size` (Vector2) = `(1.00, 1.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+  - `_Exterior` | path=`TestBoat_12_Tethers/_Exterior` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `BoatShell_Wooden` | path=`TestBoat_12_Tethers/_Exterior/BoatShell_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 1.75, 0`
+        - worldPosition: `0, 1.75, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 1.75, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoatVisualMarker` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisualMarker (MonoScript) asset='Assets/Scripts/Boats/BoatVisualMarker.cs'`
+          - `category` (Enum) = `Exterior Shell`
+        - `ResizableSegment2D` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `BoatShell_Sprite (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Exterior/BoatShell_Wooden/BoatShell_Sprite'`
+          - `boxCollider` (ObjectReference) = `BoatShell_Wooden (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Exterior/BoatShell_Wooden'`
+          - `width` (Float) = `40`
+          - `height` (Float) = `5.5`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `BoxCollider2D` index=3 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(40.00, 5.50)`
+          - `m_EdgeRadius` (Float) = `0`
+      - `BoatShell_Sprite` | path=`TestBoat_12_Tethers/_Exterior/BoatShell_Wooden/BoatShell_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0.064`
+          - worldPosition: `0, 1.75, 0.064`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.06)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `MetalHull_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/MetalHull_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(40.00, 5.50)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+  - `_Gameplay` | path=`TestBoat_12_Tethers/_Gameplay` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `anchor_02` | path=`TestBoat_12_Tethers/_Gameplay/anchor_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 2, 0`
+        - worldPosition: `0, 2, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 2.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `anchor_02`
+          - `hardpointType` (Enum) = `Anchor`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/anchor_02/MountPoint'`
+          - `placementMarkerRenderer` (ObjectReference) = `anchor_02 (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Gameplay/anchor_02'`
+          - `controllers` (Generic) = `array size=0`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `anchor_02 (Hardpoint) scenePath='TestBoat_12_Tethers/_Gameplay/anchor_02'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/anchor_02/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `True`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(1.00, 1.00)`
+          - `localOffset` (Vector2) = `(0.00, 0.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `False`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+        - `BoatVisualMarker` index=7 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisualMarker (MonoScript) asset='Assets/Scripts/Boats/BoatVisualMarker.cs'`
+          - `category` (Enum) = `Exterior Shell`
+      - `ModuleBottomAnchor` | path=`TestBoat_12_Tethers/_Gameplay/anchor_02/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `0, 2, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_12_Tethers/_Gameplay/anchor_02/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `0, 2, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_12_Tethers/_Gameplay/anchor_02/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `0, 2, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `BoardingDoor_Wooden` | path=`TestBoat_12_Tethers/_Gameplay/BoardingDoor_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`BoardingArea` | static=False
+      - Transform:
+        - localPosition: `-13.5, 2, 0`
+        - worldPosition: `-13.5, 2, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-13.50, 2.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `BoatHatchWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatHatchWooden_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoxCollider2D` index=2 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(3.00, 3.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `BoatBoardingInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBoardingInteractable (MonoScript) asset='Assets/Scripts/Parts/BoatBoardingInteractable.cs'`
+          - `priority` (Integer) = `30`
+          - `maxUseDistance` (Float) = `3`
+          - `boardPoint` (ObjectReference) = `BoardingDoor_Wooden (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/BoardingDoor_Wooden'`
+          - `parentPlayerToBoat` (Boolean) = `True`
+          - `postSnapNudge` (Vector2) = `(0.00, 0.00)`
+          - `requireHoldToBoard` (Boolean) = `True`
+          - `boardHoldKey` (Enum) = `E`
+          - `boardHoldSeconds` (Float) = `0.35`
+          - `showBoardHoldProgressInPrompt` (Boolean) = `True`
+          - `suppressInstantBoardInteract` (Boolean) = `True`
+          - `requireHoldToUnboard` (Boolean) = `True`
+          - `unboardHoldKey` (Enum) = `E`
+          - `unboardHoldSeconds` (Float) = `0.65`
+          - `showUnboardHoldProgressInPrompt` (Boolean) = `True`
+          - `suppressInstantUnboardInteract` (Boolean) = `True`
+          - `fadeWhenPlayerFar` (Boolean) = `True`
+          - `fadeRenderers` (Generic) = `array size=1`
+          - `fadeOnlyWhenBoardedInterior` (Boolean) = `True`
+          - `fadeNearDistance` (Float) = `1.2`
+          - `nearAlpha` (Float) = `1`
+          - `farAlpha` (Float) = `0.1`
+          - `fadeSpeed` (Float) = `12`
+          - `useInteractDistanceForFade` (Boolean) = `True`
+          - `debugHold` (Boolean) = `False`
+    - `DeckBoardZone` | path=`TestBoat_12_Tethers/_Gameplay/DeckBoardZone` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 7.25, 0`
+        - worldPosition: `0, 7.25, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 7.25, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(40.00, 5.50)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `ResizableSegment2D` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `boxCollider` (ObjectReference) = `DeckBoardZone (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Gameplay/DeckBoardZone'`
+          - `width` (Float) = `40`
+          - `height` (Float) = `5.5`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `DeckBoardZone` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `DeckBoardZone (MonoScript) asset='Assets/Scripts/Boats/DeckBoardZone.cs'`
+          - `priority` (Integer) = `1`
+          - `holdSeconds` (Float) = `0.5`
+          - `primaryHoldKey` (Enum) = `E`
+          - `allowSecondaryHoldKey` (Boolean) = `False`
+          - `secondaryHoldKey` (Enum) = `W`
+          - `snapToBoardPoint` (Boolean) = `False`
+          - `zeroVelocityOnBoard` (Boolean) = `True`
+          - `requireUnboarded` (Boolean) = `True`
+          - `onlyBoardClosestEligiblePlayer` (Boolean) = `True`
+          - `promptText` (String) = `Board Deck`
+          - `includeHoldKeyInPrompt` (Boolean) = `True`
+          - `includeProgressInPrompt` (Boolean) = `True`
+          - `debugLog` (Boolean) = `False`
+    - `engine_02` | path=`TestBoat_12_Tethers/_Gameplay/engine_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-18.5, 0.085, 0`
+        - worldPosition: `-18.5, 0.085, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-18.50, 0.09, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `engine_02`
+          - `hardpointType` (Enum) = `Engine`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/engine_02/MountPoint'`
+          - `placementMarkerRenderer` (ObjectReference) = `engine_02 (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Gameplay/engine_02'`
+          - `controllers` (Generic) = `array size=0`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `engine_02 (Hardpoint) scenePath='TestBoat_12_Tethers/_Gameplay/engine_02'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/engine_02/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `False`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `ModuleBottomAnchor` | path=`TestBoat_12_Tethers/_Gameplay/engine_02/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-18.5, 0.085, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_12_Tethers/_Gameplay/engine_02/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-18.5, 0.085, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_12_Tethers/_Gameplay/engine_02/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-18.5, 0.085, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `helm_02` | path=`TestBoat_12_Tethers/_Gameplay/helm_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `13.5, 2, 0`
+        - worldPosition: `13.5, 2, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(13.50, 2.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `helm_02`
+          - `hardpointType` (Enum) = `Helm`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/helm_02/MountPoint'`
+          - `placementMarkerRenderer` (ObjectReference) = `helm_02 (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Gameplay/helm_02'`
+          - `controllers` (Generic) = `array size=1`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `helm_02 (Hardpoint) scenePath='TestBoat_12_Tethers/_Gameplay/helm_02'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/helm_02/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `False`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(2.00, 2.00)`
+          - `localOffset` (Vector2) = `(0.00, 0.00)`
+          - `drawGizmo` (Boolean) = `True`
+      - `ModuleBottomAnchor` | path=`TestBoat_12_Tethers/_Gameplay/helm_02/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `13.5, 2, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_12_Tethers/_Gameplay/helm_02/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `13.5, 2, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_12_Tethers/_Gameplay/helm_02/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `13.5, 2, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `keel_02` | path=`TestBoat_12_Tethers/_Gameplay/keel_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `16, -1.725, 0`
+        - worldPosition: `16, -1.725, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(16.00, -1.73, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `keel_02`
+          - `hardpointType` (Enum) = `Keel`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/keel_02/MountPoint'`
+          - `placementMarkerRenderer` (ObjectReference) = `keel_02 (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Gameplay/keel_02'`
+          - `controllers` (Generic) = `array size=0`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `keel_02 (Hardpoint) scenePath='TestBoat_12_Tethers/_Gameplay/keel_02'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/keel_02/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `True`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Top`
+          - `targetEdge` (Enum) = `Bottom`
+          - `boundsSource` (Enum) = `Renderer And Collider Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `1`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `ModuleBottomAnchor` | path=`TestBoat_12_Tethers/_Gameplay/keel_02/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `16, -1.725, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_12_Tethers/_Gameplay/keel_02/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `16, -1.725, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_12_Tethers/_Gameplay/keel_02/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `16, -1.725, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `MapTable` | path=`TestBoat_12_Tethers/_Gameplay/MapTable` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `9, 0.5, 0`
+        - worldPosition: `9, 0.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(9.00, 0.50, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `BoatMapTable_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatMapTable_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `MapTableInteractable` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `MapTableInteractable (MonoScript) asset='Assets/Scripts/Parts/MapTableInteractable.cs'`
+          - `priority` (Integer) = `40`
+          - `maxUseDistance` (Float) = `2`
+          - `toggle` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+        - `BoxCollider2D` index=3 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(2.00, 2.00)`
+          - `m_EdgeRadius` (Float) = `0`
+    - `money_chest_slot_01` | path=`TestBoat_12_Tethers/_Gameplay/money_chest_slot_01` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `6, 0.363, 0`
+        - worldPosition: `6, 0.363, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(6.00, 0.36, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `MoneyChestSecureSlot` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `MoneyChestSecureSlot (MonoScript) asset='Assets/Scripts/MoneyChest/MoneyChestSecureSlot.cs'`
+          - `stableId` (String) = `money_chest_slot_01`
+          - `chestAnchor` (ObjectReference) = `ChestAnchor (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/money_chest_slot_01/ChestAnchor'`
+          - `moneyChestItemDefinition` (ObjectReference) = `item_money_chest (ItemDefinition) asset='Assets/Defs/Items/Sacred/item_money_chest.asset'`
+          - `interactionPriority` (Integer) = `20`
+          - `actionRange` (Float) = `1.75`
+          - `nearbyChestSearchRadius` (Float) = `1.5`
+          - `acceptsReplacementSpawns` (Boolean) = `True`
+          - `logDebugMessages` (Boolean) = `False`
+        - `SpriteRenderer` index=2 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `MoneyChestAnchor_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/MoneyChestAnchor_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 0.51)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoatBuilderSurfaceSnapAuthoring` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `4`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `ChestAnchor` | path=`TestBoat_12_Tethers/_Gameplay/money_chest_slot_01/ChestAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0.8, 0`
+          - worldPosition: `6, 1.163, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.80, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `InteractionCollider` | path=`TestBoat_12_Tethers/_Gameplay/money_chest_slot_01/InteractionCollider` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `6, 0.363, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 0.50)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(3.00, 2.00)`
+            - `m_EdgeRadius` (Float) = `0`
+    - `payload_01` | path=`TestBoat_12_Tethers/_Gameplay/payload_01` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-10.5, 5.26, 0`
+        - worldPosition: `-10.5, 5.26, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-10.50, 5.26, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `CircleCollider2D` index=2 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `Hardpoint` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `payload_01`
+          - `hardpointType` (Enum) = `Tether Payload`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/payload_01/MountPoint'`
+          - `moduleAnchor` (ObjectReference) = `ModuleBottomAnchor (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/payload_01/ModuleBottomAnchor'`
+          - `placementMarkerRenderer` (ObjectReference) = `payload_01 (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Gameplay/payload_01'`
+          - `controllers` (Generic) = `array size=0`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+        - `HardpointInteractable` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `payload_01 (Hardpoint) scenePath='TestBoat_12_Tethers/_Gameplay/payload_01'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/payload_01/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `False`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `HardpointSupportFootprint` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointSupportFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointSupportFootprint.cs'`
+          - `enforceSupport` (Boolean) = `True`
+          - `localProbeOffset` (Vector2) = `(0.00, -0.10)`
+          - `maximumSupportDrop` (Float) = `0.35`
+          - `sampleSpacing` (Float) = `0.2`
+          - `edgeInset` (Float) = `0.02`
+          - `supportLayerMask` (LayerMask) = `0`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireSameBoat` (Boolean) = `True`
+          - `drawGizmo` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+        - `HardpointSupportHoverPreview` index=7 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointSupportHoverPreview (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointSupportHoverPreview.cs'`
+          - `hoverColliders` (Generic) = `array size=0`
+          - `lineWidth` (Float) = `0.045`
+          - `zOffset` (Float) = `-0.05`
+          - `validColor` (Color) = `RGBA(0.150, 1.000, 0.250, 0.950)`
+          - `invalidColor` (Color) = `RGBA(1.000, 0.150, 0.100, 0.950)`
+          - `verboseLogging` (Boolean) = `False`
+        - `BoatBuilderSurfaceSnapAuthoring` index=8 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `ModuleBottomAnchor` | path=`TestBoat_12_Tethers/_Gameplay/payload_01/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-10.5, 5.26, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_12_Tethers/_Gameplay/payload_01/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-10.5, 5.26, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_12_Tethers/_Gameplay/payload_01/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-10.5, 5.26, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `PilotChair_Metal` | path=`TestBoat_12_Tethers/_Gameplay/PilotChair_Metal` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `11.5, 0.72, 0`
+        - worldPosition: `11.5, 0.72, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `0.3, 0.3, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(11.50, 0.72, 0.00)`
+          - `m_LocalScale` (Vector3) = `(0.30, 0.30, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Chair_Metal (Sprite) asset='Assets/Resources/Sprites/BoatKit/Chair_Metal.png'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `True`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(1.00, 1.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoxCollider2D` index=2 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(4.00, 7.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `PilotChairInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `PilotChairInteractable (MonoScript) asset='Assets/Scripts/Parts/PilotChairInteractable.cs'`
+          - `pilotStationId` (String) = `pilot_station_01`
+          - `priority` (Integer) = `100`
+          - `maxUseDistance` (Float) = `1.5`
+          - `escapePriority` (Integer) = `900`
+          - `seatController` (ObjectReference) = `PilotChair_Metal (SeatController2D) scenePath='TestBoat_12_Tethers/_Gameplay/PilotChair_Metal'`
+          - `seatPoint` (ObjectReference) = `Seat (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/PilotChair_Metal/Seat'`
+          - `pinOccupantToSeat` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `helmHardpoint` (ObjectReference) = `helm_02 (Hardpoint) scenePath='TestBoat_12_Tethers/_Gameplay/helm_02'`
+        - `SeatController2D` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `SeatController2D (MonoScript) asset='Assets/Scripts/Controller/Player/SeatController2D.cs'`
+          - `seatPoint` (ObjectReference) = `PilotChair_Metal (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/PilotChair_Metal'`
+          - `pinOccupantToSeat` (Boolean) = `True`
+          - `zeroVelocityWhilePinned` (Boolean) = `True`
+          - `ejectWhenSeatPointUnderwater` (Boolean) = `True`
+          - `underwaterProbePoint` (ObjectReference) = `WaterEjectLevel (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/PilotChair_Metal/WaterEjectLevel'`
+          - `underwaterDepthTolerance` (Float) = `0.05`
+          - `underwaterGraceSeconds` (Float) = `3`
+          - `autoAssignExplicitWaterContext` (Boolean) = `True`
+          - `fallbackToOceanWhenNotPartOfBoat` (Boolean) = `True`
+          - `logEjections` (Boolean) = `False`
+        - `BoatBuilderSurfaceSnapAuthoring` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `1.5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `-1`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `Seat` | path=`TestBoat_12_Tethers/_Gameplay/PilotChair_Metal/Seat` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 1, 0`
+          - worldPosition: `11.5, 1.02, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 1.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `WaterEjectLevel` | path=`TestBoat_12_Tethers/_Gameplay/PilotChair_Metal/WaterEjectLevel` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 2, 0`
+          - worldPosition: `11.5, 1.32, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 2.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `PlayerSpawnPoint` | path=`TestBoat_12_Tethers/_Gameplay/PlayerSpawnPoint` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-11, 2, 0`
+        - worldPosition: `-11, 2, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-11.00, 2.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `PlayerSpawnPoint` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `PlayerSpawnPoint (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerSpawnPoint.cs'`
+          - `slotIndex` (Integer) = `-1`
+          - `weight` (Integer) = `0`
+    - `PlayerSpawnPoint` | path=`TestBoat_12_Tethers/_Gameplay/PlayerSpawnPoint` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-5, 2, 0`
+        - worldPosition: `-5, 2, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-5.00, 2.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `PlayerSpawnPoint` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `PlayerSpawnPoint (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerSpawnPoint.cs'`
+          - `slotIndex` (Integer) = `-1`
+          - `weight` (Integer) = `0`
+    - `PlayerSpawnPoint` | path=`TestBoat_12_Tethers/_Gameplay/PlayerSpawnPoint` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `1.5, 2, 0`
+        - worldPosition: `1.5, 2, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(1.50, 2.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `PlayerSpawnPoint` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `PlayerSpawnPoint (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerSpawnPoint.cs'`
+          - `slotIndex` (Integer) = `-1`
+          - `weight` (Integer) = `0`
+    - `PlayerSpawnPoint` | path=`TestBoat_12_Tethers/_Gameplay/PlayerSpawnPoint` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `8.5, 2, 0`
+        - worldPosition: `8.5, 2, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(8.50, 2.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `PlayerSpawnPoint` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `PlayerSpawnPoint (MonoScript) asset='Assets/Scripts/Controller/Player/PlayerSpawnPoint.cs'`
+          - `slotIndex` (Integer) = `-1`
+          - `weight` (Integer) = `0`
+    - `pump_02` | path=`TestBoat_12_Tethers/_Gameplay/pump_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-10, 0.085, 0`
+        - worldPosition: `-10, 0.085, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-10.00, 0.09, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `pump_02`
+          - `hardpointType` (Enum) = `Pump`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/pump_02/MountPoint'`
+          - `placementMarkerRenderer` (ObjectReference) = `pump_02 (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Gameplay/pump_02'`
+          - `controllers` (Generic) = `array size=0`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `pump_02 (Hardpoint) scenePath='TestBoat_12_Tethers/_Gameplay/pump_02'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/pump_02/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `False`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `HardpointReservedFootprint` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `InteractionHitbox` | path=`TestBoat_12_Tethers/_Gameplay/pump_02/InteractionHitbox` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-10, 0.085, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `BoxCollider2D` index=1 enabled=`True`
+            - `m_Density` (Float) = `1`
+            - `m_IncludeLayers` (LayerMask) = `0`
+            - `m_ExcludeLayers` (LayerMask) = `0`
+            - `m_LayerOverridePriority` (Integer) = `0`
+            - `m_ForceSendLayers` (LayerMask) = `-1`
+            - `m_ForceReceiveLayers` (LayerMask) = `-1`
+            - `m_ContactCaptureLayers` (LayerMask) = `-1`
+            - `m_CallbackLayers` (LayerMask) = `-1`
+            - `m_IsTrigger` (Boolean) = `True`
+            - `m_UsedByEffector` (Boolean) = `False`
+            - `m_CompositeOperation` (Enum) = `None`
+            - `m_CompositeOrder` (Integer) = `0`
+            - `m_Offset` (Vector2) = `(0.00, 1.00)`
+            - `m_AutoTiling` (Boolean) = `False`
+            - `m_Size` (Vector2) = `(2.00, 3.00)`
+            - `m_EdgeRadius` (Float) = `0`
+      - `ModuleBottomAnchor` | path=`TestBoat_12_Tethers/_Gameplay/pump_02/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-10, 0.085, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_12_Tethers/_Gameplay/pump_02/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-10, 0.085, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_12_Tethers/_Gameplay/pump_02/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 1, 0`
+          - worldPosition: `-10, 1.085, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 1.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `rudder_02` | path=`TestBoat_12_Tethers/_Gameplay/rudder_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-20.77, 1, 0`
+        - worldPosition: `-20.77, 1, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-20.77, 1.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `rudder_02`
+          - `hardpointType` (Enum) = `Rudder`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/rudder_02/MountPoint'`
+          - `placementMarkerRenderer` (ObjectReference) = `rudder_02 (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Gameplay/rudder_02'`
+          - `controllers` (Generic) = `array size=0`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `rudder_02 (Hardpoint) scenePath='TestBoat_12_Tethers/_Gameplay/rudder_02'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/rudder_02/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `True`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Right`
+          - `targetEdge` (Enum) = `Left`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `ModuleBottomAnchor` | path=`TestBoat_12_Tethers/_Gameplay/rudder_02/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-20.77, 1, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_12_Tethers/_Gameplay/rudder_02/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-20.77, 1, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_12_Tethers/_Gameplay/rudder_02/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-20.77, 1, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `storage_02` | path=`TestBoat_12_Tethers/_Gameplay/storage_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `3, 0.085, 0`
+        - worldPosition: `3, 0.085, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(3.00, 0.09, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `storage_02`
+          - `hardpointType` (Enum) = `Storage`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/storage_02/MountPoint'`
+          - `moduleAnchor` (ObjectReference) = `ModuleBottomAnchor (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/storage_02/ModuleBottomAnchor'`
+          - `placementMarkerRenderer` (ObjectReference) = `storage_02 (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Gameplay/storage_02'`
+          - `controllers` (Generic) = `array size=0`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `storage_02 (Hardpoint) scenePath='TestBoat_12_Tethers/_Gameplay/storage_02'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/storage_02/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `True`
+          - `exteriorModule` (Boolean) = `False`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+      - `ModuleBottomAnchor` | path=`TestBoat_12_Tethers/_Gameplay/storage_02/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `3, 0.085, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_12_Tethers/_Gameplay/storage_02/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `3, 0.085, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_12_Tethers/_Gameplay/storage_02/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `3, 0.085, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `winch_02` | path=`TestBoat_12_Tethers/_Gameplay/winch_02` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-5, 5.26, 0`
+        - worldPosition: `-5, 5.26, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-5.00, 5.26, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `winch_02`
+          - `hardpointType` (Enum) = `Winch`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/winch_02/MountPoint'`
+          - `placementMarkerRenderer` (ObjectReference) = `winch_02 (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Gameplay/winch_02'`
+          - `controllers` (Generic) = `array size=0`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `winch_02 (Hardpoint) scenePath='TestBoat_12_Tethers/_Gameplay/winch_02'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/winch_02/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `False`
+          - `exteriorModule` (Boolean) = `False`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+        - `TetherWinchLink` index=7 enabled=`True`
+          - `m_Script` (ObjectReference) = `TetherWinchLink (MonoScript) asset='Assets/Scripts/Modules/Tethers/TetherWinchLink.cs'`
+          - `ownerWinchHardpoint` (ObjectReference) = `winch_02 (Hardpoint) scenePath='TestBoat_12_Tethers/_Gameplay/winch_02'`
+          - `linkedPayloadHardpoint` (ObjectReference) = `payload_01 (Hardpoint) scenePath='TestBoat_12_Tethers/_Gameplay/payload_01'`
+      - `ModuleBottomAnchor` | path=`TestBoat_12_Tethers/_Gameplay/winch_02/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-5, 5.26, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_12_Tethers/_Gameplay/winch_02/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-5, 5.26, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_12_Tethers/_Gameplay/winch_02/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-5, 5.26, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `winch_03` | path=`TestBoat_12_Tethers/_Gameplay/winch_03` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-1.5, 5.26, 0`
+        - worldPosition: `-1.5, 5.26, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-1.50, 5.26, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `Hardpoint_Circle_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/Hardpoint_Circle_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Simple`
+          - `m_Size` (Vector2) = `(0.32, 0.16)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `Hardpoint` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `Hardpoint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/Hardpoint.cs'`
+          - `hardpointId` (String) = `winch_03`
+          - `hardpointType` (Enum) = `Winch`
+          - `additionalAcceptedTypes` (Generic) = `array size=0`
+          - `mountPoint` (ObjectReference) = `MountPoint (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/winch_03/MountPoint'`
+          - `placementMarkerRenderer` (ObjectReference) = `winch_03 (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Gameplay/winch_03'`
+          - `controllers` (Generic) = `array size=0`
+          - `installStartingModuleOnAwake` (Boolean) = `True`
+        - `HardpointInteractable` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointInteractable (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointInteractable.cs'`
+          - `hardpoint` (ObjectReference) = `winch_03 (Hardpoint) scenePath='TestBoat_12_Tethers/_Gameplay/winch_03'`
+          - `promptAnchor` (ObjectReference) = `PromptAnchor (Transform) scenePath='TestBoat_12_Tethers/_Gameplay/winch_03/PromptAnchor'`
+          - `interactionPriority` (Integer) = `20`
+          - `pickupPriority` (Integer) = `20`
+          - `maxDistance` (Float) = `2`
+          - `hideHoverLabelWhenNotActionable` (Boolean) = `True`
+          - `requireMatchingBoatBoardingContext` (Boolean) = `True`
+          - `allowAccessWhenNotPartOfBoat` (Boolean) = `False`
+          - `exteriorModule` (Boolean) = `False`
+          - `pickupMode` (Enum) = `Hold`
+          - `pickupHoldDuration` (Float) = `2`
+        - `CircleCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_Radius` (Float) = `1`
+        - `HardpointReservedFootprint` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `HardpointReservedFootprint (MonoScript) asset='Assets/Scripts/Modules/Hardpoints/HardpointReservedFootprint.cs'`
+          - `enabledForBuilderBlocking` (Boolean) = `True`
+          - `size` (Vector2) = `(3.00, 3.00)`
+          - `localOffset` (Vector2) = `(0.00, 1.00)`
+          - `drawGizmo` (Boolean) = `True`
+        - `BoatBuilderSurfaceSnapAuthoring` index=6 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBuilderSurfaceSnapAuthoring (MonoScript) asset='Assets/Scripts/Inventory/Cargo/BoatBuilderSurfaceSnapAuthoring.cs'`
+          - `snapOnBuilderPlace` (Boolean) = `True`
+          - `anchor` (Enum) = `Bottom`
+          - `targetEdge` (Enum) = `Top`
+          - `boundsSource` (Enum) = `Renderer Bounds`
+          - `anchorRenderers` (Generic) = `array size=0`
+          - `anchorColliders` (Generic) = `array size=0`
+          - `yOffsetFromSurfaceTop` (Float) = `0`
+          - `xOffsetFromSurfaceEdge` (Float) = `0`
+          - `maxVerticalSnapDistance` (Float) = `5`
+          - `maxHorizontalSnapDistance` (Float) = `1.5`
+          - `horizontalInset` (Float) = `0.03`
+          - `verticalInset` (Float) = `0.03`
+          - `surfaceLayerMask` (LayerMask) = `8`
+          - `includeTriggerSurfaces` (Boolean) = `False`
+          - `requireBoatRootChild` (Boolean) = `True`
+          - `verboseLogging` (Boolean) = `False`
+        - `TetherWinchLink` index=7 enabled=`True`
+          - `m_Script` (ObjectReference) = `TetherWinchLink (MonoScript) asset='Assets/Scripts/Modules/Tethers/TetherWinchLink.cs'`
+          - `ownerWinchHardpoint` (ObjectReference) = `winch_03 (Hardpoint) scenePath='TestBoat_12_Tethers/_Gameplay/winch_03'`
+          - `linkedPayloadHardpoint` (ObjectReference) = `anchor_02 (Hardpoint) scenePath='TestBoat_12_Tethers/_Gameplay/anchor_02'`
+      - `ModuleBottomAnchor` | path=`TestBoat_12_Tethers/_Gameplay/winch_03/ModuleBottomAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-1.5, 5.26, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `MountPoint` | path=`TestBoat_12_Tethers/_Gameplay/winch_03/MountPoint` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-1.5, 5.26, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `PromptAnchor` | path=`TestBoat_12_Tethers/_Gameplay/winch_03/PromptAnchor` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-1.5, 5.26, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `_Hull` | path=`TestBoat_12_Tethers/_Hull` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `BoatWall_Wooden` | path=`TestBoat_12_Tethers/_Hull/BoatWall_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-20, 1.5, 0`
+        - worldPosition: `-20, 1.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-20.00, 1.50, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(0.82, 6.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `ResizableSegment2D` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `BoatWall_Sprite (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Hull/BoatWall_Wooden/BoatWall_Sprite'`
+          - `boxCollider` (ObjectReference) = `BoatWall_Wooden (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Hull/BoatWall_Wooden'`
+          - `width` (Float) = `0.82`
+          - `height` (Float) = `6`
+          - `resizeAxis` (Enum) = `Vertical`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `Wall`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+        - `WallSegmentAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `WallSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Walls/WallSegmentAuthoring.cs'`
+          - `wallCollider` (ObjectReference) = `BoatWall_Wooden (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Hull/BoatWall_Wooden'`
+          - `spriteRenderer` (ObjectReference) = `BoatWall_Sprite (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Hull/BoatWall_Wooden/BoatWall_Sprite'`
+          - `resizableSegment` (ObjectReference) = `BoatWall_Wooden (ResizableSegment2D) scenePath='TestBoat_12_Tethers/_Hull/BoatWall_Wooden'`
+          - `width` (Float) = `0.82`
+          - `height` (Float) = `6`
+    - `BoatWall_Wooden` | path=`TestBoat_12_Tethers/_Hull/BoatWall_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `20, 1.5, 0`
+        - worldPosition: `20, 1.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(20.00, 1.50, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(0.82, 6.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `ResizableSegment2D` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `BoatWall_Sprite (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Hull/BoatWall_Wooden/BoatWall_Sprite'`
+          - `boxCollider` (ObjectReference) = `BoatWall_Wooden (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Hull/BoatWall_Wooden'`
+          - `width` (Float) = `0.82`
+          - `height` (Float) = `6`
+          - `resizeAxis` (Enum) = `Vertical`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `Wall`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+        - `WallSegmentAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `WallSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Walls/WallSegmentAuthoring.cs'`
+          - `wallCollider` (ObjectReference) = `BoatWall_Wooden (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Hull/BoatWall_Wooden'`
+          - `spriteRenderer` (ObjectReference) = `BoatWall_Sprite (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Hull/BoatWall_Wooden/BoatWall_Sprite'`
+          - `resizableSegment` (ObjectReference) = `BoatWall_Wooden (ResizableSegment2D) scenePath='TestBoat_12_Tethers/_Hull/BoatWall_Wooden'`
+          - `width` (Float) = `0.82`
+          - `height` (Float) = `6`
+      - `BoatWall_Sprite` | path=`TestBoat_12_Tethers/_Hull/BoatWall_Wooden/BoatWall_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-20, 1.5, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatWallWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatWallWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(0.575, 0.575, 0.575, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(0.82, 6.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+      - `BoatWall_Sprite` | path=`TestBoat_12_Tethers/_Hull/BoatWall_Wooden/BoatWall_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `20, 1.5, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatWallWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatWallWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(0.575, 0.575, 0.575, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(0.82, 6.00)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+    - `HullSegment_Wooden` | path=`TestBoat_12_Tethers/_Hull/HullSegment_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, -1, 0`
+        - worldPosition: `0, -1, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, -1.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `False`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(40.00, 1.45)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `FloorSegmentAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `FloorSegmentAuthoring (MonoScript) asset='Assets/Scripts/Parts/Segments/FloorSegmentAuthoring.cs'`
+          - `floorCollider` (ObjectReference) = `HullSegment_Wooden (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Hull/HullSegment_Wooden'`
+          - `spriteRenderer` (ObjectReference) = `HullSegment_Sprite (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Hull/HullSegment_Wooden/HullSegment_Sprite'`
+          - `resizableSegment` (ObjectReference) = `HullSegment_Wooden (ResizableSegment2D) scenePath='TestBoat_12_Tethers/_Hull/HullSegment_Wooden'`
+          - `width` (Float) = `40`
+          - `height` (Float) = `1.45`
+        - `ResizableSegment2D` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `HullSegment_Sprite (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Hull/HullSegment_Wooden/HullSegment_Sprite'`
+          - `boxCollider` (ObjectReference) = `HullSegment_Wooden (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Hull/HullSegment_Wooden'`
+          - `width` (Float) = `40`
+          - `height` (Float) = `1.45`
+          - `resizeAxis` (Enum) = `Horizontal`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `CompartmentBoundaryAuthoring` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentBoundaryAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentBoundaryAuthoring.cs'`
+          - `roles` (Enum) = `-1`
+          - `countsAsBoundary` (Boolean) = `True`
+          - `isOpeningCarrier` (Boolean) = `False`
+          - `openingId` (String) = ``
+      - `HullSegment_Sprite` | path=`TestBoat_12_Tethers/_Hull/HullSegment_Wooden/HullSegment_Sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `0, -1, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `BoatSegmentWooden_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/BoatSegmentWooden_Sprite.gif'`
+            - `m_Color` (Color) = `RGBA(0.585, 0.585, 0.585, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(40.00, 1.45)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+  - `_Interior` | path=`TestBoat_12_Tethers/_Interior` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `CompartmentInterior_Wooden` | path=`TestBoat_12_Tethers/_Interior/CompartmentInterior_Wooden` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 1.805, 0`
+        - worldPosition: `0, 1.805, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 1.81, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `Compartment` index=1 enabled=`True`
+          - `m_Script` (ObjectReference) = `Compartment (MonoScript) asset='Assets/Scripts/Boats/Compartments/Compartment.cs'`
+          - `compartmentId` (String) = `compartment_01`
+          - `compartmentName` (String) = ``
+          - `p0` (Vector2) = `(-19.75, 2.38)`
+          - `p1` (Vector2) = `(19.75, 2.38)`
+          - `p2` (Vector2) = `(19.75, -2.38)`
+          - `p3` (Vector2) = `(-19.75, -2.38)`
+          - `localCorners` (Generic) = `array size=4`
+          - `waterArea` (Float) = `0`
+          - `minAirFraction` (Float) = `0.2`
+          - `airIntegrity` (Float) = `1`
+          - `airLeakRate` (Float) = `0`
+          - `externalWaterSources` (Generic) = `array size=0`
+        - `CompartmentRectAuthoring` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentRectAuthoring (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentRectAuthoring.cs'`
+          - `width` (Integer) = `158`
+          - `height` (Integer) = `19`
+          - `cellSize` (Float) = `0.25`
+          - `centerOffsetCells` (Vector2Int) = `(0, 0)`
+          - `compartment` (ObjectReference) = `CompartmentInterior_Wooden (Compartment) scenePath='TestBoat_12_Tethers/_Interior/CompartmentInterior_Wooden'`
+          - `boxCollider` (ObjectReference) = `CompartmentInterior_Wooden (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Interior/CompartmentInterior_Wooden'`
+          - `resizableSegment` (ObjectReference) = `CompartmentInterior_Wooden (ResizableSegment2D) scenePath='TestBoat_12_Tethers/_Interior/CompartmentInterior_Wooden'`
+          - `visibilityZone` (ObjectReference) = `CompartmentInterior_Wooden (BoatVisibilityZone) scenePath='TestBoat_12_Tethers/_Interior/CompartmentInterior_Wooden'`
+          - `ensureBoxCollider2D` (Boolean) = `True`
+          - `colliderIsTrigger` (Boolean) = `True`
+          - `allowResizableSegmentToDriveSize` (Boolean) = `True`
+          - `preserveWaterFractionOnResize` (Boolean) = `True`
+        - `CompartmentWaterRenderer` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `CompartmentWaterRenderer (MonoScript) asset='Assets/Scripts/Boats/Compartments/CompartmentWaterRenderer.cs'`
+          - `sortingLayerName` (String) = `BoatView`
+          - `sortingOrder` (Integer) = `25`
+          - `waterColor` (Color) = `RGBA(0.100, 0.400, 0.900, 0.600)`
+        - `BoxCollider2D` index=4 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(39.50, 4.75)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `MeshFilter` index=5 enabled=`n/a`
+        - `MeshRenderer` index=6 enabled=`True`
+          - `m_CastShadows` (Enum) = `On`
+          - `m_ReceiveShadows` (Boolean) = `True`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `2`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+        - `ResizableSegment2D` index=7 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `compartment_sprite (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Interior/CompartmentInterior_Wooden/compartment_sprite'`
+          - `boxCollider` (ObjectReference) = `CompartmentInterior_Wooden (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Interior/CompartmentInterior_Wooden'`
+          - `width` (Float) = `39.5`
+          - `height` (Float) = `4.75`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `SortingLayerSetter` index=8 enabled=`True`
+          - `m_Script` (ObjectReference) = `SortingLayerSetter (MonoScript) asset='Assets/Scripts/Camera/SortingLayerSetter.cs'`
+          - `sortingLayerName` (String) = `BoatForehull`
+          - `sortingOrder` (Integer) = `99`
+        - `BoatVisibilityZone` index=9 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisibilityZone (MonoScript) asset='Assets/Scripts/Boats/BoatVisibilityZone.cs'`
+          - `mode` (Enum) = `Boarded Interior`
+          - `controller` (ObjectReference) = `TestBoat_12_Tethers (BoatVisualStateController) scenePath='TestBoat_12_Tethers'`
+          - `priority` (Integer) = `100`
+          - `logEvents` (Boolean) = `False`
+        - `BoatVisualMarker` index=10 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisualMarker (MonoScript) asset='Assets/Scripts/Boats/BoatVisualMarker.cs'`
+          - `category` (Enum) = `Interior`
+      - `compartment_sprite` | path=`TestBoat_12_Tethers/_Interior/CompartmentInterior_Wooden/compartment_sprite` | activeSelf=True | activeInHierarchy=True | layer=`Hull` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `0, 1.805, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+          - `SpriteRenderer` index=1 enabled=`True`
+            - `m_CastShadows` (Enum) = `Off`
+            - `m_ReceiveShadows` (Boolean) = `False`
+            - `m_DynamicOccludee` (Boolean) = `True`
+            - `m_StaticShadowCaster` (Boolean) = `False`
+            - `m_MotionVectors` (Enum) = `Per Object Motion`
+            - `m_LightProbeUsage` (Integer) = `1`
+            - `m_ReflectionProbeUsage` (Integer) = `1`
+            - `m_RayTracingMode` (Integer) = `0`
+            - `m_RayTraceProcedural` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+            - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+            - `m_SmallMeshCulling` (Boolean) = `True`
+            - `m_RenderingLayerMask` (Integer) = `1`
+            - `m_RendererPriority` (Integer) = `0`
+            - `m_Materials` (Generic) = `array size=1`
+            - `m_Sprite` (ObjectReference) = `ChatGPT Image Feb 1, 2026, 08_19_31 PM_0 (Sprite) asset='Assets/Resources/Sprites/BoatKit/CompartmentBackground_Wooden_1.png'`
+            - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+            - `m_FlipX` (Boolean) = `False`
+            - `m_FlipY` (Boolean) = `False`
+            - `m_DrawMode` (Enum) = `Tiled`
+            - `m_Size` (Vector2) = `(39.50, 4.75)`
+            - `m_AdaptiveModeThreshold` (Float) = `0.5`
+            - `m_SpriteTileMode` (Enum) = `Continuous`
+            - `m_MaskInteraction` (Enum) = `None`
+            - `m_SpriteSortPoint` (Enum) = `Center`
+    - `Ladder` | path=`TestBoat_12_Tethers/_Interior/Ladder` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `17, 3.5, 0`
+        - worldPosition: `17, 3.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(17.00, 3.50, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `LadderMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/LadderMetal_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Tiled`
+          - `m_Size` (Vector2) = `(1.28, 7.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoxCollider2D` index=2 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(1.28, 7.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `LadderZone` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `LadderZone (MonoScript) asset='Assets/Scripts/Controller/Player/Ladders/LadderZone.cs'`
+          - `climbSpeed` (Float) = `6`
+          - `snapToCenterSpeed` (Float) = `18`
+          - `requireInteractToClimb` (Boolean) = `True`
+          - `allowImplicitDownClimb` (Boolean) = `True`
+          - `allowTopExit` (Boolean) = `True`
+          - `allowBottomExit` (Boolean) = `True`
+          - `topExitMargin` (Float) = `0.15`
+          - `bottomExitMargin` (Float) = `0.15`
+          - `topExitPoint` (ObjectReference) = `Top (Transform) scenePath='TestBoat_12_Tethers/_Interior/Ladder/Top'`
+          - `bottomExitPoint` (ObjectReference) = `Bottom (Transform) scenePath='TestBoat_12_Tethers/_Interior/Ladder/Bottom'`
+          - `interactionPriority` (Integer) = `25`
+          - `maxInteractDistance` (Float) = `1.5`
+          - `climbCenter` (ObjectReference) = `Middle (Transform) scenePath='TestBoat_12_Tethers/_Interior/Ladder/Middle'`
+          - `boatAccessMode` (Enum) = `Auto`
+          - `debugLogs` (Boolean) = `False`
+        - `ResizableSegment2D` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `Ladder (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Interior/Ladder'`
+          - `boxCollider` (ObjectReference) = `Ladder (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Interior/Ladder'`
+          - `width` (Float) = `1.28`
+          - `height` (Float) = `7`
+          - `resizeAxis` (Enum) = `Vertical`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `1`
+        - `LadderAutoFitAuthoring` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `LadderAutoFitAuthoring (MonoScript) asset='Assets/Scripts/Controller/Player/Ladders/LadderAutoFitAuthoring.cs'`
+          - `resizable` (ObjectReference) = `Ladder (ResizableSegment2D) scenePath='TestBoat_12_Tethers/_Interior/Ladder'`
+          - `ladderCollider` (ObjectReference) = `Ladder (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Interior/Ladder'`
+          - `top` (ObjectReference) = `Top (Transform) scenePath='TestBoat_12_Tethers/_Interior/Ladder/Top'`
+          - `middle` (ObjectReference) = `Middle (Transform) scenePath='TestBoat_12_Tethers/_Interior/Ladder/Middle'`
+          - `bottom` (ObjectReference) = `Bottom (Transform) scenePath='TestBoat_12_Tethers/_Interior/Ladder/Bottom'`
+          - `topExitPoint` (ObjectReference) = `TopExit (Transform) scenePath='TestBoat_12_Tethers/_Interior/Ladder/TopExit'`
+          - `bottomExitPoint` (ObjectReference) = `BottomExit (Transform) scenePath='TestBoat_12_Tethers/_Interior/Ladder/BottomExit'`
+          - `topInset` (Float) = `0.05`
+          - `bottomInset` (Float) = `0.05`
+          - `topExitLocalOffset` (Vector2) = `(0.00, 0.35)`
+          - `bottomExitLocalOffset` (Vector2) = `(0.00, 0.15)`
+          - `autoApplyInEditor` (Boolean) = `True`
+    - `Ladder` | path=`TestBoat_12_Tethers/_Interior/Ladder` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `-16, 3.5, 0`
+        - worldPosition: `-16, 3.5, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(-16.00, 3.50, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `SpriteRenderer` index=1 enabled=`True`
+          - `m_CastShadows` (Enum) = `Off`
+          - `m_ReceiveShadows` (Boolean) = `False`
+          - `m_DynamicOccludee` (Boolean) = `True`
+          - `m_StaticShadowCaster` (Boolean) = `False`
+          - `m_MotionVectors` (Enum) = `Per Object Motion`
+          - `m_LightProbeUsage` (Integer) = `1`
+          - `m_ReflectionProbeUsage` (Integer) = `1`
+          - `m_RayTracingMode` (Integer) = `0`
+          - `m_RayTraceProcedural` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlagsOverride` (Boolean) = `False`
+          - `m_RayTracingAccelStructBuildFlags` (Integer) = `1`
+          - `m_SmallMeshCulling` (Boolean) = `True`
+          - `m_RenderingLayerMask` (Integer) = `1`
+          - `m_RendererPriority` (Integer) = `0`
+          - `m_Materials` (Generic) = `array size=1`
+          - `m_Sprite` (ObjectReference) = `LadderMetal_Sprite_0 (Sprite) asset='Assets/Sprites/Piskel/LadderMetal_Sprite.gif'`
+          - `m_Color` (Color) = `RGBA(1.000, 1.000, 1.000, 1.000)`
+          - `m_FlipX` (Boolean) = `False`
+          - `m_FlipY` (Boolean) = `False`
+          - `m_DrawMode` (Enum) = `Tiled`
+          - `m_Size` (Vector2) = `(1.28, 7.00)`
+          - `m_AdaptiveModeThreshold` (Float) = `0.5`
+          - `m_SpriteTileMode` (Enum) = `Continuous`
+          - `m_MaskInteraction` (Enum) = `None`
+          - `m_SpriteSortPoint` (Enum) = `Center`
+        - `BoxCollider2D` index=2 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(1.28, 7.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `LadderZone` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `LadderZone (MonoScript) asset='Assets/Scripts/Controller/Player/Ladders/LadderZone.cs'`
+          - `climbSpeed` (Float) = `6`
+          - `snapToCenterSpeed` (Float) = `18`
+          - `requireInteractToClimb` (Boolean) = `True`
+          - `allowImplicitDownClimb` (Boolean) = `True`
+          - `allowTopExit` (Boolean) = `True`
+          - `allowBottomExit` (Boolean) = `True`
+          - `topExitMargin` (Float) = `0.15`
+          - `bottomExitMargin` (Float) = `0.15`
+          - `topExitPoint` (ObjectReference) = `Top (Transform) scenePath='TestBoat_12_Tethers/_Interior/Ladder/Top'`
+          - `bottomExitPoint` (ObjectReference) = `Bottom (Transform) scenePath='TestBoat_12_Tethers/_Interior/Ladder/Bottom'`
+          - `interactionPriority` (Integer) = `25`
+          - `maxInteractDistance` (Float) = `1.5`
+          - `climbCenter` (ObjectReference) = `Middle (Transform) scenePath='TestBoat_12_Tethers/_Interior/Ladder/Middle'`
+          - `boatAccessMode` (Enum) = `Auto`
+          - `debugLogs` (Boolean) = `False`
+        - `ResizableSegment2D` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `spriteRenderer` (ObjectReference) = `Ladder (SpriteRenderer) scenePath='TestBoat_12_Tethers/_Interior/Ladder'`
+          - `boxCollider` (ObjectReference) = `Ladder (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Interior/Ladder'`
+          - `width` (Float) = `1.28`
+          - `height` (Float) = `7`
+          - `resizeAxis` (Enum) = `Vertical`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `1`
+        - `LadderAutoFitAuthoring` index=5 enabled=`True`
+          - `m_Script` (ObjectReference) = `LadderAutoFitAuthoring (MonoScript) asset='Assets/Scripts/Controller/Player/Ladders/LadderAutoFitAuthoring.cs'`
+          - `resizable` (ObjectReference) = `Ladder (ResizableSegment2D) scenePath='TestBoat_12_Tethers/_Interior/Ladder'`
+          - `ladderCollider` (ObjectReference) = `Ladder (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Interior/Ladder'`
+          - `top` (ObjectReference) = `Top (Transform) scenePath='TestBoat_12_Tethers/_Interior/Ladder/Top'`
+          - `middle` (ObjectReference) = `Middle (Transform) scenePath='TestBoat_12_Tethers/_Interior/Ladder/Middle'`
+          - `bottom` (ObjectReference) = `Bottom (Transform) scenePath='TestBoat_12_Tethers/_Interior/Ladder/Bottom'`
+          - `topExitPoint` (ObjectReference) = `TopExit (Transform) scenePath='TestBoat_12_Tethers/_Interior/Ladder/TopExit'`
+          - `bottomExitPoint` (ObjectReference) = `BottomExit (Transform) scenePath='TestBoat_12_Tethers/_Interior/Ladder/BottomExit'`
+          - `topInset` (Float) = `0.05`
+          - `bottomInset` (Float) = `0.05`
+          - `topExitLocalOffset` (Vector2) = `(0.00, 0.35)`
+          - `bottomExitLocalOffset` (Vector2) = `(0.00, 0.15)`
+          - `autoApplyInEditor` (Boolean) = `True`
+      - `Bottom` | path=`TestBoat_12_Tethers/_Interior/Ladder/Bottom` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -3.45, 0`
+          - worldPosition: `17, 0.05, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -3.45, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `Bottom` | path=`TestBoat_12_Tethers/_Interior/Ladder/Bottom` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -3.45, 0`
+          - worldPosition: `-16, 0.05, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -3.45, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `BottomExit` | path=`TestBoat_12_Tethers/_Interior/Ladder/BottomExit` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -3.3, 0`
+          - worldPosition: `17, 0.2, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -3.30, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `BottomExit` | path=`TestBoat_12_Tethers/_Interior/Ladder/BottomExit` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, -3.3, 0`
+          - worldPosition: `-16, 0.2, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, -3.30, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `Middle` | path=`TestBoat_12_Tethers/_Interior/Ladder/Middle` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `17, 3.5, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `Middle` | path=`TestBoat_12_Tethers/_Interior/Ladder/Middle` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 0, 0`
+          - worldPosition: `-16, 3.5, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `Top` | path=`TestBoat_12_Tethers/_Interior/Ladder/Top` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 3.45, 0`
+          - worldPosition: `17, 6.95, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 3.45, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `Top` | path=`TestBoat_12_Tethers/_Interior/Ladder/Top` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 3.45, 0`
+          - worldPosition: `-16, 6.95, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 3.45, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `TopExit` | path=`TestBoat_12_Tethers/_Interior/Ladder/TopExit` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 3.8, 0`
+          - worldPosition: `17, 7.3, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 3.80, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+      - `TopExit` | path=`TestBoat_12_Tethers/_Interior/Ladder/TopExit` | activeSelf=True | activeInHierarchy=True | layer=`Interactable` | tag=`Untagged` | static=False
+        - Transform:
+          - localPosition: `0, 3.8, 0`
+          - worldPosition: `-16, 7.3, 0`
+          - localRotationEuler: `0, 0, 0`
+          - worldRotationEuler: `0, 0, 0`
+          - localScale: `1, 1, 1`
+        - Components:
+          - `Transform` index=0 enabled=`n/a`
+            - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+            - `m_LocalPosition` (Vector3) = `(0.00, 3.80, 0.00)`
+            - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+            - `m_ConstrainProportionsScale` (Boolean) = `False`
+  - `_Volumes` | path=`TestBoat_12_Tethers/_Volumes` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+    - Transform:
+      - localPosition: `0, 0, 0`
+      - worldPosition: `0, 0, 0`
+      - localRotationEuler: `0, 0, 0`
+      - worldRotationEuler: `0, 0, 0`
+      - localScale: `1, 1, 1`
+    - Components:
+      - `Transform` index=0 enabled=`n/a`
+        - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+        - `m_LocalPosition` (Vector3) = `(0.00, 0.00, 0.00)`
+        - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+        - `m_ConstrainProportionsScale` (Boolean) = `False`
+    - `BoardedVolume` | path=`TestBoat_12_Tethers/_Volumes/BoardedVolume` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`PlayerBoat` | static=False
+      - Transform:
+        - localPosition: `0, 5.138, 0`
+        - worldPosition: `0, 5.138, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 5.14, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(40.82, 13.73)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `BoatBoardedVolume` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatBoardedVolume (MonoScript) asset='Assets/Scripts/Controller/Player/BoatBoardedVolume.cs'`
+    - `BoatItemContainmentZone` | path=`TestBoat_12_Tethers/_Volumes/BoatItemContainmentZone` | activeSelf=True | activeInHierarchy=True | layer=`Default` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 5.088, 0`
+        - worldPosition: `0, 5.088, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 5.09, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(41.02, 13.83)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `BoatItemContainmentZone` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatItemContainmentZone (MonoScript) asset='Assets/Scripts/Inventory/Item/BoatItemContainmentZone.cs'`
+    - `VisibilityZone_BoardedExteriorDeck` | path=`TestBoat_12_Tethers/_Volumes/VisibilityZone_BoardedExteriorDeck` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 7.25, 0`
+        - worldPosition: `0, 7.25, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 7.25, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(40.00, 5.50)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `BoatVisibilityZone` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisibilityZone (MonoScript) asset='Assets/Scripts/Boats/BoatVisibilityZone.cs'`
+          - `mode` (Enum) = `Boarded Exterior Deck`
+          - `controller` (ObjectReference) = `TestBoat_12_Tethers (BoatVisualStateController) scenePath='TestBoat_12_Tethers'`
+          - `priority` (Integer) = `10`
+          - `logEvents` (Boolean) = `False`
+        - `ResizableSegment2D` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `boxCollider` (ObjectReference) = `VisibilityZone_BoardedExteriorDeck (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Volumes/VisibilityZone_BoardedExteriorDeck'`
+          - `width` (Float) = `40`
+          - `height` (Float) = `5.5`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `BoatVisualMarker` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisualMarker (MonoScript) asset='Assets/Scripts/Boats/BoatVisualMarker.cs'`
+          - `category` (Enum) = `Volume`
+    - `VisibilityZone_BoardedInterior` | path=`TestBoat_12_Tethers/_Volumes/VisibilityZone_BoardedInterior` | activeSelf=True | activeInHierarchy=True | layer=`InternalSensor` | tag=`Untagged` | static=False
+      - Transform:
+        - localPosition: `0, 2, 0`
+        - worldPosition: `0, 2, 0`
+        - localRotationEuler: `0, 0, 0`
+        - worldRotationEuler: `0, 0, 0`
+        - localScale: `1, 1, 1`
+      - Components:
+        - `Transform` index=0 enabled=`n/a`
+          - `m_LocalRotation` (Quaternion) = `(0.00, 0.00, 0.00)`
+          - `m_LocalPosition` (Vector3) = `(0.00, 2.00, 0.00)`
+          - `m_LocalScale` (Vector3) = `(1.00, 1.00, 1.00)`
+          - `m_ConstrainProportionsScale` (Boolean) = `False`
+        - `BoxCollider2D` index=1 enabled=`True`
+          - `m_Density` (Float) = `1`
+          - `m_IncludeLayers` (LayerMask) = `0`
+          - `m_ExcludeLayers` (LayerMask) = `0`
+          - `m_LayerOverridePriority` (Integer) = `0`
+          - `m_ForceSendLayers` (LayerMask) = `-1`
+          - `m_ForceReceiveLayers` (LayerMask) = `-1`
+          - `m_ContactCaptureLayers` (LayerMask) = `-1`
+          - `m_CallbackLayers` (LayerMask) = `-1`
+          - `m_IsTrigger` (Boolean) = `True`
+          - `m_UsedByEffector` (Boolean) = `False`
+          - `m_CompositeOperation` (Enum) = `None`
+          - `m_CompositeOrder` (Integer) = `0`
+          - `m_Offset` (Vector2) = `(0.00, 0.00)`
+          - `m_AutoTiling` (Boolean) = `False`
+          - `m_Size` (Vector2) = `(40.00, 5.00)`
+          - `m_EdgeRadius` (Float) = `0`
+        - `BoatVisibilityZone` index=2 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisibilityZone (MonoScript) asset='Assets/Scripts/Boats/BoatVisibilityZone.cs'`
+          - `mode` (Enum) = `Boarded Interior`
+          - `controller` (ObjectReference) = `TestBoat_12_Tethers (BoatVisualStateController) scenePath='TestBoat_12_Tethers'`
+          - `priority` (Integer) = `100`
+          - `logEvents` (Boolean) = `False`
+        - `ResizableSegment2D` index=3 enabled=`True`
+          - `m_Script` (ObjectReference) = `ResizableSegment2D (MonoScript) asset='Assets/Scripts/Parts/Segments/ResizableSegment2D.cs'`
+          - `boxCollider` (ObjectReference) = `VisibilityZone_BoardedInterior (BoxCollider2D) scenePath='TestBoat_12_Tethers/_Volumes/VisibilityZone_BoardedInterior'`
+          - `width` (Float) = `40`
+          - `height` (Float) = `5`
+          - `resizeAxis` (Enum) = `Both`
+          - `resizeSprite` (Boolean) = `True`
+          - `resizeCollider` (Boolean) = `True`
+          - `forceTiledSprite` (Boolean) = `True`
+          - `snapResizeInEditor` (Boolean) = `True`
+          - `resizeSnapIncrement` (Float) = `0.5`
+        - `BoatVisualMarker` index=4 enabled=`True`
+          - `m_Script` (ObjectReference) = `BoatVisualMarker (MonoScript) asset='Assets/Scripts/Boats/BoatVisualMarker.cs'`
+          - `category` (Enum) = `Volume`
+

@@ -14,6 +14,7 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
     [SerializeField] private string ghostCollisionLayerName = "GhostCollision";
     [SerializeField] private string bellInteriorLayerName = "BellInterior";
     [SerializeField] private string bellLedgeLayerName = "BellLedge";
+    [SerializeField] private string tetherPayloadLayerName = "TetherPayload";
 
     [Header("Sprite Sorting")]
     [SerializeField] private string boardedSortingLayerName = "BoatPlayer";
@@ -90,6 +91,7 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
     private int _ghostCollisionLayer;
     private int _bellInteriorLayer;
     private int _bellLedgeLayer;
+    private int _tetherPayloadLayer;
 
     private int _hullBit;
     private int _boatItemBit;
@@ -99,6 +101,7 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
     private int _ghostCollisionBit;
     private int _bellInteriorBit;
     private int _bellLedgeBit;
+    private int _tetherPayloadBit;
     private int _bellCollisionBits;
 
     private int _nonBoatWorldBits;
@@ -367,6 +370,9 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
         _ghostCollisionLayer = LayerMask.NameToLayer(ghostCollisionLayerName);
         _bellInteriorLayer = LayerMask.NameToLayer(bellInteriorLayerName);
         _bellLedgeLayer = LayerMask.NameToLayer(bellLedgeLayerName);
+        _tetherPayloadLayer = string.IsNullOrWhiteSpace(tetherPayloadLayerName)
+            ? -1
+            : LayerMask.NameToLayer(tetherPayloadLayerName);
 
         if (_hullLayer < 0)
             Debug.LogError($"Layer '{hullLayerName}' not found.", this);
@@ -397,6 +403,14 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
         if (_bellLedgeLayer < 0)
             Debug.LogError($"Layer '{bellLedgeLayerName}' not found.", this);
 
+        if (!string.IsNullOrWhiteSpace(tetherPayloadLayerName) && _tetherPayloadLayer < 0)
+        {
+            Debug.LogWarning(
+                $"[PlayerBoardingState:{name}] Optional layer '{tetherPayloadLayerName}' not found. " +
+                "Boarded-player tether-payload exclusion will be skipped.",
+                this);
+        }
+
         _hullBit = LayerBitOrZero(_hullLayer);
         _boatItemBit = LayerBitOrZero(_boatItemLayer);
         _hatchLedgeBit = LayerBitOrZero(_hatchLedgeLayer);
@@ -405,6 +419,7 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
         _ghostCollisionBit = LayerBitOrZero(_ghostCollisionLayer);
         _bellInteriorBit = LayerBitOrZero(_bellInteriorLayer);
         _bellLedgeBit = LayerBitOrZero(_bellLedgeLayer);
+        _tetherPayloadBit = LayerBitOrZero(_tetherPayloadLayer);
 
         _bellCollisionBits =
             _bellInteriorBit |
@@ -491,6 +506,12 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
 
         if (IsBoarded)
         {
+            // A live deployed tether payload is physically independent of the boat.
+            // Boarded players must not be able to shove it, ride it, or inject solver
+            // impulses into its tether. Bell occupants still collide with the bell
+            // through the dedicated GhostCollision override instead of the real payload.
+            mask |= _tetherPayloadBit;
+
             // Boarded player ignores world ground and world ledges/docks.
             mask |= _nonBoatWorldBits;
 
@@ -522,6 +543,10 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
         }
         else
         {
+            // Once unboarded, world/swimming players may physically collide with
+            // deployed tether payloads again.
+            mask &= ~_tetherPayloadBit;
+
             // Unboarded player ignores boat hull, hatch ledges, and ALL ghosts.
             mask |= _hullBit;
             mask |= _hatchLedgeBit;

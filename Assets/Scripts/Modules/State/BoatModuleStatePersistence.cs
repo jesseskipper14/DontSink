@@ -251,6 +251,17 @@ public sealed class BoatModuleStatePersistence : MonoBehaviour
             {
                 storage.RestoreContainerSnapshot(snap.storageContainer, itemCatalog);
                 Log($"Restored StorageModule contents/cargo rack on '{snap.hardpointId}'.");
+
+                // Storage restore replaces the ItemContainerState object. A tether
+                // deployment module may still be subscribed to the previous container
+                // until its first Update, but BoatSpawner restores tether state and
+                // loose BellItems before that Update can run. Reconcile the stowed
+                // physical payload shell immediately so dependent restores can resolve it.
+                if (installed.TryGetComponent(out TetherDeploymentModule tetherDeployment))
+                {
+                    tetherDeployment.RefreshStoredPayloadAfterStorageRestore();
+                    Log($"Refreshed tether stored-payload runtime on '{snap.hardpointId}' after storage restore.");
+                }
             }
         }
 

@@ -8,6 +8,18 @@ public sealed class TetherConstraint2D : MonoBehaviour
     [SerializeField, Min(0f)] private float visualSlackSagPerMeter = 0.05f;
     [SerializeField, Min(0f)] private float maxVisualSag = 2f;
 
+    [Tooltip("Show a straight, static rope from the winch exit to a live physical payload while it is fully docked/stowed.")]
+    [SerializeField] private bool showDockedStaticRope = true;
+
+    [Tooltip("Hide both deployed and docked rope visuals while the owning boat is being viewed in BoardedInterior mode.")]
+    [SerializeField] private bool hideRopeWhenBoatInterior = true;
+
+    [Header("Break Protection")]
+    [Tooltip(
+        "How long tension must remain continuously above the line breaking load before the tether snaps. " +
+        "This rejects one-frame solver spikes without changing the actual joint force or line rating.")]
+    [SerializeField, Min(0f)] private float sustainedBreakingLoadSeconds = 0.15f;
+
     [Header("Runtime Debug")]
     [SerializeField] private bool _attached;
     [SerializeField] private float _deployedLength;
@@ -23,8 +35,15 @@ public sealed class TetherConstraint2D : MonoBehaviour
     private DistanceJoint2D _runtimeJoint;
     private TetherJointBreakRelay2D _breakRelay;
 
+    // Presentation-only context. These do not own tether or payload state.
+    private TetherDeploymentModule _deploymentModule;
+    private BoatVisualStateController _boatVisualState;
+
     private bool _breakPending;
     private float _pendingBreakTension;
+    [SerializeField] private float _breakingLoadOvertimeSeconds;
+    [SerializeField] private float _breakProtectionRemainingSeconds;
+    private float _peakBreakingLoadTension;
 
     public bool IsAttached =>
         _attached &&
@@ -52,9 +71,25 @@ public sealed class TetherConstraint2D : MonoBehaviour
         _currentTension > _breakingLoad;
 
     /// <summary>
-    /// Consumes a solver-owned DistanceJoint2D break notification.
-    /// The break is latched until the owning WinchModule has had a chance to
-    /// release the payload and reconcile line inventory.
+    /// Temporarily suppresses breaking-load accumulation while leaving the
+    /// physical DistanceJoint fully active. Used after persistence restore so
+    /// one or two load-order/solver settling spikes cannot sacrifice the line.
+    /// </summary>
+    public void BeginBreakProtection(float seconds)
+    {
+        _breakProtectionRemainingSeconds =
+            Mathf.Max(
+                _breakProtectionRemainingSeconds,
+                Mathf.Max(0f, seconds));
+
+        _breakingLoadOvertimeSeconds = 0f;
+        _peakBreakingLoadTension = 0f;
+    }
+
+    /// <summary>
+    /// Consumes a latched tether break. The break may come from sustained
+    /// breaking-load evaluation or, defensively, a solver-owned joint break.
+    /// The owning WinchModule remains responsible for line/payload reconciliation.
     /// </summary>
     public bool TryConsumeBreak(out float breakTension)
     {
@@ -72,6 +107,7 @@ public sealed class TetherConstraint2D : MonoBehaviour
     private void Awake()
     {
         CacheLineRenderer();
+        CacheVisualContext();
 
         if (lineRenderer == null)
         {
@@ -95,6 +131,22 @@ public sealed class TetherConstraint2D : MonoBehaviour
         {
             lineRenderer.useWorldSpace = true;
             lineRenderer.positionCount = 3;
+        }
+    }
+
+    private void CacheVisualContext()
+    {
+        if (_deploymentModule == null)
+        {
+            _deploymentModule =
+                GetComponent<TetherDeploymentModule>() ??
+                GetComponentInParent<TetherDeploymentModule>();
+        }
+
+        if (_boatVisualState == null)
+        {
+            _boatVisualState =
+                GetComponentInParent<BoatVisualStateController>();
         }
     }
 
@@ -165,6 +217,9 @@ public sealed class TetherConstraint2D : MonoBehaviour
         _attached = false;
         _breakPending = false;
         _pendingBreakTension = 0f;
+        _breakingLoadOvertimeSeconds = 0f;
+        _breakProtectionRemainingSeconds = 0f;
+        _peakBreakingLoadTension = 0f;
 
         if (_breakRelay != null)
             _breakRelay.Unbind(this);
@@ -207,10 +262,11 @@ public sealed class TetherConstraint2D : MonoBehaviour
         if (_runtimeJoint == null)
             return;
 
-        _runtimeJoint.breakForce =
-            _breakingLoad > 0f
-                ? _breakingLoad
-                : Mathf.Infinity;
+        // Breaking is evaluated by this component instead of delegated directly
+        // to the solver. A raw Joint2D.breakForce can destroy the tether from a
+        // single load-order/contact spike before gameplay code can distinguish a
+        // transient impulse from a sustained overload.
+        _runtimeJoint.breakForce = Mathf.Infinity;
     }
 
     private void FixedUpdate()
@@ -244,6 +300,14 @@ public sealed class TetherConstraint2D : MonoBehaviour
         // Mutating joint configuration first can discard the very reaction data
         // we are trying to observe.
         SampleReactionForce();
+        EvaluateBreakingLoad(Time.fixedDeltaTime);
+
+        if (!_attached ||
+            _runtimeJoint == null ||
+            !_runtimeJoint.enabled)
+        {
+            return;
+        }
 
         UpdateJointAnchors();
 
@@ -329,6 +393,86 @@ public sealed class TetherConstraint2D : MonoBehaviour
                 tension);
     }
 
+
+    private void EvaluateBreakingLoad(float deltaTime)
+    {
+        if (!_attached ||
+            _runtimeJoint == null ||
+            !_runtimeJoint.enabled ||
+            _breakPending)
+        {
+            return;
+        }
+
+        if (_breakProtectionRemainingSeconds > 0f)
+        {
+            _breakProtectionRemainingSeconds =
+                Mathf.Max(
+                    0f,
+                    _breakProtectionRemainingSeconds -
+                    Mathf.Max(0f, deltaTime));
+
+            _breakingLoadOvertimeSeconds = 0f;
+            _peakBreakingLoadTension = 0f;
+            return;
+        }
+
+        if (_breakingLoad <= 0f ||
+            _currentTension <= _breakingLoad)
+        {
+            _breakingLoadOvertimeSeconds = 0f;
+            _peakBreakingLoadTension = 0f;
+            return;
+        }
+
+        _peakBreakingLoadTension =
+            Mathf.Max(
+                _peakBreakingLoadTension,
+                _currentTension);
+
+        _breakingLoadOvertimeSeconds +=
+            Mathf.Max(0f, deltaTime);
+
+        if (_breakingLoadOvertimeSeconds + 0.0001f <
+            sustainedBreakingLoadSeconds)
+        {
+            return;
+        }
+
+        LatchBreak(
+            Mathf.Max(
+                _currentTension,
+                _peakBreakingLoadTension));
+    }
+
+    private void LatchBreak(float breakTension)
+    {
+        if (_breakPending)
+            return;
+
+        _currentTension =
+            Mathf.Max(
+                _currentTension,
+                Mathf.Max(0f, breakTension));
+
+        _pendingBreakTension =
+            _currentTension;
+
+        _breakPending = true;
+        _attached = false;
+        _breakingLoadOvertimeSeconds = 0f;
+        _breakProtectionRemainingSeconds = 0f;
+        _peakBreakingLoadTension = 0f;
+
+        if (_breakRelay != null)
+            _breakRelay.Unbind(this);
+
+        if (_runtimeJoint != null)
+            _runtimeJoint.enabled = false;
+
+        SetRendererVisible(false);
+    }
+
     internal void NotifyRuntimeJointBroken(
         Joint2D brokenJoint)
     {
@@ -355,13 +499,8 @@ public sealed class TetherConstraint2D : MonoBehaviour
                 _currentTension,
                 breakTension);
 
-        _pendingBreakTension =
-            _currentTension;
-
-        _breakPending = true;
-        _attached = false;
-
-        SetRendererVisible(false);
+        LatchBreak(
+            _currentTension);
     }
 
     private void ResetMeasurements()
@@ -373,17 +512,106 @@ public sealed class TetherConstraint2D : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!IsAttached ||
-            _startAnchor == null ||
-            _payload == null)
+        CacheVisualContext();
+
+        // The rope belongs to the exterior presentation of the boat. The bell may
+        // still physically exist while Steve is viewing the boat interior, but the
+        // cable should not render through the cutaway/interior view.
+        if (ShouldHideRopeForBoatInterior())
         {
             SetRendererVisible(false);
             return;
         }
 
-        SampleReactionForce();
-        UpdateLineVisual();
-        SetRendererVisible(true);
+        if (IsAttached &&
+            _startAnchor != null &&
+            _payload != null)
+        {
+            SampleReactionForce();
+            UpdateLineVisual();
+            SetRendererVisible(true);
+            return;
+        }
+
+        // A live physical payload such as the diving bell remains visible while
+        // stowed. There is no DistanceJoint while docked, so draw a presentation-
+        // only straight rope from the authored tether exit to the payload eye.
+        if (showDockedStaticRope &&
+            TryUpdateDockedStaticLineVisual())
+        {
+            SetRendererVisible(true);
+            return;
+        }
+
+        SetRendererVisible(false);
+    }
+
+    private bool ShouldHideRopeForBoatInterior()
+    {
+        if (!hideRopeWhenBoatInterior)
+            return false;
+
+        if (_boatVisualState == null)
+            _boatVisualState = GetComponentInParent<BoatVisualStateController>();
+
+        return
+            _boatVisualState != null &&
+            _boatVisualState.CurrentMode == BoatVisibilityMode.BoardedInterior;
+    }
+
+    private bool TryUpdateDockedStaticLineVisual()
+    {
+        if (_deploymentModule == null)
+            _deploymentModule = GetComponent<TetherDeploymentModule>();
+
+        if (_deploymentModule == null ||
+            !_deploymentModule.HasDockedPhysicalPayload)
+        {
+            return false;
+        }
+
+        WorldItem dockedWorldItem =
+            _deploymentModule.DockedPhysicalWorldItem;
+
+        if (dockedWorldItem == null)
+            return false;
+
+        TetherPayload dockedPayload =
+            dockedWorldItem.GetComponent<TetherPayload>();
+
+        if (dockedPayload == null ||
+            dockedPayload.TetherAnchor == null ||
+            _deploymentModule.TetherExitPoint == null)
+        {
+            return false;
+        }
+
+        if (lineRenderer == null)
+        {
+            CacheLineRenderer();
+
+            if (lineRenderer == null)
+                return false;
+        }
+
+        Vector3 start =
+            _deploymentModule.TetherExitPoint.position;
+
+        Vector3 end =
+            dockedPayload.TetherAnchor.position;
+
+        Vector3 mid =
+            Vector3.Lerp(
+                start,
+                end,
+                0.5f);
+
+        lineRenderer.positionCount = 3;
+        lineRenderer.SetPosition(0, start);
+        lineRenderer.SetPosition(1, mid);
+        lineRenderer.SetPosition(2, end);
+
+        return true;
     }
 
     private void UpdateLineVisual()

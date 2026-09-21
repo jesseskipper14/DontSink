@@ -38,6 +38,19 @@ public sealed class InventoryDragController : MonoBehaviour
 
     private readonly List<RaycastResult> _raycastResults = new();
 
+    private sealed class WorldDropTargetCandidate
+    {
+        public IWorldItemDropTarget Target;
+        public Collider2D Collider;
+        public bool DirectTarget;
+        public bool ExactPointerHit;
+        public float DistanceSqr;
+        public float ColliderArea;
+        public int HierarchyDepth;
+    }
+
+    private readonly List<WorldDropTargetCandidate> _worldDropCandidates = new();
+
     public bool IsDragging => isDragging;
     public ItemInstance DraggedItem => draggedItem;
 
@@ -696,45 +709,301 @@ public sealed class InventoryDragController : MonoBehaviour
         return false;
     }
 
-    private bool TryGetWorldDropTargetUnderCursor(out IWorldItemDropTarget target)
+    private int CollectWorldDropTargetCandidates(ItemInstance item)
     {
-        target = null;
+        _worldDropCandidates.Clear();
 
         Camera cam = worldCamera != null ? worldCamera : Camera.main;
         if (cam == null)
         {
-            LogWarning("TryGetWorldDropTargetUnderCursor failed because no camera was available.");
-            return false;
+            LogWarning("CollectWorldDropTargetCandidates failed because no camera was available.");
+            return 0;
         }
 
         Vector3 mouse = Input.mousePosition;
         Vector3 world = cam.ScreenToWorldPoint(mouse);
         Vector2 point = new Vector2(world.x, world.y);
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(point, worldDropTargetRadius, worldDropTargetMask);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(
+            point,
+            worldDropTargetRadius,
+            worldDropTargetMask);
+
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D col = hits[i];
             if (col == null)
                 continue;
 
-            target = col.GetComponent<IWorldItemDropTarget>();
-            if (target != null)
+            // A target physically attached to the hit collider owns that collider.
+            // Only fall back to a parent target when the collider has no direct target.
+            // This prevents a dedicated child target (ballast slot, chest, rack slot, etc.)
+            // from simultaneously impersonating a generic ancestor target.
+            IWorldItemDropTarget target =
+                col.GetComponent<IWorldItemDropTarget>();
+
+            bool direct =
+                target != null;
+
+            if (target == null)
             {
-                Log($"TryGetWorldDropTargetUnderCursor | hit={col.name} | direct target found");
-                return true;
+                target =
+                    col.GetComponentInParent<IWorldItemDropTarget>();
             }
 
-            target = col.GetComponentInParent<IWorldItemDropTarget>();
-            if (target != null)
+            if (target == null)
+                continue;
+
+            WorldDropTargetCandidate candidate =
+                BuildWorldDropTargetCandidate(
+                    target,
+                    col,
+                    direct,
+                    point);
+
+            AddOrImproveWorldDropCandidate(
+                candidate);
+        }
+
+        _worldDropCandidates.Sort(
+            CompareWorldDropCandidates);
+
+        if (_worldDropCandidates.Count == 0)
+        {
+            Log("CollectWorldDropTargetCandidates | no world drop target hit.");
+            return 0;
+        }
+
+        if (verboseLogging)
+        {
+            for (int i = 0; i < _worldDropCandidates.Count; i++)
             {
-                Log($"TryGetWorldDropTargetUnderCursor | hit={col.name} | parent target found");
-                return true;
+                WorldDropTargetCandidate candidate =
+                    _worldDropCandidates[i];
+
+                Log(
+                    $"World drop candidate[{i}] | " +
+                    $"target={DescribeWorldDropTarget(candidate.Target)} | " +
+                    $"collider={(candidate.Collider != null ? candidate.Collider.name : "NULL")} | " +
+                    $"direct={candidate.DirectTarget} | " +
+                    $"exact={candidate.ExactPointerHit} | " +
+                    $"distance={Mathf.Sqrt(candidate.DistanceSqr):F3} | " +
+                    $"area={candidate.ColliderArea:F3} | " +
+                    $"depth={candidate.HierarchyDepth} | " +
+                    $"item={DescribeItem(item)}");
             }
         }
 
-        Log("TryGetWorldDropTargetUnderCursor | no world drop target hit.");
-        return false;
+        return _worldDropCandidates.Count;
+    }
+
+    private WorldDropTargetCandidate BuildWorldDropTargetCandidate(
+        IWorldItemDropTarget target,
+        Collider2D collider,
+        bool directTarget,
+        Vector2 pointerWorld)
+    {
+        bool exactPointerHit =
+            collider != null &&
+            collider.OverlapPoint(pointerWorld);
+
+        Vector2 closest =
+            collider != null
+                ? collider.ClosestPoint(pointerWorld)
+                : pointerWorld;
+
+        float distanceSqr =
+            exactPointerHit
+                ? 0f
+                : (closest - pointerWorld).sqrMagnitude;
+
+        float area =
+            float.MaxValue;
+
+        int hierarchyDepth =
+            0;
+
+        if (collider != null)
+        {
+            Bounds bounds =
+                collider.bounds;
+
+            area =
+                Mathf.Max(
+                    0.0001f,
+                    Mathf.Abs(
+                        bounds.size.x *
+                        bounds.size.y));
+
+            hierarchyDepth =
+                GetHierarchyDepth(
+                    collider.transform);
+        }
+
+        return new WorldDropTargetCandidate
+        {
+            Target = target,
+            Collider = collider,
+            DirectTarget = directTarget,
+            ExactPointerHit = exactPointerHit,
+            DistanceSqr = distanceSqr,
+            ColliderArea = area,
+            HierarchyDepth = hierarchyDepth
+        };
+    }
+
+    private void AddOrImproveWorldDropCandidate(
+        WorldDropTargetCandidate candidate)
+    {
+        if (candidate == null ||
+            candidate.Target == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < _worldDropCandidates.Count; i++)
+        {
+            WorldDropTargetCandidate existing =
+                _worldDropCandidates[i];
+
+            if (!ReferenceEquals(
+                    existing.Target,
+                    candidate.Target))
+            {
+                continue;
+            }
+
+            // The same parent target can be discovered through many child colliders.
+            // Keep only its best spatial representation so it is evaluated once.
+            if (CompareWorldDropCandidates(
+                    candidate,
+                    existing) < 0)
+            {
+                _worldDropCandidates[i] =
+                    candidate;
+            }
+
+            return;
+        }
+
+        _worldDropCandidates.Add(
+            candidate);
+    }
+
+    private static int CompareWorldDropCandidates(
+        WorldDropTargetCandidate a,
+        WorldDropTargetCandidate b)
+    {
+        if (ReferenceEquals(a, b))
+            return 0;
+
+        if (a == null)
+            return 1;
+
+        if (b == null)
+            return -1;
+
+        // 1) A collider actually under the pointer beats one touched only by the
+        //    forgiving overlap radius.
+        if (a.ExactPointerHit !=
+            b.ExactPointerHit)
+        {
+            return
+                a.ExactPointerHit
+                    ? -1
+                    : 1;
+        }
+
+        // 2) Otherwise prefer the spatially closest candidate.
+        int distanceCompare =
+            a.DistanceSqr.CompareTo(
+                b.DistanceSqr);
+
+        if (distanceCompare != 0)
+            return distanceCompare;
+
+        // 3) Smaller colliders are normally the more intentional/specific target
+        //    when several exact surfaces overlap (for example a chest sitting on a rack).
+        int areaCompare =
+            a.ColliderArea.CompareTo(
+                b.ColliderArea);
+
+        if (areaCompare != 0)
+            return areaCompare;
+
+        // 4) Prefer the deeper/more local hierarchy surface over an ancestor fixture.
+        int depthCompare =
+            b.HierarchyDepth.CompareTo(
+                a.HierarchyDepth);
+
+        if (depthCompare != 0)
+            return depthCompare;
+
+        // 5) Finally prefer a target attached directly to the collider over one
+        //    inherited from a parent.
+        if (a.DirectTarget !=
+            b.DirectTarget)
+        {
+            return
+                a.DirectTarget
+                    ? -1
+                    : 1;
+        }
+
+        Component aComponent =
+            a.Target as Component;
+
+        Component bComponent =
+            b.Target as Component;
+
+        int aId =
+            aComponent != null
+                ? aComponent.GetInstanceID()
+                : 0;
+
+        int bId =
+            bComponent != null
+                ? bComponent.GetInstanceID()
+                : 0;
+
+        return
+            aId.CompareTo(
+                bId);
+    }
+
+    private static int GetHierarchyDepth(
+        Transform transform)
+    {
+        int depth =
+            0;
+
+        Transform current =
+            transform;
+
+        while (current != null)
+        {
+            depth++;
+            current =
+                current.parent;
+        }
+
+        return depth;
+    }
+
+    private string DescribeWorldDropTarget(
+        IWorldItemDropTarget target)
+    {
+        if (target == null)
+            return "NULL";
+
+        Component component =
+            target as Component;
+
+        if (component == null)
+            return target.GetType().Name;
+
+        return
+            $"{target.GetType().Name}('{component.name}')";
     }
 
     private bool TryDepositDraggedItemIntoWorldTarget(ItemInstance item, out ItemInstance remainder)
@@ -744,18 +1013,71 @@ public sealed class InventoryDragController : MonoBehaviour
         if (item == null)
             return false;
 
-        if (!TryGetWorldDropTargetUnderCursor(out IWorldItemDropTarget target))
+        int candidateCount =
+            CollectWorldDropTargetCandidates(
+                item);
+
+        if (candidateCount <= 0)
             return false;
 
-        if (!target.CanAcceptWorldDrop(item))
+        for (int i = 0; i < candidateCount; i++)
         {
-            Log($"TryDepositDraggedItemIntoWorldTarget | target rejected preview | item={DescribeItem(item)}");
-            return false;
+            WorldDropTargetCandidate candidate =
+                _worldDropCandidates[i];
+
+            if (candidate == null ||
+                candidate.Target == null)
+            {
+                continue;
+            }
+
+            IWorldItemDropTarget target =
+                candidate.Target;
+
+            if (!target.CanAcceptWorldDrop(item))
+            {
+                Log(
+                    $"TryDepositDraggedItemIntoWorldTarget | candidate rejected preview | " +
+                    $"candidate={i + 1}/{candidateCount} | " +
+                    $"target={DescribeWorldDropTarget(target)} | " +
+                    $"collider={(candidate.Collider != null ? candidate.Collider.name : "NULL")} | " +
+                    $"item={DescribeItem(item)}");
+
+                continue;
+            }
+
+            ItemInstance candidateRemainder =
+                item;
+
+            bool ok =
+                target.TryAcceptWorldDrop(
+                    item,
+                    out candidateRemainder);
+
+            Log(
+                $"TryDepositDraggedItemIntoWorldTarget | candidate attempted | " +
+                $"candidate={i + 1}/{candidateCount} | " +
+                $"target={DescribeWorldDropTarget(target)} | " +
+                $"collider={(candidate.Collider != null ? candidate.Collider.name : "NULL")} | " +
+                $"ok={ok} | remainder={DescribeItem(candidateRemainder)}");
+
+            if (!ok)
+                continue;
+
+            remainder =
+                candidateRemainder;
+
+            return true;
         }
 
-        bool ok = target.TryAcceptWorldDrop(item, out remainder);
-        Log($"TryDepositDraggedItemIntoWorldTarget | item={DescribeItem(item)} | ok={ok} | remainder={DescribeItem(remainder)}");
-        return ok;
+        remainder =
+            item;
+
+        Log(
+            $"TryDepositDraggedItemIntoWorldTarget | all {candidateCount} candidates rejected/failed | " +
+            $"item={DescribeItem(item)}");
+
+        return false;
     }
 
     /// <summary>
