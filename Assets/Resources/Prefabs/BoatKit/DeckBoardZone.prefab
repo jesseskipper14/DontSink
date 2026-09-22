@@ -116,16 +116,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   priority: 1
   holdSeconds: 0.5
-  primaryHoldKey: 101
   allowSecondaryHoldKey: 0
-  secondaryHoldKey: 119
   boatRootOverride: {fileID: 0}
   boardPoint: {fileID: 0}
-  snapToBoardPoint: 0
+  snapToBoardPoint: 1
   zeroVelocityOnBoard: 1
   requireUnboarded: 1
   onlyBoardClosestEligiblePlayer: 1
   promptText: Board Deck
+  unboardPromptText: Leave Deck
   includeHoldKeyInPrompt: 1
   includeProgressInPrompt: 1
   debugLog: 0

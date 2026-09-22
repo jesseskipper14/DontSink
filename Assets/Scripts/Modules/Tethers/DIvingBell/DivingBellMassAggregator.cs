@@ -52,6 +52,13 @@ public sealed class DivingBellMassAggregator : MonoBehaviour
         "physics can disable authority and replicate the authoritative Rigidbody state instead.")]
     [SerializeField] private bool physicsAuthority = true;
 
+    [Tooltip(
+        "Global gameplay-authority policy layered on top of the local Physics Authority switch. " +
+        "The bell mass/COM solver mutates Rigidbody state only when BOTH allow it.")]
+    [SerializeField]
+    private GameplayAuthorityMode gameplayAuthorityMode =
+        GameplayAuthorityMode.SinglePlayerOrAuthoritative;
+
     [Header("References")]
     [SerializeField] private DivingBellOccupancy occupancy;
     [SerializeField] private TetherPayload payload;
@@ -93,7 +100,9 @@ public sealed class DivingBellMassAggregator : MonoBehaviour
 
     private ItemInstance _boundPayloadItem;
 
-    public bool PhysicsAuthority => physicsAuthority;
+    public bool PhysicsAuthority =>
+        physicsAuthority &&
+        GameplayAuthority.CanRun(gameplayAuthorityMode);
     public bool AggregationActive => aggregationActive;
     public float DryMass => dryMass;
     public float AggregateMass => aggregateMass;
@@ -108,7 +117,9 @@ public sealed class DivingBellMassAggregator : MonoBehaviour
     {
         ResolveRefs();
         ReconcileContainedItems();
-        RefreshPayloadItemBinding();
+
+        if (PhysicsAuthority)
+            RefreshPayloadItemBinding();
     }
 
     private void OnDisable()
@@ -127,15 +138,16 @@ public sealed class DivingBellMassAggregator : MonoBehaviour
     private void FixedUpdate()
     {
         ResolveRefs();
-        RefreshPayloadItemBinding();
-        PruneContainedItems();
 
-        if (!physicsAuthority ||
+        if (!PhysicsAuthority ||
             bellBody == null ||
             occupancy == null)
         {
             return;
         }
+
+        RefreshPayloadItemBinding();
+        PruneContainedItems();
 
         bool isDocked =
             IsAuthoritativelyDocked();
@@ -176,6 +188,11 @@ public sealed class DivingBellMassAggregator : MonoBehaviour
         bool authoritative)
     {
         physicsAuthority = authoritative;
+
+        if (!PhysicsAuthority)
+            UnbindPayloadItem();
+        else
+            RefreshPayloadItemBinding();
     }
 
     public void RegisterContainedItem(
@@ -237,15 +254,16 @@ public sealed class DivingBellMassAggregator : MonoBehaviour
     public void RecomputeNow()
     {
         ResolveRefs();
-        RefreshPayloadItemBinding();
-        PruneContainedItems();
 
-        if (!physicsAuthority ||
+        if (!PhysicsAuthority ||
             bellBody == null ||
             occupancy == null)
         {
             return;
         }
+
+        RefreshPayloadItemBinding();
+        PruneContainedItems();
 
         bool isDocked =
             IsAuthoritativelyDocked();
@@ -363,6 +381,9 @@ public sealed class DivingBellMassAggregator : MonoBehaviour
 
     private void HandlePayloadItemChanged()
     {
+        if (!PhysicsAuthority)
+            return;
+
         if (worldItem == null ||
             _boundPayloadItem == null ||
             !ReferenceEquals(
@@ -382,7 +403,7 @@ public sealed class DivingBellMassAggregator : MonoBehaviour
         else
             RefreshDryMassFromCurrentBody();
 
-        if (physicsAuthority &&
+        if (PhysicsAuthority &&
             !IsAuthoritativelyDocked())
         {
             ApplyAggregateBodyState();

@@ -551,6 +551,12 @@ public sealed class DivingBellOccupancy :
             this,
             state);
 
+        // Exit subscribers may temporarily manipulate player sorting for their own
+        // presentation cleanup. Reassert the authoritative current boat/world
+        // presentation LAST so a front exit cannot retain stale bell sorting.
+        ReapplyAuthoritativePlayerPresentation(
+            state);
+
         message =
             "Left diving bell.";
 
@@ -852,6 +858,13 @@ public sealed class DivingBellOccupancy :
             this,
             state);
 
+        // Bottom exit is semantically a world exit. Run this AFTER every exit
+        // subscriber so the player's final visual layer/order comes from the
+        // authoritative PlayerBoardingState (normally WorldPlayer / authored
+        // world orders) rather than from any stale bell-entry snapshot.
+        ReapplyAuthoritativePlayerPresentation(
+            state);
+
         message =
             "Left diving bell through bottom opening.";
 
@@ -1039,6 +1052,9 @@ public sealed class DivingBellOccupancy :
             this,
             state);
 
+        ReapplyAuthoritativePlayerPresentation(
+            state);
+
         if (!string.IsNullOrWhiteSpace(
                 reason))
         {
@@ -1048,6 +1064,22 @@ public sealed class DivingBellOccupancy :
         }
 
         return true;
+    }
+
+    private static void ReapplyAuthoritativePlayerPresentation(
+        PlayerBellOccupantState state)
+    {
+        if (state == null)
+            return;
+
+        PlayerBoardingState boarding =
+            state.GetComponent<PlayerBoardingState>() ??
+            state.GetComponentInParent<PlayerBoardingState>() ??
+            state.GetComponentInChildren<PlayerBoardingState>(
+                true);
+
+        if (boarding != null)
+            boarding.ReapplyCurrentPresentation();
     }
 
     private void ApplyInteractionContext(

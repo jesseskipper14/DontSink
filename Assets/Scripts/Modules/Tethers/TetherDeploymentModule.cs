@@ -6,6 +6,15 @@ using UnityEngine;
 [RequireComponent(typeof(StorageModule))]
 public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLifecycle
 {
+    [Header("Gameplay Authority")]
+    [Tooltip(
+        "Gameplay deploy/recall/retrieval mutations are host-authoritative. Persistence restore is " +
+        "expected to run on authority; future clients should hydrate from replicated state rather than " +
+        "replaying gameplay deployment commands.")]
+    [SerializeField]
+    private GameplayAuthorityMode gameplayAuthorityMode =
+        GameplayAuthorityMode.SinglePlayerOrAuthoritative;
+
     [Header("Payload Storage")]
     [SerializeField] private StorageModule storageModule;
     [SerializeField, Min(0)] private int payloadSlotIndex = 0;
@@ -110,6 +119,8 @@ public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLife
     public bool KeepStoredPayloadPhysical => keepStoredPayloadPhysical;
     public bool HasDockedPhysicalPayload => dockedPhysicalWorldItem != null;
     public bool IsPhysicalRecallCapturePending => physicalRecallCapturePending;
+    public bool HasGameplayAuthority =>
+        GameplayAuthority.CanRun(gameplayAuthorityMode);
 
     public TetherPayload DeployedPayload
     {
@@ -209,7 +220,9 @@ public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLife
 
     private void FixedUpdate()
     {
-        ReconcilePendingPhysicalRecall();
+        if (HasGameplayAuthority)
+            ReconcilePendingPhysicalRecall();
+
         RefreshDeploymentState();
     }
 
@@ -282,6 +295,9 @@ public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLife
     public bool TryDeployStoredPayload(out TetherPayload payload)
     {
         payload = null;
+
+        if (!HasGameplayAuthority)
+            return false;
 
         if (keepStoredPayloadPhysical)
         {
@@ -473,6 +489,9 @@ public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLife
     /// </summary>
     public bool TryRecallDeployedPayload()
     {
+        if (!HasGameplayAuthority)
+            return false;
+
         if (keepStoredPayloadPhysical)
         {
             return TryRecallDeployedPhysicalPayload();
@@ -1662,6 +1681,9 @@ public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLife
 
     public void BeginPayloadRetrieval()
     {
+        if (!HasGameplayAuthority)
+            return;
+
         TetherPayload payload =
             DeployedPayload;
 
@@ -1673,6 +1695,9 @@ public sealed class TetherDeploymentModule : MonoBehaviour, IInstalledModuleLife
 
     public void EndPayloadRetrieval()
     {
+        if (!HasGameplayAuthority)
+            return;
+
         TetherPayload payload =
             DeployedPayload;
 

@@ -3,6 +3,8 @@ using UnityEngine;
 
 public sealed class GameState : MonoBehaviour
 {
+    public const string DefaultPlayerPersistenceKey = "local";
+
     public static GameState I { get; private set; }
 
     [Header("Debug")]
@@ -27,8 +29,32 @@ public sealed class GameState : MonoBehaviour
     [Header("Active Travel (null when not traveling)")]
     public TravelPayload activeTravel;
 
-    [Header("Player Loadout")]
+    [Header("Player Persistence (Legacy Local-Player Mirrors)")]
+    [Tooltip(
+        "Backward-compatible local-player mirror. New player-aware code should use " +
+        "Get/SetPlayerLoadout with a persistence key.")]
     public PlayerLoadoutSnapshot playerLoadout;
+
+    [Tooltip(
+        "Backward-compatible local-player mirror. New player-aware code should use " +
+        "Get/SetPlayerSceneContext with a persistence key.")]
+    public PlayerSceneContextSnapshot playerSceneContext;
+
+    [Header("Player Persistence Seam")]
+    [Tooltip(
+        "Persistence key represented by the legacy playerLoadout/playerSceneContext mirrors. " +
+        "Single-player defaults to 'local'. Future multiplayer bootstrap may replace this " +
+        "with the authenticated local player's stable persistence key.")]
+    [SerializeField] private string localPlayerPersistenceKey = DefaultPlayerPersistenceKey;
+
+    [Tooltip(
+        "Additive keyed player persistence records. Existing singular fields remain populated " +
+        "for backward compatibility with current systems and old saves.")]
+    public List<PlayerPersistenceStateSnapshot> playerPersistenceStates =
+        new List<PlayerPersistenceStateSnapshot>();
+
+    public string LocalPlayerPersistenceKey =>
+        NormalizePlayerPersistenceKey(localPlayerPersistenceKey);
 
     [Header("Boat Registry")]
     public BoatRegistry boatRegistry;
@@ -36,9 +62,6 @@ public sealed class GameState : MonoBehaviour
     [Header("Money")]
     public MoneyChestTreasurySnapshot moneyChestTreasuryState = new MoneyChestTreasurySnapshot();
     public MoneyChestTreasuryService moneyChestTreasury;
-
-    [Header("Player Scene Context")]
-    public PlayerSceneContextSnapshot playerSceneContext;
 
     public BoatSaveState boat = new BoatSaveState
     {
@@ -72,6 +95,7 @@ public sealed class GameState : MonoBehaviour
         EnsureBoatStateDefaults();
         EnsureWorldMapSnapshotDefaults();
         EnsureMoneyChestTreasuryDefaults();
+        EnsurePlayerPersistenceDefaults();
 
         LogLifecycle("Awake accepted as singleton.");
         LogState("Awake BEFORE registry check");
@@ -267,6 +291,7 @@ public sealed class GameState : MonoBehaviour
             $"  activeTravel={DescribeTravel(activeTravel)}\n" +
             $"  boat={DescribeBoat(boat)}\n" +
             $"  playerLoadout={(playerLoadout != null ? "OK" : "NULL")}\n" +
+            $"  localPlayerKey='{LocalPlayerPersistenceKey}' playerRecords={(playerPersistenceStates != null ? playerPersistenceStates.Count : -1)}\n" +
             $"  boatRegistry={(boatRegistry != null ? boatRegistry.name : "NULL")}\n" +
             $"  moneyChestTreasury={(moneyChestTreasury != null ? moneyChestTreasury.name : "NULL")}\n" +
             $"  moneyChestState={(moneyChestTreasuryState != null ? $"active='{moneyChestTreasuryState.activeChestInstanceId}', count={(moneyChestTreasuryState.chests != null ? moneyChestTreasuryState.chests.Count : -1)}" : "NULL")}",
@@ -479,19 +504,379 @@ public sealed class GameState : MonoBehaviour
         LogState($"SetBoatTransformState reason='{reason}'");
     }
 
-    public void SetPlayerSceneContext(PlayerSceneContextSnapshot snapshot, string reason = "")
+    public static string NormalizePlayerPersistenceKey(string playerKey)
     {
-        playerSceneContext = snapshot;
+        return
+            string.IsNullOrWhiteSpace(playerKey)
+                ? DefaultPlayerPersistenceKey
+                : playerKey.Trim();
+    }
+
+    public void SetLocalPlayerPersistenceKey(
+        string playerKey,
+        string reason = "")
+    {
+        EnsurePlayerPersistenceDefaults();
+
+        string oldKey =
+            LocalPlayerPersistenceKey;
+
+        PlayerPersistenceStateSnapshot oldRecord =
+            GetOrCreatePlayerPersistenceState(
+                oldKey);
+
+        oldRecord.loadout =
+            playerLoadout;
+
+        oldRecord.sceneContext =
+            playerSceneContext;
+
+        localPlayerPersistenceKey =
+            NormalizePlayerPersistenceKey(
+                playerKey);
+
+        PlayerPersistenceStateSnapshot newRecord =
+            GetOrCreatePlayerPersistenceState(
+                LocalPlayerPersistenceKey);
+
+        playerLoadout =
+            newRecord.loadout;
+
+        playerSceneContext =
+            newRecord.sceneContext;
 
         if (verboseLogging)
         {
             Debug.Log(
-                $"[GameState:{name}] SetPlayerSceneContext reason='{reason}' " +
+                $"[GameState:{name}] SetLocalPlayerPersistenceKey " +
+                $"old='{oldKey}' new='{LocalPlayerPersistenceKey}' reason='{reason}'",
+                this);
+        }
+    }
+
+    public bool TryGetPlayerPersistenceState(
+        string playerKey,
+        out PlayerPersistenceStateSnapshot state)
+    {
+        EnsurePlayerPersistenceCollection();
+
+        string normalized =
+            NormalizePlayerPersistenceKey(
+                playerKey);
+
+        for (int i = 0;
+             i < playerPersistenceStates.Count;
+             i++)
+        {
+            PlayerPersistenceStateSnapshot candidate =
+                playerPersistenceStates[i];
+
+            if (candidate == null)
+                continue;
+
+            if (string.Equals(
+                    NormalizePlayerPersistenceKey(candidate.playerKey),
+                    normalized,
+                    System.StringComparison.Ordinal))
+            {
+                candidate.playerKey =
+                    normalized;
+
+                state =
+                    candidate;
+
+                return true;
+            }
+        }
+
+        state =
+            null;
+
+        return false;
+    }
+
+    public PlayerPersistenceStateSnapshot GetOrCreatePlayerPersistenceState(
+        string playerKey)
+    {
+        string normalized =
+            NormalizePlayerPersistenceKey(
+                playerKey);
+
+        if (TryGetPlayerPersistenceState(
+                normalized,
+                out PlayerPersistenceStateSnapshot existing))
+        {
+            return existing;
+        }
+
+        PlayerPersistenceStateSnapshot created =
+            new PlayerPersistenceStateSnapshot
+            {
+                version = 1,
+                playerKey = normalized
+            };
+
+        playerPersistenceStates.Add(
+            created);
+
+        return created;
+    }
+
+    public PlayerLoadoutSnapshot GetPlayerLoadout(
+        string playerKey)
+    {
+        EnsurePlayerPersistenceDefaults();
+
+        string normalized =
+            NormalizePlayerPersistenceKey(
+                playerKey);
+
+        if (TryGetPlayerPersistenceState(
+                normalized,
+                out PlayerPersistenceStateSnapshot state))
+        {
+            return state.loadout;
+        }
+
+        return
+            string.Equals(
+                normalized,
+                LocalPlayerPersistenceKey,
+                System.StringComparison.Ordinal)
+                ? playerLoadout
+                : null;
+    }
+
+    public void SetPlayerLoadout(
+        string playerKey,
+        PlayerLoadoutSnapshot snapshot,
+        string reason = "")
+    {
+        string normalized =
+            NormalizePlayerPersistenceKey(
+                playerKey);
+
+        PlayerPersistenceStateSnapshot state =
+            GetOrCreatePlayerPersistenceState(
+                normalized);
+
+        state.loadout =
+            snapshot;
+
+        if (string.Equals(
+                normalized,
+                LocalPlayerPersistenceKey,
+                System.StringComparison.Ordinal))
+        {
+            playerLoadout =
+                snapshot;
+        }
+
+        if (verboseLogging)
+        {
+            Debug.Log(
+                $"[GameState:{name}] SetPlayerLoadout key='{normalized}' " +
+                $"hasValue={(snapshot != null)} reason='{reason}'",
+                this);
+        }
+    }
+
+    public PlayerSceneContextSnapshot GetPlayerSceneContext(
+        string playerKey)
+    {
+        EnsurePlayerPersistenceDefaults();
+
+        string normalized =
+            NormalizePlayerPersistenceKey(
+                playerKey);
+
+        if (TryGetPlayerPersistenceState(
+                normalized,
+                out PlayerPersistenceStateSnapshot state))
+        {
+            return state.sceneContext;
+        }
+
+        return
+            string.Equals(
+                normalized,
+                LocalPlayerPersistenceKey,
+                System.StringComparison.Ordinal)
+                ? playerSceneContext
+                : null;
+    }
+
+    public void SetPlayerSceneContext(
+        string playerKey,
+        PlayerSceneContextSnapshot snapshot,
+        string reason = "")
+    {
+        string normalized =
+            NormalizePlayerPersistenceKey(
+                playerKey);
+
+        PlayerPersistenceStateSnapshot state =
+            GetOrCreatePlayerPersistenceState(
+                normalized);
+
+        state.sceneContext =
+            snapshot;
+
+        if (string.Equals(
+                normalized,
+                LocalPlayerPersistenceKey,
+                System.StringComparison.Ordinal))
+        {
+            playerSceneContext =
+                snapshot;
+        }
+
+        if (verboseLogging)
+        {
+            Debug.Log(
+                $"[GameState:{name}] SetPlayerSceneContext key='{normalized}' reason='{reason}' " +
                 $"hasValue={(snapshot != null && snapshot.hasValue)} " +
                 $"wasBoarded={(snapshot != null && snapshot.wasBoarded)} " +
                 $"boatInstanceId='{(snapshot != null ? snapshot.boatInstanceId : "NULL")}'",
                 this);
         }
+    }
+
+    public void SetPlayerSceneContext(
+        PlayerSceneContextSnapshot snapshot,
+        string reason = "")
+    {
+        SetPlayerSceneContext(
+            LocalPlayerPersistenceKey,
+            snapshot,
+            reason);
+    }
+
+    public void SetPlayerPersistenceStates(
+        List<PlayerPersistenceStateSnapshot> states,
+        string reason = "")
+    {
+        playerPersistenceStates =
+            states ??
+            new List<PlayerPersistenceStateSnapshot>();
+
+        EnsurePlayerPersistenceDefaults();
+
+        if (verboseLogging)
+        {
+            Debug.Log(
+                $"[GameState:{name}] SetPlayerPersistenceStates reason='{reason}' " +
+                $"count={playerPersistenceStates.Count} localKey='{LocalPlayerPersistenceKey}'",
+                this);
+        }
+    }
+
+    public void SyncLocalPlayerPersistenceMirrors(
+        string reason = "")
+    {
+        EnsurePlayerPersistenceDefaults();
+
+        PlayerPersistenceStateSnapshot local =
+            GetOrCreatePlayerPersistenceState(
+                LocalPlayerPersistenceKey);
+
+        local.loadout =
+            playerLoadout;
+
+        local.sceneContext =
+            playerSceneContext;
+
+        if (verboseLogging)
+        {
+            Debug.Log(
+                $"[GameState:{name}] SyncLocalPlayerPersistenceMirrors " +
+                $"key='{LocalPlayerPersistenceKey}' reason='{reason}'",
+                this);
+        }
+    }
+
+    private void EnsurePlayerPersistenceCollection()
+    {
+        if (playerPersistenceStates == null)
+        {
+            playerPersistenceStates =
+                new List<PlayerPersistenceStateSnapshot>();
+        }
+    }
+
+    private void EnsurePlayerPersistenceDefaults()
+    {
+        EnsurePlayerPersistenceCollection();
+
+        localPlayerPersistenceKey =
+            NormalizePlayerPersistenceKey(
+                localPlayerPersistenceKey);
+
+        // Remove null/duplicate keyed records deterministically. Keep the first
+        // valid record for a key because older/additive JSON may be hand-edited.
+        HashSet<string> seen =
+            new HashSet<string>(
+                System.StringComparer.Ordinal);
+
+        for (int i = playerPersistenceStates.Count - 1;
+             i >= 0;
+             i--)
+        {
+            PlayerPersistenceStateSnapshot state =
+                playerPersistenceStates[i];
+
+            if (state == null)
+            {
+                playerPersistenceStates.RemoveAt(i);
+                continue;
+            }
+
+            state.playerKey =
+                NormalizePlayerPersistenceKey(
+                    state.playerKey);
+        }
+
+        for (int i = 0;
+             i < playerPersistenceStates.Count;)
+        {
+            PlayerPersistenceStateSnapshot state =
+                playerPersistenceStates[i];
+
+            if (!seen.Add(state.playerKey))
+            {
+                playerPersistenceStates.RemoveAt(i);
+                continue;
+            }
+
+            i++;
+        }
+
+        PlayerPersistenceStateSnapshot local =
+            GetOrCreatePlayerPersistenceState(
+                LocalPlayerPersistenceKey);
+
+        // Old schema-v1 saves have only the singular fields. Hydrate the additive
+        // keyed record from those fields when necessary. New saves contain both.
+        if (local.loadout == null &&
+            playerLoadout != null)
+        {
+            local.loadout =
+                playerLoadout;
+        }
+
+        if (local.sceneContext == null &&
+            playerSceneContext != null)
+        {
+            local.sceneContext =
+                playerSceneContext;
+        }
+
+        // Keep the old public fields alive as the local-player compatibility view.
+        playerLoadout =
+            local.loadout;
+
+        playerSceneContext =
+            local.sceneContext;
     }
 }
 

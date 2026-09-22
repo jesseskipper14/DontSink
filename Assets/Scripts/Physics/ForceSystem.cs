@@ -4,6 +4,17 @@ using System.Linq;
 
 public class ForceSystem : MonoBehaviour
 {
+    [Header("Gameplay Authority")]
+    [Tooltip(
+        "OPT-IN. When enabled, this ForceSystem applies providers only on peers allowed " +
+        "by GameplayAuthority. Leave OFF for actor-local/player physics unless that actor " +
+        "is intentionally host-authoritative.")]
+    [SerializeField] private bool enforceGameplayAuthority = false;
+
+    [SerializeField]
+    private GameplayAuthorityMode gameplayAuthorityMode =
+        GameplayAuthorityMode.SinglePlayerOrAuthoritative;
+
     [Header("Diagnostics")]
     [SerializeField] private bool verboseDiagnostics = true;
 
@@ -11,6 +22,17 @@ public class ForceSystem : MonoBehaviour
 
     private readonly List<IForceProvider> allProviders = new();
     private readonly List<IForceProvider> orderedProviders = new();
+
+    public bool EnforcesGameplayAuthority => enforceGameplayAuthority;
+    public GameplayAuthorityMode GameplayAuthorityPolicy => gameplayAuthorityMode;
+
+    public void ConfigureGameplayAuthorityGate(
+        bool enforce,
+        GameplayAuthorityMode mode)
+    {
+        enforceGameplayAuthority = enforce;
+        gameplayAuthorityMode = mode;
+    }
 
     private void Awake()
     {
@@ -69,6 +91,12 @@ public class ForceSystem : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (enforceGameplayAuthority &&
+            !GameplayAuthority.CanRun(gameplayAuthorityMode))
+        {
+            return;
+        }
+
         foreach (IForceProvider provider in orderedProviders)
         {
             IOrderedForceProvider ordered =

@@ -3,6 +3,14 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class TetherConstraint2D : MonoBehaviour
 {
+    [Header("Gameplay Authority")]
+    [Tooltip(
+        "Only authoritative peers run the physical DistanceJoint/break solver. Non-authoritative " +
+        "peers retain the binding and rope presentation while the runtime joint is suppressed.")]
+    [SerializeField]
+    private GameplayAuthorityMode gameplayAuthorityMode =
+        GameplayAuthorityMode.SinglePlayerOrAuthoritative;
+
     [Header("Visual")]
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField, Min(0f)] private float visualSlackSagPerMeter = 0.05f;
@@ -34,6 +42,7 @@ public sealed class TetherConstraint2D : MonoBehaviour
     private TetherPayload _payload;
     private DistanceJoint2D _runtimeJoint;
     private TetherJointBreakRelay2D _breakRelay;
+    private bool _jointSuppressedForAuthority;
 
     // Presentation-only context. These do not own tether or payload state.
     private TetherDeploymentModule _deploymentModule;
@@ -48,8 +57,10 @@ public sealed class TetherConstraint2D : MonoBehaviour
     public bool IsAttached =>
         _attached &&
         _payload != null &&
-        _runtimeJoint != null &&
-        _runtimeJoint.enabled;
+        _runtimeJoint != null;
+
+    public bool HasGameplayAuthority =>
+        GameplayAuthority.CanRun(gameplayAuthorityMode);
 
     public float DeployedLength => _deployedLength;
     public float CurrentDistance => _currentDistance;
@@ -207,6 +218,7 @@ public sealed class TetherConstraint2D : MonoBehaviour
         _runtimeJoint.distance = _deployedLength;
         _attached = true;
 
+        RefreshJointAuthorityState();
         UpdateGeometryMeasurements();
         SampleReactionForce();
         SetRendererVisible(true);
@@ -225,6 +237,7 @@ public sealed class TetherConstraint2D : MonoBehaviour
             _breakRelay.Unbind(this);
 
         _breakRelay = null;
+        _jointSuppressedForAuthority = false;
 
         if (_runtimeJoint != null)
         {
@@ -271,6 +284,17 @@ public sealed class TetherConstraint2D : MonoBehaviour
 
     private void FixedUpdate()
     {
+        RefreshJointAuthorityState();
+
+        if (!HasGameplayAuthority)
+        {
+            if (_attached)
+                UpdateGeometryMeasurements();
+
+            _currentTension = 0f;
+            return;
+        }
+
         // With breakAction=Disable, a solver break leaves the runtime joint
         // present but disabled. The relay normally catches the callback first;
         // this is a defensive fallback in case another component interfered.
@@ -476,6 +500,9 @@ public sealed class TetherConstraint2D : MonoBehaviour
     internal void NotifyRuntimeJointBroken(
         Joint2D brokenJoint)
     {
+        if (!HasGameplayAuthority)
+            return;
+
         if (brokenJoint == null ||
             _runtimeJoint == null ||
             brokenJoint != _runtimeJoint ||
@@ -501,6 +528,38 @@ public sealed class TetherConstraint2D : MonoBehaviour
 
         LatchBreak(
             _currentTension);
+    }
+
+    private void RefreshJointAuthorityState()
+    {
+        if (_runtimeJoint == null)
+        {
+            _jointSuppressedForAuthority = false;
+            return;
+        }
+
+        if (!HasGameplayAuthority)
+        {
+            if (_runtimeJoint.enabled)
+                _runtimeJoint.enabled = false;
+
+            _jointSuppressedForAuthority = true;
+            _breakPending = false;
+            _pendingBreakTension = 0f;
+            _breakingLoadOvertimeSeconds = 0f;
+            _peakBreakingLoadTension = 0f;
+            return;
+        }
+
+        if (!_jointSuppressedForAuthority)
+            return;
+
+        _runtimeJoint.enabled = true;
+        _jointSuppressedForAuthority = false;
+
+        UpdateJointAnchors();
+        _runtimeJoint.distance = _deployedLength;
+        ApplyJointBreakSettings();
     }
 
     private void ResetMeasurements()

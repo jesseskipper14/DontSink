@@ -38,6 +38,15 @@ public sealed class DivingBellContainedItem :
     private int sortingOrderAboveBellInterior =
         13;
 
+    [Header("Authority")]
+    [Tooltip(
+        "Controls who may make autonomous containment-loss decisions. " +
+        "Non-authoritative peers keep bell presentation/context available, but do not " +
+        "decide that an item escaped the bell from their local physics state.")]
+    [SerializeField]
+    private GameplayAuthorityMode gameplayAuthorityMode =
+        GameplayAuthorityMode.SinglePlayerOrAuthoritative;
+
     [Header("Containment Safety")]
     [Tooltip(
         "How long the item's primary solid-body center may remain outside the " +
@@ -87,6 +96,15 @@ public sealed class DivingBellContainedItem :
         IsContainedInBell
             ? currentBell
             : null;
+
+    /// <summary>
+    /// True when this peer may autonomously decide that live physics has ended
+    /// bell containment. Explicit Assign/Clear calls remain state-application APIs
+    /// so persistence and future replicated state can still apply authoritative data.
+    /// </summary>
+    public bool ContainmentAuthority =>
+        GameplayAuthority.CanRun(
+            gameplayAuthorityMode);
 
     private void Awake()
     {
@@ -139,7 +157,21 @@ public sealed class DivingBellContainedItem :
         if (!_hasBellContext)
             return;
 
-        // Destroyed UnityEngine.Object references compare equal to null.
+        // Presentation remains client-local. The decision that live physics has
+        // actually ended bell containment is shared gameplay state and belongs
+        // only to the authoritative simulation.
+        if (!ContainmentAuthority)
+        {
+            outsideSeconds =
+                0f;
+
+            ReapplyVisualContext();
+            return;
+        }
+
+        // Destroyed UnityEngine.Object references compare equal to null. Losing the
+        // containing bell is also a containment-state mutation, so only authority
+        // performs the clear.
         if (currentBell == null)
         {
             ClearBellContainment(
@@ -195,7 +227,8 @@ public sealed class DivingBellContainedItem :
             }
         }
 
-        // Visual sorting follows the bell's docked/deployed presentation.
+        // Visual sorting follows the bell's docked/deployed presentation on every
+        // peer, including non-authoritative clients.
         ReapplyVisualContext();
     }
 

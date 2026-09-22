@@ -6,7 +6,6 @@ public sealed class WorldItemContainerDropTarget : MonoBehaviour, IWorldItemDrop
     [SerializeField] private WorldItem worldItem;
 
     [Header("Range")]
-    [SerializeField] private Transform playerTransform;
     [SerializeField] private float maxDepositDistance = 2.25f;
 
     [Header("Boat Access")]
@@ -27,22 +26,19 @@ public sealed class WorldItemContainerDropTarget : MonoBehaviour, IWorldItemDrop
         if (worldItem == null)
             worldItem = GetComponent<WorldItem>();
 
-        if (playerTransform == null)
-        {
-            PlayerInventory playerInventory = FindFirstObjectByType<PlayerInventory>();
-            if (playerInventory != null)
-                playerTransform = playerInventory.transform;
-        }
-
         CacheBoatContext();
     }
 
-    public bool CanAcceptWorldDrop(ItemInstance incoming)
+    public bool CanAcceptWorldDrop(
+        in WorldItemDropContext context,
+        ItemInstance incoming)
     {
-        if (!IsInRange())
+        if (!IsInRange(
+                in context))
             return false;
 
-        if (!CanAccessByBoatContext())
+        if (!CanAccessByBoatContext(
+                context.Requester))
             return false;
 
         if (incoming == null)
@@ -58,14 +54,19 @@ public sealed class WorldItemContainerDropTarget : MonoBehaviour, IWorldItemDrop
         return ContainerPlacementUtility.CanAutoInsert(containerItem, incoming);
     }
 
-    public bool TryAcceptWorldDrop(ItemInstance incoming, out ItemInstance remainder)
+    public bool TryAcceptWorldDrop(
+        in WorldItemDropContext context,
+        ItemInstance incoming,
+        out ItemInstance remainder)
     {
         remainder = incoming;
 
-        if (!IsInRange())
+        if (!IsInRange(
+                in context))
             return false;
 
-        if (!CanAccessByBoatContext())
+        if (!CanAccessByBoatContext(
+                context.Requester))
             return false;
 
         if (incoming == null)
@@ -81,16 +82,22 @@ public sealed class WorldItemContainerDropTarget : MonoBehaviour, IWorldItemDrop
         return ContainerPlacementUtility.TryAutoInsert(containerItem, incoming, out remainder);
     }
 
-    private bool IsInRange()
+    private bool IsInRange(
+        in WorldItemDropContext context)
     {
-        if (playerTransform == null)
+        if (!context.HasRequester)
             return false;
 
-        float dist = Vector2.Distance(playerTransform.position, transform.position);
+        float dist =
+            Vector2.Distance(
+                context.Origin,
+                transform.position);
+
         return dist <= maxDepositDistance;
     }
 
-    private bool CanAccessByBoatContext()
+    private bool CanAccessByBoatContext(
+        GameObject requester)
     {
         if (!requireMatchingBoatBoardingContext)
             return true;
@@ -99,7 +106,9 @@ public sealed class WorldItemContainerDropTarget : MonoBehaviour, IWorldItemDrop
 
         if (_ownedItem != null && _ownedItem.IsOwnedByBoat)
         {
-            bool ok = IsPlayerBoardedOnBoatId(_ownedItem.OwningBoatInstanceId);
+            bool ok = IsPlayerBoardedOnBoatId(
+                requester,
+                _ownedItem.OwningBoatInstanceId);
 
             Log(
                 $"Drop access by BoatOwnedItem | item='{name}' ownedBoatId='{_ownedItem.OwningBoatInstanceId}' ok={ok}");
@@ -109,7 +118,9 @@ public sealed class WorldItemContainerDropTarget : MonoBehaviour, IWorldItemDrop
 
         if (_cachedParentBoat != null)
         {
-            bool ok = IsPlayerBoardedOnBoat(_cachedParentBoat);
+            bool ok = IsPlayerBoardedOnBoat(
+                requester,
+                _cachedParentBoat);
 
             Log(
                 $"Drop access by parent Boat | item='{name}' boat='{_cachedParentBoat.name}' id='{_cachedParentBoat.BoatInstanceId}' ok={ok}");
@@ -117,7 +128,9 @@ public sealed class WorldItemContainerDropTarget : MonoBehaviour, IWorldItemDrop
             return ok;
         }
 
-        PlayerBoardingState boarding = FindPlayerBoardingState();
+        PlayerBoardingState boarding =
+            FindPlayerBoardingState(
+                requester);
         if (boarding != null && boarding.IsBoarded)
         {
             Log($"Drop access denied: player is boarded, but container '{name}' is not boat-owned.");
@@ -127,12 +140,16 @@ public sealed class WorldItemContainerDropTarget : MonoBehaviour, IWorldItemDrop
         return allowAccessWhenNotPartOfBoat;
     }
 
-    private bool IsPlayerBoardedOnBoatId(string boatInstanceId)
+    private bool IsPlayerBoardedOnBoatId(
+        GameObject requester,
+        string boatInstanceId)
     {
         if (string.IsNullOrWhiteSpace(boatInstanceId))
             return false;
 
-        PlayerBoardingState boarding = FindPlayerBoardingState();
+        PlayerBoardingState boarding =
+            FindPlayerBoardingState(
+                requester);
         if (boarding == null || !boarding.IsBoarded || boarding.CurrentBoatRoot == null)
             return false;
 
@@ -146,12 +163,16 @@ public sealed class WorldItemContainerDropTarget : MonoBehaviour, IWorldItemDrop
         return currentBoat.BoatInstanceId == boatInstanceId;
     }
 
-    private bool IsPlayerBoardedOnBoat(Boat requiredBoat)
+    private bool IsPlayerBoardedOnBoat(
+        GameObject requester,
+        Boat requiredBoat)
     {
         if (requiredBoat == null)
             return false;
 
-        PlayerBoardingState boarding = FindPlayerBoardingState();
+        PlayerBoardingState boarding =
+            FindPlayerBoardingState(
+                requester);
         if (boarding == null || !boarding.IsBoarded || boarding.CurrentBoatRoot == null)
             return false;
 
@@ -171,24 +192,18 @@ public sealed class WorldItemContainerDropTarget : MonoBehaviour, IWorldItemDrop
         return currentBoat == requiredBoat || boarding.CurrentBoatRoot == requiredBoat.transform;
     }
 
-    private PlayerBoardingState FindPlayerBoardingState()
+    private PlayerBoardingState FindPlayerBoardingState(
+        GameObject requester)
     {
-        if (playerTransform != null)
-        {
-            PlayerBoardingState fromTransform =
-                playerTransform.GetComponentInParent<PlayerBoardingState>();
+        if (requester == null)
+            return null;
 
-            if (fromTransform != null)
-                return fromTransform;
+        PlayerBoardingState fromRequester =
+            requester.GetComponentInParent<PlayerBoardingState>() ??
+            requester.GetComponentInChildren<PlayerBoardingState>(
+                true);
 
-            fromTransform =
-                playerTransform.GetComponentInChildren<PlayerBoardingState>(true);
-
-            if (fromTransform != null)
-                return fromTransform;
-        }
-
-        return FindFirstObjectByType<PlayerBoardingState>();
+        return fromRequester;
     }
 
     private void CacheBoatContext()

@@ -297,15 +297,20 @@ public sealed class SceneTransitionController : MonoBehaviour
             return false;
         }
 
-        PlayerLoadoutPersistence persistence = Object.FindAnyObjectByType<PlayerLoadoutPersistence>();
+        PlayerLoadoutPersistence persistence =
+            ResolveCurrentPlayerPersistence();
+
         if (persistence == null)
         {
-            LogWarning("SaveCurrentPlayerLoadout failed because no PlayerLoadoutPersistence was found in scene.");
+            LogWarning(
+                "SaveCurrentPlayerLoadout failed because no unambiguous current-player " +
+                "PlayerLoadoutPersistence was found in scene.");
             return false;
         }
 
         persistence.SaveToGameState();
-        Log("SaveCurrentPlayerLoadout | saved to GameState.");
+        Log(
+            $"SaveCurrentPlayerLoadout | key='{persistence.PersistenceKey}' saved to GameState.");
         return true;
     }
 
@@ -317,21 +322,29 @@ public sealed class SceneTransitionController : MonoBehaviour
             return false;
         }
 
-        if (GameState.I.playerLoadout == null)
+        PlayerLoadoutPersistence persistence =
+            ResolveCurrentPlayerPersistence();
+
+        if (persistence == null)
         {
-            LogWarning("RestoreCurrentPlayerLoadout skipped because GameState.playerLoadout is null.");
+            LogWarning(
+                "RestoreCurrentPlayerLoadout failed because no unambiguous current-player " +
+                "PlayerLoadoutPersistence was found in scene.");
             return false;
         }
 
-        PlayerLoadoutPersistence persistence = Object.FindAnyObjectByType<PlayerLoadoutPersistence>();
-        if (persistence == null)
+        if (GameState.I.GetPlayerLoadout(
+                persistence.PersistenceKey) == null)
         {
-            LogWarning("RestoreCurrentPlayerLoadout failed because no PlayerLoadoutPersistence was found in scene.");
+            LogWarning(
+                $"RestoreCurrentPlayerLoadout skipped because no loadout exists for " +
+                $"key='{persistence.PersistenceKey}'.");
             return false;
         }
 
         persistence.RestoreFromGameState();
-        Log("RestoreCurrentPlayerLoadout | restored from GameState.");
+        Log(
+            $"RestoreCurrentPlayerLoadout | key='{persistence.PersistenceKey}' restored from GameState.");
         return true;
     }
 
@@ -641,52 +654,194 @@ public sealed class SceneTransitionController : MonoBehaviour
             $"pos={snapshot.worldPosition} rotZ={snapshot.worldRotationZ:F3}");
     }
 
-    private void CapturePlayerSceneContext(GameState gs, string reason)
+    public bool CaptureCurrentPlayerSceneContext(
+        string reason = "")
+    {
+        GameState gs =
+            GameState.I;
+
+        if (gs == null)
+        {
+            LogError(
+                "CaptureCurrentPlayerSceneContext failed because GameState is null.");
+            return false;
+        }
+
+        return CapturePlayerSceneContext(
+            gs,
+            reason);
+    }
+
+    private bool CapturePlayerSceneContext(
+        GameState gs,
+        string reason)
     {
         if (gs == null)
-            return;
+            return false;
 
-        PlayerBoardingState boarding = Object.FindAnyObjectByType<PlayerBoardingState>();
+        PlayerBoardingState boarding =
+            ResolveCurrentPlayerBoardingState(
+                out string playerKey);
 
         if (boarding == null)
         {
-            LogWarning($"CapturePlayerSceneContext skipped: no PlayerBoardingState found. reason='{reason}'");
-            gs.SetPlayerSceneContext(new PlayerSceneContextSnapshot
-            {
-                version = 1,
-                hasValue = false,
-                wasBoarded = false,
-                boatInstanceId = null
-            }, reason);
+            LogWarning(
+                $"CapturePlayerSceneContext: no unambiguous current-player " +
+                $"PlayerBoardingState found. reason='{reason}'");
 
-            return;
+            gs.SetPlayerSceneContext(
+                playerKey,
+                new PlayerSceneContextSnapshot
+                {
+                    version = 1,
+                    hasValue = false,
+                    wasBoarded = false,
+                    boatInstanceId = null
+                },
+                reason);
+
+            return false;
         }
 
-        string boatInstanceId = null;
+        string boatInstanceId =
+            null;
 
-        if (boarding.IsBoarded && boarding.CurrentBoatRoot != null)
+        if (boarding.IsBoarded &&
+            boarding.CurrentBoatRoot != null)
         {
             Boat boat =
                 boarding.CurrentBoatRoot.GetComponent<Boat>() ??
                 boarding.CurrentBoatRoot.GetComponentInParent<Boat>();
 
             if (boat != null)
-                boatInstanceId = boat.BoatInstanceId;
+            {
+                boatInstanceId =
+                    boat.BoatInstanceId;
+            }
         }
 
-        var snapshot = new PlayerSceneContextSnapshot
-        {
-            version = 1,
-            hasValue = true,
-            wasBoarded = boarding.IsBoarded,
-            boatInstanceId = boatInstanceId
-        };
+        PlayerSceneContextSnapshot snapshot =
+            new PlayerSceneContextSnapshot
+            {
+                version = 1,
+                hasValue = true,
+                wasBoarded = boarding.IsBoarded,
+                boatInstanceId = boatInstanceId
+            };
 
-        gs.SetPlayerSceneContext(snapshot, reason);
+        gs.SetPlayerSceneContext(
+            playerKey,
+            snapshot,
+            reason);
 
         Log(
-            $"CapturePlayerSceneContext | reason='{reason}' " +
+            $"CapturePlayerSceneContext | key='{playerKey}' reason='{reason}' " +
             $"wasBoarded={snapshot.wasBoarded} boatInstanceId='{snapshot.boatInstanceId}'");
+
+        return true;
+    }
+
+    private PlayerLoadoutPersistence ResolveCurrentPlayerPersistence()
+    {
+        PlayerLoadoutPersistence[] all =
+            Object.FindObjectsByType<PlayerLoadoutPersistence>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+
+        if (all == null ||
+            all.Length == 0)
+        {
+            return null;
+        }
+
+        string desiredKey =
+            GameState.I != null
+                ? GameState.I.LocalPlayerPersistenceKey
+                : GameState.DefaultPlayerPersistenceKey;
+
+        PlayerLoadoutPersistence matched =
+            null;
+
+        int matchCount =
+            0;
+
+        for (int i = 0;
+             i < all.Length;
+             i++)
+        {
+            PlayerLoadoutPersistence candidate =
+                all[i];
+
+            if (candidate == null ||
+                candidate.PersistenceKey != desiredKey)
+            {
+                continue;
+            }
+
+            matched =
+                candidate;
+
+            matchCount++;
+        }
+
+        if (matchCount == 1)
+            return matched;
+
+        if (matchCount > 1)
+        {
+            LogWarning(
+                $"ResolveCurrentPlayerPersistence is ambiguous: {matchCount} active " +
+                $"PlayerLoadoutPersistence components resolve to key='{desiredKey}'. " +
+                "Future multiplayer bootstrap must assign distinct player persistence keys.");
+
+            return null;
+        }
+
+        return null;
+    }
+
+    private PlayerBoardingState ResolveCurrentPlayerBoardingState(
+        out string playerKey)
+    {
+        playerKey =
+            GameState.I != null
+                ? GameState.I.LocalPlayerPersistenceKey
+                : GameState.DefaultPlayerPersistenceKey;
+
+        PlayerLoadoutPersistence persistence =
+            ResolveCurrentPlayerPersistence();
+
+        if (persistence != null)
+        {
+            playerKey =
+                persistence.PersistenceKey;
+
+            PlayerBoardingState fromPersistence =
+                persistence.ResolveBoardingState();
+
+            if (fromPersistence != null)
+                return fromPersistence;
+        }
+
+        PlayerBoardingState[] all =
+            Object.FindObjectsByType<PlayerBoardingState>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+
+        if (all == null ||
+            all.Length == 0)
+        {
+            return null;
+        }
+
+        if (all.Length == 1)
+            return all[0];
+
+        LogWarning(
+            $"ResolveCurrentPlayerBoardingState is ambiguous: {all.Length} active players exist " +
+            "and no unique current-player persistence owner could be resolved.");
+
+        return null;
     }
 
 #if UNITY_EDITOR

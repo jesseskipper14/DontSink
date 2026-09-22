@@ -121,6 +121,15 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
     private SpriteRenderer[] _spriteRenderers;
     private string[] _originalSortingLayerNames;
     private int[] _originalSortingOrders;
+    private int[] _originalRelativeSortingOrders;
+
+    // Temporary visual sorting override. This is intentionally owned by the
+    // player presentation state so external systems (such as the diving bell)
+    // never write SpriteRenderer sorting directly and then try to repair it later.
+    private Object _presentationSortingOverrideOwner;
+    private bool _presentationSortingOverrideActive;
+    private int _presentationSortingOverrideLayerId;
+    private int _presentationSortingOverrideBaseOrder;
 
     private void Awake()
     {
@@ -185,9 +194,38 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
             _collisionOverrideOwner = null;
             _collisionOverrideActive = false;
         }
+
+        _presentationSortingOverrideOwner = null;
+        _presentationSortingOverrideActive = false;
     }
 
     public void Board(Transform boatRoot)
+    {
+        ApplyBoardState(
+            boatRoot,
+            refreshVisualState: true);
+    }
+
+    /// <summary>
+    /// Applies authoritative boarded state without immediately resolving boat
+    /// visibility zones.
+    ///
+    /// Use this only for transactional placement flows that must move the player
+    /// to a final authored position before zone-driven presentation is allowed to
+    /// evaluate. The caller is responsible for refreshing presentation after the
+    /// next 2D physics update.
+    /// </summary>
+    public void BoardDeferredPresentation(
+        Transform boatRoot)
+    {
+        ApplyBoardState(
+            boatRoot,
+            refreshVisualState: false);
+    }
+
+    private void ApplyBoardState(
+        Transform boatRoot,
+        bool refreshVisualState)
     {
         // Defensive against a direct boat-to-boat reassignment.
         UnregisterMassContribution();
@@ -199,7 +237,8 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
         ApplyMask();
         ApplySpriteSorting();
 
-        RefreshCurrentBoatVisualState();
+        if (refreshVisualState)
+            RefreshCurrentBoatVisualState();
     }
 
     public void Unboard()
@@ -314,8 +353,75 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
     }
 
     /// <summary>
-    /// Rebuild sprite sorting from the authoritative current boarding state.
-    /// Restores both original sorting layers and orders before applying boarded sorting.
+    /// Temporarily places this player's sprite renderers into another sorting context.
+    /// The override is owned, so only the system that acquired it may update/release it.
+    ///
+    /// This is presentation-only state. It does not change boarding, collision, or authority.
+    /// </summary>
+    public bool TrySetPresentationSortingOverride(
+        Object owner,
+        int sortingLayerId,
+        int baseSortingOrder)
+    {
+        if (owner == null)
+            return false;
+
+        if (_presentationSortingOverrideActive &&
+            _presentationSortingOverrideOwner != null &&
+            !ReferenceEquals(_presentationSortingOverrideOwner, owner))
+        {
+            return false;
+        }
+
+        if (_spriteRenderers == null ||
+            _spriteRenderers.Length == 0 ||
+            _originalRelativeSortingOrders == null ||
+            _originalRelativeSortingOrders.Length != _spriteRenderers.Length)
+        {
+            CacheSpriteRenderers();
+        }
+
+        _presentationSortingOverrideOwner = owner;
+        _presentationSortingOverrideActive = true;
+        _presentationSortingOverrideLayerId = sortingLayerId;
+        _presentationSortingOverrideBaseOrder = baseSortingOrder;
+
+        ReapplyCurrentPresentation();
+        return true;
+    }
+
+    public bool ClearPresentationSortingOverride(
+        Object owner)
+    {
+        if (!_presentationSortingOverrideActive)
+            return true;
+
+        if (owner == null ||
+            _presentationSortingOverrideOwner == null ||
+            !ReferenceEquals(_presentationSortingOverrideOwner, owner))
+        {
+            return false;
+        }
+
+        _presentationSortingOverrideOwner = null;
+        _presentationSortingOverrideActive = false;
+
+        ReapplyCurrentPresentation();
+        return true;
+    }
+
+    public bool HasPresentationSortingOverride =>
+        _presentationSortingOverrideActive &&
+        _presentationSortingOverrideOwner != null;
+
+    public Object PresentationSortingOverrideOwner =>
+        HasPresentationSortingOverride
+            ? _presentationSortingOverrideOwner
+            : null;
+
+    /// <summary>
+    /// Rebuild sprite sorting from the authoritative current boarding state, then
+    /// apply any active temporary presentation override last.
     /// </summary>
     public void ReapplyCurrentPresentation()
     {
@@ -329,6 +435,9 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
 
         if (IsBoarded)
             ApplyBoardedSortingLayer();
+
+        if (HasPresentationSortingOverride)
+            ApplyPresentationSortingOverride();
     }
 
     /// <summary>
@@ -712,6 +821,9 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
 
         _originalSortingLayerNames = new string[_spriteRenderers.Length];
         _originalSortingOrders = new int[_spriteRenderers.Length];
+        _originalRelativeSortingOrders = new int[_spriteRenderers.Length];
+
+        int minOrder = int.MaxValue;
 
         for (int i = 0; i < _spriteRenderers.Length; i++)
         {
@@ -721,6 +833,20 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
 
             _originalSortingLayerNames[i] = sr.sortingLayerName;
             _originalSortingOrders[i] = sr.sortingOrder;
+            minOrder = Mathf.Min(minOrder, sr.sortingOrder);
+        }
+
+        if (minOrder == int.MaxValue)
+            minOrder = 0;
+
+        for (int i = 0; i < _spriteRenderers.Length; i++)
+        {
+            SpriteRenderer sr = _spriteRenderers[i];
+            if (sr == null)
+                continue;
+
+            _originalRelativeSortingOrders[i] =
+                _originalSortingOrders[i] - minOrder;
         }
     }
 
@@ -737,6 +863,35 @@ public sealed class PlayerBoardingState : MonoBehaviour, IMassContribution
 
         if (IsBoarded)
             ApplyBoardedSortingLayer();
+
+        if (HasPresentationSortingOverride)
+            ApplyPresentationSortingOverride();
+    }
+
+    private void ApplyPresentationSortingOverride()
+    {
+        if (!HasPresentationSortingOverride ||
+            _spriteRenderers == null ||
+            _originalRelativeSortingOrders == null)
+        {
+            return;
+        }
+
+        int count = Mathf.Min(
+            _spriteRenderers.Length,
+            _originalRelativeSortingOrders.Length);
+
+        for (int i = 0; i < count; i++)
+        {
+            SpriteRenderer sr = _spriteRenderers[i];
+            if (sr == null)
+                continue;
+
+            sr.sortingLayerID = _presentationSortingOverrideLayerId;
+            sr.sortingOrder =
+                _presentationSortingOverrideBaseOrder +
+                _originalRelativeSortingOrders[i];
+        }
     }
 
     private void ApplyBoardedSortingLayer()

@@ -1013,6 +1013,16 @@ public sealed class InventoryDragController : MonoBehaviour
         if (item == null)
             return false;
 
+        WorldItemDropContext dropContext =
+            BuildWorldItemDropContext();
+
+        if (!dropContext.HasRequester)
+        {
+            LogWarning(
+                "TryDepositDraggedItemIntoWorldTarget failed because no requester could be resolved.");
+            return false;
+        }
+
         int candidateCount =
             CollectWorldDropTargetCandidates(
                 item);
@@ -1034,7 +1044,9 @@ public sealed class InventoryDragController : MonoBehaviour
             IWorldItemDropTarget target =
                 candidate.Target;
 
-            if (!target.CanAcceptWorldDrop(item))
+            if (!target.CanAcceptWorldDrop(
+                    in dropContext,
+                    item))
             {
                 Log(
                     $"TryDepositDraggedItemIntoWorldTarget | candidate rejected preview | " +
@@ -1051,6 +1063,7 @@ public sealed class InventoryDragController : MonoBehaviour
 
             bool ok =
                 target.TryAcceptWorldDrop(
+                    in dropContext,
                     item,
                     out candidateRemainder);
 
@@ -1078,6 +1091,24 @@ public sealed class InventoryDragController : MonoBehaviour
             $"item={DescribeItem(item)}");
 
         return false;
+    }
+
+
+    private WorldItemDropContext BuildWorldItemDropContext()
+    {
+        GameObject requester =
+            inventory != null
+                ? inventory.gameObject
+                : null;
+
+        Vector2 origin =
+            requester != null
+                ? (Vector2)requester.transform.position
+                : (Vector2)transform.position;
+
+        return new WorldItemDropContext(
+            requester,
+            origin);
     }
 
     /// <summary>

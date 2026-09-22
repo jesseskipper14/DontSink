@@ -26,6 +26,15 @@ public class LocalInteractionIntentSource : MonoBehaviour, IInteractionIntentSou
 
     public InteractionIntent Current { get; private set; }
 
+    /// <summary>
+    /// Presentation-only binding label for local UI. Gameplay should consume
+    /// InteractionIntent rather than reading this physical key directly.
+    /// </summary>
+    public string InteractBindingLabel =>
+        interactKey == KeyCode.None
+            ? "Interact"
+            : interactKey.ToString();
+
     private float _lastClickTime = -999f;
     private Vector2 _lastClickScreenPos;
 
@@ -48,6 +57,7 @@ public class LocalInteractionIntentSource : MonoBehaviour, IInteractionIntentSou
         }
 
         bool interactPressed = Input.GetKeyDown(interactKey);
+        bool interactHeld = Input.GetKey(interactKey);
         bool doublePressed = false;
 
         if (enableDoubleClickInteract && Input.GetMouseButtonDown(0))
@@ -70,6 +80,7 @@ public class LocalInteractionIntentSource : MonoBehaviour, IInteractionIntentSou
         Current = new InteractionIntent
         {
             InteractPressed = interactPressed || doublePressed,
+            InteractHeld = interactHeld,
             InteractDoublePressed = doublePressed,
 
             PickupPressed = Input.GetKeyDown(pickupKey),

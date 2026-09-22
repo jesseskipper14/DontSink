@@ -24,6 +24,14 @@ public sealed class DivingBellAirVolume :
     MonoBehaviour,
     IVolumeContribution
 {
+    [Header("Gameplay Authority")]
+    [Tooltip(
+        "Only authoritative peers advance trapped-air, venting, compression, and air-quality state. " +
+        "Non-authoritative peers may still render hydrated/replicated runtime values.")]
+    [SerializeField]
+    private GameplayAuthorityMode gameplayAuthorityMode =
+        GameplayAuthorityMode.SinglePlayerOrAuthoritative;
+
     [Header("Geometry")]
     [Tooltip(
         "Center of the open bottom plane. If blank, the bell's Bottom Interior Point is used when available.")]
@@ -136,6 +144,8 @@ public sealed class DivingBellAirVolume :
     public bool OpeningSubmerged => openingSubmerged;
     public bool IsVenting => venting;
     public int BreathingOccupantCount => breathingOccupantCount;
+    public bool HasGameplayAuthority =>
+        GameplayAuthority.CanRun(gameplayAuthorityMode);
 
     public float VolumeContribution =>
         Mathf.Max(0f, maxAirDisplacementVolume) *
@@ -190,6 +200,12 @@ public sealed class DivingBellAirVolume :
     private void FixedUpdate()
     {
         ResolveRefs();
+
+        if (!HasGameplayAuthority)
+        {
+            UpdateWaterSurfaceVisual();
+            return;
+        }
 
         Transform opening = BottomOpeningPoint;
         if (opening == null ||

@@ -22,7 +22,9 @@ public sealed class StorageModuleWorldDropTarget : MonoBehaviour, IWorldItemDrop
         CacheRefs();
     }
 
-    public bool CanAcceptWorldDrop(ItemInstance item)
+    public bool CanAcceptWorldDrop(
+        in WorldItemDropContext context,
+        ItemInstance item)
     {
         if (item == null || item.Definition == null)
             return false;
@@ -37,11 +39,16 @@ public sealed class StorageModuleWorldDropTarget : MonoBehaviour, IWorldItemDrop
         return ContainerPlacementUtility.CanAutoInsert(storageModule, item);
     }
 
-    public bool TryAcceptWorldDrop(ItemInstance item, out ItemInstance remainder)
+    public bool TryAcceptWorldDrop(
+        in WorldItemDropContext context,
+        ItemInstance item,
+        out ItemInstance remainder)
     {
         remainder = item;
 
-        if (!CanAcceptWorldDrop(item))
+        if (!CanAcceptWorldDrop(
+                in context,
+                item))
             return false;
 
         bool ok = ContainerPlacementUtility.TryAutoInsert(

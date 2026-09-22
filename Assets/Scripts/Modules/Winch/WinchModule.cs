@@ -5,6 +5,14 @@ using UnityEngine;
 [RequireComponent(typeof(InstalledModule))]
 public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IInstalledModuleRemovalGuard, IInstalledModuleAdditionalMass
 {
+    [Header("Gameplay Authority")]
+    [Tooltip(
+        "Shared winch/tether runtime state is host-authoritative. Non-authoritative peers may " +
+        "read replicated state/presentation but do not advance spool simulation or accept controls.")]
+    [SerializeField]
+    private GameplayAuthorityMode gameplayAuthorityMode =
+        GameplayAuthorityMode.SinglePlayerOrAuthoritative;
+
     [Header("Rigging")]
     [SerializeField] private TetherLineCatalog lineCatalog;
     [SerializeField, Min(1)] private int lineSlotCount = 1;
@@ -94,6 +102,8 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
     public bool IsOverWorkingLoad => _constraint != null && _constraint.IsOverWorkingLoad;
     public bool IsOverBreakingLoad => _constraint != null && _constraint.IsOverBreakingLoad;
     public bool HasDeployedPayload => _deployment != null && _deployment.HasDeployedPayload;
+    public bool HasGameplayAuthority =>
+        GameplayAuthority.CanRun(gameplayAuthorityMode);
 
     private void Awake()
     {
@@ -109,6 +119,9 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
     private void FixedUpdate()
     {
         RefreshDeploymentRuntimeRefs();
+
+        if (!HasGameplayAuthority)
+            return;
 
         if (_constraint != null &&
             _constraint.TryConsumeBreak(
@@ -282,6 +295,12 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         WinchControlIntent intent,
         out string message)
     {
+        if (!HasGameplayAuthority)
+        {
+            message = "WINCH CONTROL REQUIRES GAMEPLAY AUTHORITY";
+            return false;
+        }
+
         switch (intent)
         {
             case WinchControlIntent.Lower:
@@ -358,6 +377,9 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
 
     public bool TryLower()
     {
+        if (!HasGameplayAuthority)
+            return false;
+
         if (!EnsureDeploymentBound())
             return false;
 
@@ -450,6 +472,9 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
 
     public bool TryRaise()
     {
+        if (!HasGameplayAuthority)
+            return false;
+
         if (!EnsureDeploymentBound())
             return false;
 
@@ -504,12 +529,18 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
 
     public void Stop()
     {
+        if (!HasGameplayAuthority)
+            return;
+
         command = WinchCommand.Stop;
         StartSpoolTransition(0f);
     }
 
     public bool QuickRelease()
     {
+        if (!HasGameplayAuthority)
+            return false;
+
         if (!EnsureDeploymentBound())
             return false;
 
@@ -536,6 +567,9 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
 
     public bool CutLine()
     {
+        if (!HasGameplayAuthority)
+            return false;
+
         if (!EnsureDeploymentBound())
             return false;
 

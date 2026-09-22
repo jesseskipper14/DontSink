@@ -20,8 +20,8 @@ public sealed class DivingBellOceanPresentationBridge : MonoBehaviour
 
     [Header("Local Viewer")]
     [Tooltip(
-        "Optional explicit locally-controlled player. In single-player this may remain blank. " +
-        "Future multiplayer bootstrap should assign the local player explicitly.")]
+        "Optional explicit locally-controlled player. When blank, this follows CameraManager's " +
+        "viewing player, then uses a single-player-only fallback when exactly one player exists.")]
     [SerializeField] private PlayerBoardingState localViewingPlayer;
 
     [Header("Ocean Presentation")]
@@ -148,15 +148,18 @@ public sealed class DivingBellOceanPresentationBridge : MonoBehaviour
 
     private bool IsLocalViewerInsideThisBell()
     {
+        PlayerBoardingState resolvedLocalViewer =
+            ResolveLocalViewingPlayer();
+
         if (occupancy == null ||
-            localViewingPlayer == null)
+            resolvedLocalViewer == null)
         {
             return false;
         }
 
         PlayerBellOccupantState bellState =
-            localViewingPlayer.GetComponent<PlayerBellOccupantState>() ??
-            localViewingPlayer.GetComponentInChildren<PlayerBellOccupantState>(true);
+            resolvedLocalViewer.GetComponent<PlayerBellOccupantState>() ??
+            resolvedLocalViewer.GetComponentInChildren<PlayerBellOccupantState>(true);
 
         return
             bellState != null &&
@@ -187,21 +190,53 @@ public sealed class DivingBellOceanPresentationBridge : MonoBehaviour
 
     private BoatVisibilityMode ResolveNormalViewerMode()
     {
-        if (localViewingPlayer == null ||
-            !localViewingPlayer.IsBoarded ||
-            localViewingPlayer.CurrentBoatRoot == null)
+        PlayerBoardingState resolvedLocalViewer =
+            ResolveLocalViewingPlayer();
+
+        if (resolvedLocalViewer == null ||
+            !resolvedLocalViewer.IsBoarded ||
+            resolvedLocalViewer.CurrentBoatRoot == null)
         {
             return BoatVisibilityMode.UnboardedExterior;
         }
 
         BoatVisualStateController boatVisual =
-            localViewingPlayer.CurrentBoatRoot.GetComponent<BoatVisualStateController>() ??
-            localViewingPlayer.CurrentBoatRoot.GetComponentInChildren<BoatVisualStateController>(true);
+            resolvedLocalViewer.CurrentBoatRoot.GetComponent<BoatVisualStateController>() ??
+            resolvedLocalViewer.CurrentBoatRoot.GetComponentInChildren<BoatVisualStateController>(true);
 
         if (boatVisual != null)
             return boatVisual.CurrentMode;
 
         return BoatVisibilityMode.BoardedExteriorDeck;
+    }
+
+    private PlayerBoardingState ResolveLocalViewingPlayer()
+    {
+        if (localViewingPlayer != null)
+            return localViewingPlayer;
+
+        if (CameraManager.Instance != null)
+        {
+            PlayerBoardingState viewed =
+                CameraManager.Instance.ViewingPlayer;
+
+            if (viewed != null)
+                return viewed;
+        }
+
+        // Single-player fallback only. With multiple players present, a missing local
+        // viewer is safer than letting an arbitrary remote player drive client-local
+        // ocean presentation.
+        PlayerBoardingState[] players =
+            FindObjectsByType<PlayerBoardingState>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+
+        return
+            players != null &&
+            players.Length == 1
+                ? players[0]
+                : null;
     }
 
     private void ResolveRefs()
@@ -214,13 +249,8 @@ public sealed class DivingBellOceanPresentationBridge : MonoBehaviour
                 GetComponentInChildren<DivingBellOccupancy>(true);
         }
 
-        if (localViewingPlayer == null)
-        {
-            // Single-player fallback only. Future multiplayer should use the
-            // explicit SetLocalViewingPlayer seam rather than scene-global guessing.
-            localViewingPlayer =
-                FindFirstObjectByType<PlayerBoardingState>();
-        }
+        // Local viewing-player resolution is intentionally deferred to
+        // ResolveLocalViewingPlayer(). Do not cache an arbitrary scene-global player here.
 
         if (airVolume == null)
         {

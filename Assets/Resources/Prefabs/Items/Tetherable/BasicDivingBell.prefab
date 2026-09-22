@@ -970,7 +970,6 @@ MonoBehaviour:
   actionRange: 3
   maxDepositDistance: 4
   promptAnchor: {fileID: 1230503685021858815}
-  playerTransform: {fileID: 0}
   verboseLogging: 1
 --- !u!212 &8167489310718042421
 SpriteRenderer:
@@ -1163,7 +1162,6 @@ MonoBehaviour:
   actionRange: 3
   maxDepositDistance: 4
   promptAnchor: {fileID: 3888870139610820316}
-  playerTransform: {fileID: 0}
   verboseLogging: 0
 --- !u!212 &4713060368204426048
 SpriteRenderer:
@@ -2643,7 +2641,7 @@ Transform:
   m_GameObject: {fileID: 7935743969133213090}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2, z: 0}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2693,7 +2691,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 6, y: 2}
+  m_Size: {x: 2, y: 1}
   m_EdgeRadius: 0
 --- !u!1 &8130874790704986176
 GameObject:
@@ -2728,7 +2726,6 @@ GameObject:
   - component: {fileID: 7753287100603563785}
   - component: {fileID: 8573274156166156798}
   - component: {fileID: -8286215539652806787}
-  - component: {fileID: 592530109805155915}
   m_Layer: 10
   m_Name: BasicDivingBell
   m_TagString: Untagged
@@ -3021,6 +3018,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d25d72d0396500e4c803080c99afb5b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enforceGameplayAuthority: 0
+  gameplayAuthorityMode: 0
   verboseDiagnostics: 0
 --- !u!114 &3338520402114865873
 MonoBehaviour:
@@ -3058,6 +3057,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dccc5a14dd026c348a546e9b8a1a01bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameplayAuthorityMode: 0
   bottomOpeningPoint: {fileID: 0}
   airCeilingPoint: {fileID: 7148026227179495840}
   chamberCollider: {fileID: 2377425643928038064}
@@ -3123,6 +3123,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stateAuthority: 1
+  gameplayAuthorityMode: 0
   occupancy: {fileID: 7826154232828323026}
   worldItem: {fileID: 0}
   acceptedBallastCategory: 16384
@@ -3193,6 +3194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   physicsAuthority: 1
+  gameplayAuthorityMode: 0
   occupancy: {fileID: 0}
   payload: {fileID: 0}
   forceBody: {fileID: 0}
@@ -3302,14 +3304,12 @@ MonoBehaviour:
   deployedBaseOrder: 130
   hideExteriorForLocalOccupant: 1
   localViewingPlayer: {fileID: 0}
-  hideDockedBellWhileViewingBoatInterior: 1
   resolvedSortingReference: {fileID: 0}
   resolvedSortingLayer: BoatForehull
   resolvedBaseOrder: 130
   resolvedBellDocked: 0
   usingDeployedSorting: 1
   localViewerInsideBell: 0
-  hiddenByHostBoatInteriorView: 0
 --- !u!114 &7753287100603563785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3343,6 +3343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1575b8eb0a23a64b84d92ec0156de58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameplayAuthorityMode: 0
   tetherAnchor: {fileID: 4623164851314858308}
   collisionScope: {fileID: 0}
   usingTetherPayloadLayer: 0
@@ -3365,30 +3366,6 @@ MonoBehaviour:
   explicitColliders: []
   includeTriggerColliders: 0
   lastCollectedColliderCount: 1
---- !u!114 &592530109805155915
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8130874790704986176}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7204ee10302d1294aa4ad1d140c31e86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  occupancy: {fileID: 0}
-  airVolume: {fileID: 0}
-  localViewingPlayer: {fileID: 0}
-  compositeSortingLayerName: FrontWater
-  compositeBaseOrder: 20
-  onlyWhileOpeningSubmerged: 1
-  suppressLegacyOceanBridgeWhileActive: 1
-  includeContainedBellItems: 1
-  prototypeActive: 0
-  compositedRendererCount: 0
-  legacyBridgeSuppressed: 0
-  verboseLogging: 0
 --- !u!1 &8503363483428652224
 GameObject:
   m_ObjectHideFlags: 0

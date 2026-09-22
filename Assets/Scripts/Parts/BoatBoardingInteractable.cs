@@ -357,7 +357,7 @@ public sealed class BoatBoardingInteractable :
         if (!fadeWhenPlayerFar)
             return;
 
-        PlayerBoardingState player = ResolvePlayer();
+        PlayerBoardingState player = ResolvePresentationPlayer();
 
         float targetAlpha = nearAlpha;
 
@@ -425,6 +425,31 @@ public sealed class BoatBoardingInteractable :
 
         _cachedPlayer = FindFirstObjectByType<PlayerBoardingState>();
         return _cachedPlayer;
+    }
+
+    private PlayerBoardingState ResolvePresentationPlayer()
+    {
+        if (CameraManager.Instance != null)
+        {
+            PlayerBoardingState viewed =
+                CameraManager.Instance.ViewingPlayer;
+
+            if (viewed != null)
+                return viewed;
+        }
+
+        // Single-player fallback only. With multiple players and no resolved local
+        // viewer, do not let an arbitrary remote player drive this client's fade.
+        PlayerBoardingState[] players =
+            FindObjectsByType<PlayerBoardingState>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+
+        return
+            players != null &&
+            players.Length == 1
+                ? players[0]
+                : null;
     }
 
     private PlayerBoardingState FindBoardingState(in InteractContext context)

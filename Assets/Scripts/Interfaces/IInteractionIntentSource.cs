@@ -3,6 +3,7 @@ using UnityEngine;
 public struct InteractionIntent
 {
     public bool InteractPressed;
+    public bool InteractHeld;
     public bool InteractDoublePressed;
 
     public bool PickupPressed;

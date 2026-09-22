@@ -399,6 +399,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77013b5475bbc7144a0130110ccd1d30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameplayAuthorityMode: 0
   lineCatalog: {fileID: 11400000, guid: 4ff7d6809bf05544a88f2a7831460f4c, type: 2}
   lineSlotCount: 2
   reelSpeedMetersPerSecond: 1.5
@@ -1600,6 +1601,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2100224
   autoFindMainCamera: 1
+  localViewingPlayer: {fileID: 0}
   logVisibility: 0
 --- !u!114 &87176328688239609
 MonoBehaviour:
@@ -1732,6 +1734,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d25d72d0396500e4c803080c99afb5b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enforceGameplayAuthority: 0
+  gameplayAuthorityMode: 0
   verboseDiagnostics: 1
 --- !u!114 &1400106877947138362
 MonoBehaviour:

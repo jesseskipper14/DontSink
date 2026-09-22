@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
@@ -31,8 +32,14 @@ public sealed class SaveGamePayload
     // Kept here deliberately so the schema has an obvious home for later migrations.
     public TravelPayload activeTravel;
 
+    // Legacy local-player mirrors retained so current/older builds can continue
+    // reading schema-v1 saves without migration.
     public PlayerLoadoutSnapshot playerLoadout;
     public PlayerSceneContextSnapshot playerSceneContext;
+
+    // Additive player-aware persistence seam. Old schema-v1 saves simply deserialize
+    // this as null; new saves continue writing the legacy mirrors above as well.
+    public List<PlayerPersistenceStateSnapshot> playerPersistenceStates;
 
     public BoatSaveState boat;
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[DefaultExecutionOrder(-10000)]
 public sealed class GameplayAuthorityDebugSetter : MonoBehaviour
 {
     [SerializeField] private bool authoritative = true;

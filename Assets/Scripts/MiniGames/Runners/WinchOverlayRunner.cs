@@ -20,6 +20,7 @@ public sealed class WinchOverlayRunner : MonoBehaviour
     private Hardpoint _activeHardpoint;
     private WinchModule _activeWinch;
     private WinchCartridge _activeCartridge;
+    private GameObject _activeRequester;
 
     private void Reset()
     {
@@ -47,6 +48,18 @@ public sealed class WinchOverlayRunner : MonoBehaviour
 
     public bool OpenForHardpoint(
         Hardpoint hardpoint)
+    {
+        // Compatibility overload for non-player callers. Winch controls may still
+        // be observed/routed, but player inventory transfers require an explicit
+        // requester and will be rejected.
+        return OpenForHardpoint(
+            hardpoint,
+            null);
+    }
+
+    public bool OpenForHardpoint(
+        Hardpoint hardpoint,
+        GameObject requester)
     {
         if (hardpoint == null)
         {
@@ -95,11 +108,22 @@ public sealed class WinchOverlayRunner : MonoBehaviour
                 ? $"winch_console:{hardpoint.HardpointId}"
                 : $"winch_console:{hardpoint.GetInstanceID()}";
 
+        if (string.IsNullOrWhiteSpace(
+                hardpoint.HardpointId))
+        {
+            Debug.LogWarning(
+                "[WinchOverlayRunner] Winch hardpoint has no stable HardpointId. " +
+                "Using a runtime instance-id target as compatibility fallback; " +
+                "networked routing should require the stable id.",
+                hardpoint);
+        }
+
         WinchCartridge cartridge =
             new WinchCartridge(
                 hardpoint,
                 winch,
-                readout);
+                readout,
+                requester);
 
         _activeHardpoint =
             hardpoint;
@@ -109,6 +133,9 @@ public sealed class WinchOverlayRunner : MonoBehaviour
 
         _activeCartridge =
             cartridge;
+
+        _activeRequester =
+            requester;
 
         _activeTargetId =
             targetId;
@@ -172,18 +199,6 @@ public sealed class WinchOverlayRunner : MonoBehaviour
     private void OnMiniGameEffect(
         MiniGameEffect effect)
     {
-        if (effect.kind !=
-            MiniGameEffectKind.Control)
-        {
-            return;
-        }
-
-        if (effect.system !=
-            WinchControlIntentPayload.EffectSystem)
-        {
-            return;
-        }
-
         if (string.IsNullOrWhiteSpace(
                 _activeTargetId) ||
             effect.targetId !=
@@ -192,6 +207,30 @@ public sealed class WinchOverlayRunner : MonoBehaviour
             return;
         }
 
+        if (effect.kind ==
+                MiniGameEffectKind.Control &&
+            effect.system ==
+                WinchControlIntentPayload.EffectSystem)
+        {
+            HandleControlIntentEffect(
+                effect);
+
+            return;
+        }
+
+        if (effect.kind ==
+                MiniGameEffectKind.Transaction &&
+            effect.system ==
+                WinchLineTransferIntentPayload.EffectSystem)
+        {
+            HandleLineTransferEffect(
+                effect);
+        }
+    }
+
+    private void HandleControlIntentEffect(
+        MiniGameEffect effect)
+    {
         if (_activeHardpoint == null ||
             _activeWinch == null)
         {
@@ -250,6 +289,68 @@ public sealed class WinchOverlayRunner : MonoBehaviour
             message);
     }
 
+    private void HandleLineTransferEffect(
+        MiniGameEffect effect)
+    {
+        if (_activeHardpoint == null ||
+            _activeWinch == null)
+        {
+            NotifyLineTransferResult(
+                WinchLineTransferOperation.LoadOneFromPlayer,
+                false,
+                "WINCH LINE TRANSFER TARGET IS NO LONGER AVAILABLE");
+
+            return;
+        }
+
+        if (_activeRequester == null)
+        {
+            NotifyLineTransferResult(
+                WinchLineTransferOperation.LoadOneFromPlayer,
+                false,
+                "WINCH REQUESTER IS UNAVAILABLE");
+
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(
+                effect.payloadJson))
+        {
+            NotifyLineTransferResult(
+                WinchLineTransferOperation.LoadOneFromPlayer,
+                false,
+                "MISSING WINCH LINE TRANSFER INTENT");
+
+            return;
+        }
+
+        WinchLineTransferIntentPayload payload =
+            JsonUtility.FromJson<WinchLineTransferIntentPayload>(
+                effect.payloadJson);
+
+        if (payload == null)
+        {
+            NotifyLineTransferResult(
+                WinchLineTransferOperation.LoadOneFromPlayer,
+                false,
+                "INVALID WINCH LINE TRANSFER INTENT");
+
+            return;
+        }
+
+        bool ok =
+            WinchLineTransferAuthority.TryApply(
+                _activeWinch,
+                _activeRequester,
+                payload,
+                out string message);
+
+        NotifyLineTransferResult(
+            payload.operation,
+            ok,
+            message);
+    }
+
     private void NotifyIntentResult(
         WinchControlIntent intent,
         bool success,
@@ -257,6 +358,17 @@ public sealed class WinchOverlayRunner : MonoBehaviour
     {
         _activeCartridge?.NotifyControlIntentApplied(
             intent,
+            success,
+            message);
+    }
+
+    private void NotifyLineTransferResult(
+        WinchLineTransferOperation operation,
+        bool success,
+        string message)
+    {
+        _activeCartridge?.NotifyLineTransferApplied(
+            operation,
             success,
             message);
     }
@@ -273,6 +385,9 @@ public sealed class WinchOverlayRunner : MonoBehaviour
             null;
 
         _activeCartridge =
+            null;
+
+        _activeRequester =
             null;
     }
 

@@ -117,8 +117,17 @@ public sealed class AnchorPayload : TetherPayload,
     }
 #endif
 
-    private void FixedUpdate()
+    protected override void FixedUpdate()
     {
+        base.FixedUpdate();
+
+        if (!HasGameplayAuthority)
+        {
+            ReleaseStaticHold();
+            ClearRuntimeDebug();
+            return;
+        }
+
         Rigidbody2D rb = Rigidbody;
 
         if (rb == null ||
@@ -341,6 +350,9 @@ public sealed class AnchorPayload : TetherPayload,
 
     private void OnJointBreak2D(Joint2D brokenJoint)
     {
+        if (!HasGameplayAuthority)
+            return;
+
         if (brokenJoint == null ||
             brokenJoint != _staticHoldJoint)
         {

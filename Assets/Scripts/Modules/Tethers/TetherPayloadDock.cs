@@ -25,6 +25,14 @@ public enum TetherDockState
 [DisallowMultipleComponent]
 public sealed class TetherPayloadDock : MonoBehaviour
 {
+    [Header("Gameplay Authority")]
+    [Tooltip(
+        "Only authoritative peers advance Capturing motion. Replicated/client presentation may " +
+        "still hold dock state without independently moving the shared payload.")]
+    [SerializeField]
+    private GameplayAuthorityMode gameplayAuthorityMode =
+        GameplayAuthorityMode.SinglePlayerOrAuthoritative;
+
     [Header("Dock")]
     [Tooltip(
         "Optional exact capture pose. If blank, TetherDeploymentModule supplies " +
@@ -71,6 +79,8 @@ public sealed class TetherPayloadDock : MonoBehaviour
 
     public bool HasDockedPayload => dockedPayload != null;
     public TetherDockState State => dockState;
+    public bool HasGameplayAuthority =>
+        GameplayAuthority.CanRun(gameplayAuthorityMode);
 
     public Transform DockPoint =>
         activeDockPoint != null
@@ -81,6 +91,9 @@ public sealed class TetherPayloadDock : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!HasGameplayAuthority)
+            return;
+
         if (dockState != TetherDockState.Capturing)
             return;
 

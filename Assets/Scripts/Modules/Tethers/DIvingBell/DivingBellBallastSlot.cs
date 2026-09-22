@@ -42,13 +42,6 @@ public sealed class DivingBellBallastSlot :
     [SerializeField, Min(0.1f)] private float maxDepositDistance = 2.25f;
     [SerializeField] private Transform promptAnchor;
 
-    [Header("Local Player Bridge")]
-    [Tooltip(
-        "Used only by the current single-player IWorldItemDropTarget interface, " +
-        "which does not carry requester identity. Future multiplayer UI should " +
-        "route an explicit requester/intent to DivingBellBallastSystem.")]
-    [SerializeField] private Transform playerTransform;
-
     [Header("Debug")]
     [SerializeField] private bool verboseLogging;
 
@@ -77,7 +70,6 @@ public sealed class DivingBellBallastSlot :
             promptAnchor = transform;
 
         ResolveRenderer();
-        ResolvePlayer();
         EnsureColliderIsTrigger();
     }
 
@@ -123,24 +115,23 @@ public sealed class DivingBellBallastSlot :
     }
 
     public bool CanAcceptWorldDrop(
+        in WorldItemDropContext context,
         ItemInstance incoming)
     {
         ResolveRefs();
 
         if (ballastSystem == null ||
-            !IsLocalPlayerInDepositRange())
+            !IsRequesterInDepositRange(
+                in context))
         {
             return false;
         }
-
-        GameObject requester =
-            ResolveRequester();
 
         bool ok =
             ballastSystem.CanAcceptBallast(
                 slotIndex,
                 incoming,
-                requester,
+                context.Requester,
                 out string reason);
 
         Log(
@@ -150,6 +141,7 @@ public sealed class DivingBellBallastSlot :
     }
 
     public bool TryAcceptWorldDrop(
+        in WorldItemDropContext context,
         ItemInstance incoming,
         out ItemInstance remainder)
     {
@@ -158,19 +150,17 @@ public sealed class DivingBellBallastSlot :
         ResolveRefs();
 
         if (ballastSystem == null ||
-            !IsLocalPlayerInDepositRange())
+            !IsRequesterInDepositRange(
+                in context))
         {
             return false;
         }
-
-        GameObject requester =
-            ResolveRequester();
 
         bool ok =
             ballastSystem.TryInsertBallast(
                 slotIndex,
                 incoming,
-                requester,
+                context.Requester,
                 out remainder,
                 out string message);
 
@@ -308,11 +298,10 @@ public sealed class DivingBellBallastSlot :
         return definition.Icon;
     }
 
-    private bool IsLocalPlayerInDepositRange()
+    private bool IsRequesterInDepositRange(
+        in WorldItemDropContext context)
     {
-        ResolvePlayer();
-
-        if (playerTransform == null)
+        if (!context.HasRequester)
             return false;
 
         Vector2 point =
@@ -320,7 +309,7 @@ public sealed class DivingBellBallastSlot :
 
         return
             Vector2.Distance(
-                playerTransform.position,
+                context.Origin,
                 point) <=
             Mathf.Max(0.1f, maxDepositDistance);
     }
@@ -359,7 +348,6 @@ public sealed class DivingBellBallastSlot :
             promptAnchor = transform;
 
         ResolveRenderer();
-        ResolvePlayer();
     }
 
     private void ResolveRenderer()
@@ -370,28 +358,6 @@ public sealed class DivingBellBallastSlot :
         ballastRenderer =
             GetComponent<SpriteRenderer>() ??
             GetComponentInChildren<SpriteRenderer>(true);
-    }
-
-    private void ResolvePlayer()
-    {
-        if (playerTransform != null)
-            return;
-
-        PlayerInventory inventory =
-            FindFirstObjectByType<PlayerInventory>();
-
-        if (inventory != null)
-            playerTransform = inventory.transform;
-    }
-
-    private GameObject ResolveRequester()
-    {
-        ResolvePlayer();
-
-        return
-            playerTransform != null
-                ? playerTransform.gameObject
-                : null;
     }
 
     private void EnsureColliderIsTrigger()

@@ -29,6 +29,20 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
 
     public CharacterIntent Current { get; private set; }
 
+    /// <summary>
+    /// Presentation-only binding labels for local UI. Gameplay should consume
+    /// ICharacterIntentSource rather than reading these physical keys directly.
+    /// </summary>
+    public string ClimbUpBindingLabel =>
+        climbUpKey == KeyCode.None
+            ? "Up"
+            : climbUpKey.ToString();
+
+    public string ClimbDownBindingLabel =>
+        climbDownKey == KeyCode.None
+            ? "Down"
+            : climbDownKey.ToString();
+
     private bool _jumpPressedLatched;
 
     void Update()

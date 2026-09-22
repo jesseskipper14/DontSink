@@ -9,14 +9,15 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
     [SerializeField] private SpriteRenderer[] interiorRenderers;
 
     [Tooltip(
-        "Separate floor artwork. It always follows the interior Sorting Layer and " +
-        "renders exactly one order above the interior group.")]
+        "Separate floor artwork. It follows the bell's current docked/deployed sorting context.")]
     [SerializeField] private SpriteRenderer[] floorRenderers;
 
     [SerializeField] private SpriteRenderer[] exteriorRenderers;
 
     [Header("Sorting Authority")]
-    [Tooltip("Optional explicit sorting source. Normally leave blank; while docked this auto-resolves from the InstalledModule that owns the TetherPayloadDock.")]
+    [Tooltip(
+        "Optional explicit sorting source while docked. Normally leave blank; the source " +
+        "auto-resolves from the InstalledModule that owns the TetherPayloadDock.")]
     [SerializeField] private SpriteRenderer sortingReferenceOverride;
 
     [Header("Orders Relative To Diving Base")]
@@ -26,26 +27,24 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
 
     [Header("Deployed Bell Sorting")]
     [Tooltip(
-        "Sorting Layer used while the bell is NOT docked. Set this to a layer that " +
-        "renders in front of the boat. Blank/invalid falls back to the last docked layer.")]
+        "Sorting Layer used while the bell is NOT docked. This is global bell presentation: " +
+        "deployment changes the bell for every viewer. It is never selected from player occupancy.")]
     [SerializeField] private string deployedSortingLayerName = "";
 
     [Tooltip(
-        "Base sorting order used on the deployed sorting layer. Interior/occupant/" +
-        "exterior offsets above are applied relative to this value.")]
+        "Base sorting order used on the deployed sorting layer. Interior/occupant/exterior " +
+        "offsets above are applied relative to this value.")]
     [SerializeField] private int deployedBaseOrder = 0;
 
     [Header("Local Interior View")]
     [Tooltip(
-        "Hide the bell's exterior/front sprite only for the local viewer while that " +
-        "viewer occupies this bell. This is client-local presentation and does not " +
-        "change shared bell state.")]
+        "Hide the bell's exterior/front sprite only for the local viewer while that viewer occupies " +
+        "this bell. This is client-local presentation and does not change shared bell state.")]
     [SerializeField] private bool hideExteriorForLocalOccupant = true;
 
     [Tooltip(
-        "Optional explicit local player. In single-player this may remain blank and " +
-        "auto-resolve. In multiplayer, the client/player bootstrap should assign the " +
-        "locally-controlled PlayerBoardingState through SetLocalViewingPlayer().")]
+        "Optional explicit local player. When blank, presentation follows CameraManager's viewing " +
+        "player, then uses a single-player-only fallback when exactly one player exists.")]
     [SerializeField] private PlayerBoardingState localViewingPlayer;
 
     [Header("Runtime Debug")]
@@ -57,8 +56,16 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
     [SerializeField] private bool localViewerInsideBell;
 
     private bool _reportedMissingDeployedSortingLayer;
+    private bool _occupancyEventsBound;
 
-    private readonly Dictionary<PlayerBellOccupantState, PlayerSortingSnapshot> _snapshots = new();
+    // Bell sorting is state-driven, not occupant-driven. These values make that
+    // explicit and avoid re-writing the bell merely because occupancy changed.
+    private bool _hasAppliedBellSortingContext;
+    private bool _appliedBellDocked;
+    private int _appliedBellSortingLayerId;
+    private int _appliedBellBaseOrder;
+
+    private readonly HashSet<PlayerBellOccupantState> _occupantOverrides = new();
     private readonly List<PlayerBellOccupantState> _current = new();
     private readonly List<PlayerBellOccupantState> _restore = new();
 
@@ -71,6 +78,7 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
     private void OnEnable()
     {
         ResolveRefs();
+        BindOccupancyEvents();
         RefreshPresentation();
     }
 
@@ -81,22 +89,21 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
 
     private void OnDisable()
     {
+        UnbindOccupancyEvents();
         RestoreBellRendererVisibility();
-
         RestoreAllTrackedOccupants();
     }
 
     private void OnDestroy()
     {
+        UnbindOccupancyEvents();
         RestoreBellRendererVisibility();
-
         RestoreAllTrackedOccupants();
     }
 
     /// <summary>
-    /// Authoritative sorting context for objects visually contained by this bell.
-    /// Consumers should use this instead of inferring the bell state from an
-    /// arbitrary SpriteRenderer in the hierarchy.
+    /// Current bell-interior sorting context. This follows the bell's GLOBAL
+    /// docked/deployed presentation state, never the local player's occupancy.
     /// </summary>
     public bool TryGetInteriorSortingContext(
         out int sortingLayerId,
@@ -107,76 +114,201 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
         sortingLayerId = 0;
         interiorBaseOrder = 0;
 
-        if (string.IsNullOrWhiteSpace(resolvedSortingLayer))
+        if (!_hasAppliedBellSortingContext)
             return false;
 
-        sortingLayerId = SortingLayer.NameToID(resolvedSortingLayer);
-        interiorBaseOrder = resolvedBaseOrder + interiorOrderOffset;
-
+        sortingLayerId = _appliedBellSortingLayerId;
+        interiorBaseOrder = _appliedBellBaseOrder + interiorOrderOffset;
         return true;
     }
 
     public void RefreshPresentation()
     {
         ResolveRefs();
+        RestoreDepartedOccupants();
 
         bool docked =
             occupancy != null &&
             occupancy.IsDocked;
 
-        resolvedBellDocked =
-            docked;
+        resolvedBellDocked = docked;
 
-        int layerId;
-        int baseOrder;
-
-        if (!docked &&
-            TryResolveDeployedSorting(
-                out layerId,
-                out baseOrder))
+        if (TryResolveBellSortingContext(
+                docked,
+                out int layerId,
+                out int baseOrder,
+                out SpriteRenderer source,
+                out bool deployedContext))
         {
-            usingDeployedSorting =
-                true;
+            resolvedSortingReference = source;
+            resolvedSortingLayer = SortingLayer.IDToName(layerId);
+            resolvedBaseOrder = baseOrder;
+            usingDeployedSorting = deployedContext;
 
-            resolvedSortingReference =
-                null;
+            ApplyBellSortingIfContextChanged(
+                docked,
+                layerId,
+                baseOrder);
 
-            resolvedSortingLayer =
-                SortingLayer.IDToName(
-                    layerId);
+            int interiorTargetOrder =
+                baseOrder +
+                interiorOrderOffset;
 
-            resolvedBaseOrder =
-                baseOrder;
+            int floorTargetOrder =
+                interiorTargetOrder +
+                1;
+
+            int occupantTargetOrder =
+                Mathf.Max(
+                    baseOrder +
+                    occupantOrderOffset,
+                    floorTargetOrder +
+                    1);
+
+            int exteriorTargetOrder =
+                Mathf.Max(
+                    baseOrder +
+                    exteriorOrderOffset,
+                    occupantTargetOrder +
+                    1);
+
+            SyncOccupants(
+                layerId,
+                occupantTargetOrder);
         }
         else
         {
-            usingDeployedSorting =
-                false;
-
-            SpriteRenderer source =
-                ResolveSortingReference();
-
-            if (source == null)
-            {
-                RefreshLocalVisibility();
-                return;
-            }
-
-            resolvedSortingReference =
-                source;
-
-            resolvedSortingLayer =
-                source.sortingLayerName;
-
-            resolvedBaseOrder =
-                source.sortingOrder;
-
-            layerId =
-                source.sortingLayerID;
-
-            baseOrder =
-                source.sortingOrder;
+            usingDeployedSorting = false;
         }
+
+        RefreshLocalVisibility();
+    }
+
+    /// <summary>
+    /// Multiplayer seam: each client may explicitly assign its locally-controlled
+    /// viewing player. When unset, CameraManager.ViewingPlayer is preferred.
+    /// </summary>
+    public void SetLocalViewingPlayer(
+        PlayerBoardingState player)
+    {
+        localViewingPlayer = player;
+        RefreshLocalVisibility();
+    }
+
+    private void BindOccupancyEvents()
+    {
+        if (_occupancyEventsBound || occupancy == null)
+            return;
+
+        occupancy.OccupantEntered += HandleOccupantEntered;
+        occupancy.OccupantExited += HandleOccupantExited;
+        occupancy.OccupantEmergencyEjected += HandleOccupantEmergencyEjected;
+        _occupancyEventsBound = true;
+    }
+
+    private void UnbindOccupancyEvents()
+    {
+        if (!_occupancyEventsBound || occupancy == null)
+        {
+            _occupancyEventsBound = false;
+            return;
+        }
+
+        occupancy.OccupantEntered -= HandleOccupantEntered;
+        occupancy.OccupantExited -= HandleOccupantExited;
+        occupancy.OccupantEmergencyEjected -= HandleOccupantEmergencyEjected;
+        _occupancyEventsBound = false;
+    }
+
+    private void HandleOccupantEntered(
+        DivingBellOccupancy bell,
+        PlayerBellOccupantState state)
+    {
+        if (bell == null || !ReferenceEquals(bell, occupancy))
+            return;
+
+        // Occupancy changes occupant sorting/local visibility only. Bell sorting is
+        // resolved independently from docked/deployed state in RefreshPresentation.
+        RefreshPresentation();
+    }
+
+    private void HandleOccupantExited(
+        DivingBellOccupancy bell,
+        PlayerBellOccupantState state)
+    {
+        if (bell == null || !ReferenceEquals(bell, occupancy))
+            return;
+
+        ReleaseOccupantSortingOverride(state);
+        RefreshLocalVisibility();
+    }
+
+    private void HandleOccupantEmergencyEjected(
+        DivingBellOccupancy bell,
+        PlayerBellOccupantState state)
+    {
+        if (bell == null || !ReferenceEquals(bell, occupancy))
+            return;
+
+        ReleaseOccupantSortingOverride(state);
+        RefreshLocalVisibility();
+    }
+
+    private bool TryResolveBellSortingContext(
+        bool docked,
+        out int sortingLayerId,
+        out int baseOrder,
+        out SpriteRenderer source,
+        out bool deployedContext)
+    {
+        sortingLayerId = 0;
+        baseOrder = 0;
+        source = null;
+        deployedContext = false;
+
+        if (!docked &&
+            TryResolveDeployedSorting(
+                out sortingLayerId,
+                out baseOrder))
+        {
+            deployedContext = true;
+            return true;
+        }
+
+        source = ResolveSortingReference();
+
+        if (source != null)
+        {
+            sortingLayerId = source.sortingLayerID;
+            baseOrder = source.sortingOrder;
+            return true;
+        }
+
+        // Preserve the previous valid bell context rather than letting a temporary
+        // missing dock reference cause occupancy/local-view changes to re-layer it.
+        if (_hasAppliedBellSortingContext)
+        {
+            sortingLayerId = _appliedBellSortingLayerId;
+            baseOrder = _appliedBellBaseOrder;
+            return true;
+        }
+
+        return false;
+    }
+
+    private void ApplyBellSortingIfContextChanged(
+        bool docked,
+        int sortingLayerId,
+        int baseOrder)
+    {
+        bool changed =
+            !_hasAppliedBellSortingContext ||
+            _appliedBellDocked != docked ||
+            _appliedBellSortingLayerId != sortingLayerId ||
+            _appliedBellBaseOrder != baseOrder;
+
+        if (!changed)
+            return;
 
         int interiorTargetOrder =
             baseOrder +
@@ -186,8 +318,6 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
             interiorTargetOrder +
             1;
 
-        // Keep occupants above the floor even if an older prefab still carries
-        // the original occupantOrderOffset=2 value.
         int occupantTargetOrder =
             Mathf.Max(
                 baseOrder +
@@ -195,8 +325,6 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
                 floorTargetOrder +
                 1);
 
-        // Preserve the authored exterior offset when it is already higher, but
-        // never let the front shell fall behind an occupant.
         int exteriorTargetOrder =
             Mathf.Max(
                 baseOrder +
@@ -206,45 +334,37 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
 
         ApplyBellGroupSorting(
             interiorRenderers,
-            layerId,
+            sortingLayerId,
             interiorTargetOrder);
 
         ApplyBellGroupSorting(
             floorRenderers,
-            layerId,
+            sortingLayerId,
             floorTargetOrder);
 
         ApplyBellGroupSorting(
             exteriorRenderers,
-            layerId,
+            sortingLayerId,
             exteriorTargetOrder);
 
-        SyncOccupants(
-            layerId,
-            occupantTargetOrder);
-
-        RefreshLocalVisibility();
+        _hasAppliedBellSortingContext = true;
+        _appliedBellDocked = docked;
+        _appliedBellSortingLayerId = sortingLayerId;
+        _appliedBellBaseOrder = baseOrder;
     }
 
     private bool TryResolveDeployedSorting(
         out int sortingLayerId,
         out int baseOrder)
     {
-        sortingLayerId =
-            0;
+        sortingLayerId = 0;
+        baseOrder = deployedBaseOrder;
 
-        baseOrder =
-            deployedBaseOrder;
-
-        if (string.IsNullOrWhiteSpace(
-                deployedSortingLayerName))
-        {
+        if (string.IsNullOrWhiteSpace(deployedSortingLayerName))
             return false;
-        }
 
         int candidateId =
-            SortingLayer.NameToID(
-                deployedSortingLayerName);
+            SortingLayer.NameToID(deployedSortingLayerName);
 
         if (candidateId == 0 &&
             deployedSortingLayerName != "Default")
@@ -254,101 +374,80 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
                 Debug.LogWarning(
                     $"[DivingBellVisualPresentation:{name}] " +
                     $"Deployed Sorting Layer '{deployedSortingLayerName}' was not found. " +
-                    "Bell will temporarily fall back to its docked sorting context.",
+                    "Bell will retain its last valid sorting context.",
                     this);
 
-                _reportedMissingDeployedSortingLayer =
-                    true;
+                _reportedMissingDeployedSortingLayer = true;
             }
 
             return false;
         }
 
-        _reportedMissingDeployedSortingLayer =
-            false;
-
-        sortingLayerId =
-            candidateId;
-
+        _reportedMissingDeployedSortingLayer = false;
+        sortingLayerId = candidateId;
         return true;
-    }
-
-    /// <summary>
-    /// Multiplayer seam: each client should assign its locally-controlled player.
-    /// In single-player, leaving this unset falls back to FindFirstObjectByType.
-    /// </summary>
-    public void SetLocalViewingPlayer(
-        PlayerBoardingState player)
-    {
-        localViewingPlayer =
-            player;
-
-        RefreshLocalVisibility();
     }
 
     private void RefreshLocalVisibility()
     {
-        ResolveLocalViewingPlayer();
+        PlayerBoardingState resolvedLocalViewer =
+            ResolveLocalViewingPlayer();
 
-        PlayerBellOccupantState localBellState =
-            null;
+        PlayerBellOccupantState localBellState = null;
 
-        if (localViewingPlayer != null)
+        if (resolvedLocalViewer != null)
         {
             localBellState =
-                localViewingPlayer.GetComponent<PlayerBellOccupantState>() ??
-                localViewingPlayer.GetComponentInChildren<PlayerBellOccupantState>(
-                    true);
+                resolvedLocalViewer.GetComponent<PlayerBellOccupantState>() ??
+                resolvedLocalViewer.GetComponentInChildren<PlayerBellOccupantState>(true);
         }
 
         localViewerInsideBell =
             localBellState != null &&
             occupancy != null &&
-            localBellState.IsInside(
-                occupancy);
+            localBellState.IsInside(occupancy);
 
-        SetRendererGroupEnabled(
-            interiorRenderers,
-            true);
-
-        SetRendererGroupEnabled(
-            floorRenderers,
-            true);
+        SetRendererGroupEnabled(interiorRenderers, true);
+        SetRendererGroupEnabled(floorRenderers, true);
 
         bool exteriorVisible =
             !hideExteriorForLocalOccupant ||
             !localViewerInsideBell;
 
-        SetRendererGroupEnabled(
-            exteriorRenderers,
-            exteriorVisible);
+        SetRendererGroupEnabled(exteriorRenderers, exteriorVisible);
     }
 
     private void RestoreBellRendererVisibility()
     {
-        SetRendererGroupEnabled(
-            interiorRenderers,
-            true);
-
-        SetRendererGroupEnabled(
-            floorRenderers,
-            true);
-
-        SetRendererGroupEnabled(
-            exteriorRenderers,
-            true);
+        SetRendererGroupEnabled(interiorRenderers, true);
+        SetRendererGroupEnabled(floorRenderers, true);
+        SetRendererGroupEnabled(exteriorRenderers, true);
     }
 
-    private void ResolveLocalViewingPlayer()
+    private PlayerBoardingState ResolveLocalViewingPlayer()
     {
         if (localViewingPlayer != null)
-            return;
+            return localViewingPlayer;
 
-        // Single-player fallback only. Future multiplayer bootstrap should call
-        // SetLocalViewingPlayer so a remote player's occupancy never controls
-        // this client's bell shell visibility.
-        localViewingPlayer =
-            FindFirstObjectByType<PlayerBoardingState>();
+        if (CameraManager.Instance != null)
+        {
+            PlayerBoardingState viewed =
+                CameraManager.Instance.ViewingPlayer;
+
+            if (viewed != null)
+                return viewed;
+        }
+
+        PlayerBoardingState[] players =
+            FindObjectsByType<PlayerBoardingState>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+
+        return
+            players != null &&
+            players.Length == 1
+                ? players[0]
+                : null;
     }
 
     private static void SetRendererGroupEnabled(
@@ -358,25 +457,24 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
         if (renderers == null)
             return;
 
-        for (int i = 0;
-             i < renderers.Length;
-             i++)
+        for (int i = 0; i < renderers.Length; i++)
         {
-            SpriteRenderer renderer =
-                renderers[i];
-
+            SpriteRenderer renderer = renderers[i];
             if (renderer != null)
                 renderer.enabled = enabled;
         }
     }
 
-    private void SyncOccupants(int sortingLayerId, int occupantBaseOrder)
+    private void SyncOccupants(
+        int sortingLayerId,
+        int occupantBaseOrder)
     {
         _current.Clear();
 
         if (occupancy != null)
         {
-            IReadOnlyList<PlayerBellOccupantState> occupants = occupancy.Occupants;
+            IReadOnlyList<PlayerBellOccupantState> occupants =
+                occupancy.Occupants;
 
             if (occupants != null)
             {
@@ -389,70 +487,103 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
 
                     _current.Add(state);
 
-                    if (!_snapshots.TryGetValue(state, out PlayerSortingSnapshot snapshot))
-                    {
-                        snapshot = PlayerSortingSnapshot.Capture(state);
-                        _snapshots.Add(state, snapshot);
-                    }
+                    PlayerBoardingState boarding =
+                        ResolvePlayerBoardingState(state);
 
-                    snapshot.ApplyBellSorting(
-                        sortingLayerId,
-                        occupantBaseOrder);
+                    if (boarding == null)
+                        continue;
+
+                    // PlayerBoardingState owns all player sprite sorting. The bell
+                    // merely requests a temporary override and can update that same
+                    // owned override when dock/deploy sorting context changes.
+                    if (boarding.TrySetPresentationSortingOverride(
+                            this,
+                            sortingLayerId,
+                            occupantBaseOrder))
+                    {
+                        _occupantOverrides.Add(state);
+                    }
                 }
             }
         }
 
+        RestoreDepartedOccupants();
+    }
+
+    private void RestoreDepartedOccupants()
+    {
+        if (_occupantOverrides.Count == 0)
+            return;
+
         _restore.Clear();
 
-        foreach (var pair in _snapshots)
+        foreach (PlayerBellOccupantState state in _occupantOverrides)
         {
-            if (pair.Key == null || !_current.Contains(pair.Key))
-                _restore.Add(pair.Key);
+            if (state == null ||
+                occupancy == null ||
+                !state.IsInside(occupancy))
+            {
+                _restore.Add(state);
+            }
         }
 
         for (int i = 0; i < _restore.Count; i++)
-        {
-            PlayerBellOccupantState state = _restore[i];
+            ReleaseOccupantSortingOverride(_restore[i]);
 
-            if (_snapshots.TryGetValue(state, out PlayerSortingSnapshot snapshot))
-            {
-                snapshot.Restore();
-                ReapplyAuthoritativePlayerPresentation(
-                    state);
-            }
-
-            _snapshots.Remove(state);
-        }
-    }
-
-    private void RestoreAllTrackedOccupants()
-    {
-        foreach (var pair in _snapshots)
-        {
-            pair.Value?.Restore();
-
-            ReapplyAuthoritativePlayerPresentation(
-                pair.Key);
-        }
-
-        _snapshots.Clear();
-        _current.Clear();
         _restore.Clear();
     }
 
-    private static void ReapplyAuthoritativePlayerPresentation(
+    private void ReleaseOccupantSortingOverride(
         PlayerBellOccupantState state)
     {
         if (state == null)
             return;
 
         PlayerBoardingState boarding =
-            state.GetComponent<PlayerBoardingState>() ??
-            state.GetComponentInChildren<PlayerBoardingState>(
-                true);
+            ResolvePlayerBoardingState(state);
 
         if (boarding != null)
+        {
+            boarding.ClearPresentationSortingOverride(this);
+
+            // ClearPresentationSortingOverride already rebuilds from the current
+            // boarded/unboarded state. Reassert once for defensive callers whose
+            // state changed during the same exit/eject operation.
             boarding.ReapplyCurrentPresentation();
+        }
+
+        _occupantOverrides.Remove(state);
+        _current.Remove(state);
+    }
+
+    private void RestoreAllTrackedOccupants()
+    {
+        if (_occupantOverrides.Count > 0)
+        {
+            _restore.Clear();
+
+            foreach (PlayerBellOccupantState state in _occupantOverrides)
+                _restore.Add(state);
+
+            for (int i = 0; i < _restore.Count; i++)
+                ReleaseOccupantSortingOverride(_restore[i]);
+        }
+
+        _occupantOverrides.Clear();
+        _current.Clear();
+        _restore.Clear();
+    }
+
+    private static PlayerBoardingState ResolvePlayerBoardingState(
+        PlayerBellOccupantState state)
+    {
+        if (state == null)
+            return null;
+
+        return
+            state.GetComponent<PlayerBoardingState>() ??
+            state.GetComponentInParent<PlayerBoardingState>() ??
+            state.GetComponentInChildren<PlayerBoardingState>(true);
     }
 
     private void ApplyBellGroupSorting(
@@ -481,7 +612,9 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
             if (renderer == null)
                 continue;
 
-            int relative = renderer.sortingOrder - minOrder;
+            int relative =
+                renderer.sortingOrder -
+                minOrder;
 
             renderer.sortingLayerID = sortingLayerId;
             renderer.sortingOrder = targetBaseOrder + relative;
@@ -496,22 +629,32 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
         if (occupancy == null)
             return resolvedSortingReference;
 
-        TetherPayloadDock dock = occupancy.CurrentDock;
+        TetherPayloadDock dock =
+            occupancy.CurrentDock;
+
         if (dock == null)
             return resolvedSortingReference;
 
-        InstalledModule installed = dock.GetComponentInParent<InstalledModule>();
+        InstalledModule installed =
+            dock.GetComponentInParent<InstalledModule>();
+
         if (installed == null)
-            installed = dock.GetComponentInChildren<InstalledModule>(true);
+        {
+            installed =
+                dock.GetComponentInChildren<InstalledModule>(true);
+        }
 
         if (installed == null)
             return resolvedSortingReference;
 
-        SpriteRenderer direct = installed.GetComponent<SpriteRenderer>();
+        SpriteRenderer direct =
+            installed.GetComponent<SpriteRenderer>();
+
         if (IsUsableBaseRenderer(direct))
             return direct;
 
-        SpriteRenderer[] candidates = installed.GetComponentsInChildren<SpriteRenderer>(true);
+        SpriteRenderer[] candidates =
+            installed.GetComponentsInChildren<SpriteRenderer>(true);
 
         for (int i = 0; i < candidates.Length; i++)
         {
@@ -522,7 +665,8 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
         return resolvedSortingReference;
     }
 
-    private bool IsUsableBaseRenderer(SpriteRenderer candidate)
+    private bool IsUsableBaseRenderer(
+        SpriteRenderer candidate)
     {
         if (candidate == null)
             return false;
@@ -553,102 +697,9 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
                 GetComponentInChildren<DivingBellOccupancy>(true);
         }
 
-        ResolveLocalViewingPlayer();
+        if (isActiveAndEnabled && !_occupancyEventsBound)
+            BindOccupancyEvents();
     }
 
-    private sealed class PlayerSortingSnapshot
-    {
-        private readonly SpriteRenderer[] _renderers;
-        private readonly int[] _layerIds;
-        private readonly int[] _orders;
-        private readonly int[] _relativeOrders;
 
-        private PlayerSortingSnapshot(
-            SpriteRenderer[] renderers,
-            int[] layerIds,
-            int[] orders,
-            int[] relativeOrders)
-        {
-            _renderers = renderers;
-            _layerIds = layerIds;
-            _orders = orders;
-            _relativeOrders = relativeOrders;
-        }
-
-        public static PlayerSortingSnapshot Capture(PlayerBellOccupantState state)
-        {
-            if (state == null)
-            {
-                return new PlayerSortingSnapshot(
-                    System.Array.Empty<SpriteRenderer>(),
-                    System.Array.Empty<int>(),
-                    System.Array.Empty<int>(),
-                    System.Array.Empty<int>());
-            }
-
-            SpriteRenderer[] renderers = state.GetComponentsInChildren<SpriteRenderer>(true);
-            int count = renderers != null ? renderers.Length : 0;
-
-            int[] layerIds = new int[count];
-            int[] orders = new int[count];
-            int[] relative = new int[count];
-
-            int minOrder = int.MaxValue;
-
-            for (int i = 0; i < count; i++)
-            {
-                SpriteRenderer renderer = renderers[i];
-                if (renderer != null)
-                    minOrder = Mathf.Min(minOrder, renderer.sortingOrder);
-            }
-
-            if (minOrder == int.MaxValue)
-                minOrder = 0;
-
-            for (int i = 0; i < count; i++)
-            {
-                SpriteRenderer renderer = renderers[i];
-                if (renderer == null)
-                    continue;
-
-                layerIds[i] = renderer.sortingLayerID;
-                orders[i] = renderer.sortingOrder;
-                relative[i] = renderer.sortingOrder - minOrder;
-            }
-
-            return new PlayerSortingSnapshot(
-                renderers,
-                layerIds,
-                orders,
-                relative);
-        }
-
-        public void ApplyBellSorting(
-            int sortingLayerId,
-            int occupantBaseOrder)
-        {
-            for (int i = 0; i < _renderers.Length; i++)
-            {
-                SpriteRenderer renderer = _renderers[i];
-                if (renderer == null)
-                    continue;
-
-                renderer.sortingLayerID = sortingLayerId;
-                renderer.sortingOrder = occupantBaseOrder + _relativeOrders[i];
-            }
-        }
-
-        public void Restore()
-        {
-            for (int i = 0; i < _renderers.Length; i++)
-            {
-                SpriteRenderer renderer = _renderers[i];
-                if (renderer == null)
-                    continue;
-
-                renderer.sortingLayerID = _layerIds[i];
-                renderer.sortingOrder = _orders[i];
-            }
-        }
-    }
 }

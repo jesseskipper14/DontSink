@@ -8,8 +8,50 @@ public sealed class PlayerLoadoutPersistence : MonoBehaviour
     [SerializeField] private PlayerEquipment equipment;
     [SerializeField] private ItemDefinitionCatalog itemCatalog;
 
+    [Header("Player Persistence")]
+    [Tooltip(
+        "Optional explicit persistence key for this player. Blank means use " +
+        "GameState.LocalPlayerPersistenceKey, which preserves current single-player behavior. " +
+        "Future multiplayer bootstrap should assign each player a stable authenticated key.")]
+    [SerializeField] private string playerPersistenceKey = "";
+
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = true;
+
+    public string PersistenceKey
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(
+                    playerPersistenceKey))
+            {
+                return
+                    GameState.NormalizePlayerPersistenceKey(
+                        playerPersistenceKey);
+            }
+
+            return
+                GameState.I != null
+                    ? GameState.I.LocalPlayerPersistenceKey
+                    : GameState.DefaultPlayerPersistenceKey;
+        }
+    }
+
+    public void SetPersistenceKey(
+        string playerKey)
+    {
+        playerPersistenceKey =
+            GameState.NormalizePlayerPersistenceKey(
+                playerKey);
+    }
+
+    public PlayerBoardingState ResolveBoardingState()
+    {
+        return
+            GetComponent<PlayerBoardingState>() ??
+            GetComponentInParent<PlayerBoardingState>() ??
+            GetComponentInChildren<PlayerBoardingState>(true);
+    }
 
     private void Awake()
     {
@@ -87,12 +129,21 @@ public sealed class PlayerLoadoutPersistence : MonoBehaviour
             return;
         }
 
-        GameState.I.playerLoadout = CaptureSnapshot();
+        string key =
+            PersistenceKey;
+
+        PlayerLoadoutSnapshot snapshot =
+            CaptureSnapshot();
+
+        GameState.I.SetPlayerLoadout(
+            key,
+            snapshot,
+            $"PlayerLoadoutPersistence '{name}'");
 
         Log(
-            $"SaveToGameState | gs={(GameState.I != null ? GameState.I.name : "NULL")} " +
-            $"| storedHotbar={DescribeInventory(GameState.I.playerLoadout?.inventory)} " +
-            $"| storedEquip={DescribeEquipment(GameState.I.playerLoadout?.equipment)}");
+            $"SaveToGameState | key='{key}' gs={(GameState.I != null ? GameState.I.name : "NULL")} " +
+            $"| storedHotbar={DescribeInventory(snapshot?.inventory)} " +
+            $"| storedEquip={DescribeEquipment(snapshot?.equipment)}");
     }
 
     public void RestoreFromGameState()
@@ -103,12 +154,20 @@ public sealed class PlayerLoadoutPersistence : MonoBehaviour
             return;
         }
 
-        Log(
-            $"RestoreFromGameState | gs={(GameState.I != null ? GameState.I.name : "NULL")} " +
-            $"| storedHotbar={DescribeInventory(GameState.I.playerLoadout?.inventory)} " +
-            $"| storedEquip={DescribeEquipment(GameState.I.playerLoadout?.equipment)}");
+        string key =
+            PersistenceKey;
 
-        RestoreSnapshot(GameState.I.playerLoadout);
+        PlayerLoadoutSnapshot snapshot =
+            GameState.I.GetPlayerLoadout(
+                key);
+
+        Log(
+            $"RestoreFromGameState | key='{key}' gs={(GameState.I != null ? GameState.I.name : "NULL")} " +
+            $"| storedHotbar={DescribeInventory(snapshot?.inventory)} " +
+            $"| storedEquip={DescribeEquipment(snapshot?.equipment)}");
+
+        RestoreSnapshot(
+            snapshot);
     }
 
     private string DescribeInventory(InventorySnapshot snapshot)

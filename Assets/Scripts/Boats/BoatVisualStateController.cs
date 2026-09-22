@@ -32,7 +32,15 @@ public sealed class BoatVisualStateController : MonoBehaviour
     [SerializeField] private LayerMask hideByCameraMaskWhenInterior = 0;
     [SerializeField] private bool autoFindMainCamera = true;
 
+    [Header("Client-Local Viewer")]
+    [Tooltip(
+        "Optional explicit player whose camera/presentation this controller should serve. " +
+        "When blank, CameraManager.ViewingPlayer is preferred; single-player falls back " +
+        "only when exactly one PlayerBoardingState exists.")]
+    [SerializeField] private PlayerBoardingState localViewingPlayer;
+
     private readonly Dictionary<PlayerBoardingState, List<BoatVisibilityZone>> _activeZonesByPlayer = new();
+    private readonly Dictionary<PlayerBoardingState, BoatVisibilityMode> _resolvedModeByPlayer = new();
 
     private Renderer[] _exteriorRenderers;
     private Renderer[] _interiorRenderers;
@@ -42,6 +50,7 @@ public sealed class BoatVisualStateController : MonoBehaviour
     private Renderer[] _compartmentWaterRenderers;
 
     private BoatVisibilityMode _currentMode;
+    private PlayerBoardingState _lastResolvedLocalViewer;
 
     private int _originalCameraCullingMask;
     private bool _cachedOriginalCameraMask;
@@ -72,6 +81,41 @@ public sealed class BoatVisualStateController : MonoBehaviour
         }
     }
 #endif
+
+    /// <summary>
+    /// Multiplayer/client-presentation seam. This affects only which player's zone
+    /// state drives this client's renderer/camera/ocean presentation. Per-player
+    /// collision handling continues to evaluate every player independently.
+    /// </summary>
+    public void SetLocalViewingPlayer(
+        PlayerBoardingState player)
+    {
+        localViewingPlayer =
+            player;
+
+        _lastResolvedLocalViewer =
+            player;
+
+        RefreshPresentationForLocalViewer();
+    }
+
+    private void LateUpdate()
+    {
+        PlayerBoardingState resolved =
+            ResolveLocalViewingPlayer();
+
+        if (ReferenceEquals(
+                resolved,
+                _lastResolvedLocalViewer))
+        {
+            return;
+        }
+
+        _lastResolvedLocalViewer =
+            resolved;
+
+        RefreshPresentationForLocalViewer();
+    }
 
     public void NotifyPlayerEnteredZone(PlayerBoardingState player, BoatVisibilityZone zone)
     {
@@ -108,7 +152,10 @@ public sealed class BoatVisualStateController : MonoBehaviour
 
         if (!IsPlayerOnThisBoat(player))
         {
-            ApplyMode(unboardedMode);
+            ApplyResolvedModeForPlayer(
+                player,
+                unboardedMode);
+
             return;
         }
 
@@ -128,14 +175,20 @@ public sealed class BoatVisualStateController : MonoBehaviour
     {
         if (player == null)
         {
-            ApplyMode(unboardedMode);
+            if (ResolveLocalViewingPlayer() == null)
+                ApplyMode(unboardedMode);
+
             return;
         }
 
         if (!IsPlayerOnThisBoat(player))
         {
             _activeZonesByPlayer.Remove(player);
-            ApplyMode(unboardedMode);
+
+            ApplyResolvedModeForPlayer(
+                player,
+                unboardedMode);
+
             return;
         }
 
@@ -182,7 +235,10 @@ public sealed class BoatVisualStateController : MonoBehaviour
     {
         if (player == null || !IsPlayerOnThisBoat(player))
         {
-            ApplyMode(unboardedMode);
+            ApplyResolvedModeForPlayer(
+                player,
+                unboardedMode);
+
             return;
         }
 
@@ -212,13 +268,53 @@ public sealed class BoatVisualStateController : MonoBehaviour
                 _activeZonesByPlayer.Remove(player);
         }
 
-        if (bestZone != null)
+        BoatVisibilityMode resolvedMode =
+            bestZone != null
+                ? bestZone.Mode
+                : defaultBoardedMode;
+
+        ApplyResolvedModeForPlayer(
+            player,
+            resolvedMode);
+    }
+
+    private void ApplyResolvedModeForPlayer(
+        PlayerBoardingState player,
+        BoatVisibilityMode mode)
+    {
+        bool onThisBoat =
+            IsPlayerOnThisBoat(player);
+
+        if (player != null)
         {
-            ApplyMode(bestZone.Mode);
-            return;
+            if (onThisBoat)
+            {
+                _resolvedModeByPlayer[player] =
+                    mode;
+            }
+            else
+            {
+                _resolvedModeByPlayer.Remove(
+                    player);
+            }
+
+            // This is per-player physical collision context, NOT client-local
+            // presentation. Remote players still need correct host-side collision
+            // handling while they occupy an interior zone.
+            ApplyExteriorModulePlayerCollisionPolicy(
+                player,
+                onThisBoat
+                    ? mode
+                    : unboardedMode);
         }
 
-        ApplyMode(defaultBoardedMode);
+        if (IsLocalViewingPlayer(player))
+        {
+            ApplyMode(
+                onThisBoat
+                    ? mode
+                    : unboardedMode);
+        }
     }
 
     public void ApplyMode(BoatVisibilityMode mode)
@@ -269,10 +365,6 @@ public sealed class BoatVisualStateController : MonoBehaviour
         // Hardpoints explicitly authored as exterior may live under _Gameplay,
         // but their renderers should follow exterior visibility.
         ApplyExternalHardpointVisibility(exteriorVisible);
-
-        // Exterior hardware should not become an invisible wall inside the boat.
-        // Ignore only player <-> exterior-module solid collider pairs while interior.
-        ApplyExteriorModulePlayerCollisionPolicy(mode);
 
         bool compartmentWaterVisible =
             (mode == BoatVisibilityMode.BoardedInterior && showCompartmentWaterInInterior) ||
@@ -336,60 +428,71 @@ public sealed class BoatVisualStateController : MonoBehaviour
         }
     }
 
-    private void ApplyExteriorModulePlayerCollisionPolicy(BoatVisibilityMode mode)
+    private void ApplyExteriorModulePlayerCollisionPolicy(
+        PlayerBoardingState player,
+        BoatVisibilityMode mode)
     {
-        if (mode != BoatVisibilityMode.BoardedInterior)
+        if (player == null)
+            return;
+
+        if (mode != BoatVisibilityMode.BoardedInterior ||
+            !IsPlayerOnThisBoat(player))
         {
-            RestoreExteriorModulePlayerCollisions(false);
+            RestoreExteriorModulePlayerCollisions(
+                player,
+                false);
+
             return;
         }
 
-        PlayerBoardingState[] players =
-            FindObjectsByType<PlayerBoardingState>(
-                FindObjectsInactive.Exclude,
-                FindObjectsSortMode.None);
+        Collider2D[] exteriorModuleColliders =
+            GetExteriorModuleSolidColliders();
 
-        if (players == null || players.Length == 0)
-            return;
-
-        Collider2D[] exteriorModuleColliders = GetExteriorModuleSolidColliders();
         if (exteriorModuleColliders.Length == 0)
             return;
 
-        for (int p = 0; p < players.Length; p++)
+        Collider2D[] playerColliders =
+            player.GetComponentsInChildren<Collider2D>(
+                true);
+
+        for (int i = 0; i < playerColliders.Length; i++)
         {
-            PlayerBoardingState player = players[p];
-            if (!IsPlayerOnThisBoat(player))
+            Collider2D playerCollider =
+                playerColliders[i];
+
+            if (!IsUsableSolidCollider(playerCollider))
                 continue;
 
-            Collider2D[] playerColliders =
-                player.GetComponentsInChildren<Collider2D>(true);
-
-            for (int i = 0; i < playerColliders.Length; i++)
+            for (int j = 0; j < exteriorModuleColliders.Length; j++)
             {
-                Collider2D playerCollider = playerColliders[i];
-                if (!IsUsableSolidCollider(playerCollider))
+                Collider2D moduleCollider =
+                    exteriorModuleColliders[j];
+
+                if (!IsUsableSolidCollider(moduleCollider))
                     continue;
 
-                for (int j = 0; j < exteriorModuleColliders.Length; j++)
+                if (playerCollider == moduleCollider)
+                    continue;
+
+                // Another system may already own this ignored pair.
+                // Only record and later restore pairs changed here.
+                if (Physics2D.GetIgnoreCollision(
+                        playerCollider,
+                        moduleCollider))
                 {
-                    Collider2D moduleCollider = exteriorModuleColliders[j];
-                    if (!IsUsableSolidCollider(moduleCollider))
-                        continue;
-
-                    if (playerCollider == moduleCollider)
-                        continue;
-
-                    // Another system may already own this ignored pair.
-                    // Only record and later restore pairs changed here.
-                    if (Physics2D.GetIgnoreCollision(playerCollider, moduleCollider))
-                        continue;
-
-                    Physics2D.IgnoreCollision(playerCollider, moduleCollider, true);
-
-                    _ignoredExteriorModulePlayerPairs.Add(
-                        new IgnoredColliderPair(playerCollider, moduleCollider));
+                    continue;
                 }
+
+                Physics2D.IgnoreCollision(
+                    playerCollider,
+                    moduleCollider,
+                    true);
+
+                _ignoredExteriorModulePlayerPairs.Add(
+                    new IgnoredColliderPair(
+                        player,
+                        playerCollider,
+                        moduleCollider));
             }
         }
     }
@@ -434,11 +537,22 @@ public sealed class BoatVisualStateController : MonoBehaviour
                !collider.isTrigger;
     }
 
-    private void RestoreExteriorModulePlayerCollisions(bool force)
+    private void RestoreExteriorModulePlayerCollisions(
+        PlayerBoardingState player,
+        bool force)
     {
         for (int i = _ignoredExteriorModulePlayerPairs.Count - 1; i >= 0; i--)
         {
-            IgnoredColliderPair pair = _ignoredExteriorModulePlayerPairs[i];
+            IgnoredColliderPair pair =
+                _ignoredExteriorModulePlayerPairs[i];
+
+            if (player != null &&
+                !ReferenceEquals(
+                    pair.Player,
+                    player))
+            {
+                continue;
+            }
 
             if (pair.PlayerCollider == null ||
                 pair.ModuleCollider == null)
@@ -450,7 +564,8 @@ public sealed class BoatVisualStateController : MonoBehaviour
             if (!force)
             {
                 ColliderDistance2D distance =
-                    pair.PlayerCollider.Distance(pair.ModuleCollider);
+                    pair.PlayerCollider.Distance(
+                        pair.ModuleCollider);
 
                 if (distance.isOverlapped)
                     continue;
@@ -467,32 +582,144 @@ public sealed class BoatVisualStateController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_currentMode == BoatVisibilityMode.BoardedInterior)
-            return;
-
         if (_ignoredExteriorModulePlayerPairs.Count == 0)
             return;
 
-        RestoreExteriorModulePlayerCollisions(false);
+        for (int i = _ignoredExteriorModulePlayerPairs.Count - 1; i >= 0; i--)
+        {
+            IgnoredColliderPair pair =
+                _ignoredExteriorModulePlayerPairs[i];
+
+            bool shouldRemainIgnored =
+                pair.Player != null &&
+                IsPlayerOnThisBoat(pair.Player) &&
+                _resolvedModeByPlayer.TryGetValue(
+                    pair.Player,
+                    out BoatVisibilityMode mode) &&
+                mode == BoatVisibilityMode.BoardedInterior;
+
+            if (shouldRemainIgnored)
+                continue;
+
+            if (pair.PlayerCollider == null ||
+                pair.ModuleCollider == null)
+            {
+                _ignoredExteriorModulePlayerPairs.RemoveAt(i);
+                continue;
+            }
+
+            ColliderDistance2D distance =
+                pair.PlayerCollider.Distance(
+                    pair.ModuleCollider);
+
+            if (distance.isOverlapped)
+                continue;
+
+            Physics2D.IgnoreCollision(
+                pair.PlayerCollider,
+                pair.ModuleCollider,
+                false);
+
+            _ignoredExteriorModulePlayerPairs.RemoveAt(i);
+        }
     }
 
     private void OnDisable()
     {
-        RestoreExteriorModulePlayerCollisions(true);
+        RestoreExteriorModulePlayerCollisions(
+            null,
+            true);
+
+        _activeZonesByPlayer.Clear();
+        _resolvedModeByPlayer.Clear();
     }
 
     private readonly struct IgnoredColliderPair
     {
+        public readonly PlayerBoardingState Player;
         public readonly Collider2D PlayerCollider;
         public readonly Collider2D ModuleCollider;
 
         public IgnoredColliderPair(
+            PlayerBoardingState player,
             Collider2D playerCollider,
             Collider2D moduleCollider)
         {
-            PlayerCollider = playerCollider;
-            ModuleCollider = moduleCollider;
+            Player =
+                player;
+
+            PlayerCollider =
+                playerCollider;
+
+            ModuleCollider =
+                moduleCollider;
         }
+    }
+
+    private void RefreshPresentationForLocalViewer()
+    {
+        PlayerBoardingState viewer =
+            ResolveLocalViewingPlayer();
+
+        _lastResolvedLocalViewer =
+            viewer;
+
+        if (viewer != null &&
+            IsPlayerOnThisBoat(viewer))
+        {
+            RefreshZonesForPlayer(
+                viewer);
+
+            return;
+        }
+
+        ApplyMode(
+            unboardedMode);
+    }
+
+    private bool IsLocalViewingPlayer(
+        PlayerBoardingState player)
+    {
+        if (player == null)
+            return false;
+
+        PlayerBoardingState viewer =
+            ResolveLocalViewingPlayer();
+
+        return
+            viewer != null &&
+            ReferenceEquals(
+                player,
+                viewer);
+    }
+
+    private PlayerBoardingState ResolveLocalViewingPlayer()
+    {
+        if (localViewingPlayer != null)
+            return localViewingPlayer;
+
+        if (CameraManager.Instance != null)
+        {
+            PlayerBoardingState viewed =
+                CameraManager.Instance.ViewingPlayer;
+
+            if (viewed != null)
+                return viewed;
+        }
+
+        // Single-player fallback only. With multiple players present, refusing to
+        // guess is safer than allowing an arbitrary remote player's trigger events
+        // to control this client's cutaway/camera/ocean presentation.
+        PlayerBoardingState[] players =
+            FindObjectsByType<PlayerBoardingState>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+
+        return
+            players != null &&
+            players.Length == 1
+                ? players[0]
+                : null;
     }
 
     private void ResolveCameraIfNeeded()

@@ -426,7 +426,8 @@ public static class SaveGameService
         if (transition != null)
         {
             transition.SaveCurrentPlayerLoadout();
-            CapturePlayerSceneContext(gs, "SaveGameService.SaveSlot");
+            transition.CaptureCurrentPlayerSceneContext(
+                "SaveGameService.SaveSlot");
             transition.SaveCurrentBoatState("SaveGameService.SaveSlot");
             CaptureMoneyChestTreasury(gs, "SaveGameService.SaveSlot");
             WorldMapSaveBuilder.CaptureCurrentWorldMapIntoGameState("SaveGameService.SaveSlot");
@@ -448,6 +449,8 @@ public static class SaveGameService
             gs.moneyChestTreasuryState = new MoneyChestTreasurySnapshot();
 
         gs.moneyChestTreasuryState.EnsureDefaults();
+        gs.SyncLocalPlayerPersistenceMirrors(
+            "SaveGameService.BuildPayload");
 
         return new SaveGamePayload
         {
@@ -458,6 +461,7 @@ public static class SaveGameService
             activeTravel = null,
             playerLoadout = gs.playerLoadout,
             playerSceneContext = gs.playerSceneContext,
+            playerPersistenceStates = gs.playerPersistenceStates,
             boat = gs.boat,
             moneyChestTreasury = gs.moneyChestTreasuryState
         };
@@ -527,8 +531,13 @@ public static class SaveGameService
         // v1 load always starts from NodeScene.
         gs.activeTravel = null;
 
+        // Apply legacy mirrors first. Old schema-v1 saves do not contain the keyed
+        // list; GameState hydrates its local player record from these fields.
         gs.playerLoadout = payload.playerLoadout;
         gs.playerSceneContext = payload.playerSceneContext;
+        gs.SetPlayerPersistenceStates(
+            payload.playerPersistenceStates,
+            "SaveGameService.LoadSlot");
 
         gs.SetMoneyChestTreasuryState(
             payload.moneyChestTreasury,
@@ -567,47 +576,6 @@ public static class SaveGameService
             GameObject go = new GameObject("SceneTransitionController");
             go.AddComponent<SceneTransitionController>();
         }
-    }
-
-    private static void CapturePlayerSceneContext(GameState gs, string reason)
-    {
-        if (gs == null)
-            return;
-
-        PlayerBoardingState boarding = UnityEngine.Object.FindAnyObjectByType<PlayerBoardingState>();
-
-        if (boarding == null)
-        {
-            gs.SetPlayerSceneContext(new PlayerSceneContextSnapshot
-            {
-                version = 1,
-                hasValue = false,
-                wasBoarded = false,
-                boatInstanceId = null
-            }, reason);
-
-            return;
-        }
-
-        string boatInstanceId = null;
-
-        if (boarding.IsBoarded && boarding.CurrentBoatRoot != null)
-        {
-            Boat boat =
-                boarding.CurrentBoatRoot.GetComponent<Boat>() ??
-                boarding.CurrentBoatRoot.GetComponentInParent<Boat>();
-
-            if (boat != null)
-                boatInstanceId = boat.BoatInstanceId;
-        }
-
-        gs.SetPlayerSceneContext(new PlayerSceneContextSnapshot
-        {
-            version = 1,
-            hasValue = true,
-            wasBoarded = boarding.IsBoarded,
-            boatInstanceId = boatInstanceId
-        }, reason);
     }
 
     private static void CaptureMoneyChestTreasury(GameState gs, string reason)

@@ -3,9 +3,8 @@ using MiniGames;
 
 /// <summary>
 /// Dedicated Winch cartridge.
-/// Presentation and command-intent emission only for winch controls;
-/// WinchModule remains runtime authority.
-/// Line-slot inventory transfer UI is intentionally unchanged in this pass.
+/// Presentation and intent emission only. WinchModule and the authoritative line
+/// transfer router remain runtime authorities.
 /// </summary>
 public sealed class WinchCartridge :
     IMiniGameCartridge,
@@ -14,6 +13,7 @@ public sealed class WinchCartridge :
     private readonly Hardpoint _hardpoint;
     private readonly WinchModule _winch;
     private readonly WinchReadoutSource _readout;
+    private readonly GameObject _requester;
 
     private MiniGameContext _ctx;
     private bool _requestedClose;
@@ -25,11 +25,13 @@ public sealed class WinchCartridge :
     public WinchCartridge(
         Hardpoint hardpoint,
         WinchModule winch,
-        WinchReadoutSource readout)
+        WinchReadoutSource readout,
+        GameObject requester)
     {
         _hardpoint = hardpoint;
         _winch = winch;
         _readout = readout;
+        _requester = requester;
     }
 
     public void Begin(
@@ -45,28 +47,7 @@ public sealed class WinchCartridge :
         _statusNote =
             null;
 
-        _playerInventory =
-            Object.FindFirstObjectByType<PlayerInventory>();
-
-        _playerEquipment =
-            _playerInventory != null
-                ? _playerInventory.Equipment
-                : null;
-
-        if (_playerEquipment == null &&
-            _playerInventory != null)
-        {
-            _playerEquipment =
-                _playerInventory.GetComponentInParent<PlayerEquipment>(
-                    true);
-        }
-
-        if (_playerEquipment == null)
-        {
-            _playerEquipment =
-                Object.FindFirstObjectByType<PlayerEquipment>(
-                    FindObjectsInactive.Include);
-        }
+        ResolveRequesterInventoryContext();
     }
 
     public MiniGameResult Tick(
@@ -565,16 +546,86 @@ public sealed class WinchCartridge :
                 : $"{intent.ToString().ToUpperInvariant()} REJECTED";
     }
 
-    private enum PlayerLineSourceKind
+    /// <summary>
+    /// Result callback from the authoritative line-transfer router.
+    /// </summary>
+    public void NotifyLineTransferApplied(
+        WinchLineTransferOperation operation,
+        bool success,
+        string message)
     {
-        None = 0,
-        Hotbar = 1,
-        Hands = 2
+        if (!string.IsNullOrWhiteSpace(
+                message))
+        {
+            _statusNote =
+                message;
+
+            return;
+        }
+
+        _statusNote =
+            success
+                ? $"{operation.ToString().ToUpperInvariant()} ACCEPTED"
+                : $"{operation.ToString().ToUpperInvariant()} REJECTED";
+    }
+
+    private void EmitLineTransferIntent(
+        WinchLineTransferIntentPayload payload)
+    {
+        if (payload == null)
+            return;
+
+        if (_ctx == null ||
+            _ctx.emitEffect == null)
+        {
+            _statusNote =
+                "WINCH LINE TRANSFER ROUTER UNAVAILABLE";
+
+            return;
+        }
+
+        payload.version =
+            WinchLineTransferIntentPayload.CurrentVersion;
+
+        _statusNote =
+            payload.operation ==
+                WinchLineTransferOperation.LoadOneFromPlayer
+                ? "LOAD LINE REQUESTED"
+                : "UNLOAD LINE REQUESTED";
+
+        _ctx.emitEffect.Invoke(
+            new MiniGameEffect
+            {
+                kind =
+                    MiniGameEffectKind.Transaction,
+
+                system =
+                    WinchLineTransferIntentPayload.EffectSystem,
+
+                targetId =
+                    _ctx.targetId,
+
+                value01 =
+                    1f,
+
+                quality01 =
+                    1f,
+
+                durationSeconds =
+                    0f,
+
+                v2 =
+                    Vector2.zero,
+
+                payloadJson =
+                    JsonUtility.ToJson(
+                        payload)
+            });
     }
 
     private struct PlayerLineSource
     {
-        public PlayerLineSourceKind Kind;
+        public WinchLinePlayerSourceKind Kind;
         public int HotbarIndex;
         public ItemInstance Item;
     }
@@ -847,6 +898,41 @@ public sealed class WinchCartridge :
             true);
     }
 
+    private void ResolveRequesterInventoryContext()
+    {
+        _playerInventory =
+            null;
+
+        _playerEquipment =
+            null;
+
+        if (_requester == null)
+            return;
+
+        _playerInventory =
+            _requester.GetComponent<PlayerInventory>() ??
+            _requester.GetComponentInChildren<PlayerInventory>(
+                true) ??
+            _requester.GetComponentInParent<PlayerInventory>(
+                true);
+
+        if (_playerInventory != null)
+        {
+            _playerEquipment =
+                _playerInventory.Equipment;
+        }
+
+        if (_playerEquipment == null)
+        {
+            _playerEquipment =
+                _requester.GetComponent<PlayerEquipment>() ??
+                _requester.GetComponentInChildren<PlayerEquipment>(
+                    true) ??
+                _requester.GetComponentInParent<PlayerEquipment>(
+                    true);
+        }
+    }
+
     private string ResolveAvailableLineSummary()
     {
         int compatibleUnits =
@@ -963,7 +1049,7 @@ public sealed class WinchCartridge :
                     new PlayerLineSource
                     {
                         Kind =
-                            PlayerLineSourceKind.Hotbar,
+                            WinchLinePlayerSourceKind.Hotbar,
                         HotbarIndex =
                             i,
                         Item =
@@ -987,7 +1073,7 @@ public sealed class WinchCartridge :
                 new PlayerLineSource
                 {
                     Kind =
-                        PlayerLineSourceKind.Hands,
+                        WinchLinePlayerSourceKind.Hands,
                     HotbarIndex =
                         -1,
                     Item =
@@ -1040,7 +1126,8 @@ public sealed class WinchCartridge :
         }
 
         if (!TryFindFirstCompatiblePlayerLine(
-                out PlayerLineSource source))
+                out PlayerLineSource source) ||
+            source.Item == null)
         {
             _statusNote =
                 "NO COMPATIBLE TETHER LINE IN INVENTORY";
@@ -1048,291 +1135,29 @@ public sealed class WinchCartridge :
             return;
         }
 
-        if (!TryTakeOneLineFromPlayer(
-                source,
-                out ItemInstance oneLine) ||
-            oneLine == null)
-        {
-            _statusNote =
-                "COULD NOT TAKE ONE TETHER ITEM";
-
-            return;
-        }
-
-        if (oneLine.Quantity != 1)
-        {
-            ReturnLineToPlayer(
-                oneLine,
-                source);
-
-            _statusNote =
-                "TETHER STACK COULD NOT BE SPLIT";
-
-            return;
-        }
-
-        if (!binding.TryPlaceItem(
-                oneLine,
-                out ItemInstance displaced))
-        {
-            ReturnLineToPlayer(
-                oneLine,
-                source);
-
-            _statusNote =
-                "WINCH REJECTED TETHER ITEM";
-
-            return;
-        }
-
-        if (displaced != null)
-        {
-            ReturnLineToPlayer(
-                displaced,
-                source);
-        }
-
-        _statusNote =
-            $"LOADED 1 {oneLine.Definition.DisplayName}";
-    }
-
-    private bool TryTakeOneLineFromPlayer(
-        PlayerLineSource source,
-        out ItemInstance oneLine)
-    {
-        oneLine =
-            null;
-
-        ItemInstance item =
-            source.Item;
-
-        if (!IsCompatibleInventoryLine(
-                item))
-        {
-            return false;
-        }
-
-        switch (source.Kind)
-        {
-            case PlayerLineSourceKind.Hotbar:
-                {
-                    if (_playerInventory == null)
-                        return false;
-
-                    InventorySlot slot =
-                        _playerInventory.GetSlot(
-                            source.HotbarIndex);
-
-                    if (slot == null ||
-                        slot.IsEmpty ||
-                        slot.Instance == null ||
-                        !ReferenceEquals(
-                            slot.Instance,
-                            item))
-                    {
-                        return false;
-                    }
-
-                    if (item.Quantity > 1)
-                    {
-                        if (!item.CanSplit)
-                            return false;
-
-                        oneLine =
-                            item.SplitOff(
-                                1);
-
-                        if (oneLine == null)
-                            return false;
-                    }
-                    else
-                    {
-                        oneLine =
-                            item;
-
-                        slot.Clear();
-                    }
-
-                    _playerInventory.NotifyChanged();
-
-                    return
-                        oneLine != null &&
-                        oneLine.Quantity == 1;
-                }
-
-            case PlayerLineSourceKind.Hands:
-                {
-                    if (_playerEquipment == null)
-                        return false;
-
-                    ItemInstance current =
-                        _playerEquipment.Get(
-                            BottomBarSlotType.Hands);
-
-                    if (current == null ||
-                        !ReferenceEquals(
-                            current,
-                            item))
-                    {
-                        return false;
-                    }
-
-                    ItemInstance removed =
-                        _playerEquipment.Remove(
-                            BottomBarSlotType.Hands);
-
-                    if (removed == null)
-                        return false;
-
-                    if (removed.Quantity > 1)
-                    {
-                        if (!removed.CanSplit)
-                        {
-                            _playerEquipment.TryPlace(
-                                BottomBarSlotType.Hands,
-                                removed,
-                                out _);
-
-                            return false;
-                        }
-
-                        oneLine =
-                            removed.SplitOff(
-                                1);
-
-                        if (oneLine == null)
-                        {
-                            _playerEquipment.TryPlace(
-                                BottomBarSlotType.Hands,
-                                removed,
-                                out _);
-
-                            return false;
-                        }
-
-                        if (!_playerEquipment.TryPlace(
-                                BottomBarSlotType.Hands,
-                                removed,
-                                out ItemInstance displaced) ||
-                            displaced != null)
-                        {
-                            if (oneLine != null &&
-                                removed.CanStackWith(
-                                    oneLine))
-                            {
-                                int moved =
-                                    removed.AddQuantity(
-                                        oneLine.Quantity);
-
-                                oneLine.RemoveQuantity(
-                                    moved);
-                            }
-
-                            _playerInventory?.TryAutoInsert(
-                                removed,
-                                out _);
-
-                            _playerInventory?.NotifyChanged();
-
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        oneLine =
-                            removed;
-                    }
-
-                    _playerInventory?.NotifyChanged();
-
-                    return
-                        oneLine != null &&
-                        oneLine.Quantity == 1;
-                }
-        }
-
-        return false;
-    }
-
-    private void ReturnLineToPlayer(
-        ItemInstance item,
-        PlayerLineSource preferredSource)
-    {
-        if (item == null ||
-            item.IsDepleted())
-        {
-            return;
-        }
-
-        if (preferredSource.Kind ==
-                PlayerLineSourceKind.Hotbar &&
-            _playerInventory != null)
-        {
-            InventorySlot slot =
-                _playerInventory.GetSlot(
-                    preferredSource.HotbarIndex);
-
-            if (slot != null)
+        EmitLineTransferIntent(
+            new WinchLineTransferIntentPayload
             {
-                if (slot.IsEmpty)
-                {
-                    slot.Set(
-                        item);
+                operation =
+                    WinchLineTransferOperation.LoadOneFromPlayer,
 
-                    _playerInventory.NotifyChanged();
+                winchSlotIndex =
+                    slotIndex,
 
-                    return;
-                }
+                playerSourceKind =
+                    source.Kind,
 
-                if (slot.Instance != null &&
-                    slot.Instance.CanStackWith(
-                        item))
-                {
-                    int moved =
-                        slot.Instance.AddQuantity(
-                            item.Quantity);
+                playerHotbarIndex =
+                    source.HotbarIndex,
 
-                    item.RemoveQuantity(
-                        moved);
-
-                    if (item.IsDepleted())
-                    {
-                        _playerInventory.NotifyChanged();
-
-                        return;
-                    }
-                }
-            }
-        }
-
-        if (preferredSource.Kind ==
-                PlayerLineSourceKind.Hands &&
-            _playerEquipment != null &&
-            _playerEquipment.Get(
-                BottomBarSlotType.Hands) ==
-            null)
-        {
-            if (_playerEquipment.TryPlace(
-                    BottomBarSlotType.Hands,
-                    item,
-                    out ItemInstance displaced) &&
-                displaced == null)
-            {
-                _playerInventory?.NotifyChanged();
-
-                return;
-            }
-        }
-
-        if (_playerInventory != null)
-        {
-            _playerInventory.TryAutoInsert(
-                item,
-                out _);
-
-            _playerInventory.NotifyChanged();
-        }
+                expectedInstanceId =
+                    source.Item.InstanceId
+            });
     }
+
+
+
+
 
     private bool CanReturnToPlayerInventory(
         ItemInstance item)
@@ -1347,11 +1172,8 @@ public sealed class WinchCartridge :
     private void TryUnloadLineSlot(
         int slotIndex)
     {
-        if (_winch == null ||
-            _playerInventory == null)
-        {
+        if (_winch == null)
             return;
-        }
 
         if (_winch.HasDeployedPayload)
         {
@@ -1377,53 +1199,24 @@ public sealed class WinchCartridge :
             return;
         }
 
-        if (!_playerInventory.CanFullyAdd(
-                loaded))
-        {
-            _statusNote =
-                "NO INVENTORY ROOM TO UNLOAD LINE";
-
-            return;
-        }
-
-        ItemInstance removed =
-            binding.RemoveItem();
-
-        if (removed == null)
-        {
-            _statusNote =
-                "COULD NOT REMOVE LINE";
-
-            return;
-        }
-
-        if (!_playerInventory.TryAutoInsert(
-                removed,
-                out ItemInstance remainder) ||
-            (remainder != null &&
-             !remainder.IsDepleted()))
-        {
-            // Roll back only if this is already a valid one-item line slot.
-            // Legacy stacks produced by Pass 03 cannot be reinserted through
-            // the now-correct single-item binding; return them to player inventory
-            // instead of inventing a new illegal slot state.
-            if (removed.Quantity == 1)
+        EmitLineTransferIntent(
+            new WinchLineTransferIntentPayload
             {
-                binding.TryPlaceItem(
-                    removed,
-                    out _);
-            }
+                operation =
+                    WinchLineTransferOperation.UnloadToPlayer,
 
-            _statusNote =
-                "FAILED TO RETURN LINE TO INVENTORY";
+                winchSlotIndex =
+                    slotIndex,
 
-            return;
-        }
+                playerSourceKind =
+                    WinchLinePlayerSourceKind.None,
 
-        _playerInventory.NotifyChanged();
+                playerHotbarIndex =
+                    -1,
 
-        _statusNote =
-            $"UNLOADED {removed.Definition.DisplayName}";
+                expectedInstanceId =
+                    loaded.InstanceId
+            });
     }
 
     private void DrawCommandButton(

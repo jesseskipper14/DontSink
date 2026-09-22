@@ -32,6 +32,13 @@ public sealed class DivingBellBallastSystem : MonoBehaviour
         "intents to the authoritative host rather than mutating ItemInstances locally.")]
     [SerializeField] private bool stateAuthority = true;
 
+    [Tooltip(
+        "Global gameplay-authority policy layered on top of State Authority. " +
+        "Ballast ItemInstances may mutate only when BOTH allow it.")]
+    [SerializeField]
+    private GameplayAuthorityMode gameplayAuthorityMode =
+        GameplayAuthorityMode.SinglePlayerOrAuthoritative;
+
     [Header("References")]
     [SerializeField] private DivingBellOccupancy occupancy;
     [SerializeField] private WorldItem worldItem;
@@ -60,7 +67,9 @@ public sealed class DivingBellBallastSystem : MonoBehaviour
 
     public event Action<DivingBellBallastSystem> BallastChanged;
 
-    public bool StateAuthority => stateAuthority;
+    public bool StateAuthority =>
+        stateAuthority &&
+        GameplayAuthority.CanRun(gameplayAuthorityMode);
     public ItemInstance PayloadItem
     {
         get
@@ -225,7 +234,7 @@ public sealed class DivingBellBallastSystem : MonoBehaviour
     {
         reason = null;
 
-        if (!stateAuthority)
+        if (!StateAuthority)
         {
             reason = "Ballast state is not authoritative on this peer.";
             return false;
@@ -365,7 +374,7 @@ public sealed class DivingBellBallastSystem : MonoBehaviour
     {
         message = null;
 
-        if (!stateAuthority)
+        if (!StateAuthority)
         {
             message = "Ballast state is not authoritative on this peer.";
             return false;
@@ -449,7 +458,7 @@ public sealed class DivingBellBallastSystem : MonoBehaviour
         dropped = null;
         message = null;
 
-        if (!stateAuthority)
+        if (!StateAuthority)
         {
             message = "Ballast state is not authoritative on this peer.";
             return false;

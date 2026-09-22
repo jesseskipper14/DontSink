@@ -8,6 +8,15 @@ public class TetherPayload : MonoBehaviour
 {
     private const string TetherPayloadLayerName = "TetherPayload";
 
+    [Header("Gameplay Authority")]
+    [Tooltip(
+        "Tether payload physics are shared/host-authoritative. On non-authoritative peers, " +
+        "the payload Rigidbody remains simulated for queries/colliders but is forced Kinematic " +
+        "so local gravity/solver forces cannot create a second independent payload simulation.")]
+    [SerializeField]
+    private GameplayAuthorityMode gameplayAuthorityMode =
+        GameplayAuthorityMode.SinglePlayerOrAuthoritative;
+
     [Header("Tether")]
     [Tooltip("Point on this physical item where the tether attaches. Falls back to this transform.")]
     [SerializeField] private Transform tetherAnchor;
@@ -26,7 +35,11 @@ public class TetherPayload : MonoBehaviour
 
     private WorldItem _worldItem;
     private Rigidbody2D _rb;
+    private ForceSystem _forceSystem;
     private TetherPayloadDock _activeDock;
+
+    private bool _authorityBodySuppressed;
+    private RigidbodyType2D _bodyTypeBeforeAuthoritySuppression = RigidbodyType2D.Dynamic;
 
     private readonly Dictionary<GameObject, int> _originalColliderLayers =
         new Dictionary<GameObject, int>();
@@ -43,6 +56,8 @@ public class TetherPayload : MonoBehaviour
     public bool UsingTetherPayloadLayer => usingTetherPayloadLayer;
     public int TetherPayloadLayerIndex => tetherPayloadLayerIndex;
     public int SwitchedColliderObjects => switchedColliderObjects;
+    public bool HasGameplayAuthority =>
+        GameplayAuthority.CanRun(gameplayAuthorityMode);
 
 
     /// <summary>
@@ -64,6 +79,13 @@ public class TetherPayload : MonoBehaviour
     protected virtual void Awake()
     {
         CacheRefs();
+        ConfigureForceSystemAuthorityGate();
+        RefreshGameplayAuthorityBodyState();
+    }
+
+    protected virtual void FixedUpdate()
+    {
+        RefreshGameplayAuthorityBodyState();
     }
 
     protected void CacheRefs()
@@ -73,6 +95,9 @@ public class TetherPayload : MonoBehaviour
 
         if (_rb == null)
             _rb = GetComponent<Rigidbody2D>();
+
+        if (_forceSystem == null)
+            _forceSystem = GetComponent<ForceSystem>();
 
         if (collisionScope == null)
         {
@@ -207,6 +232,55 @@ public class TetherPayload : MonoBehaviour
 
         switchedColliderObjects =
             0;
+    }
+
+    private void ConfigureForceSystemAuthorityGate()
+    {
+        if (_forceSystem == null)
+            return;
+
+        _forceSystem.ConfigureGameplayAuthorityGate(
+            true,
+            gameplayAuthorityMode);
+    }
+
+    private void RefreshGameplayAuthorityBodyState()
+    {
+        CacheRefs();
+
+        if (_rb == null)
+            return;
+
+        if (!HasGameplayAuthority)
+        {
+            if (!_authorityBodySuppressed)
+            {
+                _bodyTypeBeforeAuthoritySuppression =
+                    _rb.bodyType;
+
+                _authorityBodySuppressed =
+                    true;
+            }
+
+            if (_rb.bodyType != RigidbodyType2D.Kinematic)
+                _rb.bodyType = RigidbodyType2D.Kinematic;
+
+            _rb.linearVelocity = Vector2.zero;
+            _rb.angularVelocity = 0f;
+            return;
+        }
+
+        if (!_authorityBodySuppressed)
+            return;
+
+        _rb.bodyType =
+            _bodyTypeBeforeAuthoritySuppression;
+
+        _authorityBodySuppressed =
+            false;
+
+        if (_rb.simulated)
+            _rb.WakeUp();
     }
 
     protected virtual void OnDestroy()

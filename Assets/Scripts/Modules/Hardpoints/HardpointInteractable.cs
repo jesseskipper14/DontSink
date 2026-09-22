@@ -106,7 +106,7 @@ public sealed class HardpointInteractable :
             return;
         }
 
-        OpenInstalledModuleUI();
+        OpenInstalledModuleUI(context);
     }
 
     public bool CanPickup(in InteractContext context)
@@ -483,7 +483,7 @@ public sealed class HardpointInteractable :
         inventory.NotifyChanged();
     }
 
-    private void OpenInstalledModuleUI()
+    private void OpenInstalledModuleUI(in InteractContext context)
     {
         if (hardpoint != null &&
             hardpoint.HasInstalledModule &&
@@ -525,7 +525,8 @@ public sealed class HardpointInteractable :
             }
 
             winchRunner.OpenForHardpoint(
-                hardpoint);
+                hardpoint,
+                context.InteractorGO);
 
             return;
         }

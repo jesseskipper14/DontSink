@@ -45,6 +45,39 @@ public class CameraManager : MonoBehaviour
     private ICharacterIntentSource _intentSource;
     private Vector2 _focusPanOffset;
 
+    public Transform FollowTarget => followTarget;
+
+    /// <summary>
+    /// Client-local presentation identity. In the current single-player setup this
+    /// resolves from the camera follow target. A future networking/bootstrap layer can
+    /// continue using SetFollowTarget for the locally viewed/controlled player without
+    /// making presentation systems guess among every PlayerBoardingState in the scene.
+    /// </summary>
+    public PlayerBoardingState ViewingPlayer
+    {
+        get
+        {
+            if (followTarget == null)
+                return null;
+
+            PlayerBoardingState direct =
+                followTarget.GetComponent<PlayerBoardingState>();
+
+            if (direct != null)
+                return direct;
+
+            PlayerBoardingState parent =
+                followTarget.GetComponentInParent<PlayerBoardingState>();
+
+            if (parent != null)
+                return parent;
+
+            return
+                followTarget.GetComponentInChildren<PlayerBoardingState>(
+                    true);
+        }
+    }
+
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
