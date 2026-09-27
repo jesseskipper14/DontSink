@@ -52,6 +52,14 @@ public class SunriseSunsetOverlayManager : MonoBehaviour, ISunriseSunsetService
     private float originalSunsetAlphaMax;
 
     public float Tint01 { get; private set; }
+
+    /// <summary>
+    /// Current representative sunrise/sunset tint color.
+    /// This exposes the color already owned by the overlay material so other
+    /// presentation systems can harmonize with it without duplicating palettes.
+    /// </summary>
+    public Color CurrentTintColor { get; private set; } = Color.white;
+
     public event System.Action<float> OnTintChanged;
 
     private ITimeOfDayService time;
@@ -130,6 +138,7 @@ public class SunriseSunsetOverlayManager : MonoBehaviour, ISunriseSunsetService
         float gradient = 0f;
         float brightness = 0f;
         float alpha = 0f;
+        Color tintColor = Color.white;
 
         // 🌅 Sunrise
         if (hour >= sunriseStart && hour <= sunrisePeak)
@@ -138,6 +147,7 @@ public class SunriseSunsetOverlayManager : MonoBehaviour, ISunriseSunsetService
             gradient = Mathf.Lerp(sunriseGradientMin, sunriseGradientMax, f);
             brightness = Mathf.Lerp(sunriseBrightnessMin, sunriseBrightnessMax, f);
             alpha = Mathf.Lerp(sunriseAlphaMin, sunriseAlphaMax, f);
+            tintColor = GetOverlayColor("_SunriseColor", new Color(1f, 0.5f, 0.2f, 1f));
         }
         else if (hour > sunrisePeak && hour <= sunriseFadeEnd)
         {
@@ -145,6 +155,7 @@ public class SunriseSunsetOverlayManager : MonoBehaviour, ISunriseSunsetService
             gradient = sunriseGradientMax;
             brightness = sunriseBrightnessMax;
             alpha = Mathf.Lerp(sunriseAlphaMax, sunriseAlphaMin, f);
+            tintColor = GetOverlayColor("_SunriseColor", new Color(1f, 0.5f, 0.2f, 1f));
         }
         // 🌇 Sunset
         else if (hour >= sunsetStart && hour <= sunsetPeak)
@@ -153,6 +164,7 @@ public class SunriseSunsetOverlayManager : MonoBehaviour, ISunriseSunsetService
             gradient = Mathf.Lerp(sunsetGradientMin, sunsetGradientMax, f);
             brightness = Mathf.Lerp(sunsetBrightnessMin, sunsetBrightnessMax, f);
             alpha = Mathf.Lerp(sunsetAlphaMin, sunsetAlphaMax, f);
+            tintColor = GetOverlayColor("_SunsetColor", new Color(1f, 0.2f, 0.1f, 1f));
         }
         else if (hour > sunsetPeak && hour <= sunsetFadeEnd)
         {
@@ -160,6 +172,7 @@ public class SunriseSunsetOverlayManager : MonoBehaviour, ISunriseSunsetService
             gradient = sunsetGradientMax;
             brightness = sunsetBrightnessMax;
             alpha = Mathf.Lerp(sunsetAlphaMax, sunsetAlphaMin, f);
+            tintColor = GetOverlayColor("_SunsetColor", new Color(1f, 0.2f, 0.1f, 1f));
         }
         else
         {
@@ -167,6 +180,8 @@ public class SunriseSunsetOverlayManager : MonoBehaviour, ISunriseSunsetService
             brightness = sunriseBrightnessMin;
             alpha = 0f;
         }
+
+        CurrentTintColor = tintColor;
 
         Apply(gradient, brightness, alpha);
         UpdateTint(alpha);
@@ -194,6 +209,17 @@ public class SunriseSunsetOverlayManager : MonoBehaviour, ISunriseSunsetService
 
         Tint01 = alpha;
         OnTintChanged?.Invoke(Tint01);
+    }
+
+    private Color GetOverlayColor(string propertyName, Color fallback)
+    {
+        if (overlayMaterial != null &&
+            overlayMaterial.HasProperty(propertyName))
+        {
+            return overlayMaterial.GetColor(propertyName);
+        }
+
+        return fallback;
     }
 
     private void Apply(float gradient, float brightness, float alpha)

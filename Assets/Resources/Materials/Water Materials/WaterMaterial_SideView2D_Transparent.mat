@@ -12,7 +12,10 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _ENABLECAUSTICS_ON
+  - _ENABLERAYS_ON
+  - _ENABLESPECKS_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -41,33 +44,91 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Brightness: 0.95090336
+    - _BodyFlowScale: 0.147
+    - _BodyFlowSpeed: 0.325
+    - _BodyFlowStrength: 0.3
+    - _Brightness: 0.028470386
+    - _CausticFadeDepth: 15.2
+    - _CausticScale: 0.66
+    - _CausticSharpness: 1.32
+    - _CausticSpeed: 0.427
+    - _CausticStrength: 0.198
     - _DeepDepthY: 250
     - _DepthBlendSoftness: 0.5
     - _DepthColorDistance: 50
     - _DepthPower: 2.5
     - _Distortion: 0.2
+    - _EnableCaustics: 1
     - _EnableExternalAlpha: 0
-    - _FoamBandEnd: 0.25
+    - _EnableRays: 1
+    - _EnableSpecks: 1
+    - _FoamBandEnd: 0.462
     - _FoamBandStart: 0
+    - _FoamCoverage: 1
+    - _FoamEdgeSoftness: 0.1101
     - _FoamIntensity: 1
+    - _FoamPatchScale: 0.05
+    - _FoamPatchSpeed: 0.518
+    - _FoamSlopeInfluence: 0.318
+    - _FoamSlopeReference: 0.812
+    - _ManualSunAngleDeg: 21.4
     - _MidDepthY: 100
     - _NoiseScale1: 0
     - _NoiseScale2: 0
     - _NoiseSpeed1: 0
     - _NoiseSpeed2: 0
+    - _RayAlignmentPower: 1.52
+    - _RayAlignmentStart: 0
+    - _RayBelowViewerFade: 7
+    - _RayBeyondViewerStrength: 0.1
+    - _RayBrightnessVariance: 1
+    - _RayConeHalfAngleDeg: 25
+    - _RayConePower: 0.25
+    - _RayConeSoftnessDeg: 25
+    - _RayCoreHalfAngleDeg: 25
+    - _RayCorePower: 8
+    - _RayDanceAmount: 0.2
+    - _RayDanceSpeed: 1
+    - _RayDepthLossPerMeter: 0.1
+    - _RayDriftSpeed: 0.053
+    - _RayEdgeSoftness: 0.2
+    - _RayFadeDepth: 25
+    - _RayMaxWidth: 0.48
+    - _RayMinWidth: 0.02
+    - _RayScale: 0.257
+    - _RaySharpness: 2.26
+    - _RaySpacing: 0.1
+    - _RaySpawnRate: 0.6
+    - _RayStrength: 0.3
     - _ShallowDepthY: 0
     - _SparkleBand: 0.001
-    - _SparkleIntensity: 1.1410841
+    - _SparkleCellSize: 0.45
+    - _SparkleDensity: 1
+    - _SparkleDepth: 1.101
+    - _SparkleIntensity: 0.034164466
+    - _SparkleSize: 0.0973
+    - _SparkleTwinkleSpeed: 6.08
+    - _SparkleVerticalSize: 0.0103
+    - _SpeckAmount: 1
+    - _SpeckBrightness: 0.612
+    - _SpeckCellSize: 1.156
+    - _SpeckDriftX: 0.1
+    - _SpeckDriftY: 0.1
     - _SurfaceBand: 0.25
     - _SurfaceY: 0
+    - _UseGlobalSunDirection: 0
+    - _UseGlobalSunVisibility: 0
     - _ZWrite: 0
     m_Colors:
+    - _CausticColor: {r: 0.58, g: 0.92, b: 0.94, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DeepColor: {r: 0.00044499923, g: 0.047392305, b: 0.09433961, a: 0.72}
-    - _FoamColor: {r: 0.5613208, g: 0.8816721, b: 1, a: 0.65}
+    - _FoamColor: {r: 0.8160377, g: 0.9509434, b: 1, a: 0.65}
     - _MidColor: {r: 0.04, g: 0.19999993, b: 0.3799999, a: 0.6313726}
+    - _RayColor: {r: 0.74038804, g: 0.8613308, b: 0.8867924, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ShallowColor: {r: 0.21999994, g: 0.78, b: 0.88, a: 0.48235294}
+    - _ShallowColor: {r: 0.12348701, g: 0.62063354, b: 0.7075472, a: 0.48235294}
+    - _SparkleColor: {r: 0.92, g: 0.98999995, b: 1, a: 1}
+    - _SpeckColor: {r: 0.68, g: 0.88, b: 0.86, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

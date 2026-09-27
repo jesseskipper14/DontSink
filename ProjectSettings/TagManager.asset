@@ -90,6 +90,12 @@ TagManager:
   - name: WorldItem
     uniqueID: 3129457621
     locked: 0
+  - name: WaterEffects
+    uniqueID: 1584445977
+    locked: 0
+  - name: GroundFront
+    uniqueID: 1769794395
+    locked: 0
   - name: UnderwaterResource
     uniqueID: 1261396243
     locked: 0

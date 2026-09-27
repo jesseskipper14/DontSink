@@ -11,6 +11,12 @@ public sealed class WaterMeshRenderer : MonoBehaviour
     [Tooltip("What to center the water mesh around. If null, falls back to Camera.main.")]
     [SerializeField] private Transform centerTarget;
 
+    /// <summary>
+    /// Presentation-only target used to center this local water mesh.
+    /// WaterViewEffectsController may reuse it as the local viewer anchor.
+    /// </summary>
+    public Transform CenterTarget => centerTarget;
+
     [Header("Mesh Settings")]
     [Min(2)] public int points = 1000;
     public float bottomY = -20f;
@@ -155,6 +161,7 @@ public sealed class WaterMeshRenderer : MonoBehaviour
         float dx = meshWidth / (points - 1);
         float safeScale = Mathf.Approximately(textureWorldScale, 0f) ? 1f : textureWorldScale;
 
+        // First pass: update the actual dynamic surface geometry.
         for (int i = 0; i < points; i++)
         {
             float worldX = startX + i * dx;
@@ -166,10 +173,35 @@ public sealed class WaterMeshRenderer : MonoBehaviour
             float u = worldX / safeScale;
             _uvs[i] = new Vector2(u, 1f);
             _uvs[i + points] = new Vector2(u, 0f);
+        }
 
-            // Critical: both verts in a column carry the SAME local surface Y.
-            _uv2s[i] = new Vector2(surfaceY, 0f);
-            _uv2s[i + points] = new Vector2(surfaceY, 0f);
+        // Second pass: encode shader metadata per water column.
+        // uv2.x = sampled local surface Y.
+        // uv2.y = local surface slope magnitude.
+        //
+        // Both top and bottom vertices receive the same values so interpolation
+        // keeps every fragment in a column aware of its own dynamic wave surface.
+        for (int i = 0; i < points; i++)
+        {
+            int previousIndex = Mathf.Max(0, i - 1);
+            int nextIndex = Mathf.Min(points - 1, i + 1);
+
+            float surfaceY = _vertices[i].y;
+
+            float sampleDistance =
+                (nextIndex - previousIndex) *
+                dx;
+
+            float slope =
+                sampleDistance > 0.0001f
+                    ? Mathf.Abs(
+                        (_vertices[nextIndex].y -
+                         _vertices[previousIndex].y) /
+                        sampleDistance)
+                    : 0f;
+
+            _uv2s[i] = new Vector2(surfaceY, slope);
+            _uv2s[i + points] = new Vector2(surfaceY, slope);
         }
 
         _mesh.vertices = _vertices;

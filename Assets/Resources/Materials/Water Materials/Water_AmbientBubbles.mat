@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Wind2D
-  m_Shader: {fileID: 4800000, guid: 984eae161171dbe4289af04754728515, type: 3}
+  m_Name: Water_AmbientBubbles
+  m_Shader: {fileID: 4800000, guid: aa2e1d3910fea8a45be771b63460d892, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -41,27 +41,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _CellDensity: 5
+    - _EdgeSoftness: 0.025
     - _EnableExternalAlpha: 0
-    - _GustOpacity: 0.2
-    - _GustScale: 5
-    - _GustSpeed: 0.5
-    - _LineDensity: 8
-    - _LineLength: 1.5
-    - _LineSpeed: 0
-    - _LineThickness: 0.03
-    - _Opacity: 6
-    - _OscPhase: 3.8775299
-    - _SpawnChance: 1
-    - _TimeOffset: 180.08086
-    - _TwirlAmount: 1
-    - _WindStrength: 0
+    - _FillAlpha: 0.06
+    - _HighlightStrength: 0.55
+    - _RingRadius: 0.38
+    - _RingThickness: 0.075
     - _ZWrite: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _GustColor: {r: 1, g: 1, b: 1, a: 1}
-    - _LineColor: {r: 1, g: 1, b: 1, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
-    - _WindDir: {r: -1, g: 0, b: 0, a: 0}
+    - _RingColor: {r: 0.92, g: 0.98999995, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
