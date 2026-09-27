@@ -11,7 +11,8 @@ public sealed class HardpointInteractable :
     IToggleInteractable,
     ILinkInteractable,
     IInteractionLabelProvider,
-    IInteractionPromptDisplayPolicyProvider
+    IInteractionPromptDisplayPolicyProvider,
+    IInteractionColliderScope
 {
     [Header("Refs")]
     [SerializeField] private Hardpoint hardpoint;
@@ -23,6 +24,12 @@ public sealed class HardpointInteractable :
     [SerializeField] private float maxDistance = 1.75f;
     [Tooltip("If true, the hardpoint/module hover label is hidden unless the player is in valid access context and action range.")]
     [SerializeField] private bool hideHoverLabelWhenNotActionable = true;
+
+    [Header("Interaction Geometry")]
+    [Tooltip(
+        "Legacy / empty-hardpoint interaction collider(s). Existing hardpoints with " +
+        "their collider on this same GameObject are discovered automatically.")]
+    [SerializeField] private Collider2D[] fallbackInteractionColliders;
 
     [Header("Boat Access")]
     [Tooltip("If true, hardpoints/modules that belong to a Boat can only be used by players boarded on that same boat.")]
@@ -47,6 +54,8 @@ public sealed class HardpointInteractable :
     public Hardpoint TargetHardpoint => hardpoint;
 
     private Boat _cachedBoat;
+    private InstalledModule _cachedInteractionModule;
+    private InstalledModuleInteractionZone _cachedInteractionZone;
 
     private void Reset()
     {
@@ -56,8 +65,11 @@ public sealed class HardpointInteractable :
         if (promptAnchor == null)
             promptAnchor = transform;
 
+        CacheFallbackInteractionColliders();
+        InvalidateInstalledInteractionZoneCache();
         CacheBoat();
     }
+
 
     private void Awake()
     {
@@ -67,8 +79,11 @@ public sealed class HardpointInteractable :
         if (promptAnchor == null)
             promptAnchor = transform;
 
+        CacheFallbackInteractionColliders();
+        InvalidateInstalledInteractionZoneCache();
         CacheBoat();
     }
+
 
     public bool CanInteract(in InteractContext context)
     {
@@ -347,8 +362,21 @@ public sealed class HardpointInteractable :
 
     public Transform GetPromptAnchor()
     {
-        return promptAnchor != null ? promptAnchor : transform;
+        InstalledModuleInteractionZone zone =
+            ResolveInstalledInteractionZone();
+
+        if (zone != null &&
+            zone.PromptAnchor != null)
+        {
+            return zone.PromptAnchor;
+        }
+
+        return
+            promptAnchor != null
+                ? promptAnchor
+                : transform;
     }
+
 
     public EngineModule GetInstalledEngine()
     {
@@ -568,10 +596,226 @@ public sealed class HardpointInteractable :
         runner.OpenForHardpoint(hardpoint);
     }
 
-    private bool IsInRange(in InteractContext context)
+    private bool IsInRange(
+        in InteractContext context)
     {
-        float dist = Vector2.Distance(context.Origin, transform.position);
-        return dist <= maxDistance;
+        InstalledModuleInteractionZone zone =
+            ResolveInstalledInteractionZone();
+
+        if (zone != null &&
+            zone.HasInteractionColliders)
+        {
+            return
+                zone.GetDistanceFrom(
+                    context.Origin) <=
+                maxDistance;
+        }
+
+        return
+            GetFallbackInteractionDistance(
+                context.Origin) <=
+            maxDistance;
+    }
+
+
+    /// <summary>
+    /// Source-collider scope for this hardpoint interaction owner.
+    ///
+    /// Empty hardpoint or legacy installed module:
+    ///     use the hardpoint's own fallback collider(s).
+    ///
+    /// Installed module with an authored InstalledModuleInteractionZone:
+    ///     only that module's authored collider(s) may resolve this owner.
+    /// </summary>
+    public bool AllowsInteractionCollider(
+        Collider2D sourceCollider)
+    {
+        if (sourceCollider == null ||
+            hardpoint == null)
+        {
+            return false;
+        }
+
+        InstalledModuleInteractionZone zone =
+            ResolveInstalledInteractionZone();
+
+        if (zone != null &&
+            zone.HasInteractionColliders)
+        {
+            return
+                zone.Contains(
+                    sourceCollider);
+        }
+
+        return
+            IsFallbackInteractionCollider(
+                sourceCollider);
+    }
+
+    private InstalledModuleInteractionZone ResolveInstalledInteractionZone()
+    {
+        InstalledModule installed =
+            hardpoint != null &&
+            hardpoint.HasInstalledModule
+                ? hardpoint.InstalledModule
+                : null;
+
+        if (installed != _cachedInteractionModule)
+        {
+            _cachedInteractionModule =
+                installed;
+
+            _cachedInteractionZone =
+                installed != null
+                    ? installed.GetComponentInChildren<InstalledModuleInteractionZone>(
+                        true)
+                    : null;
+        }
+        else if (installed != null &&
+                 _cachedInteractionZone == null)
+        {
+            // Migration-friendly retry. If editor/runtime tooling adds a zone after
+            // this module was already installed, it can become active without a
+            // separate hardpoint refresh API.
+            _cachedInteractionZone =
+                installed.GetComponentInChildren<InstalledModuleInteractionZone>(
+                    true);
+        }
+
+        return
+            _cachedInteractionZone;
+    }
+
+    private void InvalidateInstalledInteractionZoneCache()
+    {
+        _cachedInteractionModule =
+            null;
+
+        _cachedInteractionZone =
+            null;
+    }
+
+    private void CacheFallbackInteractionColliders()
+    {
+        if (fallbackInteractionColliders != null &&
+            fallbackInteractionColliders.Length > 0)
+        {
+            return;
+        }
+
+        // Preserve the existing common setup with zero prefab edits:
+        // HardpointInteractable + its BoxCollider2D on the same object.
+        fallbackInteractionColliders =
+            GetComponents<Collider2D>();
+    }
+
+    private bool IsFallbackInteractionCollider(
+        Collider2D sourceCollider)
+    {
+        if (sourceCollider == null)
+            return false;
+
+        CacheFallbackInteractionColliders();
+
+        if (fallbackInteractionColliders != null)
+        {
+            for (int i = 0;
+                 i < fallbackInteractionColliders.Length;
+                 i++)
+            {
+                if (ReferenceEquals(
+                        fallbackInteractionColliders[i],
+                        sourceCollider))
+                {
+                    return true;
+                }
+            }
+        }
+
+        // Compatibility for an older hardpoint whose interaction collider was
+        // authored on a child. Never reinterpret an installed module's arbitrary
+        // structural/physics collider as the fallback interaction surface.
+        Transform hardpointRoot =
+            hardpoint != null
+                ? hardpoint.transform
+                : transform;
+
+        Transform installedRoot =
+            hardpoint != null &&
+            hardpoint.InstalledModule != null
+                ? hardpoint.InstalledModule.transform
+                : null;
+
+        Transform sourceTransform =
+            sourceCollider.transform;
+
+        bool belongsToHardpoint =
+            sourceTransform == hardpointRoot ||
+            sourceTransform.IsChildOf(
+                hardpointRoot);
+
+        if (!belongsToHardpoint)
+            return false;
+
+        if (installedRoot != null &&
+            (sourceTransform == installedRoot ||
+             sourceTransform.IsChildOf(
+                 installedRoot)))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private float GetFallbackInteractionDistance(
+        Vector2 worldOrigin)
+    {
+        CacheFallbackInteractionColliders();
+
+        float best =
+            float.PositiveInfinity;
+
+        if (fallbackInteractionColliders != null)
+        {
+            for (int i = 0;
+                 i < fallbackInteractionColliders.Length;
+                 i++)
+            {
+                Collider2D collider =
+                    fallbackInteractionColliders[i];
+
+                if (collider == null ||
+                    !collider.enabled ||
+                    !collider.gameObject.activeInHierarchy)
+                {
+                    continue;
+                }
+
+                Vector2 closest =
+                    collider.ClosestPoint(
+                        worldOrigin);
+
+                float distance =
+                    Vector2.Distance(
+                        worldOrigin,
+                        closest);
+
+                if (distance < best)
+                    best = distance;
+            }
+        }
+
+        if (!float.IsPositiveInfinity(
+                best))
+        {
+            return best;
+        }
+
+        return
+            Vector2.Distance(
+                worldOrigin,
+                transform.position);
     }
 
     private bool CanAccessHardpointByContext(in InteractContext context)

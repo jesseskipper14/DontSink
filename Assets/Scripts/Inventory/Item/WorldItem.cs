@@ -6,7 +6,8 @@ public sealed class WorldItem :
     IPickupInteractable,
     IInteractPromptProvider,
     IPickupPromptProvider,
-    IInteractionLabelProvider
+    IInteractionLabelProvider,
+    IPickupBlockReasonProvider
 {
     [SerializeReference] private ItemInstance itemInstance;
     [SerializeField] private int interactionPriority = 10;
@@ -146,10 +147,20 @@ public sealed class WorldItem :
         }
 
         bool canAcquire = resolver.CanAcquire(itemInstance);
+        if (!canAcquire)
+        {
+            Log($"CanPickup RESULT: False | item={DescribeItem(itemInstance)}");
+            return false;
+        }
 
-        Log($"CanPickup RESULT: {canAcquire} | item={DescribeItem(itemInstance)}");
+        if (!DoPickupParticipantsAllow(context))
+        {
+            Log("CanPickup FAIL: blocked by world-item pickup participant");
+            return false;
+        }
 
-        return canAcquire;
+        Log($"CanPickup RESULT: True | item={DescribeItem(itemInstance)}");
+        return true;
     }
 
     public void Pickup(in InteractContext context)
@@ -168,8 +179,24 @@ public sealed class WorldItem :
         if (resolver == null)
             return;
 
+        // Validate inventory/equipment capacity before touching any external
+        // physical relationships. A failed pickup must not knock balloons,
+        // chains, or future attachments off the item as a side effect.
+        if (!resolver.CanAcquire(itemInstance))
+            return;
+
+        if (!DoPickupParticipantsAllow(context))
+            return;
+
+        // Snapshot the participants that were part of the validated transaction.
+        // Their commit callbacks run only after the ItemInstance has actually
+        // entered the acquiring player's inventory/equipment path.
+        MonoBehaviour[] pickupParticipants = GetComponents<MonoBehaviour>();
+
         if (!resolver.TryAcquire(itemInstance))
             return;
+
+        NotifyPickupParticipantsCommitted(pickupParticipants);
 
         UnbindItemMassChanges();
         itemInstance = null;
@@ -180,6 +207,66 @@ public sealed class WorldItem :
 
         SetHighlighted(false);
         Destroy(gameObject);
+    }
+
+    public bool TryGetPickupBlockReason(
+        in InteractContext context,
+        out string reason)
+    {
+        reason = null;
+
+        if (itemInstance == null ||
+            itemInstance.Definition == null ||
+            itemInstance.Quantity <= 0)
+        {
+            return false;
+        }
+
+        // Access/context denials already have their own interaction behavior.
+        // This provider is intentionally only for acquisition-capacity feedback.
+        if (IsInteractorOccupyingThisBell(
+                context) ||
+            !CanAccessByBoatContext(
+                context))
+        {
+            return false;
+        }
+
+        ItemAcquisitionResolver resolver =
+            FindAcquisitionResolver(
+                context.InteractorGO);
+
+        if (resolver == null ||
+            !resolver.TryGetBlockReason(
+                itemInstance,
+                out ItemAcquisitionBlockReason blockReason))
+        {
+            return false;
+        }
+
+        switch (blockReason)
+        {
+            case ItemAcquisitionBlockReason.HandsFull:
+                reason = "Hands Full";
+                return true;
+
+            case ItemAcquisitionBlockReason.InventoryFull:
+                reason = "Inventory Full";
+                return true;
+
+            case ItemAcquisitionBlockReason.EquipSlotOccupied:
+                reason = "Equip Slot Occupied";
+                return true;
+
+            case ItemAcquisitionBlockReason.NoValidDestination:
+                reason = "Cannot Store";
+                return true;
+
+            // Invalid item/definition state is an authoring/runtime problem rather
+            // than useful player-facing feedback. Keep that out of the prompt.
+            default:
+                return false;
+        }
     }
 
     public string GetPromptVerb(in InteractContext context)
@@ -199,6 +286,45 @@ public sealed class WorldItem :
     {
         if (highlightObject != null)
             highlightObject.SetActive(highlighted);
+    }
+
+    private bool DoPickupParticipantsAllow(in InteractContext context)
+    {
+        MonoBehaviour[] components = GetComponents<MonoBehaviour>();
+
+        for (int i = 0; i < components.Length; i++)
+        {
+            MonoBehaviour component = components[i];
+
+            if (component is IWorldItemPickupParticipant participant &&
+                !participant.AllowsWorldItemPickup(context))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static void NotifyPickupParticipantsCommitted(
+        MonoBehaviour[] components)
+    {
+        if (components == null)
+            return;
+
+        for (int i = 0; i < components.Length; i++)
+        {
+            MonoBehaviour component = components[i];
+
+            // A prior participant may have destroyed another component while
+            // applying its commit state. Unity's fake-null check keeps the
+            // transaction cleanup resilient to that.
+            if (component == null)
+                continue;
+
+            if (component is IWorldItemPickupParticipant participant)
+                participant.OnWorldItemPickupCommitted();
+        }
     }
 
     private bool IsInteractorOccupyingThisBell(

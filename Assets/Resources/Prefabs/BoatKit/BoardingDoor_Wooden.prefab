@@ -154,9 +154,10 @@ MonoBehaviour:
   unboardPoint: {fileID: 0}
   parentPlayerToBoat: 1
   postSnapNudge: {x: 0, y: 0}
+  deferGameplayToDeckBoardZoneIfPresent: 1
   requireHoldToBoard: 1
   boardHoldKey: 101
-  boardHoldSeconds: 0.35
+  boardHoldSeconds: 0.65
   showBoardHoldProgressInPrompt: 1
   suppressInstantBoardInteract: 1
   requireHoldToUnboard: 1

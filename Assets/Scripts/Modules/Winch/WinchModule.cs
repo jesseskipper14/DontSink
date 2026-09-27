@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(InstalledModule))]
-public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IInstalledModuleRemovalGuard, IInstalledModuleAdditionalMass
+public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IInstalledModuleRemovalGuard, IInstalledModuleAdditionalMass, IPowerConsumerModule
 {
     [Header("Gameplay Authority")]
     [Tooltip(
@@ -30,6 +31,14 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         "not instantaneously arrest a free-spooling payload.")]
     [SerializeField, Min(0f)] private float spoolTransitionSeconds = 0.5f;
 
+    [Header("Powered Winch Control")]
+    [Tooltip(
+        "Boat power consumed per second while automatic powered winch control is active. " +
+        "Lower and Raise draw continuously while commanded. Stop draws while electrically " +
+        "braking the spool to zero. Quick Release and Cut Line are mechanical and free.")]
+    [FormerlySerializedAs("internalBellControlPowerDemandPerSecond")]
+    [SerializeField, Min(0f)] private float poweredControlPowerDemandPerSecond = 1f;
+
     [Header("Runtime")]
     [SerializeField] private ItemContainerState lineContainer;
     [SerializeField] private WinchCommand command = WinchCommand.Stop;
@@ -38,6 +47,11 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
     [Tooltip(
         "Signed line speed in meters/second. Positive = paying out, negative = reeling in.")]
     [SerializeField] private float currentLineSpeedMetersPerSecond;
+
+    [Tooltip(
+        "True only when the mechanical parking brake has fully latched. " +
+        "Releasing manual control before this becomes true enters Quick Release.")]
+    [SerializeField] private bool parkingBrakeApplied = true;
 
 #if UNITY_EDITOR
     [Header("Debug")]
@@ -51,6 +65,18 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
     private TetherDeploymentModule _deployment;
     private TetherPayload _payload;
     private ItemContainerState _subscribedLineContainer;
+    private BoatPowerState _powerState;
+
+    // Automatic control is the powered mode used by the boat-side cartridge and
+    // (when Require Power is enabled) the bell's remote internal controls.
+    private bool _automaticControlActive;
+    private bool _automaticControlRequiresPower;
+
+    // Manual surface control is requester-bound and only valid while an unpowered
+    // player physically holds Lower / Stop / Raise.
+    private bool _manualSurfaceControlActive;
+    private GameObject _manualSurfaceRequester;
+    private WinchControlIntent _manualSurfaceIntent = WinchControlIntent.Stop;
 
     private bool _spoolTransitionActive;
     private float _spoolTransitionStartSpeed;
@@ -105,11 +131,48 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
     public bool HasGameplayAuthority =>
         GameplayAuthority.CanRun(gameplayAuthorityMode);
 
+    public bool ParkingBrakeApplied =>
+        parkingBrakeApplied;
+
+    public bool IsAutomaticControlActive =>
+        _automaticControlActive;
+
+    public bool IsManualSurfaceControlActive =>
+        _manualSurfaceControlActive;
+
+    public WinchControlIntent ManualSurfaceIntent =>
+        _manualSurfaceIntent;
+
+    public bool IsConsumingPower =>
+        _automaticControlActive &&
+        _automaticControlRequiresPower &&
+        ShouldConsumeAutomaticControlPower();
+
+    public float PowerDemandPerSecond =>
+        Mathf.Max(
+            0f,
+            poweredControlPowerDemandPerSecond);
+
+    public bool HasBoatPowerAvailable
+    {
+        get
+        {
+            if (_powerState == null)
+                ResolvePowerState();
+
+            return
+                _powerState != null &&
+                _powerState.CurrentPower > 0f;
+        }
+    }
+
     private void Awake()
     {
         CacheRefs();
+        ResolvePowerState();
         EnsureLineContainer();
     }
+
 
     private void OnDestroy()
     {
@@ -123,6 +186,14 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         if (!HasGameplayAuthority)
             return;
 
+        if (_manualSurfaceControlActive &&
+            _manualSurfaceRequester == null)
+        {
+            ReleaseManualSurfaceControlInternal(
+                "MANUAL CONTROLLER UNAVAILABLE",
+                out _);
+        }
+
         if (_constraint != null &&
             _constraint.TryConsumeBreak(
                 out float breakTension))
@@ -131,6 +202,30 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
                 breakTension);
 
             return;
+        }
+
+        float dt =
+            Mathf.Max(
+                0f,
+                Time.fixedDeltaTime);
+
+        if (_automaticControlActive &&
+            _automaticControlRequiresPower)
+        {
+            bool powerGone =
+                !HasBoatPowerAvailable;
+
+            bool consumptionFailed =
+                !powerGone &&
+                ShouldConsumeAutomaticControlPower() &&
+                !TryConsumeAutomaticControlPower(
+                    dt);
+
+            if (powerGone ||
+                consumptionFailed)
+            {
+                HandleAutomaticControlPowerLoss();
+            }
         }
 
         if (_deployment == null ||
@@ -142,27 +237,39 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
                 command = WinchCommand.Stop;
 
             ResetSpoolMotion();
+            parkingBrakeApplied = true;
+            ClearAutomaticControl();
+            ClearManualSurfaceControlState();
             return;
         }
 
-        float available = AvailableLineMeters;
+        float available =
+            AvailableLineMeters;
+
         if (available <= 0f)
         {
             _deployment.EndPayloadRetrieval();
-            command = WinchCommand.Stop;
+
+            command =
+                WinchCommand.Stop;
+
             ResetSpoolMotion();
+
+            parkingBrakeApplied =
+                true;
+
+            ClearAutomaticControl();
+            ClearManualSurfaceControlState();
             return;
         }
-
-        float dt =
-            Mathf.Max(
-                0f,
-                Time.fixedDeltaTime);
 
         switch (command)
         {
             case WinchCommand.Lower:
                 {
+                    parkingBrakeApplied =
+                        false;
+
                     EnsureSpoolTarget(
                         Mathf.Max(
                             0f,
@@ -172,17 +279,20 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
                     RefreshRetrievalIntentForActualSpoolMotion();
                     ApplyControlledSpoolMotion(available, dt);
 
-                    if (currentLineSpeedMetersPerSecond < -SpoolSpeedEpsilon)
+                    if (currentLineSpeedMetersPerSecond <
+                        -SpoolSpeedEpsilon)
+                    {
                         TryAutoDock();
+                    }
 
                     break;
                 }
 
             case WinchCommand.Raise:
                 {
-                    // Rated pull limits active hauling, but the brake can still slow a
-                    // free-spooling payload toward zero instead of freezing line length
-                    // in one physics step.
+                    parkingBrakeApplied =
+                        false;
+
                     bool canActivelyHaul =
                         ratedPullNewtons <= 0f ||
                         CurrentTension <= ratedPullNewtons;
@@ -194,23 +304,32 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
                                 reelSpeedMetersPerSecond)
                             : 0f;
 
-                    EnsureSpoolTarget(targetSpeed);
-                    TickSpoolTransition(dt);
+                    EnsureSpoolTarget(
+                        targetSpeed);
 
-                    // Raise is explicit retrieval intent even while the drum is still
-                    // braking through a positive payout speed.
+                    TickSpoolTransition(
+                        dt);
+
                     _deployment.BeginPayloadRetrieval();
 
-                    ApplyControlledSpoolMotion(available, dt);
+                    ApplyControlledSpoolMotion(
+                        available,
+                        dt);
 
-                    if (currentLineSpeedMetersPerSecond <= SpoolSpeedEpsilon)
+                    if (currentLineSpeedMetersPerSecond <=
+                        SpoolSpeedEpsilon)
+                    {
                         TryAutoDock();
+                    }
 
                     break;
                 }
 
             case WinchCommand.QuickRelease:
                 {
+                    parkingBrakeApplied =
+                        false;
+
                     _deployment.EndPayloadRetrieval();
                     CancelSpoolTransition();
 
@@ -222,7 +341,8 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
                             available,
                             Mathf.Max(
                                 deployedLength,
-                                CurrentDistance + quickReleaseSlackMeters));
+                                CurrentDistance +
+                                quickReleaseSlackMeters));
 
                     deployedLength =
                         target;
@@ -231,7 +351,9 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
                         dt > 0f
                             ? Mathf.Max(
                                 0f,
-                                (deployedLength - previousLength) / dt)
+                                (deployedLength -
+                                 previousLength) /
+                                dt)
                             : 0f;
 
                     break;
@@ -240,18 +362,44 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
             case WinchCommand.Stop:
             default:
                 {
-                    EnsureSpoolTarget(0f);
-                    TickSpoolTransition(dt);
+                    EnsureSpoolTarget(
+                        0f);
 
-                    // If Stop was pressed while line was still physically reeling in,
-                    // keep retrieval-aware payloads released until the drum actually
-                    // reaches zero speed. This avoids re-latching an anchor while the
-                    // spool is still coasting inward.
+                    TickSpoolTransition(
+                        dt);
+
                     RefreshRetrievalIntentForActualSpoolMotion();
-                    ApplyControlledSpoolMotion(available, dt);
+                    ApplyControlledSpoolMotion(
+                        available,
+                        dt);
 
-                    if (currentLineSpeedMetersPerSecond < -SpoolSpeedEpsilon)
+                    if (currentLineSpeedMetersPerSecond <
+                        -SpoolSpeedEpsilon)
+                    {
                         TryAutoDock();
+                    }
+
+                    bool fullyStopped =
+                        !_spoolTransitionActive &&
+                        Mathf.Abs(
+                            currentLineSpeedMetersPerSecond) <=
+                        SpoolSpeedEpsilon;
+
+                    if (fullyStopped)
+                    {
+                        parkingBrakeApplied =
+                            true;
+
+                        // Automatic Stop only needs power until the mechanical
+                        // parking brake has actually latched.
+                        if (_automaticControlActive)
+                            ClearAutomaticControl();
+                    }
+                    else
+                    {
+                        parkingBrakeApplied =
+                            false;
+                    }
 
                     break;
                 }
@@ -261,43 +409,457 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
             _deployment != null &&
             _deployment.HasDeployedPayload)
         {
-            _constraint.SetDeployedLength(deployedLength);
+            _constraint.SetDeployedLength(
+                deployedLength);
+
             _constraint.SetLineRatings(
                 WorkingLoadNewtons,
                 BreakingLoadNewtons);
         }
     }
 
-    public void OnInstalled(Hardpoint hardpoint)
+
+
+    public void OnInstalled(
+        Hardpoint hardpoint)
     {
-        _ownerHardpoint = hardpoint;
+        _ownerHardpoint =
+            hardpoint;
+
         CacheRefs();
+        ResolvePowerState();
         EnsureLineContainer();
     }
+
 
     public void OnRemoved()
     {
         _deployment?.EndPayloadRetrieval();
 
-        command = WinchCommand.Stop;
+        command =
+            WinchCommand.Stop;
+
         ResetSpoolMotion();
+
+        parkingBrakeApplied =
+            true;
+
+        ClearAutomaticControl();
+        ClearManualSurfaceControlState();
+
         _deployment = null;
         _payload = null;
         _constraint = null;
+        _powerState = null;
     }
+
+
 
     /// <summary>
     /// Authoritative entry point for external winch control requests.
     /// UI, local input, and future network/host routing should request an intent
     /// here rather than directly mutating command, deployed length, or spool state.
     /// </summary>
+    /// <summary>
+    /// Legacy/one-shot authority entry point. Lower / Stop / Raise use powered
+    /// automatic control. Quick Release / Cut Line remain mechanical.
+    /// </summary>
     public bool TryApplyControlIntent(
+        WinchControlIntent intent,
+        out string message)
+    {
+        return
+            TryApplyAutomaticControlIntent(
+                requester: null,
+                intent,
+                requirePower: true,
+                out message);
+    }
+
+    /// <summary>
+    /// Boat-side cartridge request seam.
+    ///
+    /// Press:
+    ///   powered Lower / Stop / Raise -> automatic control.
+    ///   Quick Release / Cut Line -> mechanical one-shot.
+    ///
+    /// HoldBegin / HoldEnd:
+    ///   unpowered manual Lower / Stop / Raise.
+    /// </summary>
+    public bool TryApplySurfaceControlIntent(
+        GameObject requester,
+        WinchControlIntent intent,
+        WinchControlInputPhase phase,
+        out string message)
+    {
+        if (!HasGameplayAuthority)
+        {
+            message =
+                "WINCH CONTROL REQUIRES GAMEPLAY AUTHORITY";
+
+            return false;
+        }
+
+        bool poweredIntent =
+            IsPoweredMotorIntent(
+                intent);
+
+        switch (phase)
+        {
+            case WinchControlInputPhase.Press:
+                {
+                    if (!poweredIntent)
+                    {
+                        return
+                            TryApplyMechanicalIntent(
+                                intent,
+                                out message);
+                    }
+
+                    if (!HasBoatPowerAvailable)
+                    {
+                        message =
+                            "UNPOWERED | HOLD LOWER / STOP / RAISE FOR MANUAL CONTROL";
+
+                        return false;
+                    }
+
+                    if (_manualSurfaceControlActive &&
+                        !IsSameRequester(
+                            requester,
+                            _manualSurfaceRequester))
+                    {
+                        message =
+                            "WINCH IS UNDER MANUAL CONTROL";
+
+                        return false;
+                    }
+
+                    ClearManualSurfaceControlState();
+
+                    return
+                        TryApplyAutomaticControlIntent(
+                            requester,
+                            intent,
+                            requirePower: true,
+                            out message);
+                }
+
+            case WinchControlInputPhase.HoldBegin:
+                {
+                    if (!poweredIntent)
+                    {
+                        message =
+                            $"{intent.ToString().ToUpperInvariant()} DOES NOT USE MANUAL HOLD CONTROL";
+
+                        return false;
+                    }
+
+                    if (HasBoatPowerAvailable)
+                    {
+                        message =
+                            "POWER AVAILABLE | CLICK FOR AUTOMATIC CONTROL";
+
+                        return false;
+                    }
+
+                    return
+                        TryBeginManualSurfaceControl(
+                            requester,
+                            intent,
+                            out message);
+                }
+
+            case WinchControlInputPhase.HoldEnd:
+                {
+                    return
+                        TryReleaseManualSurfaceControl(
+                            requester,
+                            out message);
+                }
+
+            default:
+                {
+                    message =
+                        $"UNKNOWN WINCH CONTROL PHASE: {phase}";
+
+                    return false;
+                }
+        }
+    }
+
+    /// <summary>
+    /// Internal bell controls remain remote automatic controls. The panel's
+    /// Require Power toggle can bypass the power requirement for testing/balance.
+    /// Mechanical Quick Release / Cut Line never require power.
+    /// </summary>
+    public bool TryApplyInternalBellControlIntent(
+        WinchControlIntent intent,
+        bool requirePower,
+        out string message)
+    {
+        if (_manualSurfaceControlActive)
+        {
+            message =
+                "WINCH IS UNDER MANUAL SURFACE CONTROL";
+
+            return false;
+        }
+
+        return
+            TryApplyAutomaticControlIntent(
+                requester: null,
+                intent,
+                requirePower,
+                out message);
+    }
+
+    private bool TryApplyAutomaticControlIntent(
+        GameObject requester,
+        WinchControlIntent intent,
+        bool requirePower,
+        out string message)
+    {
+        if (!HasGameplayAuthority)
+        {
+            message =
+                "WINCH CONTROL REQUIRES GAMEPLAY AUTHORITY";
+
+            return false;
+        }
+
+        if (!IsPoweredMotorIntent(
+                intent))
+        {
+            return
+                TryApplyMechanicalIntent(
+                    intent,
+                    out message);
+        }
+
+        if (requirePower &&
+            !HasBoatPowerAvailable)
+        {
+            message =
+                "WINCH AUTOMATIC CONTROL REQUIRES BOAT POWER";
+
+            return false;
+        }
+
+        bool ok =
+            TryApplyControlIntentCore(
+                intent,
+                out message);
+
+        if (!ok)
+            return false;
+
+        _automaticControlActive =
+            true;
+
+        _automaticControlRequiresPower =
+            requirePower;
+
+        if (intent ==
+            WinchControlIntent.Stop)
+        {
+            bool alreadyStopped =
+                !_spoolTransitionActive &&
+                Mathf.Abs(
+                    currentLineSpeedMetersPerSecond) <=
+                SpoolSpeedEpsilon;
+
+            if (alreadyStopped)
+            {
+                parkingBrakeApplied =
+                    true;
+
+                ClearAutomaticControl();
+
+                message =
+                    "WINCH STOPPED | PARKING BRAKE APPLIED";
+            }
+            else
+            {
+                parkingBrakeApplied =
+                    false;
+
+                message =
+                    "STOP COMMAND ACCEPTED | BRAKING";
+            }
+        }
+        else
+        {
+            parkingBrakeApplied =
+                false;
+        }
+
+        return true;
+    }
+
+    private bool TryApplyMechanicalIntent(
+        WinchControlIntent intent,
+        out string message)
+    {
+        ClearAutomaticControl();
+        ClearManualSurfaceControlState();
+
+        return
+            TryApplyControlIntentCore(
+                intent,
+                out message);
+    }
+
+    private bool TryBeginManualSurfaceControl(
+        GameObject requester,
+        WinchControlIntent intent,
+        out string message)
+    {
+        if (requester == null)
+        {
+            message =
+                "MANUAL WINCH CONTROL REQUIRES A REQUESTING PLAYER";
+
+            return false;
+        }
+
+        if (_manualSurfaceControlActive &&
+            !IsSameRequester(
+                requester,
+                _manualSurfaceRequester))
+        {
+            message =
+                "WINCH IS ALREADY UNDER MANUAL CONTROL";
+
+            return false;
+        }
+
+        ClearAutomaticControl();
+
+        bool ok =
+            TryApplyControlIntentCore(
+                intent,
+                out message);
+
+        if (!ok)
+            return false;
+
+        _manualSurfaceControlActive =
+            true;
+
+        _manualSurfaceRequester =
+            requester;
+
+        _manualSurfaceIntent =
+            intent;
+
+        if (intent ==
+            WinchControlIntent.Stop)
+        {
+            bool alreadyStopped =
+                !_spoolTransitionActive &&
+                Mathf.Abs(
+                    currentLineSpeedMetersPerSecond) <=
+                SpoolSpeedEpsilon;
+
+            parkingBrakeApplied =
+                alreadyStopped;
+
+            message =
+                alreadyStopped
+                    ? "MANUAL STOP | PARKING BRAKE APPLIED"
+                    : "MANUAL STOP | HOLD TO BRAKE";
+        }
+        else
+        {
+            parkingBrakeApplied =
+                false;
+
+            message =
+                $"MANUAL {intent.ToString().ToUpperInvariant()} | HOLD CONTROL";
+        }
+
+        return true;
+    }
+
+    public bool TryReleaseManualSurfaceControl(
+        GameObject requester,
+        out string message)
+    {
+        if (!HasGameplayAuthority)
+        {
+            message =
+                "WINCH CONTROL REQUIRES GAMEPLAY AUTHORITY";
+
+            return false;
+        }
+
+        if (!_manualSurfaceControlActive)
+        {
+            message =
+                parkingBrakeApplied
+                    ? "PARKING BRAKE APPLIED"
+                    : "NO MANUAL CONTROL ACTIVE";
+
+            return true;
+        }
+
+        if (!IsSameRequester(
+                requester,
+                _manualSurfaceRequester))
+        {
+            message =
+                "MANUAL WINCH CONTROL BELONGS TO ANOTHER REQUESTER";
+
+            return false;
+        }
+
+        return
+            ReleaseManualSurfaceControlInternal(
+                "MANUAL CONTROL RELEASED",
+                out message);
+    }
+
+    private bool ReleaseManualSurfaceControlInternal(
+        string reason,
+        out string message)
+    {
+        bool brakeWasApplied =
+            parkingBrakeApplied;
+
+        ClearManualSurfaceControlState();
+
+        if (brakeWasApplied)
+        {
+            command =
+                WinchCommand.Stop;
+
+            message =
+                $"{reason} | PARKING BRAKE APPLIED";
+
+            return true;
+        }
+
+        bool released =
+            EnterQuickReleaseState();
+
+        message =
+            released
+                ? $"{reason} | PARKING BRAKE NOT APPLIED | QUICK RELEASE"
+                : $"{reason} | PARKING BRAKE NOT APPLIED | QUICK RELEASE FAILED";
+
+        return released;
+    }
+
+    private bool TryApplyControlIntentCore(
         WinchControlIntent intent,
         out string message)
     {
         if (!HasGameplayAuthority)
         {
-            message = "WINCH CONTROL REQUIRES GAMEPLAY AUTHORITY";
+            message =
+                "WINCH CONTROL REQUIRES GAMEPLAY AUTHORITY";
+
             return false;
         }
 
@@ -321,7 +883,9 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
                     Stop();
 
                     message =
-                        "WINCH STOPPED";
+                        parkingBrakeApplied
+                            ? "WINCH STOPPED | PARKING BRAKE APPLIED"
+                            : "STOP COMMAND ACCEPTED | BRAKING";
 
                     return true;
                 }
@@ -346,7 +910,7 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
 
                     message =
                         ok
-                            ? "BRAKE RELEASED"
+                            ? "BRAKE RELEASED | QUICK RELEASE"
                             : "QUICK RELEASE REJECTED";
 
                     return ok;
@@ -373,6 +937,205 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
                     return false;
                 }
         }
+    }
+
+    private static bool IsPoweredMotorIntent(
+        WinchControlIntent intent)
+    {
+        return
+            intent == WinchControlIntent.Lower ||
+            intent == WinchControlIntent.Stop ||
+            intent == WinchControlIntent.Raise;
+    }
+
+    private bool ShouldConsumeAutomaticControlPower()
+    {
+        if (!_automaticControlActive ||
+            !_automaticControlRequiresPower)
+        {
+            return false;
+        }
+
+        switch (command)
+        {
+            case WinchCommand.Lower:
+                {
+                    if (_deployment == null ||
+                        !_deployment.HasDeployedPayload)
+                    {
+                        return false;
+                    }
+
+                    float available =
+                        AvailableLineMeters;
+
+                    return
+                        available > 0f &&
+                        deployedLength <
+                        available -
+                        SegmentBoundaryEpsilonMeters;
+                }
+
+            case WinchCommand.Raise:
+                return
+                    _deployment != null &&
+                    _deployment.HasDeployedPayload;
+
+            case WinchCommand.Stop:
+                return
+                    !parkingBrakeApplied &&
+                    (_spoolTransitionActive ||
+                     Mathf.Abs(
+                         currentLineSpeedMetersPerSecond) >
+                     SpoolSpeedEpsilon);
+
+            default:
+                return false;
+        }
+    }
+
+    private bool TryConsumeAutomaticControlPower(
+        float dt)
+    {
+        if (!_automaticControlActive ||
+            !_automaticControlRequiresPower)
+        {
+            return true;
+        }
+
+        if (_powerState == null)
+            ResolvePowerState();
+
+        if (_powerState == null)
+            return false;
+
+        float amount =
+            PowerDemandPerSecond *
+            Mathf.Max(
+                0f,
+                dt);
+
+        return
+            _powerState.TryConsume(
+                amount);
+    }
+
+    private void HandleAutomaticControlPowerLoss()
+    {
+        if (!_automaticControlActive)
+            return;
+
+        ClearAutomaticControl();
+
+        if (parkingBrakeApplied)
+        {
+            command =
+                WinchCommand.Stop;
+
+            return;
+        }
+
+        bool released =
+            EnterQuickReleaseState();
+
+        GameMessageService.PostWarning(
+            released
+                ? "Winch lost boat power. Parking brake was not applied; winch entered quick release."
+                : "Winch lost boat power. Parking brake was not applied and quick release could not be reconciled.");
+    }
+
+    private bool EnterQuickReleaseState()
+    {
+        if (!HasGameplayAuthority)
+            return false;
+
+        if (!EnsureDeploymentBound())
+            return false;
+
+        RefreshDeploymentRuntimeRefs();
+
+        if (_deployment == null ||
+            !_deployment.HasDeployedPayload ||
+            _payload == null ||
+            _constraint == null)
+        {
+            return false;
+        }
+
+        _deployment.EndPayloadRetrieval();
+
+        command =
+            WinchCommand.QuickRelease;
+
+        parkingBrakeApplied =
+            false;
+
+        CancelSpoolTransition();
+
+        return true;
+    }
+
+    private void ClearAutomaticControl()
+    {
+        _automaticControlActive =
+            false;
+
+        _automaticControlRequiresPower =
+            false;
+    }
+
+    private void ClearManualSurfaceControlState()
+    {
+        _manualSurfaceControlActive =
+            false;
+
+        _manualSurfaceRequester =
+            null;
+
+        _manualSurfaceIntent =
+            WinchControlIntent.Stop;
+    }
+
+    private static bool IsSameRequester(
+        GameObject a,
+        GameObject b)
+    {
+        return
+            a != null &&
+            b != null &&
+            ReferenceEquals(
+                a,
+                b);
+    }
+
+    private void ResolvePowerState()
+    {
+        if (_installedModule == null)
+            _installedModule = GetComponent<InstalledModule>();
+
+        if (_ownerHardpoint == null &&
+            _installedModule != null)
+        {
+            _ownerHardpoint =
+                _installedModule.OwnerHardpoint;
+        }
+
+        Boat boat =
+            null;
+
+        if (_ownerHardpoint != null)
+        {
+            boat =
+                _ownerHardpoint.GetComponentInParent<Boat>();
+        }
+
+        if (boat == null)
+            boat = GetComponentInParent<Boat>();
+
+        _powerState =
+            boat != null
+                ? boat.GetComponent<BoatPowerState>()
+                : null;
     }
 
     public bool TryLower()
@@ -461,6 +1224,9 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
                 available);
         }
 
+        parkingBrakeApplied =
+            false;
+
         command = WinchCommand.Lower;
         StartSpoolTransition(
             Mathf.Max(
@@ -469,6 +1235,7 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
 
         return true;
     }
+
 
     public bool TryRaise()
     {
@@ -483,8 +1250,17 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         if (!_deployment.HasDeployedPayload ||
             _payload == null)
         {
-            command = WinchCommand.Stop;
+            command =
+                WinchCommand.Stop;
+
             ResetSpoolMotion();
+
+            parkingBrakeApplied =
+                true;
+
+            ClearAutomaticControl();
+            ClearManualSurfaceControlState();
+
             return true;
         }
 
@@ -518,6 +1294,9 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         // length begins decreasing.
         _deployment.BeginPayloadRetrieval();
 
+        parkingBrakeApplied =
+            false;
+
         command = WinchCommand.Raise;
         StartSpoolTransition(
             -Mathf.Max(
@@ -527,19 +1306,46 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         return true;
     }
 
+
     public void Stop()
     {
         if (!HasGameplayAuthority)
             return;
 
-        command = WinchCommand.Stop;
-        StartSpoolTransition(0f);
+        command =
+            WinchCommand.Stop;
+
+        bool alreadyStopped =
+            !_spoolTransitionActive &&
+            Mathf.Abs(
+                currentLineSpeedMetersPerSecond) <=
+            SpoolSpeedEpsilon;
+
+        if (alreadyStopped)
+        {
+            ResetSpoolMotion();
+
+            parkingBrakeApplied =
+                true;
+
+            return;
+        }
+
+        parkingBrakeApplied =
+            false;
+
+        StartSpoolTransition(
+            0f);
     }
+
 
     public bool QuickRelease()
     {
         if (!HasGameplayAuthority)
             return false;
+
+        ClearAutomaticControl();
+        ClearManualSurfaceControlState();
 
         if (!EnsureDeploymentBound())
             return false;
@@ -560,10 +1366,17 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
 
         _deployment.EndPayloadRetrieval();
 
-        command = WinchCommand.QuickRelease;
+        command =
+            WinchCommand.QuickRelease;
+
+        parkingBrakeApplied =
+            false;
+
         CancelSpoolTransition();
+
         return true;
     }
+
 
     public bool CutLine()
     {
@@ -626,6 +1439,12 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
 
         ResetSpoolMotion();
 
+        parkingBrakeApplied =
+            true;
+
+        ClearAutomaticControl();
+        ClearManualSurfaceControlState();
+
         deployedLength =
             0f;
 
@@ -637,6 +1456,7 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
 
         return true;
     }
+
 
     private void HandleTetherBreak(
         float breakTension)
@@ -665,6 +1485,12 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
         _deployment?.EndPayloadRetrieval();
         command = WinchCommand.Stop;
         ResetSpoolMotion();
+
+        parkingBrakeApplied =
+            true;
+
+        ClearAutomaticControl();
+        ClearManualSurfaceControlState();
 
         bool released =
             _deployment != null &&
@@ -731,6 +1557,7 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
                 ? _deployment.TetherConstraint
                 : null;
     }
+
 
     private bool TryBuildCutLineLossPlan(
         float cutLengthMeters,
@@ -959,6 +1786,12 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
 
         ResetSpoolMotion();
 
+        parkingBrakeApplied =
+            true;
+
+        ClearAutomaticControl();
+        ClearManualSurfaceControlState();
+
         CacheRefs();
         RefreshDeploymentRuntimeRefs();
 
@@ -1000,6 +1833,7 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
             WorkingLoadNewtons,
             BreakingLoadNewtons);
     }
+
 
     private void CacheRefs()
     {
@@ -1113,19 +1947,36 @@ public sealed class WinchModule : MonoBehaviour, IInstalledModuleLifecycle, IIns
                 deployedWorldItem.transform.position,
                 _deployment.PayloadHangPoint.position);
 
-        if (distanceToDock > dockingDistance)
+        if (distanceToDock >
+            dockingDistance)
+        {
             return;
+        }
 
         if (!_deployment.TryRecallDeployedPayload())
             return;
 
-        command = WinchCommand.Stop;
-        ResetSpoolMotion();
-        deployedLength = 0f;
+        command =
+            WinchCommand.Stop;
 
-        _payload = null;
-        _constraint = _deployment.TetherConstraint;
+        ResetSpoolMotion();
+
+        parkingBrakeApplied =
+            true;
+
+        ClearAutomaticControl();
+        ClearManualSurfaceControlState();
+
+        deployedLength =
+            0f;
+
+        _payload =
+            null;
+
+        _constraint =
+            _deployment.TetherConstraint;
     }
+
 
     private void StartSpoolTransition(
         float targetSpeed)

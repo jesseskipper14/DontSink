@@ -51,9 +51,40 @@ public class Interactor2D : MonoBehaviour
     private readonly List<IInteractionTargetFilter> _interactionTargetFilters =
         new List<IInteractionTargetFilter>();
 
+    private IInteractable _activeHoldInteractTarget;
+    private float _activeHoldInteractElapsed;
+    private float _activeHoldInteractDuration;
+    private bool _holdInteractTriggered;
+
     private IPickupInteractable _activeHoldPickupTarget;
     private float _activeHoldPickupElapsed;
     private bool _holdPickupTriggered;
+
+    public IInteractable ActiveHoldInteractTarget =>
+        _activeHoldInteractTarget;
+
+    public float ActiveHoldInteractElapsed =>
+        _activeHoldInteractElapsed;
+
+    public float ActiveHoldInteractDuration =>
+        _activeHoldInteractTarget != null
+            ? Mathf.Max(
+                0.0001f,
+                _activeHoldInteractDuration)
+            : 0f;
+
+    public float ActiveHoldInteractProgress =>
+        _activeHoldInteractTarget != null
+            ? Mathf.Clamp01(
+                _activeHoldInteractElapsed /
+                Mathf.Max(
+                    0.0001f,
+                    _activeHoldInteractDuration))
+            : 0f;
+
+    public bool IsHoldingInteract =>
+        _activeHoldInteractTarget != null &&
+        !_holdInteractTriggered;
 
     public IPickupInteractable ActiveHoldPickupTarget => _activeHoldPickupTarget;
     public float ActiveHoldPickupElapsed => _activeHoldPickupElapsed;
@@ -90,11 +121,9 @@ public class Interactor2D : MonoBehaviour
         if (!TryBuildContext(out InteractContext ctx, out InteractionIntent intent))
             return;
 
-        if (intent.InteractPressed && TryResolveBest(ctx, out IInteractable interactTarget))
-        {
-            interactTarget.Interact(ctx);
-            OnInteracted?.Invoke(interactTarget);
-        }
+        HandleInteractIntent(
+            intent,
+            ctx);
 
         if (intent.UnsecurePressed && TryResolveBestUnsecure(ctx, out IUnsecureInteractable unsecureTarget))
         {
@@ -590,6 +619,9 @@ public class Interactor2D : MonoBehaviour
             if (labelProvider == null) labelProvider = owner as IInteractionLabelProvider;
             if (labelProvider == null) labelProvider = current.GetComponent<IInteractionLabelProvider>();
 
+            IInteractionDetailProvider[] detailProviders =
+                ResolveInteractionDetailProviders(current);
+
             IInteractionRangeProvider rangeProvider = interact as IInteractionRangeProvider;
             if (rangeProvider == null) rangeProvider = pickup as IInteractionRangeProvider;
             if (rangeProvider == null) rangeProvider = owner as IInteractionRangeProvider;
@@ -606,12 +638,49 @@ public class Interactor2D : MonoBehaviour
                 pickupPromptProvider,
                 actionProvider,
                 labelProvider,
+                detailProviders,
                 rangeProvider);
 
             return true;
         }
 
         return false;
+    }
+
+    private static IInteractionDetailProvider[] ResolveInteractionDetailProviders(
+        Transform ownerTransform)
+    {
+        if (ownerTransform == null)
+            return null;
+
+        MonoBehaviour[] components =
+            ownerTransform.GetComponents<MonoBehaviour>();
+
+        if (components == null ||
+            components.Length == 0)
+        {
+            return null;
+        }
+
+        List<IInteractionDetailProvider> providers =
+            null;
+
+        for (int i = 0; i < components.Length; i++)
+        {
+            MonoBehaviour component = components[i];
+            if (component is not IInteractionDetailProvider provider)
+                continue;
+
+            providers ??=
+                new List<IInteractionDetailProvider>();
+
+            providers.Add(provider);
+        }
+
+        return providers != null &&
+               providers.Count > 0
+            ? providers.ToArray()
+            : null;
     }
 
     private Collider2D[] GetMouseHoverHits(
@@ -864,6 +933,143 @@ public class Interactor2D : MonoBehaviour
             (priority * 10f) +
             (distScore * (1f - aimBias)) +
             (front * aimBias * 2f);
+    }
+
+    // ---------------------------------------------------------------------
+    // Ordinary interaction hold execution
+    // ---------------------------------------------------------------------
+
+    private void HandleInteractIntent(
+        InteractionIntent intent,
+        in InteractContext ctx)
+    {
+        bool hasTarget =
+            TryResolveBest(
+                ctx,
+                out IInteractable interactTarget);
+
+        if (!hasTarget ||
+            interactTarget == null)
+        {
+            ResetHoldInteract();
+            return;
+        }
+
+        if (interactTarget is not IHoldInteractable holdInteractable)
+        {
+            ResetHoldInteract();
+
+            if (intent.InteractPressed &&
+                interactTarget.CanInteract(
+                    ctx))
+            {
+                interactTarget.Interact(
+                    ctx);
+
+                OnInteracted?.Invoke(
+                    interactTarget);
+            }
+
+            return;
+        }
+
+        float requiredHoldDuration =
+            Mathf.Max(
+                0f,
+                holdInteractable.GetInteractionHoldDuration(
+                    ctx));
+
+        // Conditional hold targets may return zero for the current action.
+        // Preserve ordinary press-to-interact behavior in that case.
+        if (requiredHoldDuration <= 0f)
+        {
+            ResetHoldInteract();
+
+            if (intent.InteractPressed &&
+                interactTarget.CanInteract(
+                    ctx))
+            {
+                interactTarget.Interact(
+                    ctx);
+
+                OnInteracted?.Invoke(
+                    interactTarget);
+            }
+
+            return;
+        }
+
+        if (!intent.InteractHeld)
+        {
+            ResetHoldInteract();
+            return;
+        }
+
+        if (!ReferenceEquals(
+                _activeHoldInteractTarget,
+                interactTarget))
+        {
+            _activeHoldInteractTarget =
+                interactTarget;
+
+            _activeHoldInteractElapsed =
+                0f;
+
+            _activeHoldInteractDuration =
+                requiredHoldDuration;
+
+            _holdInteractTriggered =
+                false;
+        }
+
+        // Once the held interaction fires, require a full release before this
+        // input may trigger another interaction. This prevents boarding and then
+        // immediately beginning the reverse unboard action while E remains held.
+        if (_holdInteractTriggered)
+            return;
+
+        if (!interactTarget.CanInteract(
+                ctx))
+        {
+            ResetHoldInteract();
+            return;
+        }
+
+        _activeHoldInteractDuration =
+            requiredHoldDuration;
+
+        _activeHoldInteractElapsed +=
+            Time.deltaTime;
+
+        if (_activeHoldInteractElapsed <
+            _activeHoldInteractDuration)
+        {
+            return;
+        }
+
+        interactTarget.Interact(
+            ctx);
+
+        OnInteracted?.Invoke(
+            interactTarget);
+
+        _holdInteractTriggered =
+            true;
+    }
+
+    private void ResetHoldInteract()
+    {
+        _activeHoldInteractTarget =
+            null;
+
+        _activeHoldInteractElapsed =
+            0f;
+
+        _activeHoldInteractDuration =
+            0f;
+
+        _holdInteractTriggered =
+            false;
     }
 
     // ---------------------------------------------------------------------

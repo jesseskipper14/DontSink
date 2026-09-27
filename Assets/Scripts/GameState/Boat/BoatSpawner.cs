@@ -639,6 +639,12 @@ public sealed class BoatSpawner : MonoBehaviour
         auto.RefreshRegistration();
     }
 
+    public bool TryGetBoatSpawnPoint(out Transform result)
+    {
+        result = ResolveSpawnPointSafe();
+        return result != null;
+    }
+
     private Transform ResolveSpawnPointSafe()
     {
         if (spawnPoint != null)

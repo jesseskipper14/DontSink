@@ -18,6 +18,9 @@ public sealed class EscapeMenuUI : MonoBehaviour, IEscapeClosable
     [SerializeField] private SaveLoadController saveLoadController;
     [SerializeField] private SaveLoadPanelUI saveLoadPanel;
 
+    [Header("Debug Respawn")]
+    [SerializeField] private ChoiceDialogUI respawnDialog;
+
     public int EscapePriority => escapePriority;
     public bool IsEscapeOpen => root != null && root.activeSelf;
 
@@ -33,6 +36,9 @@ public sealed class EscapeMenuUI : MonoBehaviour, IEscapeClosable
 
         if (saveLoadPanel == null)
             saveLoadPanel = FindAnyObjectByType<SaveLoadPanelUI>(FindObjectsInactive.Include);
+
+        if (respawnDialog == null)
+            respawnDialog = FindAnyObjectByType<ChoiceDialogUI>(FindObjectsInactive.Include);
     }
 
     public void Open()
@@ -84,6 +90,45 @@ public sealed class EscapeMenuUI : MonoBehaviour, IEscapeClosable
             saveLoadPanel.Open();
         else
             Debug.LogWarning("[EscapeMenuUI] Cannot open load UI: no SaveLoadPanelUI found.", this);
+    }
+
+    public void RespawnPlayer()
+    {
+        if (respawnDialog == null)
+            respawnDialog = FindAnyObjectByType<ChoiceDialogUI>(FindObjectsInactive.Include);
+
+        if (respawnDialog == null)
+        {
+            Debug.LogWarning(
+                "[EscapeMenuUI] No ChoiceDialogUI found. Respawning with inventory kept.",
+                this);
+
+            ExecuteRespawn(keepInventory: true);
+            return;
+        }
+
+        respawnDialog.Show(
+            "Respawn Player?",
+            "Respawn at the boat spawn point (or 0,0 if none exists). Keep your current inventory?",
+            "Keep Inventory",
+            primary: () => ExecuteRespawn(keepInventory: true),
+            secondaryLabel: "Discard Inventory",
+            secondary: () => ExecuteRespawn(keepInventory: false),
+            cancelLabel: "Cancel");
+    }
+
+    private void ExecuteRespawn(bool keepInventory)
+    {
+        if (!PlayerDebugRespawnService.TryRespawn(keepInventory))
+        {
+            Debug.LogWarning(
+                "[EscapeMenuUI] Debug respawn failed. No active PlayerDeathSystem/player could be resolved.",
+                this);
+
+            return;
+        }
+
+        Close();
     }
 
     public void ReturnToMainMenu()

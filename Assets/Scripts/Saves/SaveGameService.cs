@@ -428,7 +428,9 @@ public static class SaveGameService
             transition.SaveCurrentPlayerLoadout();
             transition.CaptureCurrentPlayerSceneContext(
                 "SaveGameService.SaveSlot");
-            transition.SaveCurrentBoatState("SaveGameService.SaveSlot");
+            transition.SaveCurrentBoatState(
+                "SaveGameService.SaveSlot",
+                includeSaveOnlyFlotation: true);
             CaptureMoneyChestTreasury(gs, "SaveGameService.SaveSlot");
             WorldMapSaveBuilder.CaptureCurrentWorldMapIntoGameState("SaveGameService.SaveSlot");
             return;

@@ -352,7 +352,8 @@ public sealed class SceneTransitionController : MonoBehaviour
         string reason = "",
         string routeFromNodeHint = null,
         string routeToNodeHint = null,
-        MoneyChestLossContext moneyChestLossContext = MoneyChestLossContext.Auto)
+        MoneyChestLossContext moneyChestLossContext = MoneyChestLossContext.Auto,
+        bool includeSaveOnlyFlotation = false)
     {
         GameState gs = GameState.I;
         if (gs == null)
@@ -403,7 +404,7 @@ public sealed class SceneTransitionController : MonoBehaviour
         // is registered as boat-owned so BoatLooseItemPersistence can capture it.
         gs.moneyChestTreasury?.PrepareActiveChestForBoatCapture(boat);
 
-        CaptureLooseItems(gs, boat);
+        CaptureLooseItems(gs, boat, includeSaveOnlyFlotation);
         CaptureModulesAndPower(gs, boat);
         CaptureTetherState(gs, boat);
         CaptureCompartments(gs, boat);
@@ -483,7 +484,10 @@ public sealed class SceneTransitionController : MonoBehaviour
     //        $"| volumeCol={(volumeCol != null ? volumeCol.name : "NULL")}");
     //}
 
-    private void CaptureLooseItems(GameState gs, Boat boat)
+    private void CaptureLooseItems(
+        GameState gs,
+        Boat boat,
+        bool includeSaveOnlyFlotation)
     {
         if (gs == null || boat == null)
             return;
@@ -496,14 +500,23 @@ public sealed class SceneTransitionController : MonoBehaviour
             return;
         }
 
-        BoatLooseItemManifest manifest = persistence.CaptureManifest();
+        BoatLooseItemManifest manifest =
+            persistence.CaptureManifest(includeSaveOnlyFlotation);
 
         gs.SetBoatLooseItems(
             manifest,
             $"Captured from boat '{boat.name}' via SceneTransitionController");
 
         int count = manifest?.looseItems != null ? manifest.looseItems.Count : -1;
-        Log($"CaptureLooseItems | count={count}");
+        int flotationCount =
+            manifest?.saveOnlyFlotationBags != null
+                ? manifest.saveOnlyFlotationBags.Count
+                : -1;
+
+        Log(
+            $"CaptureLooseItems | count={count} " +
+            $"saveOnlyFlotation={flotationCount} " +
+            $"includeSaveOnlyFlotation={includeSaveOnlyFlotation}");
     }
 
     private void CaptureModulesAndPower(GameState gs, Boat boat)

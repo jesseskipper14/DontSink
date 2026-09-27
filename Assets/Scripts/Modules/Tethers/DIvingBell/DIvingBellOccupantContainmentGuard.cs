@@ -26,6 +26,15 @@ public sealed class DivingBellOccupantContainmentGuard :
         "on this GameObject.")]
     [SerializeField] private Collider2D containmentVolume;
 
+    [Header("Gameplay Authority")]
+    [Tooltip(
+        "Controls who may make autonomous occupant-containment decisions. " +
+        "Non-authoritative peers may still observe occupancy/presentation, but do not " +
+        "decide from local physics that an occupant escaped the bell.")]
+    [SerializeField]
+    private GameplayAuthorityMode gameplayAuthorityMode =
+        GameplayAuthorityMode.SinglePlayerOrAuthoritative;
+
     [Header("Safety")]
     [SerializeField, Min(0f)]
     private float outsideGraceSeconds =
@@ -47,6 +56,14 @@ public sealed class DivingBellOccupantContainmentGuard :
     private readonly List<PlayerBellOccupantState>
         _scratch =
             new List<PlayerBellOccupantState>();
+
+    /// <summary>
+    /// True when this peer may autonomously decide that live physics requires an
+    /// emergency occupant ejection.
+    /// </summary>
+    public bool ContainmentAuthority =>
+        GameplayAuthority.CanRun(
+            gameplayAuthorityMode);
 
     private void Awake()
     {
@@ -75,6 +92,16 @@ public sealed class DivingBellOccupantContainmentGuard :
     private void LateUpdate()
     {
         ResolveRefs();
+
+        // Physical escape detection is an autonomous shared-gameplay decision.
+        // Client/local physics may differ slightly, so only authority may decide
+        // that an occupant has actually escaped and must be ejected.
+        if (!ContainmentAuthority)
+        {
+            _outsideSince.Clear();
+            _scratch.Clear();
+            return;
+        }
 
         if (occupancy == null ||
             containmentVolume == null ||

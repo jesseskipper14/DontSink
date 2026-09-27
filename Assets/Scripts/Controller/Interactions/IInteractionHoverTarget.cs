@@ -15,6 +15,14 @@ public readonly struct InteractionHoverTarget
     public readonly IInteractPromptActionProvider ActionProvider;
 
     public readonly IInteractionLabelProvider LabelProvider;
+    public readonly IInteractionDetailProvider[] DetailProviders;
+
+    // Backward-compatible convenience for any adjacent code that still expects
+    // the original single-provider shape.
+    public IInteractionDetailProvider DetailProvider =>
+        DetailProviders != null && DetailProviders.Length > 0
+            ? DetailProviders[0]
+            : null;
     public readonly IInteractionRangeProvider RangeProvider;
 
     public bool IsValid => Owner != null || SourceCollider != null;
@@ -30,6 +38,38 @@ public readonly struct InteractionHoverTarget
         IPickupPromptProvider pickupPromptProvider,
         IInteractPromptActionProvider actionProvider,
         IInteractionLabelProvider labelProvider,
+        IInteractionDetailProvider detailProvider,
+        IInteractionRangeProvider rangeProvider)
+        : this(
+            sourceCollider,
+            owner,
+            interact,
+            pickup,
+            unsecure,
+            toggle,
+            promptProvider,
+            pickupPromptProvider,
+            actionProvider,
+            labelProvider,
+            detailProvider != null
+                ? new[] { detailProvider }
+                : null,
+            rangeProvider)
+    {
+    }
+
+    public InteractionHoverTarget(
+        Collider2D sourceCollider,
+        MonoBehaviour owner,
+        IInteractable interact,
+        IPickupInteractable pickup,
+        IUnsecureInteractable unsecure,
+        IToggleInteractable toggle,
+        IInteractPromptProvider promptProvider,
+        IPickupPromptProvider pickupPromptProvider,
+        IInteractPromptActionProvider actionProvider,
+        IInteractionLabelProvider labelProvider,
+        IInteractionDetailProvider[] detailProviders,
         IInteractionRangeProvider rangeProvider)
     {
         SourceCollider = sourceCollider;
@@ -45,6 +85,7 @@ public readonly struct InteractionHoverTarget
         ActionProvider = actionProvider;
 
         LabelProvider = labelProvider;
+        DetailProviders = detailProviders;
         RangeProvider = rangeProvider;
     }
 }

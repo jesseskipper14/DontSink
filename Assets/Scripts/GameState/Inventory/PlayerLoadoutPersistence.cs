@@ -64,8 +64,144 @@ public sealed class PlayerLoadoutPersistence : MonoBehaviour
         Log($"Awake | inventory={(inventory != null ? inventory.name : "NULL")} | equipment={(equipment != null ? equipment.name : "NULL")} | catalog={(itemCatalog != null ? itemCatalog.name : "NULL")}");
     }
 
+    private void PrepareTransientInventoryStateForCapture()
+    {
+        InventoryDragController[] dragControllers =
+            Object.FindObjectsByType<InventoryDragController>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.None);
+
+        if (dragControllers == null ||
+            dragControllers.Length == 0)
+        {
+            return;
+        }
+
+        InventoryDragController exactActiveMatch =
+            null;
+
+        int exactActiveMatchCount =
+            0;
+
+        InventoryDragController uniqueActiveDrag =
+            null;
+
+        int activeDragCount =
+            0;
+
+        for (int i = 0;
+             i < dragControllers.Length;
+             i++)
+        {
+            InventoryDragController dragController =
+                dragControllers[i];
+
+            if (dragController == null)
+                continue;
+
+            bool hasActiveDrag =
+                dragController.IsDragging ||
+                dragController.DraggedItem != null;
+
+            if (!hasActiveDrag)
+                continue;
+
+            activeDragCount++;
+
+            if (activeDragCount == 1)
+                uniqueActiveDrag = dragController;
+            else
+                uniqueActiveDrag = null;
+
+            if (inventory != null &&
+                dragController.BoundInventory == inventory)
+            {
+                exactActiveMatch =
+                    dragController;
+
+                exactActiveMatchCount++;
+            }
+
+            Log(
+                $"PrepareTransientInventoryStateForCapture | candidate='{dragController.name}' " +
+                $"active={hasActiveDrag} " +
+                $"boundInventory={(dragController.BoundInventory != null ? dragController.BoundInventory.name : "NULL")} " +
+                $"boundInventoryId={(dragController.BoundInventory != null ? dragController.BoundInventory.GetInstanceID() : 0)} " +
+                $"persistenceInventory={(inventory != null ? inventory.name : "NULL")} " +
+                $"persistenceInventoryId={(inventory != null ? inventory.GetInstanceID() : 0)}");
+        }
+
+        InventoryDragController chosen =
+            null;
+
+        string resolutionReason =
+            null;
+
+        if (exactActiveMatchCount == 1)
+        {
+            chosen =
+                exactActiveMatch;
+
+            resolutionReason =
+                "exact PlayerInventory ownership";
+        }
+        else if (exactActiveMatchCount > 1)
+        {
+            LogError(
+                $"PrepareTransientInventoryStateForCapture found {exactActiveMatchCount} active drag controllers " +
+                "bound to the same PlayerInventory. Refusing ambiguous persistence reconciliation.");
+            return;
+        }
+        else if (activeDragCount == 1 &&
+                 uniqueActiveDrag != null)
+        {
+            // Current game is single-player and has one local UI drag controller.
+            // If scene wiring/reference identity prevents an exact match, one and
+            // only one active drag is still unambiguous. This fallback is expressly
+            // NOT used when multiple active drags exist.
+            chosen =
+                uniqueActiveDrag;
+
+            resolutionReason =
+                "unique active-drag fallback";
+
+            LogWarning(
+                "PrepareTransientInventoryStateForCapture found no exact PlayerInventory match, " +
+                $"but exactly one active drag exists ('{chosen.name}'). Using the unique active-drag " +
+                "fallback for the current single-player persistence boundary.");
+        }
+        else if (activeDragCount > 1)
+        {
+            LogError(
+                $"PrepareTransientInventoryStateForCapture found {activeDragCount} active drag controllers " +
+                "and none matched this PlayerInventory exactly. Refusing to guess.");
+            return;
+        }
+        else
+        {
+            return;
+        }
+
+        bool resolved =
+            chosen.PrepareForPersistenceCapture();
+
+        if (!resolved)
+        {
+            LogError(
+                $"PrepareTransientInventoryStateForCapture could not reconcile active drag via " +
+                $"{resolutionReason}. The dragged item remains authoritative in InventoryDragController " +
+                "and was NOT world-dropped.");
+            return;
+        }
+
+        Log(
+            $"PrepareTransientInventoryStateForCapture | active drag reconciled via {resolutionReason} before snapshot.");
+    }
+
     public PlayerLoadoutSnapshot CaptureSnapshot()
     {
+        PrepareTransientInventoryStateForCapture();
+
         InventorySnapshot inv = inventory != null ? inventory.CaptureSnapshot() : null;
         EquipmentSnapshot eq = equipment != null ? equipment.CaptureSnapshot() : null;
 

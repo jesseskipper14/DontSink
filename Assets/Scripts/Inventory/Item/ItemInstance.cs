@@ -10,6 +10,12 @@ public sealed class ItemInstance
     [SerializeReference] private ItemContainerState containerState;
     [SerializeField] private int currentCharges;
 
+    // Physical environmental state that must survive WorldItem destruction,
+    // inventory/Hands storage, scene persistence, and later re-instantiation.
+    // Zero for ordinary/dry items. Waterlogging-capable world prefabs decide
+    // whether and how this value changes.
+    [SerializeField, Min(0f)] private float retainedWaterVolume;
+
     [NonSerialized] public Action Changed;
 
     [NonSerialized] private ItemContainerState subscribedContainerState;
@@ -58,6 +64,9 @@ public sealed class ItemInstance
     public int MaxCharges => definition != null ? definition.MaxCharges : 0;
     public int CurrentCharges => HasCharges ? Mathf.Clamp(currentCharges, 0, MaxCharges) : 0;
     public bool HasAnyCharges => !HasCharges || CurrentCharges > 0;
+
+    public float RetainedWaterVolume =>
+        Mathf.Max(0f, retainedWaterVolume);
 
     public int RemainingStackSpace => IsStackable ? Mathf.Max(0, MaxStack - quantity) : 0;
 
@@ -261,6 +270,28 @@ public sealed class ItemInstance
         NotifyChanged();
     }
 
+    /// <summary>
+    /// Stores retained flood-water volume on the ItemInstance itself so the
+    /// physical state survives pickup into Hands/inventory and normal save/load.
+    /// The world-side WaterloggingMass2D component remains responsible for
+    /// deciding capacity, leak/drain rates, and converting this volume to mass.
+    /// </summary>
+    public void SetRetainedWaterVolume(float volume)
+    {
+        float next =
+            float.IsNaN(volume) ||
+            float.IsInfinity(volume)
+                ? 0f
+                : Mathf.Max(0f, volume);
+
+        if (Mathf.Abs(retainedWaterVolume - next) <= 0.000001f)
+            return;
+
+        retainedWaterVolume = next;
+        NotifyChanged();
+    }
+
+
     public bool IsDepleted()
     {
         return definition == null || quantity <= 0;
@@ -278,6 +309,7 @@ public sealed class ItemInstance
             itemId = definition.ItemId,
             quantity = quantity,
             currentCharges = HasCharges ? CurrentCharges : 0,
+            retainedWaterVolume = RetainedWaterVolume,
             container = containerState != null ? containerState.ToSnapshot() : null
         };
     }
@@ -304,6 +336,12 @@ public sealed class ItemInstance
             instance.currentCharges = Mathf.Clamp(snapshot.currentCharges, 0, def.MaxCharges);
         else
             instance.currentCharges = 0;
+
+        instance.retainedWaterVolume =
+            float.IsNaN(snapshot.retainedWaterVolume) ||
+            float.IsInfinity(snapshot.retainedWaterVolume)
+                ? 0f
+                : Mathf.Max(0f, snapshot.retainedWaterVolume);
 
         if (def.IsContainer)
         {

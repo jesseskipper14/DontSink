@@ -277,6 +277,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d25d72d0396500e4c803080c99afb5b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enforceGameplayAuthority: 0
+  gameplayAuthorityMode: 0
   verboseDiagnostics: 1
 --- !u!114 &-8898250925047297299
 MonoBehaviour:
@@ -290,7 +292,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06d0a205c2a3920439c097f31fd0b2d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bodySource: {fileID: 0}
+  bodySource: {fileID: -7800538462113517192}
   waveManager: {fileID: 0}
   wave: {fileID: 0}
   useBoatWaterContext: 1

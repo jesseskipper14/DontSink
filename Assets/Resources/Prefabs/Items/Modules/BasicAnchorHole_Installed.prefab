@@ -31,6 +31,100 @@ Transform:
   m_Children: []
   m_Father: {fileID: 9126828244924666281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2192463239899081465
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6573914059502542509}
+  - component: {fileID: 4255635723439285534}
+  - component: {fileID: 2834556962966143483}
+  m_Layer: 8
+  m_Name: InteractionZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6573914059502542509
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2192463239899081465}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9126828244924666281}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &4255635723439285534
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2192463239899081465}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 2, y: 2}
+  m_EdgeRadius: 0
+--- !u!114 &2834556962966143483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2192463239899081465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9dc2025305ddbe49a607ba8d0459393, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionColliders:
+  - {fileID: 4255635723439285534}
+  promptAnchor: {fileID: 8257903097564535626}
 --- !u!1 &3524316323811778203
 GameObject:
   m_ObjectHideFlags: 0
@@ -252,6 +346,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6573914059502542509}
   - {fileID: 8851162932041584786}
   - {fileID: 7475546025739489731}
   - {fileID: 4693907460653047433}
@@ -494,18 +589,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48d4edf299525f941b25d34b414b9843, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameplayAuthorityMode: 0
   storageModule: {fileID: -1241104913437828045}
   payloadSlotIndex: 0
   payloadHangPoint: {fileID: 2056573557452705157}
   tetherExitPoint: {fileID: 2244527422794193482}
+  keepStoredPayloadPhysical: 0
+  payloadDock: {fileID: 0}
   tetherConstraint: {fileID: 7187124118525404290}
   initialDeployedLength: 0.05
   restoreCollisionSkinMeters: 0.02
+  restoreTetherBreakProtectionSeconds: 0.5
   storedPayloadVisualRenderer: {fileID: 0}
   storedPayloadVisualScale: 1
   storedPayloadSortingOrderOffset: 0
   deploymentState: 0
   deployedWorldItem: {fileID: 0}
+  dockedPhysicalWorldItem: {fileID: 0}
+  physicalRecallCapturePending: 0
+  pendingPhysicalRecallPreviousLength: 0
 --- !u!114 &7187124118525404290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -518,9 +620,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 411d60245f22b1145abebeee32d2333c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameplayAuthorityMode: 0
   lineRenderer: {fileID: 6842432513037919890}
   visualSlackSagPerMeter: 0.05
   maxVisualSag: 2
+  showDockedStaticRope: 1
+  hideRopeWhenBoatInterior: 1
+  sustainedBreakingLoadSeconds: 0.15
   _attached: 0
   _deployedLength: 0
   _currentDistance: 0
@@ -528,6 +634,8 @@ MonoBehaviour:
   _currentTension: 0
   _workingLoad: 0
   _breakingLoad: 0
+  _breakingLoadOvertimeSeconds: 0
+  _breakProtectionRemainingSeconds: 0
 --- !u!114 &-1261390962955333027
 MonoBehaviour:
   m_ObjectHideFlags: 0

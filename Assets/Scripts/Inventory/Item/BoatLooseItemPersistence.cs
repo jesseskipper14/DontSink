@@ -22,7 +22,8 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
             itemRegistry = GetComponent<BoatItemRegistry>();
     }
 
-    public BoatLooseItemManifest CaptureManifest()
+    public BoatLooseItemManifest CaptureManifest(
+        bool includeSaveOnlyFlotation = false)
     {
         var manifest = new BoatLooseItemManifest();
 
@@ -48,6 +49,13 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
             {
                 continue;
             }
+
+            // Deployed flotation bags have an explicit save/load-only snapshot.
+            // They must never leak into ordinary boat-loose persistence or they
+            // would survive NodeScene <-> BoatScene transitions. Unused loose bags
+            // remain ordinary items and continue through the normal item path.
+            if (FlotationBagSavePersistence.UsesSaveOnlyPersistence(worldItem))
+                continue;
 
             if (worldItem.Instance.Definition.WorldPersistence ==
                 WorldItemPersistencePolicy.Never)
@@ -172,9 +180,26 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
         CapturePersistentWorldItems(
             manifest);
 
+        if (includeSaveOnlyFlotation)
+        {
+            FlotationBagSavePersistence.Capture(
+                manifest,
+                boat,
+                gameObject.scene);
+        }
+        else
+        {
+            // Scene transitions deliberately erase this save-only channel.
+            // Deployed bags are assumed to deflate during the implied travel time.
+            manifest.saveOnlyFlotationBags =
+                new List<FlotationBagSaveSnapshot>();
+        }
+
         Log(
             $"CaptureManifest complete | boatLoose={manifest.looseItems.Count} " +
-            $"persistentWorld={(manifest.persistentWorldItems != null ? manifest.persistentWorldItems.Count : 0)}");
+            $"persistentWorld={(manifest.persistentWorldItems != null ? manifest.persistentWorldItems.Count : 0)} " +
+            $"saveOnlyFlotation={(manifest.saveOnlyFlotationBags != null ? manifest.saveOnlyFlotationBags.Count : 0)} " +
+            $"includeSaveOnlyFlotation={includeSaveOnlyFlotation}");
 
         return manifest;
     }
@@ -192,6 +217,9 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
 
         if (manifest.persistentWorldItems == null)
             manifest.persistentWorldItems = new List<PersistentWorldItemSnapshot>();
+
+        if (manifest.saveOnlyFlotationBags == null)
+            manifest.saveOnlyFlotationBags = new List<FlotationBagSaveSnapshot>();
 
         if (boat == null || itemRegistry == null || itemCatalog == null)
         {
@@ -213,6 +241,15 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
 
         RestorePersistentWorldItems(
             manifest);
+
+        // Restore flotation last. Its dynamic targets may be ordinary loose items,
+        // persistent world items, the player, the boat, or a tether payload; all
+        // of those restoration paths have had a chance to exist by this point.
+        FlotationBagSavePersistence.Restore(
+            manifest,
+            boat,
+            itemCatalog,
+            gameObject.scene);
 
         Log("RestoreManifest END");
     }
@@ -653,6 +690,9 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
             {
                 continue;
             }
+
+            if (FlotationBagSavePersistence.UsesSaveOnlyPersistence(worldItem))
+                continue;
 
             if (worldItem.gameObject.scene !=
                 gameObject.scene)

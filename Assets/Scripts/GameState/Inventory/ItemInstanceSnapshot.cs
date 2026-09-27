@@ -11,6 +11,9 @@ public sealed class ItemInstanceSnapshot
     public int quantity;
     public int currentCharges;
 
+    // Additive schema-v1 field. Old saves deserialize this as 0.
+    public float retainedWaterVolume;
+
     [SerializeReference]
     public ItemContainerSnapshot container;
 }

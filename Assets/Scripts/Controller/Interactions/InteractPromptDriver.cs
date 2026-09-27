@@ -188,7 +188,15 @@ public sealed class InteractPromptDriver : MonoBehaviour
                 return false;
 
             if (interactor.IsWithinActionRange(target, ctx))
-                return target.Pickup.CanPickup(ctx);
+            {
+                if (target.Pickup.CanPickup(ctx))
+                    return true;
+
+                return TryResolvePickupBlockReason(
+                    target,
+                    ctx,
+                    out _);
+            }
 
             return true;
         }
@@ -204,10 +212,18 @@ public sealed class InteractPromptDriver : MonoBehaviour
             }
 
             if (hasPickup &&
-                !_suppressedPickup.Contains(target.Pickup) &&
-                target.Pickup.CanPickup(ctx))
+                !_suppressedPickup.Contains(target.Pickup))
             {
-                return true;
+                if (target.Pickup.CanPickup(ctx))
+                    return true;
+
+                if (TryResolvePickupBlockReason(
+                        target,
+                        ctx,
+                        out _))
+                {
+                    return true;
+                }
             }
 
             if (hasUnsecure && target.Unsecure.CanUnsecure(ctx))
@@ -231,6 +247,8 @@ public sealed class InteractPromptDriver : MonoBehaviour
         if (!string.IsNullOrWhiteSpace(label))
             _promptActions.Add(new PromptAction(label, priority: 200));
 
+        AddInteractionDetails(target, ctx);
+
         if (!interactor.IsWithinActionRange(target, ctx))
             return;
 
@@ -238,6 +256,51 @@ public sealed class InteractPromptDriver : MonoBehaviour
         AddPickupActions(target, ctx);
         AddToggleActions(target, ctx);
         AddLinkActions(target, ctx);
+    }
+
+    private void AddInteractionDetails(
+        in InteractionHoverTarget target,
+        in InteractContext ctx)
+    {
+        IInteractionDetailProvider[] providers =
+            target.DetailProviders;
+
+        if (providers == null ||
+            providers.Length == 0)
+        {
+            return;
+        }
+
+        for (int i = 0; i < providers.Length; i++)
+        {
+            IInteractionDetailProvider provider =
+                providers[i];
+
+            if (provider == null)
+                continue;
+
+            if (!provider.TryGetInteractionDetail(
+                    ctx,
+                    out string detail))
+            {
+                continue;
+            }
+
+            if (string.IsNullOrWhiteSpace(detail))
+                continue;
+
+            // Name = 200, details = 150 downward, ordinary actions = 100 and below.
+            // Give each provider a unique priority so ordering remains deterministic.
+            int priority =
+                Mathf.Max(
+                    110,
+                    150 - i);
+
+            _promptActions.Add(
+                new PromptAction(
+                    detail,
+                    priority: priority));
+        }
     }
 
     private Vector3 ResolvePromptPosition(in InteractionHoverTarget target)
@@ -327,7 +390,24 @@ public sealed class InteractPromptDriver : MonoBehaviour
             return;
 
         if (!target.Pickup.CanPickup(ctx))
+        {
+            if (TryResolvePickupBlockReason(
+                    target,
+                    ctx,
+                    out string blockReason))
+            {
+                _promptActions.Add(
+                    new PromptAction(
+                        $"<b>{blockReason}</b>",
+                        priority: 90,
+                        textColor: new Color(
+                            1f,
+                            0.35f,
+                            0.35f)));
+            }
+
             return;
+        }
 
         string pickupVerb = ResolvePickupVerb(target, ctx);
         bool isHoldPickup = target.Pickup.PickupMode == PickupInteractionMode.Hold;
@@ -358,6 +438,24 @@ public sealed class InteractPromptDriver : MonoBehaviour
             priority: 90,
             showProgress: isHoldPickup,
             progress01: progress));
+    }
+
+    private static bool TryResolvePickupBlockReason(
+        in InteractionHoverTarget target,
+        in InteractContext ctx,
+        out string reason)
+    {
+        reason = null;
+
+        if (target.Pickup is not IPickupBlockReasonProvider provider)
+            return false;
+
+        return
+            provider.TryGetPickupBlockReason(
+                ctx,
+                out reason) &&
+            !string.IsNullOrWhiteSpace(
+                reason);
     }
 
     private string ResolvePickupVerb(in InteractionHoverTarget target, in InteractContext ctx)

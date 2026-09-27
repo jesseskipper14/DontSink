@@ -40,7 +40,8 @@ public class LocalInteractionIntentSource : MonoBehaviour, IInteractionIntentSou
 
     private void Update()
     {
-        if (respectGameplayInputBlocker && GameplayInputBlocker.IsBlocked)
+        if ((respectGameplayInputBlocker && GameplayInputBlocker.IsBlocked) ||
+            InteractionInputBlocker.IsBlocked)
         {
             ClearIntentAndResetClickState();
             return;

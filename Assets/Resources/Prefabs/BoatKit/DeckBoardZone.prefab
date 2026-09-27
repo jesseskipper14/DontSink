@@ -116,11 +116,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   priority: 1
   holdSeconds: 0.5
+  unboardArmSeconds: 0.18
   allowSecondaryHoldKey: 0
   boatRootOverride: {fileID: 0}
   boardPoint: {fileID: 0}
   snapToBoardPoint: 1
   zeroVelocityOnBoard: 1
+  blockingHullLayerName: Hull
+  boardPathStartAllowance: 0.03
+  boardPathEndAllowance: 1
+  rejectInteriorBoardDestination: 1
+  requireAuthoredBoardPoint: 0
   requireUnboarded: 1
   onlyBoardClosestEligiblePlayer: 1
   promptText: Board Deck

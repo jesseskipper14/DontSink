@@ -26,13 +26,30 @@ public class ForceBody2D : MonoBehaviour, IForceBody
     public float Width => width;
     public float Height => height;
 
+    // Geometry and displacement are normally the same thing for simple bodies.
+    // Dynamic inflatable bodies may temporarily use their dimensions only as
+    // water-contact geometry while supplying authoritative displacement through
+    // IVolumeContribution. Default 1 preserves every existing body's behavior.
+    private float baseDisplacementScale = 1f;
+
     /// <summary>
-    /// Base displacement represented by this body's authored dimensions.
-    /// In the game's 2D physics model, Width x Height is the volume proxy.
+    /// Geometric area represented by the current Width x Height rectangle.
+    /// This remains the shape used by the simple buoyancy solver.
     /// </summary>
-    public float DimensionVolume =>
+    public float GeometryVolume =>
         Mathf.Max(0f, width) *
         Mathf.Max(0f, height);
+
+    /// <summary>
+    /// Base displacement contributed by the current geometry. Ordinary bodies
+    /// use GeometryVolume unchanged. Dynamic inflatables may suppress it while
+    /// providing their total displacement through IVolumeContribution, avoiding
+    /// double-counting when their physical geometry grows.
+    /// </summary>
+    public float DimensionVolume =>
+        GeometryVolume * Mathf.Max(0f, baseDisplacementScale);
+
+    public float BaseDisplacementScale => baseDisplacementScale;
 
     /// <summary>
     /// Sum of all currently live, finite, positive volume contributions.
@@ -43,30 +60,111 @@ public class ForceBody2D : MonoBehaviour, IForceBody
     {
         get
         {
-            float total = 0f;
+            GetVolumeContributionTotals(
+                out float cappedVolume,
+                out float uncappedVolume);
+
+            return cappedVolume + uncappedVolume;
+        }
+    }
+
+    /// <summary>
+    /// Splits runtime displacement into the normal capped bucket and an
+    /// explicitly opted-in uncapped bucket. Ordinary contributors remain
+    /// capped by default.
+    /// </summary>
+    public void GetVolumeContributionTotals(
+        out float cappedVolume,
+        out float uncappedVolume)
+    {
+        cappedVolume = 0f;
+        uncappedVolume = 0f;
+
+        for (int i = 0; i < volumeContributions.Count; i++)
+        {
+            IVolumeContribution contribution =
+                volumeContributions[i];
+
+            if (!IsLiveVolumeContribution(contribution))
+                continue;
+
+            float value =
+                contribution.VolumeContribution;
+
+            if (value <= 0f ||
+                float.IsNaN(value) ||
+                float.IsInfinity(value))
+            {
+                continue;
+            }
+
+            float effectiveness01 = 1f;
+            float bypass01 = 0f;
+
+            if (contribution is IBuoyancyVolumePolicy policy)
+            {
+                effectiveness01 = policy.VolumeEffectiveness01;
+                bypass01 = policy.BodyAccelerationCapBypass01;
+
+                if (float.IsNaN(effectiveness01) ||
+                    float.IsInfinity(effectiveness01))
+                {
+                    effectiveness01 = 0f;
+                }
+
+                if (float.IsNaN(bypass01) ||
+                    float.IsInfinity(bypass01))
+                {
+                    bypass01 = 0f;
+                }
+
+                effectiveness01 = Mathf.Clamp01(effectiveness01);
+                bypass01 = Mathf.Clamp01(bypass01);
+            }
+
+            // Apply contribution effectiveness first, then split the remaining
+            // effective volume between capped and uncapped paths. Ordinary
+            // contributors remain 100% effective and capped by default.
+            float effectiveValue = value * effectiveness01;
+
+            uncappedVolume += effectiveValue * bypass01;
+            cappedVolume += effectiveValue * (1f - bypass01);
+        }
+    }
+
+    /// <summary>
+    /// Per-body scale applied to the historical buoyant-acceleration ceiling.
+    /// Ordinary bodies remain at 1. Policies may only make the capped path more
+    /// restrictive; multiple policies resolve to the most restrictive live scale.
+    /// </summary>
+    public float BodyAccelerationCapScale01
+    {
+        get
+        {
+            float scale01 = 1f;
 
             for (int i = 0; i < volumeContributions.Count; i++)
             {
-                IVolumeContribution contribution =
-                    volumeContributions[i];
+                IVolumeContribution contribution = volumeContributions[i];
 
                 if (!IsLiveVolumeContribution(contribution))
                     continue;
 
-                float value =
-                    contribution.VolumeContribution;
+                IBuoyancyVolumePolicy policy =
+                    contribution as IBuoyancyVolumePolicy;
 
-                if (value <= 0f ||
-                    float.IsNaN(value) ||
-                    float.IsInfinity(value))
-                {
+                if (policy == null)
                     continue;
-                }
 
-                total += value;
+                float candidate = policy.BodyAccelerationCapScale01;
+
+                if (float.IsNaN(candidate) || float.IsInfinity(candidate))
+                    candidate = 0f;
+
+                scale01 = Mathf.Min(scale01, Mathf.Clamp01(candidate));
             }
 
-            return total;
+            return scale01;
         }
     }
 
@@ -98,6 +196,19 @@ public class ForceBody2D : MonoBehaviour, IForceBody
     {
         width = Mathf.Max(0.01f, newWidth);
         height = Mathf.Max(0.01f, newHeight);
+    }
+
+    /// <summary>
+    /// Runtime-only scale for how much the current Width x Height geometry
+    /// contributes as base displacement. Default 1. A value of 0 keeps the
+    /// geometry for submersion/drag while displacement is supplied elsewhere.
+    /// </summary>
+    public void SetBaseDisplacementScale(float scale)
+    {
+        if (float.IsNaN(scale) || float.IsInfinity(scale))
+            scale = 0f;
+
+        baseDisplacementScale = Mathf.Max(0f, scale);
     }
 
     public void RegisterVolumeContribution(

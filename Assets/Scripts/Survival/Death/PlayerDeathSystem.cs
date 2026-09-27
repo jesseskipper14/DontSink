@@ -77,8 +77,6 @@ namespace Survival.Death
 
         public void DebugRespawnNow()
         {
-            if (!IsDead) return;
-
             IsDead = false;
             LastDeath = null;
 

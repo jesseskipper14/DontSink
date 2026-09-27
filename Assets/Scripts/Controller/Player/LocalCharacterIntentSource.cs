@@ -33,6 +33,11 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
     /// Presentation-only binding labels for local UI. Gameplay should consume
     /// ICharacterIntentSource rather than reading these physical keys directly.
     /// </summary>
+    public string JumpBindingLabel =>
+        jumpKey == KeyCode.None
+            ? "Jump"
+            : jumpKey.ToString();
+
     public string ClimbUpBindingLabel =>
         climbUpKey == KeyCode.None
             ? "Up"

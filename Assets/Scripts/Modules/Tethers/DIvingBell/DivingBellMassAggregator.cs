@@ -108,6 +108,11 @@ public sealed class DivingBellMassAggregator : MonoBehaviour
     public float AggregateMass => aggregateMass;
     public Vector2 AggregateLocalCenterOfMass => aggregateLocalCenterOfMass;
 
+    public bool DockedMassHandoffComplete =>
+        IsAuthoritativelyDocked() &&
+        (worldItem == null ||
+         worldItem.Instance == null);
+
     private void Awake()
     {
         ResolveRefs();
@@ -149,15 +154,36 @@ public sealed class DivingBellMassAggregator : MonoBehaviour
         RefreshPayloadItemBinding();
         PruneContainedItems();
 
-        bool isDocked =
+        bool isPhysicallyDocked =
             IsAuthoritativelyDocked();
 
-        // This is the physical-support handoff only. Ownership/persistence is left
-        // untouched. BoatOwnedItemEscapeTracker performs the same rule defensively.
-        SetContainedCargoBoatSupport(
-            isDocked);
+        // IMPORTANT MASS HANDOFF RULE:
+        //
+        // TetherPayloadDock may report Docked before TetherDeploymentModule has
+        // finished transferring the SAME payload ItemInstance out of this live
+        // WorldItem and back into the installed storage slot.
+        //
+        // During that short window the boat-side storage mass does not own the bell
+        // yet. If aggregation stops merely because the physical dock says Docked,
+        // the bell disappears from total Boat mass for one or more physics frames
+        // and the hull visibly jumps/oscillates.
+        //
+        // WorldItem.Instance == null is the ownership-handoff marker for the live
+        // stored physical shell. TetherDeploymentModule clears it immediately before
+        // restoring the ItemInstance to storage and synchronously notifying storage
+        // mass listeners. Therefore aggregation may end only after BOTH conditions
+        // are true.
+        bool dockedMassHandoffComplete =
+            isPhysicallyDocked &&
+            (worldItem == null ||
+             worldItem.Instance == null);
 
-        if (isDocked)
+        // Contained cargo should resume Boat support only when the same handoff is
+        // complete, preventing an equivalent transient support gap/double-count.
+        SetContainedCargoBoatSupport(
+            dockedMassHandoffComplete);
+
+        if (dockedMassHandoffComplete)
         {
             aggregationActive = false;
             occupantContributionCount = 0;

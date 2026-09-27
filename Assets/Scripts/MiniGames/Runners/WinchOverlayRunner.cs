@@ -236,6 +236,7 @@ public sealed class WinchOverlayRunner : MonoBehaviour
         {
             NotifyIntentResult(
                 WinchControlIntent.Stop,
+                WinchControlInputPhase.Press,
                 false,
                 "WINCH CONTROL TARGET IS NO LONGER AVAILABLE");
 
@@ -247,6 +248,7 @@ public sealed class WinchOverlayRunner : MonoBehaviour
         {
             NotifyIntentResult(
                 WinchControlIntent.Stop,
+                WinchControlInputPhase.Press,
                 false,
                 "MISSING WINCH CONTROL INTENT");
 
@@ -261,6 +263,7 @@ public sealed class WinchOverlayRunner : MonoBehaviour
         {
             NotifyIntentResult(
                 WinchControlIntent.Stop,
+                WinchControlInputPhase.Press,
                 false,
                 "INVALID WINCH CONTROL INTENT");
 
@@ -272,6 +275,7 @@ public sealed class WinchOverlayRunner : MonoBehaviour
         {
             NotifyIntentResult(
                 payload.intent,
+                payload.phase,
                 false,
                 $"UNSUPPORTED WINCH INTENT VERSION {payload.version}");
 
@@ -279,15 +283,19 @@ public sealed class WinchOverlayRunner : MonoBehaviour
         }
 
         bool ok =
-            _activeWinch.TryApplyControlIntent(
+            _activeWinch.TryApplySurfaceControlIntent(
+                _activeRequester,
                 payload.intent,
+                payload.phase,
                 out string message);
 
         NotifyIntentResult(
             payload.intent,
+            payload.phase,
             ok,
             message);
     }
+
 
     private void HandleLineTransferEffect(
         MiniGameEffect effect)
@@ -353,14 +361,17 @@ public sealed class WinchOverlayRunner : MonoBehaviour
 
     private void NotifyIntentResult(
         WinchControlIntent intent,
+        WinchControlInputPhase phase,
         bool success,
         string message)
     {
         _activeCartridge?.NotifyControlIntentApplied(
             intent,
+            phase,
             success,
             message);
     }
+
 
     private void NotifyLineTransferResult(
         WinchLineTransferOperation operation,
@@ -375,6 +386,15 @@ public sealed class WinchOverlayRunner : MonoBehaviour
 
     private void ClearActiveSession()
     {
+        if (_activeWinch != null &&
+            _activeWinch.HasGameplayAuthority &&
+            _activeWinch.IsManualSurfaceControlActive)
+        {
+            _activeWinch.TryReleaseManualSurfaceControl(
+                _activeRequester,
+                out _);
+        }
+
         _activeTargetId =
             null;
 
@@ -390,6 +410,7 @@ public sealed class WinchOverlayRunner : MonoBehaviour
         _activeRequester =
             null;
     }
+
 
     private bool ResolveOverlay()
     {

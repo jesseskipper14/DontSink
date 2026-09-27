@@ -910,6 +910,7 @@ MonoBehaviour:
         containerState:
           rid: 9210759048355119172
         currentCharges: 0
+        retainedWaterVolume: 0
     - rid: 9210759048355119172
       type: {class: ItemContainerState, ns: , asm: Assembly-CSharp}
       data:
@@ -2486,6 +2487,15 @@ MonoBehaviour:
   boatBodyAlwaysUsesOcean: 1
   sliceCount: 10
   lastTotalSubmersion: 0
+  lastCappedRuntimeVolume: 0
+  lastUncappedRuntimeVolume: 0
+  lastRuntimeVolumeBypass01: 0
+  lastMaxTotalBuoyantForce: 0
+  lastAppliedCappedBuoyantForce: 0
+  lastAppliedUncappedBuoyantForce: 0
+  lastAppliedTotalBuoyantForce: 0
+  lastBuoyantAcceleration: 0
+  lastSurfaceYAtBodyX: 0
   enabledFlag: 1
   priority: 50
 --- !u!114 &6897800352757182041

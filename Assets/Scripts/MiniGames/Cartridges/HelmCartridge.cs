@@ -110,6 +110,31 @@ public sealed class HelmCartridge :
     public void DrawOverlayGUI(
         Rect panel)
     {
+        Event current =
+            Event.current;
+
+        // IMGUI text fields can retain keyboard focus and consume Escape before
+        // overlay-level close handling sees it. Handle Escape at the cartridge
+        // boundary before drawing/focusing the command terminal so the Helm
+        // always closes consistently.
+        if (current != null &&
+            current.type == EventType.KeyDown &&
+            current.keyCode == KeyCode.Escape)
+        {
+            GUI.FocusControl(
+                null);
+
+            _focusCommandField =
+                false;
+
+            _requestedClose =
+                true;
+
+            current.Use();
+
+            return;
+        }
+
         const float pad = 18f;
         const float line = 23f;
 

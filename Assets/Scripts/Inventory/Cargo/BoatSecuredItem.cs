@@ -8,7 +8,8 @@ public sealed class BoatSecuredItem :
     IInteractable,
     IUnsecureInteractable,
     IInteractPromptProvider,
-    IInteractPromptActionProvider
+    IInteractPromptActionProvider,
+    IInteractionDetailProvider
 {
     [Header("Interaction")]
     [SerializeField] private int interactionPriority = 25;
@@ -162,6 +163,20 @@ public sealed class BoatSecuredItem :
         TrySecurePlaceholder(context);
     }
 
+    public bool TryGetInteractionDetail(
+        in InteractContext context,
+        out string detail)
+    {
+        if (!isSecured)
+        {
+            detail = null;
+            return false;
+        }
+
+        detail = "Secured";
+        return true;
+    }
+
     public string GetPromptVerb(in InteractContext context)
     {
         if (isSecured)
@@ -200,8 +215,6 @@ public sealed class BoatSecuredItem :
         actions.Add(new PromptAction(
             $"Press E to Fasten Cargo ({pct}%)",
             priority: 100,
-            showProgress: true,
-            progress01: SecureQualityNormalized,
             pulse: SecureQualityNormalized <= 0.25f));
 
         actions.Add(new PromptAction(

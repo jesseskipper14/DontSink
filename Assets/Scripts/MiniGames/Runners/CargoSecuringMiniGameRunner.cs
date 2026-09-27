@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using MiniGames;
 
 public sealed class CargoSecuringMiniGameRunner : MonoBehaviour
@@ -6,16 +8,26 @@ public sealed class CargoSecuringMiniGameRunner : MonoBehaviour
     [Header("Refs")]
     [SerializeField] private MiniGameOverlayHost overlay;
 
-    [Header("Rope Consumable")]
-    [SerializeField] private ItemDefinition ropeItemDefinition;
-    [Min(1)]
-    [SerializeField] private int secureRopeCost = 3;
-    [Min(1)]
-    [SerializeField] private int fastenRopeCost = 1;
+    [Header("Tether Consumable")]
+    [Tooltip(
+        "Any ItemDefinition present in this catalog may be consumed as securing tether. " +
+        "Add new rope/cable types to the catalog rather than hardcoding them here.")]
+    [SerializeField] private TetherLineCatalog tetherLineCatalog;
 
-    [Tooltip("Stored on secured cargo when rope is used. Quality still clamps to 1.")]
+    [Min(1)]
+    [FormerlySerializedAs("secureRopeCost")]
+    [SerializeField] private int secureTetherCost = 3;
+
+    [Min(1)]
+    [FormerlySerializedAs("fastenRopeCost")]
+    [SerializeField] private int fastenTetherCost = 1;
+
+    [Tooltip(
+        "Stored on secured cargo when tether is used. This remains a generic securing " +
+        "bonus for now; line-specific strength data remains authoritative in TetherLineCatalog.")]
     [Range(0f, 1f)]
-    [SerializeField] private float ropeBonus01 = 0.15f;
+    [FormerlySerializedAs("ropeBonus01")]
+    [SerializeField] private float tetherBonus01 = 0.15f;
 
     [Header("Secure Result")]
     [Tooltip("Max/current quality applied when the timing result is perfect.")]
@@ -81,11 +93,11 @@ public sealed class CargoSecuringMiniGameRunner : MonoBehaviour
 
                 Log($"Secure result rating={rating} quality={q:0.00} ok={ok}");
             },
-            ropeButtonLabel: $"Secure with Rope (cost {secureRopeCost})",
-            ropeCost: secureRopeCost,
-            getRopeCount: () => GetRopeCount(inventory),
-            canUseRope: () => CanUseRope(inventory, secureRopeCost),
-            onRopeCompleted: () => TrySecureWithRope(item, zone, inventory));
+            tetherOptions:
+                BuildSecureTetherOptions(
+                    item,
+                    zone,
+                    inventory));
 
         overlay.Open(cart, BuildContext(item));
         return true;
@@ -117,104 +129,335 @@ public sealed class CargoSecuringMiniGameRunner : MonoBehaviour
 
                 Log($"Fasten result rating={rating} restore={restore:0.00} ok={ok}");
             },
-            ropeButtonLabel: $"Fasten with Rope (cost {fastenRopeCost})",
-            ropeCost: fastenRopeCost,
-            getRopeCount: () => GetRopeCount(inventory),
-            canUseRope: () => CanUseRope(inventory, fastenRopeCost) && item.SecureQualityCurrent01 < item.SecureQualityMax01,
-            onRopeCompleted: () => TryFastenWithRope(item, inventory));
+            tetherOptions:
+                BuildFastenTetherOptions(
+                    item,
+                    inventory));
 
         overlay.Open(cart, BuildContext(item));
         return true;
     }
 
-    private bool TrySecureWithRope(BoatSecuredItem item, BoatSecureZone zone, PlayerInventory inventory)
+    private List<CargoSecuringTimingCartridge.TetherOption>
+        BuildSecureTetherOptions(
+            BoatSecuredItem item,
+            BoatSecureZone zone,
+            PlayerInventory inventory)
     {
-        if (item == null || zone == null)
-            return false;
+        return BuildTetherOptions(
+            inventory,
+            secureTetherCost,
+            "Secure with",
+            definition =>
+                TrySecureWithTether(
+                    item,
+                    zone,
+                    inventory,
+                    definition),
+            extraCanUse: null);
+    }
 
-        if (!TryConsumeRope(inventory, secureRopeCost))
-            return false;
+    private List<CargoSecuringTimingCartridge.TetherOption>
+        BuildFastenTetherOptions(
+            BoatSecuredItem item,
+            PlayerInventory inventory)
+    {
+        return BuildTetherOptions(
+            inventory,
+            fastenTetherCost,
+            "Fasten with",
+            definition =>
+                TryFastenWithTether(
+                    item,
+                    inventory,
+                    definition),
+            extraCanUse: () =>
+                item != null &&
+                item.IsSecured &&
+                item.SecureQualityCurrent01 <
+                item.SecureQualityMax01);
+    }
 
-        float q = Mathf.Clamp01(secureQualityAtPerfect);
+    private List<CargoSecuringTimingCartridge.TetherOption>
+        BuildTetherOptions(
+            PlayerInventory inventory,
+            int cost,
+            string verb,
+            System.Func<ItemDefinition, bool> onCompleted,
+            System.Func<bool> extraCanUse)
+    {
+        List<CargoSecuringTimingCartridge.TetherOption>
+            options =
+                new List<
+                    CargoSecuringTimingCartridge.TetherOption>();
 
-        bool ok = item.SecureInZone(
-            zone,
-            q,
-            q,
-            usedRope: true,
-            ropeBonus01: ropeBonus01);
-
-        if (!ok)
+        if (inventory == null ||
+            tetherLineCatalog == null ||
+            tetherLineCatalog.Entries == null)
         {
-            RefundRope(inventory, secureRopeCost);
-            Log("Secure with rope failed after consuming rope. Refunded rope.");
+            return options;
+        }
+
+        HashSet<ItemDefinition> visited =
+            new HashSet<ItemDefinition>();
+
+        IReadOnlyList<TetherLineCatalog.Entry> entries =
+            tetherLineCatalog.Entries;
+
+        for (int i = 0;
+             i < entries.Count;
+             i++)
+        {
+            TetherLineCatalog.Entry entry =
+                entries[i];
+
+            ItemDefinition definition =
+                entry != null
+                    ? entry.ItemDefinition
+                    : null;
+
+            if (definition == null ||
+                !visited.Add(
+                    definition))
+            {
+                continue;
+            }
+
+            int initialCount =
+                InventoryConsumableUtility.Count(
+                    inventory,
+                    definition);
+
+            // The player asked to choose among tether materials they actually
+            // have. Do not clutter the mini-game with catalog entries at zero.
+            if (initialCount <= 0)
+                continue;
+
+            ItemDefinition capturedDefinition =
+                definition;
+
+            options.Add(
+                new CargoSecuringTimingCartridge.TetherOption(
+                    buttonLabel:
+                        $"{verb} " +
+                        $"{capturedDefinition.DisplayName} " +
+                        $"(cost {cost})",
+                    resultLabel:
+                        capturedDefinition.DisplayName,
+                    cost:
+                        cost,
+                    getCount:
+                        () =>
+                            GetTetherCount(
+                                inventory,
+                                capturedDefinition),
+                    canUse:
+                        () =>
+                            CanUseTether(
+                                inventory,
+                                capturedDefinition,
+                                cost) &&
+                            (extraCanUse == null ||
+                             extraCanUse()),
+                    onCompleted:
+                        () =>
+                            onCompleted != null &&
+                            onCompleted(
+                                capturedDefinition)));
+        }
+
+        return options;
+    }
+
+    private bool TrySecureWithTether(
+        BoatSecuredItem item,
+        BoatSecureZone zone,
+        PlayerInventory inventory,
+        ItemDefinition tetherDefinition)
+    {
+        if (item == null ||
+            zone == null ||
+            tetherDefinition == null)
+        {
             return false;
         }
 
-        Log($"Secure with rope quality={q:0.00} cost={secureRopeCost}");
-        return true;
-    }
-
-    private bool TryFastenWithRope(BoatSecuredItem item, PlayerInventory inventory)
-    {
-        if (item == null || !item.IsSecured)
-            return false;
-
-        if (item.SecureQualityCurrent01 >= item.SecureQualityMax01)
-            return false;
-
-        if (!TryConsumeRope(inventory, fastenRopeCost))
-            return false;
-
-        bool ok = item.TryFasten(fastenRestoreAtPerfect);
-
-        if (!ok)
+        if (!TryConsumeTether(
+                inventory,
+                tetherDefinition,
+                secureTetherCost))
         {
-            RefundRope(inventory, fastenRopeCost);
-            Log("Fasten with rope failed after consuming rope. Refunded rope.");
             return false;
         }
 
-        Log($"Fasten with rope restore={fastenRestoreAtPerfect:0.00} cost={fastenRopeCost}");
+        float q =
+            Mathf.Clamp01(
+                secureQualityAtPerfect);
+
+        bool ok =
+            item.SecureInZone(
+                zone,
+                q,
+                q,
+                usedRope: true,
+                ropeBonus01: tetherBonus01);
+
+        if (!ok)
+        {
+            RefundTether(
+                inventory,
+                tetherDefinition,
+                secureTetherCost);
+
+            Log(
+                "Secure with tether failed after consumption. " +
+                $"Refunded {tetherDefinition.DisplayName}.");
+
+            return false;
+        }
+
+        Log(
+            $"Secure with tether quality={q:0.00} " +
+            $"cost={secureTetherCost} " +
+            $"material={tetherDefinition.DisplayName}");
+
         return true;
     }
 
-    private int GetRopeCount(PlayerInventory inventory)
+    private bool TryFastenWithTether(
+        BoatSecuredItem item,
+        PlayerInventory inventory,
+        ItemDefinition tetherDefinition)
     {
-        if (ropeItemDefinition == null || inventory == null)
+        if (item == null ||
+            !item.IsSecured ||
+            tetherDefinition == null)
+        {
+            return false;
+        }
+
+        if (item.SecureQualityCurrent01 >=
+            item.SecureQualityMax01)
+        {
+            return false;
+        }
+
+        if (!TryConsumeTether(
+                inventory,
+                tetherDefinition,
+                fastenTetherCost))
+        {
+            return false;
+        }
+
+        bool ok =
+            item.TryFasten(
+                fastenRestoreAtPerfect);
+
+        if (!ok)
+        {
+            RefundTether(
+                inventory,
+                tetherDefinition,
+                fastenTetherCost);
+
+            Log(
+                "Fasten with tether failed after consumption. " +
+                $"Refunded {tetherDefinition.DisplayName}.");
+
+            return false;
+        }
+
+        Log(
+            $"Fasten with tether restore={fastenRestoreAtPerfect:0.00} " +
+            $"cost={fastenTetherCost} " +
+            $"material={tetherDefinition.DisplayName}");
+
+        return true;
+    }
+
+    private static int GetTetherCount(
+        PlayerInventory inventory,
+        ItemDefinition tetherDefinition)
+    {
+        if (inventory == null ||
+            tetherDefinition == null)
+        {
             return 0;
+        }
 
-        return InventoryConsumableUtility.Count(inventory, ropeItemDefinition);
+        return
+            InventoryConsumableUtility.Count(
+                inventory,
+                tetherDefinition);
     }
 
-    private bool CanUseRope(PlayerInventory inventory, int cost)
+    private static bool CanUseTether(
+        PlayerInventory inventory,
+        ItemDefinition tetherDefinition,
+        int cost)
     {
-        if (ropeItemDefinition == null || inventory == null || cost <= 0)
+        if (inventory == null ||
+            tetherDefinition == null ||
+            cost <= 0)
+        {
             return false;
+        }
 
-        return InventoryConsumableUtility.Count(inventory, ropeItemDefinition) >= cost;
+        return
+            GetTetherCount(
+                inventory,
+                tetherDefinition) >= cost;
     }
 
-    private bool TryConsumeRope(PlayerInventory inventory, int cost)
+    private static bool TryConsumeTether(
+        PlayerInventory inventory,
+        ItemDefinition tetherDefinition,
+        int cost)
     {
-        if (ropeItemDefinition == null || inventory == null || cost <= 0)
+        if (inventory == null ||
+            tetherDefinition == null ||
+            cost <= 0)
+        {
             return false;
+        }
 
-        return InventoryConsumableUtility.TryConsume(inventory, ropeItemDefinition, cost);
+        return
+            InventoryConsumableUtility.TryConsume(
+                inventory,
+                tetherDefinition,
+                cost);
     }
 
-    private void RefundRope(PlayerInventory inventory, int amount)
+    private void RefundTether(
+        PlayerInventory inventory,
+        ItemDefinition tetherDefinition,
+        int amount)
     {
-        if (inventory == null || ropeItemDefinition == null || amount <= 0)
+        if (inventory == null ||
+            tetherDefinition == null ||
+            amount <= 0)
+        {
             return;
+        }
 
-        ItemInstance refund = ItemInstance.Create(ropeItemDefinition, amount);
+        ItemInstance refund =
+            ItemInstance.Create(
+                tetherDefinition,
+                amount);
 
-        if (!inventory.TryAutoInsert(refund, out ItemInstance remainder) ||
-            remainder != null && !remainder.IsDepleted())
+        if (!inventory.TryAutoInsert(
+                refund,
+                out ItemInstance remainder) ||
+            remainder != null &&
+            !remainder.IsDepleted())
         {
             Debug.LogWarning(
-                $"[CargoSecuringMiniGameRunner] Failed to fully refund rope amount={amount}. The inventory gods demand tribute.",
+                "[CargoSecuringMiniGameRunner] " +
+                $"Failed to fully refund tether " +
+                $"item='{tetherDefinition.DisplayName}' " +
+                $"amount={amount}. " +
+                "The inventory gods demand tribute.",
                 this);
         }
     }

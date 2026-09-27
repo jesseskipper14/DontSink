@@ -24,11 +24,19 @@ public sealed class InventoryDragController : MonoBehaviour
     [SerializeField] private Camera worldCamera;
 
     [Header("Debug")]
-    [SerializeField] private bool verboseLogging = true;
+    [SerializeField] private bool verboseLogging = false;
 
     [System.NonSerialized] private ItemInstance draggedItem;
     private InventorySlotUI sourceSlot;
     private bool isDragging;
+
+    // Normal UI drags are reservation-backed. The authoritative ItemInstance stays
+    // in its source slot until a drop actually commits.
+    private bool _reservationBackedDrag;
+    private ItemInstance _reservedSourceItem;
+    private string _reservedSourceInstanceId;
+    private int _reservedQuantity;
+    private bool _reservationPreviewIsSynthetic;
 
     // A deployed sounding line is special: while the UI drag is in progress,
     // the ItemInstance stays authoritatively in Hands. We only release it into
@@ -51,8 +59,111 @@ public sealed class InventoryDragController : MonoBehaviour
 
     private readonly List<WorldDropTargetCandidate> _worldDropCandidates = new();
 
+    // Safety state. Drag teardown must never silently become a world drop.
+    private bool _resolvingLifecycleDrag;
+    private bool _applicationQuitting;
+
+    // Drag-preview invalid-target visuals only need recomputing when the dragged
+    // item reference/quantity changes, not every frame.
+    private ItemInstance _lastPreviewItem;
+    private int _lastPreviewQuantity = int.MinValue;
+
     public bool IsDragging => isDragging;
     public ItemInstance DraggedItem => draggedItem;
+    public bool IsReservationBackedDrag => isDragging && _reservationBackedDrag;
+
+    public int GetReservedQuantityFor(
+        InventorySlotUI slot)
+    {
+        if (!isDragging ||
+            !_reservationBackedDrag ||
+            slot == null ||
+            sourceSlot != slot)
+        {
+            return 0;
+        }
+
+        return Mathf.Max(
+            0,
+            _reservedQuantity);
+    }
+
+    /// <summary>
+    /// The exact PlayerInventory this UI drag controller operates on.
+    /// Used by persistence to associate scene-level UI with the correct player
+    /// without relying on transform hierarchy or arbitrary object searches.
+    /// </summary>
+    public PlayerInventory BoundInventory => inventory;
+
+    /// <summary>
+    /// Persistence boundary seam.
+    ///
+    /// A normal UI drag temporarily removes the ItemInstance from its bound slot.
+    /// Before inventory/equipment persistence captures a snapshot, that transient
+    /// ownership must be reconciled back into authoritative storage or the snapshot
+    /// will incorrectly omit the dragged item.
+    ///
+    /// This method NEVER world-drops as a fallback.
+    /// </summary>
+    public bool PrepareForPersistenceCapture()
+    {
+        if (!isDragging &&
+            draggedItem == null)
+        {
+            return true;
+        }
+
+        if (_reservationBackedDrag)
+        {
+            // Reservation-backed drags never removed authoritative inventory.
+            // Persistence only needs the transient UI reservation cleared.
+            Log(
+                $"PrepareForPersistenceCapture | cancelling reservation-backed drag | " +
+                $"source={DescribeSlot(sourceSlot)} reserved={_reservedQuantity} " +
+                $"item={DescribeItem(_reservedSourceItem)}");
+
+            Cleanup();
+            return true;
+        }
+
+        if (_draggingDeployedSounder)
+        {
+            // Deployed sounder also remains authoritatively in Hands.
+            Cleanup();
+            return true;
+        }
+
+        if (draggedItem == null ||
+            draggedItem.IsDepleted())
+        {
+            Cleanup();
+            return true;
+        }
+
+        // Defensive compatibility path for any legacy caller that starts a detached
+        // drag through BeginDrag(ItemInstance, InventorySlotUI).
+        ItemInstance itemToResolve =
+            draggedItem;
+
+        if (TryResolveItemWithoutWorldDrop(
+                itemToResolve,
+                sourceSlot))
+        {
+            Log(
+                $"PrepareForPersistenceCapture | reconciled legacy detached drag | " +
+                $"item={DescribeItem(itemToResolve)}");
+
+            Cleanup();
+            return true;
+        }
+
+        KeepDragActive(
+            itemToResolve,
+            "PrepareForPersistenceCapture | legacy detached drag had no safe storage destination.");
+
+        return false;
+    }
+
 
     private void Awake()
     {
@@ -70,6 +181,29 @@ public sealed class InventoryDragController : MonoBehaviour
 
         HideVisual();
         Log($"Awake | canvas={(canvas != null ? canvas.name : "NULL")} | dragIcon={(dragIcon != null ? dragIcon.name : "NULL")}");
+    }
+
+    private void OnApplicationQuit()
+    {
+        _applicationQuitting = true;
+    }
+
+    private void OnDisable()
+    {
+        if (_applicationQuitting)
+            return;
+
+        if (isDragging || draggedItem != null)
+            ResolveInterruptedDragWithoutWorldDrop("OnDisable");
+    }
+
+    private void OnDestroy()
+    {
+        if (_applicationQuitting)
+            return;
+
+        if (isDragging || draggedItem != null)
+            ResolveInterruptedDragWithoutWorldDrop("OnDestroy");
     }
 
     private void Update()
@@ -101,16 +235,7 @@ public sealed class InventoryDragController : MonoBehaviour
         if (dragCargoLabel != null)
             dragCargoLabel.rectTransform.anchoredPosition = localPoint;
 
-        if (isDragging)
-        {
-            playerInventoryUI?.RefreshDragPreview(draggedItem);
-            loadoutOverlayUI?.RefreshDragPreview(draggedItem);
-        }
-        else
-        {
-            playerInventoryUI?.RefreshDragPreview(null);
-            loadoutOverlayUI?.RefreshDragPreview(null);
-        }
+        RefreshDragPreviewsIfChanged();
 
         if (Input.GetMouseButtonDown(1))
         {
@@ -121,19 +246,49 @@ public sealed class InventoryDragController : MonoBehaviour
                 bool deposited = TryDepositSingleInto(target);
                 if (deposited)
                     target.Refresh();
+
+                return;
             }
-            else
+
+            // Right-click over a world drop target means "deposit one into that
+            // target" first. Raw world spawning is only allowed when there is no
+            // world-drop target under/near the pointer at all.
+            bool worldTargetHandled =
+                TryDepositSingleIntoWorldTarget(
+                    out bool hadWorldTargetCandidate);
+
+            if (!worldTargetHandled &&
+                !hadWorldTargetCandidate)
             {
                 TryDropSingleToWorld();
             }
         }
     }
 
-    public void BeginDrag(InventorySlotUI slot)
+    public void BeginDrag(
+        InventorySlotUI slot)
+    {
+        BeginDrag(
+            slot,
+            requestedQuantity: -1);
+    }
+
+
+    public void BeginDrag(
+        InventorySlotUI slot,
+        int requestedQuantity)
     {
         if (slot == null)
         {
-            LogWarning("BeginDrag ignored because slot was null.");
+            LogWarning(
+                "BeginDrag ignored because slot was null.");
+            return;
+        }
+
+        if (isDragging)
+        {
+            LogWarning(
+                "BeginDrag ignored because a drag is already active.");
             return;
         }
 
@@ -143,61 +298,465 @@ public sealed class InventoryDragController : MonoBehaviour
             return;
         }
 
-        ItemInstance item = slot.RemoveItem();
-        if (item == null || item.Definition == null)
+        ItemInstance sourceItem =
+            slot.GetBoundItem();
+
+        if (sourceItem == null ||
+            sourceItem.Definition == null ||
+            sourceItem.IsDepleted())
         {
-            LogWarning($"BeginDrag failed | source={DescribeSlot(slot)} | removed item was null/invalid");
+            LogWarning(
+                $"BeginDrag failed | source={DescribeSlot(slot)} | source item was null/invalid");
             return;
         }
 
-        draggedItem = item;
-        sourceSlot = slot;
-        isDragging = true;
+        int quantity =
+            requestedQuantity <= 0
+                ? sourceItem.Quantity
+                : Mathf.Clamp(
+                    requestedQuantity,
+                    1,
+                    sourceItem.Quantity);
 
-        ShowVisual(item);
+        // Partial reservations are only meaningful for splittable stack items.
+        if (quantity < sourceItem.Quantity &&
+            !sourceItem.CanSplit)
+        {
+            quantity =
+                sourceItem.Quantity;
+        }
 
-        Log($"BeginDrag | source={DescribeSlot(sourceSlot)} | item={DescribeItem(draggedItem)}");
+        sourceSlot =
+            slot;
+
+        _reservationBackedDrag =
+            true;
+
+        _reservedSourceItem =
+            sourceItem;
+
+        _reservedSourceInstanceId =
+            sourceItem.InstanceId;
+
+        _reservedQuantity =
+            quantity;
+
+        _reservationPreviewIsSynthetic =
+            quantity < sourceItem.Quantity;
+
+        draggedItem =
+            _reservationPreviewIsSynthetic
+                ? ItemInstance.Create(
+                    sourceItem.Definition,
+                    quantity)
+                : sourceItem;
+
+        if (draggedItem == null ||
+            draggedItem.Definition == null)
+        {
+            LogWarning(
+                $"BeginDrag failed creating reservation preview | source={DescribeSlot(slot)}");
+            ClearReservationMetadata();
+            sourceSlot = null;
+            return;
+        }
+
+        isDragging =
+            true;
+
+        ShowVisual(
+            draggedItem);
+
+        sourceSlot.Refresh();
+
+        Log(
+            $"BeginDrag RESERVATION | source={DescribeSlot(sourceSlot)} | " +
+            $"authoritative={DescribeItem(_reservedSourceItem)} | " +
+            $"reserved={_reservedQuantity} | partial={_reservationPreviewIsSynthetic}");
     }
 
-    public void BeginDrag(ItemInstance item, InventorySlotUI slot)
+    private bool TryValidateReservation(
+        out ItemInstance currentSource)
     {
-        if (item == null || item.Definition == null)
+        currentSource =
+            null;
+
+        if (!isDragging ||
+            !_reservationBackedDrag ||
+            sourceSlot == null ||
+            _reservedSourceItem == null ||
+            _reservedQuantity <= 0)
         {
-            LogWarning("BeginDrag(item, slot) failed because item was null/invalid.");
+            return false;
+        }
+
+        currentSource =
+            sourceSlot.GetBoundItem();
+
+        if (currentSource == null ||
+            currentSource.Definition == null ||
+            currentSource.IsDepleted())
+        {
+            LogWarning(
+                $"Reservation invalid because source is empty/invalid | " +
+                $"source={DescribeSlot(sourceSlot)}");
+            return false;
+        }
+
+        bool sameReference =
+            ReferenceEquals(
+                currentSource,
+                _reservedSourceItem);
+
+        bool sameId =
+            !string.IsNullOrWhiteSpace(
+                _reservedSourceInstanceId) &&
+            string.Equals(
+                currentSource.InstanceId,
+                _reservedSourceInstanceId,
+                System.StringComparison.Ordinal);
+
+        if (!sameReference &&
+            !sameId)
+        {
+            LogWarning(
+                $"Reservation invalid because source item changed | " +
+                $"expected={DescribeItem(_reservedSourceItem)} | " +
+                $"actual={DescribeItem(currentSource)}");
+            return false;
+        }
+
+        if (currentSource.Quantity <
+            _reservedQuantity)
+        {
+            LogWarning(
+                $"Reservation invalid because source quantity fell below reservation | " +
+                $"sourceQty={currentSource.Quantity} reserved={_reservedQuantity}");
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool TryExtractReservedQuantity(
+        int quantity,
+        out ItemInstance extracted)
+    {
+        extracted =
+            null;
+
+        if (!TryValidateReservation(
+                out ItemInstance currentSource))
+        {
+            return false;
+        }
+
+        int amount =
+            Mathf.Clamp(
+                quantity,
+                1,
+                _reservedQuantity);
+
+        if (amount > currentSource.Quantity)
+            return false;
+
+        if (amount == currentSource.Quantity)
+        {
+            extracted =
+                sourceSlot.RemoveItem();
+        }
+        else
+        {
+            extracted =
+                currentSource.SplitOff(
+                    amount);
+        }
+
+        if (extracted == null ||
+            extracted.Definition == null ||
+            extracted.IsDepleted())
+        {
+            LogWarning(
+                $"TryExtractReservedQuantity failed | amount={amount} " +
+                $"source={DescribeSlot(sourceSlot)}");
+            return false;
+        }
+
+        sourceSlot.Refresh();
+
+        return true;
+    }
+
+    private bool TryDetachEntireReservation(
+        out ItemInstance extracted)
+    {
+        extracted =
+            null;
+
+        if (!_reservationBackedDrag ||
+            _reservedQuantity <= 0)
+        {
+            return false;
+        }
+
+        int amount =
+            _reservedQuantity;
+
+        if (!TryExtractReservedQuantity(
+                amount,
+                out extracted))
+        {
+            return false;
+        }
+
+        // From this point onward, the existing transaction machinery may treat
+        // the extracted object exactly like the old drag implementation did.
+        // If commit fails it is restored through the normal rollback paths.
+        _reservationBackedDrag =
+            false;
+
+        _reservedSourceItem =
+            null;
+
+        _reservedSourceInstanceId =
+            null;
+
+        _reservedQuantity =
+            0;
+
+        _reservationPreviewIsSynthetic =
+            false;
+
+        draggedItem =
+            extracted;
+
+        ShowVisual(
+            draggedItem);
+
+        return true;
+    }
+
+    private void CommitOneReservedUnit()
+    {
+        if (!_reservationBackedDrag)
+            return;
+
+        _reservedQuantity =
+            Mathf.Max(
+                0,
+                _reservedQuantity - 1);
+
+        if (_reservedQuantity <= 0)
+        {
+            Cleanup();
+            return;
+        }
+
+        ItemInstance currentSource =
+            sourceSlot != null
+                ? sourceSlot.GetBoundItem()
+                : null;
+
+        if (currentSource == null ||
+            currentSource.Definition == null)
+        {
+            LogWarning(
+                "CommitOneReservedUnit lost its reservation source after commit. " +
+                "Clearing the remaining UI reservation; authoritative inventory is unchanged.");
+            Cleanup();
+            return;
+        }
+
+        _reservedSourceItem =
+            currentSource;
+
+        _reservedSourceInstanceId =
+            currentSource.InstanceId;
+
+        if (_reservationPreviewIsSynthetic)
+        {
+            draggedItem =
+                ItemInstance.Create(
+                    currentSource.Definition,
+                    _reservedQuantity);
+        }
+        else
+        {
+            draggedItem =
+                currentSource;
+        }
+
+        ShowVisual(
+            draggedItem);
+
+        sourceSlot?.Refresh();
+    }
+
+    private bool RestoreExtractedReservationUnit(
+        ItemInstance extracted)
+    {
+        if (extracted == null ||
+            extracted.IsDepleted())
+        {
+            return true;
+        }
+
+        if (sourceSlot != null)
+        {
+            if (sourceSlot.TryPlaceItem(
+                    extracted,
+                    out ItemInstance remainder))
+            {
+                if (remainder == null ||
+                    remainder.IsDepleted())
+                {
+                    sourceSlot.Refresh();
+                    return true;
+                }
+
+                extracted =
+                    remainder;
+            }
+        }
+
+        if (inventory != null &&
+            inventory.CanFullyAdd(
+                extracted) &&
+            inventory.TryAddInstance(
+                extracted))
+        {
+            // The rollback no longer lives at the reservation source, so the
+            // reservation itself is no longer valid. The uncommitted remainder
+            // was never removed and remains safely in inventory.
+            Cleanup();
+            return true;
+        }
+
+        return false;
+    }
+
+    private void ConvertFailedReservationUnitToDetachedDrag(
+        ItemInstance extracted,
+        string reason)
+    {
+        // Any unextracted reserved quantity never left the source and is therefore
+        // safe. Only the one extracted unit remains transient.
+        ClearReservationMetadata();
+
+        draggedItem =
+            extracted;
+
+        isDragging =
+            extracted != null &&
+            !extracted.IsDepleted();
+
+        if (isDragging)
+            ShowVisual(draggedItem);
+        else
+            HideVisual();
+
+        sourceSlot?.Refresh();
+
+        LogWarning(
+            $"{reason} Remaining reservation was cancelled; extracted unit retained as detached drag.");
+    }
+
+    private void ClearReservationMetadata()
+    {
+        _reservationBackedDrag =
+            false;
+
+        _reservedSourceItem =
+            null;
+
+        _reservedSourceInstanceId =
+            null;
+
+        _reservedQuantity =
+            0;
+
+        _reservationPreviewIsSynthetic =
+            false;
+    }
+
+    public void BeginDrag(
+        ItemInstance item,
+        InventorySlotUI slot)
+    {
+        // Compatibility overload. The normal InventorySlotUI path no longer uses
+        // detached ItemInstances. If the supplied item is still the authoritative
+        // source object, convert it to a reservation. Otherwise preserve it as a
+        // legacy detached drag so older callers do not silently break.
+        if (item == null ||
+            item.Definition == null)
+        {
+            LogWarning(
+                "BeginDrag(item, slot) failed because item was null/invalid.");
             return;
         }
 
         if (isDragging)
         {
-            LogWarning("BeginDrag(item, slot) ignored because drag is already active.");
+            LogWarning(
+                "BeginDrag(item, slot) ignored because drag is already active.");
             return;
         }
 
-        draggedItem = item;
-        sourceSlot = slot;
-        isDragging = true;
+        if (slot != null &&
+            ReferenceEquals(
+                slot.GetBoundItem(),
+                item))
+        {
+            BeginDrag(
+                slot,
+                item.Quantity);
+            return;
+        }
 
-        ShowVisual(item);
+        ClearReservationMetadata();
 
-        Log($"BeginDrag(item, slot) | source={DescribeSlot(sourceSlot)} | item={DescribeItem(draggedItem)}");
+        draggedItem =
+            item;
+
+        sourceSlot =
+            slot;
+
+        isDragging =
+            true;
+
+        ShowVisual(
+            item);
+
+        LogWarning(
+            $"BeginDrag(item, slot) | LEGACY DETACHED path | " +
+            $"source={DescribeSlot(sourceSlot)} | item={DescribeItem(draggedItem)}");
     }
+
 
     public void EndDrag()
     {
         if (!isDragging)
         {
-            Log("EndDrag ignored because not dragging.");
+            Log(
+                "EndDrag ignored because not dragging.");
             return;
         }
 
-        InventorySlotUI target = FindTargetSlotUnderMouse();
-        ItemInstance working = draggedItem;
+        if (IsLikelyLifecycleInterruptedEndDrag())
+        {
+            ResolveInterruptedDragWithoutWorldDrop(
+                "EndDrag lifecycle interruption");
+            return;
+        }
 
-        Log($"EndDrag BEGIN | source={DescribeSlot(sourceSlot)} | target={DescribeSlot(target)} | item={DescribeItem(working)}");
+        InventorySlotUI target =
+            FindTargetSlotUnderMouse();
 
         if (_draggingDeployedSounder)
         {
-            // Dropping it back onto its own Hands slot is just a cancelled drag.
+            ItemInstance sounder =
+                draggedItem;
+
             if (target == sourceSlot)
             {
                 Cleanup();
@@ -206,9 +765,9 @@ public sealed class InventoryDragController : MonoBehaviour
 
             if (_deployedSounderController != null &&
                 _deployedSounderController.IsActiveDeployedSounder(
-                    working) &&
+                    sounder) &&
                 _deployedSounderController.TryReleaseDeployedSounderToWorld(
-                    working,
+                    sounder,
                     out _))
             {
                 Log(
@@ -225,119 +784,142 @@ public sealed class InventoryDragController : MonoBehaviour
             return;
         }
 
+        if (_reservationBackedDrag)
+        {
+            // Returning to the source is a pure reservation cancellation. Nothing
+            // authoritative ever moved.
+            if (target == sourceSlot)
+            {
+                Cleanup();
+                return;
+            }
+
+            if (!TryDetachEntireReservation(
+                    out ItemInstance extracted))
+            {
+                LogWarning(
+                    "EndDrag | reservation could not be validated/extracted. Cancelling transient drag.");
+                Cleanup();
+                return;
+            }
+
+            draggedItem =
+                extracted;
+        }
+
+        ItemInstance working =
+            draggedItem;
+
+        Log(
+            $"EndDrag COMMIT | source={DescribeSlot(sourceSlot)} | " +
+            $"target={DescribeSlot(target)} | item={DescribeItem(working)}");
+
+        if (working == null ||
+            working.IsDepleted())
+        {
+            Cleanup();
+            return;
+        }
+
         if (target != null)
         {
-            if (target.TryPlaceItem(working, out ItemInstance displaced))
+            if (TryCommitUiDropTransaction(
+                    target,
+                    working))
             {
-                Log($"EndDrag | target accepted item | target={DescribeSlot(target)} | displaced={DescribeItem(displaced)}");
-
-                if (displaced == null || displaced.IsDepleted())
-                {
-                    Cleanup();
-                    return;
-                }
-
-                bool resolved = false;
-
-                if (sourceSlot != null && sourceSlot != target)
-                {
-                    if (sourceSlot.TryPlaceItem(displaced, out ItemInstance returned))
-                    {
-                        Log($"EndDrag | source accepted displaced item back | source={DescribeSlot(sourceSlot)} | returned={DescribeItem(returned)}");
-
-                        if (returned == null || returned.IsDepleted())
-                        {
-                            Cleanup();
-                            return;
-                        }
-
-                        displaced = returned;
-                    }
-                }
-
-                if (displacedItemResolver != null)
-                    resolved = displacedItemResolver.TryResolve(displaced, sourceSlot);
-
-                if (resolved)
-                {
-                    Cleanup();
-                    return;
-                }
-
-                // Full rollback if displaced item could not be resolved anywhere.
-                LogWarning("EndDrag | displaced item could not be resolved. Rolling back swap.");
-
-                ItemInstance rolledBackWorking = target.RemoveItem();
-                if (rolledBackWorking == null)
-                    rolledBackWorking = working;
-
-                bool targetRestored = target.TryPlaceItem(displaced, out ItemInstance targetRestoreRemainder);
-                bool sourceRestored = sourceSlot != null && sourceSlot.TryPlaceItem(rolledBackWorking, out ItemInstance sourceRestoreRemainder);
-
-                //LogWarning($"EndDrag rollback | targetRestored={targetRestored} remainder={DescribeItem(targetRestoreRemainder)} | sourceRestored={sourceRestored} remainder={DescribeItem(sourceRestoreRemainder)}");
-
-                Cleanup();
-                return;
-            }
-            else
-            {
-                LogWarning($"EndDrag | target rejected item | target={DescribeSlot(target)} | item={DescribeItem(working)}");
-                target.PlayInvalidTargetFeedback();
-            }
-        }
-        else
-        {
-            Log("EndDrag | no UI target under mouse, trying world container target.");
-
-            if (TryDepositDraggedItemIntoWorldTarget(working, out ItemInstance remainder))
-            {
-                if (remainder == null || remainder.IsDepleted())
-                {
-                    Cleanup();
-                    return;
-                }
-
-                // A world target may intentionally accept only part of a stack.
-                // The dragged stack originated from sourceSlot, which is normally
-                // empty for the duration of the drag, so return the remainder there
-                // automatically instead of leaving a stranded partial stack attached
-                // to the cursor after the mouse button has already been released.
-                if (TryResolvePartialWorldDepositRemainder(remainder))
-                {
-                    Cleanup();
-                    return;
-                }
-
-                // Absolute safety fallback: never destroy or silently lose an item if
-                // the original slot disappeared and the normal displaced-item resolver
-                // also has nowhere legal to put it. Keep the remainder in the active
-                // drag only in that exceptional case.
-                ShowVisual(draggedItem);
-                LogWarning(
-                    $"EndDrag | partial world deposit succeeded, but remainder could not be auto-resolved; " +
-                    $"keeping drag active | remainder={DescribeItem(draggedItem)}");
                 return;
             }
 
-            Log("EndDrag | no valid world container target, dropping dragged item into world.");
+            target.PlayInvalidTargetFeedback();
 
-            if (TryDropItemToWorld(working))
+            if (TryResolveItemWithoutWorldDrop(
+                    working,
+                    sourceSlot))
             {
                 Cleanup();
                 return;
             }
 
-            LogWarning("EndDrag | world drop failed, returning item to source.");
+            KeepDragActive(
+                working,
+                "EndDrag | UI target rejected/rolled back and item could not be safely restored.");
+            return;
         }
 
-        if (sourceSlot != null)
+        Log(
+            "EndDrag | no UI target under mouse, trying world container target.");
+
+        if (TryDepositDraggedItemIntoWorldTarget(
+                working,
+                out ItemInstance remainder,
+                out bool hadWorldTargetCandidate))
         {
-            sourceSlot.TryPlaceItem(working, out _);
-            Log($"EndDrag | returned item to source | source={DescribeSlot(sourceSlot)} | item={DescribeItem(working)}");
+            if (remainder == null ||
+                remainder.IsDepleted())
+            {
+                Cleanup();
+                return;
+            }
+
+            if (TryResolveItemWithoutWorldDrop(
+                    remainder,
+                    sourceSlot))
+            {
+                Cleanup();
+                return;
+            }
+
+            KeepDragActive(
+                remainder,
+                "EndDrag | partial world-target deposit succeeded but remainder could not be safely restored.");
+            return;
         }
 
-        Cleanup();
+        if (hadWorldTargetCandidate)
+        {
+            LogWarning(
+                "EndDrag | world target(s) were present but none accepted the item; cancelling drop safely.");
+
+            if (TryResolveItemWithoutWorldDrop(
+                    working,
+                    sourceSlot))
+            {
+                Cleanup();
+                return;
+            }
+
+            KeepDragActive(
+                working,
+                "EndDrag | rejected world target and item could not be safely restored.");
+            return;
+        }
+
+        Log(
+            "EndDrag | no UI/world target under mouse, dropping dragged item into world.");
+
+        if (TryDropItemToWorld(
+                working))
+        {
+            Cleanup();
+            return;
+        }
+
+        LogWarning(
+            "EndDrag | intentional world drop failed; restoring item instead.");
+
+        if (TryResolveItemWithoutWorldDrop(
+                working,
+                sourceSlot))
+        {
+            Cleanup();
+            return;
+        }
+
+        KeepDragActive(
+            working,
+            "EndDrag | world drop failed and item could not be safely restored.");
     }
+
 
     public bool IsDraggingFrom(InventorySlotUI slot)
     {
@@ -478,6 +1060,8 @@ public sealed class InventoryDragController : MonoBehaviour
             dragCargoLabel.textWrappingMode = TextWrappingModes.NoWrap;
             dragCargoLabel.raycastTarget = false;
         }
+
+        RefreshDragPreviewsIfChanged();
     }
 
     private void HideVisual()
@@ -503,11 +1087,24 @@ public sealed class InventoryDragController : MonoBehaviour
 
     private void Cleanup()
     {
-        Log($"Cleanup | item={DescribeItem(draggedItem)} | source={DescribeSlot(sourceSlot)}");
+        InventorySlotUI previousSource =
+            sourceSlot;
 
-        draggedItem = null;
-        sourceSlot = null;
-        isDragging = false;
+        Log(
+            $"Cleanup | item={DescribeItem(draggedItem)} | " +
+            $"source={DescribeSlot(sourceSlot)} | reservation={_reservationBackedDrag} " +
+            $"reservedQty={_reservedQuantity}");
+
+        draggedItem =
+            null;
+
+        sourceSlot =
+            null;
+
+        isDragging =
+            false;
+
+        ClearReservationMetadata();
 
         _draggingDeployedSounder =
             false;
@@ -517,9 +1114,25 @@ public sealed class InventoryDragController : MonoBehaviour
 
         HideVisual();
 
-        playerInventoryUI?.RefreshDragPreview(null);
-        loadoutOverlayUI?.RefreshDragPreview(null);
+        _lastPreviewItem =
+            null;
+
+        _lastPreviewQuantity =
+            int.MinValue;
+
+        playerInventoryUI?.RefreshDragPreview(
+            null);
+
+        loadoutOverlayUI?.RefreshDragPreview(
+            null);
+
+        if (previousSource != null &&
+            previousSource.isActiveAndEnabled)
+        {
+            previousSource.Refresh();
+        }
     }
+
 
     private string DescribeSlot(InventorySlotUI slot)
     {
@@ -538,10 +1151,15 @@ public sealed class InventoryDragController : MonoBehaviour
         return $"{itemId} x{item.Quantity} inst={item.InstanceId}";
     }
 
-    public bool TryDepositSingleInto(InventorySlotUI target)
+    public bool TryDepositSingleInto(
+        InventorySlotUI target)
     {
-        if (!isDragging || draggedItem == null || target == null)
+        if (!isDragging ||
+            draggedItem == null ||
+            target == null)
+        {
             return false;
+        }
 
         if (_draggingDeployedSounder)
         {
@@ -565,83 +1183,219 @@ public sealed class InventoryDragController : MonoBehaviour
             return released;
         }
 
-        if (draggedItem.Quantity <= 0)
-            return false;
-
-        if (draggedItem.Quantity == 1)
+        if (_reservationBackedDrag)
         {
-            if (target.TryPlaceItem(draggedItem, out ItemInstance displaced))
-            {
-                if (displaced != null && !displaced.IsDepleted())
-                {
-                    LogWarning("TryDepositSingleInto | target displaced item unexpectedly during single final place.");
-                    return false;
-                }
+            if (target == sourceSlot)
+                return false;
 
+            if (!TryExtractReservedQuantity(
+                    1,
+                    out ItemInstance single))
+            {
                 Cleanup();
-                return true;
-            }
-
-            return false;
-        }
-
-        ItemInstance singleToPlace = draggedItem.SplitOff(1);
-        if (singleToPlace == null)
-            return false;
-
-        if (target.TryPlaceItem(singleToPlace, out ItemInstance displacedRemainder))
-        {
-            if (displacedRemainder != null && !displacedRemainder.IsDepleted())
-            {
-                draggedItem.AddQuantity(1);
                 return false;
             }
 
-            ShowVisual(draggedItem);
+            if (!CanAcceptWithoutDisplacingExisting(
+                    target,
+                    single))
+            {
+                target.PlayInvalidTargetFeedback();
+
+                if (!RestoreExtractedReservationUnit(
+                        single))
+                {
+                    ConvertFailedReservationUnitToDetachedDrag(
+                        single,
+                        "TryDepositSingleInto | target rejected and rollback failed.");
+                }
+
+                return false;
+            }
+
+            ItemInstance targetBefore =
+                target.GetBoundItem();
+
+            if (!target.TryPlaceItem(
+                    single,
+                    out ItemInstance remainder))
+            {
+                if (!RestoreExtractedReservationUnit(
+                        single))
+                {
+                    ConvertFailedReservationUnitToDetachedDrag(
+                        single,
+                        "TryDepositSingleInto | placement failed and rollback failed.");
+                }
+
+                return false;
+            }
+
+            if (remainder != null &&
+                !remainder.IsDepleted())
+            {
+                bool targetRolledBack =
+                    TryRollbackUnexpectedSinglePlacement(
+                        target,
+                        targetBefore,
+                        single,
+                        remainder);
+
+                if (!targetRolledBack ||
+                    !RestoreExtractedReservationUnit(
+                        single))
+                {
+                    ConvertFailedReservationUnitToDetachedDrag(
+                        single,
+                        "TryDepositSingleInto | unexpected displacement rollback failed.");
+                }
+
+                return false;
+            }
+
+            CommitOneReservedUnit();
             return true;
         }
 
-        draggedItem.AddQuantity(1);
-        return false;
+        // Compatibility path for any legacy detached drag.
+        if (draggedItem.Quantity <= 0)
+            return false;
+
+        if (!CanAcceptWithoutDisplacingExisting(
+                target,
+                draggedItem))
+        {
+            target.PlayInvalidTargetFeedback();
+            return false;
+        }
+
+        if (draggedItem.Quantity == 1)
+        {
+            ItemInstance before =
+                target.GetBoundItem();
+
+            if (!target.TryPlaceItem(
+                    draggedItem,
+                    out ItemInstance remainder))
+            {
+                return false;
+            }
+
+            if (remainder != null &&
+                !remainder.IsDepleted())
+            {
+                if (!TryRollbackUnexpectedSinglePlacement(
+                        target,
+                        before,
+                        draggedItem,
+                        remainder))
+                {
+                    KeepDragActive(
+                        draggedItem,
+                        "TryDepositSingleInto legacy path rollback failed.");
+                }
+
+                return false;
+            }
+
+            Cleanup();
+            return true;
+        }
+
+        ItemInstance singleToPlace =
+            draggedItem.SplitOff(
+                1);
+
+        if (singleToPlace == null)
+            return false;
+
+        ItemInstance beforeItem =
+            target.GetBoundItem();
+
+        if (!target.TryPlaceItem(
+                singleToPlace,
+                out ItemInstance displacedOrRemainder))
+        {
+            RestoreSplitQuantity(
+                draggedItem,
+                singleToPlace);
+            return false;
+        }
+
+        if (displacedOrRemainder != null &&
+            !displacedOrRemainder.IsDepleted())
+        {
+            if (!TryRollbackUnexpectedSinglePlacement(
+                    target,
+                    beforeItem,
+                    singleToPlace,
+                    displacedOrRemainder))
+            {
+                LogWarning(
+                    "TryDepositSingleInto legacy path unexpected displacement rollback failed.");
+                return false;
+            }
+
+            RestoreSplitQuantity(
+                draggedItem,
+                singleToPlace);
+
+            ShowVisual(
+                draggedItem);
+
+            return false;
+        }
+
+        ShowVisual(
+            draggedItem);
+
+        return true;
     }
+
 
     public void CancelDrag()
     {
-        if (!isDragging && draggedItem == null)
+        if (!isDragging &&
+            draggedItem == null)
         {
             HideVisual();
             playerInventoryUI?.RefreshDragPreview(null);
+            loadoutOverlayUI?.RefreshDragPreview(null);
             return;
         }
 
-        Log($"CancelDrag | item={DescribeItem(draggedItem)} | source={DescribeSlot(sourceSlot)}");
+        Log(
+            $"CancelDrag | item={DescribeItem(draggedItem)} | " +
+            $"source={DescribeSlot(sourceSlot)} | reservation={_reservationBackedDrag}");
 
-        if (_draggingDeployedSounder)
+        if (_reservationBackedDrag ||
+            _draggingDeployedSounder)
         {
-            // We never removed it from Hands, so cancelling needs no inventory rollback.
+            // Nothing authoritative left storage.
             Cleanup();
             return;
         }
 
-        bool restored = false;
-
-        if (draggedItem != null && sourceSlot != null && sourceSlot.isActiveAndEnabled && sourceSlot.gameObject.activeInHierarchy)
+        if (draggedItem == null ||
+            draggedItem.IsDepleted())
         {
-            if (sourceSlot.TryPlaceItem(draggedItem, out ItemInstance displaced))
-            {
-                if (displaced == null || displaced.IsDepleted())
-                    restored = true;
-            }
+            Cleanup();
+            return;
         }
 
-        if (!restored && draggedItem != null && displacedItemResolver != null)
-            restored = displacedItemResolver.TryResolve(draggedItem, sourceSlot);
+        if (TryResolveItemWithoutWorldDrop(
+                draggedItem,
+                sourceSlot))
+        {
+            Cleanup();
+            return;
+        }
 
-        if (!restored && draggedItem != null)
-            LogWarning($"CancelDrag | failed to restore dragged item cleanly | item={DescribeItem(draggedItem)}");
-
-        Cleanup();
+        KeepDragActive(
+            draggedItem,
+            "CancelDrag | legacy detached item could not be restored without a world drop.");
     }
+
 
     private bool TryDropItemToWorld(ItemInstance item)
     {
@@ -665,8 +1419,11 @@ public sealed class InventoryDragController : MonoBehaviour
 
     private bool TryDropSingleToWorld()
     {
-        if (!isDragging || draggedItem == null)
+        if (!isDragging ||
+            draggedItem == null)
+        {
             return false;
+        }
 
         if (_draggingDeployedSounder)
         {
@@ -684,9 +1441,38 @@ public sealed class InventoryDragController : MonoBehaviour
             return released;
         }
 
+        if (_reservationBackedDrag)
+        {
+            if (!TryExtractReservedQuantity(
+                    1,
+                    out ItemInstance single))
+            {
+                Cleanup();
+                return false;
+            }
+
+            if (TryDropItemToWorld(
+                    single))
+            {
+                CommitOneReservedUnit();
+                return true;
+            }
+
+            if (!RestoreExtractedReservationUnit(
+                    single))
+            {
+                ConvertFailedReservationUnitToDetachedDrag(
+                    single,
+                    "TryDropSingleToWorld | world drop failed and rollback failed.");
+            }
+
+            return false;
+        }
+
         if (draggedItem.Quantity == 1)
         {
-            if (TryDropItemToWorld(draggedItem))
+            if (TryDropItemToWorld(
+                    draggedItem))
             {
                 Cleanup();
                 return true;
@@ -695,19 +1481,28 @@ public sealed class InventoryDragController : MonoBehaviour
             return false;
         }
 
-        ItemInstance single = draggedItem.SplitOff(1);
-        if (single == null)
+        ItemInstance legacySingle =
+            draggedItem.SplitOff(
+                1);
+
+        if (legacySingle == null)
             return false;
 
-        if (TryDropItemToWorld(single))
+        if (TryDropItemToWorld(
+                legacySingle))
         {
-            ShowVisual(draggedItem);
+            ShowVisual(
+                draggedItem);
             return true;
         }
 
-        draggedItem.AddQuantity(1);
+        RestoreSplitQuantity(
+            draggedItem,
+            legacySingle);
+
         return false;
     }
+
 
     private int CollectWorldDropTargetCandidates(ItemInstance item)
     {
@@ -1006,9 +1801,13 @@ public sealed class InventoryDragController : MonoBehaviour
             $"{target.GetType().Name}('{component.name}')";
     }
 
-    private bool TryDepositDraggedItemIntoWorldTarget(ItemInstance item, out ItemInstance remainder)
+    private bool TryDepositDraggedItemIntoWorldTarget(
+        ItemInstance item,
+        out ItemInstance remainder,
+        out bool hadCandidates)
     {
         remainder = item;
+        hadCandidates = false;
 
         if (item == null)
             return false;
@@ -1027,10 +1826,15 @@ public sealed class InventoryDragController : MonoBehaviour
             CollectWorldDropTargetCandidates(
                 item);
 
+        hadCandidates =
+            candidateCount > 0;
+
         if (candidateCount <= 0)
             return false;
 
-        for (int i = 0; i < candidateCount; i++)
+        for (int i = 0;
+             i < candidateCount;
+             i++)
         {
             WorldDropTargetCandidate candidate =
                 _worldDropCandidates[i];
@@ -1093,6 +1897,136 @@ public sealed class InventoryDragController : MonoBehaviour
         return false;
     }
 
+    private bool TryDepositSingleIntoWorldTarget(
+        out bool hadCandidates)
+    {
+        hadCandidates =
+            false;
+
+        if (!isDragging ||
+            draggedItem == null ||
+            draggedItem.IsDepleted())
+        {
+            return false;
+        }
+
+        if (_draggingDeployedSounder)
+            return false;
+
+        if (_reservationBackedDrag)
+        {
+            if (!TryExtractReservedQuantity(
+                    1,
+                    out ItemInstance single))
+            {
+                Cleanup();
+                return false;
+            }
+
+            if (!TryDepositDraggedItemIntoWorldTarget(
+                    single,
+                    out ItemInstance remainder,
+                    out hadCandidates))
+            {
+                if (!RestoreExtractedReservationUnit(
+                        single))
+                {
+                    ConvertFailedReservationUnitToDetachedDrag(
+                        single,
+                        "TryDepositSingleIntoWorldTarget | target rejected and rollback failed.");
+                }
+
+                return false;
+            }
+
+            int remainderQuantity =
+                remainder == null ||
+                remainder.IsDepleted()
+                    ? 0
+                    : remainder.Quantity;
+
+            if (remainderQuantity > 0)
+            {
+                if (!RestoreExtractedReservationUnit(
+                        remainder))
+                {
+                    ConvertFailedReservationUnitToDetachedDrag(
+                        remainder,
+                        "TryDepositSingleIntoWorldTarget | partial remainder rollback failed.");
+                    return true;
+                }
+
+                // A one-unit deposit that returns one unit accepted nothing.
+                return false;
+            }
+
+            CommitOneReservedUnit();
+            return true;
+        }
+
+        if (draggedItem.Quantity == 1)
+        {
+            if (!TryDepositDraggedItemIntoWorldTarget(
+                    draggedItem,
+                    out ItemInstance remainder,
+                    out hadCandidates))
+            {
+                return false;
+            }
+
+            if (remainder == null ||
+                remainder.IsDepleted())
+            {
+                Cleanup();
+                return true;
+            }
+
+            draggedItem =
+                remainder;
+
+            ShowVisual(
+                draggedItem);
+
+            return true;
+        }
+
+        ItemInstance legacySingle =
+            draggedItem.SplitOff(
+                1);
+
+        if (legacySingle == null)
+            return false;
+
+        if (!TryDepositDraggedItemIntoWorldTarget(
+                legacySingle,
+                out ItemInstance legacyRemainder,
+                out hadCandidates))
+        {
+            RestoreSplitQuantity(
+                draggedItem,
+                legacySingle);
+
+            ShowVisual(
+                draggedItem);
+
+            return false;
+        }
+
+        if (legacyRemainder != null &&
+            !legacyRemainder.IsDepleted())
+        {
+            RestoreSplitQuantity(
+                draggedItem,
+                legacyRemainder);
+        }
+
+        ShowVisual(
+            draggedItem);
+
+        return true;
+    }
+
+
 
     private WorldItemDropContext BuildWorldItemDropContext()
     {
@@ -1111,46 +2045,586 @@ public sealed class InventoryDragController : MonoBehaviour
             origin);
     }
 
-    /// <summary>
-    /// Resolves the unaccepted portion of a partial world-target deposit.
-    /// Prefer the exact slot the drag originated from; if that is no longer a
-    /// legal destination, fall back to the project's existing displaced-item
-    /// resolver. Returns true only when the remainder is fully accounted for.
-    /// </summary>
-    private bool TryResolvePartialWorldDepositRemainder(ItemInstance remainder)
+    private bool TryCommitUiDropTransaction(
+        InventorySlotUI target,
+        ItemInstance working)
     {
-        if (remainder == null || remainder.IsDepleted())
+        if (target == null ||
+            working == null ||
+            working.IsDepleted())
+        {
+            return false;
+        }
+
+        ItemInstance targetBefore =
+            target.GetBoundItem();
+
+        bool trueSwapExpected =
+            WouldDisplaceExisting(
+                targetBefore,
+                working);
+
+        // If this is a real swap, prove BEFORE mutating the target that the old
+        // item has a safe non-world destination. Otherwise reject transaction.
+        if (trueSwapExpected &&
+            !CanResolveItemWithoutWorldDrop(
+                targetBefore,
+                sourceSlot))
+        {
+            LogWarning(
+                $"EndDrag | swap rejected before mutation because displaced item has no safe destination | " +
+                $"target={DescribeSlot(target)} | displaced={DescribeItem(targetBefore)}");
+
+            return false;
+        }
+
+        if (!target.TryPlaceItem(
+                working,
+                out ItemInstance displacedOrRemainder))
+        {
+            LogWarning(
+                $"EndDrag | target rejected item | target={DescribeSlot(target)} | item={DescribeItem(working)}");
+            return false;
+        }
+
+        Log(
+            $"EndDrag | target accepted item | target={DescribeSlot(target)} | " +
+            $"displaced/remainder={DescribeItem(displacedOrRemainder)}");
+
+        if (displacedOrRemainder == null ||
+            displacedOrRemainder.IsDepleted())
+        {
+            Cleanup();
+            return true;
+        }
+
+        // Partial stack/container placement returns the incoming item/remainder.
+        // Resolve that remainder safely without interpreting it as a swap.
+        if (ReferenceEquals(
+                displacedOrRemainder,
+                working))
+        {
+            draggedItem =
+                displacedOrRemainder;
+
+            if (TryResolveItemWithoutWorldDrop(
+                    displacedOrRemainder,
+                    sourceSlot))
+            {
+                Cleanup();
+                return true;
+            }
+
+            KeepDragActive(
+                displacedOrRemainder,
+                "EndDrag | partial UI placement left a remainder with no safe destination.");
+
+            return true;
+        }
+
+        // True swap: resolve the old target item without any world-drop fallback.
+        if (TryResolveItemWithoutWorldDrop(
+                displacedOrRemainder,
+                sourceSlot))
+        {
+            Cleanup();
+            return true;
+        }
+
+        LogWarning(
+            "EndDrag | displaced item could not be resolved safely. Rolling back swap.");
+
+        if (TryRollbackUiSwap(
+                target,
+                working,
+                displacedOrRemainder,
+                targetBefore))
+        {
+            if (TryResolveItemWithoutWorldDrop(
+                    working,
+                    sourceSlot))
+            {
+                Cleanup();
+                return true;
+            }
+
+            KeepDragActive(
+                working,
+                "EndDrag | swap rolled back but dragged item could not be restored to storage.");
+
+            return true;
+        }
+
+        // Extremely defensive fallback. Do not call Cleanup because that would
+        // abandon authoritative item references.
+        KeepDragActive(
+            working,
+            "EndDrag | swap rollback itself failed. Drag retained for recovery.");
+
+        return true;
+    }
+
+    private bool TryRollbackUiSwap(
+        InventorySlotUI target,
+        ItemInstance working,
+        ItemInstance displaced,
+        ItemInstance targetBefore)
+    {
+        if (target == null ||
+            working == null ||
+            displaced == null)
+        {
+            return false;
+        }
+
+        ItemInstance current =
+            target.GetBoundItem();
+
+        if (!ReferenceEquals(
+                current,
+                working))
+        {
+            LogWarning(
+                $"Rollback aborted because target no longer contains dragged item | " +
+                $"targetNow={DescribeItem(current)} | working={DescribeItem(working)}");
+            return false;
+        }
+
+        ItemInstance removedWorking =
+            target.RemoveItem();
+
+        if (!ReferenceEquals(
+                removedWorking,
+                working))
+        {
+            LogWarning(
+                $"Rollback removed unexpected item | removed={DescribeItem(removedWorking)} | " +
+                $"working={DescribeItem(working)}");
+            return false;
+        }
+
+        if (!target.TryPlaceItem(
+                displaced,
+                out ItemInstance restoreRemainder) ||
+            (restoreRemainder != null &&
+             !restoreRemainder.IsDepleted()))
+        {
+            // Try to put the dragged item back where we found it so the failed
+            // rollback does not make the situation worse.
+            target.TryPlaceItem(
+                removedWorking,
+                out _);
+
+            LogWarning(
+                $"Rollback failed restoring original target item | " +
+                $"expectedBefore={DescribeItem(targetBefore)} | displaced={DescribeItem(displaced)} | " +
+                $"remainder={DescribeItem(restoreRemainder)}");
+
+            return false;
+        }
+
+        draggedItem =
+            removedWorking;
+
+        return true;
+    }
+
+    private bool TryRollbackUnexpectedSinglePlacement(
+        InventorySlotUI target,
+        ItemInstance targetBefore,
+        ItemInstance placedSingle,
+        ItemInstance displacedOrRemainder)
+    {
+        if (target == null ||
+            placedSingle == null)
+        {
+            return false;
+        }
+
+        ItemInstance targetAfter =
+            target.GetBoundItem();
+
+        // A container/stack may legally return the incoming object as an
+        // unaccepted remainder while leaving the target object itself unchanged.
+        // That is not a displaced target item, so no target rollback is needed.
+        if (ReferenceEquals(
+                targetAfter,
+                targetBefore))
+        {
+            return true;
+        }
+
+        if (!ReferenceEquals(
+                targetAfter,
+                placedSingle))
+        {
+            return false;
+        }
+
+        ItemInstance removed =
+            target.RemoveItem();
+
+        if (!ReferenceEquals(
+                removed,
+                placedSingle))
+        {
+            return false;
+        }
+
+        if (targetBefore == null)
             return true;
 
-        ItemInstance unresolved = remainder;
-
-        if (sourceSlot != null)
+        if (!ReferenceEquals(
+                displacedOrRemainder,
+                targetBefore))
         {
-            if (sourceSlot.TryPlaceItem(unresolved, out ItemInstance returned))
+            // We know the target changed, but the returned object is not the item
+            // that used to occupy it. Do not guess.
+            target.TryPlaceItem(
+                placedSingle,
+                out _);
+            return false;
+        }
+
+        if (!target.TryPlaceItem(
+                targetBefore,
+                out ItemInstance restoreRemainder) ||
+            (restoreRemainder != null &&
+             !restoreRemainder.IsDepleted()))
+        {
+            target.TryPlaceItem(
+                placedSingle,
+                out _);
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool CanAcceptWithoutDisplacingExisting(
+        InventorySlotUI slot,
+        ItemInstance incoming)
+    {
+        if (slot == null ||
+            incoming == null ||
+            incoming.IsDepleted())
+        {
+            return false;
+        }
+
+        if (!slot.CanAcceptPreview(
+                incoming))
+        {
+            return false;
+        }
+
+        ItemInstance existing =
+            slot.GetBoundItem();
+
+        if (existing == null)
+            return true;
+
+        if (ReferenceEquals(
+                existing,
+                incoming))
+        {
+            return true;
+        }
+
+        if (existing.IsContainer &&
+            !incoming.IsContainer)
+        {
+            return true;
+        }
+
+        if (existing.CanStackWith(
+                incoming) &&
+            existing.RemainingStackSpace > 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool WouldDisplaceExisting(
+        ItemInstance existing,
+        ItemInstance incoming)
+    {
+        if (existing == null ||
+            incoming == null ||
+            ReferenceEquals(existing, incoming))
+        {
+            return false;
+        }
+
+        if (existing.IsContainer &&
+            !incoming.IsContainer)
+        {
+            return false;
+        }
+
+        if (existing.CanStackWith(
+                incoming) &&
+            existing.RemainingStackSpace > 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool CanResolveItemWithoutWorldDrop(
+        ItemInstance item,
+        InventorySlotUI preferredSlot)
+    {
+        if (item == null ||
+            item.IsDepleted())
+        {
+            return true;
+        }
+
+        if (preferredSlot != null &&
+            CanAcceptWithoutDisplacingExisting(
+                preferredSlot,
+                item))
+        {
+            return true;
+        }
+
+        return
+            inventory != null &&
+            inventory.CanFullyAdd(item);
+    }
+
+    private bool TryResolveItemWithoutWorldDrop(
+        ItemInstance item,
+        InventorySlotUI preferredSlot)
+    {
+        if (item == null ||
+            item.IsDepleted())
+        {
+            return true;
+        }
+
+        ItemInstance unresolved =
+            item;
+
+        if (preferredSlot != null &&
+            CanAcceptWithoutDisplacingExisting(
+                preferredSlot,
+                unresolved))
+        {
+            if (preferredSlot.TryPlaceItem(
+                    unresolved,
+                    out ItemInstance remainder))
             {
-                Log(
-                    $"Partial world deposit | returned remainder to source | " +
-                    $"source={DescribeSlot(sourceSlot)} | returned={DescribeItem(returned)}");
-
-                if (returned == null || returned.IsDepleted())
+                if (remainder == null ||
+                    remainder.IsDepleted())
+                {
                     return true;
+                }
 
-                unresolved = returned;
+                unresolved =
+                    remainder;
             }
         }
 
-        if (displacedItemResolver != null &&
-            displacedItemResolver.TryResolve(unresolved, sourceSlot))
+        if (unresolved == null ||
+            unresolved.IsDepleted())
         {
-            Log(
-                $"Partial world deposit | displaced-item resolver accepted remainder | " +
-                $"item={DescribeItem(unresolved)}");
-
             return true;
         }
 
-        draggedItem = unresolved;
+        if (inventory != null &&
+            inventory.CanFullyAdd(
+                unresolved) &&
+            inventory.TryAddInstance(
+                unresolved))
+        {
+            return true;
+        }
+
         return false;
+    }
+
+    private void ResolveInterruptedDragWithoutWorldDrop(
+        string reason)
+    {
+        if (_resolvingLifecycleDrag)
+            return;
+
+        if (!isDragging &&
+            draggedItem == null)
+        {
+            return;
+        }
+
+        _resolvingLifecycleDrag =
+            true;
+
+        try
+        {
+            LogWarning(
+                $"{reason} | terminating transient drag safely | " +
+                $"item={DescribeItem(draggedItem)} | source={DescribeSlot(sourceSlot)} | " +
+                $"reservation={_reservationBackedDrag}");
+
+            if (_reservationBackedDrag ||
+                _draggingDeployedSounder)
+            {
+                // Reservation-backed inventory and the deployed sounder never
+                // surrendered authoritative ownership.
+                Cleanup();
+                return;
+            }
+
+            if (draggedItem == null ||
+                draggedItem.IsDepleted())
+            {
+                Cleanup();
+                return;
+            }
+
+            if (TryResolveItemWithoutWorldDrop(
+                    draggedItem,
+                    sourceSlot))
+            {
+                Cleanup();
+                return;
+            }
+
+            KeepDragActive(
+                draggedItem,
+                $"{reason} | legacy detached drag had no safe storage destination.");
+        }
+        finally
+        {
+            _resolvingLifecycleDrag =
+                false;
+        }
+    }
+
+
+    private bool IsLikelyLifecycleInterruptedEndDrag()
+    {
+        if (_applicationQuitting)
+            return true;
+
+        // A real pointer-release EndDrag occurs after the primary button is up.
+        // If Unity is ending the drag while it remains held, UI teardown is the
+        // overwhelmingly likely cause.
+        if (Input.GetMouseButton(0))
+            return true;
+
+        if (sourceSlot == null)
+            return true;
+
+        if (!sourceSlot.isActiveAndEnabled ||
+            !sourceSlot.gameObject.activeInHierarchy)
+        {
+            return true;
+        }
+
+        if (canvas == null ||
+            !canvas.isActiveAndEnabled ||
+            !canvas.gameObject.activeInHierarchy)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void KeepDragActive(
+        ItemInstance item,
+        string reason)
+    {
+        ClearReservationMetadata();
+
+        draggedItem =
+            item;
+
+        isDragging =
+            item != null &&
+            !item.IsDepleted();
+
+        if (isDragging)
+        {
+            ShowVisual(
+                draggedItem);
+        }
+        else
+        {
+            HideVisual();
+        }
+
+        sourceSlot?.Refresh();
+
+        LogWarning(
+            $"{reason} Keeping detached item authoritative in drag state | item={DescribeItem(draggedItem)}");
+    }
+
+
+    private static void RestoreSplitQuantity(
+        ItemInstance destinationStack,
+        ItemInstance splitRemainder)
+    {
+        if (destinationStack == null ||
+            splitRemainder == null ||
+            splitRemainder.IsDepleted())
+        {
+            return;
+        }
+
+        if (!destinationStack.CanStackWith(
+                splitRemainder))
+        {
+            return;
+        }
+
+        int amount =
+            splitRemainder.Quantity;
+
+        int restored =
+            destinationStack.AddQuantity(
+                amount);
+
+        splitRemainder.RemoveQuantity(
+            restored);
+    }
+
+    private void RefreshDragPreviewsIfChanged()
+    {
+        ItemInstance previewItem =
+            isDragging
+                ? draggedItem
+                : null;
+
+        int quantity =
+            previewItem != null
+                ? previewItem.Quantity
+                : int.MinValue;
+
+        if (ReferenceEquals(
+                _lastPreviewItem,
+                previewItem) &&
+            _lastPreviewQuantity == quantity)
+        {
+            return;
+        }
+
+        _lastPreviewItem =
+            previewItem;
+
+        _lastPreviewQuantity =
+            quantity;
+
+        playerInventoryUI?.RefreshDragPreview(
+            previewItem);
+
+        loadoutOverlayUI?.RefreshDragPreview(
+            previewItem);
     }
 
     private void Log(string msg)

@@ -1,5 +1,15 @@
 using UnityEngine;
 
+public enum ItemAcquisitionBlockReason
+{
+    None = 0,
+    InvalidItem,
+    HandsFull,
+    InventoryFull,
+    EquipSlotOccupied,
+    NoValidDestination
+}
+
 [DisallowMultipleComponent]
 public sealed class ItemAcquisitionResolver : MonoBehaviour
 {
@@ -49,6 +59,214 @@ public sealed class ItemAcquisitionResolver : MonoBehaviour
 
         Log("CanAcquire FAIL: no valid placement path");
         return false;
+    }
+
+    /// <summary>
+    /// Returns the reason acquisition is currently blocked without mutating item
+    /// state and without emitting the normal acquisition debug logs. Prompt/UI
+    /// code can use this to explain a failed pickup rather than silently hiding
+    /// the action.
+    /// </summary>
+    public bool TryGetBlockReason(
+        ItemInstance item,
+        out ItemAcquisitionBlockReason reason)
+    {
+        reason =
+            ItemAcquisitionBlockReason.None;
+
+        if (item == null ||
+            item.Definition == null ||
+            item.Quantity <= 0)
+        {
+            reason =
+                ItemAcquisitionBlockReason.InvalidItem;
+
+            return true;
+        }
+
+        if (CanAcquireSilently(item))
+            return false;
+
+        bool handsOccupied =
+            equipment != null &&
+            equipment.Get(
+                BottomBarSlotType.Hands) != null;
+
+        bool hasPotentialPreferredNonHandsPath =
+            HasPotentialPreferredNonHandsPath(
+                item);
+
+        bool canPotentiallyUseHotbar =
+            HasAnyStructurallyAllowedHotbarDestination(
+                item);
+
+        // "Hands Full" is intentionally reserved for genuinely hands-only items.
+        // A stowable item with a full inventory should not claim the player's hands
+        // are the sole problem, and an equippable item with a blocked preferred slot
+        // has its own more specific failure.
+        if (handsOccupied &&
+            !hasPotentialPreferredNonHandsPath &&
+            !canPotentiallyUseHotbar)
+        {
+            reason =
+                ItemAcquisitionBlockReason.HandsFull;
+
+            Log(
+                "BlockReason: HandsFull | " +
+                $"preferredNonHands={hasPotentialPreferredNonHandsPath} " +
+                $"allowedHotbarPath={canPotentiallyUseHotbar}");
+
+            return true;
+        }
+
+        if (item.Definition.PreferredDisplacedDestination ==
+                PreferredDisplacedDestination.MatchingEquipSlot &&
+            equipment != null)
+        {
+            BottomBarSlotType slot =
+                item.Definition.EquipSlot;
+
+            if (slot != BottomBarSlotType.None &&
+                slot != BottomBarSlotType.Hands &&
+                equipment.IsSlotOccupiedOrBlocked(
+                    slot))
+            {
+                reason =
+                    ItemAcquisitionBlockReason.EquipSlotOccupied;
+
+                return true;
+            }
+        }
+
+        if (item.Definition.StowableInInventory &&
+            inventory != null &&
+            !inventory.CanFullyAdd(item))
+        {
+            reason =
+                ItemAcquisitionBlockReason.InventoryFull;
+
+            return true;
+        }
+
+        reason =
+            ItemAcquisitionBlockReason.NoValidDestination;
+
+        return true;
+    }
+
+    private bool CanAcquireSilently(
+        ItemInstance item)
+    {
+        if (item == null ||
+            item.Definition == null ||
+            item.Quantity <= 0)
+        {
+            return false;
+        }
+
+        switch (item.Definition.PreferredDisplacedDestination)
+        {
+            case PreferredDisplacedDestination.MatchingEquipSlot:
+                {
+                    if (equipment != null)
+                    {
+                        BottomBarSlotType slot =
+                            item.Definition.EquipSlot;
+
+                        if (slot != BottomBarSlotType.None &&
+                            slot != BottomBarSlotType.Hands &&
+                            equipment.CanEquip(
+                                slot,
+                                item))
+                        {
+                            return true;
+                        }
+                    }
+
+                    break;
+                }
+
+            case PreferredDisplacedDestination.AnyHotbar:
+                {
+                    if (inventory != null &&
+                        inventory.CanFullyAdd(
+                            item))
+                    {
+                        return true;
+                    }
+
+                    break;
+                }
+        }
+
+        if (equipment != null &&
+            equipment.Get(
+                BottomBarSlotType.Hands) == null &&
+            equipment.CanEquip(
+                BottomBarSlotType.Hands,
+                item))
+        {
+            return true;
+        }
+
+        return
+            inventory != null &&
+            inventory.CanFullyAdd(
+                item);
+    }
+
+    private bool HasAnyStructurallyAllowedHotbarDestination(
+        ItemInstance item)
+    {
+        if (inventory == null ||
+            item == null ||
+            item.Definition == null ||
+            !item.Definition.StowableInInventory)
+        {
+            return false;
+        }
+
+        for (int i = 0;
+             i < inventory.HotbarSlotCount;
+             i++)
+        {
+            BottomBarSlotType slot =
+                PlayerInventory.HotbarIndexToSlotType(
+                    i);
+
+            if (item.Definition.IsAllowedInParentSlot(
+                    slot))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool HasPotentialPreferredNonHandsPath(
+        ItemInstance item)
+    {
+        if (item == null ||
+            item.Definition == null)
+        {
+            return false;
+        }
+
+        if (item.Definition.PreferredDisplacedDestination !=
+            PreferredDisplacedDestination.MatchingEquipSlot)
+        {
+            return false;
+        }
+
+        BottomBarSlotType slot =
+            item.Definition.EquipSlot;
+
+        return
+            equipment != null &&
+            item.Definition.IsEquippable &&
+            slot != BottomBarSlotType.None &&
+            slot != BottomBarSlotType.Hands;
     }
 
     public bool TryAcquire(ItemInstance item)

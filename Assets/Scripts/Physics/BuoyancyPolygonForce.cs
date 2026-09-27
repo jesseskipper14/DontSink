@@ -23,6 +23,27 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
 
     [HideInInspector] public float lastTotalSubmersion = 0f;
 
+    [Header("Runtime Buoyancy Diagnostics")]
+    [SerializeField, Min(0f)] private float lastCappedRuntimeVolume;
+    [SerializeField, Min(0f)] private float lastUncappedRuntimeVolume;
+    [SerializeField, Range(0f, 1f)] private float lastRuntimeVolumeBypass01;
+    [SerializeField, Min(0f)] private float lastMaxTotalBuoyantForce;
+    [SerializeField, Min(0f)] private float lastAppliedCappedBuoyantForce;
+    [SerializeField, Min(0f)] private float lastAppliedUncappedBuoyantForce;
+    [SerializeField, Min(0f)] private float lastAppliedTotalBuoyantForce;
+    [SerializeField] private float lastBuoyantAcceleration;
+    [SerializeField] private float lastSurfaceYAtBodyX;
+
+    public float LastCappedRuntimeVolume => lastCappedRuntimeVolume;
+    public float LastUncappedRuntimeVolume => lastUncappedRuntimeVolume;
+    public float LastRuntimeVolumeBypass01 => lastRuntimeVolumeBypass01;
+    public float LastMaxTotalBuoyantForce => lastMaxTotalBuoyantForce;
+    public float LastAppliedCappedBuoyantForce => lastAppliedCappedBuoyantForce;
+    public float LastAppliedUncappedBuoyantForce => lastAppliedUncappedBuoyantForce;
+    public float LastAppliedTotalBuoyantForce => lastAppliedTotalBuoyantForce;
+    public float LastBuoyantAcceleration => lastBuoyantAcceleration;
+    public float LastSurfaceYAtBodyX => lastSurfaceYAtBodyX;
+
     private PhysicsGlobals physicsGlobals;
 
     // Boat-only contributor cache. Compartments remain authoritative on Boat.Compartments;
@@ -76,6 +97,8 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
 
     public void ApplyForces(IForceBody body)
     {
+        ResetRuntimeDiagnostics();
+
         if (!enabledFlag)
             return;
 
@@ -110,14 +133,62 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
 
         float totalSubmergedArea = 0f;
 
-        // The fallback polygon describes the body's submersion geometry.
-        // ForceBody2D.Volume is the authoritative displacement amount, so extra
-        // volume contributions scale displacement without changing the visible/
-        // collision dimensions or the geometric submerged fraction. Boat
-        // contributor geometry already represents real displacement 1:1.
+        // Runtime volume is split into two buckets:
+        //
+        // 1) ordinary/capped contributions keep the historical body-mass
+        //    acceleration ceiling;
+        // 2) explicitly opted-in contributions may exceed that ceiling.
+        //
+        // Lift bags opt into bucket #2 only while physically tethered. Player
+        // equipment volume, diving-bell air, detached bags, and future ordinary
+        // contributors stay in bucket #1 unless they deliberately say otherwise.
+        float cappedRuntimeVolume = 0f;
+        float uncappedRuntimeVolume = 0f;
+        ForceBody2D simpleForceBody =
+            usingLegacyFallback
+                ? body as ForceBody2D
+                : null;
+
+        // Sample the current-frame surface BEFORE querying runtime volume
+        // policies. Lift bags use this value to decide whether their inflated
+        // collider is fully/partially submerged. Sampling afterward leaves the
+        // policy one physics step stale, which is enough for a very light bag to
+        // receive a single uncapped launch impulse at the waterline.
+        lastSurfaceYAtBodyX = SampleActiveSurfaceY(body.Position.x);
+
+        if (simpleForceBody != null)
+        {
+            simpleForceBody.GetVolumeContributionTotals(
+                out cappedRuntimeVolume,
+                out uncappedRuntimeVolume);
+        }
+
+        lastCappedRuntimeVolume = cappedRuntimeVolume;
+        lastUncappedRuntimeVolume = uncappedRuntimeVolume;
+
+        float totalRuntimeVolume =
+            cappedRuntimeVolume + uncappedRuntimeVolume;
+
+        lastRuntimeVolumeBypass01 =
+            totalRuntimeVolume > 0.000001f
+                ? Mathf.Clamp01(uncappedRuntimeVolume / totalRuntimeVolume)
+                : 0f;
+
+        // The fallback polygon describes the body's submersion geometry. Base
+        // displacement plus ordinary runtime volume still use the legacy sliced
+        // buoyancy path. Uncapped runtime volume is applied separately at the
+        // Rigidbody center of mass after geometric submersion is known. That is
+        // important: enormous artificial volume distributed across slice
+        // centroids can create equally enormous artificial torque on a very light
+        // bag. The gas adds lift, not a free spin motor.
+        float fallbackDisplacementVolume =
+            simpleForceBody != null
+                ? simpleForceBody.DimensionVolume + cappedRuntimeVolume
+                : Mathf.Max(0f, body.Volume);
+
         float fallbackDisplacementScale =
             usingLegacyFallback
-                ? Mathf.Max(0f, body.Volume) /
+                ? Mathf.Max(0f, fallbackDisplacementVolume) /
                   Mathf.Max(totalContributorArea, 0.000001f)
                 : 1f;
 
@@ -125,9 +196,20 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
         float accumulatedImpulseX = 0f;
         float accumulatedSubmergedWidth = 0f;
 
+        // Historical safety ceiling for authored/base displacement and ordinary
+        // runtime contributions. Uncapped contributions are intentionally NOT
+        // added to this budget; they are handled once, at center of mass, below.
+        float bodyAccelerationCapScale01 =
+            simpleForceBody != null
+                ? simpleForceBody.BodyAccelerationCapScale01
+                : 1f;
+
         float maxTotalBuoyantForce =
             physicsGlobals.MaxBuoyantAcceleration *
-            body.Mass;
+            body.Mass *
+            Mathf.Clamp01(bodyAccelerationCapScale01);
+
+        lastMaxTotalBuoyantForce = maxTotalBuoyantForce;
 
         for (int contributorIndex = 0;
              contributorIndex < contributorPolygons.Count;
@@ -251,6 +333,8 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
                     Mathf.Min(
                         sliceForce,
                         maxSliceForce);
+
+                lastAppliedCappedBuoyantForce += sliceForce;
 
                 body.rb.AddForceAtPosition(
                     Vector2.up *
@@ -380,6 +464,39 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
                 totalSubmergedArea /
                 totalContributorArea);
 
+        // Runtime volume that explicitly bypasses the body-mass acceleration cap
+        // is applied as pure lift through the Rigidbody center of mass. This keeps
+        // the intended tether-transmitted lifting force without reintroducing the
+        // old high-volume spin/torque instability. If the contribution stops
+        // opting in (for example, a lift-bag tether is cut), it automatically
+        // falls back into the capped sliced path on the next physics step.
+        if (usingLegacyFallback &&
+            uncappedRuntimeVolume > 0f &&
+            lastTotalSubmersion > 0f)
+        {
+            float uncappedRuntimeBuoyantForce =
+                uncappedRuntimeVolume *
+                lastTotalSubmersion *
+                physicsGlobals.WaterDensity *
+                physicsGlobals.Gravity;
+
+            lastAppliedUncappedBuoyantForce =
+                uncappedRuntimeBuoyantForce;
+
+            body.rb.AddForce(
+                Vector2.up * uncappedRuntimeBuoyantForce,
+                ForceMode2D.Force);
+        }
+
+        lastAppliedTotalBuoyantForce =
+            lastAppliedCappedBuoyantForce +
+            lastAppliedUncappedBuoyantForce;
+
+        lastBuoyantAcceleration =
+            body.Mass > 0.000001f
+                ? lastAppliedTotalBuoyantForce / body.Mass
+                : 0f;
+
         // --- Apply averaged wave impulse ---
         if (_activeExposure.AllowsWaveMomentumCoupling &&
             accumulatedSubmergedWidth > 0f)
@@ -404,6 +521,19 @@ public class BuoyancyPolygonForce : MonoBehaviour, IForceProvider, ISubmersionPr
                 (netImpulse /
                  Time.fixedDeltaTime));
         }
+    }
+
+    private void ResetRuntimeDiagnostics()
+    {
+        lastCappedRuntimeVolume = 0f;
+        lastUncappedRuntimeVolume = 0f;
+        lastRuntimeVolumeBypass01 = 0f;
+        lastMaxTotalBuoyantForce = 0f;
+        lastAppliedCappedBuoyantForce = 0f;
+        lastAppliedUncappedBuoyantForce = 0f;
+        lastAppliedTotalBuoyantForce = 0f;
+        lastBuoyantAcceleration = 0f;
+        lastSurfaceYAtBodyX = 0f;
     }
 
     /// <summary>

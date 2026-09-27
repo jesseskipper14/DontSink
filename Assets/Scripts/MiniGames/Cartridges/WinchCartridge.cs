@@ -22,6 +22,10 @@ public sealed class WinchCartridge :
     private PlayerInventory _playerInventory;
     private PlayerEquipment _playerEquipment;
 
+    // Local UI capture only. Authority for whether manual control is actually
+    // active lives in WinchModule and is reported back through the runner.
+    private WinchControlIntent? _manualHeldIntent;
+
     public WinchCartridge(
         Hardpoint hardpoint,
         WinchModule winch,
@@ -45,6 +49,9 @@ public sealed class WinchCartridge :
             false;
 
         _statusNote =
+            null;
+
+        _manualHeldIntent =
             null;
 
         ResolveRequesterInventoryContext();
@@ -71,13 +78,18 @@ public sealed class WinchCartridge :
 
     public MiniGameResult Cancel()
     {
+        ReleaseManualHoldIfNeeded();
+
         return Cancelled(
             "Closed Winch");
     }
 
+
     public MiniGameResult Interrupt(
         string reason)
     {
+        ReleaseManualHoldIfNeeded();
+
         return Cancelled(
             string.IsNullOrWhiteSpace(
                 reason)
@@ -85,11 +97,15 @@ public sealed class WinchCartridge :
                 : $"Winch interrupted: {reason}");
     }
 
+
     public void End()
     {
+        ReleaseManualHoldIfNeeded();
+
         _ctx =
             null;
     }
+
 
     public void DrawOverlayGUI(
         Rect panel)
@@ -346,6 +362,72 @@ public sealed class WinchCartridge :
         y +=
             25f;
 
+        string modeText =
+            snapshot.HasPower
+                ? "POWERED: AUTOMATIC CONTROL ENABLED"
+                : "UNPOWERED: MANUAL CONTROL ENABLED";
+
+        DrawColoredLabel(
+            new Rect(
+                x,
+                y,
+                width,
+                22f),
+            modeText,
+            snapshot.HasPower
+                ? new Color(0.35f, 1f, 0.35f)
+                : new Color(1f, 0.72f, 0.20f));
+
+        y +=
+            22f;
+
+        if (!snapshot.HasPower)
+        {
+            DrawColoredLabel(
+                new Rect(
+                    x,
+                    y,
+                    width,
+                    22f),
+                "HOLD RAISE / LOWER / STOP TO EXECUTE",
+                new Color(1f, 0.72f, 0.20f));
+
+            y +=
+                22f;
+        }
+
+        string brakeText =
+            snapshot.ParkingBrakeApplied
+                ? "PARKING BRAKE: APPLIED"
+                : "PARKING BRAKE: RELEASED";
+
+        if (snapshot.ManualControlActive)
+            brakeText += " | MANUAL CONTROL ACTIVE";
+        else if (snapshot.AutomaticControlActive)
+            brakeText += " | AUTOMATIC CONTROL ACTIVE";
+
+        Color brakeColor =
+            snapshot.ParkingBrakeApplied
+                ? new Color(0.35f, 1f, 0.35f)
+                : new Color(1f, 0.32f, 0.24f);
+
+        if (snapshot.ManualControlActive)
+            brakeColor = new Color(1f, 0.72f, 0.20f);
+        else if (snapshot.AutomaticControlActive)
+            brakeColor = new Color(0.35f, 0.85f, 1f);
+
+        DrawColoredLabel(
+            new Rect(
+                x,
+                y,
+                width,
+                22f),
+            brakeText,
+            brakeColor);
+
+        y +=
+            28f;
+
         float gap =
             8f;
 
@@ -353,7 +435,11 @@ public sealed class WinchCartridge :
             (width - gap * 3f) /
             4f;
 
-        DrawCommandButton(
+        bool manualUiMode =
+            !snapshot.HasPower ||
+            _manualHeldIntent.HasValue;
+
+        DrawMotorControlButton(
             new Rect(
                 x,
                 y,
@@ -362,9 +448,10 @@ public sealed class WinchCartridge :
             "LOWER",
             snapshot.HasDeployment &&
             snapshot.AvailableLineMeters > 0f,
-            TryLower);
+            WinchControlIntent.Lower,
+            manualUiMode);
 
-        DrawCommandButton(
+        DrawMotorControlButton(
             new Rect(
                 x + (buttonWidth + gap),
                 y,
@@ -372,9 +459,10 @@ public sealed class WinchCartridge :
                 34f),
             "STOP",
             snapshot.HasWinch,
-            Stop);
+            WinchControlIntent.Stop,
+            manualUiMode);
 
-        DrawCommandButton(
+        DrawMotorControlButton(
             new Rect(
                 x + (buttonWidth + gap) * 2f,
                 y,
@@ -383,7 +471,8 @@ public sealed class WinchCartridge :
             "RAISE",
             snapshot.HasDeployment &&
             snapshot.HasDeployedPayload,
-            TryRaise);
+            WinchControlIntent.Raise,
+            manualUiMode);
 
         DrawCommandButton(
             new Rect(
@@ -416,13 +505,18 @@ public sealed class WinchCartridge :
         if (!string.IsNullOrWhiteSpace(
                 _statusNote))
         {
-            GUI.Label(
+            Color statusNoteColor =
+                ResolveStatusNoteColor(
+                    _statusNote);
+
+            DrawColoredLabel(
                 new Rect(
                     x,
                     y,
                     width,
                     22f),
-                _statusNote);
+                _statusNote,
+                statusNoteColor);
 
             y +=
                 24f;
@@ -440,35 +534,155 @@ public sealed class WinchCartridge :
     private void TryLower()
     {
         EmitControlIntent(
-            WinchControlIntent.Lower);
+            WinchControlIntent.Lower,
+            WinchControlInputPhase.Press);
     }
 
     private void TryRaise()
     {
         EmitControlIntent(
-            WinchControlIntent.Raise);
+            WinchControlIntent.Raise,
+            WinchControlInputPhase.Press);
     }
 
     private void Stop()
     {
         EmitControlIntent(
-            WinchControlIntent.Stop);
+            WinchControlIntent.Stop,
+            WinchControlInputPhase.Press);
     }
 
     private void QuickRelease()
     {
+        ReleaseManualHoldIfNeeded();
+
         EmitControlIntent(
-            WinchControlIntent.QuickRelease);
+            WinchControlIntent.QuickRelease,
+            WinchControlInputPhase.Press);
     }
 
     private void CutLine()
     {
+        ReleaseManualHoldIfNeeded();
+
         EmitControlIntent(
-            WinchControlIntent.CutLine);
+            WinchControlIntent.CutLine,
+            WinchControlInputPhase.Press);
+    }
+
+    private void DrawMotorControlButton(
+        Rect rect,
+        string label,
+        bool enabled,
+        WinchControlIntent intent,
+        bool manualMode)
+    {
+        if (!manualMode)
+        {
+            DrawCommandButton(
+                rect,
+                label,
+                enabled,
+                () =>
+                    EmitControlIntent(
+                        intent,
+                        WinchControlInputPhase.Press));
+
+            return;
+        }
+
+        bool held =
+            _manualHeldIntent.HasValue &&
+            _manualHeldIntent.Value == intent;
+
+        bool previous =
+            GUI.enabled;
+
+        GUI.enabled =
+            previous &&
+            enabled;
+
+        GUI.Box(
+            rect,
+            held
+                ? $"{label} [HOLDING]"
+                : label,
+            GUI.skin.button);
+
+        Event current =
+            Event.current;
+
+        if (current != null &&
+            current.type == EventType.MouseUp &&
+            current.button == 0 &&
+            held)
+        {
+            EmitControlIntent(
+                intent,
+                WinchControlInputPhase.HoldEnd);
+
+            _manualHeldIntent =
+                null;
+
+            current.Use();
+
+            GUI.enabled =
+                previous;
+
+            return;
+        }
+
+        if (enabled &&
+            current != null &&
+            current.type == EventType.MouseDown &&
+            current.button == 0 &&
+            rect.Contains(
+                current.mousePosition))
+        {
+            if (_manualHeldIntent.HasValue &&
+                _manualHeldIntent.Value != intent)
+            {
+                WinchControlIntent previousIntent =
+                    _manualHeldIntent.Value;
+
+                EmitControlIntent(
+                    previousIntent,
+                    WinchControlInputPhase.HoldEnd);
+            }
+
+            _manualHeldIntent =
+                intent;
+
+            EmitControlIntent(
+                intent,
+                WinchControlInputPhase.HoldBegin);
+
+            current.Use();
+        }
+
+        GUI.enabled =
+            previous;
+    }
+
+    private void ReleaseManualHoldIfNeeded()
+    {
+        if (!_manualHeldIntent.HasValue)
+            return;
+
+        WinchControlIntent heldIntent =
+            _manualHeldIntent.Value;
+
+        _manualHeldIntent =
+            null;
+
+        EmitControlIntent(
+            heldIntent,
+            WinchControlInputPhase.HoldEnd);
     }
 
     private void EmitControlIntent(
-        WinchControlIntent intent)
+        WinchControlIntent intent,
+        WinchControlInputPhase phase)
     {
         if (_ctx == null ||
             _ctx.emitEffect == null)
@@ -486,11 +700,16 @@ public sealed class WinchCartridge :
                     WinchControlIntentPayload.CurrentVersion,
 
                 intent =
-                    intent
+                    intent,
+
+                phase =
+                    phase
             };
 
         _statusNote =
-            $"{intent.ToString().ToUpperInvariant()} REQUESTED";
+            phase == WinchControlInputPhase.Press
+                ? $"{intent.ToString().ToUpperInvariant()} REQUESTED"
+                : $"{intent.ToString().ToUpperInvariant()} {phase.ToString().ToUpperInvariant()}";
 
         _ctx.emitEffect.Invoke(
             new MiniGameEffect
@@ -528,9 +747,29 @@ public sealed class WinchCartridge :
     /// </summary>
     public void NotifyControlIntentApplied(
         WinchControlIntent intent,
+        WinchControlInputPhase phase,
         bool success,
         string message)
     {
+        if (phase ==
+                WinchControlInputPhase.HoldBegin &&
+            !success &&
+            _manualHeldIntent.HasValue &&
+            _manualHeldIntent.Value == intent)
+        {
+            _manualHeldIntent =
+                null;
+        }
+
+        if (phase ==
+                WinchControlInputPhase.HoldEnd &&
+            _manualHeldIntent.HasValue &&
+            _manualHeldIntent.Value == intent)
+        {
+            _manualHeldIntent =
+                null;
+        }
+
         if (!string.IsNullOrWhiteSpace(
                 message))
         {
@@ -542,9 +781,10 @@ public sealed class WinchCartridge :
 
         _statusNote =
             success
-                ? $"{intent.ToString().ToUpperInvariant()} ACCEPTED"
-                : $"{intent.ToString().ToUpperInvariant()} REJECTED";
+                ? $"{intent.ToString().ToUpperInvariant()} {phase.ToString().ToUpperInvariant()} ACCEPTED"
+                : $"{intent.ToString().ToUpperInvariant()} {phase.ToString().ToUpperInvariant()} REJECTED";
     }
+
 
     /// <summary>
     /// Result callback from the authoritative line-transfer router.
@@ -1251,26 +1491,63 @@ public sealed class WinchCartridge :
         WinchReadoutSnapshot snapshot)
     {
         string state;
+        Color stateColor;
 
         if (!snapshot.HasWinch)
         {
             state =
                 "OFFLINE";
+
+            stateColor =
+                new Color(1f, 0.32f, 0.24f);
         }
         else if (!snapshot.HasLink)
         {
             state =
                 "UNLINKED";
+
+            stateColor =
+                new Color(1f, 0.72f, 0.20f);
         }
         else if (!snapshot.HasDeployment)
         {
             state =
                 "NO DEPLOYMENT MODULE";
+
+            stateColor =
+                new Color(1f, 0.72f, 0.20f);
         }
         else
         {
             state =
                 $"{snapshot.DeploymentState} | {snapshot.Command}";
+
+            if (snapshot.Command ==
+                WinchCommand.QuickRelease)
+            {
+                stateColor =
+                    new Color(1f, 0.32f, 0.24f);
+            }
+            else if (snapshot.ParkingBrakeApplied)
+            {
+                stateColor =
+                    new Color(0.35f, 1f, 0.35f);
+            }
+            else if (snapshot.ManualControlActive)
+            {
+                stateColor =
+                    new Color(1f, 0.72f, 0.20f);
+            }
+            else if (snapshot.AutomaticControlActive)
+            {
+                stateColor =
+                    new Color(0.35f, 0.85f, 1f);
+            }
+            else
+            {
+                stateColor =
+                    Color.white;
+            }
         }
 
         DrawLineAt(
@@ -1279,11 +1556,13 @@ public sealed class WinchCartridge :
             width,
             line,
             "STATUS:",
-            state.ToUpperInvariant());
+            state.ToUpperInvariant(),
+            stateColor);
 
         y +=
             line;
     }
+
 
     private static string ResolvePayloadLabel(
         WinchReadoutSnapshot snapshot)
@@ -1328,7 +1607,8 @@ public sealed class WinchCartridge :
         float width,
         float line,
         string label,
-        string value)
+        string value,
+        Color? valueColor = null)
     {
         const float labelWidth =
             122f;
@@ -1341,6 +1621,15 @@ public sealed class WinchCartridge :
                 line),
             label);
 
+        Color previous =
+            GUI.contentColor;
+
+        if (valueColor.HasValue)
+        {
+            GUI.contentColor =
+                valueColor.Value;
+        }
+
         GUI.Label(
             new Rect(
                 x + labelWidth,
@@ -1350,6 +1639,89 @@ public sealed class WinchCartridge :
                     width - labelWidth),
                 line),
             value);
+
+        GUI.contentColor =
+            previous;
+    }
+
+
+    private static void DrawColoredLabel(
+        Rect rect,
+        string text,
+        Color color)
+    {
+        Color previous =
+            GUI.contentColor;
+
+        GUI.contentColor =
+            color;
+
+        GUI.Label(
+            rect,
+            text);
+
+        GUI.contentColor =
+            previous;
+    }
+
+    private static Color ResolveStatusNoteColor(
+        string message)
+    {
+        if (string.IsNullOrWhiteSpace(
+                message))
+        {
+            return Color.white;
+        }
+
+        string upper =
+            message.ToUpperInvariant();
+
+        if (upper.Contains("REJECT") ||
+            upper.Contains("FAILED") ||
+            upper.Contains("UNAVAILABLE") ||
+            upper.Contains("QUICK RELEASE") ||
+            upper.Contains("LOST BOAT POWER"))
+        {
+            return
+                new Color(
+                    1f,
+                    0.32f,
+                    0.24f);
+        }
+
+        if (upper.Contains("PARKING BRAKE APPLIED") ||
+            upper.Contains("ACCEPTED"))
+        {
+            return
+                new Color(
+                    0.35f,
+                    1f,
+                    0.35f);
+        }
+
+        if (upper.Contains("MANUAL") ||
+            upper.Contains("HOLD") ||
+            upper.Contains("BRAKING"))
+        {
+            return
+                new Color(
+                    1f,
+                    0.72f,
+                    0.20f);
+        }
+
+        if (upper.Contains("AUTOMATIC") ||
+            upper.Contains("POWERED"))
+        {
+            return
+                new Color(
+                    0.35f,
+                    0.85f,
+                    1f);
+        }
+
+        return
+            Color.white;
     }
 
     private static void DrawSectionBox(

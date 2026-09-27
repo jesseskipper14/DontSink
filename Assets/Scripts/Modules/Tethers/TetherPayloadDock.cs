@@ -100,6 +100,18 @@ public sealed class TetherPayloadDock : MonoBehaviour
         TickCapture();
     }
 
+    private void OnDisable()
+    {
+        // A disabled dock cannot continue authoritative capture motion. If it is
+        // disabled mid-capture, restore the payload's pre-capture physics state
+        // instead of leaving it stranded as a Kinematic body.
+        if (HasGameplayAuthority &&
+            dockState == TetherDockState.Capturing)
+        {
+            AbortBrokenCapture();
+        }
+    }
+
     public TetherDockState GetDockState(TetherPayload payload)
     {
         if (payload == null || !ReferenceEquals(dockedPayload, payload))
@@ -336,14 +348,64 @@ public sealed class TetherPayloadDock : MonoBehaviour
 
     private void AbortBrokenCapture()
     {
-        TetherPayload previous = dockedPayload;
+        TetherPayload previousPayload =
+            dockedPayload;
 
-        if (previous != null)
-            previous.ClearActiveDock(this);
+        Rigidbody2D previousBody =
+            dockedBody;
 
-        dockedPayload = null;
-        dockedBody = null;
-        activeDockPoint = null;
+        Transform releaseParent =
+            _originalParent;
+
+        // TryDock temporarily converts the payload body to Kinematic. A broken
+        // capture must therefore roll that temporary physics mutation back BEFORE
+        // relinquishing dock ownership, otherwise the deployment layer may rebind
+        // the tether to a payload that is still Kinematic.
+        if (previousPayload != null)
+        {
+            previousPayload.transform.SetParent(
+                releaseParent,
+                worldPositionStays: true);
+        }
+
+        if (previousBody != null)
+        {
+            previousBody.bodyType =
+                _savedFreeBodyState
+                    ? _freeBodyType
+                    : RigidbodyType2D.Dynamic;
+
+            previousBody.constraints =
+                _savedFreeBodyState
+                    ? _freeConstraints
+                    : RigidbodyConstraints2D.None;
+
+            previousBody.simulated =
+                _savedFreeBodyState
+                    ? _freeSimulated
+                    : true;
+
+            previousBody.linearVelocity =
+                Vector2.zero;
+
+            previousBody.angularVelocity =
+                0f;
+
+            if (previousBody.simulated)
+                previousBody.WakeUp();
+        }
+
+        if (previousPayload != null)
+            previousPayload.ClearActiveDock(this);
+
+        dockedPayload =
+            null;
+
+        dockedBody =
+            null;
+
+        activeDockPoint =
+            null;
 
         ClearSavedFreeBodyState();
         SetDockState(TetherDockState.Free);

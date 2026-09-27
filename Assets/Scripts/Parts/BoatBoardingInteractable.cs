@@ -7,15 +7,9 @@ public sealed class BoatBoardingInteractable :
     IInteractable,
     IInteractPromptProvider,
     IInteractPromptActionProvider,
-    IInteractionLabelProvider
+    IInteractionLabelProvider,
+    IHoldInteractable
 {
-    private enum HoldAction
-    {
-        None,
-        Board,
-        Unboard
-    }
-
     [Header("Interaction")]
     [SerializeField] private int priority = 60;
     [SerializeField] private float maxUseDistance = 1.8f;
@@ -30,8 +24,6 @@ public sealed class BoatBoardingInteractable :
 
     [Header("Board Hold")]
     [SerializeField] private bool requireHoldToBoard = true;
-    [SerializeField] private KeyCode boardHoldKey = KeyCode.E;
-
     [SerializeField, Min(0.05f)]
     private float boardHoldSeconds = 0.35f;
 
@@ -42,8 +34,6 @@ public sealed class BoatBoardingInteractable :
 
     [Header("Unboard Hold")]
     [SerializeField] private bool requireHoldToUnboard = true;
-    [SerializeField] private KeyCode unboardHoldKey = KeyCode.E;
-
     [SerializeField, Min(0.05f)]
     private float unboardHoldSeconds = 0.65f;
 
@@ -77,13 +67,41 @@ public sealed class BoatBoardingInteractable :
     [SerializeField] private bool debugHold = false;
 
     private float _currentAlpha = 1f;
-    private PlayerBoardingState _cachedPlayer;
-
-    private PlayerBoardingState _holdPlayer;
-    private HoldAction _holdAction;
-    private float _holdTimer;
 
     public int InteractionPriority => priority;
+
+    public float GetInteractionHoldDuration(
+        in InteractContext context)
+    {
+        PlayerBoardingState boarding =
+            FindBoardingState(
+                context);
+
+        if (boarding == null)
+            return 0f;
+
+        if (boarding.IsBoarded)
+        {
+            if (boarding.CurrentBoatRoot != boatRoot)
+                return 0f;
+
+            return
+                requireHoldToUnboard &&
+                suppressInstantUnboardInteract
+                    ? Mathf.Max(
+                        0.05f,
+                        unboardHoldSeconds)
+                    : 0f;
+        }
+
+        return
+            requireHoldToBoard &&
+            suppressInstantBoardInteract
+                ? Mathf.Max(
+                    0.05f,
+                    boardHoldSeconds)
+                : 0f;
+    }
 
     public string GetPromptVerb(in InteractContext context)
     {
@@ -124,21 +142,22 @@ public sealed class BoatBoardingInteractable :
         ApplyAlpha(_currentAlpha);
     }
 
-    private void Update()
-    {
-        TickBoardingHold();
-    }
-
     public bool CanInteract(in InteractContext context)
     {
         if (context.InteractorGO == null)
             return false;
 
-        float dist = Vector2.Distance(context.Origin, transform.position);
+        float dist =
+            Vector2.Distance(
+                context.Origin,
+                transform.position);
+
         if (dist > maxUseDistance)
             return false;
 
-        PlayerBoardingState boarding = FindBoardingState(context);
+        PlayerBoardingState boarding =
+            FindBoardingState(context);
+
         if (boarding == null)
             return true;
 
@@ -152,165 +171,41 @@ public sealed class BoatBoardingInteractable :
     {
         GameObject go = context.InteractorGO;
         Transform t = context.InteractorTransform;
-        if (go == null || t == null) return;
 
-        PlayerBoardingState boarding = FindBoardingState(context);
+        if (go == null || t == null)
+            return;
+
+        PlayerBoardingState boarding =
+            FindBoardingState(context);
+
         if (boarding == null)
         {
-            Debug.LogWarning($"'{go.name}' missing PlayerBoardingState.");
+            Debug.LogWarning(
+                $"'{go.name}' missing PlayerBoardingState.",
+                this);
             return;
         }
 
+        if (!CanInteract(context))
+            return;
+
         if (!boarding.IsBoarded)
         {
-            if (requireHoldToBoard && suppressInstantBoardInteract)
-            {
-                BeginOrContinueHold(boarding, HoldAction.Board);
+            Board(
+                go,
+                t,
+                boarding);
 
-                if (debugHold)
-                {
-                    Debug.Log(
-                        $"[BoatBoardingInteractable:{name}] Instant board suppressed; hold {boardHoldKey} to board.",
-                        this);
-                }
-
-                return;
-            }
-
-            Board(go, t, boarding);
             return;
         }
 
         if (boarding.CurrentBoatRoot != boatRoot)
             return;
 
-        if (requireHoldToUnboard && suppressInstantUnboardInteract)
-        {
-            BeginOrContinueHold(boarding, HoldAction.Unboard);
-
-            if (debugHold)
-            {
-                Debug.Log(
-                    $"[BoatBoardingInteractable:{name}] Instant unboard suppressed; hold {unboardHoldKey} to leave.",
-                    this);
-            }
-
-            return;
-        }
-
-        Unboard(go, t, boarding);
-    }
-
-    private void TickBoardingHold()
-    {
-        PlayerBoardingState player = ResolvePlayer();
-        if (player == null)
-        {
-            ResetHold();
-            return;
-        }
-
-        HoldAction action = GetAvailableHoldAction(player);
-        if (action == HoldAction.None)
-        {
-            ResetHold();
-            return;
-        }
-
-        KeyCode key = GetHoldKey(action);
-        if (key == KeyCode.None || !Input.GetKey(key))
-        {
-            ResetHold();
-            return;
-        }
-
-        BeginOrContinueHold(player, action);
-
-        _holdTimer += Time.deltaTime;
-
-        float requiredSeconds = GetHoldSeconds(action);
-        if (_holdTimer < requiredSeconds)
-            return;
-
-        GameObject go = player.gameObject;
-        Transform t = player.transform;
-
-        ResetHold();
-
-        if (action == HoldAction.Board)
-            Board(go, t, player);
-        else if (action == HoldAction.Unboard)
-            Unboard(go, t, player);
-    }
-
-    private HoldAction GetAvailableHoldAction(PlayerBoardingState player)
-    {
-        if (player == null)
-            return HoldAction.None;
-
-        if (!IsPlayerInRange(player))
-            return HoldAction.None;
-
-        if (player.IsBoarded)
-        {
-            if (!requireHoldToUnboard)
-                return HoldAction.None;
-
-            if (boatRoot == null || player.CurrentBoatRoot != boatRoot)
-                return HoldAction.None;
-
-            return HoldAction.Unboard;
-        }
-
-        if (!requireHoldToBoard)
-            return HoldAction.None;
-
-        return HoldAction.Board;
-    }
-
-    private void BeginOrContinueHold(PlayerBoardingState player, HoldAction action)
-    {
-        if (_holdPlayer != player || _holdAction != action)
-        {
-            _holdPlayer = player;
-            _holdAction = action;
-            _holdTimer = 0f;
-        }
-    }
-
-    private void ResetHold()
-    {
-        _holdPlayer = null;
-        _holdAction = HoldAction.None;
-        _holdTimer = 0f;
-    }
-
-    private float GetPromptProgress(PlayerBoardingState player, HoldAction action, float requiredSeconds)
-    {
-        if (_holdPlayer != player || _holdAction != action)
-            return 0f;
-
-        return Mathf.Clamp01(_holdTimer / Mathf.Max(0.05f, requiredSeconds));
-    }
-
-    private KeyCode GetHoldKey(HoldAction action)
-    {
-        return action switch
-        {
-            HoldAction.Board => boardHoldKey,
-            HoldAction.Unboard => unboardHoldKey,
-            _ => KeyCode.None
-        };
-    }
-
-    private float GetHoldSeconds(HoldAction action)
-    {
-        return action switch
-        {
-            HoldAction.Board => Mathf.Max(0.05f, boardHoldSeconds),
-            HoldAction.Unboard => Mathf.Max(0.05f, unboardHoldSeconds),
-            _ => 0f
-        };
+        Unboard(
+            go,
+            t,
+            boarding);
     }
 
     private bool IsPlayerInRange(PlayerBoardingState player)
@@ -332,8 +227,6 @@ public sealed class BoatBoardingInteractable :
         ZeroVelocity(go);
         boarding.Board(boatRoot);
 
-        ResetHold();
-
         if (debugHold)
             Debug.Log($"[BoatBoardingInteractable:{name}] Boarded '{go.name}'.", this);
     }
@@ -345,8 +238,6 @@ public sealed class BoatBoardingInteractable :
 
         ZeroVelocity(go);
         boarding.Unboard();
-
-        ResetHold();
 
         if (debugHold)
             Debug.Log($"[BoatBoardingInteractable:{name}] Unboarded '{go.name}'.", this);
@@ -418,15 +309,6 @@ public sealed class BoatBoardingInteractable :
             rb.linearVelocity = Vector2.zero;
     }
 
-    private PlayerBoardingState ResolvePlayer()
-    {
-        if (_cachedPlayer != null)
-            return _cachedPlayer;
-
-        _cachedPlayer = FindFirstObjectByType<PlayerBoardingState>();
-        return _cachedPlayer;
-    }
-
     private PlayerBoardingState ResolvePresentationPlayer()
     {
         if (CameraManager.Instance != null)
@@ -483,6 +365,66 @@ public sealed class BoatBoardingInteractable :
         return null;
     }
 
+    private float GetGenericHoldProgress(
+        in InteractContext context)
+    {
+        Interactor2D interactor =
+            ResolveInteractor(
+                context);
+
+        if (interactor == null ||
+            !ReferenceEquals(
+                interactor.ActiveHoldInteractTarget,
+                this))
+        {
+            return 0f;
+        }
+
+        return
+            interactor.ActiveHoldInteractProgress;
+    }
+
+    private static Interactor2D ResolveInteractor(
+        in InteractContext context)
+    {
+        if (context.InteractorGO != null)
+        {
+            Interactor2D direct =
+                context.InteractorGO.GetComponent<Interactor2D>();
+
+            if (direct != null)
+                return direct;
+
+            Interactor2D parent =
+                context.InteractorGO.GetComponentInParent<Interactor2D>();
+
+            if (parent != null)
+                return parent;
+
+            Interactor2D child =
+                context.InteractorGO.GetComponentInChildren<Interactor2D>(
+                    true);
+
+            if (child != null)
+                return child;
+        }
+
+        if (context.InteractorTransform != null)
+        {
+            Interactor2D parent =
+                context.InteractorTransform.GetComponentInParent<Interactor2D>();
+
+            if (parent != null)
+                return parent;
+
+            return
+                context.InteractorTransform.GetComponentInChildren<Interactor2D>(
+                    true);
+        }
+
+        return null;
+    }
+
     private void ApplyAlpha(float alpha)
     {
         if (fadeRenderers == null)
@@ -507,27 +449,45 @@ public sealed class BoatBoardingInteractable :
         return "Boarding Door";
     }
 
-    public void GetPromptActions(in InteractContext context, System.Collections.Generic.List<PromptAction> actions)
+    public void GetPromptActions(
+        in InteractContext context,
+        System.Collections.Generic.List<PromptAction> actions)
     {
-        PlayerBoardingState boarding = FindBoardingState(context);
-        if (boarding == null)
-            return;
+        PlayerBoardingState boarding =
+            FindBoardingState(context);
 
-        if (boarding.IsBoarded && boarding.CurrentBoatRoot == boatRoot)
+        if (boarding == null ||
+            !CanInteract(context))
+        {
+            return;
+        }
+
+        if (boarding.IsBoarded &&
+            boarding.CurrentBoatRoot == boatRoot)
         {
             if (!requireHoldToUnboard)
             {
-                actions.Add(new PromptAction("Press E to Leave Boat", priority: 100));
+                actions.Add(
+                    new PromptAction(
+                        "Press E to Leave Boat",
+                        priority: 100));
                 return;
             }
 
-            float progress = GetPromptProgress(boarding, HoldAction.Unboard, unboardHoldSeconds);
+            float progress =
+                GetGenericHoldProgress(
+                    context);
 
-            actions.Add(new PromptAction(
-                $"Hold {unboardHoldKey} to Leave Boat",
-                priority: 100,
-                showProgress: showUnboardHoldProgressInPrompt,
-                progress01: showUnboardHoldProgressInPrompt ? progress : 0f));
+            actions.Add(
+                new PromptAction(
+                    "Hold E to Leave Boat",
+                    priority: 100,
+                    showProgress:
+                        showUnboardHoldProgressInPrompt,
+                    progress01:
+                        showUnboardHoldProgressInPrompt
+                            ? progress
+                            : 0f));
 
             return;
         }
@@ -536,17 +496,27 @@ public sealed class BoatBoardingInteractable :
         {
             if (!requireHoldToBoard)
             {
-                actions.Add(new PromptAction("Press E to Board", priority: 100));
+                actions.Add(
+                    new PromptAction(
+                        "Press E to Board",
+                        priority: 100));
                 return;
             }
 
-            float progress = GetPromptProgress(boarding, HoldAction.Board, boardHoldSeconds);
+            float progress =
+                GetGenericHoldProgress(
+                    context);
 
-            actions.Add(new PromptAction(
-                $"Hold {boardHoldKey} to Board",
-                priority: 100,
-                showProgress: showBoardHoldProgressInPrompt,
-                progress01: showBoardHoldProgressInPrompt ? progress : 0f));
+            actions.Add(
+                new PromptAction(
+                    "Hold E to Board",
+                    priority: 100,
+                    showProgress:
+                        showBoardHoldProgressInPrompt,
+                    progress01:
+                        showBoardHoldProgressInPrompt
+                            ? progress
+                            : 0f));
         }
     }
 }

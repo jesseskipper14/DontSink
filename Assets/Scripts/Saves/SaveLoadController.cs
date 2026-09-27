@@ -72,6 +72,10 @@ public sealed class SaveLoadController : MonoBehaviour
             blockSaveOnCompatibilityErrors);
 
         LogResult($"SaveSlot('{finalSlot}')", result);
+
+        if (result.success)
+            GameMessageService.PostInfo("Game Saved");
+
         return result;
     }
 

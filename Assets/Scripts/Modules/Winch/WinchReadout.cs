@@ -10,6 +10,13 @@ public struct WinchReadoutSnapshot
     public bool HasLink;
     public bool HasDeployment;
 
+    public bool HasPower;
+    public bool AutomaticControlEnabled;
+    public bool AutomaticControlActive;
+    public bool ManualControlActive;
+    public bool ParkingBrakeApplied;
+    public float CurrentLineSpeedMetersPerSecond;
+
     public WinchCommand Command;
     public TetherDeploymentState DeploymentState;
 
@@ -60,6 +67,24 @@ public sealed class WinchReadoutSource
 
         snapshot.Command =
             _winch.Command;
+
+        snapshot.HasPower =
+            _winch.HasBoatPowerAvailable;
+
+        snapshot.AutomaticControlEnabled =
+            snapshot.HasPower;
+
+        snapshot.AutomaticControlActive =
+            _winch.IsAutomaticControlActive;
+
+        snapshot.ManualControlActive =
+            _winch.IsManualSurfaceControlActive;
+
+        snapshot.ParkingBrakeApplied =
+            _winch.ParkingBrakeApplied;
+
+        snapshot.CurrentLineSpeedMetersPerSecond =
+            _winch.CurrentLineSpeedMetersPerSecond;
 
         snapshot.AvailableLineMeters =
             _winch.AvailableLineMeters;

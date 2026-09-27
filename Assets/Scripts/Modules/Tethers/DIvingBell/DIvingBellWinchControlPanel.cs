@@ -26,6 +26,13 @@ public sealed class DivingBellWinchControlPanel : MonoBehaviour
         "Quick Release / Cut Line UI and confirmation behavior.")]
     [SerializeField] private bool allowDangerousIntents = false;
 
+    [Header("Internal Power")]
+    [Tooltip(
+        "When enabled, internal bell Lower / Stop / Raise commands require boat power " +
+        "and use the linked WinchModule's internal-bell power demand. Quick Release " +
+        "and Cut Line remain mechanical and never require or consume power.")]
+    [SerializeField] private bool requirePower = true;
+
     [Header("Runtime Debug")]
     [SerializeField] private TetherPayload resolvedPayload;
     [SerializeField] private TetherWinchLink resolvedLink;
@@ -40,6 +47,7 @@ public sealed class DivingBellWinchControlPanel : MonoBehaviour
     public DivingBellOccupancy Occupancy => occupancy;
     public WinchModule ResolvedWinch => resolvedWinch;
     public TetherDeploymentModule ResolvedDeployment => resolvedDeployment;
+    public bool RequirePower => requirePower;
 
     private void Awake()
     {
@@ -121,32 +129,40 @@ public sealed class DivingBellWinchControlPanel : MonoBehaviour
             return false;
         }
 
-        if (!CanControl(interactorGO, out string reason))
+        if (!CanControl(
+                interactorGO,
+                out string reason))
         {
             message = reason;
             lastControlMessage = message;
             return false;
         }
 
-        // WinchModule is the existing runtime authority. Do not duplicate its
-        // deployment, spool, load, docking, or line validation here.
-        bool ok = resolvedWinch.TryApplyControlIntent(
-            intent,
-            out message);
+        // The linked WinchModule remains the authoritative command + power consumer.
+        // This panel only identifies the request as coming from the internal bell
+        // controls and supplies the testing/balance power toggle.
+        bool ok =
+            resolvedWinch.TryApplyInternalBellControlIntent(
+                intent,
+                requirePower,
+                out message);
 
-        lastControlMessage = message;
+        lastControlMessage =
+            message;
 
         if (verboseLogging)
         {
             Debug.Log(
                 $"[DivingBellWinchControlPanel:{name}] " +
                 $"player='{interactorGO.name}' bell='{occupancy.name}' " +
-                $"intent={intent} success={ok} message='{message}'",
+                $"intent={intent} requirePower={requirePower} " +
+                $"success={ok} message='{message}'",
                 this);
         }
 
         return ok;
     }
+
 
     public bool IsIntentAllowedInternally(
         WinchControlIntent intent)

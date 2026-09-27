@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: -2964769926014982786}
   - component: {fileID: 5505755446079400409}
   - component: {fileID: -8434105766481387384}
+  - component: {fileID: 7419180121653138177}
   m_Layer: 10
   m_Name: CargoCrate
   m_TagString: Untagged
@@ -305,6 +306,15 @@ MonoBehaviour:
   boatBodyAlwaysUsesOcean: 1
   sliceCount: 10
   lastTotalSubmersion: 0
+  lastCappedRuntimeVolume: 0
+  lastUncappedRuntimeVolume: 0
+  lastRuntimeVolumeBypass01: 0
+  lastMaxTotalBuoyantForce: 0
+  lastAppliedCappedBuoyantForce: 0
+  lastAppliedUncappedBuoyantForce: 0
+  lastAppliedTotalBuoyantForce: 0
+  lastBuoyantAcceleration: 0
+  lastSurfaceYAtBodyX: 0
   enabledFlag: 1
   priority: 50
 --- !u!114 &-6181863487164022527
@@ -369,7 +379,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d25d72d0396500e4c803080c99afb5b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enforceGameplayAuthority: 0
+  gameplayAuthorityMode: 0
   verboseDiagnostics: 1
+--- !u!114 &7419180121653138177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4124277612827551974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7eb77b1befa709548abf4e4e50837ab8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameplayAuthorityMode: 0
+  usableFloodVolumeFraction: 0.5
+  leakRateFractionPerSecond: 0.0016666667
+  drainRateFractionPerSecond: 0.0033333334
+  showWetnessDetail: 1
+  wetnessDetailFormat: 'Wetness: {0}'
+  dampAt01: 0.05
+  wetAt01: 0.25
+  soakedAt01: 0.5
+  floodedAt01: 0.9
 --- !u!1 &6747998717389050764
 GameObject:
   m_ObjectHideFlags: 0

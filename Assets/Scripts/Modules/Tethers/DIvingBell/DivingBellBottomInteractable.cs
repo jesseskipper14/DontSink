@@ -19,7 +19,8 @@ public sealed class DivingBellBottomInteractable :
     IInteractPromptProvider,
     IInteractPromptActionProvider,
     IInteractionLabelProvider,
-    IInteractionPromptDisplayPolicyProvider
+    IInteractionPromptDisplayPolicyProvider,
+    IHoldInteractable
 {
     [Header("Interaction")]
     [SerializeField]
@@ -30,8 +31,19 @@ public sealed class DivingBellBottomInteractable :
     private float maxUseDistance =
         1.6f;
 
+    [Tooltip(
+        "How long Interact must be held before bottom entry or exit completes.")]
+    [SerializeField, Min(0f)]
+    private float holdSeconds =
+        0.35f;
+
     [Header("Bell")]
     [SerializeField] private DivingBellOccupancy occupancy;
+
+    [Tooltip(
+        "Which deployed access route this interactable represents. Leave Bottom on the existing opening; duplicate this interactable at authored left/right side openings and select the matching route.")]
+    [SerializeField] private DivingBellDeployedAccessRoute accessRoute =
+        DivingBellDeployedAccessRoute.Bottom;
 
     [Tooltip(
         "Optional prompt/range anchor at the bottom opening. Falls back to this transform.")]
@@ -53,6 +65,15 @@ public sealed class DivingBellBottomInteractable :
 
     public int InteractionPriority =>
         priority;
+
+    public float GetInteractionHoldDuration(
+        in InteractContext context)
+    {
+        return
+            Mathf.Max(
+                0f,
+                holdSeconds);
+    }
 
     private void Awake()
     {
@@ -87,8 +108,9 @@ public sealed class DivingBellBottomInteractable :
                 context.InteractorGO))
         {
             return
-                occupancy.CanExitBottom(
+                occupancy.CanExitDeployed(
                     context.InteractorGO,
+                    accessRoute,
                     out _);
         }
 
@@ -103,8 +125,9 @@ public sealed class DivingBellBottomInteractable :
         }
 
         return
-            occupancy.CanEnterBottom(
+            occupancy.CanEnterDeployed(
                 context.InteractorGO,
+                accessRoute,
                 out _);
     }
 
@@ -137,11 +160,13 @@ public sealed class DivingBellBottomInteractable :
 
         bool success =
             exiting
-                ? occupancy.TryExitBottom(
+                ? occupancy.TryExitDeployed(
                     context.InteractorGO,
+                    accessRoute,
                     out string message)
-                : occupancy.TryEnterBottom(
+                : occupancy.TryEnterDeployed(
                     context.InteractorGO,
+                    accessRoute,
                     out message);
 
         if (!success)
@@ -227,7 +252,7 @@ public sealed class DivingBellBottomInteractable :
 
         actions.Add(
             new PromptAction(
-                $"Press E to {verb}",
+                $"Hold E to {verb}",
                 priority: 100));
     }
 
@@ -297,6 +322,11 @@ public sealed class DivingBellBottomInteractable :
             Mathf.Max(
                 0.1f,
                 maxUseDistance);
+
+        holdSeconds =
+            Mathf.Max(
+                0f,
+                holdSeconds);
     }
 
     private void OnDrawGizmosSelected()

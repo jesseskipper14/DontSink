@@ -35,7 +35,6 @@ public sealed class HandheldSoundingLineHUD :
     private GUIStyle _titleStyle;
     private GUIStyle _readoutStyle;
     private GUIStyle _statusStyle;
-    private GUIStyle _hintStyle;
 
     private void Reset()
     {
@@ -157,18 +156,9 @@ public sealed class HandheldSoundingLineHUD :
                 panel.x + 10f,
                 panel.y + 54f,
                 panel.width - 20f,
-                42f),
+                panel.height - 64f),
             controller.StatusText,
             _statusStyle);
-
-        GUI.Label(
-            new Rect(
-                panel.x + 10f,
-                panel.y + 100f,
-                panel.width - 20f,
-                22f),
-            controller.ControlHintText,
-            _hintStyle);
     }
 
     private void EnsureStyles()
@@ -215,16 +205,6 @@ public sealed class HandheldSoundingLineHUD :
                 };
         }
 
-        if (_hintStyle == null)
-        {
-            _hintStyle =
-                new GUIStyle(
-                    GUI.skin.label)
-                {
-                    alignment =
-                        TextAnchor.MiddleCenter
-                };
-        }
     }
 
     private void ResolveRefs()

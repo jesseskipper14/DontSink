@@ -9,7 +9,8 @@ using UnityEngine;
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class LocalHandheldSoundingLineIntentSource :
-    MonoBehaviour
+    MonoBehaviour,
+    IContextHintProvider
 {
     [SerializeField] private HandheldSoundingLineController controller;
 
@@ -19,6 +20,9 @@ public sealed class LocalHandheldSoundingLineIntentSource :
     [SerializeField]
     private KeyCode useKey =
         KeyCode.G;
+
+    [Header("Context Hint")]
+    [SerializeField] private int contextHintPriority = 200;
 
     [Header("Debug")]
     [SerializeField] private bool logIntentResults;
@@ -31,6 +35,69 @@ public sealed class LocalHandheldSoundingLineIntentSource :
     private void Awake()
     {
         ResolveController();
+    }
+
+    private void OnEnable()
+    {
+        ContextHintOverlay.Register(this);
+    }
+
+    private void OnDisable()
+    {
+        ContextHintOverlay.Unregister(this);
+    }
+
+    public int ContextHintPriority => contextHintPriority;
+
+    public bool TryGetContextHint(
+        out string text,
+        out Transform worldAnchor)
+    {
+        ResolveController();
+
+        text = null;
+        worldAnchor = controller != null ? controller.transform : transform;
+
+        if (controller == null ||
+            !controller.ShouldShowReadout ||
+            GameplayInputBlocker.IsBlocked)
+        {
+            return false;
+        }
+
+        string key =
+            useKey == KeyCode.None
+                ? "USE"
+                : useKey.ToString().ToUpperInvariant();
+
+        text =
+            controller.Status switch
+            {
+                HandheldSoundingLineController.RuntimeStatus.Ready =>
+                    $"PRESS {key} TO DEPLOY",
+
+                HandheldSoundingLineController.RuntimeStatus.Sinking =>
+                    $"PRESS {key} TO RETRIEVE",
+
+                HandheldSoundingLineController.RuntimeStatus.Bottom =>
+                    $"PRESS {key} TO RETRIEVE",
+
+                HandheldSoundingLineController.RuntimeStatus.FullyExtended =>
+                    $"PRESS {key} TO RETRIEVE",
+
+                HandheldSoundingLineController.RuntimeStatus.Retrieving =>
+                    $"PRESS {key} TO RELEASE",
+
+                HandheldSoundingLineController.RuntimeStatus.BoardedBlocked =>
+                    "MOVE TO EXTERIOR DECK",
+
+                HandheldSoundingLineController.RuntimeStatus.NoLine =>
+                    "LOAD LINE TO DEPLOY",
+
+                _ => string.Empty
+            };
+
+        return !string.IsNullOrWhiteSpace(text);
     }
 
     private void Update()

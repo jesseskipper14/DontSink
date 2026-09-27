@@ -20,7 +20,8 @@ public sealed class DivingBellBoardInteractable :
     IInteractPromptProvider,
     IInteractPromptActionProvider,
     IInteractionLabelProvider,
-    IInteractionPromptDisplayPolicyProvider
+    IInteractionPromptDisplayPolicyProvider,
+    IHoldInteractable
 {
     [Header("Interaction")]
     [SerializeField]
@@ -30,6 +31,12 @@ public sealed class DivingBellBoardInteractable :
     [SerializeField, Min(0.1f)]
     private float maxUseDistance =
         1.8f;
+
+    [Tooltip(
+        "How long Interact must be held before front-door boarding or leaving completes.")]
+    [SerializeField, Min(0f)]
+    private float holdSeconds =
+        0.35f;
 
     [Header("Bell")]
     [SerializeField] private DivingBellOccupancy occupancy;
@@ -54,6 +61,15 @@ public sealed class DivingBellBoardInteractable :
 
     public int InteractionPriority =>
         priority;
+
+    public float GetInteractionHoldDuration(
+        in InteractContext context)
+    {
+        return
+            Mathf.Max(
+                0f,
+                holdSeconds);
+    }
 
     private void Awake()
     {
@@ -208,7 +224,7 @@ public sealed class DivingBellBoardInteractable :
 
         actions.Add(
             new PromptAction(
-                $"Press E to {verb}",
+                $"Hold E to {verb}",
                 priority: 100));
     }
 
@@ -253,6 +269,11 @@ public sealed class DivingBellBoardInteractable :
             Mathf.Max(
                 0.1f,
                 maxUseDistance);
+
+        holdSeconds =
+            Mathf.Max(
+                0f,
+                holdSeconds);
     }
 
     private void OnDrawGizmosSelected()

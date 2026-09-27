@@ -42,6 +42,12 @@ public class CharacterPlayer : MonoBehaviour, IForceBody
             return;
         }
 
+        // Runtime safety net for teleport/transfer failures that place the
+        // player below generated ground. The component is generic and may also
+        // be authored on future dynamic entities that require the same guarantee.
+        if (GetComponent<GeneratedGroundPenetrationGuard2D>() == null)
+            gameObject.AddComponent<GeneratedGroundPenetrationGuard2D>();
+
         if (buoyancyForce.waveManager == null)
             buoyancyForce.waveManager = FindFirstObjectByType<WaveManager>();
 

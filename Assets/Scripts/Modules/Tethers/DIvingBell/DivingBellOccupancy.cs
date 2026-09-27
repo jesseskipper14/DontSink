@@ -19,8 +19,7 @@ using UnityEngine;
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(TetherPayload))]
-public sealed class DivingBellOccupancy :
-    MonoBehaviour
+public sealed class DivingBellOccupancy : MonoBehaviour
 {
     [Header("Bell Points")]
     [Tooltip(
@@ -38,6 +37,35 @@ public sealed class DivingBellOccupancy :
     [Tooltip(
         "Where a player is placed immediately after leaving through the bottom opening while the bell is deployed.")]
     [SerializeField] private Transform bottomExteriorPoint;
+
+    [Tooltip(
+        "Optional left-side interior transfer point used when the deployed bottom opening is obstructed or by a left-side deployed-access interactable.")]
+    [SerializeField] private Transform leftSideInteriorPoint;
+
+    [Tooltip(
+        "Optional left-side exterior transfer point. Author this far enough outside the bell hull for the player's solid collider to fit cleanly.")]
+    [SerializeField] private Transform leftSideExteriorPoint;
+
+    [Tooltip(
+        "Optional right-side interior transfer point used when the deployed bottom opening is obstructed or by a right-side deployed-access interactable.")]
+    [SerializeField] private Transform rightSideInteriorPoint;
+
+    [Tooltip(
+        "Optional right-side exterior transfer point. Author this far enough outside the bell hull for the player's solid collider to fit cleanly.")]
+    [SerializeField] private Transform rightSideExteriorPoint;
+
+    [Header("Deployed Exit Ground Safety")]
+    [Tooltip(
+        "Generated ground sampler used to reject deployed exits that would place the player's solid body below the sea floor. Auto-resolves when blank.")]
+    [SerializeField] private GeneratedGroundSampler2D generatedGroundSampler;
+
+    [Tooltip(
+        "Desired vertical clearance between the player's solid collider bottom and generated sea floor at a deployed exit point.")]
+    [SerializeField, Min(0f)] private float deployedExitGroundClearance = 0.04f;
+
+    [Tooltip(
+        "Tiny authored/physics tolerance before an exit point is considered blocked by generated ground.")]
+    [SerializeField, Min(0f)] private float deployedExitGroundTolerance = 0.02f;
 
     [Header("Transfer")]
     [Tooltip(
@@ -121,6 +149,18 @@ public sealed class DivingBellOccupancy :
 
     public Transform BottomExteriorPoint =>
         bottomExteriorPoint;
+
+    public Transform LeftSideInteriorPoint =>
+        leftSideInteriorPoint;
+
+    public Transform LeftSideExteriorPoint =>
+        leftSideExteriorPoint;
+
+    public Transform RightSideInteriorPoint =>
+        rightSideInteriorPoint;
+
+    public Transform RightSideExteriorPoint =>
+        rightSideExteriorPoint;
 
     public int OccupantCount
     {
@@ -564,55 +604,87 @@ public sealed class DivingBellOccupancy :
     }
 
     /// <summary>
-    /// Returns true when the player may enter this bell through the deployed
-    /// bottom opening.
-    ///
-    /// Bottom access is intentionally the inverse of the front door:
-    ///     docked   -> front access
-    ///     undocked -> bottom access
+    /// Backward-compatible bottom-route wrapper. New side access interactables
+    /// should call CanEnterDeployed with their authored route.
     /// </summary>
     public bool CanEnterBottom(
         GameObject playerObject,
         out string reason)
     {
-        reason =
-            null;
+        return CanEnterDeployed(
+            playerObject,
+            DivingBellDeployedAccessRoute.Bottom,
+            out reason);
+    }
 
+    public bool TryEnterBottom(
+        GameObject playerObject,
+        out string message)
+    {
+        return TryEnterDeployed(
+            playerObject,
+            DivingBellDeployedAccessRoute.Bottom,
+            out message);
+    }
+
+    public bool CanExitBottom(
+        GameObject playerObject,
+        out string reason)
+    {
+        return CanExitDeployed(
+            playerObject,
+            DivingBellDeployedAccessRoute.Bottom,
+            out reason);
+    }
+
+    public bool TryExitBottom(
+        GameObject playerObject,
+        out string message)
+    {
+        return TryExitDeployed(
+            playerObject,
+            DivingBellDeployedAccessRoute.Bottom,
+            out message);
+    }
+
+    /// <summary>
+    /// Returns true when the player may enter this undocked bell through the
+    /// requested deployed-access route. Bottom/left/right share one occupancy
+    /// system; only their authored transfer points differ.
+    /// </summary>
+    public bool CanEnterDeployed(
+        GameObject playerObject,
+        DivingBellDeployedAccessRoute requestedRoute,
+        out string reason)
+    {
+        reason = null;
         ResolveRefs();
 
         if (playerObject == null)
         {
-            reason =
-                "Missing player.";
-
+            reason = "Missing player.";
             return false;
         }
 
         if (IsDocked)
         {
-            reason =
-                "Bottom entry is unavailable while the diving bell is docked.";
-
+            reason = "Deployed access is unavailable while the diving bell is docked.";
             return false;
         }
 
-        if (bottomInteriorPoint == null)
+        Transform interiorPoint = ResolveDeployedInteriorPoint(requestedRoute);
+
+        if (interiorPoint == null)
         {
-            reason =
-                "Diving bell bottom interior point is not configured.";
-
+            reason = $"Diving bell {requestedRoute} interior point is not configured.";
             return false;
         }
 
-        GameObject playerRoot =
-            ResolvePlayerRoot(
-                playerObject);
+        GameObject playerRoot = ResolvePlayerRoot(playerObject);
 
         if (playerRoot == null)
         {
-            reason =
-                "Could not resolve player root.";
-
+            reason = "Could not resolve player root.";
             return false;
         }
 
@@ -624,47 +696,36 @@ public sealed class DivingBellOccupancy :
         if (existingState != null &&
             existingState.IsInsideBell)
         {
-            if (existingState.IsInside(
-                    this))
-            {
-                reason =
-                    "Player is already inside this diving bell.";
-            }
-            else
-            {
-                reason =
-                    "Player is already inside another diving bell.";
-            }
-
+            reason = existingState.IsInside(this)
+                ? "Player is already inside this diving bell."
+                : "Player is already inside another diving bell.";
             return false;
         }
 
         return true;
     }
 
-    public bool TryEnterBottom(
+    public bool TryEnterDeployed(
         GameObject playerObject,
+        DivingBellDeployedAccessRoute requestedRoute,
         out string message)
     {
-        message =
-            null;
+        message = null;
 
-        if (!CanEnterBottom(
+        if (!CanEnterDeployed(
                 playerObject,
+                requestedRoute,
                 out message))
         {
             return false;
         }
 
-        GameObject playerRoot =
-            ResolvePlayerRoot(
-                playerObject);
+        GameObject playerRoot = ResolvePlayerRoot(playerObject);
+        Transform interiorPoint = ResolveDeployedInteriorPoint(requestedRoute);
 
-        if (playerRoot == null)
+        if (playerRoot == null || interiorPoint == null)
         {
-            message =
-                "Could not resolve player root.";
-
+            message = "Could not resolve deployed diving-bell entry.";
             return false;
         }
 
@@ -674,25 +735,16 @@ public sealed class DivingBellOccupancy :
                 createIfMissing: true);
 
         if (state == null ||
-            !state.TryBeginOccupancy(
-                this))
+            !state.TryBeginOccupancy(this))
         {
-            message =
-                "Could not enter diving bell.";
-
+            message = "Could not enter diving bell.";
             return false;
         }
 
-        if (!occupants.Contains(
-                state))
-        {
-            occupants.Add(
-                state);
-        }
+        if (!occupants.Contains(state))
+            occupants.Add(state);
 
-        ApplyInteractionContext(
-            state,
-            active: true);
+        ApplyInteractionContext(state, active: true);
 
         if (parentOccupantsToBell)
         {
@@ -703,39 +755,29 @@ public sealed class DivingBellOccupancy :
 
         SnapPlayer(
             state.gameObject,
-            bottomInteriorPoint,
+            interiorPoint,
             alignBodyCenterToTarget: true);
 
         Physics2D.SyncTransforms();
+        OccupantEntered?.Invoke(this, state);
 
-        OccupantEntered?.Invoke(
-            this,
-            state);
-
-        message =
-            "Entered diving bell through bottom opening.";
-
+        message = $"Entered diving bell through {requestedRoute} access.";
         return true;
     }
 
-    public bool CanExitBottom(
+    public bool CanExitDeployed(
         GameObject playerObject,
+        DivingBellDeployedAccessRoute requestedRoute,
         out string reason)
     {
-        reason =
-            null;
-
+        reason = null;
         ResolveRefs();
 
-        GameObject playerRoot =
-            ResolvePlayerRoot(
-                playerObject);
+        GameObject playerRoot = ResolvePlayerRoot(playerObject);
 
         if (playerRoot == null)
         {
-            reason =
-                "Could not resolve player root.";
-
+            reason = "Could not resolve player root.";
             return false;
         }
 
@@ -745,52 +787,47 @@ public sealed class DivingBellOccupancy :
                 createIfMissing: false);
 
         if (state == null ||
-            !state.IsInside(
-                this))
+            !state.IsInside(this))
         {
-            reason =
-                "Player is not inside this diving bell.";
-
+            reason = "Player is not inside this diving bell.";
             return false;
         }
 
         if (IsDocked)
         {
-            reason =
-                "Bottom exit is unavailable while the diving bell is docked.";
-
+            reason = "Deployed exit is unavailable while the diving bell is docked.";
             return false;
         }
 
-        if (bottomExteriorPoint == null)
+        if (!TryResolveSafeDeployedExit(
+                playerRoot,
+                requestedRoute,
+                out _,
+                out _,
+                out reason))
         {
-            reason =
-                "Diving bell bottom exterior point is not configured.";
-
             return false;
         }
 
         return true;
     }
 
-    public bool TryExitBottom(
+    public bool TryExitDeployed(
         GameObject playerObject,
+        DivingBellDeployedAccessRoute requestedRoute,
         out string message)
     {
-        message =
-            null;
+        message = null;
 
-        if (!CanExitBottom(
+        if (!CanExitDeployed(
                 playerObject,
+                requestedRoute,
                 out message))
         {
             return false;
         }
 
-        GameObject playerRoot =
-            ResolvePlayerRoot(
-                playerObject);
-
+        GameObject playerRoot = ResolvePlayerRoot(playerObject);
         PlayerBellOccupantState state =
             ResolveOccupantState(
                 playerRoot,
@@ -798,26 +835,26 @@ public sealed class DivingBellOccupancy :
 
         if (state == null)
         {
-            message =
-                "Missing diving-bell occupant state.";
-
+            message = "Missing diving-bell occupant state.";
             return false;
         }
 
-        occupants.Remove(
-            state);
+        if (!TryResolveSafeDeployedExit(
+                playerRoot,
+                requestedRoute,
+                out DivingBellDeployedAccessRoute actualRoute,
+                out Transform exteriorPoint,
+                out message))
+        {
+            return false;
+        }
 
-        // Bottom exit always returns the player to the world. Do NOT restore
-        // ParentBeforeBell here: an occupant may have entered through the front
-        // while docked, then ridden the bell down. In that case ParentBeforeBell
-        // is the boat hierarchy and restoring it underwater would reattach the
-        // player to a boat that may be far above.
-        state.EndOccupancy(
-            this);
+        occupants.Remove(state);
 
-        ApplyInteractionContext(
-            state,
-            active: false);
+        // Deployed exit always returns the player to world space. Never restore
+        // ParentBeforeBell here; it may be a boat far above the submerged bell.
+        state.EndOccupancy(this);
+        ApplyInteractionContext(state, active: false);
 
         state.transform.SetParent(
             null,
@@ -825,14 +862,10 @@ public sealed class DivingBellOccupancy :
 
         SnapPlayer(
             state.gameObject,
-            bottomExteriorPoint,
+            exteriorPoint,
             alignBodyCenterToTarget: true);
 
-        // Preserve the physically sensible linear motion of the bell at the
-        // moment of exit. The swim motor becomes authoritative immediately after.
-        Rigidbody2D playerBody =
-            state.GetComponent<Rigidbody2D>();
-
+        Rigidbody2D playerBody = state.GetComponent<Rigidbody2D>();
         Rigidbody2D bellBody =
             tetherPayload != null
                 ? tetherPayload.Rigidbody
@@ -844,31 +877,155 @@ public sealed class DivingBellOccupancy :
                 bellBody != null
                     ? bellBody.linearVelocity
                     : Vector2.zero;
-
-            playerBody.angularVelocity =
-                0f;
+            playerBody.angularVelocity = 0f;
         }
 
         Physics2D.SyncTransforms();
+        ResolveBottomExitWorldContext(state);
+        OccupantExited?.Invoke(this, state);
+        ReapplyAuthoritativePlayerPresentation(state);
 
-        ResolveBottomExitWorldContext(
-            state);
-
-        OccupantExited?.Invoke(
-            this,
-            state);
-
-        // Bottom exit is semantically a world exit. Run this AFTER every exit
-        // subscriber so the player's final visual layer/order comes from the
-        // authoritative PlayerBoardingState (normally WorldPlayer / authored
-        // world orders) rather than from any stale bell-entry snapshot.
-        ReapplyAuthoritativePlayerPresentation(
-            state);
-
-        message =
-            "Left diving bell through bottom opening.";
+        message = actualRoute == requestedRoute
+            ? $"Left diving bell through {actualRoute} access."
+            : $"Bottom access was obstructed; left diving bell through {actualRoute} access.";
 
         return true;
+    }
+
+    private bool TryResolveSafeDeployedExit(
+        GameObject playerRoot,
+        DivingBellDeployedAccessRoute requestedRoute,
+        out DivingBellDeployedAccessRoute actualRoute,
+        out Transform exteriorPoint,
+        out string reason)
+    {
+        actualRoute = requestedRoute;
+        exteriorPoint = null;
+        reason = null;
+
+        Collider2D playerCollider =
+            ResolvePrimarySolidPlayerCollider(
+                playerRoot,
+                playerRoot != null
+                    ? playerRoot.GetComponent<Rigidbody2D>()
+                    : null);
+
+        DivingBellDeployedAccessRoute[] order =
+            BuildExitFallbackOrder(requestedRoute);
+
+        for (int i = 0; i < order.Length; i++)
+        {
+            DivingBellDeployedAccessRoute route = order[i];
+            Transform candidate = ResolveDeployedExteriorPoint(route);
+
+            if (candidate == null)
+                continue;
+
+            if (IsDeployedExitClearOfGeneratedGround(
+                    playerCollider,
+                    candidate.position,
+                    out _))
+            {
+                actualRoute = route;
+                exteriorPoint = candidate;
+                return true;
+            }
+        }
+
+        reason =
+            "No configured diving-bell deployed exit has enough sea-floor clearance for the player.";
+        return false;
+    }
+
+    private bool IsDeployedExitClearOfGeneratedGround(
+        Collider2D playerCollider,
+        Vector2 intendedColliderCenter,
+        out float requiredCorrection)
+    {
+        requiredCorrection = 0f;
+
+        if (playerCollider == null)
+            return true;
+
+        if (generatedGroundSampler == null)
+        {
+            generatedGroundSampler =
+                FindAnyObjectByType<GeneratedGroundSampler2D>();
+        }
+
+        if (generatedGroundSampler == null)
+            return true;
+
+        return GeneratedGroundClearanceUtility2D.IsPlacementClear(
+            generatedGroundSampler,
+            playerCollider,
+            intendedColliderCenter,
+            deployedExitGroundClearance,
+            deployedExitGroundTolerance,
+            out requiredCorrection);
+    }
+
+    private static DivingBellDeployedAccessRoute[] BuildExitFallbackOrder(
+        DivingBellDeployedAccessRoute requestedRoute)
+    {
+        switch (requestedRoute)
+        {
+            case DivingBellDeployedAccessRoute.LeftSide:
+                return new[]
+                {
+                    DivingBellDeployedAccessRoute.LeftSide,
+                    DivingBellDeployedAccessRoute.RightSide,
+                    DivingBellDeployedAccessRoute.Bottom
+                };
+
+            case DivingBellDeployedAccessRoute.RightSide:
+                return new[]
+                {
+                    DivingBellDeployedAccessRoute.RightSide,
+                    DivingBellDeployedAccessRoute.LeftSide,
+                    DivingBellDeployedAccessRoute.Bottom
+                };
+
+            default:
+                return new[]
+                {
+                    DivingBellDeployedAccessRoute.Bottom,
+                    DivingBellDeployedAccessRoute.LeftSide,
+                    DivingBellDeployedAccessRoute.RightSide
+                };
+        }
+    }
+
+    private Transform ResolveDeployedInteriorPoint(
+        DivingBellDeployedAccessRoute route)
+    {
+        switch (route)
+        {
+            case DivingBellDeployedAccessRoute.LeftSide:
+                return leftSideInteriorPoint;
+
+            case DivingBellDeployedAccessRoute.RightSide:
+                return rightSideInteriorPoint;
+
+            default:
+                return bottomInteriorPoint;
+        }
+    }
+
+    private Transform ResolveDeployedExteriorPoint(
+        DivingBellDeployedAccessRoute route)
+    {
+        switch (route)
+        {
+            case DivingBellDeployedAccessRoute.LeftSide:
+                return leftSideExteriorPoint;
+
+            case DivingBellDeployedAccessRoute.RightSide:
+                return rightSideExteriorPoint;
+
+            default:
+                return bottomExteriorPoint;
+        }
     }
 
     /// <summary>
@@ -1497,6 +1654,12 @@ public sealed class DivingBellOccupancy :
                     true);
         }
 
+        if (generatedGroundSampler == null)
+        {
+            generatedGroundSampler =
+                FindAnyObjectByType<GeneratedGroundSampler2D>();
+        }
+
         ResolveCurrentDock();
     }
 
@@ -1519,53 +1682,18 @@ public sealed class DivingBellOccupancy :
             return;
         }
 
-        TetherPayloadDock parentDock =
-            tetherPayload.GetComponentInParent<TetherPayloadDock>();
-
-        if (parentDock != null &&
-            parentDock.IsDocked(
-                tetherPayload))
-        {
-            currentDock =
-                parentDock;
-
-            return;
-        }
-
-        if (currentDock != null &&
-            currentDock.IsDocked(
-                tetherPayload))
-        {
-            return;
-        }
+        // TetherPayload already owns the direct payload-local dock relationship.
+        // Prefer that authoritative runtime link instead of inferring ownership
+        // from hierarchy or scanning every TetherPayloadDock in the scene.
+        TetherPayloadDock activeDock =
+            tetherPayload.ActiveDock;
 
         currentDock =
-            null;
-
-        // Robust fallback for projects where DockPoint is not parented directly
-        // beneath the TetherPayloadDock object.
-        TetherPayloadDock[] docks =
-            FindObjectsByType<TetherPayloadDock>(
-                FindObjectsInactive.Exclude,
-                FindObjectsSortMode.None);
-
-        for (int i = 0;
-             i < docks.Length;
-             i++)
-        {
-            TetherPayloadDock dock =
-                docks[i];
-
-            if (dock != null &&
-                dock.IsDocked(
-                    tetherPayload))
-            {
-                currentDock =
-                    dock;
-
-                return;
-            }
-        }
+            activeDock != null &&
+            activeDock.IsDocked(
+                tetherPayload)
+                ? activeDock
+                : null;
     }
 
     private Transform ResolveDockedBoatRoot()
@@ -1605,6 +1733,12 @@ public sealed class DivingBellOccupancy :
     }
 
 #if UNITY_EDITOR
+    private void OnValidate()
+    {
+        deployedExitGroundClearance = Mathf.Max(0f, deployedExitGroundClearance);
+        deployedExitGroundTolerance = Mathf.Max(0f, deployedExitGroundTolerance);
+    }
+
     private void OnDrawGizmosSelected()
     {
         if (interiorEntryPoint != null)
@@ -1661,6 +1795,37 @@ public sealed class DivingBellOccupancy :
             Gizmos.DrawSphere(
                 bottomExteriorPoint.position,
                 0.08f);
+        }
+
+        DrawDeployedSideGizmo(
+            leftSideInteriorPoint,
+            leftSideExteriorPoint,
+            new Color(0.3f, 1f, 0.65f, 0.95f));
+
+        DrawDeployedSideGizmo(
+            rightSideInteriorPoint,
+            rightSideExteriorPoint,
+            new Color(1f, 0.65f, 0.25f, 0.95f));
+    }
+
+    private static void DrawDeployedSideGizmo(
+        Transform interiorPoint,
+        Transform exteriorPoint,
+        Color color)
+    {
+        Gizmos.color = color;
+
+        if (interiorPoint != null)
+            Gizmos.DrawSphere(interiorPoint.position, 0.07f);
+
+        if (exteriorPoint != null)
+            Gizmos.DrawSphere(exteriorPoint.position, 0.09f);
+
+        if (interiorPoint != null && exteriorPoint != null)
+        {
+            Gizmos.DrawLine(
+                interiorPoint.position,
+                exteriorPoint.position);
         }
     }
 #endif

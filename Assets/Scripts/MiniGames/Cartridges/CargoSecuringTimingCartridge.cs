@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MiniGames
@@ -12,13 +13,34 @@ namespace MiniGames
             Finished
         }
 
-        private readonly Action<float, string> _onCompleted;
+        public sealed class TetherOption
+        {
+            public string ButtonLabel { get; }
+            public string ResultLabel { get; }
+            public int Cost { get; }
+            public Func<int> GetCount { get; }
+            public Func<bool> CanUse { get; }
+            public Func<bool> OnCompleted { get; }
 
-        private readonly string _ropeButtonLabel;
-        private readonly int _ropeCost;
-        private readonly Func<int> _getRopeCount;
-        private readonly Func<bool> _canUseRope;
-        private readonly Func<bool> _onRopeCompleted;
+            public TetherOption(
+                string buttonLabel,
+                string resultLabel,
+                int cost,
+                Func<int> getCount,
+                Func<bool> canUse,
+                Func<bool> onCompleted)
+            {
+                ButtonLabel = buttonLabel;
+                ResultLabel = resultLabel;
+                Cost = Mathf.Max(0, cost);
+                GetCount = getCount;
+                CanUse = canUse;
+                OnCompleted = onCompleted;
+            }
+        }
+
+        private readonly Action<float, string> _onCompleted;
+        private readonly IReadOnlyList<TetherOption> _tetherOptions;
 
         private MiniGameContext _ctx;
         private System.Random _rng;
@@ -29,7 +51,7 @@ namespace MiniGames
 
         private bool _startRequested;
         private bool _endRequested;
-        private bool _ropeRequested;
+        private int _requestedTetherIndex = -1;
 
         private float _finalQuality01;
         private string _finalRating = "None";
@@ -37,18 +59,30 @@ namespace MiniGames
 
         public CargoSecuringTimingCartridge(
             Action<float, string> onCompleted,
+            IReadOnlyList<TetherOption> tetherOptions)
+        {
+            _onCompleted = onCompleted;
+            _tetherOptions = tetherOptions;
+        }
+
+        // Backward-compatible constructor for any older call sites that still
+        // provide one rope bypass option.
+        public CargoSecuringTimingCartridge(
+            Action<float, string> onCompleted,
             string ropeButtonLabel = null,
             int ropeCost = 0,
             Func<int> getRopeCount = null,
             Func<bool> canUseRope = null,
             Func<bool> onRopeCompleted = null)
+            : this(
+                onCompleted,
+                BuildLegacyTetherOptions(
+                    ropeButtonLabel,
+                    ropeCost,
+                    getRopeCount,
+                    canUseRope,
+                    onRopeCompleted))
         {
-            _onCompleted = onCompleted;
-            _ropeButtonLabel = ropeButtonLabel;
-            _ropeCost = Mathf.Max(0, ropeCost);
-            _getRopeCount = getRopeCount;
-            _canUseRope = canUseRope;
-            _onRopeCompleted = onRopeCompleted;
         }
 
         public void Begin(MiniGameContext context)
@@ -66,15 +100,25 @@ namespace MiniGames
             _remainingSeconds = 0f;
             _finalQuality01 = 0f;
             _finalRating = "None";
-            _note = "Click Start, or use rope for an automatic perfect result.";
+            _requestedTetherIndex = -1;
+            _note =
+                HasTetherOptions()
+                    ? "Click Start, or choose a tether for an automatic perfect result."
+                    : "Click Start, then click End as close to 0.00 as possible.";
         }
 
         public MiniGameResult Tick(float dt, MiniGameInput input)
         {
-            if (_state == State.WaitingToStart && _ropeRequested)
+            if (_state == State.WaitingToStart &&
+                _requestedTetherIndex >= 0)
             {
-                _ropeRequested = false;
-                return FinishRopeAttempt();
+                int requestedIndex =
+                    _requestedTetherIndex;
+
+                _requestedTetherIndex = -1;
+
+                return FinishTetherAttempt(
+                    requestedIndex);
             }
 
             if (_state == State.WaitingToStart && _startRequested)
@@ -151,7 +195,12 @@ namespace MiniGames
                 if (GUI.Button(new Rect(x, y, 140f, 34f), "Start"))
                     _startRequested = true;
 
-                DrawRopeButton(x + 154f, y);
+                y += 48f;
+
+                DrawTetherButtons(
+                    x,
+                    ref y,
+                    w);
 
                 return;
             }
@@ -197,24 +246,116 @@ namespace MiniGames
             GUI.Label(new Rect(x, y, w, 24), $"Quality: {Mathf.RoundToInt(_finalQuality01 * 100f)}%");
         }
 
-        private void DrawRopeButton(float x, float y)
+        private void DrawTetherButtons(
+            float x,
+            ref float y,
+            float width)
         {
-            if (string.IsNullOrWhiteSpace(_ropeButtonLabel) || _onRopeCompleted == null)
+            if (!HasTetherOptions())
                 return;
 
-            int have = _getRopeCount != null ? Mathf.Max(0, _getRopeCount()) : 0;
-            bool enough = _ropeCost <= 0 || have >= _ropeCost;
-            bool canUse = enough && (_canUseRope == null || _canUseRope());
+            GUI.Label(
+                new Rect(
+                    x,
+                    y,
+                    width,
+                    22f),
+                "USE TETHER");
 
-            string label = $"{_ropeButtonLabel}  [{have}]";
+            y += 28f;
 
-            bool oldEnabled = GUI.enabled;
-            GUI.enabled = oldEnabled && canUse;
+            for (int i = 0;
+                 i < _tetherOptions.Count;
+                 i++)
+            {
+                TetherOption option =
+                    _tetherOptions[i];
 
-            if (GUI.Button(new Rect(x, y, 220f, 34f), label))
-                _ropeRequested = true;
+                if (option == null ||
+                    option.OnCompleted == null)
+                {
+                    continue;
+                }
 
-            GUI.enabled = oldEnabled;
+                int have =
+                    option.GetCount != null
+                        ? Mathf.Max(
+                            0,
+                            option.GetCount())
+                        : 0;
+
+                bool enough =
+                    option.Cost <= 0 ||
+                    have >= option.Cost;
+
+                bool canUse =
+                    enough &&
+                    (option.CanUse == null ||
+                     option.CanUse());
+
+                string label =
+                    $"{option.ButtonLabel}  " +
+                    $"[Have: {have}]";
+
+                bool oldEnabled =
+                    GUI.enabled;
+
+                GUI.enabled =
+                    oldEnabled &&
+                    canUse;
+
+                if (GUI.Button(
+                        new Rect(
+                            x,
+                            y,
+                            width,
+                            34f),
+                        label))
+                {
+                    _requestedTetherIndex =
+                        i;
+                }
+
+                GUI.enabled =
+                    oldEnabled;
+
+                y += 40f;
+            }
+        }
+
+        private bool HasTetherOptions()
+        {
+            return
+                _tetherOptions != null &&
+                _tetherOptions.Count > 0;
+        }
+
+        private static IReadOnlyList<TetherOption>
+            BuildLegacyTetherOptions(
+                string ropeButtonLabel,
+                int ropeCost,
+                Func<int> getRopeCount,
+                Func<bool> canUseRope,
+                Func<bool> onRopeCompleted)
+        {
+            if (string.IsNullOrWhiteSpace(
+                    ropeButtonLabel) ||
+                onRopeCompleted == null)
+            {
+                return null;
+            }
+
+            return
+                new[]
+                {
+                    new TetherOption(
+                        ropeButtonLabel,
+                        "Rope",
+                        ropeCost,
+                        getRopeCount,
+                        canUseRope,
+                        onRopeCompleted)
+                };
         }
 
         private void StartTimer()
@@ -228,13 +369,16 @@ namespace MiniGames
             _note = "Click End as close to 0.00 as possible.";
         }
 
-        private MiniGameResult FinishRopeAttempt()
+        private MiniGameResult FinishTetherAttempt(
+            int optionIndex)
         {
-            bool ok = _onRopeCompleted != null && _onRopeCompleted();
-
-            if (!ok)
+            if (_tetherOptions == null ||
+                optionIndex < 0 ||
+                optionIndex >= _tetherOptions.Count)
             {
-                _note = "Could not use rope.";
+                _note =
+                    "Could not use tether.";
+
                 return new MiniGameResult
                 {
                     outcome = MiniGameOutcome.None,
@@ -244,15 +388,50 @@ namespace MiniGames
                 };
             }
 
-            _state = State.Finished;
-            _finalQuality01 = 1f;
-            _finalRating = "Rope";
+            TetherOption option =
+                _tetherOptions[optionIndex];
+
+            bool ok =
+                option != null &&
+                option.OnCompleted != null &&
+                option.OnCompleted();
+
+            if (!ok)
+            {
+                _note =
+                    "Could not use tether.";
+
+                return new MiniGameResult
+                {
+                    outcome = MiniGameOutcome.None,
+                    quality01 = 0f,
+                    note = _note,
+                    hasMeaningfulProgress = false
+                };
+            }
+
+            string resultLabel =
+                option != null &&
+                !string.IsNullOrWhiteSpace(
+                    option.ResultLabel)
+                    ? option.ResultLabel
+                    : "Tether";
+
+            _state =
+                State.Finished;
+
+            _finalQuality01 =
+                1f;
+
+            _finalRating =
+                resultLabel;
 
             return new MiniGameResult
             {
                 outcome = MiniGameOutcome.Completed,
                 quality01 = 1f,
-                note = "Rope used: perfect result.",
+                note =
+                    $"{resultLabel} used: perfect result.",
                 hasMeaningfulProgress = true
             };
         }

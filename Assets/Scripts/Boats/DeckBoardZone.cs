@@ -21,8 +21,13 @@ public sealed class DeckBoardZone :
     [Header("Interaction")]
     [SerializeField] private int priority = 60;
 
-    [Tooltip("How long the player must hold the board/unboard intent while inside the zone.")]
+    [Tooltip("How long the player must hold the BOARD intent while inside the zone.")]
     [SerializeField, Min(0f)] private float holdSeconds = 0.35f;
+
+    [Tooltip(
+        "How long Down must be held before a NEW Jump press confirms intentional unboarding. " +
+        "Down alone never unboards.")]
+    [SerializeField, Min(0f)] private float unboardArmSeconds = 0.18f;
 
     [Tooltip(
         "If true, ClimbUpHeld may also board the player. " +
@@ -38,6 +43,32 @@ public sealed class DeckBoardZone :
 
     [SerializeField] private bool snapToBoardPoint = true;
     [SerializeField] private bool zeroVelocityOnBoard = true;
+
+    [Header("Board Safety")]
+    [Tooltip(
+        "Physics layer used by the boat shell. A deck-board snap is rejected if " +
+        "the direct path to the authored board point crosses this boat's hull.")]
+    [SerializeField] private string blockingHullLayerName = "Hull";
+
+    [Tooltip(
+        "Small distance ignored at the player's current position so merely touching " +
+        "the outside of the hull does not count as teleporting through it.")]
+    [SerializeField, Min(0f)] private float boardPathStartAllowance = 0.03f;
+
+    [Tooltip(
+        "Small distance ignored immediately before the authored board point so the " +
+        "destination may sit directly on top of deck collision geometry.")]
+    [SerializeField, Min(0f)] private float boardPathEndAllowance = 0.08f;
+
+    [Tooltip(
+        "If true, the player's actual collider footprint at the authored board point " +
+        "must not overlap any BoardedInterior visibility zone on this boat.")]
+    [SerializeField] private bool rejectInteriorBoardDestination = true;
+
+    [Tooltip(
+        "If true, a DeckBoardZone is invalid without an authored boardPoint. " +
+        "This prevents a successful deck-board operation from leaving the player in place.")]
+    [SerializeField] private bool requireAuthoredBoardPoint = true;
 
     [Header("Rules")]
     [Tooltip(
@@ -62,11 +93,16 @@ public sealed class DeckBoardZone :
     private readonly Dictionary<PlayerBoardingState, int> _overlapCounts = new();
     private readonly Dictionary<PlayerBoardingState, float> _holdTimers = new();
     private readonly Dictionary<PlayerBoardingState, ZoneAction> _holdActions = new();
+    private readonly Dictionary<PlayerBoardingState, bool> _previousJumpHeld = new();
     private readonly List<PlayerBoardingState> _scratchPlayers = new();
 
     private Collider2D _trigger;
     private Boat _cachedBoat;
     private bool _missingBoatLogged;
+
+    private int _blockingHullLayer = -1;
+    private int _blockingHullMask;
+    private bool _missingHullLayerLogged;
 
     private void Awake()
     {
@@ -80,11 +116,15 @@ public sealed class DeckBoardZone :
         }
 
         CacheBoat();
+        CacheBlockingHullLayer();
     }
 
     private void OnValidate()
     {
         holdSeconds = Mathf.Max(0f, holdSeconds);
+        unboardArmSeconds = Mathf.Max(0f, unboardArmSeconds);
+        boardPathStartAllowance = Mathf.Max(0f, boardPathStartAllowance);
+        boardPathEndAllowance = Mathf.Max(0f, boardPathEndAllowance);
 
         if (_trigger == null)
             _trigger = GetComponent<Collider2D>();
@@ -95,6 +135,7 @@ public sealed class DeckBoardZone :
         _overlapCounts.Clear();
         _holdTimers.Clear();
         _holdActions.Clear();
+        _previousJumpHeld.Clear();
         _scratchPlayers.Clear();
     }
 
@@ -146,11 +187,16 @@ public sealed class DeckBoardZone :
             {
                 _holdTimers[boarding] = 0f;
                 _holdActions[boarding] = action;
+                CaptureCurrentJumpHeld(boarding);
             }
 
-            if (!IsHoldIntentActive(
-                    boarding,
-                    action))
+            if (action == ZoneAction.Unboard)
+            {
+                TickUnboardGesture(boarding);
+                continue;
+            }
+
+            if (!IsBoardHoldIntentActive(boarding))
             {
                 _holdTimers[boarding] = 0f;
                 continue;
@@ -166,9 +212,7 @@ public sealed class DeckBoardZone :
                 continue;
 
             bool succeeded =
-                action == ZoneAction.Board
-                    ? TryBoard(boarding)
-                    : TryUnboard(boarding);
+                TryBoard(boarding);
 
             _holdTimers[boarding] = 0f;
 
@@ -230,14 +274,24 @@ public sealed class DeckBoardZone :
                 action);
 
         if (!includeProgressInPrompt)
-            return $"Hold {inputText} - {verb}";
+        {
+            return
+                action == ZoneAction.Unboard
+                    ? $"{inputText} - {verb}"
+                    : $"Hold {inputText} - {verb}";
+        }
+
+        float requiredSeconds =
+            action == ZoneAction.Unboard
+                ? unboardArmSeconds
+                : holdSeconds;
 
         float progress =
             Mathf.Clamp01(
                 GetHoldTimer(boarding) /
                 Mathf.Max(
                     0.01f,
-                    holdSeconds));
+                    requiredSeconds));
 
         return
             $"Hold {inputText} - {verb} " +
@@ -267,6 +321,7 @@ public sealed class DeckBoardZone :
             _overlapCounts[boarding] = 1;
             _holdTimers[boarding] = 0f;
             _holdActions[boarding] = ZoneAction.None;
+            CaptureCurrentJumpHeld(boarding);
         }
         else
         {
@@ -297,6 +352,7 @@ public sealed class DeckBoardZone :
             _overlapCounts.Remove(boarding);
             _holdTimers.Remove(boarding);
             _holdActions.Remove(boarding);
+            _previousJumpHeld.Remove(boarding);
         }
         else
         {
@@ -332,27 +388,35 @@ public sealed class DeckBoardZone :
         if (boatRoot == null)
             return false;
 
-        // BOARDING TRANSACTION:
+        // A DeckBoardZone is an EXTERIOR-DECK transition, never a generic
+        // teleport-inside-the-boat button.
         //
-        // 1) Apply authoritative boarded physics/state without resolving boat
-        //    visibility zones at the player's pre-snap position.
-        // 2) Move to the authored deck point.
-        // 3) Sync transforms.
-        // 4) Wait for the next 2D physics update before asking visibility zones
-        //    which presentation actually contains the player.
+        // Safety is validated while the player is still unboarded:
+        //   1) direct route to boardPoint must not cross this boat's Hull;
+        //   2) the player's real collider footprint at boardPoint must not overlap
+        //      a BoardedInterior visibility zone.
         //
-        // Collider2D.IsTouching() reports the LAST physics-system contact state,
-        // so an immediate post-teleport zone scan can still see the player's old
-        // exterior/interior overlap for one frame.
+        // Only after those invariants pass do we mutate PlayerBoardingState.
+        if (!TryPlaceAtSafeDeckDestination(
+                boarding,
+                boatRoot,
+                out string safetyFailure))
+        {
+            if (debugLog)
+            {
+                Debug.Log(
+                    $"[DeckBoardZone:{name}] Rejected board for '{boarding.name}': {safetyFailure}",
+                    this);
+            }
+
+            return false;
+        }
+
         boarding.BoardDeferredPresentation(
             boatRoot);
 
-        if (snapToBoardPoint &&
-            boardPoint != null)
-        {
-            SnapPlayerToBoardPoint(
-                boarding);
-        }
+        if (zeroVelocityOnBoard)
+            ZeroPlayerVelocity(boarding);
 
         Physics2D.SyncTransforms();
 
@@ -385,6 +449,27 @@ public sealed class DeckBoardZone :
             !boarding.IsBoarded ||
             boarding.CurrentBoatRoot != expectedBoatRoot)
         {
+            yield break;
+        }
+
+        // Defensive postcondition. The pre-board check should already guarantee
+        // this, but never allow a DeckBoardZone transition to settle as Interior
+        // if boat motion or another physics interaction changed the result.
+        if (rejectInteriorBoardDestination &&
+            IsPlayerOverlappingInteriorZone(
+                boarding,
+                expectedBoatRoot,
+                out BoatVisibilityZone interiorZone))
+        {
+            if (debugLog)
+            {
+                Debug.LogWarning(
+                    $"[DeckBoardZone:{name}] Post-board safety rejected Interior zone " +
+                    $"'{interiorZone.name}' for '{boarding.name}'. Unboarding immediately.",
+                    this);
+            }
+
+            boarding.Unboard();
             yield break;
         }
 
@@ -502,6 +587,386 @@ public sealed class DeckBoardZone :
             boarding.CurrentBoatRoot == boatRoot;
     }
 
+    private bool TryPlaceAtSafeDeckDestination(
+        PlayerBoardingState boarding,
+        Transform boatRoot,
+        out string failureReason)
+    {
+        failureReason = null;
+
+        if (boarding == null)
+        {
+            failureReason = "Missing player boarding state.";
+            return false;
+        }
+
+        if (requireAuthoredBoardPoint &&
+            (!snapToBoardPoint || boardPoint == null))
+        {
+            failureReason =
+                "Deck boarding requires an authored boardPoint and snapping enabled.";
+            return false;
+        }
+
+        if (!snapToBoardPoint ||
+            boardPoint == null)
+        {
+            // Legacy opt-out. Kept only for explicitly-authored old content.
+            return true;
+        }
+
+        if (IsBoardPathBlockedByOwnHull(
+                boarding,
+                boatRoot,
+                out Collider2D blockingHull))
+        {
+            failureReason =
+                blockingHull != null
+                    ? $"Path to deck crosses Hull collider '{blockingHull.name}'."
+                    : "Path to deck crosses the boat hull.";
+
+            return false;
+        }
+
+        Rigidbody2D rb =
+            boarding.GetComponent<Rigidbody2D>();
+
+        Vector3 originalTransformPosition =
+            boarding.transform.position;
+
+        Vector2 originalBodyPosition =
+            rb != null
+                ? rb.position
+                : (Vector2)originalTransformPosition;
+
+        // Move while still UNBOARDED. BoatVisibilityZone ignores unboarded players,
+        // so we can validate the exact destination geometry without ever exposing an
+        // Interior boarded state.
+        SetPlayerPosition(
+            boarding,
+            boardPoint.position);
+
+        Physics2D.SyncTransforms();
+
+        if (rejectInteriorBoardDestination &&
+            IsPlayerOverlappingInteriorZone(
+                boarding,
+                boatRoot,
+                out BoatVisibilityZone interiorZone))
+        {
+            // Roll back the temporary validation placement.
+            if (rb != null)
+                rb.position = originalBodyPosition;
+            else
+                boarding.transform.position = originalTransformPosition;
+
+            Physics2D.SyncTransforms();
+
+            failureReason =
+                interiorZone != null
+                    ? $"Authored deck destination overlaps Interior zone '{interiorZone.name}'."
+                    : "Authored deck destination overlaps an Interior zone.";
+
+            return false;
+        }
+
+        // Destination is valid. Leave the player at the authored deck point and let
+        // the caller atomically promote that placement to boarded state.
+        return true;
+    }
+
+    private bool IsBoardPathBlockedByOwnHull(
+        PlayerBoardingState boarding,
+        Transform boatRoot,
+        out Collider2D blockingHull)
+    {
+        blockingHull = null;
+
+        if (boarding == null ||
+            boatRoot == null ||
+            boardPoint == null)
+        {
+            return false;
+        }
+
+        CacheBlockingHullLayer();
+
+        if (_blockingHullLayer < 0 ||
+            _blockingHullMask == 0)
+        {
+            // Fail closed. A missing safety layer should never silently turn this
+            // back into a wall-teleport path.
+            return true;
+        }
+
+        Vector2 start =
+            ResolvePlayerReferencePoint(
+                boarding);
+
+        Vector2 target =
+            boardPoint.position;
+
+        Vector2 delta =
+            target - start;
+
+        float distance =
+            delta.magnitude;
+
+        if (distance <= 0.0001f)
+            return false;
+
+        Vector2 direction =
+            delta / distance;
+
+        float startAllowance =
+            Mathf.Min(
+                boardPathStartAllowance,
+                distance);
+
+        float endAllowance =
+            Mathf.Min(
+                boardPathEndAllowance,
+                Mathf.Max(
+                    0f,
+                    distance - startAllowance));
+
+        float castDistance =
+            distance -
+            startAllowance -
+            endAllowance;
+
+        if (castDistance <= 0.0001f)
+            return false;
+
+        Vector2 castStart =
+            start +
+            direction * startAllowance;
+
+        RaycastHit2D[] hits =
+            Physics2D.RaycastAll(
+                castStart,
+                direction,
+                castDistance,
+                _blockingHullMask);
+
+        for (int i = 0;
+             hits != null && i < hits.Length;
+             i++)
+        {
+            Collider2D hit =
+                hits[i].collider;
+
+            if (hit == null ||
+                !hit.enabled ||
+                hit.isTrigger)
+            {
+                continue;
+            }
+
+            if (!BelongsToBoat(
+                    hit.transform,
+                    boatRoot))
+            {
+                continue;
+            }
+
+            blockingHull = hit;
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool IsPlayerOverlappingInteriorZone(
+        PlayerBoardingState boarding,
+        Transform boatRoot,
+        out BoatVisibilityZone interiorZone)
+    {
+        interiorZone = null;
+
+        if (boarding == null ||
+            boatRoot == null)
+        {
+            return false;
+        }
+
+        BoatVisibilityZone[] zones =
+            boatRoot.GetComponentsInChildren<BoatVisibilityZone>(
+                true);
+
+        if (zones == null ||
+            zones.Length == 0)
+        {
+            return false;
+        }
+
+        Collider2D[] playerColliders =
+            boarding.GetComponentsInChildren<Collider2D>(
+                true);
+
+        if (playerColliders == null ||
+            playerColliders.Length == 0)
+        {
+            return false;
+        }
+
+        for (int z = 0;
+             z < zones.Length;
+             z++)
+        {
+            BoatVisibilityZone zone =
+                zones[z];
+
+            if (zone == null ||
+                !zone.isActiveAndEnabled ||
+                zone.Mode != BoatVisibilityMode.BoardedInterior)
+            {
+                continue;
+            }
+
+            Collider2D zoneCollider =
+                zone.GetComponent<Collider2D>();
+
+            if (zoneCollider == null ||
+                !zoneCollider.enabled)
+            {
+                continue;
+            }
+
+            for (int p = 0;
+                 p < playerColliders.Length;
+                 p++)
+            {
+                Collider2D playerCollider =
+                    playerColliders[p];
+
+                if (playerCollider == null ||
+                    !playerCollider.enabled)
+                {
+                    continue;
+                }
+
+                ColliderDistance2D distance =
+                    Physics2D.Distance(
+                        zoneCollider,
+                        playerCollider);
+
+                // BoatVisualStateController resolves Interior when player colliders
+                // physically touch the zone. Treat overlap or essentially-zero
+                // separation as invalid for a DeckBoardZone destination.
+                if (distance.isOverlapped ||
+                    distance.distance <= 0.001f)
+                {
+                    interiorZone = zone;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static bool BelongsToBoat(
+        Transform candidate,
+        Transform boatRoot)
+    {
+        if (candidate == null ||
+            boatRoot == null)
+        {
+            return false;
+        }
+
+        return
+            candidate == boatRoot ||
+            candidate.IsChildOf(boatRoot);
+    }
+
+    private static Vector2 ResolvePlayerReferencePoint(
+        PlayerBoardingState boarding)
+    {
+        if (boarding == null)
+            return Vector2.zero;
+
+        Rigidbody2D rb =
+            boarding.GetComponent<Rigidbody2D>();
+
+        if (rb != null)
+            return rb.worldCenterOfMass;
+
+        return boarding.transform.position;
+    }
+
+    private void CacheBlockingHullLayer()
+    {
+        _blockingHullLayer =
+            string.IsNullOrWhiteSpace(
+                blockingHullLayerName)
+                ? -1
+                : LayerMask.NameToLayer(
+                    blockingHullLayerName);
+
+        _blockingHullMask =
+            _blockingHullLayer >= 0
+                ? 1 << _blockingHullLayer
+                : 0;
+
+        if (_blockingHullLayer < 0 &&
+            !_missingHullLayerLogged)
+        {
+            _missingHullLayerLogged = true;
+
+            Debug.LogError(
+                $"[DeckBoardZone:{name}] Safety layer '{blockingHullLayerName}' does not exist. " +
+                "Deck boarding will fail closed rather than permit wall teleporting.",
+                this);
+        }
+    }
+
+    private static void SetPlayerPosition(
+        PlayerBoardingState boarding,
+        Vector2 target)
+    {
+        if (boarding == null)
+            return;
+
+        Rigidbody2D rb =
+            boarding.GetComponent<Rigidbody2D>();
+
+        if (rb != null)
+        {
+            rb.position = target;
+            return;
+        }
+
+        Vector3 position =
+            boarding.transform.position;
+
+        position.x = target.x;
+        position.y = target.y;
+
+        boarding.transform.position =
+            position;
+    }
+
+    private static void ZeroPlayerVelocity(
+        PlayerBoardingState boarding)
+    {
+        if (boarding == null)
+            return;
+
+        Rigidbody2D rb =
+            boarding.GetComponent<Rigidbody2D>();
+
+        if (rb == null)
+            return;
+
+        rb.linearVelocity =
+            Vector2.zero;
+
+        rb.angularVelocity =
+            0f;
+    }
+
     private void SnapPlayerToBoardPoint(
         PlayerBoardingState boarding)
     {
@@ -583,53 +1048,100 @@ public sealed class DeckBoardZone :
         return best;
     }
 
-    private bool IsHoldIntentActive(
-        PlayerBoardingState boarding,
-        ZoneAction action)
+    private bool IsBoardHoldIntentActive(
+        PlayerBoardingState boarding)
     {
         if (boarding == null)
             return false;
 
-        if (action == ZoneAction.Board)
+        IInteractionIntentSource interaction =
+            ResolveInteractionIntentSource(boarding);
+
+        if (interaction != null &&
+            interaction.Current.InteractHeld)
         {
-            IInteractionIntentSource interaction =
-                ResolveInteractionIntentSource(
-                    boarding);
+            return true;
+        }
 
-            if (interaction != null &&
-                interaction.Current.InteractHeld)
-            {
-                return true;
-            }
-
-            if (allowSecondaryHoldKey)
-            {
-                ICharacterIntentSource character =
-                    ResolveCharacterIntentSource(
-                        boarding);
-
-                if (character != null &&
-                    character.Current.ClimbUpHeld)
-                {
-                    return true;
-                }
-            }
-
+        if (!allowSecondaryHoldKey)
             return false;
-        }
 
-        if (action == ZoneAction.Unboard)
+        ICharacterIntentSource character =
+            ResolveCharacterIntentSource(boarding);
+
+        return
+            character != null &&
+            character.Current.ClimbUpHeld;
+    }
+
+    private void TickUnboardGesture(
+        PlayerBoardingState boarding)
+    {
+        ICharacterIntentSource character =
+            ResolveCharacterIntentSource(boarding);
+
+        if (character == null)
         {
-            ICharacterIntentSource character =
-                ResolveCharacterIntentSource(
-                    boarding);
-
-            return
-                character != null &&
-                character.Current.ClimbDownHeld;
+            ResetHold(boarding);
+            return;
         }
 
-        return false;
+        CharacterIntent intent =
+            character.Current;
+
+        bool previousJumpHeld =
+            _previousJumpHeld.TryGetValue(
+                boarding,
+                out bool stored) &&
+            stored;
+
+        bool newJumpPress =
+            intent.JumpHeld &&
+            !previousJumpHeld;
+
+        _previousJumpHeld[boarding] =
+            intent.JumpHeld;
+
+        // Down/S only arms the leave action. It never unboards by itself.
+        if (!intent.ClimbDownHeld)
+        {
+            _holdTimers[boarding] = 0f;
+            return;
+        }
+
+        float timer =
+            GetHoldTimer(boarding) +
+            Time.deltaTime;
+
+        _holdTimers[boarding] = timer;
+
+        if (timer < unboardArmSeconds ||
+            !newJumpPress)
+        {
+            return;
+        }
+
+        bool succeeded =
+            TryUnboard(boarding);
+
+        _holdTimers[boarding] = 0f;
+
+        if (succeeded)
+            _holdActions[boarding] = ZoneAction.None;
+    }
+
+    private void CaptureCurrentJumpHeld(
+        PlayerBoardingState boarding)
+    {
+        if (boarding == null)
+            return;
+
+        ICharacterIntentSource character =
+            ResolveCharacterIntentSource(boarding);
+
+        _previousJumpHeld[boarding] =
+            character != null &&
+            character.Current.JumpHeld;
     }
 
     private IInteractionIntentSource ResolveInteractionIntentSource(
@@ -729,6 +1241,7 @@ public sealed class DeckBoardZone :
 
         _holdTimers[boarding] = 0f;
         _holdActions[boarding] = ZoneAction.None;
+        CaptureCurrentJumpHeld(boarding);
     }
 
     private string GetInputPromptText(
@@ -742,9 +1255,13 @@ public sealed class DeckBoardZone :
                     boarding);
 
             if (character is LocalCharacterIntentSource localCharacter)
-                return localCharacter.ClimbDownBindingLabel;
+            {
+                return
+                    $"{localCharacter.ClimbDownBindingLabel}, then " +
+                    $"{localCharacter.JumpBindingLabel}";
+            }
 
-            return "Down";
+            return "Down, then Jump";
         }
 
         IInteractionIntentSource interaction =
@@ -872,16 +1389,26 @@ public sealed class DeckBoardZone :
                 ? unboardPromptText
                 : promptText;
 
+        float requiredSeconds =
+            action == ZoneAction.Unboard
+                ? unboardArmSeconds
+                : holdSeconds;
+
         float progress =
             Mathf.Clamp01(
                 GetHoldTimer(boarding) /
                 Mathf.Max(
                     0.01f,
-                    holdSeconds));
+                    requiredSeconds));
+
+        string actionText =
+            action == ZoneAction.Unboard
+                ? $"{inputText} to {verb}"
+                : $"Hold {inputText} to {verb}";
 
         actions.Add(
             new PromptAction(
-                $"Hold {inputText} to {verb}",
+                actionText,
                 priority: 100,
                 showProgress: includeProgressInPrompt,
                 progress01: progress));

@@ -85,61 +85,103 @@ public sealed class InventorySlotUI : MonoBehaviour,
 
     public void Refresh()
     {
-        ItemInstance instance = GetInstance();
-        bool hasItem = instance != null && instance.Definition != null;
+        ItemInstance instance =
+            GetInstance();
+
+        int reservedQuantity =
+            dragController != null
+                ? dragController.GetReservedQuantityFor(
+                    this)
+                : 0;
+
+        int visibleQuantity =
+            instance != null
+                ? Mathf.Max(
+                    0,
+                    instance.Quantity - reservedQuantity)
+                : 0;
+
+        bool hasItem =
+            instance != null &&
+            instance.Definition != null &&
+            visibleQuantity > 0;
 
         if (chargeBar != null)
             chargeBar.Bind(hasItem ? instance : null);
 
-        bool isCargo = CargoLabelFormatter.IsCargo(instance);
+        bool isCargo =
+            hasItem &&
+            CargoLabelFormatter.IsCargo(
+                instance);
 
         if (cargoLabelText != null)
         {
-            cargoLabelText.enabled = isCargo;
+            cargoLabelText.enabled =
+                isCargo;
 
             if (isCargo)
-                cargoLabelText.text = CargoLabelFormatter.Format(instance.Definition, cargoLabelMaxCharacters);
+            {
+                cargoLabelText.text =
+                    CargoLabelFormatter.Format(
+                        instance.Definition,
+                        cargoLabelMaxCharacters);
+            }
             else
-                cargoLabelText.text = "";
+            {
+                cargoLabelText.text =
+                    "";
+            }
         }
 
         if (icon != null)
         {
-            icon.enabled = hasItem;
+            icon.enabled =
+                hasItem;
 
-            if (hasItem)
-            {
-                icon.sprite = instance.Definition.Icon;
-            }
-            else
-            {
-                icon.sprite = null;
-            }
+            icon.sprite =
+                hasItem
+                    ? instance.Definition.Icon
+                    : null;
         }
 
         if (purposeIcon != null)
         {
-            bool showPurpose = !hasItem && assignedPurposeIcon != null;
-            purposeIcon.enabled = showPurpose;
-            purposeIcon.sprite = showPurpose ? assignedPurposeIcon : null;
+            bool showPurpose =
+                !hasItem &&
+                assignedPurposeIcon != null;
+
+            purposeIcon.enabled =
+                showPurpose;
+
+            purposeIcon.sprite =
+                showPurpose
+                    ? assignedPurposeIcon
+                    : null;
         }
 
         if (countText != null)
         {
-            if (hasItem)
-                countText.text = instance.Quantity > 1 ? instance.Quantity.ToString() : "";
-            else
-                countText.text = "";
+            countText.text =
+                hasItem &&
+                visibleQuantity > 1
+                    ? visibleQuantity.ToString()
+                    : "";
         }
 
-        if (!SupportsSelection && selectionHighlight != null)
-            selectionHighlight.SetActive(false);
+        if (!SupportsSelection &&
+            selectionHighlight != null)
+        {
+            selectionHighlight.SetActive(
+                false);
+        }
 
         Log(
             $"Refresh | slotType={SlotType} | hasItem={hasItem} " +
-            $"| item={DescribeItem(instance)} " +
+            $"| item={DescribeItem(instance)} | reserved={reservedQuantity} " +
+            $"| visibleQty={visibleQuantity} " +
             $"| countText='{(countText != null ? countText.text : "NO_TEXT")}'");
     }
+
 
     public void SetSelected(bool selected)
     {
@@ -235,39 +277,66 @@ public sealed class InventorySlotUI : MonoBehaviour,
             return;
     }
 
-    public void OnBeginDrag(PointerEventData eventData)
+    public void OnBeginDrag(
+        PointerEventData eventData)
     {
         if (dragController == null)
             return;
 
         if (dragController.IsDragging)
         {
-            Log($"OnBeginDrag ignored because drag already active | slotType={SlotType}");
+            Log(
+                $"OnBeginDrag ignored because drag already active | slotType={SlotType}");
             return;
         }
 
-        _dragBeganThisPress = true;
+        _dragBeganThisPress =
+            true;
 
-        ItemInstance boundItem = GetBoundItem();
-        bool ctrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+        ItemInstance boundItem =
+            GetBoundItem();
 
-        if (ctrlHeld && boundItem != null && boundItem.CanSplit)
+        if (boundItem == null ||
+            boundItem.Definition == null)
         {
-            int splitAmount = Mathf.CeilToInt(boundItem.Quantity * 0.5f);
-            ItemInstance split = boundItem.SplitOff(splitAmount);
-
-            if (split != null)
-            {
-                Log($"OnBeginDrag split drag | slotType={SlotType} | split={DescribeItem(split)} | remaining={DescribeItem(boundItem)}");
-                Refresh();
-                dragController.BeginDrag(split, this);
-                return;
-            }
+            return;
         }
 
-        Log($"OnBeginDrag normal drag | slotType={SlotType} | item={DescribeItem(boundItem)}");
-        dragController.BeginDrag(this);
+        bool ctrlHeld =
+            Input.GetKey(
+                KeyCode.LeftControl) ||
+            Input.GetKey(
+                KeyCode.RightControl);
+
+        if (ctrlHeld &&
+            boundItem.CanSplit)
+        {
+            int splitAmount =
+                Mathf.CeilToInt(
+                    boundItem.Quantity *
+                    0.5f);
+
+            Log(
+                $"OnBeginDrag split RESERVATION | slotType={SlotType} | " +
+                $"reserved={splitAmount} | source={DescribeItem(boundItem)}");
+
+            dragController.BeginDrag(
+                this,
+                splitAmount);
+
+            Refresh();
+            return;
+        }
+
+        Log(
+            $"OnBeginDrag normal RESERVATION | slotType={SlotType} | item={DescribeItem(boundItem)}");
+
+        dragController.BeginDrag(
+            this);
+
+        Refresh();
     }
+
 
     public void OnDrag(PointerEventData eventData)
     {

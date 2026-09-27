@@ -587,9 +587,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   root: {fileID: 6162987735943863836}
   fillImage: {fileID: 4154903632287218727}
-  labelText: {fileID: 0}
   valueText: {fileID: 0}
-  showLabel: 0
   showValueText: 0
 --- !u!1 &8253092041845786797
 GameObject:
@@ -733,7 +731,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 5045213545228075862, guid: 0e08b83a8ccb621489967be61183c02c, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
