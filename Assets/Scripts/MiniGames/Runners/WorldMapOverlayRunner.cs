@@ -25,14 +25,43 @@ public sealed class WorldMapOverlayRunner : MonoBehaviour
     [Header("POIs")]
     [SerializeField] private WorldMapPOISource poiSource;
 
+    [Header("Celestial Map")]
+    [SerializeField] private CelestialMapOverlaySource celestialOverlaySource;
+
+    [Header("Star Chart")]
+    [Tooltip("Optional. If blank, the deterministic Phase-5B built-in fragment visual defaults are used.")]
+    [SerializeField] private CelestialChartFragmentVisualSettings chartFragmentVisualSettings;
+
     [Header("Debug Open")]
     [SerializeField] private bool debugOpenWithKey = false;
     [SerializeField] private KeyCode debugOpenKey = KeyCode.M;
 
-    public bool IsWorldMapOpen =>
+    public bool IsMapTableOpen =>
         overlay != null &&
         overlay.IsOpen &&
-        overlay.ActiveCartridge is WorldMapCartridge;
+        overlay.ActiveCartridge is MapTableCartridge;
+
+    // Compatibility: callers that only care about the old world-map page still work.
+    public bool IsWorldMapOpen
+    {
+        get
+        {
+            if (overlay == null || !overlay.IsOpen)
+                return false;
+
+            if (overlay.ActiveCartridge is WorldMapCartridge)
+                return true;
+
+            return overlay.ActiveCartridge is MapTableCartridge table &&
+                   table.ActivePage == MapTablePage.WorldMap;
+        }
+    }
+
+    public bool IsStarChartOpen =>
+        overlay != null &&
+        overlay.IsOpen &&
+        overlay.ActiveCartridge is MapTableCartridge table &&
+        table.ActivePage == MapTablePage.StarChart;
 
     private void Reset()
     {
@@ -53,22 +82,56 @@ public sealed class WorldMapOverlayRunner : MonoBehaviour
             ToggleWorldMap();
     }
 
+    /// <summary>
+    /// Legacy compatibility entry point. The physical map table now opens a MapTableCartridge,
+    /// initially on the World Map page.
+    /// </summary>
     public bool ToggleWorldMap()
+    {
+        return ToggleMapTable(null, MapTablePage.WorldMap);
+    }
+
+    public bool ToggleMapTable(
+        GameObject requester,
+        MapTablePage initialPage = MapTablePage.WorldMap)
     {
         AutoWire();
 
-        if (IsWorldMapOpen)
+        if (IsMapTableOpen || IsLegacyWorldMapOpen())
         {
             overlay.Close();
             return true;
         }
 
-        return OpenWorldMap();
+        return OpenMapTable(requester, initialPage);
     }
 
     public bool OpenWorldMap()
     {
+        return OpenMapTable(null, MapTablePage.WorldMap);
+    }
+
+    public bool OpenWorldMap(GameObject requester)
+    {
+        return OpenMapTable(requester, MapTablePage.WorldMap);
+    }
+
+    public bool OpenStarChart(GameObject requester = null)
+    {
+        return OpenMapTable(requester, MapTablePage.StarChart);
+    }
+
+    public bool OpenMapTable(
+        GameObject requester,
+        MapTablePage initialPage = MapTablePage.WorldMap)
+    {
         AutoWire();
+
+        if (overlay != null && overlay.IsOpen && overlay.ActiveCartridge is MapTableCartridge existingTable)
+        {
+            existingTable.SetActivePage(initialPage);
+            return true;
+        }
 
         if (overlay == null)
         {
@@ -88,7 +151,18 @@ public sealed class WorldMapOverlayRunner : MonoBehaviour
             return false;
         }
 
-        var cart = new WorldMapCartridge(
+        GameObject resolvedRequester = ResolveRequester(requester);
+        if (resolvedRequester == null)
+        {
+            Debug.LogWarning(
+                "[WorldMapOverlayRunner] No unique map-table requester could be resolved. " +
+                "The table can still be viewed, but shared star-chart mutations will be rejected.",
+                this);
+        }
+
+        var viewport = new MapTableViewportState();
+
+        var worldMap = new WorldMapCartridge(
             generator,
             runtimeBinder,
             player,
@@ -98,30 +172,84 @@ public sealed class WorldMapOverlayRunner : MonoBehaviour
             eventManager,
             effectCatalog,
             topographyDebugSource,
-            poiSource
-        );
+            poiSource,
+            celestialOverlaySource,
+            viewport,
+            embeddedInMapTable: true);
+
+        var starChart = new CelestialChartTableCartridge(
+            resolvedRequester,
+            viewport,
+            worldMap,
+            chartFragmentVisualSettings);
+
+        var table = new MapTableCartridge(
+            resolvedRequester,
+            worldMap,
+            starChart,
+            viewport,
+            initialPage);
 
         var ctx = new MiniGameContext
         {
-            targetId = "world_map",
+            targetId = "map_table",
             difficulty = 1f,
             pressure = 0f,
             seed = generator.seed
         };
 
-        overlay.Open(cart, ctx);
+        overlay.Open(table, ctx);
         return true;
     }
 
     public bool CloseWorldMap()
     {
+        return CloseMapTable();
+    }
+
+    public bool CloseMapTable()
+    {
         AutoWire();
 
-        if (!IsWorldMapOpen)
+        if (!IsMapTableOpen && !IsLegacyWorldMapOpen())
             return false;
 
         overlay.Close();
         return true;
+    }
+
+    private bool IsLegacyWorldMapOpen()
+    {
+        return overlay != null &&
+               overlay.IsOpen &&
+               overlay.ActiveCartridge is WorldMapCartridge;
+    }
+
+    private GameObject ResolveRequester(GameObject explicitRequester)
+    {
+        if (explicitRequester != null)
+            return explicitRequester;
+
+        PlayerLoadoutPersistence[] players =
+            FindObjectsByType<PlayerLoadoutPersistence>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.None);
+
+        if (players != null && players.Length == 1 && players[0] != null)
+            return players[0].gameObject;
+
+        if (players != null && players.Length > 1 && GameState.I != null)
+        {
+            string localKey = GameState.I.LocalPlayerPersistenceKey;
+            for (int i = 0; i < players.Length; i++)
+            {
+                PlayerLoadoutPersistence candidate = players[i];
+                if (candidate != null && candidate.PersistenceKey == localKey)
+                    return candidate.gameObject;
+            }
+        }
+
+        return null;
     }
 
     private void AutoWire()
@@ -160,5 +288,8 @@ public sealed class WorldMapOverlayRunner : MonoBehaviour
 
         if (poiSource == null)
             poiSource = FindAnyObjectByType<WorldMapPOISource>(FindObjectsInactive.Include);
+
+        if (celestialOverlaySource == null)
+            celestialOverlaySource = FindAnyObjectByType<CelestialMapOverlaySource>(FindObjectsInactive.Include);
     }
 }

@@ -556,6 +556,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sortingLayerName: BoatView
   sortingOrder: -50
+  verboseLogging: 0
 --- !u!1001 &145268043201849349
 PrefabInstance:
   m_ObjectHideFlags: 0

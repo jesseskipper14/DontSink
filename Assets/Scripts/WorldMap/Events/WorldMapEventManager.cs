@@ -28,12 +28,55 @@ public class WorldMapEventManager : MonoBehaviour
     private void Reset()
     {
         generator = FindAnyObjectByType<WorldMapGraphGenerator>();
-        timeOfDay = FindAnyObjectByType<TimeOfDayManager>();
         runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
+        ResolveTimeOfDayManager(logResult: false);
+    }
+
+    private void Awake()
+    {
+        ResolveTimeOfDayManager(logResult: logResolutions);
+    }
+
+    private void OnEnable()
+    {
+        ResolveTimeOfDayManager(logResult: logResolutions);
+    }
+
+    private void ResolveTimeOfDayManager(bool logResult)
+    {
+        TimeOfDayManager resolved = null;
+
+        // Prefer the persistent authoritative time manager owned by ServiceRoot.
+        // Scene-local ServiceRoot duplicates may be destroyed during transitions, so a
+        // serialized reference to one of their children can become invalid afterwards.
+        if (ServiceRoot.Instance != null)
+            resolved = ServiceRoot.Instance.TimeManager;
+
+        // Fallback keeps isolated/debug scenes usable when no ServiceRoot exists.
+        if (resolved == null)
+            resolved = FindAnyObjectByType<TimeOfDayManager>();
+
+        if (timeOfDay == resolved)
+            return;
+
+        timeOfDay = resolved;
+
+        if (logResult && timeOfDay != null)
+        {
+            Debug.Log(
+                $"[WorldMapEventManager] Resolved TimeOfDayManager '{timeOfDay.name}' " +
+                $"(InstanceID={timeOfDay.GetInstanceID()}, viaServiceRoot={ServiceRoot.Instance != null && ServiceRoot.Instance.TimeManager == timeOfDay}).",
+                this);
+        }
     }
 
     private void Update()
     {
+        // Unity's destroyed-object null semantics make this a cheap safety net after
+        // scene transitions. Re-resolve instead of silently stopping event simulation.
+        if (timeOfDay == null)
+            ResolveTimeOfDayManager(logResult: logResolutions);
+
         if (!_restoredFromSave)
             TryRestorePersistedEffects();
 

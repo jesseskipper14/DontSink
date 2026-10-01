@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2a69fa9e16bae7419effe684a5a3f74, type: 3}
+  m_Name: CelestialGenerationSettings
+  m_EditorClassIdentifier: 
+  generationSalt: 1640531527
+  cellSizeWorld: 16
+  ambientStarsPer1000WorldArea: 65
+  ambientBrightnessMin: 0.18
+  ambientBrightnessMax: 0.72
+  ambientProminenceMin: 0.08
+  ambientProminenceMax: 0.34
+  ambientVisualVariantCount: 3
+  landmarkStarsPer1000WorldArea: 2.2
+  landmarkBrightnessMin: 0.72
+  landmarkBrightnessMax: 1
+  landmarkProminenceMin: 0.62
+  landmarkProminenceMax: 1
+  landmarkVisualVariantCount: 6
+  nebulaePer1000WorldArea: 0.18
+  nebulaBrightnessMin: 0.28
+  nebulaBrightnessMax: 0.78
+  nebulaProminenceMin: 0.55
+  nebulaProminenceMax: 1
+  nebulaRadiusWorldMin: 5
+  nebulaRadiusWorldMax: 15
+  nebulaVisualVariantCount: 4
+  deepSkyObjectsPer1000WorldArea: 0.1
+  deepSkyBrightnessMin: 0.4
+  deepSkyBrightnessMax: 0.92
+  deepSkyProminenceMin: 0.58
+  deepSkyProminenceMax: 1
+  deepSkyRadiusWorldMin: 2
+  deepSkyRadiusWorldMax: 8
+  deepSkyVisualVariantCount: 4

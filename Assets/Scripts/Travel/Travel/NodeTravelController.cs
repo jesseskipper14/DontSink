@@ -92,8 +92,50 @@ public sealed class NodeTravelController : MonoBehaviour
             _nodesById[rt.StableId] = rt;
         }
 
+        RefreshDockedWorldPositionTruth();
+
         if (logTravelDiagnostics)
             Debug.Log($"[NodeTravelController] Built travel context. Nodes={_nodesById.Count}", this);
+    }
+
+    private void RefreshDockedWorldPositionTruth()
+    {
+        if (!GameplayAuthority.IsAuthoritative)
+            return;
+
+        GameState gs = GameState.I;
+        if (gs == null ||
+            gs.activeTravel != null ||
+            gs.player == null ||
+            string.IsNullOrWhiteSpace(gs.player.currentNodeId))
+        {
+            return;
+        }
+
+        if (generator == null ||
+            generator.graph == null ||
+            !_nodesById.TryGetValue(
+                gs.player.currentNodeId,
+                out MapNodeRuntime currentRt) ||
+            currentRt == null)
+        {
+            return;
+        }
+
+        int nodeIndex = currentRt.NodeIndex;
+        if (nodeIndex < 0 ||
+            nodeIndex >= generator.graph.nodes.Count)
+        {
+            return;
+        }
+
+        Vector2 nodeWorldPosition =
+            generator.graph.nodes[nodeIndex].position;
+
+        WorldNavigationService.TrySetAuthoritativeTrueWorldPosition(
+            nodeWorldPosition,
+            WorldNavigationPositionSource.NodeArrival,
+            currentRt.StableId);
     }
 
     public void TryStartTravel()
@@ -177,9 +219,15 @@ public sealed class NodeTravelController : MonoBehaviour
             return;
         }
 
+        Vector2 fromWorldPosition =
+            generator.graph.nodes[fromIndex].position;
+
+        Vector2 toWorldPosition =
+            generator.graph.nodes[toIndex].position;
+
         float routeLength = Vector2.Distance(
-            generator.graph.nodes[fromIndex].position,
-            generator.graph.nodes[toIndex].position);
+            fromWorldPosition,
+            toWorldPosition);
 
         int seed = seedOverride != 0 ? seedOverride : MakeTravelSeed(fromId, toId, generator.graph.seed);
 
@@ -220,7 +268,14 @@ public sealed class NodeTravelController : MonoBehaviour
             );
         }
 
-        StartTravelSceneTransition(gs, fromId, toId, seed, routeLength);
+        StartTravelSceneTransition(
+            gs,
+            fromId,
+            toId,
+            seed,
+            routeLength,
+            fromWorldPosition,
+            toWorldPosition);
     }
 
     private bool ValidateRouteRestrictions(
@@ -250,7 +305,9 @@ public sealed class NodeTravelController : MonoBehaviour
         string fromId,
         string toId,
         int seed,
-        float routeLength)
+        float routeLength,
+        Vector2 fromWorldPosition,
+        Vector2 toWorldPosition)
     {
         if (gs.boatRegistry == null)
         {
@@ -297,7 +354,9 @@ public sealed class NodeTravelController : MonoBehaviour
             seed,
             routeLength,
             gs.boat.boatInstanceId,
-            boatId.BoatGuid
+            boatId.BoatGuid,
+            fromWorldPosition,
+            toWorldPosition
         );
     }
 

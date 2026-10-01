@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1a5e014c403de54a8073a9963a1485f, type: 3}
+  m_Name: CelestialChartFragmentVisualSettings
+  m_EditorClassIdentifier: 
+  pixelsPerCelestialWorldUnit: 7
+  paperMarginWorldUnits: 3
+  minimumPaperWidthWorld: 22
+  minimumPaperHeightWorld: 16
+  tornEdgeDepthPixels: 7
+  tornEdgeFeatureSizePixels: 11
+  paperGrainStrength: 0.0716
+  paperColor: {r: 0.78, g: 0.69, b: 0.5, a: 1}
+  inkColor: {r: 0.1, g: 0.105, b: 0.1, a: 0.92}

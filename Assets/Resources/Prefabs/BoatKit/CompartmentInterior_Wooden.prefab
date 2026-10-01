@@ -243,6 +243,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sortingLayerName: BoatForehull
   sortingOrder: 99
+  verboseLogging: 0
 --- !u!1 &8415730559265682632
 GameObject:
   m_ObjectHideFlags: 0

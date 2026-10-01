@@ -17,6 +17,9 @@ public sealed class SceneContext : MonoBehaviour
     public WorldMapTravelDebugController travelDebug;
     public NodeTravelController travelLauncher;
 
+    [Header("Global Lighting")]
+    public Light2D globalLight;
+
     [Header("Celestial Anchors")]
     public Transform sunTransform;
     public Light2D sunLight;
@@ -51,9 +54,26 @@ public sealed class SceneContext : MonoBehaviour
         if (runtimeBinder == null) runtimeBinder = FindAnyObjectByType<WorldMapRuntimeBinder>();
         if (travelDebug == null) travelDebug = FindAnyObjectByType<WorldMapTravelDebugController>();
         if (travelLauncher == null) travelLauncher = FindAnyObjectByType<NodeTravelController>();
+        if (globalLight == null) globalLight = FindGlobalLight2D();
 
         // Note: sky/cloud renderers are intentionally NOT auto-wired here.
         // There are often multiple Renderers/SpriteRenderers in a scene; prefer explicit scene wiring.
+    }
+
+    private static Light2D FindGlobalLight2D()
+    {
+        Light2D[] lights = FindObjectsByType<Light2D>(
+            FindObjectsInactive.Exclude,
+            FindObjectsSortMode.None);
+
+        for (int i = 0; i < lights.Length; i++)
+        {
+            Light2D candidate = lights[i];
+            if (candidate != null && candidate.lightType == Light2D.LightType.Global)
+                return candidate;
+        }
+
+        return null;
     }
 
     private void OnDestroy()

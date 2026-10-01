@@ -11,9 +11,10 @@ public sealed class MapTableInteractable :
     [SerializeField] private int priority = 40;
     [SerializeField] private float maxUseDistance = 1.8f;
 
-    [Header("Map")]
+    [Header("Map Table")]
     [SerializeField] private WorldMapOverlayRunner mapRunner;
     [SerializeField] private bool toggle = true;
+    [SerializeField] private MapTablePage initialPage = MapTablePage.WorldMap;
 
     [Header("Boat Access")]
     [Tooltip("If true, map tables that belong to a Boat can only be used by players boarded on that same boat.")]
@@ -70,10 +71,20 @@ public sealed class MapTableInteractable :
         if (!CanInteract(context))
             return;
 
+        // Important multiplayer seam: preserve the exact interactor through the map-table
+        // session. Viewing the table remains local presentation; shared chart-board mutations
+        // later validate this requester at CelestialChartBoardAuthority.
+        GameObject requester =
+            context.InteractorGO != null
+                ? context.InteractorGO
+                : context.InteractorTransform != null
+                    ? context.InteractorTransform.gameObject
+                    : null;
+
         if (toggle)
-            mapRunner.ToggleWorldMap();
+            mapRunner.ToggleMapTable(requester, initialPage);
         else
-            mapRunner.OpenWorldMap();
+            mapRunner.OpenMapTable(requester, initialPage);
     }
 
     private void AutoWire()

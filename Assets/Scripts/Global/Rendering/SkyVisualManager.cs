@@ -1,10 +1,12 @@
+using System;
 using UnityEngine;
 
 public class SkyVisualManager : MonoBehaviour, ISkyVisualService
 {
     [Header("Sky Settings")]
     [SerializeField] private Color horizonTint = new Color(1f, 0.6f, 0.3f);
-    [SerializeField] private float skyVariationStrength = 0.05f;
+    // Variation is now owned by the sky material itself. The old manager-level
+    // control produced coarse blocks when applied to the new screen-space shader.
     [SerializeField] private Material skyMaterial;
 
     [Header("Stars Settings")]
@@ -22,20 +24,33 @@ public class SkyVisualManager : MonoBehaviour, ISkyVisualService
     private ITimeOfDayService timeService;
     private IBrightnessService brightnessService;
 
+    // Phase 3 public visibility seam. SkyVisualManager remains the owner of
+    // time-of-day star visibility; renderers can observe the result without
+    // duplicating clock/fade rules.
+    public float StarVisibility01 { get; private set; }
+    public event Action<float> OnStarVisibilityChanged;
 
     // Warn-once flags
     private bool warnedMissingSkyMaterial;
-    private bool warnedMissingStarsMaterial;
+
     /// <summary>
     /// Called by EnvironmentManager on initialization
     /// </summary>
     public void Initialize(ITimeOfDayService time, IBrightnessService brightness)
     {
+        if (timeService != null)
+            timeService.OnTimeChanged -= UpdateStars;
+
+        if (brightnessService != null)
+            brightnessService.OnBrightnessChanged -= UpdateSky;
+
         timeService = time;
-        timeService.OnTimeChanged += UpdateStars;
+        if (timeService != null)
+            timeService.OnTimeChanged += UpdateStars;
 
         brightnessService = brightness;
-        brightnessService.OnBrightnessChanged += UpdateSky;
+        if (brightnessService != null)
+            brightnessService.OnBrightnessChanged += UpdateSky;
 
         // Cache materials (scene refs may be injected later via RebindSceneAnchors)
         CacheMaterials();
@@ -44,7 +59,6 @@ public class SkyVisualManager : MonoBehaviour, ISkyVisualService
         if (brightnessService != null) UpdateSky(brightnessService.Brightness01);
         if (timeService != null) UpdateStars(timeService.CurrentTime);
     }
-
 
     private void CacheMaterials()
     {
@@ -69,7 +83,6 @@ public class SkyVisualManager : MonoBehaviour, ISkyVisualService
 
         // reset warn flags per scene
         warnedMissingSkyMaterial = false;
-        warnedMissingStarsMaterial = false;
 
         CacheMaterials();
 
@@ -104,27 +117,15 @@ public class SkyVisualManager : MonoBehaviour, ISkyVisualService
 
         skyMaterial.SetFloat("_Brightness", brightness);
         skyMaterial.SetColor("_HorizonTint", horizonTint);
-        skyMaterial.SetFloat("_VariationStrength", skyVariationStrength);
     }
 
     /// <summary>
-    /// Stars fade logic, purely time-of-day based
+    /// Stars fade logic, purely time-of-day based.
+    /// Phase 3 computes/exposes visibility even if the legacy stars material is absent,
+    /// allowing deterministic celestial renderers to reuse the same time rules.
     /// </summary>
     private void UpdateStars(float hour)
     {
-        if (!starsMaterial)
-        {
-            CacheMaterials();
-            if (!starsMaterial)
-            {
-                if (!warnedMissingStarsMaterial)
-                {
-                    warnedMissingStarsMaterial = true;
-                    Debug.LogWarning("SkyVisualManager: stars material missing (stars disabled for this scene).");
-                }
-                return;
-            }
-        }
         float alpha;
 
         if (hour >= starsFadeInStart && hour <= starsFadeInEnd)
@@ -146,6 +147,25 @@ public class SkyVisualManager : MonoBehaviour, ISkyVisualService
             alpha = starsMinAlpha;
         }
 
-        starsMaterial.SetFloat("_StarAlpha", alpha);
+        alpha = Mathf.Clamp01(alpha);
+
+        if (!Mathf.Approximately(alpha, StarVisibility01))
+        {
+            StarVisibility01 = alpha;
+            OnStarVisibilityChanged?.Invoke(StarVisibility01);
+        }
+        else
+        {
+            StarVisibility01 = alpha;
+        }
+
+        // Legacy compatibility only. Deterministic celestial stars are now allowed
+        // to coexist with a sky material that has no _StarAlpha property at all.
+        // If an old stars material is still present, keep driving it exactly as before.
+        if (!starsMaterial)
+            CacheMaterials();
+
+        if (starsMaterial != null && starsMaterial.HasProperty("_StarAlpha"))
+            starsMaterial.SetFloat("_StarAlpha", alpha);
     }
 }

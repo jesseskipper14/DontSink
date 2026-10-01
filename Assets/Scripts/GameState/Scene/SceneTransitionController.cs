@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [DisallowMultipleComponent]
@@ -54,7 +54,9 @@ public sealed class SceneTransitionController : MonoBehaviour
         int seed,
         float routeLength,
         string boatInstanceId,
-        string boatPrefabGuid)
+        string boatPrefabGuid,
+        Vector2 fromWorldPosition,
+        Vector2 toWorldPosition)
     //System.Collections.Generic.List<CargoManifest.Snapshot> cargoManifest)
     {
         GameState gs = GameState.I;
@@ -92,10 +94,17 @@ public sealed class SceneTransitionController : MonoBehaviour
             seed,
             routeLength,
             boatInstanceId,
-            boatPrefabGuid);
+            boatPrefabGuid,
+            fromWorldPosition,
+            toWorldPosition);
         //payloadCargo);
 
         gs.BeginTravel(payload);
+
+        WorldNavigationService.TrySetAuthoritativeTrueWorldPosition(
+            fromWorldPosition,
+            WorldNavigationPositionSource.TravelStart,
+            fromNodeStableId);
 
         string sourceName =
             GameMessageLocationResolver.ResolveDisplayName(
@@ -155,6 +164,14 @@ public sealed class SceneTransitionController : MonoBehaviour
             GameMessageLocationResolver.ResolveDisplayName(
                 payload.toNodeStableId);
 
+        if (payload.hasWorldRouteCoordinates)
+        {
+            WorldNavigationService.TrySetAuthoritativeTrueWorldPosition(
+                payload.toWorldPosition,
+                WorldNavigationPositionSource.NodeArrival,
+                payload.toNodeStableId);
+        }
+
         gs.player.currentNodeId =
             payload.toNodeStableId;
 
@@ -206,6 +223,14 @@ public sealed class SceneTransitionController : MonoBehaviour
         string sourceName =
             GameMessageLocationResolver.ResolveDisplayName(
                 payload.fromNodeStableId);
+
+        if (payload.hasWorldRouteCoordinates)
+        {
+            WorldNavigationService.TrySetAuthoritativeTrueWorldPosition(
+                payload.fromWorldPosition,
+                WorldNavigationPositionSource.NodeArrival,
+                payload.fromNodeStableId);
+        }
 
         gs.player.currentNodeId =
             payload.fromNodeStableId;

@@ -603,6 +603,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sortingLayerName: BoatView
   sortingOrder: -50
+  verboseLogging: 0
 --- !u!1 &5925046875295864308
 GameObject:
   m_ObjectHideFlags: 0

@@ -33,6 +33,14 @@ public sealed class BoatSceneController : MonoBehaviour
 
     public TravelPayload Payload { get; private set; }
 
+    /// <summary>
+    /// Nominal local BoatScene source-to-target travel distance.
+    /// WorldNavigation bridging uses this only as a scale conversion; it does not
+    /// redefine or own piloting/navigation state.
+    /// </summary>
+    public float NominalTravelDistance =>
+        Mathf.Max(0.01f, baseTravelDistance * distanceScale);
+
     private bool _completed;
     private bool _initialized;
 
@@ -159,7 +167,7 @@ public sealed class BoatSceneController : MonoBehaviour
             ctx.sourceDockAnchor.position = p;
         }
 
-        float dist = baseTravelDistance * distanceScale;
+        float dist = NominalTravelDistance;
         float targetDockEndX = sourceDockX + dist;
 
         if (ctx.targetDockAnchor != null)

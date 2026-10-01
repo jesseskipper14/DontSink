@@ -341,3 +341,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sortingLayerName: BoatView
   sortingOrder: -2
+  verboseLogging: 0

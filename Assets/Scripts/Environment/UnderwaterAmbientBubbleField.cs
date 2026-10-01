@@ -115,12 +115,6 @@ public sealed class UnderwaterAmbientBubbleField : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool verboseLogging;
 
-    // Kept only so existing 01C serialized values are harmless when this
-    // replacement script is dropped in. They no longer affect rendering.
-    [HideInInspector, SerializeField] private bool useFixedRendererBounds = true;
-    [HideInInspector, SerializeField] private float rendererBoundsPadding = 2f;
-    [HideInInspector, SerializeField] private float rendererBoundsDepth = 10f;
-
     private sealed class Bubble
     {
         public GameObject gameObject;
@@ -145,35 +139,22 @@ public sealed class UnderwaterAmbientBubbleField : MonoBehaviour
     private IBrightnessService _brightness;
     private float _sceneBrightness = 1f;
     private float _nextBirthTime;
-
-    private ParticleSystem _legacyParticleSystem;
-    private ParticleSystemRenderer _legacyParticleRenderer;
-
-    private void Awake()
-    {
-        DisableLegacyParticleSystem();
-        ResolveRefs();
-        ResolveBrightnessService();
-        EnsurePool();
-        ApplyAppearanceToPool();
-        ScheduleNextBirth();
-    }
+    private bool _reconfigureRequested;
 
     private void OnEnable()
     {
-        DisableLegacyParticleSystem();
         ResolveRefs();
         ResolveBrightnessService();
         EnsurePool();
         ApplyAppearanceToPool();
+        _reconfigureRequested = false;
         ScheduleNextBirth();
     }
 
     private void OnDisable()
     {
         UnbindBrightnessService();
-        SetAllBubbleVisualsActive(
-            false);
+        ClearAmbientBubbles();
     }
 
     private void OnDestroy()
@@ -190,6 +171,10 @@ public sealed class UnderwaterAmbientBubbleField : MonoBehaviour
 #if UNITY_EDITOR
     private void OnValidate()
     {
+        // OnValidate must remain data-only. Creating GameObjects, parenting
+        // Transforms, adding SpriteRenderers, changing active state, etc. here
+        // causes Unity's "SendMessage cannot be called during Awake,
+        // CheckConsistency, or OnValidate" warning flood.
         clusterMin =
             Mathf.Max(
                 2,
@@ -235,17 +220,26 @@ public sealed class UnderwaterAmbientBubbleField : MonoBehaviour
                 8,
                 maxParticles);
 
-        if (!Application.isPlaying)
-            return;
-
-        DisableLegacyParticleSystem();
-        EnsurePool();
-        ApplyAppearanceToPool();
+        // If Inspector values change during Play Mode, defer all hierarchy /
+        // component / material work until the next normal runtime frame.
+        _reconfigureRequested =
+            true;
     }
 #endif
 
     private void Update()
     {
+        if (_reconfigureRequested)
+        {
+            _reconfigureRequested =
+                false;
+
+            ResolveRefs();
+            ResolveBrightnessService();
+            EnsurePool();
+            ApplyAppearanceToPool();
+        }
+
         ResolveRefs();
         ResolveBrightnessService();
 
@@ -270,9 +264,6 @@ public sealed class UnderwaterAmbientBubbleField : MonoBehaviour
     {
         ResolveRefs();
 
-        if (targetCamera == null)
-            return;
-
         if (!TryGetSpawnRegion(
                 out float left,
                 out float right,
@@ -291,7 +282,6 @@ public sealed class UnderwaterAmbientBubbleField : MonoBehaviour
     [ContextMenu("Reconfigure Bubble Field")]
     public void Reconfigure()
     {
-        DisableLegacyParticleSystem();
         ResolveRefs();
         ResolveBrightnessService();
         EnsurePool();
@@ -307,47 +297,6 @@ public sealed class UnderwaterAmbientBubbleField : MonoBehaviour
         {
             DeactivateBubble(
                 _pool[i]);
-        }
-    }
-
-    private void DisableLegacyParticleSystem()
-    {
-        if (_legacyParticleSystem == null)
-        {
-            _legacyParticleSystem =
-                GetComponent<ParticleSystem>();
-        }
-
-        if (_legacyParticleRenderer == null)
-        {
-            _legacyParticleRenderer =
-                GetComponent<ParticleSystemRenderer>();
-        }
-
-        if (_legacyParticleSystem != null)
-        {
-            ParticleSystem.EmissionModule emission =
-                _legacyParticleSystem.emission;
-
-            emission.enabled =
-                false;
-
-            _legacyParticleSystem.Stop(
-                withChildren: false,
-                stopBehavior:
-                    ParticleSystemStopBehavior.StopEmittingAndClear);
-        }
-
-        if (_legacyParticleRenderer != null)
-        {
-            // This is the entire reason 02 exists. The native particle renderer
-            // is never allowed to submit anything to Unity's transparent-sort
-            // path again.
-            _legacyParticleRenderer.enabled =
-                false;
-
-            _legacyParticleRenderer.forceRenderingOff =
-                true;
         }
     }
 
@@ -786,9 +735,6 @@ public sealed class UnderwaterAmbientBubbleField : MonoBehaviour
             Vector3.one *
             size;
 
-        ApplyAppearance(
-            bubble);
-
         bubble.active =
             true;
 
@@ -1064,30 +1010,6 @@ public sealed class UnderwaterAmbientBubbleField : MonoBehaviour
         _nextBirthTime =
             Time.time +
             delay;
-    }
-
-    private void SetAllBubbleVisualsActive(
-        bool active)
-    {
-        for (int i = 0;
-             i < _pool.Count;
-             i++)
-        {
-            Bubble bubble =
-                _pool[i];
-
-            if (bubble.gameObject == null)
-                continue;
-
-            if (!active)
-            {
-                bubble.active =
-                    false;
-
-                bubble.gameObject.SetActive(
-                    false);
-            }
-        }
     }
 
     private static bool IsFinite(

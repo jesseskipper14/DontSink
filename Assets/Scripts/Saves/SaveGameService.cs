@@ -447,10 +447,13 @@ public static class SaveGameService
 
     private static SaveGamePayload BuildPayload(GameState gs, string currentScene)
     {
+        CaptureTimeOfDayIntoGameState(gs);
+
         if (gs.moneyChestTreasuryState == null)
             gs.moneyChestTreasuryState = new MoneyChestTreasurySnapshot();
 
         gs.moneyChestTreasuryState.EnsureDefaults();
+        gs.EnsureCelestialChartDefaults();
         gs.SyncLocalPlayerPersistenceMirrors(
             "SaveGameService.BuildPayload");
 
@@ -460,6 +463,8 @@ public static class SaveGameService
             player = gs.player,
             worldMap = gs.worldMap,
             worldMapSnapshot = gs.worldMapSnapshot,
+            timeOfDay = gs.timeOfDay != null ? gs.timeOfDay.Clone() : null,
+            celestialCharts = gs.celestialCharts,
             activeTravel = null,
             playerLoadout = gs.playerLoadout,
             playerSceneContext = gs.playerSceneContext,
@@ -467,6 +472,23 @@ public static class SaveGameService
             boat = gs.boat,
             moneyChestTreasury = gs.moneyChestTreasuryState
         };
+    }
+
+    private static void CaptureTimeOfDayIntoGameState(GameState gs)
+    {
+        if (gs == null)
+            return;
+
+        TimeOfDayManager manager = null;
+
+        if (ServiceRoot.Instance != null)
+            manager = ServiceRoot.Instance.TimeManager;
+
+        if (manager == null)
+            manager = UnityEngine.Object.FindAnyObjectByType<TimeOfDayManager>();
+
+        if (manager != null)
+            gs.SetTimeOfDaySnapshot(manager.CaptureSnapshot(), "SaveGameService.BuildPayload");
     }
 
     private static SaveGameResult ValidateForLoad(SaveGameFile file, string nodeSceneName, string path)
@@ -529,6 +551,11 @@ public static class SaveGameService
         gs.player = payload.player ?? new WorldMapPlayerState();
         gs.worldMap = payload.worldMap ?? new WorldMapSimState();
         gs.SetWorldMapSnapshot(payload.worldMapSnapshot, "SaveGameService.LoadSlot");
+        gs.SetTimeOfDaySnapshot(payload.timeOfDay, "SaveGameService.LoadSlot");
+        gs.SetCelestialChartState(payload.celestialCharts, "SaveGameService.LoadSlot");
+
+        if (ServiceRoot.Instance != null)
+            ServiceRoot.Instance.ApplyPersistedTimeState(gs.timeOfDay, "SaveGameService.LoadSlot");
 
         // v1 load always starts from NodeScene.
         gs.activeTravel = null;

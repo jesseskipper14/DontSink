@@ -42,16 +42,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _DeepFadeDepth: 8
-    - _DryHeightRange: 5
+    - _DeepFadeDepth: 30
+    - _DryHeightRange: 1.06
     - _EnableExternalAlpha: 0
-    - _LargeNoiseScale: 3.29
+    - _LargeNoiseScale: 0.22
     - _NoiseStrength: 0.5
-    - _PatternPixelSize: 0.057
+    - _PatternPixelSize: 0.01
     - _PebbleAmount: 0.298
-    - _PebbleDarken: 0.301
-    - _PebbleScale: 12.52
-    - _ShoreWidth: 0.28
+    - _PebbleDarken: 0.24
+    - _PebbleScale: 19.15
+    - _ShoreWidth: 0.411
     - _SmallNoiseScale: 14.18
     - _StrataFrequency: 12
     - _StrataStrength: 0.0748
@@ -62,10 +62,10 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DeepColor: {r: 0.21569064, g: 0.33336648, b: 0.3490566, a: 1}
-    - _DryHighColor: {r: 0.8018868, g: 0.68224514, b: 0.4349858, a: 1}
-    - _DryLowColor: {r: 0.5754717, g: 0.531497, b: 0.3555981, a: 1}
+    - _DryHighColor: {r: 0.9245283, g: 0.8133936, b: 0.5800107, a: 1}
+    - _DryLowColor: {r: 0.7169812, g: 0.66582865, b: 0.4565682, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ShoreColor: {r: 0.3779062, g: 0.4528302, b: 0.33107868, a: 1}
-    - _UnderwaterColor: {r: 0.30348876, g: 0.41509432, b: 0.3406906, a: 1}
+    - _ShoreColor: {r: 0.5764706, g: 0.53333336, b: 0.35686275, a: 1}
+    - _UnderwaterColor: {r: 0.5764706, g: 0.53333336, b: 0.35686275, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

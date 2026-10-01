@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fb5c0b740b15784d9abae01ef0b1d37, type: 3}
+  m_Name: CelestialMapOverlaySettings
+  m_EditorClassIdentifier: 
+  pixelsPerWorldUnit: 2
+  maxTextureDimension: 4096
+  filterMode: 1
+  ambientAlpha: 0.72
+  ambientRadiusPixelsMin: 0.55
+  ambientRadiusPixelsMax: 1.35
+  landmarkAlpha: 0.96
+  landmarkCoreRadiusPixelsMin: 1.6
+  landmarkCoreRadiusPixelsMax: 3.2
+  landmarkRayPixelsMin: 2.5
+  landmarkRayPixelsMax: 6.5
+  nebulaAlpha: 0.28
+  nebulaMinimumAspect: 0.48
+  deepSkyAlpha: 0.88
+  deepSkyMinimumRadiusPixels: 2.5
+  deepSkyRingThicknessPixels: 1.25
+  white: {r: 1, g: 1, b: 1, a: 1}
+  blueWhite: {r: 0.66, g: 0.82, b: 1, a: 1}
+  gold: {r: 1, g: 0.84, b: 0.42, a: 1}
+  orange: {r: 1, g: 0.56, b: 0.28, a: 1}
+  red: {r: 1, g: 0.34, b: 0.34, a: 1}
+  cyan: {r: 0.38, g: 0.95, b: 1, a: 1}
+  violet: {r: 0.76, g: 0.5, b: 1, a: 1}

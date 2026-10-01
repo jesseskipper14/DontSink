@@ -29,6 +29,18 @@ public sealed class GameState : MonoBehaviour
     [Header("Active Travel (null when not traveling)")]
     public TravelPayload activeTravel;
 
+    [Header("World Navigation Truth")]
+    [Tooltip("Shared authoritative continuous world-map position. This is simulation truth, not the player's believed map position.")]
+    public WorldNavigationState worldNavigation = new WorldNavigationState();
+
+    [Header("Time / Calendar Persistence")]
+    [Tooltip("Persistent time/date snapshot used for save/load. Runtime authority remains TimeOfDayManager.")]
+    public TimeOfDaySnapshot timeOfDay = new TimeOfDaySnapshot();
+
+    [Header("Celestial Charting Persistence")]
+    [Tooltip("Shared authoritative chart fragments, survey progression, and future verified constellation knowledge.")]
+    public CelestialChartStateSnapshot celestialCharts = new CelestialChartStateSnapshot();
+
     [Header("Player Persistence (Legacy Local-Player Mirrors)")]
     [Tooltip(
         "Backward-compatible local-player mirror. New player-aware code should use " +
@@ -94,6 +106,9 @@ public sealed class GameState : MonoBehaviour
 
         EnsureBoatStateDefaults();
         EnsureWorldMapSnapshotDefaults();
+        EnsureWorldNavigationDefaults();
+        EnsureTimeOfDayDefaults();
+        EnsureCelestialChartDefaults();
         EnsureMoneyChestTreasuryDefaults();
         EnsurePlayerPersistenceDefaults();
 
@@ -289,6 +304,9 @@ public sealed class GameState : MonoBehaviour
         Debug.Log(
             $"[GameState:{name}] STATE [{label}]\n" +
             $"  activeTravel={DescribeTravel(activeTravel)}\n" +
+            $"  worldNavigation={DescribeWorldNavigation(worldNavigation)}\n" +
+            $"  timeOfDay={(timeOfDay != null && timeOfDay.isValid ? $"{timeOfDay.year}/{timeOfDay.month}/{timeOfDay.day} {timeOfDay.currentTime:0.00}" : "<unset>")}\n" +
+            $"  celestialCharts={(celestialCharts != null ? $"fragments={(celestialCharts.fragments != null ? celestialCharts.fragments.Count : -1)}, regions={(celestialCharts.surveyRegions != null ? celestialCharts.surveyRegions.Count : -1)}" : "NULL")}\n" +
             $"  boat={DescribeBoat(boat)}\n" +
             $"  playerLoadout={(playerLoadout != null ? "OK" : "NULL")}\n" +
             $"  localPlayerKey='{LocalPlayerPersistenceKey}' playerRecords={(playerPersistenceStates != null ? playerPersistenceStates.Count : -1)}\n" +
@@ -304,6 +322,56 @@ public sealed class GameState : MonoBehaviour
             worldMapSnapshot = new WorldMapSaveSnapshot();
 
         worldMapSnapshot.EnsureDefaults();
+    }
+
+    private void EnsureWorldNavigationDefaults()
+    {
+        if (worldNavigation == null)
+            worldNavigation = new WorldNavigationState();
+    }
+
+    private void EnsureTimeOfDayDefaults()
+    {
+        if (timeOfDay == null)
+            timeOfDay = new TimeOfDaySnapshot();
+    }
+
+    public void EnsureCelestialChartDefaults()
+    {
+        if (celestialCharts == null)
+            celestialCharts = new CelestialChartStateSnapshot();
+
+        celestialCharts.EnsureDefaults();
+    }
+
+    public void SetCelestialChartState(CelestialChartStateSnapshot snapshot, string reason = "")
+    {
+        celestialCharts = snapshot ?? new CelestialChartStateSnapshot();
+        EnsureCelestialChartDefaults();
+
+        if (verboseLogging)
+        {
+            Debug.Log(
+                $"[GameState:{name}] SetCelestialChartState reason='{reason}' " +
+                $"fragments={celestialCharts.fragments.Count} regions={celestialCharts.surveyRegions.Count}",
+                this);
+        }
+    }
+
+    public void SetTimeOfDaySnapshot(TimeOfDaySnapshot snapshot, string reason = "")
+    {
+        timeOfDay = snapshot != null
+            ? snapshot.Clone()
+            : new TimeOfDaySnapshot();
+
+        if (verboseLogging)
+        {
+            Debug.Log(
+                $"[GameState:{name}] SetTimeOfDaySnapshot reason='{reason}' " +
+                $"valid={timeOfDay.isValid} date={timeOfDay.year}/{timeOfDay.month}/{timeOfDay.day} " +
+                $"time={timeOfDay.currentTime:0.00}",
+                this);
+        }
     }
 
     public void SetWorldMapSnapshot(WorldMapSaveSnapshot snapshot, string reason = "")
@@ -370,14 +438,36 @@ public sealed class GameState : MonoBehaviour
         if (payload == null)
             return "NULL";
 
+        string worldRoute =
+            payload.hasWorldRouteCoordinates
+                ? $"worldRoute=({payload.fromWorldPosition.x:0.###},{payload.fromWorldPosition.y:0.###})->({payload.toWorldPosition.x:0.###},{payload.toWorldPosition.y:0.###}), "
+                : "worldRoute=<none>, ";
+
         return
             $"from='{payload.fromNodeStableId}', " +
             $"to='{payload.toNodeStableId}', " +
             $"seed={payload.seed}, " +
             $"routeLength={payload.routeLength}, " +
+            worldRoute +
             $"boatInstanceId='{payload.boatInstanceId}', " +
             $"boatPrefabGuid='{payload.boatPrefabGuid}'";
         //$"cargoCount={(payload.cargoManifest != null ? payload.cargoManifest.Count : -1)}";
+    }
+
+    private string DescribeWorldNavigation(WorldNavigationState state)
+    {
+        if (state == null)
+            return "NULL";
+
+        if (!state.HasTrueWorldPosition)
+            return $"unset, revision={state.Revision}";
+
+        Vector2 p = state.TrueWorldPosition;
+        return
+            $"true=({p.x:0.###},{p.y:0.###}), " +
+            $"source={state.TruePositionSource}, " +
+            $"anchor='{state.AnchorNodeStableId}', " +
+            $"revision={state.Revision}";
     }
 
     private string DescribeBoat(BoatSaveState state)
@@ -888,11 +978,17 @@ public sealed class TravelPayload
     public int seed;
     public float routeLength;
 
+    [Tooltip("True when source/destination continuous world-map coordinates were captured at travel launch.")]
+    public bool hasWorldRouteCoordinates;
+    public Vector2 fromWorldPosition;
+    public Vector2 toWorldPosition;
+
     public string boatInstanceId;
     public string boatPrefabGuid;
 
     //public List<CargoManifest.Snapshot> cargoManifest;
 
+    // Backward-compatible constructor for old/debug callers.
     public TravelPayload(
         string from,
         string to,
@@ -900,12 +996,61 @@ public sealed class TravelPayload
         float len,
         string boatInstanceId,
         string boatPrefabGuid)
+        : this(
+            from,
+            to,
+            seed,
+            len,
+            boatInstanceId,
+            boatPrefabGuid,
+            Vector2.zero,
+            Vector2.zero,
+            false)
+    {
+    }
+
+    public TravelPayload(
+        string from,
+        string to,
+        int seed,
+        float len,
+        string boatInstanceId,
+        string boatPrefabGuid,
+        Vector2 fromWorldPosition,
+        Vector2 toWorldPosition)
+        : this(
+            from,
+            to,
+            seed,
+            len,
+            boatInstanceId,
+            boatPrefabGuid,
+            fromWorldPosition,
+            toWorldPosition,
+            true)
+    {
+    }
+
+    private TravelPayload(
+        string from,
+        string to,
+        int seed,
+        float len,
+        string boatInstanceId,
+        string boatPrefabGuid,
+        Vector2 fromWorldPosition,
+        Vector2 toWorldPosition,
+        bool hasWorldRouteCoordinates)
     //List<CargoManifest.Snapshot> cargoManifest)
     {
         fromNodeStableId = from;
         toNodeStableId = to;
         this.seed = seed;
         routeLength = len;
+
+        this.hasWorldRouteCoordinates = hasWorldRouteCoordinates;
+        this.fromWorldPosition = fromWorldPosition;
+        this.toWorldPosition = toWorldPosition;
 
         this.boatInstanceId = boatInstanceId;
         this.boatPrefabGuid = boatPrefabGuid;

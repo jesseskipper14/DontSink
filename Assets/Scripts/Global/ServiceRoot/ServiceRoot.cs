@@ -30,6 +30,7 @@ public class ServiceRoot : MonoBehaviour
     public CelestialBodyManager CelestialBodyManager => celestialManager;
     public WeatherManager WeatherManager => weatherManager;
     public WaveManager WaveManager => waveManager;
+    public TimeOfDayManager TimeManager => timeOfDayManager;
 
     public ITimeOfDayService Time { get; private set; }
     public IBrightnessService Brightness { get; private set; }
@@ -67,7 +68,29 @@ public class ServiceRoot : MonoBehaviour
         if (Weather == null) { WarnOnce("WeatherManager missing (Weather service)."); return; }
         if (Cloud == null) { WarnOnce("CloudManager missing (Cloud service)."); return; }
 
+        RestorePersistedTimeFromGameState();
         InitializeIfNeeded();
+    }
+
+    public bool ApplyPersistedTimeState(TimeOfDaySnapshot snapshot, string reason = "")
+    {
+        if (timeOfDayManager == null || snapshot == null || !snapshot.isValid)
+            return false;
+
+        bool applied = timeOfDayManager.ApplySnapshot(snapshot, forceNotify: true);
+
+        if (applied && GameState.I != null)
+            GameState.I.SetTimeOfDaySnapshot(timeOfDayManager.CaptureSnapshot(), reason);
+
+        return applied;
+    }
+
+    private void RestorePersistedTimeFromGameState()
+    {
+        if (GameState.I == null || GameState.I.timeOfDay == null || !GameState.I.timeOfDay.isValid)
+            return;
+
+        ApplyPersistedTimeState(GameState.I.timeOfDay, "ServiceRoot.Awake");
     }
 
     private void InitializeIfNeeded()
@@ -198,6 +221,10 @@ public class ServiceRoot : MonoBehaviour
                 else WarnOnce("WaveField missing (waves will be disabled in this scene).");
             }
 
+            // Global scene light
+            if (globalBrightnessManager != null)
+                globalBrightnessManager.RebindSceneAnchors(ctx.globalLight);
+
             // Sun/Moon anchors
             if (celestialManager != null)
             {
@@ -236,6 +263,9 @@ public class ServiceRoot : MonoBehaviour
         }
         else
         {
+            if (globalBrightnessManager != null)
+                globalBrightnessManager.RebindSceneAnchors(null);
+
             WarnOnce("SceneContext missing (scene bindings not applied).");
         }
     }

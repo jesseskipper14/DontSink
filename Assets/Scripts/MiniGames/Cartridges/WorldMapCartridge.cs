@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using MiniGames;
 using UnityEngine;
@@ -29,6 +29,17 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
 
     private WorldMapPOISource _poiSource;
     private WorldMapKnowledgeSource _knowledgeSource;
+    private CelestialMapOverlaySource _celestialOverlaySource;
+
+    private readonly MapTableViewportState _sharedViewport;
+    private readonly bool _embeddedInMapTable;
+
+    // Celestial truth is a developer/debug answer key, not player knowledge.
+    private bool _showCelestialMap = false;
+    private bool _showAmbientStars = true;
+    private bool _showLandmarkStars = true;
+    private bool _showNebulae = true;
+    private bool _showDeepSkyObjects = true;
 
     private bool _showNodes = true;
     private bool _showPOIs = true;
@@ -92,7 +103,10 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         WorldMapEventManager eventManager,
         WorldMapEffectCatalog effectCatalog,
         WorldMapTopographyDebugSource topographyDebugSource,
-        WorldMapPOISource poiSource = null)
+        WorldMapPOISource poiSource = null,
+        CelestialMapOverlaySource celestialOverlaySource = null,
+        MapTableViewportState sharedViewport = null,
+        bool embeddedInMapTable = false)
     {
         _generator = generator;
         _runtimeBinder = runtimeBinder;
@@ -104,8 +118,12 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         _effectCatalog = effectCatalog;
         _topographyDebugSource = topographyDebugSource;
         _poiSource = poiSource;
+        _celestialOverlaySource = celestialOverlaySource;
+        _sharedViewport = sharedViewport;
+        _embeddedInMapTable = embeddedInMapTable;
         AutoWirePOISource();
         AutoWireKnowledgeSource();
+        AutoWireCelestialOverlaySource();
     }
 
     #endregion
@@ -117,7 +135,9 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         _ctx = context ?? new MiniGameContext();
         _requestedClose = false;
         _statusLine = null;
-        _hasFitView = false;
+        _hasFitView = _sharedViewport != null && _sharedViewport.IsInitialized;
+        if (_hasFitView)
+            SyncViewportFromShared();
 
         SyncLockFromPlayerState();
         SelectCurrentNodeOrDefault();
@@ -134,6 +154,10 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
             _knowledgeSource.EnsureInitialized();
             _knowledgeSource.RevealSurfaceAroundCurrentNode();
         }
+
+        AutoWireCelestialOverlaySource();
+        if (_celestialOverlaySource != null)
+            _celestialOverlaySource.EnsureBuilt();
 
         _debugBuffDurationHours = 12f;
         _debugBuffStacks = 1;
@@ -193,6 +217,15 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         _dragging = false;
     }
 
+    public void SuspendEmbeddedInteraction()
+    {
+        _dragging = false;
+        _heatmapPickerOpen = false;
+        _eventPickerOpen = false;
+        _outcomePickerOpen = false;
+        _buffPickerOpen = false;
+    }
+
     #endregion
 
     #region IOverlayRenderable / Main Layout
@@ -201,6 +234,17 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
     {
         EnsureWhiteTexture();
 
+        if (_embeddedInMapTable)
+        {
+            DrawEmbeddedMapTablePage(panel);
+            return;
+        }
+
+        DrawStandaloneWorldMap(panel);
+    }
+
+    private void DrawStandaloneWorldMap(Rect panel)
+    {
         DrawWindowBackground(panel);
 
         float pad = 14f;
@@ -262,6 +306,19 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
             DrawInjectionToolsWindow(panel);
     }
 
+    private void DrawEmbeddedMapTablePage(Rect panel)
+    {
+        MapTablePageLayout layout = MapTablePageLayout.Compute(panel);
+
+        DrawHeatmapPanel(layout.Left);
+        DrawMapViewport(layout.Viewport);
+        DrawNodeDetailsPanel(layout.Right);
+        DrawFooter(layout.Footer);
+
+        if (_showInjectionTools)
+            DrawInjectionToolsWindow(panel);
+    }
+
     private void DrawWindowBackground(Rect panel)
     {
         Color old = GUI.color;
@@ -291,10 +348,20 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
             return;
         }
 
+        if (_sharedViewport != null && _sharedViewport.IsInitialized)
+        {
+            SyncViewportFromShared();
+            _hasFitView = true;
+        }
+
         if (!_hasFitView)
+        {
             FitViewToGraph(rect);
+            SyncViewportToShared();
+        }
 
         HandleViewportInput(rect);
+        SyncViewportToShared();
 
         Color old = GUI.color;
 
@@ -308,6 +375,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         Rect localRect = new Rect(0f, 0f, rect.width, rect.height);
 
         DrawTopographyDebugLayer(localRect);
+        DrawCelestialMapOverlay(localRect);
         DrawViewportGrid(localRect);
         DrawUnderwaterSurveyShroud(localRect);
         DrawRoutes(localRect);
@@ -315,6 +383,9 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         DrawPOIs(localRect);
         DrawNodes(localRect);
         DrawSurfaceShroud(localRect);
+
+        if (_sharedViewport != null)
+            DrawSharedReferenceReticle(localRect);
 
         GUI.EndGroup();
 
@@ -606,6 +677,56 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
             "Show Nodes"
         );
         y += 22f;
+
+        // The celestial-truth texture is an answer key for this navigation system. Keep it
+        // available in debug builds, but never expose it as ordinary player-facing map knowledge.
+        if (Debug.isDebugBuild)
+        {
+            AutoWireCelestialOverlaySource();
+            GUI.enabled = _celestialOverlaySource != null;
+            _showCelestialMap = GUI.Toggle(
+                new Rect(x, y, w, 22f),
+                _showCelestialMap,
+                "DEBUG: Celestial Truth"
+            );
+            GUI.enabled = true;
+            y += 20f;
+
+            if (_showCelestialMap && _celestialOverlaySource != null)
+            {
+                float halfToggleW = (w - 6f) * 0.5f;
+
+                _showAmbientStars = GUI.Toggle(
+                    new Rect(x + 8f, y, halfToggleW - 8f, 20f),
+                    _showAmbientStars,
+                    "Ambient"
+                );
+
+                _showLandmarkStars = GUI.Toggle(
+                    new Rect(x + halfToggleW + 6f, y, halfToggleW, 20f),
+                    _showLandmarkStars,
+                    "Landmarks"
+                );
+                y += 18f;
+
+                _showNebulae = GUI.Toggle(
+                    new Rect(x + 8f, y, halfToggleW - 8f, 20f),
+                    _showNebulae,
+                    "Nebulae"
+                );
+
+                _showDeepSkyObjects = GUI.Toggle(
+                    new Rect(x + halfToggleW + 6f, y, halfToggleW, 20f),
+                    _showDeepSkyObjects,
+                    "Deep Sky"
+                );
+                y += 22f;
+            }
+        }
+        else
+        {
+            _showCelestialMap = false;
+        }
 
         AutoWirePOISource();
 
@@ -1568,6 +1689,59 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         );
     }
 
+    private void DrawCelestialMapOverlay(Rect localRect)
+    {
+        if (!_showCelestialMap)
+            return;
+
+        AutoWireCelestialOverlaySource();
+
+        if (_celestialOverlaySource == null || !_celestialOverlaySource.HasOverlay)
+            return;
+
+        CelestialMapTextureSet textures = _celestialOverlaySource.TextureSet;
+        if (textures == null || !textures.IsValid)
+            return;
+
+        Rect bounds = textures.WorldBounds;
+
+        Vector2 topLeft = GraphToLocal(new Vector2(bounds.xMin, bounds.yMax), localRect);
+        Vector2 bottomRight = GraphToLocal(new Vector2(bounds.xMax, bounds.yMin), localRect);
+
+        Rect drawRect = Rect.MinMaxRect(
+            Mathf.Min(topLeft.x, bottomRight.x),
+            Mathf.Min(topLeft.y, bottomRight.y),
+            Mathf.Max(topLeft.x, bottomRight.x),
+            Mathf.Max(topLeft.y, bottomRight.y)
+        );
+
+        Color old = GUI.color;
+        GUI.color = Color.white;
+
+        if (_showNebulae && textures.Nebulae != null)
+            GUI.DrawTexture(drawRect, textures.Nebulae, ScaleMode.StretchToFill, true);
+
+        if (_showDeepSkyObjects && textures.DeepSkyObjects != null)
+            GUI.DrawTexture(drawRect, textures.DeepSkyObjects, ScaleMode.StretchToFill, true);
+
+        if (_showAmbientStars && textures.AmbientStars != null)
+            GUI.DrawTexture(drawRect, textures.AmbientStars, ScaleMode.StretchToFill, true);
+
+        if (_showLandmarkStars && textures.LandmarkStars != null)
+            GUI.DrawTexture(drawRect, textures.LandmarkStars, ScaleMode.StretchToFill, true);
+
+        GUI.color = old;
+    }
+
+    private void AutoWireCelestialOverlaySource()
+    {
+        if (_celestialOverlaySource != null)
+            return;
+
+        _celestialOverlaySource = UnityEngine.Object.FindAnyObjectByType<CelestialMapOverlaySource>(
+            FindObjectsInactive.Include);
+    }
+
     private void DrawViewportGrid(Rect localRect)
     {
         Color old = GUI.color;
@@ -2145,6 +2319,137 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
 
         _zoomPxPerGraphUnit = Mathf.Clamp(Mathf.Min(zoomX, zoomY) * 0.82f, MinZoom, MaxZoom);
         _hasFitView = true;
+        SyncViewportToShared();
+    }
+
+    private void SyncViewportFromShared()
+    {
+        if (_sharedViewport == null || !_sharedViewport.IsInitialized)
+            return;
+
+        _viewCenterGraph = _sharedViewport.CenterWorld;
+        _zoomPxPerGraphUnit = Mathf.Clamp(
+            _sharedViewport.PixelsPerWorldUnit,
+            MinZoom,
+            MaxZoom);
+    }
+
+    private void SyncViewportToShared()
+    {
+        if (_sharedViewport == null)
+            return;
+
+        _sharedViewport.Set(_viewCenterGraph, _zoomPxPerGraphUnit);
+    }
+
+    public bool TryGetWorldReferenceBounds(out Rect bounds)
+    {
+        bounds = default;
+
+        // Match the World Map page's own first-open framing exactly: graph bounds first.
+        if (_generator != null && _generator.graph != null && _generator.graph.nodes != null && _generator.graph.nodes.Count > 0)
+        {
+            Vector2 min = _generator.graph.nodes[0].position;
+            Vector2 max = min;
+            for (int i = 1; i < _generator.graph.nodes.Count; i++)
+            {
+                Vector2 p = _generator.graph.nodes[i].position;
+                min = Vector2.Min(min, p);
+                max = Vector2.Max(max, p);
+            }
+
+            Vector2 size = max - min;
+            if (size.x < 0.001f) size.x = 1f;
+            if (size.y < 0.001f) size.y = 1f;
+            bounds = new Rect(min, size);
+            return true;
+        }
+
+        if (_topographyDebugSource != null)
+        {
+            _topographyDebugSource.EnsureBaseTexture();
+            WorldMapTopographyField field = _topographyDebugSource.Field;
+            if (field != null && field.WorldBounds.width > 0.001f && field.WorldBounds.height > 0.001f)
+            {
+                bounds = field.WorldBounds;
+                return true;
+            }
+        }
+
+        AutoWireCelestialOverlaySource();
+        if (_celestialOverlaySource != null)
+        {
+            _celestialOverlaySource.EnsureBuilt();
+            CelestialMapTextureSet textures = _celestialOverlaySource.TextureSet;
+            if (textures != null && textures.IsValid && textures.WorldBounds.width > 0.001f && textures.WorldBounds.height > 0.001f)
+            {
+                bounds = textures.WorldBounds;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Draws the player-known geographic reference using this cartridge's exact shared viewport,
+    /// intentionally omitting celestial truth. Used under translucent scraps in Star Chart compare mode.
+    /// </summary>
+    public void DrawKnownWorldReference(Rect rect)
+    {
+        EnsureWhiteTexture();
+
+        if (_generator == null || _generator.graph == null || _generator.graph.nodes == null || _generator.graph.nodes.Count == 0)
+        {
+            GUI.Box(rect, "World reference unavailable.");
+            return;
+        }
+
+        if (_sharedViewport != null && _sharedViewport.IsInitialized)
+        {
+            SyncViewportFromShared();
+            _hasFitView = true;
+        }
+        else if (!_hasFitView)
+        {
+            FitViewToGraph(rect);
+        }
+
+        AutoWirePOISource();
+        AutoWireKnowledgeSource();
+
+        Color old = GUI.color;
+        GUI.color = new Color(0.02f, 0.10f, 0.18f, 1f);
+        GUI.DrawTexture(rect, _whiteTex);
+        GUI.color = new Color(0.16f, 0.28f, 0.38f, 1f);
+        DrawRectOutline(rect, 1f);
+
+        GUI.BeginGroup(rect);
+        Rect localRect = new Rect(0f, 0f, rect.width, rect.height);
+
+        DrawTopographyDebugLayer(localRect);
+        DrawViewportGrid(localRect);
+        DrawUnderwaterSurveyShroud(localRect);
+        DrawRoutes(localRect);
+        DrawActiveTravelRoute(localRect);
+        DrawPOIs(localRect);
+        DrawNodes(localRect);
+        DrawSurfaceShroud(localRect);
+
+        GUI.EndGroup();
+        GUI.color = old;
+    }
+
+    private static void DrawSharedReferenceReticle(Rect localRect)
+    {
+        Vector2 c = localRect.center;
+        Color color = new Color(0.30f, 0.95f, 1f, 0.70f);
+
+        DrawLine(c + Vector2.left * 11f, c + Vector2.left * 3f, color, 1f);
+        DrawLine(c + Vector2.right * 3f, c + Vector2.right * 11f, color, 1f);
+        DrawLine(c + Vector2.up * 11f, c + Vector2.up * 3f, color, 1f);
+        DrawLine(c + Vector2.down * 3f, c + Vector2.down * 11f, color, 1f);
+        DrawNodeRing(c, 4f, color, 1f);
     }
 
     #endregion

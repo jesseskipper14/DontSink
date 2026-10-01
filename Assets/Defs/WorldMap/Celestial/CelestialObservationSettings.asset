@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2949402551d41c448a25ee69caffe3f4, type: 3}
+  m_Name: CelestialObservationSettings
+  m_EditorClassIdentifier: 
+  minimumStarVisibilityToInteract: 0.2
+  minimumAnchors: 3
+  maximumAnchors: 4
+  patternStarCount: 4
+  preferLandmarkPatternStars: 1
+  patternSelectionRadius: 0.98
+  surveyTargetRadius01: 0.4
+  surveyRegionSizeWorld: 20
+  surveyPatternOverlapFraction: 0.5
+  initialZoom: 2
+  minimumZoom: 2
+  maximumZoom: 6
+  notableClickRadiusPixels: 18
+  apertureRadius01: 0.495
+  maximumInitialRotationErrorDegrees: 155
+  bearingToleranceDegrees: 3
+  registrationPipTolerance: 0.16
+  plateTolerance: 0.055
+  lensTolerance: 0.055
+  prismTolerance: 0.055
+  decoderPlateDistortion: 0.28
+  decoderLensDistortion: 0.34
+  decoderPrismDistortion: 0.26
+  captureAmbientStars: 1
+  captureUnselectedNotableObjects: 1
+  allowLandmarkStars: 1
+  allowNebulae: 1
+  allowDeepSkyObjects: 1
+  chartReticleMargin01: 0.12

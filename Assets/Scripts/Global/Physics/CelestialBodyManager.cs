@@ -143,6 +143,13 @@ public class CelestialBodyManager : MonoBehaviour, ICelestialBodyService
         float moonT;
         bool visible = TryGetMoonT(hour, out moonT);
 
+        // The moon's transform is a scene visual anchor. When the moon is outside
+        // its configured rise/set window, hide the entire visual instead of merely
+        // zeroing the Light2D. Otherwise the sprite remains visible and appears
+        // frozen at the last valid nighttime position.
+        if (moonTransform.gameObject.activeSelf != visible)
+            moonTransform.gameObject.SetActive(visible);
+
         if (!visible)
         {
             moonLight.intensity = 0f;

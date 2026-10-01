@@ -28,6 +28,12 @@ public sealed class SaveGamePayload
 
     public WorldMapSaveSnapshot worldMapSnapshot;
 
+    // Additive in schema v1. Older saves deserialize this as null/unset.
+    public TimeOfDaySnapshot timeOfDay;
+
+    // Additive in schema v1. Older saves deserialize this as null/unset.
+    public CelestialChartStateSnapshot celestialCharts;
+
     // v1 is NodeScene-only, so activeTravel should normally be null.
     // Kept here deliberately so the schema has an obvious home for later migrations.
     public TravelPayload activeTravel;

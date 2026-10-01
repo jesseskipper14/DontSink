@@ -285,7 +285,7 @@ MonoBehaviour:
   securedLocalRotationZ: 0
   usedRope: 0
   ropeBonus01: 0
-  verboseLogging: 1
+  verboseLogging: 0
 --- !u!114 &-6811883798127294128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -381,7 +381,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enforceGameplayAuthority: 0
   gameplayAuthorityMode: 0
-  verboseDiagnostics: 1
+  verboseDiagnostics: 0
 --- !u!114 &7419180121653138177
 MonoBehaviour:
   m_ObjectHideFlags: 0

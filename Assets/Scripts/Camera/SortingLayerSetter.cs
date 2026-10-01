@@ -6,6 +6,9 @@ public class SortingLayerSetter : MonoBehaviour
     public string sortingLayerName = "Default";
     public int sortingOrder = 0;
 
+    [Header("Debug")]
+    [SerializeField] private bool verboseLogging = false;
+
     private MeshRenderer _meshRenderer;
 
     private void Awake()
@@ -29,10 +32,13 @@ public class SortingLayerSetter : MonoBehaviour
         _meshRenderer.sortingLayerName = sortingLayerName;
         _meshRenderer.sortingOrder = sortingOrder;
 
-        Debug.Log(
-            $"[SortingLayerSetter:{name}] Applied sorting layer " +
-            $"'{sortingLayerName}' order={sortingOrder}.",
-            this);
+        if (verboseLogging)
+        {
+            Debug.Log(
+                $"[SortingLayerSetter:{name}] Applied sorting layer " +
+                $"'{sortingLayerName}' order={sortingOrder}.",
+                this);
+        }
     }
 
     private void CacheRenderer()

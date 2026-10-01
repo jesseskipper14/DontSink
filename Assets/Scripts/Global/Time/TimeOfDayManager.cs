@@ -12,6 +12,7 @@ public class TimeOfDayManager : MonoBehaviour, ITimeOfDayService
     public float NormalizedTime => currentTime / 24f;
     public float DayLength => dayLength;
     public DayPhase CurrentPhase { get; private set; }
+    public DayPhaseConfig PhaseConfig => phaseConfig;
 
     public event Action<float> OnTimeChanged;
     public event Action<DayPhase> OnDayPhaseChanged;
@@ -20,7 +21,6 @@ public class TimeOfDayManager : MonoBehaviour, ITimeOfDayService
     [SerializeField] private int daysPerMonth = 30;
     [SerializeField] private int monthsPerYear = 8;
 
-    // Start date (1-indexed for humans)
     [SerializeField] private int year = 1;
     [SerializeField, Range(1, 8)] private int month = 1;
     [SerializeField, Range(1, 30)] private int day = 1;
@@ -29,16 +29,22 @@ public class TimeOfDayManager : MonoBehaviour, ITimeOfDayService
     public int Month => month;
     public int Day => day;
 
-    // Total day count since epoch (useful for sims)
     public int DayIndex => (year - 1) * (monthsPerYear * daysPerMonth)
                          + (month - 1) * daysPerMonth
                          + (day - 1);
 
-    public event Action<int, int, int> OnDateChanged; // year, month, day
-    public event Action<int> OnDayAdvanced; // new DayIndex
+    public event Action<int, int, int> OnDateChanged;
+    public event Action<int> OnDayAdvanced;
 
     private void Awake()
     {
+        if (phaseConfig == null)
+        {
+            Debug.LogWarning(
+                "[TimeOfDayManager] DayPhaseConfig is not assigned. Time can advance, but day-phase changes cannot be calculated.",
+                this);
+        }
+
         RecalculatePhase(forceNotify: true);
     }
 
@@ -58,9 +64,7 @@ public class TimeOfDayManager : MonoBehaviour, ITimeOfDayService
         }
 
         if (daysAdvanced > 0)
-        {
             AdvanceDays(daysAdvanced);
-        }
 
         if (!Mathf.Approximately(prevTime, currentTime))
             OnTimeChanged?.Invoke(currentTime);
@@ -73,6 +77,34 @@ public class TimeOfDayManager : MonoBehaviour, ITimeOfDayService
         currentTime = Mathf.Repeat(hour, 24f);
         OnTimeChanged?.Invoke(currentTime);
         RecalculatePhase(forceNotify: true);
+    }
+
+    public TimeOfDaySnapshot CaptureSnapshot()
+    {
+        return new TimeOfDaySnapshot
+        {
+            isValid = true,
+            currentTime = currentTime,
+            year = year,
+            month = month,
+            day = day
+        };
+    }
+
+    public bool ApplySnapshot(TimeOfDaySnapshot snapshot, bool forceNotify = true)
+    {
+        if (snapshot == null || !snapshot.isValid)
+            return false;
+
+        year = Mathf.Max(1, snapshot.year);
+        month = Mathf.Clamp(snapshot.month, 1, Mathf.Max(1, monthsPerYear));
+        day = Mathf.Clamp(snapshot.day, 1, Mathf.Max(1, daysPerMonth));
+        currentTime = Mathf.Repeat(snapshot.currentTime, 24f);
+
+        OnTimeChanged?.Invoke(currentTime);
+        OnDateChanged?.Invoke(year, month, day);
+        RecalculatePhase(forceNotify);
+        return true;
     }
 
     private void RecalculatePhase(bool forceNotify = false)
