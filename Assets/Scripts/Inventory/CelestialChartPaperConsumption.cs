@@ -129,6 +129,26 @@ public static class CelestialChartPaperConsumption
                requester.GetComponentInChildren<PlayerInventory>(true);
     }
 
+    /// <summary>Only the instrument's direct filtered storage; never falls back to pockets.</summary>
+    public static bool TryConsumeFromInstrument(ItemInstance instrument, ItemDefinition paperDefinition,
+        out Receipt receipt, out string error)
+    {
+        receipt = null;
+        error = "Load 1 Charting Paper into the charting instrument.";
+        if (instrument == null || instrument.IsDepleted() || instrument.ChartingInstrument?.invalidated == true ||
+            paperDefinition == null || !instrument.IsContainer || instrument.ContainerState == null)
+            return false;
+        var state = instrument.ContainerState;
+        for (int i = 0; i < state.SlotCount; i++)
+        {
+            var slot = state.GetSlot(i);
+            if (slot?.Instance == null || !Matches(slot.Instance, paperDefinition)) continue;
+            receipt = ConsumeSlotItem(null, slot, state, slot.Instance);
+            if (receipt != null) { error = null; return true; }
+        }
+        return false;
+    }
+
     private static bool TryConsumeFromEquipmentSlot(
         PlayerInventory inventory,
         PlayerEquipment equipment,
@@ -210,7 +230,7 @@ public static class CelestialChartPaperConsumption
         {
             slot.Clear();
             parentContainer?.NotifyChanged();
-            inventory.NotifyChanged();
+            inventory?.NotifyChanged();
             return new Receipt
             {
                 inventory = inventory,
@@ -227,7 +247,7 @@ public static class CelestialChartPaperConsumption
             return null;
 
         parentContainer?.NotifyChanged();
-        inventory.NotifyChanged();
+        inventory?.NotifyChanged();
         return new Receipt
         {
             inventory = inventory,

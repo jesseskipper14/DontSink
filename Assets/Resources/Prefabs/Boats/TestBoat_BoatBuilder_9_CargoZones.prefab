@@ -1124,6 +1124,49 @@ MonoBehaviour:
         containerState:
           rid: 9210758840711905387
         currentCharges: 0
+        chartingInstrument:
+          version: 1
+          boatInstanceId: 
+          revision: 0
+          invalidated: 0
+          pendingObservation:
+            observationId: 
+            source: 0
+            worldSeed: 0
+            celestialGeneratorVersion: 0
+            celestialConfigHash: 
+            observerTrueWorldPosition: {x: 0, y: 0}
+            baseVisibleWorldRect:
+              serializedVersion: 2
+              x: 0
+              y: 0
+              width: 0
+              height: 0
+            instrumentCenter01: {x: 0.5, y: 0.5}
+            instrumentZoom: 1
+            instrumentRotationDegrees: 0
+            circularApertureRadius01: 0.47
+            chartReticle01:
+              serializedVersion: 2
+              x: 0
+              y: 0
+              width: 1
+              height: 1
+            calibrationQuality01: 0
+            bearingControlDegrees: 0
+            plateControl: 0
+            lensControl: 0
+            prismControl: 0
+            starVisibility01: 0
+            quality01: 0
+            capturedHour: 0
+            capturedYear: 0
+            capturedMonth: 0
+            capturedDay: 0
+            referenceObjectStableId: 
+            surveySequence: 0
+            patternObjectStableIds: []
+            objects: []
         retainedWaterVolume: 0
     - rid: 9210758840711905387
       type: {class: ItemContainerState, ns: , asm: Assembly-CSharp}

@@ -86,7 +86,8 @@ GameObject:
   - component: {fileID: 1329829164130874120}
   - component: {fileID: 800000000000000001}
   - component: {fileID: 800000000000000002}
-  - component: {fileID: 800000000000000003}
+  - component: {fileID: -7476209616757040773}
+  - component: {fileID: 7182987114798817031}
   m_Layer: 10
   m_Name: ChartingObject
   m_TagString: Untagged
@@ -354,9 +355,9 @@ MonoBehaviour:
   originHeight: 1.05
   obstructionLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 16646143
   recheckInterval: 0.15
---- !u!114 &800000000000000003
+--- !u!114 &-7476209616757040773
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -365,14 +366,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 7571194650393018128}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c442856d3efec47bc2bd48f39f7d6e, type: 3}
+  m_Script: {fileID: 11500000, guid: 85564bf74284406c892e150a6fb5d58e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   maxInteractDistance: 2
   interactionPriority: 1100
-  minimumZoom: 1
-  maximumZoom: 1.5
-  zoomSpeed: 0.1
+  runner: {fileID: 0}
+--- !u!114 &7182987114798817031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571194650393018128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fff07833f2f70cd40a458dcced508abf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldItem: {fileID: 0}
+  maxDepositDistance: 2.25
+  requireMatchingBoatBoardingContext: 1
+  allowAccessWhenNotPartOfBoat: 1
+  verboseLogging: 0
 --- !u!1 &9130302141471108845
 GameObject:
   m_ObjectHideFlags: 0

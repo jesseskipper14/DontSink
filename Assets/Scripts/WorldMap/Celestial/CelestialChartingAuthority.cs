@@ -26,7 +26,8 @@ public static class CelestialChartingAuthority
         CelestialField field,
         CelestialObservationSettings observationSettings,
         ItemDefinition chartingPaperDefinition,
-        CelestialObservation observation)
+        CelestialObservation observation,
+        ChartingInstrumentInteractable instrument = null)
     {
         if (!GameplayAuthority.IsAuthoritative)
             return Fail("Chart recording requires gameplay authority.");
@@ -78,11 +79,16 @@ public static class CelestialChartingAuthority
                 $"This survey is stale. Expected sequence {expectedSequence}, received {observation.surveySequence}.");
         }
 
-        if (!CelestialChartPaperConsumption.TryConsumeOne(
-                requester,
-                chartingPaperDefinition,
-                out CelestialChartPaperConsumption.Receipt receipt,
-                out string paperError))
+        bool instrumentWorkflow = !ReferenceEquals(instrument, null);
+        if (instrumentWorkflow && (instrument == null || !instrument.CanCommit(requester, observation)))
+            return Fail("The charting instrument session is no longer valid.");
+
+        CelestialChartPaperConsumption.Receipt receipt;
+        string paperError;
+        bool hasPaper = instrumentWorkflow
+            ? CelestialChartPaperConsumption.TryConsumeFromInstrument(instrument.Item, chartingPaperDefinition, out receipt, out paperError)
+            : CelestialChartPaperConsumption.TryConsumeOne(requester, chartingPaperDefinition, out receipt, out paperError);
+        if (!hasPaper)
         {
             return Fail(paperError);
         }
@@ -113,6 +119,7 @@ public static class CelestialChartingAuthority
         }
 
         receipt.Commit();
+        instrument?.ClearPendingObservation();
         CelestialKnowledgeAuthority.FreezeGeneration(chartState, field);
 
         return new CelestialChartCommitResult(

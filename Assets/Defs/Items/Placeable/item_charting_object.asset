@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: item_charting_object
   m_EditorClassIdentifier: 
   itemId: item_charting_object
-  displayName: Charting Object
+  displayName: Charting Instrument
   icon: {fileID: 8928137284973858656, guid: 8bebebd576cc15f489b62c84e6ed27c2, type: 3}
   itemCategories: 8194
   toolCapabilities: []
@@ -54,16 +54,16 @@ MonoBehaviour:
   isPortableContainer: 1
   portableContainerSlotCount: 1
   portableContainerColumnCount: 1
-  portableContainerMaxQuantityPerSlot: 20
+  portableContainerMaxQuantityPerSlot: 0
   portableContainerAcceptsAnyItem: 0
   portableContainerAllowedCategories: 0
   explicitlyAllowedPortableContainerItems:
-  - {fileID: 11400000}
+  - {fileID: 11400000, guid: 51dba4e0e6f6f154f9f774a31818a504, type: 2}
   portableContainerTier: 0
   pickupMode: 0
   pickupHoldDuration: 0.4
   isModule: 0
   moduleDefinition: {fileID: 0}
   soldByBoatVendors: 0
-  worldPrefab: {fileID: 61859146187821167, guid: ea5e48e5374378645939187207e6b22b, type: 3}
+  worldPrefab: {fileID: 61859146187821167, guid: 54084f0279ec13c4e87dfb66f6eb420f, type: 3}
   worldPersistence: 0

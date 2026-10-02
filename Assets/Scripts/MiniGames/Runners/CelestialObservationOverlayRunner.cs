@@ -3,8 +3,7 @@ using UnityEngine;
 
 /// <summary>
 /// Scene-level celestial observation entry point.
-/// F6 remains a temporary debug opener. Future physical instruments should call
-/// OpenObservationFor(requester) so the exact interacting player is preserved.
+/// F6 remains a debug opener. Physical instruments use TryOpenObservationFor(requester, instrument).
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class CelestialObservationOverlayRunner : MonoBehaviour
@@ -17,7 +16,7 @@ public sealed class CelestialObservationOverlayRunner : MonoBehaviour
     [SerializeField] private SkyVisualManager skyVisualManager;
 
     [Header("Phase 5 Charting")]
-    [Tooltip("Normal inventory item consumed when a successful observation is committed to paper.")]
+    [Tooltip("Paper consumed from the physical instrument's internal storage. Debug F6 retains carried-inventory consumption.")]
     [SerializeField] private ItemDefinition chartingPaperDefinition;
 
     [Header("Phase 5B Fragment Visuals")]
@@ -43,6 +42,52 @@ public sealed class CelestialObservationOverlayRunner : MonoBehaviour
 
     private bool _warnedMissingSkyVisualManager;
     private GameObject _activeRequester;
+    private ChartingInstrumentInteractable _activeInstrument;
+    private CelestialObservationCartridge _activeCartridge;
+    private int _openedFrame;
+    private float _nextClearanceCheck;
+
+    private void LateUpdate()
+    {
+        if (_activeCartridge == null) return;
+        if (overlay == null || !overlay.isActiveAndEnabled || !overlay.IsOpen ||
+            !ReferenceEquals(overlay.ActiveCartridge, _activeCartridge)) { ReleaseSession(); return; }
+        if (!ReferenceEquals(_activeInstrument, null))
+        {
+            if (_activeInstrument == null || !_activeInstrument.SessionIsValid(_activeRequester))
+            { InterruptInstrument(_activeInstrument, "Charting instrument unavailable."); return; }
+            if (Time.unscaledTime >= _nextClearanceCheck)
+            {
+                _nextClearanceCheck = Time.unscaledTime + _activeInstrument.Clearance.RecheckInterval;
+                if (!_activeInstrument.Clearance.HasClearance())
+                { InterruptInstrument(_activeInstrument, SkyClearanceRequirement.BlockedMessage); return; }
+            }
+        }
+        if (Time.frameCount > _openedFrame && Input.GetKeyDown(KeyCode.E)) overlay.Close();
+    }
+
+    public void InterruptInstrument(ChartingInstrumentInteractable instrument, string reason)
+    {
+        if (_activeInstrument != instrument) return;
+        if (overlay != null && ReferenceEquals(overlay.ActiveCartridge, _activeCartridge)) overlay.Interrupt(reason);
+        ReleaseSession();
+        GameMessageService.PostWarning(reason);
+    }
+
+    private void ReleaseSession()
+    {
+        _activeInstrument?.ReleaseOperator();
+        _activeInstrument = null;
+        _activeRequester = null;
+        _activeCartridge = null;
+    }
+
+    private void OnDisable()
+    {
+        if (overlay != null && _activeCartridge != null && ReferenceEquals(overlay.ActiveCartridge, _activeCartridge))
+            overlay.Interrupt("Charting session closed.");
+        ReleaseSession();
+    }
 
     private bool _showFragmentPreview;
     private int _previewFragmentIndex = -1;
@@ -104,62 +149,74 @@ public sealed class CelestialObservationOverlayRunner : MonoBehaviour
     }
 
     /// <summary>
-    /// Requester-preserving entry point for future telescope/astrolabe interactions.
+    /// Requester-preserving legacy/debug entry. Physical instruments supply their own storage/session.
     /// A future network transport should authenticate the sender and resolve that sender
     /// to the authoritative requester before invoking the charting authority transaction.
     /// </summary>
     public void OpenObservationFor(GameObject requester)
     {
+        TryOpenObservationFor(requester, null);
+    }
+
+    public bool TryOpenObservationFor(GameObject requester, ChartingInstrumentInteractable instrument)
+    {
         AutoWire();
+
+        if (!isActiveAndEnabled || (overlay != null && overlay.IsOpen)) return false;
+        if (instrument != null && !instrument.SessionIsValid(requester)) return false;
 
         if (requester == null)
         {
             Debug.LogError("[CelestialObservationOverlayRunner] OpenObservationFor requires an exact requester GameObject.", this);
-            return;
+            return false;
         }
 
         if (overlay == null)
         {
             Debug.LogError("[CelestialObservationOverlayRunner] Missing MiniGameOverlayHost.", this);
-            return;
+            return false;
         }
 
         if (fieldSource == null || !fieldSource.EnsureField() || fieldSource.Field == null)
         {
             Debug.LogError("[CelestialObservationOverlayRunner] CelestialFieldSource is missing or could not build the field.", this);
-            return;
+            return false;
         }
 
         if (projectionSettings == null)
         {
             Debug.LogError("[CelestialObservationOverlayRunner] Missing CelestialSkyProjectionSettings. Use the SAME asset as CelestialSkyRenderer.", this);
-            return;
+            return false;
         }
 
         if (observationSettings == null)
         {
             Debug.LogError("[CelestialObservationOverlayRunner] Missing CelestialObservationSettings.", this);
-            return;
+            return false;
         }
 
         if (chartingPaperDefinition == null)
         {
             Debug.LogError("[CelestialObservationOverlayRunner] Missing Charting Paper ItemDefinition.", this);
-            return;
+            return false;
         }
 
         if (!WorldNavigationService.TryGetTrueWorldPosition(out Vector2 observerWorldPosition))
         {
             Debug.LogWarning("[CelestialObservationOverlayRunner] No authoritative true world position is available yet.", this);
-            return;
+            return false;
         }
 
         _activeRequester = requester;
+        _activeInstrument = instrument;
+        CelestialObservation pending = instrument != null ? instrument.PendingObservation : null;
+        if (pending != null) observerWorldPosition = pending.observerTrueWorldPosition;
 
         currentSurveySequence = CelestialSurveySequenceTracker.GetCurrentSequence(
             fieldSource.Field,
             observerWorldPosition,
             observationSettings.surveyRegionSizeWorld);
+        if (pending != null) currentSurveySequence = pending.surveySequence;
 
         var context = new MiniGameContext
         {
@@ -178,8 +235,14 @@ public sealed class CelestialObservationOverlayRunner : MonoBehaviour
             ResolveTimeManager,
             currentSurveySequence,
             TryCommitObservation,
-            () => fieldSource != null && fieldSource.ShowAllConstellationsForField);
+            () => fieldSource != null && fieldSource.ShowAllConstellationsForField,
+            pending,
+            StoreCheckpoint,
+            ReleaseSession);
 
+        _activeCartridge = cartridge;
+        _openedFrame = Time.frameCount;
+        _nextClearanceCheck = 0f;
         overlay.Open(cartridge, context);
 
         if (verboseLogging)
@@ -191,16 +254,31 @@ public sealed class CelestialObservationOverlayRunner : MonoBehaviour
                 $"StarVisibility={ResolveStarVisibility():0.00}.",
                 this);
         }
+        return true;
+    }
+
+    private void StoreCheckpoint(CelestialObservation observation)
+    {
+        if (_activeInstrument == null) return;
+        _activeInstrument.StoreCheckpoint(observation);
+        if (observation == null || _activeInstrument.PendingObservation?.observationId != observation.observationId ||
+            GameState.I == null || fieldSource?.Field == null) return;
+        GameState.I.EnsureCelestialChartDefaults();
+        CelestialKnowledgeAuthority.FreezeGeneration(GameState.I.celestialCharts, fieldSource.Field);
     }
 
     private string TryCommitObservation(CelestialObservation observation)
     {
+        if (_activeCartridge == null || overlay == null || !overlay.isActiveAndEnabled ||
+            !ReferenceEquals(overlay.ActiveCartridge, _activeCartridge))
+            return "Charting session is no longer active.";
         CelestialChartCommitResult result = CelestialChartingAuthority.TryCommitObservation(
             _activeRequester,
             fieldSource != null ? fieldSource.Field : null,
             observationSettings,
             chartingPaperDefinition,
-            observation);
+            observation,
+            _activeInstrument);
 
         if (!result.success)
         {

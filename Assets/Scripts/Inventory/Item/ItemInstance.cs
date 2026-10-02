@@ -9,6 +9,14 @@ public sealed class ItemInstance
     [SerializeField] private int quantity = 1;
     [SerializeReference] private ItemContainerState containerState;
     [SerializeField] private int currentCharges;
+    [SerializeField] private ChartingInstrumentState chartingInstrument;
+    public ChartingInstrumentState ChartingInstrument => chartingInstrument;
+
+    public void SetChartingInstrumentState(ChartingInstrumentState state)
+    {
+        chartingInstrument = state != null ? state.Copy() : null;
+        NotifyChanged();
+    }
 
     // Physical environmental state that must survive WorldItem destruction,
     // inventory/Hands storage, scene persistence, and later re-instantiation.
@@ -310,6 +318,7 @@ public sealed class ItemInstance
             quantity = quantity,
             currentCharges = HasCharges ? CurrentCharges : 0,
             retainedWaterVolume = RetainedWaterVolume,
+            chartingInstrument = chartingInstrument != null ? chartingInstrument.Copy() : null,
             container = containerState != null ? containerState.ToSnapshot() : null
         };
     }
@@ -328,6 +337,7 @@ public sealed class ItemInstance
 
         ItemInstance instance = new ItemInstance();
         instance.InitializeRuntime(def, snapshot.quantity);
+        instance.chartingInstrument = snapshot.chartingInstrument?.HasState == true ? snapshot.chartingInstrument.Copy() : null;
         instance.instanceId = string.IsNullOrWhiteSpace(snapshot.instanceId)
             ? Guid.NewGuid().ToString("N")
             : snapshot.instanceId;

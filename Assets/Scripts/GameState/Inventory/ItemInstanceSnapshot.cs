@@ -10,6 +10,8 @@ public sealed class ItemInstanceSnapshot
     public string itemId;
     public int quantity;
     public int currentCharges;
+    // Additive v1 field; old items have no checkpoint. Travels with the exact item identity.
+    public ChartingInstrumentState chartingInstrument;
 
     // Additive schema-v1 field. Old saves deserialize this as 0.
     public float retainedWaterVolume;

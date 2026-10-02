@@ -48,6 +48,9 @@ namespace MiniGames
         private readonly Func<TimeOfDayManager> _timeManagerProvider;
         private readonly Func<CelestialObservation, string> _tryCommitObservation;
         private readonly int _surveySequence;
+        private readonly Action<CelestialObservation> _checkpointChanged;
+        private readonly Action _sessionEnded;
+        private CelestialObservation _pendingObservation;
 
         private readonly List<CelestialObject> _queriedObjects = new List<CelestialObject>();
         private readonly List<ProjectedObject> _projectedObjects = new List<ProjectedObject>();
@@ -132,7 +135,10 @@ namespace MiniGames
             Func<TimeOfDayManager> timeManagerProvider,
             int surveySequence,
             Func<CelestialObservation, string> tryCommitObservation,
-            Func<bool> debugShowAllConstellations = null)
+            Func<bool> debugShowAllConstellations = null,
+            CelestialObservation pendingObservation = null,
+            Action<CelestialObservation> checkpointChanged = null,
+            Action sessionEnded = null)
         {
             _field = field;
             _observerWorldPosition = observerWorldPosition;
@@ -143,6 +149,9 @@ namespace MiniGames
             _surveySequence = Mathf.Max(0, surveySequence);
             _tryCommitObservation = tryCommitObservation;
             _debugShowAllConstellations = debugShowAllConstellations;
+            _pendingObservation = pendingObservation;
+            _checkpointChanged = checkpointChanged;
+            _sessionEnded = sessionEnded;
         }
 
         public void Begin(MiniGameContext context)
@@ -172,7 +181,8 @@ namespace MiniGames
 
             BuildProjectedObjectCache();
             InitializePuzzleState();
-            BuildPattern();
+            if (_pendingObservation == null) BuildPattern();
+            else RestoreRecordingPhase();
         }
 
         public MiniGameResult Tick(float dt, MiniGameInput input)
@@ -231,6 +241,7 @@ namespace MiniGames
 
         public void End()
         {
+            _sessionEnded?.Invoke();
             if (_softDisc != null)
             {
                 UnityEngine.Object.Destroy(_softDisc);
@@ -697,7 +708,7 @@ namespace MiniGames
             }
             else
             {
-                instructions = "Pattern acquired. Record the observation to produce Phase 4 evidence. Paper comes next in Phase 5.";
+                instructions = "Observation complete. Record it onto Charting Paper. You may close the instrument and return with paper later.";
             }
 
             GUI.Label(new Rect(inner.x, y, inner.width, 104f), instructions, _smallLabelStyle);
@@ -842,7 +853,7 @@ namespace MiniGames
                 text = _setupError;
                 color = Error;
             }
-            else if (visibility < MinimumVisibility)
+            else if (visibility < MinimumVisibility && _pendingObservation == null)
             {
                 text = "Insufficient stellar visibility. Wait for darker or clearer conditions.";
                 color = Error;
@@ -878,7 +889,7 @@ namespace MiniGames
             {
                 Rect button = new Rect(rect.center.x - 120f, rect.y + 28f, 240f, 32f);
                 bool old = GUI.enabled;
-                GUI.enabled = visibility >= MinimumVisibility && !_completed;
+                GUI.enabled = (visibility >= MinimumVisibility || _pendingObservation != null) && !_completed;
                 if (GUI.Button(button, "RECORD OBSERVATION"))
                     CompleteObservation(visibility);
                 GUI.enabled = old;
@@ -1328,6 +1339,8 @@ namespace MiniGames
             if (forward || reverse)
             {
                 _stage = ObservationStage.ReadyToRecord;
+                _pendingObservation = BuildObservation(GetStarVisibility01());
+                _checkpointChanged?.Invoke(_pendingObservation);
                 SetStatus("Pattern acquired.", 2f);
                 return;
             }
@@ -1410,6 +1423,8 @@ namespace MiniGames
 
         private void ReturnToCalibration()
         {
+            _pendingObservation = null;
+            _checkpointChanged?.Invoke(null);
             _stage = ObservationStage.Calibration;
             _traceIds.Clear();
             SetStatus("Calibration released.", 1f);
@@ -1417,6 +1432,8 @@ namespace MiniGames
 
         private void ClearTrace(string status)
         {
+            _pendingObservation = null;
+            _checkpointChanged?.Invoke(null);
             _traceIds.Clear();
             if (_stage == ObservationStage.ReadyToRecord)
                 _stage = ObservationStage.TracePattern;
@@ -1425,10 +1442,11 @@ namespace MiniGames
 
         private void CompleteObservation(float visibility)
         {
-            if (_completed || _stage != ObservationStage.ReadyToRecord || visibility < MinimumVisibility)
+            if (_completed || _stage != ObservationStage.ReadyToRecord ||
+                (_pendingObservation == null && visibility < MinimumVisibility))
                 return;
 
-            CelestialObservation observation = BuildObservation(visibility);
+            CelestialObservation observation = _pendingObservation ?? BuildObservation(visibility);
             if (observation == null)
                 return;
 
