@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class CelestialFieldGenerator
+public static partial class CelestialFieldGenerator
 {
     public const int CurrentGeneratorVersion = 1;
 
@@ -22,7 +22,7 @@ public static class CelestialFieldGenerator
             : null;
 
         CelestialField field = Create(worldSeed, worldBounds, config);
-        if (field != null) field.ConfigureConstellations(settings.constellations);
+        if (field != null) field.ConfigureConstellations(settings.CreateConstellationConfigSnapshot());
         return field;
     }
 

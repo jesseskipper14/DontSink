@@ -126,7 +126,10 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
 
             manifest.looseItems.Add(new BoatLooseItemSnapshot
             {
-                version = 3,
+                version = 4,
+                isEquipmentDeployed = !hasBellContext && !isMoneySlotSecured && !isCargoSecured &&
+                    worldItem.GetComponent<PlaceableBoatEquipment>() != null &&
+                    worldItem.GetComponent<PlaceableBoatEquipment>().IsDeployed,
                 owningBoatInstanceId = boat.BoatInstanceId,
                 item = itemSnapshot,
                 localPosition = localPos,
@@ -370,6 +373,13 @@ public sealed class BoatLooseItemPersistence : MonoBehaviour
                     snapshot.usedRope,
                     snapshot.ropeBonus01);
             }
+        }
+
+        if (snapshot.isEquipmentDeployed && !snapshot.isSecured && !restoredBellContainment)
+        {
+            PlaceableBoatEquipment equipment = spawned.GetComponent<PlaceableBoatEquipment>();
+            if (equipment != null && !equipment.RestoreDeployment(boat))
+                LogWarning("Equipment deployment could not be restored on a valid support; item remains loose.");
         }
 
         Log(

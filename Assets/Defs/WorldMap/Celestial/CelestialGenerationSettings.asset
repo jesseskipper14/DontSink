@@ -42,3 +42,14 @@ MonoBehaviour:
   deepSkyRadiusWorldMin: 2
   deepSkyRadiusWorldMax: 8
   deepSkyVisualVariantCount: 4
+  constellations:
+    averageStarsPerConstellation: 6
+    starCountVariation: 1
+    averageBranchesPerConstellation: 1
+    branchCountVariation: 0
+    minimumStarsPerConstellation: 4
+    maximumStarsPerConstellation: 12
+    constellationReductionPercent: 0
+    branchCountIsExtraConnections: 0
+  constellationReductionPercent: 25
+  branchCountIsExtraConnections: 1

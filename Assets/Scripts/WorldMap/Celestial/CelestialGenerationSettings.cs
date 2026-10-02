@@ -64,6 +64,18 @@ public sealed class CelestialGenerationSettings : ScriptableObject
 
     [Header("Constellation Generation (separate from star identity)")]
     public CelestialConstellationGenerationConfig constellations = new();
+    [Tooltip("Deterministically leaves this percentage of candidate constellations unassigned. Applies to fresh worlds; saved tuning remains frozen.")]
+    [Range(0f, 100f)] public float constellationReductionPercent = 25f;
+    [Tooltip("When enabled, Average Branches and Branch Variation count extra connections beyond the connected base path. Disable for the historical total-line interpretation.")]
+    public bool branchCountIsExtraConnections = true;
+
+    public CelestialConstellationGenerationConfig CreateConstellationConfigSnapshot()
+    {
+        var config = (constellations ?? new CelestialConstellationGenerationConfig()).Clone();
+        config.constellationReductionPercent = Mathf.Clamp(constellationReductionPercent, 0f, 100f);
+        config.branchCountIsExtraConnections = branchCountIsExtraConnections;
+        return config;
+    }
 
     public CelestialGenerationConfig CreateConfigSnapshot()
     {

@@ -20,6 +20,7 @@ public sealed class MainMenuController : MonoBehaviour
     [SerializeField] private string defaultBoatInstanceId = "boat_001";
     [SerializeField] private string defaultStartingNodeId = "";
     [SerializeField] private bool clearPlayerSceneContextOnNewGame = true;
+    [SerializeField, Range(0f, 24f)] private float newGameStartHour = 10f;
 
     [Header("Save / Load")]
     [SerializeField] private SaveLoadController saveLoadController;
@@ -183,6 +184,8 @@ public sealed class MainMenuController : MonoBehaviour
         gs.player.lockedSourceNodeId = null;
 
         gs.worldMap = new WorldMapSimState();
+        gs.SetCelestialChartState(null, "MainMenuController.NewGame");
+        ResetTimeOfDayForNewGame(gs);
 
         gs.playerLoadout = null;
 
@@ -204,7 +207,37 @@ public sealed class MainMenuController : MonoBehaviour
         if (clearPlayerSceneContextOnNewGame)
             gs.playerSceneContext = null;
 
+        // Rebuild the keyed records from the reset legacy mirrors, not the previous session.
+        gs.SetPlayerPersistenceStates(null, "MainMenuController.NewGame");
+
+        MoneyChestTreasuryService treasury = gs.moneyChestTreasury != null
+            ? gs.moneyChestTreasury : MoneyChestTreasuryService.Instance;
+        if (treasury != null) treasury.ResetForNewGame();
+        else gs.SetMoneyChestTreasuryState(null, "MainMenuController.NewGame");
+
         gs.LogState("MainMenuController.ResetGameStateForNewGame");
+    }
+
+    private void ResetTimeOfDayForNewGame(GameState gs)
+    {
+        var snapshot = new TimeOfDaySnapshot
+        {
+            isValid = true,
+            currentTime = Mathf.Repeat(newGameStartHour, 24f),
+            year = 1,
+            month = 1,
+            day = 1
+        };
+        gs.SetTimeOfDaySnapshot(snapshot, "MainMenuController.NewGame");
+
+        if (ServiceRoot.Instance != null &&
+            ServiceRoot.Instance.ApplyPersistedTimeState(snapshot, "MainMenuController.NewGame"))
+            return;
+
+        var manager = ServiceRoot.Instance != null ? ServiceRoot.Instance.TimeManager : null;
+        if (manager == null) manager = FindAnyObjectByType<TimeOfDayManager>();
+        if (manager != null) manager.ApplySnapshot(snapshot, forceNotify: true);
+        // Without a live service, its normal Awake restore consumes the valid GameState snapshot.
     }
 
     public void LoadGameStub()

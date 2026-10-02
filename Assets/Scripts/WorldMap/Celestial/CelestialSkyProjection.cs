@@ -154,16 +154,9 @@ public static class CelestialSkyProjection
         viewportPosition = default;
         signedWindowPosition = default;
 
-        if (!TryProjectToViewport(
-                fieldBounds,
-                observerWorldPosition,
-                objectWorldPosition,
-                settings,
-                out _,
-                out signedWindowPosition))
-        {
-            return false;
-        }
+        if (settings == null || !WorldMapCoordinateSpace.IsValidBounds(fieldBounds)) return false;
+        signedWindowPosition = (objectWorldPosition - observerWorldPosition) /
+            (GetMetricWorldSpan(fieldBounds, settings) * 0.5f);
 
         float aspect = Mathf.Max(0.01f, viewportAspect);
         float centerY = settings != null ? settings.SkyViewportCenterY : 0.5f;
@@ -172,7 +165,36 @@ public static class CelestialSkyProjection
             signedWindowPosition.x * 0.5f + 0.5f,
             centerY + signedWindowPosition.y * 0.5f * aspect);
 
-        return true;
+        Rect envelope = GetSceneViewportRect(settings);
+        return viewportPosition.x >= envelope.xMin && viewportPosition.x <= envelope.xMax &&
+            viewportPosition.y >= envelope.yMin && viewportPosition.y <= envelope.yMax;
+    }
+
+    public static Rect GetSceneViewportRect(CelestialSkyProjectionSettings settings)
+    {
+        float side = Mathf.Max(0f, settings.horizontalCullMarginViewport) + Mathf.Clamp01(settings.sceneSideExtensionViewport);
+        float vertical = Mathf.Max(0f, settings.verticalCullMarginViewport);
+        return Rect.MinMaxRect(-side, settings.SkyViewportMinY - vertical, 1f + side,
+            settings.SkyViewportMaxY + vertical + Mathf.Clamp01(settings.sceneTopExtensionViewport));
+    }
+
+    /// <summary>Query every object eligible for expanded scene projection, plus the existing travel reserve.</summary>
+    public static Rect BuildSceneQueryWorldRect(Rect bounds, Vector2 observer,
+        CelestialSkyProjectionSettings settings, float aspect)
+    {
+        Rect viewport = GetSceneViewportRect(settings);
+        float span = GetMetricWorldSpan(bounds, settings);
+        float verticalSpan = span / Mathf.Max(0.01f, aspect);
+        Rect scene = Rect.MinMaxRect(observer.x + (viewport.xMin - 0.5f) * span,
+            observer.y + (viewport.yMin - settings.SkyViewportCenterY) * verticalSpan,
+            observer.x + (viewport.xMax - 0.5f) * span,
+            observer.y + (viewport.yMax - settings.SkyViewportCenterY) * verticalSpan);
+        Vector2 padding = GetVisibleWorldSize(bounds, settings) * Mathf.Max(0f, settings.queryPaddingFraction);
+        scene = Rect.MinMaxRect(scene.xMin - padding.x, scene.yMin - padding.y,
+            scene.xMax + padding.x, scene.yMax + padding.y);
+        Rect authored = BuildQueryWorldRect(bounds, observer, settings);
+        return Rect.MinMaxRect(Mathf.Min(scene.xMin, authored.xMin), Mathf.Min(scene.yMin, authored.yMin),
+            Mathf.Max(scene.xMax, authored.xMax), Mathf.Max(scene.yMax, authored.yMax));
     }
 
     /// <summary>
@@ -187,6 +209,58 @@ public static class CelestialSkyProjection
         float span = GetMetricWorldSpan(fieldBounds, settings);
         float aspect = Mathf.Max(0.01f, viewportAspect);
         return new Vector2(span, span / aspect);
+    }
+
+    /// <summary>
+    /// Projects and clips a branch independently of sprite endpoint culling. A branch may cross
+    /// the visible sky even when one or both member stars are outside the queried star window.
+    /// </summary>
+    public static bool TryProjectSceneSegment(
+        Rect fieldBounds, Vector2 observer, Vector2 from, Vector2 to,
+        CelestialSkyProjectionSettings settings, float viewportAspect,
+        out Vector2 a, out Vector2 b)
+    {
+        a = b = default;
+        if (settings == null || !WorldMapCoordinateSpace.IsValidBounds(fieldBounds)) return false;
+        float span = GetMetricWorldSpan(fieldBounds, settings);
+        float aspect = Mathf.Max(0.01f, viewportAspect);
+        Vector2 center = new Vector2(0.5f, settings.SkyViewportCenterY);
+        Vector2 scale = new Vector2(1f / span, aspect / span);
+        a = center + Vector2.Scale(from - observer, scale);
+        b = center + Vector2.Scale(to - observer, scale);
+        return TryClipSegmentToRect(ref a, ref b, GetSceneViewportRect(settings));
+    }
+
+    public static bool TryClipSegmentToRect(ref Vector2 a, ref Vector2 b, Rect rect)
+    {
+        if (rect.width <= 0f || rect.height <= 0f) return false;
+        Vector2 delta = b - a;
+        float start = 0f, end = 1f;
+        if (!ClipSegmentBoundary(-delta.x, a.x - rect.xMin, ref start, ref end) ||
+            !ClipSegmentBoundary(delta.x, rect.xMax - a.x, ref start, ref end) ||
+            !ClipSegmentBoundary(-delta.y, a.y - rect.yMin, ref start, ref end) ||
+            !ClipSegmentBoundary(delta.y, rect.yMax - a.y, ref start, ref end)) return false;
+        Vector2 origin = a;
+        a = origin + delta * start;
+        b = origin + delta * end;
+        return (b - a).sqrMagnitude > 0.00000001f;
+    }
+
+    private static bool ClipSegmentBoundary(float direction, float distance, ref float start, ref float end)
+    {
+        if (Mathf.Abs(direction) <= 0.000001f) return distance >= 0f;
+        float t = distance / direction;
+        if (direction < 0f)
+        {
+            if (t > end) return false;
+            start = Mathf.Max(start, t);
+        }
+        else
+        {
+            if (t < start) return false;
+            end = Mathf.Min(end, t);
+        }
+        return true;
     }
 
     public static bool ViewCrossesFieldBounds(

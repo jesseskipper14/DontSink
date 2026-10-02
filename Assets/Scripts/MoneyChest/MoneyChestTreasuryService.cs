@@ -135,6 +135,16 @@ public sealed class MoneyChestTreasuryService : MonoBehaviour
         }
     }
 
+    public void ResetForNewGame()
+    {
+        // Old scene callbacks must not recreate records in the new game's empty treasury.
+        foreach (MoneyChestState chest in liveChestsById.Values)
+            if (chest != null) chest.Changed -= HandleChestChanged;
+        liveChestsById.Clear();
+        if (GameState.I != null)
+            GameState.I.SetMoneyChestTreasuryState(null, "MoneyChestTreasuryService.NewGame");
+    }
+
     public void RegisterChest(MoneyChestState chest)
     {
         if (chest == null)
@@ -850,7 +860,10 @@ public sealed class MoneyChestTreasuryService : MonoBehaviour
     {
         get
         {
-            return !HasActiveChest && HasLostChestSnapshots;
+            MoneyChestTreasurySnapshot state = TreasuryState;
+            // A clean new game needs its first chest without inventing a prior lost one.
+            return state != null && !HasActiveChest &&
+                (state.chests.Count == 0 || HasLostChestSnapshots);
         }
     }
 

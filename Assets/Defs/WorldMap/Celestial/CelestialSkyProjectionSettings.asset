@@ -45,6 +45,9 @@ MonoBehaviour:
     m_RotationOrder: 4
   horizontalCullMarginViewport: 0.04
   verticalCullMarginViewport: 0.05
+  sceneSideExtensionViewport: 0.3
+  sceneTopExtensionViewport: 0.3
+  voidAmbientFadeDistanceWorld: 32
   showAmbientStars: 1
   showLandmarkStars: 1
   showNebulae: 1

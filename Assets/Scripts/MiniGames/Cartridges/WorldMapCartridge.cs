@@ -40,6 +40,8 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
     private bool _showLandmarkStars = true;
     private bool _showNebulae = true;
     private bool _showDeepSkyObjects = true;
+    private CelestialField _constellationPointField;
+    private readonly Dictionary<string, Vector2> _constellationWorldPoints = new();
 
     private bool _showNodes = true;
     private bool _showPOIs = true;
@@ -718,6 +720,16 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
                     _showDeepSkyObjects,
                     "Deep Sky"
                 );
+                y += 22f;
+
+                CelestialFieldSource constellationSource = _celestialOverlaySource.FieldSource;
+                GUI.enabled = constellationSource != null;
+                bool showConstellations = constellationSource != null && constellationSource.ShowAllConstellationsForField;
+                bool nextShowConstellations = GUI.Toggle(new Rect(x + 8f, y, w - 8f, 20f),
+                    showConstellations, "DEBUG: Constellations");
+                if (constellationSource != null && nextShowConstellations != showConstellations)
+                    constellationSource.SetConstellationDebugVisibleForField(nextShowConstellations);
+                GUI.enabled = true;
                 y += 22f;
             }
         }
@@ -1728,7 +1740,41 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         if (_showLandmarkStars && textures.LandmarkStars != null)
             GUI.DrawTexture(drawRect, textures.LandmarkStars, ScaleMode.StretchToFill, true);
 
+        CelestialFieldSource constellationSource = _celestialOverlaySource.FieldSource;
+        CelestialField celestialField = _celestialOverlaySource.Field;
+        if (Debug.isDebugBuild && constellationSource != null &&
+            constellationSource.ShowAllConstellationsForField && celestialField != null)
+        {
+            Color branchColor = new Color(0.42f, 0.78f, 0.95f, 0.85f);
+            if (_constellationPointField != celestialField)
+            {
+                _constellationPointField = celestialField;
+                _constellationWorldPoints.Clear();
+            }
+            foreach (var constellation in celestialField.Constellations.All)
+            {
+                foreach (var edge in constellation.Edges)
+                {
+                    if (!TryGetConstellationWorldPoint(edge.fromStarStableId, out Vector2 from) ||
+                        !TryGetConstellationWorldPoint(edge.toStarStableId, out Vector2 to)) continue;
+                    Vector2 a = GraphToLocal(from, localRect);
+                    Vector2 b = GraphToLocal(to, localRect);
+                    if (CelestialSkyProjection.TryClipSegmentToRect(ref a, ref b, localRect))
+                        DrawLine(a, b, branchColor, 1.5f);
+                }
+            }
+        }
+
         GUI.color = old;
+    }
+
+    private bool TryGetConstellationWorldPoint(string id, out Vector2 point)
+    {
+        if (_constellationWorldPoints.TryGetValue(id, out point)) return true;
+        if (!_constellationPointField.TryResolveObject(id, out var obj)) return false;
+        point = obj.WorldPosition;
+        _constellationWorldPoints[id] = point;
+        return true;
     }
 
     private void AutoWireCelestialOverlaySource()

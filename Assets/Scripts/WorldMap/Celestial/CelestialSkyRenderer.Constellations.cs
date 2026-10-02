@@ -7,26 +7,65 @@ public sealed partial class CelestialSkyRenderer
     [Tooltip("Exact local player's ICharacterIntentSource. Reads FocusHeld, never a hardwired mouse button.")]
     [SerializeField] private MonoBehaviour lookIntentSource;
     [SerializeField] private bool showCrewConstellationNames = true;
-    private readonly Dictionary<string, Vector2> _constellationScreenPoints = new();
+    [SerializeField, Min(0.01f)] private float constellationFadeInSeconds = 0.35f;
+    [SerializeField, Min(0.01f)] private float constellationFadeOutSeconds = 0.45f;
+    [SerializeField, Range(0f, 0.25f)] private float constellationPulseAmount = 0.06f;
+    [SerializeField, Min(0.1f)] private float constellationPulsePeriodSeconds = 3f;
+    private float _constellationLookFade;
+    private float _constellationPulsePhase;
+    private CelestialField _constellationPointField;
+    private readonly Dictionary<string, Vector2> _constellationWorldPoints = new();
+    private readonly List<LineRenderer> _constellationLines = new();
+    private readonly List<TextMesh> _constellationLabels = new();
+    private Material _constellationLineMaterial;
+    private Font _constellationFont;
 
-    private void OnGUI()
+    private void LateUpdate()
     {
-        if (!_ready || !isActiveAndEnabled || fieldSource == null || !fieldSource.HasField ||
-            targetCamera == null || _starVisibility01 <= 0.001f || !WorldNavigationService.TryGetTrueWorldPosition(out _)) return;
-        bool debug = fieldSource.debugShowAllConstellations;
-        if (!debug && !IsLookHeld()) return;
+        int usedLines = 0, usedLabels = 0;
+        bool ready = CanRenderConstellationLook();
+        bool held = ready && IsLookHeld();
+        AdvanceConstellationLook(ready, held, Time.unscaledDeltaTime);
+        if (ready && _constellationLookFade > 0.001f)
+            RenderConstellationLook(ref usedLines, ref usedLabels);
+        for (int i = usedLines; i < _constellationLines.Count; i++)
+            _constellationLines[i].gameObject.SetActive(false);
+        for (int i = usedLabels; i < _constellationLabels.Count; i++)
+            _constellationLabels[i].gameObject.SetActive(false);
+    }
+
+    private bool CanRenderConstellationLook() => _ready && isActiveAndEnabled &&
+        fieldSource != null && fieldSource.HasField && targetCamera != null &&
+        projectionSettings != null && projectionSettings.showLandmarkStars &&
+        _starVisibility01 > 0.001f;
+
+    private void AdvanceConstellationLook(bool ready, bool held, float deltaSeconds)
+    {
+        if (!ready) { _constellationLookFade = 0f; _constellationPulsePhase = 0f; return; }
+        if (held && _constellationLookFade <= 0f) _constellationPulsePhase = 0f;
+        float duration = held ? constellationFadeInSeconds : constellationFadeOutSeconds;
+        _constellationLookFade = Mathf.MoveTowards(_constellationLookFade, held ? 1f : 0f,
+            Mathf.Max(0f, deltaSeconds) / Mathf.Max(0.01f, duration));
+        if (held) _constellationPulsePhase = Mathf.Repeat(_constellationPulsePhase +
+            Mathf.Max(0f, deltaSeconds) * Mathf.PI * 2f / Mathf.Max(0.1f, constellationPulsePeriodSeconds), Mathf.PI * 2f);
+    }
+
+    private float ConstellationLookAlpha => Mathf.SmoothStep(0f, 1f, _constellationLookFade) *
+        (1f - Mathf.Clamp(constellationPulseAmount, 0f, 0.25f) *
+            (0.5f - 0.5f * Mathf.Cos(_constellationPulsePhase)));
+
+    private void RenderConstellationLook(ref int usedLines, ref int usedLabels)
+    {
+        if (!WorldNavigationService.TryGetTrueWorldPosition(out Vector2 observer)) return;
+        bool debug = fieldSource.ShowAllConstellationsForField;
         var state = GameState.I != null ? GameState.I.celestialCharts : null;
-        _constellationScreenPoints.Clear();
-        foreach (var slot in _slots)
+        if (_constellationPointField != fieldSource.Field)
         {
-            if (slot.celestialObject == null || !slot.gameObject.activeInHierarchy || slot.renderer.color.a <= 0.001f) continue;
-            Vector3 screen = targetCamera.WorldToScreenPoint(slot.transform.position);
-            _constellationScreenPoints[slot.celestialObject.StableId] = new Vector2(screen.x, Screen.height - screen.y);
+            _constellationPointField = fieldSource.Field;
+            _constellationWorldPoints.Clear();
         }
-        Rect pixel = targetCamera.pixelRect;
-        Rect clip = new Rect(pixel.x, Screen.height - pixel.yMax, pixel.width, pixel.height);
-        GUI.BeginGroup(clip);
-        var labelStyle = new GUIStyle(GUI.skin.label) { richText = false };
+        GetWorldUnitsPerPixel(out _, out float worldPerPixelY);
+        Color lineColor = new Color(0.42f, 0.78f, 0.95f, _starVisibility01 * 0.65f * ConstellationLookAlpha);
         foreach (var constellation in fieldSource.Field.Constellations.All)
         {
             bool known = CelestialKnowledgeQueries.IsConstellationKnown(state, constellation.StableId);
@@ -34,22 +73,109 @@ public sealed partial class CelestialSkyRenderer
             Vector2 center = Vector2.zero; int count = 0;
             foreach (var edge in constellation.Edges)
             {
-                if (!_constellationScreenPoints.TryGetValue(edge.fromStarStableId, out Vector2 a) ||
-                    !_constellationScreenPoints.TryGetValue(edge.toStarStableId, out Vector2 b)) continue;
-                DrawConstellationSkyLine(a - clip.position, b - clip.position, _starVisibility01 * 0.65f);
+                if (!TryGetConstellationWorldPoint(edge.fromStarStableId, out Vector2 from) ||
+                    !TryGetConstellationWorldPoint(edge.toStarStableId, out Vector2 to) ||
+                    !CelestialSkyProjection.TryProjectSceneSegment(fieldSource.Field.WorldBounds, observer,
+                        from, to, projectionSettings, ResolveProjectionViewportAspect(),
+                        out Vector2 a, out Vector2 b)) continue;
+                LineRenderer line = GetConstellationLine(usedLines++);
+                line.startWidth = line.endWidth = Mathf.Max(0.0001f, worldPerPixelY * 1.5f);
+                line.startColor = line.endColor = lineColor;
+                line.SetPosition(0, ConstellationViewportToWorld(a));
+                line.SetPosition(1, ConstellationViewportToWorld(b));
                 center += a + b; count += 2;
             }
             if (count > 0 && known && showCrewConstellationNames && CelestialKnowledgeQueries.TryGetCrewCelestialName(
                 state, fieldSource.Field, constellation.StableId, CelestialSubjectKind.Constellation, out string name))
             {
-                Color old = GUI.color;
-                GUI.color = new Color(1f, 1f, 1f, _starVisibility01);
-                Vector2 p = center / count - clip.position;
-                GUI.Label(new Rect(p.x + 8f, p.y - 20f, 230f, 24f), name, labelStyle);
-                GUI.color = old;
+                TextMesh label = GetConstellationLabel(usedLabels++);
+                label.text = name;
+                label.color = new Color(1f, 1f, 1f, _starVisibility01 * ConstellationLookAlpha);
+                label.characterSize = worldPerPixelY * 18f;
+                Vector2 position = center / count + new Vector2(8f / Mathf.Max(1, targetCamera.pixelWidth),
+                    12f / Mathf.Max(1, targetCamera.pixelHeight));
+                label.transform.position = ConstellationViewportToWorld(position);
+                label.transform.rotation = targetCamera.transform.rotation;
             }
         }
-        GUI.EndGroup();
+    }
+
+    private Vector3 ConstellationViewportToWorld(Vector2 point)
+    {
+        Vector3 world = SkyViewportToWorld(point);
+        world.z = ResolveRenderWorldZ();
+        return world;
+    }
+
+    private LineRenderer GetConstellationLine(int index)
+    {
+        if (_constellationLineMaterial == null)
+        {
+            Shader shader = Shader.Find("Custom/CelestialUnlitAlpha2D") ?? Shader.Find("Sprites/Default");
+            _constellationLineMaterial = new Material(shader) { name = "CelestialConstellationLines_Runtime", hideFlags = HideFlags.DontSave };
+        }
+        while (_constellationLines.Count <= index)
+        {
+            var go = new GameObject("ConstellationBranch");
+            go.transform.SetParent(renderRoot, false);
+            go.layer = gameObject.layer;
+            var line = go.AddComponent<LineRenderer>();
+            line.sharedMaterial = _constellationLineMaterial;
+            line.useWorldSpace = true;
+            line.positionCount = 2;
+            line.alignment = LineAlignment.View;
+            line.sortingLayerName = "Background";
+            line.sortingOrder = -99;
+            line.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            line.receiveShadows = false;
+            _constellationLines.Add(line);
+        }
+        LineRenderer result = _constellationLines[index];
+        result.gameObject.SetActive(true);
+        return result;
+    }
+
+    private TextMesh GetConstellationLabel(int index)
+    {
+        if (_constellationFont == null) _constellationFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        while (_constellationLabels.Count <= index)
+        {
+            var go = new GameObject("ConstellationCrewName");
+            go.transform.SetParent(renderRoot, false);
+            go.layer = gameObject.layer;
+            var label = go.AddComponent<TextMesh>();
+            label.font = _constellationFont;
+            label.fontSize = 32;
+            label.richText = false;
+            label.anchor = TextAnchor.MiddleLeft;
+            var renderer = go.GetComponent<MeshRenderer>();
+            renderer.sharedMaterial = _constellationFont.material;
+            renderer.sortingLayerName = "Background";
+            renderer.sortingOrder = -99;
+            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+            _constellationLabels.Add(label);
+        }
+        TextMesh result = _constellationLabels[index];
+        result.gameObject.SetActive(true);
+        return result;
+    }
+
+    private void HideConstellationLook()
+    {
+        _constellationLookFade = 0f;
+        _constellationPulsePhase = 0f;
+        foreach (var line in _constellationLines) if (line != null) line.gameObject.SetActive(false);
+        foreach (var label in _constellationLabels) if (label != null) label.gameObject.SetActive(false);
+    }
+
+    private bool TryGetConstellationWorldPoint(string id, out Vector2 point)
+    {
+        if (_constellationWorldPoints.TryGetValue(id, out point)) return true;
+        if (!_constellationPointField.TryResolveObject(id, out var obj)) return false;
+        point = obj.WorldPosition;
+        _constellationWorldPoints[id] = point;
+        return true;
     }
 
     private bool IsLookHeld()
@@ -72,15 +198,4 @@ public sealed partial class CelestialSkyRenderer
             lookIntentSource is ICharacterIntentSource intent && intent.Current.FocusHeld;
     }
 
-    private static void DrawConstellationSkyLine(Vector2 a, Vector2 b, float alpha)
-    {
-        Vector2 d = b - a;
-        if (d.sqrMagnitude <= 0.0001f) return;
-        Matrix4x4 matrix = GUI.matrix;
-        Color color = GUI.color;
-        GUI.color = new Color(0.42f, 0.78f, 0.95f, alpha);
-        GUIUtility.RotateAroundPivot(Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg, a);
-        GUI.DrawTexture(new Rect(a.x, a.y - 0.75f, d.magnitude, 1.5f), Texture2D.whiteTexture);
-        GUI.matrix = matrix; GUI.color = color;
-    }
 }

@@ -31,6 +31,7 @@ public class ServiceRoot : MonoBehaviour
     public WeatherManager WeatherManager => weatherManager;
     public WaveManager WaveManager => waveManager;
     public TimeOfDayManager TimeManager => timeOfDayManager;
+    public SkyVisualManager SkyManager => skyVisualManager;
 
     public ITimeOfDayService Time { get; private set; }
     public IBrightnessService Brightness { get; private set; }

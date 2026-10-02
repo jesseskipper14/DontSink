@@ -81,8 +81,10 @@ public static class CelestialConstellationGenerator
 
             centroid /= Mathf.Max(1, members.Count);
             // The path above connects every member. Additional branches cannot duplicate that path.
-            int branchTarget = tuning.IsLegacy ? members.Count - 1 : Mathf.Clamp(
-                tuning.averageBranchesPerConstellation + Variation(field, seed.StableId + ":branches", tuning.branchCountVariation),
+            int requestedBranches = tuning.averageBranchesPerConstellation +
+                Variation(field, seed.StableId + ":branches", tuning.branchCountVariation);
+            int branchTarget = tuning.UsesLegacyBranchCounts ? members.Count - 1 : Mathf.Clamp(
+                tuning.branchCountIsExtraConnections ? members.Count - 1 + Mathf.Max(0, requestedBranches) : requestedBranches,
                 members.Count - 1, members.Count * (members.Count - 1) / 2);
             var extras = new List<CelestialConstellationEdge>();
             for (int a = 0; a < members.Count; a++)
@@ -99,6 +101,18 @@ public static class CelestialConstellationGenerator
             ordinal++;
         }
 
+        int removeCount = Mathf.RoundToInt(result.Count * field.ConstellationConfig.constellationReductionPercent / 100f);
+        if (removeCount > 0)
+        {
+            // Thin whole candidate groups; never recycle their members into another constellation.
+            // Ranking avoids spatial/iteration bias while keeping the exact requested count reduction.
+            result.Sort((a, b) =>
+            {
+                int order = PriorityHash(field, a.StableId + ":retention").CompareTo(PriorityHash(field, b.StableId + ":retention"));
+                return order != 0 ? order : string.CompareOrdinal(a.StableId, b.StableId);
+            });
+            result.RemoveRange(result.Count - removeCount, removeCount);
+        }
         result.Sort((a, b) => string.CompareOrdinal(a.StableId, b.StableId));
         return new CelestialConstellationCatalog(result);
     }

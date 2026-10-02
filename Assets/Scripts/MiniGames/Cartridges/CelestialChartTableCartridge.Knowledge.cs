@@ -63,7 +63,7 @@ public sealed partial class CelestialChartTableCartridge
         foreach (var constellation in field.Constellations.All)
         {
             bool known = CelestialKnowledgeQueries.IsConstellationKnown(state, constellation.StableId);
-            if (!(known && _showKnownConstellations) && !_fieldSource.debugShowAllConstellations) continue;
+            if (!(known && _showKnownConstellations) && !_fieldSource.ShowAllConstellationsForField) continue;
             foreach (var edge in constellation.Edges)
             {
                 bool drewSameScrap = false;
@@ -83,7 +83,7 @@ public sealed partial class CelestialChartTableCartridge
                             if (b.id == edge.toStarStableId && (a.point - b.point).sqrMagnitude < distance)
                             { bestA = a; bestB = b; distance = (a.point - b.point).sqrMagnitude; }
                 if (bestA != null) _branches.Add(new BoardBranch(constellation.StableId, bestA.point, bestB.point));
-                else if (_fieldSource.debugShowAllConstellations &&
+                else if (_fieldSource.ShowAllConstellationsForField &&
                     field.TryResolveObject(edge.fromStarStableId, out var truthA) && field.TryResolveObject(edge.toStarStableId, out var truthB))
                     _branches.Add(new BoardBranch(constellation.StableId, _viewport.WorldToScreen(truthA.WorldPosition, board),
                         _viewport.WorldToScreen(truthB.WorldPosition, board)));
@@ -184,7 +184,7 @@ public sealed partial class CelestialChartTableCartridge
                 DrawSubjectLabel(center, "const:" + constellation.StableId,
                     CelestialKnowledgeQueries.FindAnnotation(state, constellation.StableId, CelestialSubjectKind.Constellation), textStyle);
         }
-        if (_fieldSource.debugShowAllConstellations)
+        if (_fieldSource.ShowAllConstellationsForField)
             GUI.Label(new Rect(8f, board.height - 24f, board.width - 16f, 22f), "DEBUG: all constellation truth visible (does not grant knowledge)");
     }
 

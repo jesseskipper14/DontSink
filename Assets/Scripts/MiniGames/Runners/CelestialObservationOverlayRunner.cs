@@ -178,7 +178,7 @@ public sealed class CelestialObservationOverlayRunner : MonoBehaviour
             ResolveTimeManager,
             currentSurveySequence,
             TryCommitObservation,
-            () => fieldSource != null && fieldSource.debugShowAllConstellations);
+            () => fieldSource != null && fieldSource.ShowAllConstellationsForField);
 
         overlay.Open(cartridge, context);
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -50,6 +51,37 @@ public sealed class CelestialFieldSource : MonoBehaviour
     public CelestialGenerationSettings GenerationSettings => generationSettings;
     public CelestialField Field { get; private set; }
     public bool HasField => Field != null && Field.IsValid;
+
+    private static readonly HashSet<CelestialFieldSource> ActiveSources = new();
+
+    // Scene sky and map tools can have separate providers for the same celestial truth.
+    public bool ShowAllConstellationsForField
+    {
+        get
+        {
+            if (debugShowAllConstellations) return true;
+            foreach (var source in ActiveSources)
+                if (source != null && source.debugShowAllConstellations && SharesField(source)) return true;
+            return false;
+        }
+    }
+
+    public void SetConstellationDebugVisibleForField(bool visible)
+    {
+        debugShowAllConstellations = visible;
+        foreach (var source in ActiveSources)
+            if (source != null && SharesField(source)) source.debugShowAllConstellations = visible;
+    }
+
+    private bool SharesField(CelestialFieldSource other) => HasField && other.HasField &&
+        Field.WorldSeed == other.Field.WorldSeed &&
+        Field.Identity.generatorVersion == other.Field.Identity.generatorVersion &&
+        Field.Identity.configHash == other.Field.Identity.configHash &&
+        RectApproximatelyEqual(Field.WorldBounds, other.Field.WorldBounds) &&
+        Field.ConstellationConfig.Fingerprint == other.Field.ConstellationConfig.Fingerprint;
+
+    private void OnEnable() => ActiveSources.Add(this);
+    private void OnDisable() => ActiveSources.Remove(this);
 
     private void Reset()
     {
@@ -203,7 +235,7 @@ public sealed class CelestialFieldSource : MonoBehaviour
         // Old chart saves retain the pre-Phase-7 derivative truth defaults.
         var config = sameWorld && state.constellationGeneration != null ? state.constellationGeneration :
             state != null && state.fragments != null && state.fragments.Count > 0 && state.constellationGeneration == null
-                ? new CelestialConstellationGenerationConfig() : generationSettings.constellations;
+                ? new CelestialConstellationGenerationConfig() : generationSettings.CreateConstellationConfigSnapshot();
         Field.ConfigureConstellations(config);
     }
 

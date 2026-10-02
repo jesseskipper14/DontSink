@@ -58,6 +58,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
     private bool _warnedMissingWorldPosition;
     private bool _warnedCrossingBounds;
     private float _starVisibility01 = 1f;
+    private SkyVisualManager _subscribedSkyVisualManager;
 
     private int _visibleAmbient;
     private int _visibleLandmarks;
@@ -93,6 +94,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
         UnsubscribeSkyVisibility();
         RestoreLegacyRenderer();
         SetAllSlotsActive(false);
+        HideConstellationLook();
         _ready = false;
     }
 
@@ -109,6 +111,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
 
         DestroyRuntimeMaterial(ref _starMaterial);
         DestroyRuntimeMaterial(ref _deepSkyMaterial);
+        DestroyRuntimeMaterial(ref _constellationLineMaterial);
 
         if (renderRoot != null && renderRoot.parent == transform && renderRoot.name == "__CelestialSkyRuntime")
             Destroy(renderRoot.gameObject);
@@ -193,12 +196,14 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
         if (field == null || !field.IsValid)
             return;
 
-        Rect queryRect = CelestialSkyProjection.BuildQueryWorldRect(
+        Rect queryRect = CelestialSkyProjection.BuildSceneQueryWorldRect(
             field.WorldBounds,
             observerWorldPosition,
-            projectionSettings);
+            projectionSettings, ResolveProjectionViewportAspect());
 
         field.Query(queryRect, _queriedObjects, clearResults: true);
+        CelestialFieldGenerator.AppendVoidAmbientStars(field, queryRect,
+            projectionSettings.voidAmbientFadeDistanceWorld, _queriedObjects);
 
         EnsureSlotCount(_queriedObjects.Count);
 
@@ -239,7 +244,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
             _warnedCrossingBounds = true;
             Debug.LogWarning(
                 "[CelestialSkyRenderer] The visible celestial window currently crosses the generated field bounds. " +
-                "Phase 3 intentionally does not fake/wrap stars beyond world truth; outer-world presentation/boundary policy remains a later design pass.",
+                "Outside the known world, only the configured fading ambient void transition is rendered; navigational objects remain within known bounds.",
                 this);
         }
         else if (!crossesBounds)
@@ -301,10 +306,11 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
                 continue;
             }
 
-            float xMin = -projectionSettings.horizontalCullMarginViewport;
-            float xMax = 1f + projectionSettings.horizontalCullMarginViewport;
-            float yMin = projectionSettings.SkyViewportMinY - projectionSettings.verticalCullMarginViewport;
-            float yMax = projectionSettings.SkyViewportMaxY + projectionSettings.verticalCullMarginViewport;
+            Rect skyEnvelope = CelestialSkyProjection.GetSceneViewportRect(projectionSettings);
+            float xMin = skyEnvelope.xMin;
+            float xMax = skyEnvelope.xMax;
+            float yMin = skyEnvelope.yMin;
+            float yMax = skyEnvelope.yMax;
 
             if (viewport.x < xMin || viewport.x > xMax || viewport.y < yMin || viewport.y > yMax)
             {
@@ -315,8 +321,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
             if (!slot.gameObject.activeSelf)
                 slot.gameObject.SetActive(true);
 
-            Vector3 projected = targetCamera.ViewportToWorldPoint(
-                new Vector3(viewport.x, viewport.y, ResolveProjectionDepth()));
+            Vector3 projected = SkyViewportToWorld(viewport);
 
             projected.z = ResolveRenderWorldZ();
             slot.transform.position = projected;
@@ -405,36 +410,42 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
         if (legacyStarsRenderer == null && SceneContext.Current != null)
             legacyStarsRenderer = SceneContext.Current.starsRenderer;
 
-        if (skyVisualManager == null)
+        SkyVisualManager authoritativeSky = ServiceRoot.Instance != null ? ServiceRoot.Instance.SkyManager : null;
+        if (authoritativeSky != null)
+            skyVisualManager = authoritativeSky;
+        else if (skyVisualManager == null)
         {
-            skyVisualManager = FindAnyObjectByType<SkyVisualManager>(FindObjectsInactive.Include);
-            if (skyVisualManager != null)
-                _starVisibility01 = skyVisualManager.StarVisibility01;
+            skyVisualManager = FindAnyObjectByType<SkyVisualManager>();
         }
+        if (isActiveAndEnabled) SubscribeSkyVisibility();
     }
 
     private void SubscribeSkyVisibility()
     {
-        if (skyVisualManager == null)
-            AutoWire();
-
-        if (skyVisualManager == null)
-            return;
-
-        skyVisualManager.OnStarVisibilityChanged -= HandleStarVisibilityChanged;
-        skyVisualManager.OnStarVisibilityChanged += HandleStarVisibilityChanged;
-        _starVisibility01 = skyVisualManager.StarVisibility01;
+        if (_subscribedSkyVisualManager != skyVisualManager)
+        {
+            UnsubscribeSkyVisibility();
+            _subscribedSkyVisualManager = skyVisualManager;
+            if (_subscribedSkyVisualManager != null)
+                _subscribedSkyVisualManager.OnStarVisibilityChanged += HandleStarVisibilityChanged;
+            _forceRefresh = true;
+        }
+        if (_subscribedSkyVisualManager != null)
+            HandleStarVisibilityChanged(_subscribedSkyVisualManager.StarVisibility01);
     }
 
     private void UnsubscribeSkyVisibility()
     {
-        if (skyVisualManager != null)
-            skyVisualManager.OnStarVisibilityChanged -= HandleStarVisibilityChanged;
+        if (_subscribedSkyVisualManager != null)
+            _subscribedSkyVisualManager.OnStarVisibilityChanged -= HandleStarVisibilityChanged;
+        _subscribedSkyVisualManager = null;
     }
 
     private void HandleStarVisibilityChanged(float visibility01)
     {
-        _starVisibility01 = Mathf.Clamp01(visibility01);
+        float visibility = Mathf.Clamp01(visibility01);
+        if (Mathf.Approximately(_starVisibility01, visibility)) return;
+        _starVisibility01 = visibility;
 
         if (_starVisibility01 > 0.001f)
             _forceRefresh = true;
@@ -657,6 +668,10 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
     private float ResolveObjectAlpha(CelestialObject obj)
     {
         float brightness = Mathf.Lerp(0.48f, 1f, obj.Brightness01);
+        if (obj.Kind == CelestialObjectKind.AmbientStar && fieldSource != null && fieldSource.Field != null &&
+            !fieldSource.Field.WorldBounds.Contains(obj.WorldPosition))
+            brightness *= CelestialFieldGenerator.GetVoidAmbientWeight(fieldSource.Field.WorldBounds,
+                obj.WorldPosition, projectionSettings.voidAmbientFadeDistanceWorld);
 
         switch (obj.Kind)
         {
@@ -795,12 +810,10 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
 
     private void GetWorldUnitsPerPixel(out float worldPerPixelX, out float worldPerPixelY)
     {
-        float depth = ResolveProjectionDepth();
-
-        Vector3 left = targetCamera.ViewportToWorldPoint(new Vector3(0f, 0.5f, depth));
-        Vector3 right = targetCamera.ViewportToWorldPoint(new Vector3(1f, 0.5f, depth));
-        Vector3 bottom = targetCamera.ViewportToWorldPoint(new Vector3(0.5f, 0f, depth));
-        Vector3 top = targetCamera.ViewportToWorldPoint(new Vector3(0.5f, 1f, depth));
+        Vector3 left = SkyViewportToWorld(new Vector2(0f, 0.5f));
+        Vector3 right = SkyViewportToWorld(new Vector2(1f, 0.5f));
+        Vector3 bottom = SkyViewportToWorld(new Vector2(0.5f, 0f));
+        Vector3 top = SkyViewportToWorld(new Vector2(0.5f, 1f));
 
         worldPerPixelX = Vector3.Distance(left, right) / Mathf.Max(1, targetCamera.pixelWidth);
         worldPerPixelY = Vector3.Distance(bottom, top) / Mathf.Max(1, targetCamera.pixelHeight);

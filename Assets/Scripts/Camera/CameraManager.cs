@@ -46,6 +46,9 @@ public class CameraManager : MonoBehaviour
     private Vector2 _focusPanOffset;
 
     public Transform FollowTarget => followTarget;
+    public Camera ActiveCamera => activeCamera;
+    public Vector2 FocusPanOffset => _focusPanOffset;
+    public void RestoreFocusPanOffset(Vector2 offset) { _focusPanOffset = offset; }
 
     /// <summary>
     /// Client-local presentation identity. In the current single-player setup this

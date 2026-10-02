@@ -52,6 +52,16 @@ public sealed class CelestialSkyProjectionSettings : ScriptableObject
     [Range(0f, 0.25f)]
     public float verticalCullMarginViewport = 0.05f;
 
+    [Header("Scene Sky Offscreen Coverage")]
+    [Tooltip("Additional fraction of a full viewport width retained beyond EACH side. Does not change star scale or chart/instrument coverage.")]
+    [Range(0f, 1f)] public float sceneSideExtensionViewport = 0.30f;
+    [Tooltip("Additional fraction of a full viewport height retained above the sky band. The lower edge is unchanged.")]
+    [Range(0f, 1f)] public float sceneTopExtensionViewport = 0.30f;
+
+    [Header("Void Ambient Transition")]
+    [Tooltip("World-map distance outside the known bounds over which ambient-only stars taper in density and opacity to zero. Zero disables the transition. Does not alter saved world star identity.")]
+    [Min(0f)] public float voidAmbientFadeDistanceWorld = 32f;
+
     [Header("Visible Kinds")]
     public bool showAmbientStars = true;
     public bool showLandmarkStars = true;
@@ -130,6 +140,9 @@ public sealed class CelestialSkyProjectionSettings : ScriptableObject
         queryPaddingFraction = Mathf.Clamp01(queryPaddingFraction);
         queryRefreshDistanceFraction = Mathf.Clamp(queryRefreshDistanceFraction, 0.005f, 0.5f);
         maximumQueryRefreshSeconds = Mathf.Max(0.05f, maximumQueryRefreshSeconds);
+        sceneSideExtensionViewport = Mathf.Clamp01(sceneSideExtensionViewport);
+        sceneTopExtensionViewport = Mathf.Clamp01(sceneTopExtensionViewport);
+        voidAmbientFadeDistanceWorld = Mathf.Max(0f, voidAmbientFadeDistanceWorld);
 
         ambientSizePixelsMin = Mathf.Max(0.25f, ambientSizePixelsMin);
         ambientSizePixelsMax = Mathf.Max(ambientSizePixelsMin, ambientSizePixelsMax);

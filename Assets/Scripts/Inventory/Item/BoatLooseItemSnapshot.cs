@@ -4,7 +4,10 @@ using UnityEngine;
 [Serializable]
 public sealed class BoatLooseItemSnapshot
 {
-    public int version = 3;
+    public int version = 4;
+
+    // v4: physical deployment of non-module boat equipment. No local viewing state.
+    public bool isEquipmentDeployed;
 
     public string owningBoatInstanceId;
 
