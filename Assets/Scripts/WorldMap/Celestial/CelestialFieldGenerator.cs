@@ -21,7 +21,9 @@ public static class CelestialFieldGenerator
             ? settings.CreateConfigSnapshot()
             : null;
 
-        return Create(worldSeed, worldBounds, config);
+        CelestialField field = Create(worldSeed, worldBounds, config);
+        if (field != null) field.ConfigureConstellations(settings.constellations);
+        return field;
     }
 
     public static CelestialField Create(

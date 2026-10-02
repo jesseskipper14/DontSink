@@ -26,6 +26,10 @@ public sealed class CelestialChartFragmentMark
 public sealed class CelestialChartFragmentSnapshot
 {
     public int version = 1;
+
+    // Prototype/tutorial provenance. Starter patches are ordinary immutable evidence,
+    // but the UI can label them differently and bootstrap them onto the board.
+    public bool isStarterPatch;
     public string fragmentId;
     public string observationId;
     public string createdByPlayerKey;
@@ -80,6 +84,7 @@ public sealed class CelestialChartBoardPlacementSnapshot
     public bool pinned;
     public int layerOrder;
     public int revision = 1;
+    public string groupId;
     public string lastEditedByPlayerKey;
 
     public void EnsureDefaults()
@@ -92,6 +97,63 @@ public sealed class CelestialChartBoardPlacementSnapshot
         else
             rotationDegrees = Mathf.DeltaAngle(0f, rotationDegrees);
 
+        if (string.IsNullOrWhiteSpace(groupId))
+            groupId = null;
+        else
+            groupId = groupId.Trim();
+
+        lastEditedByPlayerKey = GameState.NormalizePlayerPersistenceKey(lastEditedByPlayerKey);
+    }
+}
+
+public enum MapTablePhysicalPieceKind
+{
+    PlayerBoat = 0,
+    TreasureChest = 1,
+    PointOfInterest = 2,
+    Trader = 3,
+    SuspectedPirates = 4,
+    Custom = 100
+}
+
+public enum MapTablePhysicalPieceColor
+{
+    Blue = 0,
+    Green = 1,
+    Red = 2,
+    Yellow = 3,
+    White = 4,
+    Black = 5
+}
+
+[Serializable]
+public sealed class MapTablePhysicalPieceSnapshot
+{
+    public int version = 1;
+    public string pieceId;
+    public MapTablePhysicalPieceKind kind = MapTablePhysicalPieceKind.PlayerBoat;
+    public MapTablePhysicalPieceColor color = MapTablePhysicalPieceColor.Blue;
+    public string label;
+    public Vector2 boardWorldPosition;
+    public float rotationDegrees;
+    public bool pinned;
+    public int layerOrder;
+    public int revision = 1;
+    public string lastEditedByPlayerKey;
+
+    public void EnsureDefaults()
+    {
+        revision = Mathf.Max(1, revision);
+        layerOrder = Mathf.Max(0, layerOrder);
+
+        if (float.IsNaN(rotationDegrees) || float.IsInfinity(rotationDegrees))
+            rotationDegrees = 0f;
+        else
+            rotationDegrees = Mathf.DeltaAngle(0f, rotationDegrees);
+
+        if (string.IsNullOrWhiteSpace(label))
+            label = null;
+
         lastEditedByPlayerKey = GameState.NormalizePlayerPersistenceKey(lastEditedByPlayerKey);
     }
 }
@@ -99,7 +161,13 @@ public sealed class CelestialChartBoardPlacementSnapshot
 [Serializable]
 public sealed class CelestialChartStateSnapshot
 {
-    public int version = 2;
+    public int version = 5;
+    public List<CelestialSubjectAnnotationSnapshot> annotations = new();
+    public int knowledgeRevision;
+    public string lastKnowledgeEditorPlayerKey;
+    public CelestialConstellationGenerationConfig constellationGeneration;
+    public int constellationWorldSeed;
+    public string constellationFieldHash;
     public List<CelestialChartFragmentSnapshot> fragments = new();
     public List<CelestialSurveyRegionProgressSnapshot> surveyRegions = new();
     public List<string> verifiedConstellationIds = new();
@@ -109,9 +177,17 @@ public sealed class CelestialChartStateSnapshot
     public int boardRevision;
     public List<CelestialChartBoardPlacementSnapshot> boardPlacements = new();
 
+    // Generic physical pieces that sit on the shared map table plane. Color is player-authored
+    // semantics for now; future treasure/POI/trader/etc marker kinds can reuse the same persisted seam.
+    public int tablePieceRevision;
+    public List<MapTablePhysicalPieceSnapshot> tablePieces = new();
+
     public void EnsureDefaults()
     {
-        version = Mathf.Max(2, version);
+        version = Mathf.Max(5, version);
+        annotations ??= new List<CelestialSubjectAnnotationSnapshot>();
+        knowledgeRevision = Mathf.Max(0, knowledgeRevision);
+        constellationGeneration?.Sanitize();
 
         if (fragments == null)
             fragments = new List<CelestialChartFragmentSnapshot>();
@@ -125,7 +201,11 @@ public sealed class CelestialChartStateSnapshot
         if (boardPlacements == null)
             boardPlacements = new List<CelestialChartBoardPlacementSnapshot>();
 
+        if (tablePieces == null)
+            tablePieces = new List<MapTablePhysicalPieceSnapshot>();
+
         boardRevision = Mathf.Max(0, boardRevision);
+        tablePieceRevision = Mathf.Max(0, tablePieceRevision);
 
         var seenFragments = new HashSet<string>(StringComparer.Ordinal);
         for (int i = fragments.Count - 1; i >= 0; i--)
@@ -163,6 +243,19 @@ public sealed class CelestialChartStateSnapshot
             }
 
             placement.EnsureDefaults();
+        }
+
+        var seenPieces = new HashSet<string>(StringComparer.Ordinal);
+        for (int i = tablePieces.Count - 1; i >= 0; i--)
+        {
+            MapTablePhysicalPieceSnapshot piece = tablePieces[i];
+            if (piece == null || string.IsNullOrWhiteSpace(piece.pieceId) || !seenPieces.Add(piece.pieceId))
+            {
+                tablePieces.RemoveAt(i);
+                continue;
+            }
+
+            piece.EnsureDefaults();
         }
 
         var seenRegions = new HashSet<string>(StringComparer.Ordinal);
@@ -359,6 +452,64 @@ public sealed class CelestialChartStateSnapshot
         return false;
     }
 
+    public bool TryGetTablePiece(string pieceId, out MapTablePhysicalPieceSnapshot piece)
+    {
+        EnsureDefaults();
+        piece = null;
+        if (string.IsNullOrWhiteSpace(pieceId))
+            return false;
+
+        for (int i = 0; i < tablePieces.Count; i++)
+        {
+            MapTablePhysicalPieceSnapshot candidate = tablePieces[i];
+            if (candidate != null && candidate.pieceId == pieceId)
+            {
+                piece = candidate;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public MapTablePhysicalPieceSnapshot GetFirstTablePiece(MapTablePhysicalPieceKind kind)
+    {
+        EnsureDefaults();
+        for (int i = 0; i < tablePieces.Count; i++)
+        {
+            MapTablePhysicalPieceSnapshot piece = tablePieces[i];
+            if (piece != null && piece.kind == kind)
+                return piece;
+        }
+
+        return null;
+    }
+
+    public bool TryAddTablePiece(MapTablePhysicalPieceSnapshot piece)
+    {
+        EnsureDefaults();
+        if (piece == null || string.IsNullOrWhiteSpace(piece.pieceId) || TryGetTablePiece(piece.pieceId, out _))
+            return false;
+
+        piece.EnsureDefaults();
+        tablePieces.Add(piece);
+        return true;
+    }
+
+    public int GetNextTablePieceLayerOrder()
+    {
+        EnsureDefaults();
+        int max = -1;
+        for (int i = 0; i < tablePieces.Count; i++)
+        {
+            MapTablePhysicalPieceSnapshot piece = tablePieces[i];
+            if (piece != null)
+                max = Mathf.Max(max, piece.layerOrder);
+        }
+
+        return max + 1;
+    }
+
     public int GetNextLayerOrder()
     {
         EnsureDefaults();
@@ -420,30 +571,162 @@ public static class CelestialChartFragmentBuilder
             }
         }
 
-        if (observation.objects != null)
+        AddTranscribedMarks(fragment, observation);
+
+        fragment.EnsureDefaults();
+        return fragment;
+    }
+
+    /// <summary>
+    /// A completed observation may contain a broad sweep of everything the player actually saw.
+    /// A physical scrap is deliberately smaller: the solved landmark pattern, its observation
+    /// datum, and nearby contextual evidence. This makes repeated surveys produce overlapping
+    /// puzzle pieces instead of multiple near-duplicate screenshots of the whole local sky.
+    /// </summary>
+    private static void AddTranscribedMarks(
+        CelestialChartFragmentSnapshot fragment,
+        CelestialObservation observation)
+    {
+        if (fragment == null || observation == null || observation.objects == null)
+            return;
+
+        var patternIds = new HashSet<string>(StringComparer.Ordinal);
+        if (observation.patternObjectStableIds != null)
+        {
+            for (int i = 0; i < observation.patternObjectStableIds.Count; i++)
+            {
+                string id = observation.patternObjectStableIds[i];
+                if (!string.IsNullOrWhiteSpace(id))
+                    patternIds.Add(id);
+            }
+        }
+
+        bool hasBounds = false;
+        float minX = 0f;
+        float maxX = 0f;
+        float minY = 0f;
+        float maxY = 0f;
+
+        Encapsulate(
+            ref hasBounds,
+            ref minX,
+            ref maxX,
+            ref minY,
+            ref maxY,
+            observation.observerTrueWorldPosition);
+
+        for (int i = 0; i < observation.objects.Count; i++)
+        {
+            CelestialObservationObject obj = observation.objects[i];
+            if (obj == null || string.IsNullOrWhiteSpace(obj.stableId))
+                continue;
+
+            if (!obj.isAnchor && !patternIds.Contains(obj.stableId))
+                continue;
+
+            Encapsulate(
+                ref hasBounds,
+                ref minX,
+                ref maxX,
+                ref minY,
+                ref maxY,
+                obj.worldPosition);
+        }
+
+        // Fallback should be extraordinarily rare because authority validates the pattern first.
+        if (!hasBounds)
         {
             for (int i = 0; i < observation.objects.Count; i++)
             {
                 CelestialObservationObject obj = observation.objects[i];
-                if (obj == null || string.IsNullOrWhiteSpace(obj.stableId))
+                if (obj == null)
                     continue;
 
-                fragment.marks.Add(new CelestialChartFragmentMark
-                {
-                    celestialObjectStableId = obj.stableId,
-                    kind = obj.kind,
-                    colorClass = obj.colorClass,
-                    celestialWorldPosition = obj.worldPosition,
-                    observedInstrumentPosition01 = obj.instrumentPosition01,
-                    brightness01 = Mathf.Clamp01(obj.brightness01),
-                    prominence01 = Mathf.Clamp01(obj.prominence01),
-                    isPatternAnchor = obj.isAnchor
-                });
+                Encapsulate(
+                    ref hasBounds,
+                    ref minX,
+                    ref maxX,
+                    ref minY,
+                    ref maxY,
+                    obj.worldPosition);
             }
         }
 
-        fragment.EnsureDefaults();
-        return fragment;
+        float span = hasBounds
+            ? Mathf.Max(maxX - minX, maxY - minY)
+            : 0f;
+
+        // Keep enough surrounding texture to correlate scraps while ensuring one survey
+        // does not hand the player a bedsheet containing the whole neighborhood.
+        float contextMarginWorld = Mathf.Clamp(
+            2.75f + span * 0.16f,
+            3.5f,
+            6f);
+
+        Rect transcriptionBounds = hasBounds
+            ? Rect.MinMaxRect(
+                minX - contextMarginWorld,
+                minY - contextMarginWorld,
+                maxX + contextMarginWorld,
+                maxY + contextMarginWorld)
+            : new Rect(
+                observation.observerTrueWorldPosition.x - 6f,
+                observation.observerTrueWorldPosition.y - 6f,
+                12f,
+                12f);
+
+        for (int i = 0; i < observation.objects.Count; i++)
+        {
+            CelestialObservationObject obj = observation.objects[i];
+            if (obj == null || string.IsNullOrWhiteSpace(obj.stableId))
+                continue;
+
+            bool isAnchor = obj.isAnchor || patternIds.Contains(obj.stableId);
+            bool includeContext =
+                transcriptionBounds.Contains(obj.worldPosition) &&
+                (obj.kind == CelestialObjectKind.AmbientStar ||
+                 obj.kind == CelestialObjectKind.Nebula ||
+                 obj.kind == CelestialObjectKind.DeepSkyObject);
+
+            // Non-pattern landmark stars are deliberately omitted from the physical transcription.
+            // The player charts the solved 3-5 landmark pattern plus nearby ambient texture.
+            if (!isAnchor && !includeContext)
+                continue;
+
+            fragment.marks.Add(new CelestialChartFragmentMark
+            {
+                celestialObjectStableId = obj.stableId,
+                kind = obj.kind,
+                colorClass = obj.colorClass,
+                celestialWorldPosition = obj.worldPosition,
+                observedInstrumentPosition01 = obj.instrumentPosition01,
+                brightness01 = Mathf.Clamp01(obj.brightness01),
+                prominence01 = Mathf.Clamp01(obj.prominence01),
+                isPatternAnchor = isAnchor
+            });
+        }
+    }
+
+    private static void Encapsulate(
+        ref bool hasPoint,
+        ref float minX,
+        ref float maxX,
+        ref float minY,
+        ref float maxY,
+        Vector2 point)
+    {
+        if (!hasPoint)
+        {
+            hasPoint = true;
+            minX = maxX = point.x;
+            minY = maxY = point.y;
+            return;
+        }
+
+        minX = Mathf.Min(minX, point.x);
+        maxX = Mathf.Max(maxX, point.x);
+        minY = Mathf.Min(minY, point.y);
+        maxY = Mathf.Max(maxY, point.y);
     }
 
     private static Vector2 ComputeObservationDatumInstrumentPosition(CelestialObservation observation)

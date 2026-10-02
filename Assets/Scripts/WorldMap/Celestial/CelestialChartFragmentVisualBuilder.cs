@@ -275,16 +275,50 @@ public static class CelestialChartFragmentVisualBuilder
             switch (mark.kind)
             {
                 case CelestialObjectKind.AmbientStar:
-                    DrawDisc(pixels, width, height, p.x, p.y, mark.brightness01 > 0.72f ? 2 : 1, markInk);
+                {
+                    Color starInk = ResolveStarPigment(mark.colorClass, ink, strength, ambient: true);
+                    DrawDisc(
+                        pixels,
+                        width,
+                        height,
+                        p.x,
+                        p.y,
+                        mark.brightness01 > 0.72f ? 2 : 1,
+                        starInk);
                     break;
+                }
 
                 case CelestialObjectKind.LandmarkStar:
                 {
                     int radius = Mathf.RoundToInt(Mathf.Lerp(2f, 4f, mark.prominence01));
-                    DrawDisc(pixels, width, height, p.x, p.y, radius, markInk);
-                    DrawCross(pixels, width, height, p.x, p.y, radius + 3, markInk);
+                    Color starInk = ResolveStarPigment(mark.colorClass, ink, strength, ambient: false);
+
+                    // A thin dark under-mark keeps pale/white pigments readable on parchment.
+                    DrawDisc(
+                        pixels,
+                        width,
+                        height,
+                        p.x,
+                        p.y,
+                        radius + 1,
+                        new Color(ink.r, ink.g, ink.b, ink.a * Mathf.Clamp01(strength * 0.82f)));
+
+                    DrawDisc(pixels, width, height, p.x, p.y, radius, starInk);
+                    DrawCross(pixels, width, height, p.x, p.y, radius + 3, starInk);
+
                     if (mark.isPatternAnchor)
-                        DrawRing(pixels, width, height, p.x, p.y, radius + 5, 1, new Color(ink.r, ink.g, ink.b, ink.a * 0.70f));
+                    {
+                        DrawRing(
+                            pixels,
+                            width,
+                            height,
+                            p.x,
+                            p.y,
+                            radius + 5,
+                            1,
+                            new Color(ink.r, ink.g, ink.b, ink.a * 0.70f));
+                    }
+
                     break;
                 }
 
@@ -299,13 +333,67 @@ public static class CelestialChartFragmentVisualBuilder
         }
 
         Vector2Int datum = ToPixel(transformedDatum, bounds, pixelsPerWorldUnit, width, height);
-        // Observation datum deliberately has no heading/orientation glyph. It is only a circular registration mark.
-        DrawRing(pixels, width, height, datum.x, datum.y, 4, 1, new Color(ink.r, ink.g, ink.b, ink.a * 0.82f));
-        DrawDisc(pixels, width, height, datum.x, datum.y, 1, new Color(ink.r, ink.g, ink.b, ink.a * 0.62f));
+        DrawPaperBoatMarker(
+            pixels,
+            width,
+            height,
+            datum.x,
+            datum.y,
+            6,
+            new Color(ink.r, ink.g, ink.b, ink.a * 0.88f),
+            new Color(ink.r, ink.g, ink.b, ink.a * 0.55f));
 
         texture.SetPixels32(pixels);
         texture.Apply(false, false);
         return texture;
+    }
+
+    private static Color ResolveStarPigment(
+        CelestialColorClass colorClass,
+        Color baseInk,
+        float strength,
+        bool ambient)
+    {
+        Color pigment;
+
+        switch (colorClass)
+        {
+            case CelestialColorClass.BlueWhite:
+                pigment = new Color(0.40f, 0.62f, 0.86f, 1f);
+                break;
+
+            case CelestialColorClass.Gold:
+                pigment = new Color(0.80f, 0.59f, 0.16f, 1f);
+                break;
+
+            case CelestialColorClass.Orange:
+                pigment = new Color(0.84f, 0.39f, 0.12f, 1f);
+                break;
+
+            case CelestialColorClass.Red:
+                pigment = new Color(0.74f, 0.22f, 0.20f, 1f);
+                break;
+
+            case CelestialColorClass.Cyan:
+                pigment = new Color(0.14f, 0.66f, 0.70f, 1f);
+                break;
+
+            case CelestialColorClass.Violet:
+                pigment = new Color(0.58f, 0.35f, 0.72f, 1f);
+                break;
+
+            default:
+                pigment = new Color(0.88f, 0.88f, 0.80f, 1f);
+                break;
+        }
+
+        // These are chart pigments, not tiny glowing sky sprites. Blend toward the dark
+        // base ink so every class remains readable against tan paper while preserving
+        // enough hue to act as a deliberate correlation clue.
+        float colorWeight = ambient ? 0.62f : 0.82f;
+        Color result = Color.Lerp(baseInk, pigment, colorWeight);
+        result.a = Mathf.Clamp01(baseInk.a * Mathf.Lerp(0.65f, 1f, strength));
+        return result;
     }
 
     private static Texture2D NewTexture(int width, int height, string name)
@@ -433,6 +521,74 @@ public static class CelestialChartFragmentVisualBuilder
             h *= 0xC2B2AE35u;
             h ^= h >> 16;
             return (h & 0x00FFFFFFu) / 16777215f;
+        }
+    }
+
+
+    private static void DrawPaperBoatMarker(
+        Color32[] pixels,
+        int width,
+        int height,
+        int cx,
+        int cy,
+        int size,
+        Color lineColor,
+        Color fillColor)
+    {
+        int s = Mathf.Max(4, size);
+        Vector2 a = new Vector2(cx - s, cy);
+        Vector2 b = new Vector2(cx + s, cy);
+        Vector2 c = new Vector2(cx - s * 0.55f, cy + s * 0.72f);
+        Vector2 d = new Vector2(cx + s * 0.55f, cy + s * 0.72f);
+        Vector2 mast = new Vector2(cx, cy - s * 0.95f);
+        Vector2 sailBase = new Vector2(cx - s * 0.20f, cy);
+
+        DrawPixelLine(pixels, width, height, a, b, lineColor);
+        DrawPixelLine(pixels, width, height, a, c, lineColor);
+        DrawPixelLine(pixels, width, height, c, d, lineColor);
+        DrawPixelLine(pixels, width, height, d, b, lineColor);
+        DrawPixelLine(pixels, width, height, sailBase, mast, lineColor);
+        DrawPixelLine(pixels, width, height, mast, b, lineColor);
+        DrawDisc(pixels, width, height, cx, cy + 2, 1, fillColor);
+    }
+
+    private static void DrawPixelLine(
+        Color32[] pixels,
+        int width,
+        int height,
+        Vector2 from,
+        Vector2 to,
+        Color color)
+    {
+        int x0 = Mathf.RoundToInt(from.x);
+        int y0 = Mathf.RoundToInt(from.y);
+        int x1 = Mathf.RoundToInt(to.x);
+        int y1 = Mathf.RoundToInt(to.y);
+
+        int dx = Mathf.Abs(x1 - x0);
+        int dy = Mathf.Abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+
+        while (true)
+        {
+            Blend(pixels, width, height, x0, y0, color);
+            if (x0 == x1 && y0 == y1)
+                break;
+
+            int e2 = err * 2;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x0 += sx;
+            }
+
+            if (e2 < dx)
+            {
+                err += dx;
+                y0 += sy;
+            }
         }
     }
 

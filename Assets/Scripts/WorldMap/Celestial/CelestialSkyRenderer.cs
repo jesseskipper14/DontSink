@@ -14,7 +14,7 @@ using UnityEngine;
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(CelestialFieldSource))]
-public sealed class CelestialSkyRenderer : MonoBehaviour
+public sealed partial class CelestialSkyRenderer : MonoBehaviour
 {
     private sealed class RenderSlot
     {

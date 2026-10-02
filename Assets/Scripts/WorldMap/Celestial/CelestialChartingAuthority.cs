@@ -113,6 +113,7 @@ public static class CelestialChartingAuthority
         }
 
         receipt.Commit();
+        CelestialKnowledgeAuthority.FreezeGeneration(chartState, field);
 
         return new CelestialChartCommitResult(
             true,

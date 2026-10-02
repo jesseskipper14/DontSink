@@ -62,6 +62,9 @@ public sealed class CelestialGenerationSettings : ScriptableObject
     [Min(0.1f)] public float deepSkyRadiusWorldMax = 8f;
     [Min(1)] public int deepSkyVisualVariantCount = 4;
 
+    [Header("Constellation Generation (separate from star identity)")]
+    public CelestialConstellationGenerationConfig constellations = new();
+
     public CelestialGenerationConfig CreateConfigSnapshot()
     {
         return CelestialGenerationConfig.FromSettings(this);
@@ -69,6 +72,8 @@ public sealed class CelestialGenerationSettings : ScriptableObject
 
     private void OnValidate()
     {
+        constellations ??= new CelestialConstellationGenerationConfig();
+        constellations.Sanitize();
         cellSizeWorld = Mathf.Max(1f, cellSizeWorld);
 
         ambientStarsPer1000WorldArea = Mathf.Max(0f, ambientStarsPer1000WorldArea);

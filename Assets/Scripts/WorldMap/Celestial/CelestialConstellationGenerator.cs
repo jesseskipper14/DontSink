@@ -11,10 +11,6 @@ public static class CelestialConstellationGenerator
 {
     public const int CurrentConstellationVersion = 1;
 
-    private const int MinimumMembers = 4;
-    private const int MinimumTargetMembers = 5;
-    private const int MaximumTargetMembers = 7;
-
     public static CelestialConstellationCatalog Build(CelestialField field)
     {
         var result = new List<CelestialConstellation>();
@@ -53,11 +49,13 @@ public static class CelestialConstellationGenerator
             if (seed == null || assigned.Contains(seed.StableId))
                 continue;
 
-            int targetCount = MinimumTargetMembers + (int)(PriorityHash(field, seed.StableId + ":size") %
-                (ulong)(MaximumTargetMembers - MinimumTargetMembers + 1));
+            CelestialConstellationGenerationConfig tuning = field.ConstellationConfig;
+            int targetCount = Mathf.Clamp(
+                tuning.averageStarsPerConstellation + Variation(field, seed.StableId + ":size", tuning.starCountVariation),
+                tuning.minimumStarsPerConstellation, tuning.maximumStarsPerConstellation);
 
             var members = GrowLocalGroup(seed, landmarks, assigned, targetCount, maxLinkDistance, field);
-            if (members.Count < MinimumMembers)
+            if (members.Count < tuning.minimumStarsPerConstellation)
                 continue;
 
             for (int i = 0; i < members.Count; i++)
@@ -82,6 +80,21 @@ public static class CelestialConstellationGenerator
             }
 
             centroid /= Mathf.Max(1, members.Count);
+            // The path above connects every member. Additional branches cannot duplicate that path.
+            int branchTarget = tuning.IsLegacy ? members.Count - 1 : Mathf.Clamp(
+                tuning.averageBranchesPerConstellation + Variation(field, seed.StableId + ":branches", tuning.branchCountVariation),
+                members.Count - 1, members.Count * (members.Count - 1) / 2);
+            var extras = new List<CelestialConstellationEdge>();
+            for (int a = 0; a < members.Count; a++)
+                for (int b = a + 2; b < members.Count; b++)
+                    extras.Add(new CelestialConstellationEdge(members[a].StableId, members[b].StableId));
+            extras.Sort((a, b) =>
+            {
+                int order = PriorityHash(field, a.fromStarStableId + a.toStarStableId).CompareTo(
+                    PriorityHash(field, b.fromStarStableId + b.toStarStableId));
+                return order != 0 ? order : string.CompareOrdinal(a.fromStarStableId + a.toStarStableId, b.fromStarStableId + b.toStarStableId);
+            });
+            for (int i = 0; edges.Count < branchTarget && i < extras.Count; i++) edges.Add(extras[i]);
             result.Add(new CelestialConstellation(stableId, truthName, centroid, memberIds, edges));
             ordinal++;
         }
@@ -190,8 +203,12 @@ public static class CelestialConstellationGenerator
     {
         uint seedBits = unchecked((uint)field.WorldSeed);
         ulong memberHash = CelestialConstellationNameGenerator.Hash64(firstMemberId ?? string.Empty);
-        return $"const:{CurrentConstellationVersion}:{seedBits:X8}:{field.Identity.generatorVersion}:{ordinal}:{memberHash & 0xFFFFFFFFUL:X8}";
+        string legacyId = $"const:{CurrentConstellationVersion}:{seedBits:X8}:{field.Identity.generatorVersion}:{ordinal}:{memberHash & 0xFFFFFFFFUL:X8}";
+        return field.ConstellationConfig.IsLegacy ? legacyId : legacyId + ":" + field.ConstellationConfig.Fingerprint;
     }
+
+    private static int Variation(CelestialField field, string key, int variation) =>
+        (int)(PriorityHash(field, key) % (ulong)(variation * 2 + 1)) - variation;
 
     private static ulong PriorityHash(CelestialField field, string value)
     {

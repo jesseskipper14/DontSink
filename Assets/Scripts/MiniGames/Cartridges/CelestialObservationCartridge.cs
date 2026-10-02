@@ -18,7 +18,7 @@ namespace MiniGames
     /// Completing the puzzle builds CelestialObservation evidence, then asks the runner/authority
     /// boundary to commit it. The cartridge only marks itself complete after that commit succeeds.
     /// </summary>
-    public sealed class CelestialObservationCartridge : IMiniGameCartridge, IOverlayRenderable
+    public sealed partial class CelestialObservationCartridge : IMiniGameCartridge, IOverlayRenderable
     {
         private enum ObservationStage
         {
@@ -131,7 +131,8 @@ namespace MiniGames
             Func<float> starVisibilityProvider,
             Func<TimeOfDayManager> timeManagerProvider,
             int surveySequence,
-            Func<CelestialObservation, string> tryCommitObservation)
+            Func<CelestialObservation, string> tryCommitObservation,
+            Func<bool> debugShowAllConstellations = null)
         {
             _field = field;
             _observerWorldPosition = observerWorldPosition;
@@ -141,6 +142,7 @@ namespace MiniGames
             _timeManagerProvider = timeManagerProvider;
             _surveySequence = Mathf.Max(0, surveySequence);
             _tryCommitObservation = tryCommitObservation;
+            _debugShowAllConstellations = debugShowAllConstellations;
         }
 
         public void Begin(MiniGameContext context)
@@ -680,7 +682,7 @@ namespace MiniGames
             y += 24f;
             GUI.Label(
                 new Rect(inner.x, y, inner.width, 70f),
-                "The triangle in the telescope marks your observation origin. The sky is measured relative to that point.",
+                "The paper boat in the telescope marks your observation origin. The sky is measured relative to that point.",
                 _smallLabelStyle);
             y += 80f;
 
@@ -703,6 +705,8 @@ namespace MiniGames
             // Keep the debug reveal deliberately explicit and local to this cartridge. It does not
             // change puzzle state or correctness; it only proves which deterministic landmark stars
             // the generated survey expects. This is invaluable while we tune how cruel the puzzle is.
+            _showKnownConstellations = GUI.Toggle(new Rect(inner.x, rect.yMax - 154f, inner.width, 24f),
+                _showKnownConstellations, "Show Known Constellations");
             float buttonY = rect.yMax - 126f;
             if (_stage != ObservationStage.Calibration)
             {
@@ -746,6 +750,7 @@ namespace MiniGames
             AccumulateVisibleEvidence(visibility);
             DrawTelescopeGuide(lensRect);
             DrawCelestialObjects(lensRect, visibility);
+            DrawKnownConstellations(lensRect, visibility);
             DrawDebugExpectedStars(lensRect);
             DrawTrace(lensRect);
             DrawObservationOrigin(lensRect);
@@ -965,10 +970,7 @@ namespace MiniGames
             if (_hasDecoderReferencePoint)
             {
                 Vector2 reference = DecoderPointToScreen(_decoderReferenceCurrentPoint, center, radius);
-                // Intentionally circular and unlabeled. This communicates relative position only, not
-                // orientation, heading, or a privileged connection to any landmark star.
-                DrawDisc(reference, 4.2f, new Color(0.04f, 0.06f, 0.08f, 1f), 1f);
-                DrawCircleOutline(RectFromCenter(reference, 4.2f), Warm, 1.4f, 24);
+                DrawPaperBoatMarker(reference, 9f, Warm, new Color(0.04f, 0.06f, 0.08f, 0.95f), 1.35f);
             }
 
             ApplyCircularMask(rect, CardColor);
@@ -1255,14 +1257,7 @@ namespace MiniGames
                 return;
 
             Vector2 p = InstrumentToScreen(originUv, lensRect);
-            float s = 9f;
-            Vector2 a = p + new Vector2(0f, -s);
-            Vector2 b = p + new Vector2(-s * 0.82f, s * 0.7f);
-            Vector2 c = p + new Vector2(s * 0.82f, s * 0.7f);
-            DrawLine(a, b, Warm, 2f);
-            DrawLine(b, c, Warm, 2f);
-            DrawLine(c, a, Warm, 2f);
-            DrawDisc(p, 2.2f, Warm, 1f);
+            DrawPaperBoatMarker(p, 10f, Warm, new Color(0.05f, 0.08f, 0.10f, 0.95f), 1.8f);
         }
 
         private void HandleTraceInput(Rect lensRect, float visibility)
@@ -1897,6 +1892,27 @@ namespace MiniGames
                 DrawLine(previous, next, color, thickness);
                 previous = next;
             }
+        }
+
+
+        private void DrawPaperBoatMarker(Vector2 center, float size, Color lineColor, Color fillColor, float lineThickness)
+        {
+            float s = Mathf.Max(4f, size);
+            Vector2 leftDeck = center + new Vector2(-s * 0.92f, s * 0.10f);
+            Vector2 rightDeck = center + new Vector2(s * 0.92f, s * 0.10f);
+            Vector2 hullLeft = center + new Vector2(-s * 0.55f, s * 0.78f);
+            Vector2 hullRight = center + new Vector2(s * 0.55f, s * 0.78f);
+            Vector2 mastTop = center + new Vector2(0f, -s * 0.92f);
+            Vector2 sailLeftBase = center + new Vector2(-s * 0.22f, s * 0.10f);
+
+            DrawLine(leftDeck, rightDeck, lineColor, lineThickness);
+            DrawLine(leftDeck, hullLeft, lineColor, lineThickness);
+            DrawLine(hullLeft, hullRight, lineColor, lineThickness);
+            DrawLine(hullRight, rightDeck, lineColor, lineThickness);
+            DrawLine(sailLeftBase, mastTop, lineColor, lineThickness);
+            DrawLine(mastTop, rightDeck, lineColor, lineThickness);
+
+            DrawDisc(center + new Vector2(0f, s * 0.28f), 1.8f, fillColor, 1f);
         }
 
         private static Rect ShrinkRect(Rect rect, float amount)

@@ -364,10 +364,8 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         SyncViewportToShared();
 
         Color old = GUI.color;
-
         GUI.color = new Color(0.02f, 0.10f, 0.18f, 1f);
         GUI.DrawTexture(rect, _whiteTex);
-
         GUI.color = new Color(0.16f, 0.28f, 0.38f, 1f);
         DrawRectOutline(rect, 1f);
 
@@ -2342,6 +2340,60 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         _sharedViewport.Set(_viewCenterGraph, _zoomPxPerGraphUnit);
     }
 
+    /// <summary>
+    /// Returns the authoritative full map/celestial canvas bounds for the physical table surface.
+    /// Unlike TryGetWorldReferenceBounds (which preserves the legacy graph-fit opening view), this
+    /// must prefer the full topography/celestial world rectangle so the wood table never covers
+    /// legitimate map area merely because no graph nodes happen to sit near an edge.
+    /// </summary>
+    public bool TryGetMapTableContentBounds(out Rect bounds)
+    {
+        bounds = default;
+
+        if (_topographyDebugSource != null)
+        {
+            _topographyDebugSource.EnsureBaseTexture();
+            WorldMapTopographyField field = _topographyDebugSource.Field;
+            if (field != null && field.WorldBounds.width > 0.001f && field.WorldBounds.height > 0.001f)
+            {
+                bounds = field.WorldBounds;
+                return true;
+            }
+        }
+
+        AutoWireCelestialOverlaySource();
+        if (_celestialOverlaySource != null)
+        {
+            _celestialOverlaySource.EnsureBuilt();
+            CelestialMapTextureSet textures = _celestialOverlaySource.TextureSet;
+            if (textures != null && textures.IsValid && textures.WorldBounds.width > 0.001f && textures.WorldBounds.height > 0.001f)
+            {
+                bounds = textures.WorldBounds;
+                return true;
+            }
+        }
+
+        if (_generator != null && _generator.graph != null && _generator.graph.nodes != null && _generator.graph.nodes.Count > 0)
+        {
+            Vector2 min = _generator.graph.nodes[0].position;
+            Vector2 max = min;
+            for (int i = 1; i < _generator.graph.nodes.Count; i++)
+            {
+                Vector2 p = _generator.graph.nodes[i].position;
+                min = Vector2.Min(min, p);
+                max = Vector2.Max(max, p);
+            }
+
+            Vector2 size = max - min;
+            if (size.x < 0.001f) size.x = 1f;
+            if (size.y < 0.001f) size.y = 1f;
+            bounds = new Rect(min, size);
+            return true;
+        }
+
+        return false;
+    }
+
     public bool TryGetWorldReferenceBounds(out Rect bounds)
     {
         bounds = default;
@@ -2443,13 +2495,13 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
     private static void DrawSharedReferenceReticle(Rect localRect)
     {
         Vector2 c = localRect.center;
-        Color color = new Color(0.30f, 0.95f, 1f, 0.70f);
-
-        DrawLine(c + Vector2.left * 11f, c + Vector2.left * 3f, color, 1f);
-        DrawLine(c + Vector2.right * 3f, c + Vector2.right * 11f, color, 1f);
-        DrawLine(c + Vector2.up * 11f, c + Vector2.up * 3f, color, 1f);
-        DrawLine(c + Vector2.down * 3f, c + Vector2.down * 11f, color, 1f);
-        DrawNodeRing(c, 4f, color, 1f);
+        Color color = new Color(0.30f, 0.95f, 1f, 0.78f);
+        DrawLine(c + Vector2.left * 12f, c + Vector2.left * 7f, color, 1f);
+        DrawLine(c + Vector2.right * 7f, c + Vector2.right * 12f, color, 1f);
+        DrawLine(c + Vector2.up * 12f, c + Vector2.up * 7f, color, 1f);
+        DrawLine(c + Vector2.down * 7f, c + Vector2.down * 12f, color, 1f);
+        DrawNodeRing(c, 6f, new Color(color.r, color.g, color.b, 0.45f), 1f);
+        DrawPaperBoatMarker(c, 8f, color, new Color(0.03f, 0.10f, 0.15f, 0.90f), 1.4f);
     }
 
     #endregion
@@ -3012,6 +3064,25 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         DrawLine(new Vector2(center.x + radius, center.y - radius), new Vector2(center.x + radius, center.y + radius), color, thickness);
         DrawLine(new Vector2(center.x + radius, center.y + radius), new Vector2(center.x - radius, center.y + radius), color, thickness);
         DrawLine(new Vector2(center.x - radius, center.y + radius), new Vector2(center.x - radius, center.y - radius), color, thickness);
+    }
+
+    private static void DrawPaperBoatMarker(Vector2 center, float size, Color lineColor, Color fillColor, float lineThickness)
+    {
+        float s = Mathf.Max(4f, size);
+        Vector2 leftDeck = center + new Vector2(-s * 0.92f, s * 0.10f);
+        Vector2 rightDeck = center + new Vector2(s * 0.92f, s * 0.10f);
+        Vector2 hullLeft = center + new Vector2(-s * 0.55f, s * 0.78f);
+        Vector2 hullRight = center + new Vector2(s * 0.55f, s * 0.78f);
+        Vector2 mastTop = center + new Vector2(0f, -s * 0.92f);
+        Vector2 sailBase = center + new Vector2(-s * 0.20f, s * 0.10f);
+
+        DrawLine(leftDeck, rightDeck, lineColor, lineThickness);
+        DrawLine(leftDeck, hullLeft, lineColor, lineThickness);
+        DrawLine(hullLeft, hullRight, lineColor, lineThickness);
+        DrawLine(hullRight, rightDeck, lineColor, lineThickness);
+        DrawLine(sailBase, mastTop, lineColor, lineThickness);
+        DrawLine(mastTop, rightDeck, lineColor, lineThickness);
+        DrawNodeDot(center + new Vector2(0f, s * 0.28f), 1.6f, fillColor);
     }
 
     private static void DrawRectOutline(Rect rect, float thickness)

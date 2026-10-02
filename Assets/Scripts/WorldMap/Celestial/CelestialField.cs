@@ -8,6 +8,15 @@ using UnityEngine;
 public sealed class CelestialField
 {
     private CelestialConstellationCatalog _constellationCatalog;
+    public CelestialConstellationGenerationConfig ConstellationConfig { get; private set; } = new();
+
+    public void ConfigureConstellations(CelestialConstellationGenerationConfig config)
+    {
+        config = (config ?? new CelestialConstellationGenerationConfig()).Clone();
+        if (config.Fingerprint == ConstellationConfig.Fingerprint) return;
+        ConstellationConfig = config;
+        _constellationCatalog = null;
+    }
     public int WorldSeed { get; }
     public Rect WorldBounds { get; }
     public CelestialGenerationConfig Config { get; }

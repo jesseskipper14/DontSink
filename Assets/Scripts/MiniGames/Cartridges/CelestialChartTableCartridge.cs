@@ -11,7 +11,7 @@ using UnityEngine;
 /// viewport is the exact same transform used by WorldMapCartridge, allowing direct visual
 /// registration without revealing the true answer.
 /// </summary>
-public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayRenderable
+public sealed partial class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayRenderable
 {
     private enum EditMode
     {
@@ -24,6 +24,11 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
     private readonly MapTableViewportState _viewport;
     private readonly WorldMapCartridge _worldReference;
     private readonly CelestialChartBoardRenderCache _renderCache;
+    private readonly CelestialChartRotatedTextureCache _rotatedTextureCache;
+    private readonly float _snapPositionTolerancePixels;
+    private readonly float _snapRotationToleranceDegrees;
+    private readonly float _snapResidualTolerancePixels;
+    private readonly int _snapMinimumSharedMarks;
 
     private MiniGameContext _context;
     private bool _compareWorldReference;
@@ -38,26 +43,46 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
 
     private EditMode _editMode;
     private CelestialChartBoardEditHandle _editHandle;
+    private CelestialChartBoardGroupEditHandle _groupEditHandle;
+    private readonly Dictionary<string, Vector2> _groupOriginalCenters = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, float> _groupOriginalRotations = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, Vector2> _groupPreviewCenters = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, float> _groupPreviewRotations = new(StringComparer.Ordinal);
+    private Vector2 _groupAnchorOriginalCenter;
+    private float _groupAnchorOriginalRotation;
     private Vector2 _previewCenterWorld;
     private float _previewRotationDegrees;
     private Vector2 _moveOffsetWorld;
     private float _rotatePointerStartAngle;
     private float _rotatePlacementStartDegrees;
+    private float _snapFeedbackUntil;
 
     private readonly List<CelestialChartBoardPlacementSnapshot> _sortedPlacements = new();
 
     private static Texture2D _white;
+    private static Texture2D _boardPaperTexture;
 
     public CelestialChartTableCartridge(
         GameObject requester,
         MapTableViewportState viewport,
         WorldMapCartridge worldReference,
-        CelestialChartFragmentVisualSettings visualSettings = null)
+        CelestialChartFragmentVisualSettings visualSettings = null,
+        float snapPositionTolerancePixels = 6f,
+        float snapRotationToleranceDegrees = 2f,
+        float snapResidualTolerancePixels = 1.5f,
+        int snapMinimumSharedMarks = 2,
+        CelestialFieldSource fieldSource = null)
     {
         _requester = requester;
+        _fieldSource = fieldSource;
         _viewport = viewport ?? new MapTableViewportState();
         _worldReference = worldReference;
         _renderCache = new CelestialChartBoardRenderCache(visualSettings);
+        _rotatedTextureCache = new CelestialChartRotatedTextureCache();
+        _snapPositionTolerancePixels = Mathf.Max(0f, snapPositionTolerancePixels);
+        _snapRotationToleranceDegrees = Mathf.Max(0f, snapRotationToleranceDegrees);
+        _snapResidualTolerancePixels = Mathf.Max(0f, snapResidualTolerancePixels);
+        _snapMinimumSharedMarks = Mathf.Max(2, snapMinimumSharedMarks);
     }
 
     public void Begin(MiniGameContext context)
@@ -71,7 +96,7 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
 
     public MiniGameResult Tick(float dt, MiniGameInput input)
     {
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.C) && !AnnotationHasTextFocus())
         {
             _compareWorldReference = !_compareWorldReference;
             _statusLine = _compareWorldReference
@@ -117,11 +142,14 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
         SuspendInteractions();
         CelestialChartBoardAuthority.ReleaseAllEditsForRequester(_requester);
         _context = null;
+        _rotatedTextureCache.Dispose();
         _renderCache.Dispose();
     }
 
     public void SuspendInteractions()
     {
+        _pendingMarkDragFragmentId = null;
+        _annotationTextFocused = false;
         CancelActiveEdit();
         _folioDragFragmentId = null;
         _panning = false;
@@ -129,6 +157,7 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
 
     public void DrawOverlayGUI(Rect panel)
     {
+        _fieldSource?.EnsureField();
         EnsureWhiteTexture();
         CelestialChartStateSnapshot state = ResolveState();
         if (state == null)
@@ -144,6 +173,8 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
         DrawBoard(layout.Viewport, state);
         DrawDetails(layout.Right, state, layout.Viewport);
         DrawFooter(layout.Footer, state);
+        _annotationTextFocused = GUI.GetNameOfFocusedControl() == "CelestialName" ||
+            GUI.GetNameOfFocusedControl() == "CelestialNote";
     }
 
     private CelestialChartStateSnapshot ResolveState()
@@ -187,6 +218,12 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
         GUI.Label(new Rect(x, y, w, 34f), $"Fragments: {fragmentCount}\nOn board: {placedCount}");
         y += 40f;
 
+        _showKnownConstellations = GUI.Toggle(new Rect(x, y, w, 24f), _showKnownConstellations, "Show Known Constellations");
+        y += 28f;
+        if (GUI.Button(new Rect(x, y, w, 26f), "DEBUG VALIDATE ALL ELIGIBLE"))
+            CelestialKnowledgeAuthority.ValidateAllEligibleForDebug(_requester, KnowledgeField, out _statusLine);
+        y += 32f;
+
         float rowH = 58f;
         float controlsH = 34f;
         int rowsPerPage = Mathf.Max(1, Mathf.FloorToInt((rect.yMax - y - controlsH - 8f) / rowH));
@@ -215,9 +252,12 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
             GUI.color = old;
 
             string shortId = ShortId(fragment.fragmentId);
+            string fragmentLabel = fragment.isStarterPatch
+                ? "Starter Patch"
+                : $"Survey {fragment.surveySequence}";
             GUI.Label(
                 new Rect(row.x + 6f, row.y + 4f, row.width - 12f, 20f),
-                $"Survey {fragment.surveySequence}  •  {shortId}");
+                $"{fragmentLabel}  •  {shortId}");
             GUI.Label(
                 new Rect(row.x + 6f, row.y + 24f, row.width - 12f, 20f),
                 placed
@@ -320,7 +360,10 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
         Rect localBoard = new Rect(0f, 0f, rect.width, rect.height);
 
         if (!_compareWorldReference)
+        {
+            DrawBoardPaper(localBoard);
             DrawBoardGrid(localBoard);
+        }
 
         BuildSortedPlacements(state);
 
@@ -331,6 +374,8 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
 
         for (int i = 0; i < _sortedPlacements.Count; i++)
             DrawPlacementLayer(localBoard, state, _sortedPlacements[i], paper: false);
+
+        DrawCelestialKnowledge(localBoard, state);
 
         DrawSelectionAndPins(localBoard, state);
         DrawSharedReferenceReticle(localBoard);
@@ -353,6 +398,7 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
 
         Vector2 mouse = e.mousePosition;
         bool inside = rect.Contains(mouse);
+        BeginPendingMarkDrag(rect, state, e);
 
         if (e.type == EventType.ScrollWheel && inside)
         {
@@ -378,6 +424,7 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
                     _previewRotationDegrees = Mathf.DeltaAngle(0f, _rotatePlacementStartDegrees + delta);
                 }
 
+                UpdateGroupPreviewTransforms();
                 e.Use();
                 return;
             }
@@ -411,6 +458,13 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
 
         if (!inside || e.type != EventType.MouseDown)
             return;
+
+        if (e.button == 0 && TrySelectCelestialSubject(rect, state, mouse))
+        {
+            e.Use();
+            return;
+        }
+        if (e.button == 0) ClearSubjectSelection();
 
         CelestialChartBoardPlacementSnapshot hit = HitTestTopmostPlacement(rect, state, mouse);
 
@@ -462,40 +516,118 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
         Rect boardRect,
         Vector2 mouse)
     {
-        if (!CelestialChartBoardAuthority.TryBeginEdit(
-                _requester,
-                placement.fragmentId,
-                out _editHandle,
-                out CelestialChartBoardPlacementSnapshot authoritativePlacement,
-                out string reason))
+        CelestialChartBoardPlacementSnapshot authoritativePlacement = null;
+
+        if (!string.IsNullOrWhiteSpace(placement.groupId))
         {
-            _statusLine = reason;
+            if (!CelestialChartBoardAuthority.TryBeginGroupEdit(
+                    _requester,
+                    placement.fragmentId,
+                    out _groupEditHandle,
+                    out List<CelestialChartBoardPlacementSnapshot> groupPlacements,
+                    out string groupReason))
+            {
+                _statusLine = groupReason;
+                return;
+            }
+
+            _groupOriginalCenters.Clear();
+            _groupOriginalRotations.Clear();
+            _groupPreviewCenters.Clear();
+            _groupPreviewRotations.Clear();
+
+            for (int i = 0; i < groupPlacements.Count; i++)
+            {
+                CelestialChartBoardPlacementSnapshot member = groupPlacements[i];
+                _groupOriginalCenters[member.fragmentId] = member.boardCenterWorld;
+                _groupOriginalRotations[member.fragmentId] = member.rotationDegrees;
+                if (member.fragmentId == placement.fragmentId)
+                    authoritativePlacement = member;
+            }
+        }
+        else
+        {
+            if (!CelestialChartBoardAuthority.TryBeginEdit(
+                    _requester,
+                    placement.fragmentId,
+                    out _editHandle,
+                    out authoritativePlacement,
+                    out string reason))
+            {
+                _statusLine = reason;
+                return;
+            }
+        }
+
+        if (authoritativePlacement == null)
+        {
+            CancelActiveEdit();
+            _statusLine = "The selected chart fragment could not be resolved for editing.";
             return;
         }
 
         _editMode = mode;
         _previewCenterWorld = authoritativePlacement.boardCenterWorld;
         _previewRotationDegrees = authoritativePlacement.rotationDegrees;
+        _groupAnchorOriginalCenter = authoritativePlacement.boardCenterWorld;
+        _groupAnchorOriginalRotation = authoritativePlacement.rotationDegrees;
+        UpdateGroupPreviewTransforms();
 
         if (mode == EditMode.Move)
         {
             _moveOffsetWorld =
                 authoritativePlacement.boardCenterWorld -
                 _viewport.ScreenToWorld(mouse, boardRect);
-            _statusLine = "Moving fragment. Release to commit shared board state.";
+            _statusLine = _groupEditHandle.IsValid
+                ? "Moving assembled chart group. Release to commit all linked scraps together."
+                : "Moving fragment. Release to commit shared board state.";
         }
         else
         {
             Vector2 centerPx = _viewport.WorldToScreen(authoritativePlacement.boardCenterWorld, boardRect);
             _rotatePointerStartAngle = ScreenAngleDegrees(centerPx, mouse);
             _rotatePlacementStartDegrees = authoritativePlacement.rotationDegrees;
-            _statusLine = "Rotating fragment. Release to commit shared board state.";
+            _statusLine = _groupEditHandle.IsValid
+                ? "Rotating assembled chart group. Release to commit all linked scraps together."
+                : "Rotating fragment. Release to commit shared board state.";
         }
     }
 
     private void CommitActiveEdit()
     {
-        if (_editMode == EditMode.None || !_editHandle.IsValid)
+        if (_editMode == EditMode.None)
+        {
+            ClearEditPreview();
+            return;
+        }
+
+        if (_groupEditHandle.IsValid)
+        {
+            if (CelestialChartBoardAuthority.TryCommitGroupEdit(
+                    _requester,
+                    _groupEditHandle,
+                    _previewCenterWorld,
+                    _previewRotationDegrees,
+                    bringToFront: true,
+                    out List<CelestialChartBoardPlacementSnapshot> groupPlacements,
+                    out string groupReason))
+            {
+                _selectedFragmentId = _groupEditHandle.anchorFragmentId;
+                _statusLine = _editMode == EditMode.Rotate
+                    ? $"Assembled group rotation committed ({groupPlacements.Count} scraps)."
+                    : $"Assembled group moved ({groupPlacements.Count} scraps).";
+            }
+            else
+            {
+                _statusLine = groupReason;
+                CelestialChartBoardAuthority.CancelGroupEdit(_requester, _groupEditHandle);
+            }
+
+            ClearEditPreview();
+            return;
+        }
+
+        if (!_editHandle.IsValid)
         {
             ClearEditPreview();
             return;
@@ -529,6 +661,9 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
         if (_editHandle.IsValid)
             CelestialChartBoardAuthority.CancelEdit(_requester, _editHandle);
 
+        if (_groupEditHandle.IsValid)
+            CelestialChartBoardAuthority.CancelGroupEdit(_requester, _groupEditHandle);
+
         ClearEditPreview();
     }
 
@@ -536,11 +671,44 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
     {
         _editMode = EditMode.None;
         _editHandle = default;
+        _groupEditHandle = default;
+        _groupOriginalCenters.Clear();
+        _groupOriginalRotations.Clear();
+        _groupPreviewCenters.Clear();
+        _groupPreviewRotations.Clear();
+        _groupAnchorOriginalCenter = Vector2.zero;
+        _groupAnchorOriginalRotation = 0f;
         _previewCenterWorld = Vector2.zero;
         _previewRotationDegrees = 0f;
         _moveOffsetWorld = Vector2.zero;
         _rotatePointerStartAngle = 0f;
         _rotatePlacementStartDegrees = 0f;
+    }
+
+    private void UpdateGroupPreviewTransforms()
+    {
+        if (!_groupEditHandle.IsValid)
+            return;
+
+        float deltaRotation = Mathf.DeltaAngle(_groupAnchorOriginalRotation, _previewRotationDegrees);
+        foreach (KeyValuePair<string, Vector2> pair in _groupOriginalCenters)
+        {
+            string fragmentId = pair.Key;
+            Vector2 originalCenter = pair.Value;
+            float originalRotation = _groupOriginalRotations.TryGetValue(fragmentId, out float r) ? r : 0f;
+
+            if (fragmentId == _groupEditHandle.anchorFragmentId)
+            {
+                _groupPreviewCenters[fragmentId] = _previewCenterWorld;
+                _groupPreviewRotations[fragmentId] = _previewRotationDegrees;
+                continue;
+            }
+
+            Vector2 local = originalCenter - _groupAnchorOriginalCenter;
+            Vector2 rotatedLocal = RotateVector(local, -deltaRotation);
+            _groupPreviewCenters[fragmentId] = _previewCenterWorld + rotatedLocal;
+            _groupPreviewRotations[fragmentId] = Mathf.DeltaAngle(0f, originalRotation + deltaRotation);
+        }
     }
 
     private void BuildSortedPlacements(CelestialChartStateSnapshot state)
@@ -608,18 +776,36 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
         if (visual == null)
             return;
 
-        Rect screenRect = GetPlacementLocalRect(boardRect, placement, visual);
         float rotation = GetRenderRotation(placement);
+        CelestialChartRotatedTextureCache.RotatedVisual rotated =
+            _rotatedTextureCache.Get(
+                fragment.fragmentId,
+                visual,
+                rotation);
 
-        Texture2D texture = paper ? visual.PaperTexture : visual.InkTexture;
+        if (rotated == null)
+            return;
+
+        Texture2D texture = paper ? rotated.PaperTexture : rotated.InkTexture;
         if (texture == null)
             return;
+
+        Vector2 center = _viewport.WorldToLocal(GetRenderCenter(placement), boardRect);
+        float width = rotated.WorldSize.x * _viewport.PixelsPerWorldUnit;
+        float height = rotated.WorldSize.y * _viewport.PixelsPerWorldUnit;
+        Rect screenRect = new Rect(
+            center.x - width * 0.5f,
+            center.y - height * 0.5f,
+            width,
+            height);
 
         float alpha = paper
             ? (_compareWorldReference ? 0.58f : 0.97f)
             : 1f;
 
-        DrawRotatedTexture(screenRect, texture, rotation, alpha);
+        // Rotation has already been baked into an axis-aligned texture. Normal IMGUI group
+        // clipping now works even at extreme zoom, so scraps cannot escape the board viewport.
+        DrawTextureClippedByBoard(screenRect, texture, alpha);
     }
 
     private Rect GetPlacementLocalRect(
@@ -646,16 +832,28 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
 
     private Vector2 GetRenderCenter(CelestialChartBoardPlacementSnapshot placement)
     {
-        if (_editMode != EditMode.None && _editHandle.fragmentId == placement.fragmentId)
-            return _previewCenterWorld;
+        if (_editMode != EditMode.None)
+        {
+            if (_groupEditHandle.IsValid && _groupPreviewCenters.TryGetValue(placement.fragmentId, out Vector2 groupCenter))
+                return groupCenter;
+
+            if (_editHandle.IsValid && _editHandle.fragmentId == placement.fragmentId)
+                return _previewCenterWorld;
+        }
 
         return placement.boardCenterWorld;
     }
 
     private float GetRenderRotation(CelestialChartBoardPlacementSnapshot placement)
     {
-        if (_editMode != EditMode.None && _editHandle.fragmentId == placement.fragmentId)
-            return _previewRotationDegrees;
+        if (_editMode != EditMode.None)
+        {
+            if (_groupEditHandle.IsValid && _groupPreviewRotations.TryGetValue(placement.fragmentId, out float groupRotation))
+                return groupRotation;
+
+            if (_editHandle.IsValid && _editHandle.fragmentId == placement.fragmentId)
+                return _previewRotationDegrees;
+        }
 
         return placement.rotationDegrees;
     }
@@ -674,21 +872,37 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
             if (visual == null)
                 continue;
 
-            Rect screenRect = GetPlacementLocalRect(boardRect, placement, visual);
+            Vector2 center = _viewport.WorldToLocal(GetRenderCenter(placement), boardRect);
+            float width = visual.RotatedCelestialBounds.width * _viewport.PixelsPerWorldUnit;
+            float height = visual.RotatedCelestialBounds.height * _viewport.PixelsPerWorldUnit;
             float rotation = GetRenderRotation(placement);
 
             if (placement.fragmentId == _selectedFragmentId)
             {
-                DrawRotatedOutline(
-                    screenRect,
+                DrawClippedRotatedOutline(
+                    boardRect,
+                    center,
+                    width,
+                    height,
                     rotation,
                     2f,
                     new Color(0.30f, 0.95f, 1f, 0.92f));
+
+                if (Time.unscaledTime <= _snapFeedbackUntil)
+                {
+                    DrawClippedRotatedOutline(
+                        boardRect,
+                        center,
+                        width + 5f,
+                        height + 5f,
+                        rotation,
+                        2f,
+                        new Color(1f, 0.82f, 0.28f, 0.95f));
+                }
             }
 
-            if (placement.pinned)
+            if (placement.pinned && boardRect.Contains(center))
             {
-                Vector2 center = screenRect.center;
                 DrawDisc(center, 6f, new Color(0.92f, 0.32f, 0.22f, 0.95f));
                 DrawDisc(center, 2f, new Color(1f, 0.86f, 0.48f, 1f));
             }
@@ -719,30 +933,136 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
         DrawRotatedTexture(r, visual.InkTexture, 0f, 0.85f);
     }
 
+    private void DrawBoardPaper(Rect rect)
+    {
+        EnsureBoardPaperTexture();
+
+        if (_boardPaperTexture == null)
+            return;
+
+        float zoom = Mathf.Max(0.0001f, _viewport.PixelsPerWorldUnit);
+        float worldWidth = rect.width / zoom;
+        float worldHeight = rect.height / zoom;
+        float worldLeft = _viewport.CenterWorld.x - worldWidth * 0.5f;
+        float worldBottom = _viewport.CenterWorld.y - worldHeight * 0.5f;
+
+        const float tileWorldSize = 18f;
+        Rect uv = new Rect(
+            worldLeft / tileWorldSize,
+            worldBottom / tileWorldSize,
+            worldWidth / tileWorldSize,
+            worldHeight / tileWorldSize);
+
+        Color old = GUI.color;
+        GUI.color = Color.white;
+        GUI.DrawTextureWithTexCoords(rect, _boardPaperTexture, uv, true);
+        GUI.color = old;
+    }
+
     private void DrawBoardGrid(Rect rect)
     {
         float zoom = Mathf.Max(0.0001f, _viewport.PixelsPerWorldUnit);
-        float spacing = Mathf.Clamp(zoom, 18f, 80f);
-        float offsetX = Mathf.Repeat((-_viewport.CenterWorld.x * zoom) + rect.width * 0.5f, spacing);
-        float offsetY = Mathf.Repeat((_viewport.CenterWorld.y * zoom) + rect.height * 0.5f, spacing);
+        float minorWorld = NiceGridStep(44f / zoom);
+        float majorWorld = minorWorld * 5f;
 
-        Color c = new Color(1f, 1f, 1f, 0.045f);
-        for (float x = rect.x + offsetX; x < rect.xMax; x += spacing)
-            DrawLine(new Vector2(x, rect.y), new Vector2(x, rect.yMax), c, 1f);
+        DrawWorldGridLines(
+            rect,
+            minorWorld,
+            new Color(0.80f, 0.84f, 0.78f, 0.045f),
+            1f);
 
-        for (float y = rect.y + offsetY; y < rect.yMax; y += spacing)
-            DrawLine(new Vector2(rect.x, y), new Vector2(rect.xMax, y), c, 1f);
+        DrawWorldGridLines(
+            rect,
+            majorWorld,
+            new Color(0.88f, 0.90f, 0.82f, 0.085f),
+            1f);
+
+        // Sparse registration dots give the eye something obvious to compare against while
+        // panning the whole chart plane versus dragging one loose scrap.
+        Vector2 worldMin = _viewport.ScreenToWorld(rect.min, rect);
+        Vector2 worldMax = _viewport.ScreenToWorld(rect.max, rect);
+
+        float minX = Mathf.Min(worldMin.x, worldMax.x);
+        float maxX = Mathf.Max(worldMin.x, worldMax.x);
+        float minY = Mathf.Min(worldMin.y, worldMax.y);
+        float maxY = Mathf.Max(worldMin.y, worldMax.y);
+
+        float firstX = Mathf.Floor(minX / majorWorld) * majorWorld;
+        float firstY = Mathf.Floor(minY / majorWorld) * majorWorld;
+        Color dotColor = new Color(0.88f, 0.90f, 0.82f, 0.12f);
+
+        for (float x = firstX; x <= maxX + majorWorld; x += majorWorld)
+        {
+            for (float y = firstY; y <= maxY + majorWorld; y += majorWorld)
+            {
+                Vector2 local = _viewport.WorldToLocal(new Vector2(x, y), rect);
+                if (rect.Contains(local))
+                    DrawDisc(local, 1.5f, dotColor);
+            }
+        }
+    }
+
+    private void DrawWorldGridLines(
+        Rect rect,
+        float worldStep,
+        Color color,
+        float thickness)
+    {
+        if (worldStep <= 0.0001f)
+            return;
+
+        Vector2 worldTopLeft = _viewport.ScreenToWorld(rect.min, rect);
+        Vector2 worldBottomRight = _viewport.ScreenToWorld(rect.max, rect);
+
+        float minX = Mathf.Min(worldTopLeft.x, worldBottomRight.x);
+        float maxX = Mathf.Max(worldTopLeft.x, worldBottomRight.x);
+        float minY = Mathf.Min(worldTopLeft.y, worldBottomRight.y);
+        float maxY = Mathf.Max(worldTopLeft.y, worldBottomRight.y);
+
+        float firstX = Mathf.Floor(minX / worldStep) * worldStep;
+        for (float x = firstX; x <= maxX + worldStep; x += worldStep)
+        {
+            float localX = _viewport.WorldToLocal(new Vector2(x, _viewport.CenterWorld.y), rect).x;
+            DrawLine(new Vector2(localX, rect.y), new Vector2(localX, rect.yMax), color, thickness);
+        }
+
+        float firstY = Mathf.Floor(minY / worldStep) * worldStep;
+        for (float y = firstY; y <= maxY + worldStep; y += worldStep)
+        {
+            float localY = _viewport.WorldToLocal(new Vector2(_viewport.CenterWorld.x, y), rect).y;
+            DrawLine(new Vector2(rect.x, localY), new Vector2(rect.xMax, localY), color, thickness);
+        }
+    }
+
+    private static float NiceGridStep(float targetWorldStep)
+    {
+        targetWorldStep = Mathf.Max(0.0001f, targetWorldStep);
+        float power = Mathf.Pow(10f, Mathf.Floor(Mathf.Log10(targetWorldStep)));
+        float scaled = targetWorldStep / power;
+
+        float nice;
+        if (scaled <= 1f)
+            nice = 1f;
+        else if (scaled <= 2f)
+            nice = 2f;
+        else if (scaled <= 5f)
+            nice = 5f;
+        else
+            nice = 10f;
+
+        return nice * power;
     }
 
     private static void DrawSharedReferenceReticle(Rect rect)
     {
         Vector2 c = rect.center;
-        Color color = new Color(0.30f, 0.95f, 1f, 0.70f);
-        DrawLine(c + Vector2.left * 11f, c + Vector2.left * 3f, color, 1f);
-        DrawLine(c + Vector2.right * 3f, c + Vector2.right * 11f, color, 1f);
-        DrawLine(c + Vector2.up * 11f, c + Vector2.up * 3f, color, 1f);
-        DrawLine(c + Vector2.down * 3f, c + Vector2.down * 11f, color, 1f);
-        DrawRing(c, 4f, color, 1f);
+        Color color = new Color(0.30f, 0.95f, 1f, 0.78f);
+        DrawLine(c + Vector2.left * 12f, c + Vector2.left * 7f, color, 1f);
+        DrawLine(c + Vector2.right * 7f, c + Vector2.right * 12f, color, 1f);
+        DrawLine(c + Vector2.up * 12f, c + Vector2.up * 7f, color, 1f);
+        DrawLine(c + Vector2.down * 7f, c + Vector2.down * 12f, color, 1f);
+        DrawRing(c, 6f, new Color(color.r, color.g, color.b, 0.42f), 1f);
+        DrawPaperBoatMarker(c, 8f, color, new Color(0.03f, 0.10f, 0.15f, 0.90f), 1.35f);
     }
 
     #endregion
@@ -756,6 +1076,8 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
         float x = rect.x + 10f;
         float y = rect.y + 10f;
         float w = rect.width - 20f;
+
+        if (DrawCelestialSubjectDetails(rect, state)) return;
 
         GUI.Label(new Rect(x, y, w, 22f), "STAR CHART BOARD");
         y += 28f;
@@ -776,7 +1098,7 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
         GUI.Label(
             new Rect(x, y, w, 78f),
             "World Map and Star Chart share the exact same center and scale.\n\n" +
-            "In COMPARE, the small circle + center dot on a scrap is the observation datum. Wherever that mark lands is your theoretical geographic position.");
+            "In COMPARE, the paper boat printed on a scrap is the observation datum. Wherever that mark lands is your theoretical geographic position.");
         y += 86f;
 
         if (string.IsNullOrWhiteSpace(_selectedFragmentId) ||
@@ -788,7 +1110,11 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
 
         state.TryGetPlacement(fragment.fragmentId, out CelestialChartBoardPlacementSnapshot placement);
 
-        GUI.Label(new Rect(x, y, w, 22f), $"Selected: Survey {fragment.surveySequence}");
+        GUI.Label(
+            new Rect(x, y, w, 22f),
+            fragment.isStarterPatch
+                ? "Selected: Starter Patch"
+                : $"Selected: Survey {fragment.surveySequence}");
         y += 22f;
         GUI.Label(new Rect(x, y, w, 36f), $"{ShortId(fragment.fragmentId)}\nMarks: {fragment.marks?.Count ?? 0}");
         y += 42f;
@@ -798,6 +1124,8 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
             GUI.Label(new Rect(x, y, w, 52f), "This fragment is still in the folio.\nDrag its row onto the board to place it.");
             return;
         }
+
+        int groupCount = CountGroupMembers(state, placement.groupId);
 
         GUI.Label(
             new Rect(x, y, w, 42f),
@@ -833,6 +1161,35 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
         DrawRotateButton(new Rect(x + (quarter + 3f) * 3f, y, quarter, 26f), "+15°", placement, 15f);
         GUI.enabled = true;
         y += 32f;
+
+        GUI.enabled = !placement.pinned && _editMode == EditMode.None;
+        if (GUI.Button(new Rect(x, y, w, 28f), "ATTEMPT SNAP"))
+            AttemptEvidenceSnap(state, placement, boardRect);
+        GUI.enabled = true;
+        y += 34f;
+
+        if (groupCount > 1)
+        {
+            GUI.enabled = _editMode == EditMode.None;
+            if (GUI.Button(new Rect(x, y, w, 26f), "DETACH FROM ASSEMBLED GROUP"))
+            {
+                if (CelestialChartBoardAuthority.TryDetachFromGroup(
+                        _requester,
+                        placement.fragmentId,
+                        placement.revision,
+                        out _,
+                        out string detachReason))
+                {
+                    _statusLine = "Fragment detached from its assembled chart group.";
+                }
+                else
+                {
+                    _statusLine = detachReason;
+                }
+            }
+            GUI.enabled = true;
+            y += 32f;
+        }
 
         if (GUI.Button(new Rect(x, y, w, 26f), "BRING TO FRONT"))
         {
@@ -897,6 +1254,39 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
         if (!GUI.Button(rect, label))
             return;
 
+        if (!string.IsNullOrWhiteSpace(placement.groupId))
+        {
+            if (!CelestialChartBoardAuthority.TryBeginGroupEdit(
+                    _requester,
+                    placement.fragmentId,
+                    out CelestialChartBoardGroupEditHandle handle,
+                    out _,
+                    out string beginReason))
+            {
+                _statusLine = beginReason;
+                return;
+            }
+
+            if (CelestialChartBoardAuthority.TryCommitGroupEdit(
+                    _requester,
+                    handle,
+                    placement.boardCenterWorld,
+                    Mathf.DeltaAngle(0f, placement.rotationDegrees + delta),
+                    bringToFront: true,
+                    out List<CelestialChartBoardPlacementSnapshot> groupPlacements,
+                    out string groupReason))
+            {
+                _statusLine = $"Assembled group rotated {delta:+0;-0;0}° ({groupPlacements.Count} scraps).";
+            }
+            else
+            {
+                CelestialChartBoardAuthority.CancelGroupEdit(_requester, handle);
+                _statusLine = groupReason;
+            }
+
+            return;
+        }
+
         if (CelestialChartBoardAuthority.TryRotateBy(
                 _requester,
                 placement.fragmentId,
@@ -916,7 +1306,7 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
     private void DrawFooter(Rect rect, CelestialChartStateSnapshot state)
     {
         string status = string.IsNullOrWhiteSpace(_statusLine)
-            ? "Arrange scraps by matching stars. The game does not auto-snap or correct your belief."
+            ? "Arrange scraps manually. ATTEMPT SNAP only precision-seats an already-close overlap; dragging never snaps automatically."
             : _statusLine;
 
         GUI.Label(
@@ -956,6 +1346,22 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
         return false;
     }
 
+    private static int CountGroupMembers(CelestialChartStateSnapshot state, string groupId)
+    {
+        if (state == null || state.boardPlacements == null || string.IsNullOrWhiteSpace(groupId))
+            return 0;
+
+        int count = 0;
+        for (int i = 0; i < state.boardPlacements.Count; i++)
+        {
+            CelestialChartBoardPlacementSnapshot p = state.boardPlacements[i];
+            if (p != null && p.groupId == groupId)
+                count++;
+        }
+
+        return count;
+    }
+
     private static string ShortId(string id)
     {
         if (string.IsNullOrWhiteSpace(id))
@@ -976,6 +1382,513 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
         float c = Mathf.Cos(r);
         float s = Mathf.Sin(r);
         return new Vector2(v.x * c - v.y * s, v.x * s + v.y * c);
+    }
+
+    private void AttemptEvidenceSnap(
+        CelestialChartStateSnapshot state,
+        CelestialChartBoardPlacementSnapshot placement,
+        Rect boardRect)
+    {
+        if (state == null || placement == null)
+            return;
+
+        if (placement.pinned)
+        {
+            _statusLine = "Unpin the fragment before attempting a snap.";
+            return;
+        }
+
+        if (!TryFindEvidenceSnap(
+                boardRect,
+                state,
+                placement,
+                out Vector2 snappedCenterWorld,
+                out float snappedRotationDegrees,
+                out int sharedCount,
+                out string targetFragmentId,
+                out int targetRevision,
+                out string reason))
+        {
+            _statusLine = reason;
+            return;
+        }
+
+        int snappedRevision;
+        if (!string.IsNullOrWhiteSpace(placement.groupId))
+        {
+            if (!CelestialChartBoardAuthority.TryBeginGroupEdit(
+                    _requester,
+                    placement.fragmentId,
+                    out CelestialChartBoardGroupEditHandle groupHandle,
+                    out _,
+                    out string beginReason))
+            {
+                _statusLine = beginReason;
+                return;
+            }
+
+            if (!CelestialChartBoardAuthority.TryCommitGroupEdit(
+                    _requester,
+                    groupHandle,
+                    snappedCenterWorld,
+                    snappedRotationDegrees,
+                    bringToFront: true,
+                    out List<CelestialChartBoardPlacementSnapshot> groupPlacements,
+                    out string commitReason))
+            {
+                CelestialChartBoardAuthority.CancelGroupEdit(_requester, groupHandle);
+                _statusLine = commitReason;
+                return;
+            }
+
+            snappedRevision = 0;
+            for (int i = 0; i < groupPlacements.Count; i++)
+            {
+                CelestialChartBoardPlacementSnapshot p = groupPlacements[i];
+                if (p != null && p.fragmentId == placement.fragmentId)
+                {
+                    snappedRevision = p.revision;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            if (!CelestialChartBoardAuthority.TryBeginEdit(
+                    _requester,
+                    placement.fragmentId,
+                    out CelestialChartBoardEditHandle handle,
+                    out _,
+                    out string lockReason))
+            {
+                _statusLine = lockReason;
+                return;
+            }
+
+            if (!CelestialChartBoardAuthority.TryCommitEdit(
+                    _requester,
+                    handle,
+                    snappedCenterWorld,
+                    snappedRotationDegrees,
+                    bringToFront: true,
+                    out CelestialChartBoardPlacementSnapshot snappedPlacement,
+                    out string commitReason))
+            {
+                CelestialChartBoardAuthority.CancelEdit(_requester, handle);
+                _statusLine = commitReason;
+                return;
+            }
+
+            snappedRevision = snappedPlacement.revision;
+        }
+
+        _selectedFragmentId = placement.fragmentId;
+        _snapFeedbackUntil = Time.unscaledTime + 0.45f;
+
+        string groupReason = null;
+        if (snappedRevision > 0 &&
+            CelestialChartBoardAuthority.TryMergeGroupsAfterSnap(
+                _requester,
+                placement.fragmentId,
+                snappedRevision,
+                targetFragmentId,
+                targetRevision,
+                out _,
+                out int memberCount,
+                out groupReason))
+        {
+            _statusLine =
+                $"Attempt snap succeeded: {sharedCount} shared marks seated. " +
+                $"Assembled group now has {memberCount} scraps.";
+        }
+        else
+        {
+            _statusLine = string.IsNullOrWhiteSpace(groupReason)
+                ? $"Attempt snap succeeded: {sharedCount} shared marks precision-seated."
+                : $"Snap seated, but grouping failed: {groupReason}";
+        }
+    }
+
+    private bool TryFindEvidenceSnap(
+        Rect boardRect,
+        CelestialChartStateSnapshot state,
+        CelestialChartBoardPlacementSnapshot movingPlacement,
+        out Vector2 snappedCenterWorld,
+        out float snappedRotationDegrees,
+        out int bestSharedCount,
+        out string targetFragmentId,
+        out int targetRevision,
+        out string reason)
+    {
+        snappedCenterWorld = movingPlacement != null ? movingPlacement.boardCenterWorld : Vector2.zero;
+        snappedRotationDegrees = movingPlacement != null ? movingPlacement.rotationDegrees : 0f;
+        bestSharedCount = 0;
+        targetFragmentId = null;
+        targetRevision = 0;
+        reason = null;
+
+        if (movingPlacement == null || state == null)
+        {
+            reason = "Attempt snap failed: placement state is unavailable.";
+            return false;
+        }
+
+        if (!TryGetFragment(state, movingPlacement.fragmentId, out CelestialChartFragmentSnapshot movingFragment))
+        {
+            reason = "Attempt snap failed: selected fragment evidence is unavailable.";
+            return false;
+        }
+
+        CelestialChartFragmentVisual movingVisual = _renderCache.Get(movingFragment);
+        if (movingVisual == null || movingFragment.marks == null || movingFragment.marks.Count == 0)
+        {
+            reason = "Attempt snap failed: selected fragment has no usable marks.";
+            return false;
+        }
+
+        float bestScore = float.MaxValue;
+        Vector2 bestCenterScreen = _viewport.WorldToScreen(movingPlacement.boardCenterWorld, boardRect);
+        float bestRotation = movingPlacement.rotationDegrees;
+
+        BuildSortedPlacements(state);
+        for (int i = 0; i < _sortedPlacements.Count; i++)
+        {
+            CelestialChartBoardPlacementSnapshot otherPlacement = _sortedPlacements[i];
+            if (otherPlacement == null || otherPlacement.fragmentId == movingPlacement.fragmentId)
+                continue;
+
+            if (!string.IsNullOrWhiteSpace(movingPlacement.groupId) && otherPlacement.groupId == movingPlacement.groupId)
+                continue;
+
+            if (!TryGetFragment(state, otherPlacement.fragmentId, out CelestialChartFragmentSnapshot otherFragment))
+                continue;
+
+            CelestialChartFragmentVisual otherVisual = _renderCache.Get(otherFragment);
+            if (otherVisual == null || otherFragment.marks == null || otherFragment.marks.Count == 0)
+                continue;
+
+            var movingLocalScreen = new List<Vector2>();
+            var targetScreen = new List<Vector2>();
+
+            for (int a = 0; a < movingFragment.marks.Count; a++)
+            {
+                CelestialChartFragmentMark movingMark = movingFragment.marks[a];
+                if (movingMark == null || string.IsNullOrWhiteSpace(movingMark.celestialObjectStableId))
+                    continue;
+
+                CelestialChartFragmentMark otherMark = FindMarkByStableId(otherFragment, movingMark.celestialObjectStableId);
+                if (otherMark == null)
+                    continue;
+
+                Vector2 movingLocalWorld = GetMarkFragmentLocalPosition(movingFragment, movingVisual, movingMark);
+                movingLocalScreen.Add(new Vector2(
+                    movingLocalWorld.x * _viewport.PixelsPerWorldUnit,
+                    -movingLocalWorld.y * _viewport.PixelsPerWorldUnit));
+
+                targetScreen.Add(GetMarkScreenPosition(
+                    otherFragment,
+                    otherVisual,
+                    otherMark,
+                    otherPlacement,
+                    boardRect));
+            }
+
+            int sharedCount = movingLocalScreen.Count;
+            if (sharedCount < _snapMinimumSharedMarks)
+                continue;
+
+            SolveRigidEvidenceFitScreen(
+                movingLocalScreen,
+                targetScreen,
+                out Vector2 candidateCenterScreen,
+                out float candidateRotation);
+
+            Vector2 currentCenterScreen = _viewport.WorldToScreen(movingPlacement.boardCenterWorld, boardRect);
+            float centerShiftPx = Vector2.Distance(candidateCenterScreen, currentCenterScreen);
+            float rotationShift = Mathf.Abs(Mathf.DeltaAngle(movingPlacement.rotationDegrees, candidateRotation));
+
+            if (centerShiftPx > _snapPositionTolerancePixels ||
+                rotationShift > _snapRotationToleranceDegrees)
+            {
+                continue;
+            }
+
+            float residualPx = ComputeEvidenceResidualScreen(
+                movingLocalScreen,
+                targetScreen,
+                candidateCenterScreen,
+                candidateRotation);
+
+            if (residualPx > _snapResidualTolerancePixels)
+                continue;
+
+            float score =
+                centerShiftPx +
+                rotationShift * Mathf.Max(1f, _snapPositionTolerancePixels * 0.5f) +
+                residualPx * 4f;
+
+            bool better =
+                sharedCount > bestSharedCount ||
+                (sharedCount == bestSharedCount && score < bestScore);
+
+            if (!better)
+                continue;
+
+            bestSharedCount = sharedCount;
+            bestScore = score;
+            bestCenterScreen = candidateCenterScreen;
+            bestRotation = candidateRotation;
+            targetFragmentId = otherPlacement.fragmentId;
+            targetRevision = otherPlacement.revision;
+        }
+
+        if (bestSharedCount < _snapMinimumSharedMarks)
+        {
+            reason =
+                $"Attempt snap found no convincing fit within {_snapPositionTolerancePixels:0.#} px / " +
+                $"{_snapRotationToleranceDegrees:0.#}° using at least {_snapMinimumSharedMarks} shared marks.";
+            return false;
+        }
+
+        snappedCenterWorld = _viewport.ScreenToWorld(bestCenterScreen, boardRect);
+        snappedRotationDegrees = Mathf.DeltaAngle(0f, bestRotation);
+        return true;
+    }
+
+    private static void SolveRigidEvidenceFitScreen(
+        List<Vector2> sourceLocalScreen,
+        List<Vector2> targetScreen,
+        out Vector2 centerScreen,
+        out float rotationDegrees)
+    {
+        Vector2 sourceCentroid = Vector2.zero;
+        Vector2 targetCentroid = Vector2.zero;
+        int count = Mathf.Min(sourceLocalScreen.Count, targetScreen.Count);
+
+        for (int i = 0; i < count; i++)
+        {
+            sourceCentroid += sourceLocalScreen[i];
+            targetCentroid += targetScreen[i];
+        }
+
+        sourceCentroid /= Mathf.Max(1, count);
+        targetCentroid /= Mathf.Max(1, count);
+
+        float dot = 0f;
+        float cross = 0f;
+        for (int i = 0; i < count; i++)
+        {
+            Vector2 a = sourceLocalScreen[i] - sourceCentroid;
+            Vector2 b = targetScreen[i] - targetCentroid;
+            dot += a.x * b.x + a.y * b.y;
+            cross += a.x * b.y - a.y * b.x;
+        }
+
+        rotationDegrees = Mathf.Atan2(cross, dot) * Mathf.Rad2Deg;
+        centerScreen = targetCentroid - RotateScreenVector(sourceCentroid, rotationDegrees);
+    }
+
+    private static float ComputeEvidenceResidualScreen(
+        List<Vector2> sourceLocalScreen,
+        List<Vector2> targetScreen,
+        Vector2 centerScreen,
+        float rotationDegrees)
+    {
+        int count = Mathf.Min(sourceLocalScreen.Count, targetScreen.Count);
+        if (count <= 0)
+            return float.MaxValue;
+
+        float total = 0f;
+        for (int i = 0; i < count; i++)
+        {
+            Vector2 transformed = centerScreen + RotateScreenVector(sourceLocalScreen[i], rotationDegrees);
+            total += Vector2.Distance(transformed, targetScreen[i]);
+        }
+
+        return total / count;
+    }
+
+    private Vector2 GetMarkScreenPosition(
+        CelestialChartFragmentSnapshot fragment,
+        CelestialChartFragmentVisual visual,
+        CelestialChartFragmentMark mark,
+        CelestialChartBoardPlacementSnapshot placement,
+        Rect boardRect)
+    {
+        Vector2 localWorld = GetMarkFragmentLocalPosition(fragment, visual, mark);
+        Vector2 localScreen = new Vector2(
+            localWorld.x * _viewport.PixelsPerWorldUnit,
+            -localWorld.y * _viewport.PixelsPerWorldUnit);
+
+        Vector2 centerScreen = _viewport.WorldToScreen(placement.boardCenterWorld, boardRect);
+        return centerScreen + RotateScreenVector(localScreen, placement.rotationDegrees);
+    }
+
+    private static Vector2 GetMarkFragmentLocalPosition(
+        CelestialChartFragmentSnapshot fragment,
+        CelestialChartFragmentVisual visual,
+        CelestialChartFragmentMark mark)
+    {
+        if (fragment == null || visual == null || mark == null)
+            return Vector2.zero;
+
+        // Fragment visuals bake the observation instrument rotation into the generated
+        // paper/ink texture before board placement rotation is applied. Reproduce that
+        // exact transform here so evidence snapping compares the same geometry the player sees.
+        float recordedRotation = NormalizeSignedDegrees(fragment.recordedInstrumentRotationDegrees);
+        Vector2 rotatedWorld = RotateVector(mark.celestialWorldPosition, recordedRotation);
+        return rotatedWorld - visual.RotatedCelestialBounds.center;
+    }
+
+    private static CelestialChartFragmentMark FindMarkByStableId(CelestialChartFragmentSnapshot fragment, string stableId)
+    {
+        if (fragment == null || fragment.marks == null || string.IsNullOrWhiteSpace(stableId))
+            return null;
+
+        for (int i = 0; i < fragment.marks.Count; i++)
+        {
+            CelestialChartFragmentMark mark = fragment.marks[i];
+            if (mark != null && mark.celestialObjectStableId == stableId)
+                return mark;
+        }
+
+        return null;
+    }
+
+    private static float NormalizeSignedDegrees(float degrees)
+    {
+        if (float.IsNaN(degrees) || float.IsInfinity(degrees))
+            return 0f;
+
+        return Mathf.DeltaAngle(0f, degrees);
+    }
+
+    private static Vector2 RotateVector(Vector2 v, float degrees)
+    {
+        float r = degrees * Mathf.Deg2Rad;
+        float c = Mathf.Cos(r);
+        float s = Mathf.Sin(r);
+        return new Vector2(v.x * c - v.y * s, v.x * s + v.y * c);
+    }
+
+    private static void DrawPaperBoatMarker(Vector2 center, float size, Color lineColor, Color fillColor, float lineThickness)
+    {
+        float s = Mathf.Max(4f, size);
+        Vector2 leftDeck = center + new Vector2(-s * 0.92f, s * 0.10f);
+        Vector2 rightDeck = center + new Vector2(s * 0.92f, s * 0.10f);
+        Vector2 hullLeft = center + new Vector2(-s * 0.55f, s * 0.78f);
+        Vector2 hullRight = center + new Vector2(s * 0.55f, s * 0.78f);
+        Vector2 mastTop = center + new Vector2(0f, -s * 0.92f);
+        Vector2 sailBase = center + new Vector2(-s * 0.20f, s * 0.10f);
+
+        DrawLine(leftDeck, rightDeck, lineColor, lineThickness);
+        DrawLine(leftDeck, hullLeft, lineColor, lineThickness);
+        DrawLine(hullLeft, hullRight, lineColor, lineThickness);
+        DrawLine(hullRight, rightDeck, lineColor, lineThickness);
+        DrawLine(sailBase, mastTop, lineColor, lineThickness);
+        DrawLine(mastTop, rightDeck, lineColor, lineThickness);
+        DrawDisc(center + new Vector2(0f, s * 0.28f), 1.6f, fillColor);
+    }
+
+    private static void DrawTextureClippedByBoard(
+        Rect rect,
+        Texture texture,
+        float alpha)
+    {
+        if (texture == null || rect.width <= 0.1f || rect.height <= 0.1f)
+            return;
+
+        Color old = GUI.color;
+        GUI.color = new Color(1f, 1f, 1f, Mathf.Clamp01(alpha));
+        GUI.DrawTexture(rect, texture, ScaleMode.StretchToFill, true);
+        GUI.color = old;
+    }
+
+    private static void DrawClippedRotatedOutline(
+        Rect clipRect,
+        Vector2 center,
+        float width,
+        float height,
+        float degrees,
+        float thickness,
+        Color color)
+    {
+        Vector2 halfX = RotateScreenVector(new Vector2(width * 0.5f, 0f), degrees);
+        Vector2 halfY = RotateScreenVector(new Vector2(0f, height * 0.5f), degrees);
+
+        Vector2 p0 = center - halfX - halfY;
+        Vector2 p1 = center + halfX - halfY;
+        Vector2 p2 = center + halfX + halfY;
+        Vector2 p3 = center - halfX + halfY;
+
+        DrawClippedLine(p0, p1, clipRect, color, thickness);
+        DrawClippedLine(p1, p2, clipRect, color, thickness);
+        DrawClippedLine(p2, p3, clipRect, color, thickness);
+        DrawClippedLine(p3, p0, clipRect, color, thickness);
+    }
+
+    private static void DrawClippedLine(
+        Vector2 a,
+        Vector2 b,
+        Rect clipRect,
+        Color color,
+        float width)
+    {
+        if (!ClipLineToRect(ref a, ref b, clipRect))
+            return;
+
+        DrawLine(a, b, color, width);
+    }
+
+    private static bool ClipLineToRect(
+        ref Vector2 a,
+        ref Vector2 b,
+        Rect rect)
+    {
+        Vector2 d = b - a;
+        float t0 = 0f;
+        float t1 = 1f;
+
+        if (!ClipTest(-d.x, a.x - rect.xMin, ref t0, ref t1) ||
+            !ClipTest( d.x, rect.xMax - a.x, ref t0, ref t1) ||
+            !ClipTest(-d.y, a.y - rect.yMin, ref t0, ref t1) ||
+            !ClipTest( d.y, rect.yMax - a.y, ref t0, ref t1))
+        {
+            return false;
+        }
+
+        Vector2 originalA = a;
+        a = originalA + d * t0;
+        b = originalA + d * t1;
+        return true;
+    }
+
+    private static bool ClipTest(
+        float p,
+        float q,
+        ref float t0,
+        ref float t1)
+    {
+        if (Mathf.Abs(p) <= 0.000001f)
+            return q >= 0f;
+
+        float r = q / p;
+        if (p < 0f)
+        {
+            if (r > t1)
+                return false;
+            if (r > t0)
+                t0 = r;
+        }
+        else
+        {
+            if (r < t0)
+                return false;
+            if (r < t1)
+                t1 = r;
+        }
+
+        return true;
     }
 
     private static void DrawRotatedTexture(Rect rect, Texture texture, float degrees, float alpha)
@@ -1068,6 +1981,52 @@ public sealed class CelestialChartTableCartridge : IMiniGameCartridge, IOverlayR
     {
         if (_white == null)
             _white = Texture2D.whiteTexture;
+    }
+
+    private static void EnsureBoardPaperTexture()
+    {
+        if (_boardPaperTexture != null)
+            return;
+
+        const int size = 128;
+        const int seed = 0x5A17C0DE;
+        var texture = new Texture2D(size, size, TextureFormat.RGBA32, false)
+        {
+            name = "StarChartDraftingPaper",
+            filterMode = FilterMode.Bilinear,
+            wrapMode = TextureWrapMode.Repeat,
+            hideFlags = HideFlags.DontSave
+        };
+
+        var pixels = new Color32[size * size];
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                uint h = unchecked((uint)(seed ^ (x * 73856093) ^ (y * 19349663)));
+                h ^= h >> 13;
+                h *= 1274126177u;
+                float noise = (h & 0xFFFF) / 65535f;
+
+                float fiber =
+                    Mathf.Sin((x + y * 0.31f) * 0.21f) * 0.5f +
+                    Mathf.Sin((y - x * 0.17f) * 0.11f) * 0.5f;
+
+                float v = 0.93f + (noise - 0.5f) * 0.08f + fiber * 0.018f;
+                Color baseColor = new Color(0.075f, 0.078f, 0.070f, 1f);
+                Color c = new Color(
+                    Mathf.Clamp01(baseColor.r * v),
+                    Mathf.Clamp01(baseColor.g * v),
+                    Mathf.Clamp01(baseColor.b * v),
+                    1f);
+
+                pixels[y * size + x] = (Color32)c;
+            }
+        }
+
+        texture.SetPixels32(pixels);
+        texture.Apply(false, false);
+        _boardPaperTexture = texture;
     }
 
     #endregion

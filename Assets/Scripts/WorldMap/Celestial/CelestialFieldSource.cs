@@ -18,6 +18,35 @@ public sealed class CelestialFieldSource : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = true;
 
+    [Tooltip("Presentation only. Never grants evidence, validation, or annotations.")]
+    public bool debugShowAllConstellations;
+    [SerializeField] private GameObject debugRequester;
+    public string debugSelectedConstellationId;
+
+    [ContextMenu("Constellations / DEBUG Validate Selected")]
+    public void DebugValidateSelected()
+    {
+        if (!EnsureField()) return;
+        CelestialKnowledgeAuthority.TryValidateConstellation(debugRequester, Field, debugSelectedConstellationId, out string reason);
+        Debug.Log(reason, this);
+    }
+
+    [ContextMenu("Constellations / DEBUG Validate All Eligible")]
+    public void DebugValidateAllEligible()
+    {
+        if (!EnsureField()) return;
+        CelestialKnowledgeAuthority.ValidateAllEligibleForDebug(debugRequester, Field, out string reason);
+        Debug.Log(reason, this);
+    }
+
+    [ContextMenu("Constellations / DEBUG Reset Selected To Hidden")]
+    public void DebugResetSelected()
+    {
+        if (!EnsureField()) return;
+        CelestialKnowledgeAuthority.TryResetConstellationForDebug(debugRequester, Field, debugSelectedConstellationId, out string reason);
+        Debug.Log(reason, this);
+    }
+
     public CelestialGenerationSettings GenerationSettings => generationSettings;
     public CelestialField Field { get; private set; }
     public bool HasField => Field != null && Field.IsValid;
@@ -67,9 +96,13 @@ public sealed class CelestialFieldSource : MonoBehaviour
         string desiredHash = CelestialGenerationFingerprint.Build(desiredConfig);
 
         if (FieldMatches(worldSeed, worldBounds, desiredHash))
+        {
+            ApplyConstellationConfig();
             return true;
+        }
 
         Field = CelestialFieldGenerator.Create(worldSeed, worldBounds, desiredConfig);
+        ApplyConstellationConfig();
 
         if (!HasField)
         {
@@ -159,6 +192,19 @@ public sealed class CelestialFieldSource : MonoBehaviour
                RectApproximatelyEqual(Field.WorldBounds, worldBounds) &&
                string.Equals(Field.Identity.configHash, configHash, System.StringComparison.Ordinal) &&
                Field.Identity.generatorVersion == CelestialFieldGenerator.CurrentGeneratorVersion;
+    }
+
+    private void ApplyConstellationConfig()
+    {
+        if (!HasField) return;
+        CelestialChartStateSnapshot state = GameState.I != null ? GameState.I.celestialCharts : null;
+        bool sameWorld = state != null && state.constellationWorldSeed == Field.WorldSeed &&
+            state.constellationFieldHash == Field.Identity.configHash;
+        // Old chart saves retain the pre-Phase-7 derivative truth defaults.
+        var config = sameWorld && state.constellationGeneration != null ? state.constellationGeneration :
+            state != null && state.fragments != null && state.fragments.Count > 0 && state.constellationGeneration == null
+                ? new CelestialConstellationGenerationConfig() : generationSettings.constellations;
+        Field.ConfigureConstellations(config);
     }
 
     private void AutoWire()
