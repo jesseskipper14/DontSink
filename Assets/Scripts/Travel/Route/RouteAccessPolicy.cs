@@ -39,7 +39,7 @@ public static class RouteAccessPolicy
     /// <summary>
     /// Convenience helper for UI/hover: compute whether a route is blocked and (if so) why.
     ///
-    /// This mirrors the current restriction stack (max length, then known gate) so that
+    /// This mirrors the current route-knowledge gate so that
     /// tooltip/overlay messaging stays consistent with actual travel rules.
     /// </summary>
     public static bool TryGetBlockReason(
@@ -52,12 +52,7 @@ public static class RouteAccessPolicy
         float maxRouteLength,
         out string reason)
     {
-        // Max length gate first (matches restriction ordering)
-        if (!float.IsNaN(maxRouteLength) && routeLength > maxRouteLength)
-        {
-            reason = $"Route too long (max {maxRouteLength:0.00}, got {routeLength:0.00})";
-            return true;
-        }
+        // Length arguments remain for source compatibility; distance is unrestricted.
 
         if (!IsRouteKnown(player, fromStableId, toStableId, fromClusterId, toClusterId))
         {

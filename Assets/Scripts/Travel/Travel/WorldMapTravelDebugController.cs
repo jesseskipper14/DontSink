@@ -140,16 +140,8 @@ public sealed class WorldMapTravelDebugController : MonoBehaviour
 
     private float GetMaxRouteLength()
     {
-        if (bypassAllTravelValidation || bypassRouteRestrictions)
-            return float.PositiveInfinity;
-
-        if (useOverrideMaxRouteLength)
-            return maxRouteLengthOverride;
-
-        if (travelRules != null)
-            return travelRules.maxRouteLength;
-
-        return maxRouteLengthOverride;
+        // Legacy serialized knobs are retained, but no longer cap voyages.
+        return float.PositiveInfinity;
     }
 
     private void OnValidate()

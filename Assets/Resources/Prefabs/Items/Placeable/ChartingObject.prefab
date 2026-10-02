@@ -356,7 +356,7 @@ MonoBehaviour:
   obstructionLayers:
     serializedVersion: 2
     m_Bits: 16646143
-  recheckInterval: 0.15
+  recheckInterval: 1
 --- !u!114 &-7476209616757040773
 MonoBehaviour:
   m_ObjectHideFlags: 0

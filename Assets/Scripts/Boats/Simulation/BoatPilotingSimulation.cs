@@ -115,6 +115,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     private BoatPilotingRouteState _routeGuidance;
 
     public BoatPilotingState State => state;
+    public Boat Boat => boat;
     public BoatPilotingRouteState RouteGuidance => _routeGuidance;
     public BoatControlIntent CurrentIntent => _currentIntent;
 

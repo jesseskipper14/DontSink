@@ -11,6 +11,7 @@ public sealed class SkyClearanceRequirement : MonoBehaviour
     [SerializeField, Min(0.02f)] private float recheckInterval = 0.15f;
     private readonly Collider2D[] hits = new Collider2D[128];
     public float RecheckInterval => Mathf.Max(0.02f, recheckInterval);
+    public LayerMask ObstructionLayers => obstructionLayers;
     private Vector2 Center => (Vector2)transform.position + Vector2.up *
         (originHeight + Mathf.Max(0.1f, clearanceHeight) * 0.5f);
     private Vector2 Size => new Vector2(Mathf.Max(0.1f, clearanceWidth), Mathf.Max(0.1f, clearanceHeight));

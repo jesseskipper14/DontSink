@@ -60,6 +60,18 @@ public sealed class BoatOwnedItemEscapeTracker : MonoBehaviour
         if (!TryGetOwningBoat(out Boat boat))
             return;
 
+        // Pinned equipment is physically attached even when its FixedJoint2D
+        // suppresses contacts with the boat's containment trigger. Treat the
+        // live attachment as containment; loose items still use zone membership
+        // and the normal escape grace period after unpin/break/disable.
+        PlaceableBoatEquipment equipment = GetComponent<PlaceableBoatEquipment>();
+        if (equipment != null && equipment.IsDeployed && equipment.OwningBoat == boat)
+        {
+            _outsideTimer = 0f;
+            ownedItem.SetPhysicallyContainedByOwningBoat(true);
+            return;
+        }
+
         if (!TryResolveValidContainmentZone(
                 boat,
                 out BoatItemContainmentZone zone))

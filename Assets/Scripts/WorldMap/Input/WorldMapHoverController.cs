@@ -424,16 +424,7 @@ public class WorldMapHoverController : MonoBehaviour
         // Store a note line for display.
         info.notes.Add($"Star Map: {kState}");
 
-        // Max length from config, else debug fallback.
-        float maxLen = travelRules != null
-            ? travelRules.maxRouteLength
-            : (travelDebug != null ? travelDebug.MaxRouteLength : float.PositiveInfinity);
-
-        // Blocker 1: distance
-        if (info.length > maxLen)
-            info.blockers.Add($"Route too long (max {maxLen:0.00}, got {info.length:0.00})");
-
-        // Blocker 2: star map gate (cross-cluster only, because intra-cluster is known-by-default)
+        // Star map gate (cross-cluster only, because intra-cluster is known-by-default).
         // Here we treat ONLY Known as travelable knowledge for phase 1.
         if (fromRt.ClusterId != toRt.ClusterId && kState != RouteKnowledgeState.Known)
             info.blockers.Add("Route not fully known (requires Star Map: Known)");

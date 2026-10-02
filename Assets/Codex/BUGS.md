@@ -2,6 +2,17 @@
 
 Keep reports focused: trigger, evidence, likely effect, proposed pass, and verification. Code inspection is not a live reproduction. Resolved entries remain as history.
 
+## Implemented: pinned charting/telescope instruments destabilize boat physics
+
+- Reported: 2026-10-02. User observed oscillation immediately on load, followed by the boat flipping onto land; unpinning both instruments stopped the behavior.
+- Evidence: both instruments reuse `PlaceableBoatEquipment.RestoreDeployment`, which creates a FixedJoint2D connected to the boat Rigidbody with `enableCollision = true` and infinite break force/torque. This pinning code was not changed in the world-navigation debug checkpoint.
+- User confirmed overlap: raising the pinned instruments' colliders by 0.1 units stopped the behavior.
+- Change: shared deployment checks actual solid collider distances before joint creation; searches upward along boat-up in 0.01-unit steps for 0.02-unit clearance, capped at 0.25-unit lift. It restores the original pose and creates no joint if blocked. The support probe covers buffered poses. Connected boat-body collision is disabled while the joint exists; other collision relationships are retained. Manual pinning and persisted deployment restoration use the same path.
+- Automated verification: full production runtime compilation and 49 isolated Unity assertions pass, using the production deployment source and actual Unity 2D physics with adapted boat/item hosts. Checks include compound colliders, two instruments pinned together, a 25-degree boat rotation, 150 solver steps per orientation without boat translation/rotation, idempotent restore, unpin/redeploy, blocked correction with pose rollback, unrelated world obstruction, trigger-only equipment, and client rejection.
+- Awaiting live verification on the actual prefabs/save. Inspector and prefab data were not changed. See `Assets/Codex/For me/PINNED_INSTRUMENT_CLEARANCE.md`.
+- Follow-up regressions corrected: player-adjacent deployment was blocked because the new buffer queried all layers without honoring authored obstruction exclusions; pin collision suppression also stopped containment-trigger contacts, causing five-second ownership expiry. External buffer obstructions now respect the instrument's existing sky-obstruction mask, structural surfaces still get clearance, and the escape tracker recognizes a valid live pin as physical containment with retained mass contribution. Unpin/disabled joints return to ordinary escape tracking. Expanded validation passes 61 assertions with the production ownership, registry, zone, and tracker code; live ten-second pin/save-load checks remain required.
+- Verify: pin each instrument separately, then both; sail/rotate the boat and save/load deployed instruments. Compare joint anchors, collider contacts, and boat motion with instruments unpinned. Confirm unpin/pickup/redeployment and bell/anchor behavior remain intact.
+
 ## Open: old world-map snapshot survives New Game
 
 - Found: 2026-10-02; confirmed reset/restore paths by inspection, not reproduced in play mode.

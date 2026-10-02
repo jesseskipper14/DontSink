@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17fb6c9612c228946be0bf1b6d745092, type: 3}
-  m_Name: item_fuel
+  m_Name: item_fuel_infinite
   m_EditorClassIdentifier: 
-  itemId: item_fuel
-  displayName: Fuel
+  itemId: item_fuel_infinite
+  displayName: Infinite Fuel
   icon: {fileID: -5855910142737896650, guid: b9d2fba0a94bfeb4fb36632ae9bad6f0, type: 3}
   itemCategories: 256
   toolCapabilities: []
@@ -25,8 +25,8 @@ MonoBehaviour:
   unitExposedVolumeContribution: 0
   maxStack: 1
   hasCharges: 1
-  maxCharges: 100
-  stowableInInventory: 1
+  maxCharges: 1000000
+  stowableInInventory: 0
   droppable: 1
   tradable: 1
   basePrice: 10
@@ -64,5 +64,5 @@ MonoBehaviour:
   isModule: 0
   moduleDefinition: {fileID: 0}
   soldByBoatVendors: 0
-  worldPrefab: {fileID: 61859146187821167, guid: d900f436a84f6dc48a1a34edb6e512e3, type: 3}
+  worldPrefab: {fileID: 61859146187821167, guid: 4a4f24c99d1f17b4caa87a88e6b569d7, type: 3}
   worldPersistence: 0

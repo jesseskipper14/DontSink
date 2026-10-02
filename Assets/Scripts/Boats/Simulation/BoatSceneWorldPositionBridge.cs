@@ -37,9 +37,62 @@ public sealed class BoatSceneWorldPositionBridge : MonoBehaviour
     private Vector2 _routeRight;
     private float _worldUnitsPerLocalUnit;
     private bool _projectionReady;
+    private Vector2 _debugWorldOffset;
 
     public bool ProjectionReady => _projectionReady;
     public float WorldUnitsPerLocalUnit => _worldUnitsPerLocalUnit;
+    public BoatPilotingState PilotingState => pilotingState;
+    public int DebugWarpRevision { get; private set; }
+
+    public Vector2 ProjectNavigationVector(Vector2 localVector) =>
+        (_routeRight * localVector.x + _routeForward * localVector.y) * _worldUnitsPerLocalUnit;
+
+    public Vector2 ProjectNavigationPosition(Vector2 localPosition) =>
+        _payload.fromWorldPosition + ProjectNavigationVector(localPosition) + _debugWorldOffset;
+
+    public float GeographicHeadingDegrees
+    {
+        get
+        {
+            if (pilotingState == null || !_projectionReady) return 0f;
+            float radians = pilotingState.HeadingDegrees * Mathf.Deg2Rad;
+            Vector2 direction = ProjectNavigationVector(new Vector2(Mathf.Sin(radians), Mathf.Cos(radians)));
+            return Mathf.Repeat(Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg, 360f);
+        }
+    }
+
+    /// <summary>
+    /// Debug-only geographic relocation. The boat Rigidbody, crew, tethers, scene
+    /// terrain and physical travel sample remain untouched. Navigation continues
+    /// from the new location on the next simulation tick.
+    /// </summary>
+    public bool TryDebugWarp(Vector2 target, out string reason)
+    {
+        reason = string.Empty;
+        if (!GameplayAuthority.IsAuthoritative)
+        { reason = "Only simulation authority can warp."; return false; }
+        ResolveReferences();
+        RebuildProjection();
+        if (!_projectionReady || pilotingState == null || !isActiveAndEnabled)
+        { reason = "Warp requires an active BoatScene navigation projection."; return false; }
+        if (!IsFinite(target))
+        { reason = "Coordinates must be finite numbers."; return false; }
+
+        Vector2 offset = target - (_payload.fromWorldPosition + ProjectNavigationVector(pilotingState.NavigationPosition));
+        if (!IsFinite(offset))
+        { reason = "Coordinates exceed the navigation projection's numeric range."; return false; }
+        if (!WorldNavigationService.TrySetAuthoritativeTrueWorldPosition(target, WorldNavigationPositionSource.Debug))
+        { reason = "World navigation state is unavailable."; return false; }
+        // Do not jump local navigation: route guidance would generate every skipped
+        // control point. This offset is debug session state, not saved voyage state.
+        _debugWorldOffset = offset;
+        DebugWarpRevision++;
+        return true;
+    }
+
+    private static bool IsFinite(Vector2 value) =>
+        !float.IsNaN(value.x) && !float.IsInfinity(value.x) &&
+        !float.IsNaN(value.y) && !float.IsInfinity(value.y);
 
     private void Reset()
     {
@@ -63,7 +116,7 @@ public sealed class BoatSceneWorldPositionBridge : MonoBehaviour
         if (!GameplayAuthority.IsAuthoritative)
             return;
 
-        if (!_projectionReady)
+        if (!_projectionReady || !ReferenceEquals(_payload, GameState.I != null ? GameState.I.activeTravel : null))
         {
             RebuildProjection();
             if (!_projectionReady)
@@ -79,10 +132,7 @@ public sealed class BoatSceneWorldPositionBridge : MonoBehaviour
 
         Vector2 local = pilotingState.NavigationPosition;
 
-        Vector2 worldPosition =
-            _payload.fromWorldPosition +
-            _routeRight * (local.x * _worldUnitsPerLocalUnit) +
-            _routeForward * (local.y * _worldUnitsPerLocalUnit);
+        Vector2 worldPosition = ProjectNavigationPosition(local);
 
         WorldNavigationService.TrySetAuthoritativeTrueWorldPosition(
             worldPosition,
@@ -129,10 +179,16 @@ public sealed class BoatSceneWorldPositionBridge : MonoBehaviour
     private void RebuildProjection()
     {
         _projectionReady = false;
-        _payload =
+        TravelPayload currentPayload =
             GameState.I != null
                 ? GameState.I.activeTravel
                 : null;
+        if (!ReferenceEquals(_payload, currentPayload))
+        {
+            _debugWorldOffset = Vector2.zero;
+            DebugWarpRevision++;
+        }
+        _payload = currentPayload;
 
         if (_payload == null ||
             !_payload.hasWorldRouteCoordinates)
