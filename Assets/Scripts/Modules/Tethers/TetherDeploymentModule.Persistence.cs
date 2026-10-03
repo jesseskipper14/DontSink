@@ -137,6 +137,19 @@ public sealed partial class TetherDeploymentModule
                 worldRotation);
         }
 
+        if (rb != null && BoatTerrainStreamer2D.TryGet(gameObject.scene, out var terrain))
+        {
+            Vector2 beforeCorrection = rb.position;
+            if (!terrain.EnsureAndCorrectBody(rb))
+                Debug.LogError("Restored tether payload has no safe streamed ground coverage.", this);
+            else if (Vector2.Distance(beforeCorrection, rb.position) > .001f)
+            {
+                Transform start = tetherExitPoint != null ? tetherExitPoint : transform;
+                deployedLengthMeters = Mathf.Max(deployedLengthMeters,
+                    Vector2.Distance(start.position, payload.TetherAnchor.position) + .05f);
+            }
+        }
+
         if (tetherConstraint != null)
         {
             tetherConstraint.SetDeployedLength(

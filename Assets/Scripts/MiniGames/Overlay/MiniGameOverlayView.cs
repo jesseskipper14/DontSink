@@ -13,6 +13,8 @@ namespace MiniGames
         public float dotSize = 10f;
 
         private Texture2D _white;
+        private Vector2 _cartridgeScroll;
+        private IOverlayRenderable _lastRenderable;
 
         private void Awake()
         {
@@ -55,7 +57,30 @@ namespace MiniGames
             var renderable = host.ActiveCartridge as IOverlayRenderable;
             if (renderable != null)
             {
-                renderable.DrawOverlayGUI(panel);
+                if (!ReferenceEquals(renderable, _lastRenderable))
+                {
+                    _cartridgeScroll = Vector2.zero;
+                    _lastRenderable = renderable;
+                }
+                // These fixed-pixel control layouts need room for their columns
+                // and buttons. Small Game views scroll instead of shrinking text
+                // or giving cartridges negative content rectangles.
+                const float minimumWidth = 1040f;
+                const float minimumHeight = 800f;
+                if (panel.width < minimumWidth || panel.height < minimumHeight)
+                {
+                    // Leave room for both scrollbars to avoid hiding the last row.
+                    Rect content = new Rect(0f, 0f,
+                        Mathf.Max(minimumWidth, panel.width - 18f),
+                        Mathf.Max(minimumHeight, panel.height - 18f));
+                    _cartridgeScroll = GUI.BeginScrollView(panel, _cartridgeScroll, content);
+                    try { renderable.DrawOverlayGUI(content); }
+                    finally { GUI.EndScrollView(); }
+                    // The cartridge's own X may be horizontally offscreen.
+                    if (GUI.Button(new Rect(panel.xMax - 30f, panel.y - 28f, 30f, 24f), "X"))
+                        host.Close();
+                }
+                else renderable.DrawOverlayGUI(panel);
                 return; // don't draw StarObs debug stuff on top
             }
 

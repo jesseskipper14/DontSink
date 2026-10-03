@@ -110,6 +110,17 @@ public sealed class WinchCartridge :
     public void DrawOverlayGUI(
         Rect panel)
     {
+        Rect content = new Rect(0f, 0f, Mathf.Max(1f, panel.width - 18f), Mathf.Max(panel.height, _contentHeight));
+        _scroll = GUI.BeginScrollView(panel, _scroll, content, false, true);
+        try { _contentHeight = DrawScrollableContent(content); }
+        finally { GUI.EndScrollView(); }
+    }
+
+    private Vector2 _scroll;
+    private float _contentHeight = 1000f;
+
+    private float DrawScrollableContent(Rect panel)
+    {
         const float pad =
             18f;
 
@@ -147,7 +158,7 @@ public sealed class WinchCartridge :
             _requestedClose =
                 true;
 
-            return;
+            return _contentHeight;
         }
 
         y +=
@@ -529,6 +540,7 @@ public sealed class WinchCartridge :
                 width,
                 40f),
             "Live tether tension is intentionally not shown yet; Unity's current joint readback is known to report zero in this setup.");
+        return y + 50f;
     }
 
     private void TryLower()

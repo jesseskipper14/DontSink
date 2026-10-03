@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using MiniGames;
 using UnityEngine;
 using WorldMap.Player.StarMap;
@@ -83,6 +84,12 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
     private Vector2 _dragStartMousePosition;
 
     private string _statusLine;
+    private bool _showCoordinateDebug;
+    private bool _hasDebugPoint, _hasDebugHover;
+    private Vector2 _debugPoint, _debugHover;
+    private string _debugPointStatus;
+    private Vector2 _layersScroll, _detailsScroll;
+    private float _layersContentHeight = 1000f, _detailsContentHeight = 1000f;
 
     private static Texture2D _whiteTex;
 
@@ -387,6 +394,15 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         if (_sharedViewport != null)
             DrawSharedReferenceReticle(localRect);
 
+        if (_showCoordinateDebug && _hasDebugPoint)
+        {
+            Vector2 point = GraphToLocal(_debugPoint, localRect);
+            GUI.color = Color.cyan;
+            GUI.DrawTexture(new Rect(point.x - 8, point.y - 1, 16, 2), _whiteTex);
+            GUI.DrawTexture(new Rect(point.x - 1, point.y - 8, 2, 16), _whiteTex);
+            GUI.color = old;
+        }
+
         GUI.EndGroup();
 
         GUI.color = old;
@@ -394,19 +410,38 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
 
     private void DrawNodeDetailsPanel(Rect rect)
     {
+        DrawScrollablePanel(rect, ref _detailsScroll, ref _detailsContentHeight, DrawNodeDetailsContent);
+    }
+
+    private void DrawScrollablePanel(Rect rect, ref Vector2 scroll, ref float height, Func<Rect, float> draw)
+    {
         DrawPanelBox(rect);
+        Rect viewport = new Rect(rect.x + 4f, rect.y + 4f, rect.width - 8f, rect.height - 8f);
+        float width = Mathf.Max(1f, viewport.width - 18f);
+        scroll = GUI.BeginScrollView(viewport, scroll,
+            new Rect(0f, 0f, width, Mathf.Max(viewport.height, height)), false, true);
+        try
+        {
+            height = draw(new Rect(0f, 0f, width, height));
+        }
+        finally { GUI.EndScrollView(); }
+    }
+
+    private float DrawNodeDetailsContent(Rect rect)
+    {
 
         float x = rect.x + 10f;
         float y = rect.y + 10f;
         float w = rect.width - 20f;
 
+        DrawCoordinateDebug(ref y, x, w);
         GUI.Label(new Rect(x, y, w, 22f), "Selected Node");
         y += 28f;
 
         if (!TryGetSelectedRuntime(out var selectedRt))
         {
             GUI.Label(new Rect(x, y, w, 40f), "No node selected.");
-            return;
+            return y + 50f;
         }
 
         var state = selectedRt.State;
@@ -460,10 +495,61 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         y += 40f;
 
         string routeText = BuildRouteInfoText(lockReason, travelReason);
-        GUI.Label(new Rect(x, y, w, rect.yMax - y - 10f), routeText);
+        float routeHeight = Mathf.Max(40f, GUI.skin.label.CalcHeight(new GUIContent(routeText), w));
+        GUI.Label(new Rect(x, y, w, routeHeight), routeText);
+        return y + routeHeight + 10f;
     }
 
     #endregion
+
+    private void DrawCoordinateDebug(ref float y, float x, float w)
+    {
+        _showCoordinateDebug = GUI.Toggle(new Rect(x, y, w, 22f), _showCoordinateDebug,
+            "DEBUG: Coordinates / warp");
+        y += 26f;
+        if (!_showCoordinateDebug) return;
+        GUI.Label(new Rect(x, y, w, 36f), _hasDebugHover
+            ? $"Cursor: {CoordinateText(_debugHover)}\nRight-click map to pick a point."
+            : "Right-click map to pick a point.");
+        y += 40f;
+        GUI.Label(new Rect(x, y, w, 38f), _hasDebugPoint
+            ? $"Point X: {_debugPoint.x.ToString("R", CultureInfo.InvariantCulture)}\nPoint Y: {_debugPoint.y.ToString("R", CultureInfo.InvariantCulture)}"
+            : "No debug point selected.");
+        y += 42f;
+        bool enabled = GUI.enabled;
+        GUI.enabled = enabled && _hasDebugPoint;
+        if (GUI.Button(new Rect(x, y, w * .45f, 24f), "Copy X, Y"))
+            GUIUtility.systemCopyBuffer = CoordinateText(_debugPoint);
+        GUI.enabled = enabled && _hasDebugPoint && GameplayAuthority.IsAuthoritative;
+        if (GUI.Button(new Rect(x + w * .47f, y, w * .53f, 24f), "Warp to point"))
+            WarpToDebugPoint();
+        GUI.enabled = enabled;
+        y += 28f;
+        GUI.Label(new Rect(x, y, w, 42f), string.IsNullOrEmpty(_debugPointStatus)
+            ? "Warp needs an active voyage.\nLocal boat stays in place."
+            : _debugPointStatus);
+        y += 46f;
+    }
+
+    private static string CoordinateText(Vector2 point) =>
+        point.x.ToString("R", CultureInfo.InvariantCulture) + ", " +
+        point.y.ToString("R", CultureInfo.InvariantCulture);
+
+    private void WarpToDebugPoint()
+    {
+        BoatSceneWorldPositionBridge selected = null;
+        foreach (var bridge in UnityEngine.Object.FindObjectsByType<BoatSceneWorldPositionBridge>(FindObjectsSortMode.None))
+        {
+            if (!bridge.isActiveAndEnabled || !bridge.ProjectionReady) continue;
+            if (selected != null)
+            { _debugPointStatus = "Multiple active boats: use F4 to inspect."; return; }
+            selected = bridge;
+        }
+        if (selected == null)
+        { _debugPointStatus = "Warp requires an active BoatScene voyage."; return; }
+        _debugPointStatus = selected.TryDebugWarp(_debugPoint, out string reason)
+            ? "Warped to " + CoordinateText(_debugPoint) + "." : reason;
+    }
 
     #region Selected Node Details
 
@@ -597,7 +683,11 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
 
     private void DrawHeatmapPanel(Rect rect)
     {
-        DrawPanelBox(rect);
+        DrawScrollablePanel(rect, ref _layersScroll, ref _layersContentHeight, DrawHeatmapContent);
+    }
+
+    private float DrawHeatmapContent(Rect rect)
+    {
 
         float x = rect.x + 10f;
         float y = rect.y + 10f;
@@ -611,7 +701,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
                 "Show Topography"
             );
 
-            y += 14f;
+            y += 22f;
 
             GUI.enabled = _showTopographyDebug && _topographyDebugSource.HasClassificationTexture;
 
@@ -621,7 +711,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
                 "Show Classes"
             );
 
-            y += 14f;
+            y += 22f;
 
             GUI.enabled = _showTopographyDebug && _topographyDebugSource.HasBiomeTexture;
 
@@ -632,7 +722,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
             );
 
             GUI.enabled = true;
-            y += 14f;
+            y += 22f;
 
             GUI.enabled = _showTopographyDebug && _topographyDebugSource.HasContourTexture;
 
@@ -643,7 +733,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
             );
 
             GUI.enabled = true;
-            y += 14f;
+            y += 22f;
 
             WorldMapTopographyStats stats = _topographyDebugSource.Stats;
 
@@ -655,7 +745,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
                 $"Shelf: {stats.ShelfWater01:P0} Shallow: {stats.ShallowWater01:P0}"
             );
 
-            y += 64f;
+            y += 72f;
 
             if (GUI.Button(new Rect(x, y, w, 24f), "Regenerate Topography"))
                 _topographyDebugSource.Generate();
@@ -875,6 +965,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
                 $"Effects catalog:\nE:{_effectCatalog.Events.Count}  O:{_effectCatalog.Outcomes.Count}  B:{_effectCatalog.Buffs.Count}"
             );
         }
+        return y + 62f;
     }
 
     private void DrawHeatmapDropdown(ref float y, float x, float w)
@@ -2240,6 +2331,21 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
 
         Vector2 mouse = e.mousePosition;
         bool inside = viewport.Contains(mouse);
+        _debugHover = ViewportToGraph(mouse, viewport);
+        WorldTopology topology = WorldTopologyService.Current;
+        _hasDebugHover = inside && topology.IsValid && topology.Bounds.Contains(_debugHover);
+        if (_showCoordinateDebug && e.type == EventType.MouseDown && e.button == 1 && inside)
+        {
+            if (_hasDebugHover)
+            {
+                _debugPoint = _debugHover;
+                _hasDebugPoint = true;
+                _debugPointStatus = string.Empty;
+            }
+            else _debugPointStatus = "Pick inside the finite world map.";
+            e.Use();
+            return;
+        }
 
         if (e.type == EventType.ScrollWheel && inside)
         {

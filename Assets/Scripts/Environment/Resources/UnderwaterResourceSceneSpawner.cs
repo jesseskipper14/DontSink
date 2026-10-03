@@ -90,8 +90,18 @@ public sealed class UnderwaterResourceSceneSpawner : MonoBehaviour
         UnsubscribeFromGroundNotifier();
     }
 
-    private void Start()
+    private System.Collections.IEnumerator Start()
     {
+        float deadline = Time.unscaledTime + 10f;
+        while (groundSampler != null && groundSampler.UsesStreamedGround && !groundSampler.IsGroundReady)
+        {
+            if (Time.unscaledTime >= deadline)
+            {
+                Debug.LogError("Underwater resources are waiting for streamed ground setup; initial spawn skipped.", this);
+                yield break;
+            }
+            yield return null;
+        }
         if (spawnOnStart)
             Respawn();
     }
@@ -140,6 +150,7 @@ public sealed class UnderwaterResourceSceneSpawner : MonoBehaviour
 
     private void HandleGroundGenerated()
     {
+        if (groundSampler != null && groundSampler.UsesStreamedGround) return;
         if (!respawnWhenGroundRegenerates)
             return;
 

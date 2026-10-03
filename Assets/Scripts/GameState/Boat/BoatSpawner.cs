@@ -60,12 +60,23 @@ public sealed class BoatSpawner : MonoBehaviour
 
         AssignBoatIdentity(gs, boatGO);
         RestoreBoatTransform(gs, boatGO);
+        if (boatGO.TryGetComponent<BoatPilotingSimulation>(out var piloting))
+            piloting.RebasePhysicalTravelAfterTeleport();
+        BoatTerrainStreamer2D terrain = null;
+        if (BoatTerrainStreamer2D.TryGet(gameObject.scene, out terrain) &&
+            !terrain.Prepare(boatGO.transform.position))
+        {
+            LogError("Streamed terrain setup is incomplete; boat restore stopped before tether/item physics. Check profile, material, and legacy collider settings.");
+            Destroy(boatGO);
+            return;
+        }
         RestoreModulesAndPower(gs, boatGO);
         RestoreTetherState(gs, boatGO);
         RestoreCompartments(gs, boatGO);
         RestoreAccessStates(gs, boatGO);
         //RestoreCargo(gs, boatGO);
         RestoreLooseItems(gs, boatGO);
+        if (terrain != null) terrain.CorrectRestoredExternalItems();
         RefreshAutoRegistration(boatGO);
 
         if (gs != null)

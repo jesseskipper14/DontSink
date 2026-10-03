@@ -6,6 +6,13 @@ using UnityEngine;
 public sealed class GeneratedGroundSampler2D : MonoBehaviour
 {
     [SerializeField] private EdgeCollider2D edge;
+    [Tooltip("Optional streamed provider. Leave blank for existing NodeScene single-edge ground.")]
+    [SerializeField] private MonoBehaviour streamedSource;
+    public MonoBehaviour StreamedSource => streamedSource;
+    public bool UsesStreamedGround => streamedSource != null && streamedSource is IStreamedGroundSource2D;
+    public bool IsGroundReady => UsesStreamedGround ? ((IStreamedGroundSource2D)streamedSource).IsReady : edge != null && edge.enabled;
+    public bool EnsureCoverage(float x, float radius) => !UsesStreamedGround ||
+        ((IStreamedGroundSource2D)streamedSource).EnsureCoverage(x, radius);
 
     private Vector2[] worldPoints = Array.Empty<Vector2>();
     private readonly List<IGroundGeneratedNotifier> _notifiers = new();
@@ -36,6 +43,7 @@ public sealed class GeneratedGroundSampler2D : MonoBehaviour
 
     public void Refresh()
     {
+        if (UsesStreamedGround) return;
         if (edge == null)
             edge = GetComponent<EdgeCollider2D>();
 
@@ -56,6 +64,7 @@ public sealed class GeneratedGroundSampler2D : MonoBehaviour
 
     public bool TryGetWorldSpan(out float minX, out float maxX)
     {
+        if (UsesStreamedGround) return ((IStreamedGroundSource2D)streamedSource).TryGetWorldSpan(out minX, out maxX);
         EnsureCache();
 
         if (worldPoints.Length < 2)
@@ -79,6 +88,7 @@ public sealed class GeneratedGroundSampler2D : MonoBehaviour
 
         groundY = 0f;
         slopeDegrees = 0f;
+        if (UsesStreamedGround) return ((IStreamedGroundSource2D)streamedSource).TrySampleGround(worldX, out groundY, out slopeDegrees);
 
         if (worldPoints.Length < 2)
             return false;

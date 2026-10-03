@@ -2,6 +2,21 @@
 
 Keep reports focused: trigger, evidence, likely effect, proposed pass, and verification. Code inspection is not a live reproduction. Resolved entries remain as history.
 
+## Follow-up: fixed-height UI panels can overflow small game windows
+
+- Reported: 2026-10-03. Map-table screenshot shows layer controls and node/travel controls drawing below their panel and window bounds. Other UIs may have the same pattern; they have not been audited in this pass.
+- World Map fix: both sidebars now clip and scroll independently, calculate content height including expanded debug controls, and give topography toggles non-overlapping spacing. Applies to standalone World Map and the map table's World Map page. Production compilation passes; visual/input checks remain in Play Mode.
+- Proposed contained follow-up: check Star Chart and other cartridge/module panels at the user's smaller Game view size; use bounded scrolling where content exceeds available height. Preserve central map/page registration.
+- Verify: reach bottom controls with the wheel/scrollbar, open debug sections/dropdowns, switch nodes with differing buff/event counts, and confirm no clicks leak to UI underneath.
+- Follow-up implemented: shared cartridge overlay now scrolls a minimum 1040 × 800 layout on small windows; Winch and Star Chart details have their own vertical scrolling. Production compilation passes. Play Mode input/visual checks remain, especially nested list scrolling and chart drag interactions. See `Assets/Codex/For me/CARTRIDGE_SMALL_WINDOW_LAYOUT.md`. Separate observation runner and other non-cartridge UIs have not been redesigned.
+
+## Investigate: Unity Inspector null targets during assembly reload
+
+- Reported: 2026-10-03. Actual Editor.log places GameObjectInspector.OnDisable NullReferenceException and MeshRenderer/GameObject/Transform Inspector SerializedObjectNotCreatableException between Begin MonoManager ReloadAssembly and the end of domain reload.
+- Evidence: those exception stacks contain UnityEditor Inspector code, with no project script frame identifying a gameplay failure. A stale/destroyed Inspector target is a plausible cause, not a confirmed identification of the object.
+- Recovery to try: unlock any Inspector displaying transient runtime objects, select a persistent scene object or asset, clear Console, then repeat Play Mode. If necessary close/reopen the affected Inspector tab. No automatic selection/layout manipulation or exception suppression was added.
+- Verify: whether the errors recur with an unlocked Inspector targeting a stable object; collect fresh stacks and triggering action if they do. Avoid treating these editor exceptions as evidence that terrain or map gameplay failed.
+
 ## Open: water-bottom binders reference generators rather than fill-bottom providers
 
 - Found: dynamic-terrain Phase 0 audit, 2026-10-03; serialized references and interface casts verified, no runtime reproduction.

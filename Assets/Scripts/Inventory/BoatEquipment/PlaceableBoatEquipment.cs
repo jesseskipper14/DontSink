@@ -15,6 +15,8 @@ public sealed class PlaceableBoatEquipment : MonoBehaviour, IWorldItemPickupPart
     private readonly Collider2D[] hits = new Collider2D[64];
     private FixedJoint2D pin;
     private Boat deployedBoat;
+    private RigidbodyInterpolation2D unpinnedInterpolation;
+    private bool hasPinnedInterpolation;
     private float nextSupportCheck;
     public Boat OwningBoat => GetComponent<BoatOwnedItem>().OwningBoat;
     public bool IsDeployed => isActiveAndEnabled && pin != null && pin.enabled && deployedBoat != null &&
@@ -72,6 +74,11 @@ public sealed class PlaceableBoatEquipment : MonoBehaviour, IWorldItemPickupPart
         ReleasePin();
         if (!TryEstablishPinClearance()) return false;
         deployedBoat = boat;
+        Rigidbody2D body = GetComponent<Rigidbody2D>();
+        unpinnedInterpolation = body.interpolation;
+        hasPinnedInterpolation = true;
+        // Connected bodies must render at the same point between physics ticks.
+        body.interpolation = boat.rb.interpolation;
         pin = gameObject.AddComponent<FixedJoint2D>();
         pin.enabled = false;
         pin.autoConfigureConnectedAnchor = true;
@@ -188,11 +195,22 @@ public sealed class PlaceableBoatEquipment : MonoBehaviour, IWorldItemPickupPart
         if (pin != null) { pin.enabled = false; Destroy(pin); }
         pin = null;
         deployedBoat = null;
+        if (hasPinnedInterpolation)
+        {
+            GetComponent<Rigidbody2D>().interpolation = unpinnedInterpolation;
+            hasPinnedInterpolation = false;
+        }
     }
 
     private void Update()
     {
         if (pin != null && !IsDeployed && GameplayAuthority.IsAuthoritative) ReleasePin();
+        if (IsDeployed)
+        {
+            Rigidbody2D body = GetComponent<Rigidbody2D>();
+            if (body.interpolation != deployedBoat.rb.interpolation)
+                body.interpolation = deployedBoat.rb.interpolation;
+        }
         if (IsDeployed && GameplayAuthority.IsAuthoritative && Time.unscaledTime >= nextSupportCheck)
         {
             nextSupportCheck = Time.unscaledTime + 0.25f;

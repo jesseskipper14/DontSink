@@ -99,6 +99,17 @@ public sealed class PlayerSceneContextRestorer : MonoBehaviour
             yield break;
         }
 
+        if (BoatTerrainStreamer2D.TryGet(gameObject.scene, out var terrain))
+        {
+            float terrainDeadline = Time.unscaledTime + Mathf.Max(1f, maxWaitForBoatSeconds);
+            while (!terrain.IsReady && Time.unscaledTime < terrainDeadline) yield return null;
+            var body = GetComponent<Rigidbody2D>();
+            if (!terrain.IsReady || body != null && !terrain.EnsureAndCorrectBody(body))
+            {
+                LogWarning("Cannot restore unboarded player until streamed terrain is ready.");
+                yield break;
+            }
+        }
         ForceUnboard();
         _restored = true;
     }

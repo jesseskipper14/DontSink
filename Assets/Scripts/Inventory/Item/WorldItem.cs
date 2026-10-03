@@ -25,6 +25,10 @@ public sealed class WorldItem :
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = false;
 
+    [Header("Physics Safety")]
+    [Tooltip("Use swept collision detection for dynamic dropped items so small colliders cannot skip thin ground during long falls.")]
+    [SerializeField] private bool preventGroundTunneling = true;
+
     private BoatOwnedItem _ownedItem;
     private Rigidbody2D _rb;
     private ItemInstance _subscribedItemInstance;
@@ -478,6 +482,8 @@ public sealed class WorldItem :
     {
         if (_rb == null)
             _rb = GetComponent<Rigidbody2D>();
+        if (preventGroundTunneling && _rb != null && _rb.bodyType == RigidbodyType2D.Dynamic)
+            _rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
     }
 
     private void BindItemMassChanges(ItemInstance instance)

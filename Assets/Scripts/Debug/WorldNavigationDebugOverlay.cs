@@ -147,6 +147,11 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
                     GUILayout.Label($"Voyage revision {strip.Revision}; seed {strip.Seed}; samples {strip.SampleCount}; rebases {strip.RebaseCount}");
                 }
                 else GUILayout.Label("Voyage strip: inactive (no authoritative voyage sample)");
+                if (BoatTerrainStreamer2D.TryGet(_simulation.gameObject.scene, out var terrain))
+                {
+                    GUILayout.Label($"Streamed floor: {(terrain.IsReady ? "ready" : "waiting for setup")}; loaded {terrain.LoadedCount}, committed {terrain.CommittedCount}, interests {terrain.InterestCount}");
+                    GUILayout.Label($"Ground fill bottom: {terrain.LastUsedBottomY:0.0}");
+                }
                 Boat boat = _simulation.Boat;
                 if (boat != null && boat.rb != null)
                     GUILayout.Label($"BoatScene X/Y: {boat.rb.position.x:0.000}, {boat.rb.position.y:0.000}");
@@ -174,7 +179,7 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
         if (GUILayout.Button("Warp geography")) Warp();
         GUI.enabled = previousEnabled;
         if (!string.IsNullOrEmpty(_status)) GUILayout.Label(_status);
-        GUILayout.Label("Warp is session-only. Local terrain stays unchanged until streaming lands.");
+        GUILayout.Label("Warp is session-only. Seabed depth is fixed in this checkpoint; geographic depth comes next.");
         GUILayout.Label($"{toggleKey}: toggle   |   Escape: close");
         GUILayout.EndScrollView();
         GUILayout.EndArea();

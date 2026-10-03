@@ -1072,12 +1072,23 @@ public sealed partial class CelestialChartTableCartridge : IMiniGameCartridge, I
     private void DrawDetails(Rect rect, CelestialChartStateSnapshot state, Rect boardRect)
     {
         DrawPanelBox(rect);
+        Rect content = new Rect(0f, 0f, rect.width - 18f, Mathf.Max(rect.height, _detailsHeight));
+        _detailsScroll = GUI.BeginScrollView(rect, _detailsScroll, content, false, true);
+        try { _detailsHeight = DrawDetailsContent(content, state, boardRect); }
+        finally { GUI.EndScrollView(); }
+    }
+
+    private Vector2 _detailsScroll;
+    private float _detailsHeight = 1000f;
+
+    private float DrawDetailsContent(Rect rect, CelestialChartStateSnapshot state, Rect boardRect)
+    {
 
         float x = rect.x + 10f;
         float y = rect.y + 10f;
         float w = rect.width - 20f;
 
-        if (DrawCelestialSubjectDetails(rect, state)) return;
+        if (DrawCelestialSubjectDetails(rect, state)) return 650f;
 
         GUI.Label(new Rect(x, y, w, 22f), "STAR CHART BOARD");
         y += 28f;
@@ -1105,7 +1116,7 @@ public sealed partial class CelestialChartTableCartridge : IMiniGameCartridge, I
             !TryGetFragment(state, _selectedFragmentId, out CelestialChartFragmentSnapshot fragment))
         {
             GUI.Label(new Rect(x, y, w, 54f), "No fragment selected.\nDrag one from the folio or click one on the board.");
-            return;
+            return y + 64f;
         }
 
         state.TryGetPlacement(fragment.fragmentId, out CelestialChartBoardPlacementSnapshot placement);
@@ -1122,7 +1133,7 @@ public sealed partial class CelestialChartTableCartridge : IMiniGameCartridge, I
         if (placement == null)
         {
             GUI.Label(new Rect(x, y, w, 52f), "This fragment is still in the folio.\nDrag its row onto the board to place it.");
-            return;
+            return y + 62f;
         }
 
         int groupCount = CountGroupMembers(state, placement.groupId);
@@ -1236,13 +1247,14 @@ public sealed partial class CelestialChartTableCartridge : IMiniGameCartridge, I
 
         y += 38f;
         GUI.Label(
-            new Rect(x, y, w, Mathf.Max(40f, rect.yMax - y - 8f)),
+            new Rect(x, y, w, 126f),
             "Controls\n" +
             "• Left-drag loose scrap: move\n" +
             "• Right-drag loose scrap: free rotate\n" +
             "• Left-drag empty board: pan\n" +
             "• Mouse wheel: zoom both map pages\n" +
             "• C: toggle world comparison");
+        return y + 136f;
     }
 
     private void DrawRotateButton(
