@@ -56,6 +56,7 @@ public static class CelestialSurveySequenceTracker
     public static string BuildRegionKey(CelestialField field, Vector2 worldPosition, float regionSizeWorld)
     {
         float size = Mathf.Max(0.5f, regionSizeWorld);
+        if (field != null) worldPosition = new WorldTopology(field.WorldBounds).Normalize(worldPosition);
         int x = Mathf.FloorToInt(worldPosition.x / size);
         int y = Mathf.FloorToInt(worldPosition.y / size);
         int seed = field != null ? field.WorldSeed : 0;

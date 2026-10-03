@@ -81,7 +81,11 @@ public sealed class WorldMapKnowledgeState
         int minY;
         int maxY;
 
+        var topology = new WorldTopology(worldBounds);
+        worldCenter = topology.Normalize(worldCenter);
         WorldCircleToCellBounds(worldCenter, radiusWorld, out minX, out maxX, out minY, out maxY);
+        if (worldCenter.x - radiusWorld < worldBounds.xMin || worldCenter.x + radiusWorld >= worldBounds.xMax)
+        { minX = 0; maxX = width - 1; }
 
         float radiusSqr = radiusWorld * radiusWorld;
 
@@ -93,7 +97,7 @@ public sealed class WorldMapKnowledgeState
             for (int x = minX; x <= maxX; x++)
             {
                 Vector2 cellCenter = CellCenterWorld(x, y);
-                if ((cellCenter - worldCenter).sqrMagnitude > radiusSqr)
+                if (topology.Delta(worldCenter, cellCenter).sqrMagnitude > radiusSqr)
                     continue;
 
                 int i = Index(x, y);
@@ -204,7 +208,8 @@ public sealed class WorldMapKnowledgeState
         if (!IsValid)
             return false;
 
-        if (!worldBounds.Contains(worldPosition))
+        worldPosition = new WorldTopology(worldBounds).Normalize(worldPosition);
+        if (!new WorldTopology(worldBounds).ContainsY(worldPosition.y))
             return false;
 
         float u = Mathf.InverseLerp(worldBounds.xMin, worldBounds.xMax, worldPosition.x);

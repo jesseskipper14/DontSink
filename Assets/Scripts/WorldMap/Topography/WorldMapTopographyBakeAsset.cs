@@ -8,6 +8,7 @@ public sealed class WorldMapTopographyBakeAsset : ScriptableObject
     [Header("Identity")]
     public int worldSeed;
     public string settingsFingerprint;
+    public int topologyGenerationVersion = 2;
 
     [Header("Source Info")]
     public WorldMapTopographySettings settingsSource;
@@ -106,7 +107,8 @@ public sealed class WorldMapTopographyBakeAsset : ScriptableObject
             worldBounds,
             heights,
             minRaw,
-            maxRaw
+            maxRaw,
+            topologyGenerationVersion
         );
     }
 
@@ -145,6 +147,7 @@ public sealed class WorldMapTopographyBakeAsset : ScriptableObject
         }
 
         worldSeed = seed;
+        topologyGenerationVersion = field.GenerationVersion;
         settingsSource = settings;
         settingsFingerprint = WorldMapTopographyFingerprint.Build(seed, settings);
 

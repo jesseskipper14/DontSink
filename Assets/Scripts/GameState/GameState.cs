@@ -377,6 +377,7 @@ public sealed class GameState : MonoBehaviour
     public void SetWorldMapSnapshot(WorldMapSaveSnapshot snapshot, string reason = "")
     {
         worldMapSnapshot = snapshot ?? new WorldMapSaveSnapshot();
+        WorldTopologyService.UseSnapshot(worldMapSnapshot);
         EnsureWorldMapSnapshotDefaults();
 
         if (verboseLogging)

@@ -298,6 +298,9 @@ public class WorldMapGraphGenerator : MonoBehaviour
     [ContextMenu("Generate Map Graph")]
     public void Generate()
     {
+        if (topographySource == null) topographySource = FindAnyObjectByType<WorldMapTopographyDebugSource>();
+        if (topographySource != null && topographySource.Settings != null)
+            WorldTopologyService.ConfigureGenerationBounds(new Rect(-topographySource.Settings.worldSize * 0.5f, topographySource.Settings.worldSize));
         bool generated = false;
 
         if (generationMode == WorldMapGraphGenerationMode.TopographyFirst)
@@ -394,6 +397,8 @@ public class WorldMapGraphGenerator : MonoBehaviour
             Debug.LogWarning("[WorldMapGraphGenerator] Topography source has no valid field/settings.", this);
             return false;
         }
+
+        WorldTopologyService.ConfigureGenerationBounds(field.WorldBounds);
 
         float effectiveSeaLevel = topographySource.EffectiveSeaLevel01;
         if (effectiveSeaLevel <= 0f)
@@ -616,7 +621,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
                 float tx = grid <= 1 ? 0f : sx / (float)(grid - 1);
                 float ox = Mathf.Lerp(-radiusU, radiusU, tx);
 
-                float u = Mathf.Clamp01(centerU + ox);
+                float u = Mathf.Repeat(centerU + ox, 1f);
                 float v = Mathf.Clamp01(centerV + oy);
 
                 WorldMapTopographyClass cls = ClassifyHeight(
@@ -802,7 +807,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
 
         for (int i = 0; i < selected.Count; i++)
         {
-            if (Vector2.SqrMagnitude(position - selected[i].position) < minSqr)
+            if (WorldTopologyService.Delta(position, selected[i].position).sqrMagnitude < minSqr)
                 return false;
         }
 
@@ -854,19 +859,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
         if (selected == null || selected.Count == 0 || targetClusterCount <= 0)
             return centers;
 
-        int first = 0;
-        float minX = float.PositiveInfinity;
-
-        for (int i = 0; i < selected.Count; i++)
-        {
-            float x = selected[i].position.x;
-            if (x < minX)
-            {
-                minX = x;
-                first = i;
-            }
-        }
-
+        int first = 0; // Candidate quality order, independent of the arbitrary longitude seam.
         centers.Add(first);
 
         while (centers.Count < targetClusterCount && centers.Count < selected.Count)
@@ -883,7 +876,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
 
                 for (int c = 0; c < centers.Count; c++)
                 {
-                    float d = Vector2.SqrMagnitude(selected[i].position - selected[centers[c]].position);
+                    float d = WorldTopologyService.Delta(selected[i].position, selected[centers[c]].position).sqrMagnitude;
                     if (d < nearest)
                         nearest = d;
                 }
@@ -911,7 +904,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
 
         for (int i = 0; i < points.Count; i++)
         {
-            float d = Vector2.SqrMagnitude(position - points[i]);
+            float d = WorldTopologyService.Delta(position, points[i]).sqrMagnitude;
             if (d < bestD)
             {
                 bestD = d;
@@ -929,8 +922,8 @@ public class WorldMapGraphGenerator : MonoBehaviour
     {
         indices.Sort((a, b) =>
         {
-            Vector2 da = candidates[a].position - center;
-            Vector2 db = candidates[b].position - center;
+            Vector2 da = WorldTopologyService.Delta(center, candidates[a].position);
+            Vector2 db = WorldTopologyService.Delta(center, candidates[b].position);
 
             float aa = Mathf.Atan2(da.y, da.x);
             float ab = Mathf.Atan2(db.y, db.x);
@@ -946,6 +939,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
         string localStableId,
         System.Random rng)
     {
+        pos = WorldTopologyService.Normalize(pos);
         float dock0 = Mathf.Clamp(1f + Jitter(rng, buildingJitter), 0f, 4f);
         float trade0 = Mathf.Clamp(1f + Jitter(rng, buildingJitter), 0f, 4f);
 
@@ -1181,9 +1175,9 @@ public class WorldMapGraphGenerator : MonoBehaviour
         int id,
         Queue<int> queue)
     {
-        if (x < 0 || x >= width || y < 0 || y >= height)
+        if (y < 0 || y >= height)
             return;
-
+        x = WorldTopology.WrapIndex(x, width);
         int idx = y * width + x;
 
         if (!land[idx] || ids[idx] >= 0)
@@ -1221,9 +1215,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
 
             for (int ox = -radius; ox <= radius; ox++)
             {
-                int x = centerX + ox;
-                if (x < 0 || x >= width)
-                    continue;
+                int x = WorldTopology.WrapIndex(centerX + ox, width);
 
                 int id = landmassIds[y * width + x];
                 if (id < 0)
@@ -1289,10 +1281,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
 
     private static float DistanceToUvEdge(float u, float v)
     {
-        return Mathf.Min(
-            Mathf.Min(u, 1f - u),
-            Mathf.Min(v, 1f - v)
-        );
+        return Mathf.Min(v, 1f - v);
     }
 
     private static float SignedHash01(int seed, int x, int y, int salt)
@@ -1386,7 +1375,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
                 for (int ri = 0; ri < remaining.Count; ri++)
                 {
                     int b = remaining[ri];
-                    float d = Vector2.SqrMagnitude(g.nodes[a].position - g.nodes[b].position);
+                    float d = WorldTopologyService.Delta(g.nodes[a].position, g.nodes[b].position).sqrMagnitude;
 
                     if (d < bestD)
                     {
@@ -1423,7 +1412,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
             if (g.HasEdge(a, b))
                 continue;
 
-            float d = Vector2.Distance(g.nodes[a].position, g.nodes[b].position);
+            float d = WorldTopologyService.Distance(g.nodes[a].position, g.nodes[b].position);
             if (d > 6.0f && rng.NextDouble() < 0.7)
                 continue;
 
@@ -1453,7 +1442,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
             if (a == b || g.HasEdge(a, b))
                 continue;
 
-            float d = Vector2.Distance(g.nodes[a].position, g.nodes[b].position);
+            float d = WorldTopologyService.Distance(g.nodes[a].position, g.nodes[b].position);
             if (d > maxDistance)
                 continue;
 
@@ -1469,7 +1458,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
 
         foreach (int id in nodeIds)
         {
-            float d = Vector2.SqrMagnitude(g.nodes[id].position - point);
+            float d = WorldTopologyService.Delta(g.nodes[id].position, point).sqrMagnitude;
             if (d < bestD)
             {
                 bestD = d;
@@ -1493,7 +1482,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
 
             for (int p = 0; p < c; p++)
             {
-                float d = Vector2.SqrMagnitude(centers[c] - centers[p]);
+                float d = WorldTopologyService.Delta(centers[c], centers[p]).sqrMagnitude;
                 if (d < bestD)
                 {
                     bestD = d;
@@ -1527,16 +1516,13 @@ public class WorldMapGraphGenerator : MonoBehaviour
             if (a == b)
                 continue;
 
-            if (Mathf.Abs(a - b) > neighborRange && rng.NextDouble() < 0.85)
-                continue;
-
             int na = reps[a];
             int nb = reps[b];
 
             if (g.HasEdge(na, nb))
                 continue;
 
-            float worldD = Vector2.Distance(centers[a], centers[b]);
+            float worldD = WorldTopologyService.Distance(centers[a], centers[b]);
             if (worldD > neighborRange * 1.2f * 12f && rng.NextDouble() < 0.85)
                 continue;
 
@@ -1574,7 +1560,7 @@ public class WorldMapGraphGenerator : MonoBehaviour
             if (g.HasEdge(na, nb))
                 continue;
 
-            float d = Vector2.Distance(centers[a], centers[b]);
+            float d = WorldTopologyService.Distance(centers[a], centers[b]);
             if (d > maxDistance)
                 continue;
 
@@ -1588,23 +1574,15 @@ public class WorldMapGraphGenerator : MonoBehaviour
         if (g.nodes.Count == 0)
             return;
 
-        int left = 0;
-        int right = 0;
-        float minX = float.PositiveInfinity;
-        float maxX = float.NegativeInfinity;
-
+        int left = new System.Random(g.seed).Next(g.nodes.Count);
+        int right = left;
+        float farthest = -1f;
         for (int i = 0; i < g.nodes.Count; i++)
         {
-            float x = g.nodes[i].position.x;
-            if (x < minX)
+            float distance = WorldTopologyService.Distance(g.nodes[left].position, g.nodes[i].position);
+            if (distance > farthest)
             {
-                minX = x;
-                left = i;
-            }
-
-            if (x > maxX)
-            {
-                maxX = x;
+                farthest = distance;
                 right = i;
             }
         }
@@ -1638,6 +1616,8 @@ public class WorldMapGraphGenerator : MonoBehaviour
 public class MapGraph
 {
     public int seed;
+    public int generationVersion = WorldTopology.GenerationVersion;
+    public Rect worldBounds;
     public List<MapNode> nodes = new();
     public List<MapEdge> edges = new();
 
@@ -1646,6 +1626,7 @@ public class MapGraph
     public MapGraph(int seed)
     {
         this.seed = seed;
+        worldBounds = WorldTopologyService.Current.Bounds;
     }
 
     public int AddNode(MapNode node)

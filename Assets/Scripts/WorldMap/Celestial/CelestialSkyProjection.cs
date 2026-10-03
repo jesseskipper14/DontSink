@@ -105,7 +105,7 @@ public static class CelestialSkyProjection
         if (querySize.x <= 0f || querySize.y <= 0f || metricSpan <= 0f)
             return false;
 
-        Vector2 delta = objectWorldPosition - observerWorldPosition;
+        Vector2 delta = new WorldTopology(fieldBounds).Delta(observerWorldPosition, objectWorldPosition);
 
         // Preserve the old authored query/cull envelope so this projection cleanup does not also
         // become an accidental star-density retune.
@@ -155,7 +155,7 @@ public static class CelestialSkyProjection
         signedWindowPosition = default;
 
         if (settings == null || !WorldMapCoordinateSpace.IsValidBounds(fieldBounds)) return false;
-        signedWindowPosition = (objectWorldPosition - observerWorldPosition) /
+        signedWindowPosition = (new WorldTopology(fieldBounds).Delta(observerWorldPosition, objectWorldPosition)) /
             (GetMetricWorldSpan(fieldBounds, settings) * 0.5f);
 
         float aspect = Mathf.Max(0.01f, viewportAspect);
@@ -226,8 +226,8 @@ public static class CelestialSkyProjection
         float aspect = Mathf.Max(0.01f, viewportAspect);
         Vector2 center = new Vector2(0.5f, settings.SkyViewportCenterY);
         Vector2 scale = new Vector2(1f / span, aspect / span);
-        a = center + Vector2.Scale(from - observer, scale);
-        b = center + Vector2.Scale(to - observer, scale);
+        a = center + Vector2.Scale(new WorldTopology(fieldBounds).Delta(observer, from), scale);
+        b = center + Vector2.Scale(new WorldTopology(fieldBounds).Nearest(from, observer) + new WorldTopology(fieldBounds).Delta(from, to) - observer, scale);
         return TryClipSegmentToRect(ref a, ref b, GetSceneViewportRect(settings));
     }
 

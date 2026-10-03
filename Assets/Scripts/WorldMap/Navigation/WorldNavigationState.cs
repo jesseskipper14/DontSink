@@ -31,6 +31,7 @@ public sealed class WorldNavigationState
         WorldNavigationPositionSource source,
         string anchorNodeId)
     {
+        position = WorldTopologyService.Normalize(position);
         string normalizedAnchor =
             anchorNodeId ?? string.Empty;
 

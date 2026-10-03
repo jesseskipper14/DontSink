@@ -17,7 +17,7 @@ public static class WorldNavigationService
         if (state == null || !state.HasTrueWorldPosition)
             return false;
 
-        position = state.TrueWorldPosition;
+        position = WorldTopologyService.Normalize(state.TrueWorldPosition);
         return true;
     }
 
@@ -30,6 +30,10 @@ public static class WorldNavigationService
     {
         if (!GameplayAuthority.IsAuthoritative)
             return false;
+
+        var topology = WorldTopologyService.Current;
+        if (!WorldTopology.IsFinite(position.x) || !WorldTopology.IsFinite(position.y) ||
+            topology.IsValid && !topology.ContainsY(position.y)) return false;
 
         WorldNavigationState state = ResolveState();
         if (state == null)
@@ -52,6 +56,9 @@ public static class WorldNavigationService
         Vector2 position,
         string anchorNodeStableId = null)
     {
+        var topology = WorldTopologyService.Current;
+        if (!WorldTopology.IsFinite(position.x) || !WorldTopology.IsFinite(position.y) ||
+            topology.IsValid && !topology.ContainsY(position.y)) return false;
         WorldNavigationState state = ResolveState();
         if (state == null)
             return false;

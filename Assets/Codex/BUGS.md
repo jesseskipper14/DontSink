@@ -2,6 +2,22 @@
 
 Keep reports focused: trigger, evidence, likely effect, proposed pass, and verification. Code inspection is not a live reproduction. Resolved entries remain as history.
 
+## Follow-up: multiplayer authority and transaction hardening
+
+- Found: 2026-10-02, analysis-only MP audit after wrapping. No multiplayer implementation was made.
+- Full findings and proposed contained passes: `Assets/Codex/For me/MULTIPLAYER_INFRASTRUCTURE_AUDIT.md`.
+- Highest priorities: Modules/Boat Power ticks and commands lack consistent host gates; module/storage UI loses or ignores requester context; inventory and station claims need host transactions; market item/offer changes precede final payment with no rollback on failure.
+- Existing local risk: `TradeEffectApplier.TryApply` can return failure after items/offers/embargo state have changed if final treasury application fails, or after earlier lines changed when a later removal fails. Reproduce with a controlled failing store/treasury fixture before choosing the transaction implementation.
+- Proposed pass: Modules/Boat Power first, then identity/bootstrap and a minimal two-instance integration, followed by shared transactions and lifecycle. Keep the complete evidence in the audit instead of duplicating every finding here.
+- Verify: authority-negative tests, stale/repeated/concurrent request cases, two actors with distinct inventories, two-instance shared state, and disconnect/scene/save lifecycle cases specified in the audit.
+
+## Follow-up: wrapped legacy-world bounds and live seam checks
+
+- Found: wrapping pass, 2026-10-02; compatibility limits and live checks, not a reproduced regression.
+- Evidence: wrapping needs valid bounds from published generation, saved graph/topography metadata, or runtime topography. A graph-only legacy world lacking every bounds source cannot establish a real circumference. Old saved height payloads are preserved and can retain their original terrain discontinuity.
+- Proposed contained pass: inspect real legacy saves before deciding whether a bounds migration or explicit unsupported-save message is needed. Do not invent a circumference or regenerate saved geography to hide the issue.
+- Verify: `Assets/Codex/For me/WRAPPED_WORLD_CHECKPOINT.md` morning checklist, including ordinary and old saves, map/chart selection, multi-monitor panning, physical sailing, and telescope surveys at both longitude edges. Physical polar blockers/local terrain streaming remain later terrain/content work.
+
 ## Follow-up: remaining inventory/build UI ownership before multiplayer
 
 - Found: camera ownership pass, 2026-10-02; source inspection, not a multiplayer reproduction.

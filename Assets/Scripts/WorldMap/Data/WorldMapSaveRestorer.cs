@@ -99,6 +99,10 @@ public static class WorldMapSaveRestorer
         if (snapshot.graph.nodes == null || snapshot.graph.nodes.Count == 0)
             return false;
 
+        if (snapshot.topography != null && new WorldTopology(snapshot.topography.ToWorldBounds()).IsValid)
+            WorldTopologyService.ConfigureGenerationBounds(snapshot.topography.ToWorldBounds());
+        else if (new WorldTopology(snapshot.graph.worldBounds).IsValid)
+            WorldTopologyService.ConfigureGenerationBounds(snapshot.graph.worldBounds);
         MapGraph graph = RestoreGraph(snapshot.graph);
         if (graph == null)
             return false;
@@ -219,6 +223,8 @@ public static class WorldMapSaveRestorer
             return null;
 
         var graph = new MapGraph(snapshot.seed);
+        graph.generationVersion = snapshot.topologyGenerationVersion;
+        if (new WorldTopology(snapshot.worldBounds).IsValid) graph.worldBounds = snapshot.worldBounds;
 
         for (int i = 0; i < snapshot.nodes.Count; i++)
         {
@@ -231,7 +237,7 @@ public static class WorldMapSaveRestorer
                 id = ns.nodeIndex,
                 localStableId = ns.localStableId,
                 clusterId = ns.clusterId,
-                position = ns.Position,
+                position = WorldTopologyService.Normalize(ns.Position),
                 kind = ParseEnum(ns.kind, NodeKind.Island),
                 isPrimary = ns.isPrimary,
                 displayName = ns.displayName,

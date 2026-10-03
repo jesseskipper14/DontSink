@@ -125,7 +125,7 @@ public sealed class WorldMapPOISource : MonoBehaviour
                 stableId = saved.stableId,
                 poiDefId = saved.poiDefId,
                 displayName = saved.displayName,
-                position = saved.Position,
+                position = WorldTopologyService.Normalize(saved.Position),
                 height01 = saved.height01,
                 depth01 = saved.depth01,
                 score = saved.score,

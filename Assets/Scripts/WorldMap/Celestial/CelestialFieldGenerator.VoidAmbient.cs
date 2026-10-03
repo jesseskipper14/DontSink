@@ -13,8 +13,8 @@ public static partial class CelestialFieldGenerator
         if (field == null || !field.IsValid || results == null || fadeDistance <= 0f ||
             field.Config.ambientStarsPer1000WorldArea <= 0f) return;
         Rect bounds = field.WorldBounds;
-        float left = Mathf.Max(query.xMin, bounds.xMin - fadeDistance);
-        float right = Mathf.Min(query.xMax, bounds.xMax + fadeDistance);
+        float left = query.xMin;
+        float right = query.xMax;
         float bottom = Mathf.Max(query.yMin, bounds.yMin - fadeDistance);
         float top = Mathf.Min(query.yMax, bounds.yMax + fadeDistance);
         if (left >= right || bottom >= top) return;
@@ -38,7 +38,7 @@ public static partial class CelestialFieldGenerator
                 field.Config.ambientVisualVariantCount, 0f, 0f, candidates);
             foreach (CelestialObject candidate in candidates)
             {
-                if (bounds.Contains(candidate.WorldPosition) || !query.Contains(candidate.WorldPosition)) continue;
+                if (candidate.WorldPosition.y >= bounds.yMin && candidate.WorldPosition.y <= bounds.yMax || !query.Contains(candidate.WorldPosition)) continue;
                 float weight = GetVoidAmbientWeight(bounds, candidate.WorldPosition, fadeDistance);
                 if (weight <= 0f) continue;
                 var rng = CreateObjectRng(field, x, y, VoidThinningChannel, candidate.LocalIndex);
@@ -56,7 +56,7 @@ public static partial class CelestialFieldGenerator
     public static float GetVoidAmbientWeight(Rect bounds, Vector2 position, float fadeDistance)
     {
         if (fadeDistance <= 0f) return 0f;
-        Vector2 nearest = new Vector2(Mathf.Clamp(position.x, bounds.xMin, bounds.xMax),
+        Vector2 nearest = new Vector2(position.x,
             Mathf.Clamp(position.y, bounds.yMin, bounds.yMax));
         float distance = Vector2.Distance(position, nearest);
         return 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(distance / fadeDistance));

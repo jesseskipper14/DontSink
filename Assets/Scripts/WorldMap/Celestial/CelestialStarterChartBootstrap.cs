@@ -178,8 +178,8 @@ public static class CelestialStarterChartBootstrap
 
         landmarks.Sort((a, b) =>
         {
-            float da = (a.WorldPosition - startPosition).sqrMagnitude;
-            float db = (b.WorldPosition - startPosition).sqrMagnitude;
+            float da = new WorldTopology(field.WorldBounds).Delta(startPosition, a.WorldPosition).sqrMagnitude;
+            float db = new WorldTopology(field.WorldBounds).Delta(startPosition, b.WorldPosition).sqrMagnitude;
             int distanceOrder = da.CompareTo(db);
             if (distanceOrder != 0)
                 return distanceOrder;
@@ -198,7 +198,7 @@ public static class CelestialStarterChartBootstrap
         {
             CelestialObject landmark = landmarks[i];
             anchorIds.Add(landmark.StableId);
-            Encapsulate(ref minX, ref maxX, ref minY, ref maxY, landmark.WorldPosition);
+            Encapsulate(ref minX, ref maxX, ref minY, ref maxY, new WorldTopology(field.WorldBounds).Nearest(landmark.WorldPosition, startPosition));
         }
 
         Rect patchBounds = Rect.MinMaxRect(
@@ -241,8 +241,10 @@ public static class CelestialStarterChartBootstrap
         for (int i = 0; i < queried.Count; i++)
         {
             CelestialObject obj = queried[i];
-            if (obj == null || !patchBounds.Contains(obj.WorldPosition))
+            if (obj == null)
                 continue;
+            Vector2 nearby = new WorldTopology(field.WorldBounds).Nearest(obj.WorldPosition, startPosition);
+            if (!patchBounds.Contains(nearby)) continue;
 
             bool isAnchor = anchorIds.Contains(obj.StableId);
             bool includeContext =
@@ -260,8 +262,8 @@ public static class CelestialStarterChartBootstrap
                 colorClass = obj.ColorClass,
                 celestialWorldPosition = obj.WorldPosition,
                 observedInstrumentPosition01 = new Vector2(
-                    Mathf.InverseLerp(patchBounds.xMin, patchBounds.xMax, obj.WorldPosition.x),
-                    Mathf.InverseLerp(patchBounds.yMin, patchBounds.yMax, obj.WorldPosition.y)),
+                    Mathf.InverseLerp(patchBounds.xMin, patchBounds.xMax, nearby.x),
+                    Mathf.InverseLerp(patchBounds.yMin, patchBounds.yMax, nearby.y)),
                 brightness01 = obj.Brightness01,
                 prominence01 = obj.Prominence01,
                 isPatternAnchor = isAnchor
@@ -324,11 +326,13 @@ public static class CelestialStarterChartBootstrap
                 if (mark == null)
                     continue;
 
+                Vector2 nearby = WorldTopologyService.Nearest(mark.celestialWorldPosition, fragment.observationDatumWorldPosition);
+
                 if (!hasPoint)
                 {
                     hasPoint = true;
-                    minX = maxX = mark.celestialWorldPosition.x;
-                    minY = maxY = mark.celestialWorldPosition.y;
+                    minX = maxX = nearby.x;
+                    minY = maxY = nearby.y;
                 }
                 else
                 {
@@ -337,7 +341,7 @@ public static class CelestialStarterChartBootstrap
                         ref maxX,
                         ref minY,
                         ref maxY,
-                        mark.celestialWorldPosition);
+                        nearby);
                 }
             }
         }

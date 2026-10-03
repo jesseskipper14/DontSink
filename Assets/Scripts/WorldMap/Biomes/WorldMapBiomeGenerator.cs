@@ -27,7 +27,7 @@ public static class WorldMapBiomeGenerator
                 float u = w <= 1 ? 0f : x / (float)(w - 1);
 
                 WorldMapBiomeMetrics metrics = CalculateMetrics(field, settings, u, v);
-                int picked = PickBiome(field.Seed, x, y, metrics, settings, catalog);
+                int picked = PickBiome(field.Seed, WorldTopology.WrapIndex(x, Mathf.Max(1, w - 1)), y, metrics, settings, catalog);
 
                 indices[y * w + x] = picked;
             }
@@ -105,7 +105,7 @@ public static class WorldMapBiomeGenerator
                 float tx = grid <= 1 ? 0f : sx / (float)(grid - 1);
                 float ox = Mathf.Lerp(-radiusU, radiusU, tx);
 
-                float u = Mathf.Clamp01(centerU + ox);
+                float u = Mathf.Repeat(centerU + ox, 1f);
                 float v = Mathf.Clamp01(centerV + oy);
 
                 float height = field.Sample01UV(u, v);
@@ -204,9 +204,7 @@ public static class WorldMapBiomeGenerator
                             if (ox == 0 && oy == 0)
                                 continue;
 
-                            int xx = x + ox;
-                            if (xx < 0 || xx >= width)
-                                continue;
+                            int xx = WorldTopology.WrapIndex(x + ox, Mathf.Max(1, width - 1));
 
                             int idx = src[yy * width + xx];
                             if (idx >= 0 && idx < biomeCount)

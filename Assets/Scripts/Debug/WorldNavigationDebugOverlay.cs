@@ -25,6 +25,7 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
     private bool _hasSample;
     private int _warpRevision;
     private double _physicalDistance, _worldDistance, _elapsed;
+    private Vector2 _scroll;
 
     public bool IsEscapeOpen => _open && isActiveAndEnabled;
     public int EscapePriority => 200;
@@ -111,8 +112,21 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
     private void DrawContents()
     {
         GUILayout.BeginArea(new Rect(12f, 28f, windowRect.width - 24f, windowRect.height - 38f));
+        _scroll = GUILayout.BeginScrollView(_scroll);
         bool hasWorld = WorldNavigationService.TryGetTrueWorldPosition(out Vector2 world);
         GUILayout.Label(hasWorld ? $"True world X/Y: {world.x:0.000}, {world.y:0.000}" : "True world X/Y: unavailable");
+        var topology = WorldTopologyService.Current;
+        if (topology.IsValid)
+        {
+            GUILayout.Label($"X wraps [{topology.Bounds.xMin:0.##}, {topology.Bounds.xMax:0.##}); Y finite [{topology.Bounds.yMin:0.##}, {topology.Bounds.yMax:0.##}]");
+            Vector2 west = new Vector2(topology.Bounds.xMin + 1f, 0f), east = new Vector2(topology.Bounds.xMax - 1f, 0f);
+            GUILayout.Label($"Seam probe: raw {Vector2.Distance(west, east):0.##} / wrapped {topology.Distance(west, east):0.##}");
+            if (_bridge != null && _bridge.PilotingState != null && _bridge.ProjectionReady)
+            {
+                Vector2 raw = _bridge.ProjectNavigationPosition(_bridge.PilotingState.NavigationPosition);
+                GUILayout.Label($"Unwrapped projection: {raw.x:0.###}, {raw.y:0.###}");
+            }
+        }
         GUILayout.Label($"Authority: {(GameplayAuthority.IsAuthoritative ? "local authority" : "client / read only")}");
         bool ready = _bridge != null && _bridge.isActiveAndEnabled && _bridge.ProjectionReady && _bridge.PilotingState != null;
         if (ready)
@@ -154,6 +168,7 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
         if (!string.IsNullOrEmpty(_status)) GUILayout.Label(_status);
         GUILayout.Label("Warp is session-only. Local terrain stays unchanged until streaming lands.");
         GUILayout.Label($"{toggleKey}: toggle   |   Escape: close");
+        GUILayout.EndScrollView();
         GUILayout.EndArea();
     }
 

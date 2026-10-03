@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -273,8 +273,23 @@ public sealed class MapOverlayController : MonoBehaviour, IEscapeClosable
             if (e.a < 0 || e.a >= g.nodes.Count) continue;
             if (e.b < 0 || e.b >= g.nodes.Count) continue;
 
-            Vector2 a = GraphToPanel(g.nodes[e.a].position, min, max);
-            Vector2 b = GraphToPanel(g.nodes[e.b].position, min, max);
+            Vector2 from = WorldTopologyService.Normalize(g.nodes[e.a].position);
+            Vector2 to = WorldTopologyService.Nearest(g.nodes[e.b].position, from);
+            var topology = WorldTopologyService.Current;
+            if (topology.IsValid && (to.x < topology.Bounds.xMin || to.x > topology.Bounds.xMax))
+            {
+                float edge = to.x < topology.Bounds.xMin ? topology.Bounds.xMin : topology.Bounds.xMax;
+                float t = (edge - from.x) / (to.x - from.x);
+                Vector2 split = Vector2.Lerp(from, to, t);
+                _edgeA.Add(GraphToPanel(from, min, max));
+                _edgeB.Add(GraphToPanel(split, min, max));
+                float shift = to.x < topology.Bounds.xMin ? topology.Bounds.width : -topology.Bounds.width;
+                _edgeA.Add(GraphToPanel(split + new Vector2(shift, 0f), min, max));
+                _edgeB.Add(GraphToPanel(to + new Vector2(shift, 0f), min, max));
+                continue;
+            }
+            Vector2 a = GraphToPanel(from, min, max);
+            Vector2 b = GraphToPanel(to, min, max);
 
             _edgeA.Add(a);
             _edgeB.Add(b);
@@ -375,7 +390,7 @@ public sealed class MapOverlayController : MonoBehaviour, IEscapeClosable
             return false;
         }
 
-        float routeLen = Vector2.Distance(generator.graph.nodes[fromIndex].position, generator.graph.nodes[toIndex].position);
+        float routeLen = WorldTopologyService.Distance(generator.graph.nodes[fromIndex].position, generator.graph.nodes[toIndex].position);
         float maxLen = travelDebug != null ? travelDebug.MaxRouteLength :
                        travelRules != null ? travelRules.maxRouteLength : float.NaN;
 

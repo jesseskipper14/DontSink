@@ -10,6 +10,9 @@ public sealed class WorldMapTopographySettings : ScriptableObject
     [Header("World Bounds")]
     [Tooltip("Graph-space size covered by the generated topography. This changes the physical map extent, not texture cost by itself.")]
     public Vector2 worldSize = new Vector2(400f, 250f);
+    [Header("Polar Terrain Foundation")]
+    [Range(0f, .25f)] public float polarIceBandFraction = .06f;
+    [Range(.5f, 1f)] public float polarIceHeight01 = .99f;
 
     [Header("Height Field")]
     [Tooltip("Resolution of the generated height sample grid. Higher values preserve more terrain detail but increase generation cost.")]

@@ -225,7 +225,7 @@ public sealed class NodeTravelController : MonoBehaviour
         Vector2 toWorldPosition =
             generator.graph.nodes[toIndex].position;
 
-        float routeLength = Vector2.Distance(
+        float routeLength = WorldTopologyService.Distance(
             fromWorldPosition,
             toWorldPosition);
 

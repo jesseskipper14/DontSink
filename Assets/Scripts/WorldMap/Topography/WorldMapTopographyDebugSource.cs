@@ -515,7 +515,8 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
             snapshot.ToWorldBounds(),
             heights,
             snapshot.minRaw,
-            snapshot.maxRaw
+            snapshot.maxRaw,
+            snapshot.generatorVersion == "topography_v3_wrapped_x" ? 3 : 2
         );
 
         if (!field.IsValid)

@@ -1736,7 +1736,7 @@ public sealed partial class CelestialChartTableCartridge : IMiniGameCartridge, I
         // paper/ink texture before board placement rotation is applied. Reproduce that
         // exact transform here so evidence snapping compares the same geometry the player sees.
         float recordedRotation = NormalizeSignedDegrees(fragment.recordedInstrumentRotationDegrees);
-        Vector2 rotatedWorld = RotateVector(mark.celestialWorldPosition, recordedRotation);
+        Vector2 rotatedWorld = RotateVector(WorldTopologyService.Nearest(mark.celestialWorldPosition, fragment.observationDatumWorldPosition), recordedRotation);
         return rotatedWorld - visual.RotatedCelestialBounds.center;
     }
 

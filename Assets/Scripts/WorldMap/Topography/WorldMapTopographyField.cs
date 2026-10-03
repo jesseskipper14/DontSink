@@ -8,6 +8,7 @@ public sealed class WorldMapTopographyField
     public int Width { get; }
     public int Height { get; }
     public Rect WorldBounds { get; }
+    public int GenerationVersion { get; }
 
     public float MinRaw { get; }
     public float MaxRaw { get; }
@@ -19,12 +20,14 @@ public sealed class WorldMapTopographyField
         Rect worldBounds,
         float[] height01,
         float minRaw,
-        float maxRaw)
+        float maxRaw,
+        int generationVersion = 2)
     {
         Seed = seed;
         Width = Mathf.Max(1, width);
         Height = Mathf.Max(1, height);
         WorldBounds = worldBounds;
+        GenerationVersion = generationVersion;
         _height01 = height01;
         MinRaw = minRaw;
         MaxRaw = maxRaw;
@@ -39,7 +42,7 @@ public sealed class WorldMapTopographyField
         if (!IsValid)
             return 0f;
 
-        x = Mathf.Clamp(x, 0, Width - 1);
+        x = WorldTopology.WrapIndex(x, GenerationVersion >= 3 ? Mathf.Max(1, Width - 1) : Width);
         y = Mathf.Clamp(y, 0, Height - 1);
 
         return _height01[y * Width + x];
@@ -50,7 +53,7 @@ public sealed class WorldMapTopographyField
         if (!IsValid)
             return 0f;
 
-        float u = Mathf.InverseLerp(WorldBounds.xMin, WorldBounds.xMax, worldPos.x);
+        float u = (new WorldTopology(WorldBounds).NormalizeX(worldPos.x) - WorldBounds.xMin) / WorldBounds.width;
         float v = Mathf.InverseLerp(WorldBounds.yMin, WorldBounds.yMax, worldPos.y);
 
         return Sample01UV(u, v);
@@ -61,7 +64,7 @@ public sealed class WorldMapTopographyField
         if (!IsValid)
             return 0f;
 
-        u = Mathf.Clamp01(u);
+        u = Mathf.Repeat(u, 1f);
         v = Mathf.Clamp01(v);
 
         float gx = u * (Width - 1);

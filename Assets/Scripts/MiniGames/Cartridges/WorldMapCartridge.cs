@@ -1757,10 +1757,11 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
                 {
                     if (!TryGetConstellationWorldPoint(edge.fromStarStableId, out Vector2 from) ||
                         !TryGetConstellationWorldPoint(edge.toStarStableId, out Vector2 to)) continue;
-                    Vector2 a = GraphToLocal(from, localRect);
-                    Vector2 b = GraphToLocal(to, localRect);
-                    if (CelestialSkyProjection.TryClipSegmentToRect(ref a, ref b, localRect))
-                        DrawLine(a, b, branchColor, 1.5f);
+                    DrawGeographicSegment(from, to, localRect, (a, b) =>
+                    {
+                        if (CelestialSkyProjection.TryClipSegmentToRect(ref a, ref b, localRect))
+                            DrawLine(a, b, branchColor, 1.5f);
+                    });
                 }
             }
         }
@@ -1818,13 +1819,11 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
             if (e.a < 0 || e.a >= g.nodes.Count) continue;
             if (e.b < 0 || e.b >= g.nodes.Count) continue;
 
-            Vector2 a = GraphToLocal(g.nodes[e.a].position, localRect);
-            Vector2 b = GraphToLocal(g.nodes[e.b].position, localRect);
-
             Color c = GetRouteColor(e.a, e.b);
             float thickness = GetRouteThickness(e.a, e.b);
 
-            DrawLine(a, b, c, thickness);
+            DrawGeographicSegment(g.nodes[e.a].position, g.nodes[e.b].position,
+                localRect, (a, b) => DrawLine(a, b, c, thickness));
         }
     }
 
@@ -1843,26 +1842,31 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         if (toRt.NodeIndex < 0 || toRt.NodeIndex >= g.nodes.Count)
             return;
 
-        Vector2 a = GraphToLocal(g.nodes[fromRt.NodeIndex].position, localRect);
-        Vector2 b = GraphToLocal(g.nodes[toRt.NodeIndex].position, localRect);
+        DrawGeographicSegment(g.nodes[fromRt.NodeIndex].position, g.nodes[toRt.NodeIndex].position,
+            localRect, (a, b) =>
+            {
+                DrawDashedLine(a, b, new Color(0.15f, 1f, 0.45f, 0.22f), 8f, 18f, 8f);
+                DrawDashedLine(a, b, new Color(0.25f, 1f, 0.35f, 0.95f), 3f, 18f, 8f);
+            });
+    }
 
-        DrawDashedLine(
-            a,
-            b,
-            new Color(0.15f, 1f, 0.45f, 0.22f),
-            width: 8f,
-            dashLength: 18f,
-            gapLength: 8f
-        );
-
-        DrawDashedLine(
-            a,
-            b,
-            new Color(0.25f, 1f, 0.35f, 0.95f),
-            width: 3f,
-            dashLength: 18f,
-            gapLength: 8f
-        );
+    // One finite sheet: seam-crossing connections stop at one edge and resume at the other.
+    private void DrawGeographicSegment(Vector2 from, Vector2 to, Rect localRect,
+        System.Action<Vector2, Vector2> draw)
+    {
+        from = WorldTopologyService.Normalize(from);
+        to = WorldTopologyService.Nearest(to, from);
+        var topology = WorldTopologyService.Current;
+        if (topology.IsValid && (to.x < topology.Bounds.xMin || to.x > topology.Bounds.xMax))
+        {
+            float edge = to.x < topology.Bounds.xMin ? topology.Bounds.xMin : topology.Bounds.xMax;
+            Vector2 split = Vector2.Lerp(from, to, (edge - from.x) / (to.x - from.x));
+            draw(GraphToLocal(from, localRect), GraphToLocal(split, localRect));
+            Vector2 shift = new Vector2(to.x < topology.Bounds.xMin ? topology.Bounds.width : -topology.Bounds.width, 0f);
+            draw(GraphToLocal(split + shift, localRect), GraphToLocal(to + shift, localRect));
+            return;
+        }
+        draw(GraphToLocal(from, localRect), GraphToLocal(to, localRect));
     }
 
     private static void DrawDashedLine(
@@ -3027,7 +3031,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         if (!hasEdge)
             return "No direct edge to selected node.";
 
-        float routeLen = Vector2.Distance(
+        float routeLen = WorldTopologyService.Distance(
             _generator.graph.nodes[currentRt.NodeIndex].position,
             _generator.graph.nodes[selectedRt.NodeIndex].position
         );

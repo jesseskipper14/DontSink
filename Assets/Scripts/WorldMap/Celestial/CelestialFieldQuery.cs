@@ -18,9 +18,13 @@ public static class CelestialFieldQuery
         if (field == null || !field.IsValid)
             return;
 
-        if (!TryIntersect(field.WorldBounds, worldArea, out Rect clippedArea))
+        var topology = new WorldTopology(field.WorldBounds);
+        float radius = Mathf.Max(field.Config.nebulaRadiusWorldMax, field.Config.deepSkyRadiusWorldMax);
+        if (worldArea.yMax + radius < field.WorldBounds.yMin || worldArea.yMin - radius > field.WorldBounds.yMax)
             return;
-
+        Rect clippedArea = Rect.MinMaxRect(field.WorldBounds.xMin,
+            Mathf.Max(field.WorldBounds.yMin, worldArea.yMin - radius), field.WorldBounds.xMax,
+            Mathf.Min(field.WorldBounds.yMax, worldArea.yMax + radius));
         float cellSize = field.CellSizeWorld;
 
         int minCellX = Mathf.Clamp(
@@ -60,16 +64,31 @@ public static class CelestialFieldQuery
         {
             for (int x = minCellX; x <= maxCellX; x++)
             {
+                // Check wrapped cell bounds before generating truth. Each stable cell is visited once.
+                float cellLeft = field.WorldBounds.xMin + x * cellSize;
+                float cellRight = Mathf.Min(cellLeft + cellSize, field.WorldBounds.xMax);
+                float nearestCenter = topology.Nearest(new Vector2((cellLeft + cellRight) * .5f, 0f), worldArea.center).x;
+                if (worldArea.width < field.WorldBounds.width &&
+                    Mathf.Abs(nearestCenter - worldArea.center.x) > worldArea.width * .5f + (cellRight - cellLeft) * .5f + radius)
+                    continue;
                 field.GetCellObjects(x, y, cellObjects);
 
                 for (int i = 0; i < cellObjects.Count; i++)
                 {
                     CelestialObject celestialObject = cellObjects[i];
-                    if (celestialObject != null && celestialObject.IntersectsWorldRect(clippedArea))
+                    if (celestialObject != null && IntersectsWrapped(celestialObject, worldArea, topology))
                         results.Add(celestialObject);
                 }
             }
         }
+    }
+
+    private static bool IntersectsWrapped(CelestialObject obj, Rect area, WorldTopology topology)
+    {
+        Vector2 point = topology.Nearest(obj.WorldPosition, area.center);
+        float dx = area.width >= topology.Bounds.width ? 0f : point.x - Mathf.Clamp(point.x, area.xMin, area.xMax);
+        float dy = point.y - Mathf.Clamp(point.y, area.yMin, area.yMax);
+        return dx * dx + dy * dy <= obj.FootprintRadiusWorld * obj.FootprintRadiusWorld;
     }
 
     private static bool TryIntersect(Rect a, Rect b, out Rect intersection)

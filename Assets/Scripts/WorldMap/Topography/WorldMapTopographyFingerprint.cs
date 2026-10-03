@@ -11,7 +11,7 @@ public static class WorldMapTopographyFingerprint
         string json = JsonUtility.ToJson(settings);
         uint hash = Fnv1a32(json);
 
-        return $"{worldSeed}:{hash:X8}";
+        return $"topology_v{WorldTopology.GenerationVersion}:{worldSeed}:{hash:X8}";
     }
 
     private static uint Fnv1a32(string text)

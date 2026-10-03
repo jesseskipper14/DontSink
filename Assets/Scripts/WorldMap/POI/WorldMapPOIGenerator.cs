@@ -202,7 +202,7 @@ public static class WorldMapPOIGenerator
                 float tx = grid <= 1 ? 0f : sx / (float)(grid - 1);
                 float ox = Mathf.Lerp(-radiusU, radiusU, tx);
 
-                float u = Mathf.Clamp01(centerU + ox);
+                float u = Mathf.Repeat(centerU + ox, 1f);
                 float v = Mathf.Clamp01(centerV + oy);
                 float h = field.Sample01UV(u, v);
 
@@ -360,7 +360,7 @@ public static class WorldMapPOIGenerator
             if (existing == null)
                 continue;
 
-            float sqr = Vector2.SqrMagnitude(position - existing.position);
+            float sqr = WorldTopologyService.Delta(position, existing.position).sqrMagnitude;
 
             if (sqr < globalSqr)
                 return false;
@@ -485,10 +485,7 @@ public static class WorldMapPOIGenerator
 
     private static float DistanceToUvEdge(float u, float v)
     {
-        return Mathf.Min(
-            Mathf.Min(u, 1f - u),
-            Mathf.Min(v, 1f - v)
-        );
+        return Mathf.Min(v, 1f - v);
     }
 
     private static string MakeStableToken(string raw)

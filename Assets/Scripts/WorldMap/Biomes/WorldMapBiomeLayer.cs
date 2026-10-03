@@ -35,7 +35,7 @@ public sealed class WorldMapBiomeLayer
         if (!IsValid)
             return -1;
 
-        x = Mathf.Clamp(x, 0, Width - 1);
+        x = WorldTopology.WrapIndex(x, Width);
         y = Mathf.Clamp(y, 0, Height - 1);
 
         return _biomeIndices[y * Width + x];
@@ -46,7 +46,7 @@ public sealed class WorldMapBiomeLayer
         if (!IsValid)
             return -1;
 
-        u = Mathf.Clamp01(u);
+        u = Mathf.Repeat(u, 1f);
         v = Mathf.Clamp01(v);
 
         int x = Mathf.RoundToInt(u * (Width - 1));
@@ -60,7 +60,7 @@ public sealed class WorldMapBiomeLayer
         if (!IsValid)
             return -1;
 
-        float u = Mathf.InverseLerp(WorldBounds.xMin, WorldBounds.xMax, worldPos.x);
+        float u = (new WorldTopology(WorldBounds).NormalizeX(worldPos.x) - WorldBounds.xMin) / WorldBounds.width;
         float v = Mathf.InverseLerp(WorldBounds.yMin, WorldBounds.yMax, worldPos.y);
 
         return GetBiomeIndexUV(u, v);

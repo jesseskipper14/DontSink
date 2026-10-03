@@ -67,7 +67,7 @@ public static class WorldMapSaveBuilder
     {
         var snapshot = new WorldMapSaveSnapshot
         {
-            version = 3,
+            version = 4,
             worldSeed = generator != null ? generator.seed : 0,
             lastSavedWithGameVersion = Application.version
         };
@@ -125,7 +125,7 @@ public static class WorldMapSaveBuilder
             snap.settingsId = source.Settings.name;
         }
 
-        snap.generatorVersion = "topography_v2_ushort_base64";
+        snap.generatorVersion = field.GenerationVersion >= 3 ? "topography_v3_wrapped_x" : "topography_v2_ushort_base64";
 
         return snap;
     }
@@ -157,6 +157,8 @@ public static class WorldMapSaveBuilder
 
         MapGraph graph = generator.graph;
         snap.seed = graph.seed;
+        snap.topologyGenerationVersion = graph.generationVersion;
+        snap.worldBounds = graph.worldBounds;
 
         if (graph.nodes != null)
         {
@@ -190,7 +192,7 @@ public static class WorldMapSaveBuilder
                     notes = n.notes
                 };
 
-                ns.StorePosition(n.position);
+                ns.StorePosition(WorldTopologyService.Normalize(n.position));
 
                 if (n.stats != null)
                 {
@@ -527,7 +529,7 @@ public static class WorldMapSaveBuilder
         if (a < 0 || a >= graph.nodes.Count || b < 0 || b >= graph.nodes.Count)
             return 0f;
 
-        return Vector2.Distance(graph.nodes[a].position, graph.nodes[b].position);
+        return WorldTopologyService.Distance(graph.nodes[a].position, graph.nodes[b].position);
     }
 
     private static string BuildEdgeStableId(string aStableId, string bStableId)

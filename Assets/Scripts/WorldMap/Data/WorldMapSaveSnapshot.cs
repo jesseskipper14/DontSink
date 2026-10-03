@@ -13,7 +13,7 @@ public enum WorldMapTopographySaveMode
 [Serializable]
 public sealed class WorldMapSaveSnapshot
 {
-    public int version = 3;
+    public int version = 4;
 
     [Header("Generation Identity")]
     public int worldSeed;
@@ -185,6 +185,8 @@ public sealed class WorldMapTopographyStatsSaveSnapshot
 [Serializable]
 public sealed class WorldMapGraphSaveSnapshot
 {
+    public int topologyGenerationVersion = 1;
+    public Rect worldBounds;
     public int version = 1;
     public int seed;
 

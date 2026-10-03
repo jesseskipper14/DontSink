@@ -21,6 +21,7 @@ public sealed class CelestialField
     public Rect WorldBounds { get; }
     public CelestialGenerationConfig Config { get; }
     public CelestialGenerationIdentity Identity { get; }
+    public int ConstellationTopologyVersion { get; }
 
     public float CellSizeWorld => Config != null ? Config.cellSizeWorld : 0f;
 
@@ -54,6 +55,9 @@ public sealed class CelestialField
         WorldBounds = worldBounds;
         Config = config;
         Identity = identity;
+        var saved = GameState.I != null ? GameState.I.worldMapSnapshot : null;
+        ConstellationTopologyVersion = saved != null && saved.HasPersistedWorld &&
+            (saved.topography == null || saved.topography.generatorVersion != "topography_v3_wrapped_x") ? 1 : 2;
     }
 
     public Rect GetCellWorldRect(int cellX, int cellY)

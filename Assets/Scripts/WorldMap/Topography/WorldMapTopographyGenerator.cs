@@ -83,6 +83,7 @@ public static class WorldMapTopographyGenerator
             settings.worldSize.x,
             settings.worldSize.y
         );
+        WorldTopologyService.ConfigureGenerationBounds(bounds);
 
         int combinedSeed = unchecked(worldSeed ^ settings.seedSalt);
         var rng = new System.Random(combinedSeed);
@@ -116,15 +117,24 @@ public static class WorldMapTopographyGenerator
                 if (features != null)
                 {
                     float raisedFeatureFade = settings.fadeRaisedFeaturesNearEdge
-                        ? EdgeRaisedFeatureFade(u, v, settings)
+                        ? EdgeRaisedFeatureFade(.5f, v, settings)
                         : 1f;
 
                     h += EvaluateStructuredFeatures(world, features, raisedFeatureFade);
                 }
 
+                // C1-periodic blend of the complete seeded feature/noise domain.
+                // This preserves deterministic feature generation without duplicating geography.
+                Vector2 periodicWorld = world - new Vector2(bounds.width, 0f);
+                float periodic = EvaluateBaseNoise(periodicWorld, offsetA, offsetB, offsetC, settings);
+                if (features != null)
+                    periodic += EvaluateStructuredFeatures(periodicWorld, features,
+                        settings.fadeRaisedFeaturesNearEdge ? EdgeRaisedFeatureFade(.5f, v, settings) : 1f);
+                h = Mathf.Lerp(h, periodic, Mathf.SmoothStep(0f, 1f, u));
+
                 if (settings.useRadialFalloff)
                 {
-                    Vector2 centered = new Vector2((u * 2f) - 1f, (v * 2f) - 1f);
+                    Vector2 centered = new Vector2(0f, (v * 2f) - 1f);
                     float d = Mathf.Clamp01(centered.magnitude / 1.41421356f);
 
                     float falloff = Mathf.Pow(d, settings.radialFalloffPower);
@@ -133,7 +143,7 @@ public static class WorldMapTopographyGenerator
 
                 if (settings.useOceanBorderFalloff)
                 {
-                    h -= EvaluateOceanBorderFalloff(u, v, settings);
+                    h -= EvaluateOceanBorderFalloff(.5f, v, settings);
                 }
 
                 h = ApplyContrastBias(h, settings.contrast, settings.bias);
@@ -151,6 +161,16 @@ public static class WorldMapTopographyGenerator
         for (int i = 0; i < raw.Length; i++)
             normalized[i] = Mathf.Clamp01((raw[i] - min) / range);
 
+        for (int y = 0; y < res; y++)
+        {
+            float edge = Mathf.Min(y, res - 1 - y) / (float)(res - 1);
+            float ice = settings.polarIceBandFraction > 0f ?
+                Mathf.SmoothStep(0f, 1f, 1f - edge / settings.polarIceBandFraction) : 0f;
+            for (int x = 0; x < res; x++)
+                normalized[y * res + x] = Mathf.Max(normalized[y * res + x], settings.polarIceHeight01 * ice);
+            normalized[y * res + res - 1] = normalized[y * res];
+        }
+
         return new WorldMapTopographyField(
             worldSeed,
             res,
@@ -158,7 +178,8 @@ public static class WorldMapTopographyGenerator
             bounds,
             normalized,
             min,
-            max
+            max,
+            WorldTopology.GenerationVersion
         );
     }
 
@@ -347,7 +368,7 @@ public static class WorldMapTopographyGenerator
             float nearest = float.PositiveInfinity;
             for (int j = 0; j < existingCenters.Count; j++)
             {
-                float d = Vector2.Distance(candidate, existingCenters[j]);
+                float d = new WorldTopology(bounds).Distance(candidate, existingCenters[j]);
                 if (d < nearest)
                     nearest = d;
             }
@@ -710,7 +731,7 @@ public static class WorldMapTopographyGenerator
     {
         inset01 = Mathf.Clamp01(inset01);
 
-        float insetX = bounds.width * inset01;
+        float insetX = 0f;
         float insetY = bounds.height * inset01;
 
         return new Vector2(

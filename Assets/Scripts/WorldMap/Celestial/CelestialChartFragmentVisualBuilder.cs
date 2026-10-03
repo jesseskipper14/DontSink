@@ -119,7 +119,7 @@ public static class CelestialChartFragmentVisualBuilder
                 continue;
             }
 
-            Vector2 p = Rotate(mark.celestialWorldPosition, rotationDegrees);
+            Vector2 p = Rotate(WorldTopologyService.Nearest(mark.celestialWorldPosition, fragment.observationDatumWorldPosition), rotationDegrees);
             transformedMarks.Add(p);
             Encapsulate(ref hasPoint, ref minX, ref maxX, ref minY, ref maxY, p);
         }

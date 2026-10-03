@@ -410,7 +410,7 @@ public class WorldMapHoverController : MonoBehaviour
         // Length (graph-space deterministic)
         Vector2 a = generator.graph.nodes[fromIndex].position;
         Vector2 b = generator.graph.nodes[toIndex].position;
-        info.length = Vector2.Distance(a, b);
+        info.length = WorldTopologyService.Distance(a, b);
 
         if (!runtimeBinder.Registry.TryGetByIndex(fromIndex, out var fromRt) || fromRt == null) return info;
         if (!runtimeBinder.Registry.TryGetByIndex(toIndex, out var toRt) || toRt == null) return info;

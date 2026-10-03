@@ -61,7 +61,7 @@ public static class CelestialConstellationGenerator
             for (int i = 0; i < members.Count; i++)
                 assigned.Add(members[i].StableId);
 
-            OrderAsReadablePath(members);
+            OrderAsReadablePath(members, field);
 
             string stableId = BuildStableId(field, ordinal, members[0].StableId);
             string truthName = CelestialConstellationNameGenerator.GenerateUniqueName(stableId, usedNames);
@@ -73,13 +73,15 @@ public static class CelestialConstellationGenerator
             for (int i = 0; i < members.Count; i++)
             {
                 memberIds.Add(members[i].StableId);
-                centroid += members[i].WorldPosition;
+                centroid += field.ConstellationTopologyVersion >= 2 ?
+                    new WorldTopology(field.WorldBounds).Nearest(members[i].WorldPosition, members[0].WorldPosition) : members[i].WorldPosition;
 
                 if (i > 0)
                     edges.Add(new CelestialConstellationEdge(members[i - 1].StableId, members[i].StableId));
             }
 
             centroid /= Mathf.Max(1, members.Count);
+            if (field.ConstellationTopologyVersion >= 2) centroid = new WorldTopology(field.WorldBounds).Normalize(centroid);
             // The path above connects every member. Additional branches cannot duplicate that path.
             int requestedBranches = tuning.averageBranchesPerConstellation +
                 Variation(field, seed.StableId + ":branches", tuning.branchCountVariation);
@@ -141,7 +143,7 @@ public static class CelestialConstellationGenerator
 
                 float nearest = float.PositiveInfinity;
                 for (int j = 0; j < selected.Count; j++)
-                    nearest = Mathf.Min(nearest, Vector2.Distance(candidate.WorldPosition, selected[j].WorldPosition));
+                    nearest = Mathf.Min(nearest, Distance(field, candidate.WorldPosition, selected[j].WorldPosition));
 
                 if (nearest > maxLinkDistance)
                     continue;
@@ -165,7 +167,10 @@ public static class CelestialConstellationGenerator
         return selected;
     }
 
-    private static void OrderAsReadablePath(List<CelestialObject> members)
+    private static float Distance(CelestialField field, Vector2 a, Vector2 b) =>
+        field.ConstellationTopologyVersion >= 2 ? new WorldTopology(field.WorldBounds).Distance(a, b) : Vector2.Distance(a, b);
+
+    private static void OrderAsReadablePath(List<CelestialObject> members, CelestialField field)
     {
         if (members == null || members.Count <= 2)
             return;
@@ -189,11 +194,11 @@ public static class CelestialConstellationGenerator
         while (remaining.Count > 0)
         {
             int nearestIndex = 0;
-            float nearestDistance = Vector2.Distance(currentStar.WorldPosition, remaining[0].WorldPosition);
+            float nearestDistance = Distance(field, currentStar.WorldPosition, remaining[0].WorldPosition);
 
             for (int i = 1; i < remaining.Count; i++)
             {
-                float d = Vector2.Distance(currentStar.WorldPosition, remaining[i].WorldPosition);
+                float d = Distance(field, currentStar.WorldPosition, remaining[i].WorldPosition);
                 if (d < nearestDistance)
                 {
                     nearestDistance = d;
@@ -217,7 +222,7 @@ public static class CelestialConstellationGenerator
     {
         uint seedBits = unchecked((uint)field.WorldSeed);
         ulong memberHash = CelestialConstellationNameGenerator.Hash64(firstMemberId ?? string.Empty);
-        string legacyId = $"const:{CurrentConstellationVersion}:{seedBits:X8}:{field.Identity.generatorVersion}:{ordinal}:{memberHash & 0xFFFFFFFFUL:X8}";
+        string legacyId = $"const:{field.ConstellationTopologyVersion}:{seedBits:X8}:{field.Identity.generatorVersion}:{ordinal}:{memberHash & 0xFFFFFFFFUL:X8}";
         return field.ConstellationConfig.IsLegacy ? legacyId : legacyId + ":" + field.ConstellationConfig.Fingerprint;
     }
 
