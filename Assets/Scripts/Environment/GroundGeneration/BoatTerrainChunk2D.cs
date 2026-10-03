@@ -17,8 +17,10 @@ public sealed class BoatTerrainChunk2D : MonoBehaviour
         Edge = gameObject.AddComponent<EdgeCollider2D>();
         Edge.points = _points;
         Edge.useAdjacentStartPoint = Edge.useAdjacentEndPoint = true;
-        Edge.adjacentStartPoint = new Vector2(-plan.Step, plan.Height(index * (double)plan.Width - plan.Step));
-        Edge.adjacentEndPoint = new Vector2(plan.Width + plan.Step, plan.Height((index + 1d) * plan.Width + plan.Step));
+        // Extend the actual local tangent. Adjacent forecast must never affect
+        // collision normals of committed geometry or its subsequent reload.
+        Edge.adjacentStartPoint = _points[0] * 2f - _points[1];
+        Edge.adjacentEndPoint = _points[^1] * 2f - _points[^2];
 
         int count = _points.Length;
         var vertices = new Vector3[count * 2];

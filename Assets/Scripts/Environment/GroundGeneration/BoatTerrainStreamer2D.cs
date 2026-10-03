@@ -26,6 +26,13 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
     private TravelPayload _voyage;
     private float _originX, _nextDiscovery;
     private int _layer;
+    private WorldMapTopographyField _depthField;
+    private AnimationCurve _depthCurve;
+    private float _seaLevel, _fallbackDepth, _forecastX, _forecastScale;
+    private Vector2 _forecastWorld, _forecastDirection;
+    private BoatSceneWorldPositionBridge _depthBridge;
+    public bool GeographicDepthActive => _depthField != null && _depthBridge != null && _depthBridge.isActiveAndEnabled && _depthBridge.ProjectionReady;
+    public float GeographicTargetDepth => DesiredDepth(_forecastX - _originX);
     public bool IsReady => _plan != null && _loaded.Count > 0;
     public int LoadedCount => _loaded.Count;
     public int CommittedCount => _committed.Count;
@@ -87,9 +94,20 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
             if (_layer < 0) { Debug.LogError("Streamed terrain Ground layer is missing.", this); return false; }
             int worldSeed = WorldMapRuntimeCache.I != null && WorldMapRuntimeCache.I.HasTopography
                 ? WorldMapRuntimeCache.I.Field.Seed : 0;
-            try { _plan = new BoatTerrainPlan(profile, voyage.seed ^ worldSeed); }
+            var cache = WorldMapRuntimeCache.I;
+            _depthField = profile.useGeographicDepth && cache != null && cache.HasTopography ? cache.Field : null;
+            _seaLevel = cache != null ? cache.EffectiveSeaLevel01 : 0f;
+            if (!WorldTopology.IsFinite(_seaLevel) || _seaLevel <= 0f) _depthField = null;
+            _fallbackDepth = profile.baseDepth;
+            _depthCurve = profile.geographicDepth != null && profile.geographicDepth.length > 0
+                ? new AnimationCurve(profile.geographicDepth.keys) : AnimationCurve.Linear(0, 15, 1, profile.maximumDepth);
+            RefreshDepthForecast();
+            try { _plan = new BoatTerrainPlan(profile, voyage.seed ^ worldSeed, _depthField != null ? DesiredDepth : null); }
             catch (ArgumentException error) { Debug.LogError(error.Message, this); return false; }
             OnBottomYChanged?.Invoke(_plan.BottomY);
+            // Establish the starting floor at the boat's geographic depth before
+            // slope constraints extend history towards either preload edge.
+            Load(_plan.ChunkIndex(boatPosition.x - _originX));
         }
         return EnsureCoverage(boatPosition.x, _plan.InterestRadius);
     }
@@ -98,6 +116,7 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
     {
         if (_plan == null || !GameplayAuthority.IsAuthoritative ||
             float.IsNaN(x) || float.IsInfinity(x) || float.IsNaN(radius) || float.IsInfinity(radius)) return false;
+        RefreshDepthForecast();
         radius = Mathf.Max(0, radius);
         long first = _plan.ChunkIndex(x - radius - _originX);
         long last = _plan.ChunkIndex(x + radius - _originX);
@@ -109,6 +128,38 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
             _leases[i] = Time.unscaledTime + 2f;
         }
         return true;
+    }
+
+    private void RefreshDepthForecast()
+    {
+        if (_depthField == null) return;
+        if (_depthBridge != null && (!_depthBridge.isActiveAndEnabled || _depthBridge.gameObject.scene != gameObject.scene))
+            _depthBridge = null;
+        if (_depthBridge == null)
+        {
+            foreach (var bridge in FindObjectsByType<BoatSceneWorldPositionBridge>(FindObjectsSortMode.None))
+            {
+                if (bridge.gameObject.scene != gameObject.scene || !bridge.TryRefreshProjection()) continue;
+                if (_depthBridge != null) { _depthBridge = null; return; }
+                _depthBridge = bridge;
+            }
+        }
+        if (_depthBridge == null || !_depthBridge.TryRefreshProjection()) return;
+        _forecastX = _depthBridge.PilotingState.transform.position.x;
+        _forecastScale = _depthBridge.WorldUnitsPerLocalUnit;
+        if (!WorldNavigationService.TryGetTrueWorldPosition(out _forecastWorld))
+            _forecastWorld = _depthBridge.ProjectNavigationPosition(_depthBridge.PilotingState.NavigationPosition);
+        float angle = _depthBridge.GeographicHeadingDegrees * Mathf.Deg2Rad;
+        _forecastDirection = new Vector2(Mathf.Sin(angle), Mathf.Cos(angle));
+    }
+
+    private float DesiredDepth(double strip)
+    {
+        if (!GeographicDepthActive || _forecastScale <= 0f) return _fallbackDepth;
+        Vector2 predicted = _forecastWorld + _forecastDirection * (float)((_originX + strip - _forecastX) * _forecastScale);
+        float normalizedDepth = Mathf.Clamp01((_seaLevel - _depthField.Sample01World(predicted)) / Mathf.Max(.0001f, _seaLevel));
+        float depth = _depthCurve.Evaluate(normalizedDepth);
+        return WorldTopology.IsFinite(depth) ? depth : _fallbackDepth;
     }
 
     private void Load(long index)

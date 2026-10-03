@@ -44,6 +44,15 @@ public sealed class BoatSceneWorldPositionBridge : MonoBehaviour
     public BoatPilotingState PilotingState => pilotingState;
     public int DebugWarpRevision { get; private set; }
 
+    /// <summary>Resolve a newly spawned boat before terrain commits, without waiting for FixedUpdate.</summary>
+    public bool TryRefreshProjection()
+    {
+        ResolveReferences();
+        if (!_projectionReady || !ReferenceEquals(_payload, GameState.I != null ? GameState.I.activeTravel : null))
+            RebuildProjection();
+        return _projectionReady && pilotingState != null && isActiveAndEnabled;
+    }
+
     public Vector2 ProjectNavigationVector(Vector2 localVector) =>
         (_routeRight * localVector.x + _routeForward * localVector.y) * _worldUnitsPerLocalUnit;
 

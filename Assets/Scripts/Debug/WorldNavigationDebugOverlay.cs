@@ -151,6 +151,9 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
                 {
                     GUILayout.Label($"Streamed floor: {(terrain.IsReady ? "ready" : "waiting for setup")}; loaded {terrain.LoadedCount}, committed {terrain.CommittedCount}, interests {terrain.InterestCount}");
                     GUILayout.Label($"Ground fill bottom: {terrain.LastUsedBottomY:0.0}");
+                    GUILayout.Label($"Geographic depth: {(terrain.GeographicDepthActive ? "active" : "fallback")}; target {terrain.GeographicTargetDepth:0.0}");
+                    if (terrain.TrySampleGround(_simulation.transform.position.x, out float seabedY, out _))
+                        GUILayout.Label($"Seabed under boat: Y {seabedY:0.0}");
                 }
                 Boat boat = _simulation.Boat;
                 if (boat != null && boat.rb != null)
@@ -179,7 +182,7 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
         if (GUILayout.Button("Warp geography")) Warp();
         GUI.enabled = previousEnabled;
         if (!string.IsNullOrEmpty(_status)) GUILayout.Label(_status);
-        GUILayout.Label("Warp is session-only. Seabed depth is fixed in this checkpoint; geographic depth comes next.");
+        GUILayout.Label("Warp is session-only. Committed seabed stays fixed; new chunks follow the new geography.");
         GUILayout.Label($"{toggleKey}: toggle   |   Escape: close");
         GUILayout.EndScrollView();
         GUILayout.EndArea();
