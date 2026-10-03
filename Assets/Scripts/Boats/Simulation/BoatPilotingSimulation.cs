@@ -148,6 +148,14 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     /// </summary>
     public float PhysicalTravelDelta => _physicalTravelDelta;
 
+    public BoatVoyageStripState VoyageStrip { get; } = new BoatVoyageStripState();
+
+    /// <summary>Call after an intentional physical teleport, before the next piloting tick.</summary>
+    public void RebasePhysicalTravelAfterTeleport()
+    {
+        ResetPhysicalPositionSample();
+    }
+
     public float EnvironmentalWaveAmplitude => environmentalDisturbance != null ? environmentalDisturbance.CurrentWaveAmplitude : 0f;
     public float EnvironmentalSeverity01 => environmentalDisturbance != null ? environmentalDisturbance.Severity01 : 0f;
     public float EnvironmentalPhysicalWaveLoad01 => _physicalWaveLoad01;
@@ -500,6 +508,11 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
         }
 
         SampleActualBoatMotion(dt);
+        TravelPayload stripVoyage = GameState.I != null ? GameState.I.activeTravel : null;
+        VoyageStrip.Observe(stripVoyage, boat != null ? boat.rb : null,
+            boat != null && boat.rb != null ? boat.rb.position : Vector2.zero,
+            GetSceneForwardAxis(), _physicalTravelDelta, stripVoyage != null ? stripVoyage.seed : 0,
+            GameplayAuthority.IsAuthoritative);
         AdvanceEnvironmentalDisturbance(dt);
 
         // Crucial rule:
@@ -1010,6 +1023,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
         {
             _lastPhysicalPosition = boat.rb.position;
             _hasLastPhysicalPosition = true;
+            VoyageStrip.Rebase(_lastPhysicalPosition);
         }
         else
         {

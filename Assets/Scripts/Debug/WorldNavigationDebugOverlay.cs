@@ -139,6 +139,14 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
             if (_simulation != null)
             {
                 GUILayout.Label($"Physical forward speed: {_simulation.PhysicalForwardSpeed:0.000} units / game second");
+                BoatVoyageStripState strip = _simulation.VoyageStrip;
+                if (strip.IsActive)
+                {
+                    GUILayout.Label($"Voyage strip: {strip.Position:0.000} signed physical units; last delta {strip.LastTravelDelta:0.000000}");
+                    GUILayout.Label($"Strip local origin: {strip.LocalOriginCoordinate:0.000}; axis {strip.SceneAxis.x:0.###}, {strip.SceneAxis.y:0.###}");
+                    GUILayout.Label($"Voyage revision {strip.Revision}; seed {strip.Seed}; samples {strip.SampleCount}; rebases {strip.RebaseCount}");
+                }
+                else GUILayout.Label("Voyage strip: inactive (no authoritative voyage sample)");
                 Boat boat = _simulation.Boat;
                 if (boat != null && boat.rb != null)
                     GUILayout.Label($"BoatScene X/Y: {boat.rb.position.x:0.000}, {boat.rb.position.y:0.000}");

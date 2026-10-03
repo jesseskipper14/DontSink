@@ -2,6 +2,14 @@
 
 Keep reports focused: trigger, evidence, likely effect, proposed pass, and verification. Code inspection is not a live reproduction. Resolved entries remain as history.
 
+## Open: water-bottom binders reference generators rather than fill-bottom providers
+
+- Found: dynamic-terrain Phase 0 audit, 2026-10-03; serialized references and interface casts verified, no runtime reproduction.
+- Evidence: BoatScene NodeWaterBottomBinder.groundSource points to BoatSeaFloorGenerator2D (fileID 1516219392); NodeScene points to NodeGroundGenerator2D (fileID 1821200605). Neither implements IGroundFillBottomSource. NodeWaterBottomBinder casts the assigned component to that interface and cannot apply its bottom-depth updates when the cast fails.
+- Risk: rendered water bottom does not follow generated fill depth through this binder; separately serialized water depths can mask the issue.
+- Proposed contained fix: reviewed NodeScene Inspector reassignment to the actual fill-bottom provider; BoatScene's upcoming streaming pass should instead expose aggregate loaded-chunk bottom depth. No references were changed during the audit.
+- Verify: regenerate into deeper terrain and check intended foreground/background water coverage and no unwanted shallowing on chunk unload. Details: `Assets/Codex/For me/DYNAMIC_TERRAIN_PHASE0_AUDIT.md`.
+
 ## Follow-up: multiplayer authority and transaction hardening
 
 - Found: 2026-10-02, analysis-only MP audit after wrapping. No multiplayer implementation was made.
