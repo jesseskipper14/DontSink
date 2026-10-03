@@ -58,7 +58,7 @@ public sealed class LocalHandheldSoundingLineIntentSource :
         text = null;
         worldAnchor = controller != null ? controller.transform : transform;
 
-        if (controller == null ||
+        if (!CameraManager.HasGameplayInput(this) || controller == null ||
             !controller.ShouldShowReadout ||
             GameplayInputBlocker.IsBlocked)
         {
@@ -102,6 +102,7 @@ public sealed class LocalHandheldSoundingLineIntentSource :
 
     private void Update()
     {
+        if (!CameraManager.HasGameplayInput(this)) return;
         if (controller == null)
         {
             ResolveController();

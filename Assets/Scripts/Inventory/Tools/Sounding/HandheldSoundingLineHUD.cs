@@ -50,7 +50,7 @@ public sealed class HandheldSoundingLineHUD :
     {
         ResolveRefs();
 
-        if (controller == null ||
+        if (controller == null || !CameraManager.HasGameplayInput(controller) ||
             !controller.ShouldShowReadout)
         {
             return;
@@ -59,7 +59,7 @@ public sealed class HandheldSoundingLineHUD :
         Camera cam =
             worldCamera != null
                 ? worldCamera
-                : Camera.main;
+                : CameraManager.CameraForActor(controller);
 
         Transform anchor =
             playerAnchor != null
@@ -228,8 +228,6 @@ public sealed class HandheldSoundingLineHUD :
                 controller.transform;
         }
 
-        if (worldCamera == null)
-            worldCamera = Camera.main;
     }
 
 #if UNITY_EDITOR

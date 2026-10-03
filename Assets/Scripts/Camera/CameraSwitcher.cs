@@ -11,6 +11,8 @@ public class CameraSwitcher : MonoBehaviour
 
     void Update()
     {
+        // CameraManager already routes C for managed gameplay cameras.
+        if (CameraManager.ForCamera(mainCamera) != null) return;
         // Press "C" to toggle cameras
         if (Input.GetKeyDown(KeyCode.C))
         {
@@ -21,6 +23,8 @@ public class CameraSwitcher : MonoBehaviour
     // Switch to internal camera
     public void SwitchToInternal()
     {
+        var owner = CameraManager.ForCamera(internalCamera);
+        if (owner != null) { owner.ActivateCamera(internalCamera); return; }
         mainCamera.enabled = false;
         internalCamera.enabled = true;
 
@@ -35,6 +39,8 @@ public class CameraSwitcher : MonoBehaviour
     // Switch to main camera
     public void SwitchToMain()
     {
+        var owner = CameraManager.ForCamera(mainCamera);
+        if (owner != null) { owner.ActivateCamera(mainCamera); return; }
         internalCamera.enabled = false;
         mainCamera.enabled = true;
 

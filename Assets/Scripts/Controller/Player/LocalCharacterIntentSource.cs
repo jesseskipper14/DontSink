@@ -52,9 +52,10 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
 
     void Update()
     {
-        if (GameplayInputBlocker.IsBlocked)
+        if (!CameraManager.HasGameplayInput(this) || GameplayInputBlocker.IsBlocked)
         {
             Current = default;
+            _jumpPressedLatched = false;
             return;
         }
 
@@ -64,7 +65,7 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
             _jumpPressedLatched = true;
 
         Vector2 aimWorld = Vector2.zero;
-        Camera cam = Camera.main;
+        Camera cam = CameraManager.CameraForActor(this);
         if (cam != null)
         {
             Vector3 mouse = Input.mousePosition;

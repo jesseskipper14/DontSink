@@ -17,10 +17,10 @@ namespace Survival.Death
         [Tooltip("These are the 'living' systems that must stop when dead.")]
         [SerializeField] private Behaviour[] livingBehaviours;
 
-        [Header("Camera Mode")]
-        [Tooltip("Enable while dead (spectator/freecam).")]
+        [Header("Legacy Camera Mode (unused)")]
+        [Tooltip("Retained for serialized compatibility. CameraManager now owns spectator mode; this list is unused.")]
         [SerializeField] private Behaviour[] deadCamBehaviours;
-        [Tooltip("Enable while alive (follow camera, normal controls).")]
+        [Tooltip("Retained for serialized compatibility. CameraManager now owns alive camera mode; this list is unused.")]
         [SerializeField] private Behaviour[] aliveCamBehaviours;
 
         [Header("Refs (auto if null)")]
@@ -40,9 +40,8 @@ namespace Survival.Death
             if (!afflictions) afflictions = GetComponentInChildren<AfflictionSystem>(true);
             if (!exertionEnergy) exertionEnergy = GetComponentInChildren<PlayerExertionEnergyState>(true);
 
-            // Make sure dead cam is off by default
-            SetEnabled(deadCamBehaviours, false);
-            SetEnabled(aliveCamBehaviours, true);
+            // CameraManager owns camera mode. Legacy arrays are retained for
+            // serialized compatibility, but cannot toggle another actor's cameras.
         }
 
         private Vector3 _deathPos;
@@ -75,9 +74,7 @@ namespace Survival.Death
             // Kill living systems (no "recovering" from drowning)
             SetEnabled(livingBehaviours, false);
 
-            // Camera to spectator
-            SetEnabled(aliveCamBehaviours, false);
-            SetEnabled(deadCamBehaviours, true);
+            CameraManager.ForActor(this)?.BeginSpectator();
         }
 
         public void OnRespawn()
@@ -108,8 +105,7 @@ namespace Survival.Death
                 exertionEnergy.ResetState();
 
             SetEnabled(livingBehaviours, true);
-            SetEnabled(deadCamBehaviours, false);
-            SetEnabled(aliveCamBehaviours, true);
+            CameraManager.ForActor(this)?.EndSpectator();
 
             if (_hasDeathPose)
                 SpawnCorpseAt(_deathPos, _deathRot);
@@ -136,7 +132,10 @@ namespace Survival.Death
         {
             if (list == null) return;
             for (int i = 0; i < list.Length; i++)
-                if (list[i]) list[i].enabled = enabled;
+                if (list[i] && !(list[i] is CameraManager) && !(list[i] is Camera) &&
+                    !(list[i] is AudioListener) && !(list[i] is CameraWASDController) &&
+                    !(list[i] is CameraFollow) && !(list[i] is CameraSwitcher))
+                    list[i].enabled = enabled;
         }
     }
 }

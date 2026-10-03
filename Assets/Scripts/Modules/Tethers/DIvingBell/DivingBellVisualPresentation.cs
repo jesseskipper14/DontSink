@@ -438,16 +438,7 @@ public sealed class DivingBellVisualPresentation : MonoBehaviour
                 return viewed;
         }
 
-        PlayerBoardingState[] players =
-            FindObjectsByType<PlayerBoardingState>(
-                FindObjectsInactive.Exclude,
-                FindObjectsSortMode.None);
-
-        return
-            players != null &&
-            players.Length == 1
-                ? players[0]
-                : null;
+        return null;
     }
 
     private static void SetRendererGroupEnabled(

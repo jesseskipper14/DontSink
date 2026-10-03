@@ -5,6 +5,9 @@ using MiniGames;
 public sealed class PilotingOverlayRunner : MonoBehaviour
 {
     [SerializeField] private MiniGameOverlayHost overlay;
+    [Tooltip("Optional explicit local presentation owner. Otherwise requires one unambiguous local CameraManager.")]
+    [SerializeField] private CameraManager presentationOwner;
+    private CameraManager _sessionOwner;
 
     [Header("Piloting View")]
     [Tooltip("Primary piloting zoom control. This is the navigation-world height visible in the helm mini-game. " +
@@ -30,8 +33,7 @@ public sealed class PilotingOverlayRunner : MonoBehaviour
 
     private void Reset()
     {
-        overlay =
-            FindAnyObjectByType<MiniGameOverlayHost>();
+        ResolveOverlay();
     }
 
     private void Awake()
@@ -48,6 +50,11 @@ public sealed class PilotingOverlayRunner : MonoBehaviour
                 "[PilotingOverlayRunner] OpenForHelm called with null helm.");
             return false;
         }
+
+        var requesterOwner = CameraManager.ForActor(helm.PresentationRequester);
+        var localOwner = presentationOwner != null ? presentationOwner : CameraManager.Instance;
+        if (requesterOwner == null || requesterOwner != localOwner ||
+            !requesterOwner.CanProvideGameplayInput) return false;
 
         if (!ResolveOverlay())
             return false;
@@ -118,6 +125,7 @@ public sealed class PilotingOverlayRunner : MonoBehaviour
 
         _activeHelm =
             helm;
+        _sessionOwner = requesterOwner;
 
         _activeCartridge =
             new PilotingCartridge(
@@ -198,9 +206,8 @@ public sealed class PilotingOverlayRunner : MonoBehaviour
     {
         if (overlay == null)
         {
-            overlay =
-                FindAnyObjectByType<
-                    MiniGameOverlayHost>();
+            var hosts = FindObjectsByType<MiniGameOverlayHost>(FindObjectsSortMode.None);
+            if (hosts.Length == 1) overlay = hosts[0];
         }
 
         if (overlay != null)
@@ -211,5 +218,12 @@ public sealed class PilotingOverlayRunner : MonoBehaviour
             this);
 
         return false;
+    }
+
+    private void Update()
+    {
+        if (_activeHelm != null && (_sessionOwner == null || !_sessionOwner.CanProvideGameplayInput ||
+            CameraManager.ForActor(_activeHelm.PresentationRequester) != _sessionOwner))
+            CloseForHelm(_activeHelm, "Local presentation owner changed");
     }
 }

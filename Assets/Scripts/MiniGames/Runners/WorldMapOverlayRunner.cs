@@ -140,6 +140,9 @@ public sealed class WorldMapOverlayRunner : MonoBehaviour
         GameObject requester,
         MapTablePage initialPage = MapTablePage.WorldMap)
     {
+        requester = ResolveRequester(requester);
+        var owner = CameraManager.ForActor(requester);
+        if (owner == null || !owner.CanProvideGameplayInput) return false;
         AutoWire();
 
         if (IsMapTableOpen || IsLegacyWorldMapOpen())
@@ -170,6 +173,9 @@ public sealed class WorldMapOverlayRunner : MonoBehaviour
         GameObject requester,
         MapTablePage initialPage = MapTablePage.WorldMap)
     {
+        requester = ResolveRequester(requester);
+        var owner = CameraManager.ForActor(requester);
+        if (owner == null || !owner.CanProvideGameplayInput) return false;
         AutoWire();
 
         if (overlay != null && overlay.IsOpen && overlay.ActiveCartridge is MapTableCartridge existingTable)
@@ -325,27 +331,8 @@ public sealed class WorldMapOverlayRunner : MonoBehaviour
     {
         if (explicitRequester != null)
             return explicitRequester;
-
-        PlayerLoadoutPersistence[] players =
-            FindObjectsByType<PlayerLoadoutPersistence>(
-                FindObjectsInactive.Include,
-                FindObjectsSortMode.None);
-
-        if (players != null && players.Length == 1 && players[0] != null)
-            return players[0].gameObject;
-
-        if (players != null && players.Length > 1 && GameState.I != null)
-        {
-            string localKey = GameState.I.LocalPlayerPersistenceKey;
-            for (int i = 0; i < players.Length; i++)
-            {
-                PlayerLoadoutPersistence candidate = players[i];
-                if (candidate != null && candidate.PersistenceKey == localKey)
-                    return candidate.gameObject;
-            }
-        }
-
-        return null;
+        var manager = CameraManager.Instance;
+        return manager != null && manager.OwnerTarget != null ? manager.OwnerTarget.gameObject : null;
     }
 
     private bool TryGetStartDockPosition(out Vector2 position)

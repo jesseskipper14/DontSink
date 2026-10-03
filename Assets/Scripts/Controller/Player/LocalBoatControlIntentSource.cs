@@ -45,6 +45,11 @@ public class LocalBoatControlIntentSource : MonoBehaviour, IBoatControlIntentSou
 
     private void Update()
     {
+        if (!CameraManager.HasGameplayInput(this))
+        {
+            Current = BoatControlIntent.Neutral;
+            return;
+        }
         float throttleAdjust =
             (Input.GetKey(throttleUp) ? 1f : 0f) -
             (Input.GetKey(throttleDown) ? 1f : 0f);

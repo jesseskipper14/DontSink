@@ -40,7 +40,8 @@ public class LocalInteractionIntentSource : MonoBehaviour, IInteractionIntentSou
 
     private void Update()
     {
-        if ((respectGameplayInputBlocker && GameplayInputBlocker.IsBlocked) ||
+        if (!CameraManager.HasGameplayInput(this) ||
+            (respectGameplayInputBlocker && GameplayInputBlocker.IsBlocked) ||
             InteractionInputBlocker.IsBlocked)
         {
             ClearIntentAndResetClickState();
@@ -50,10 +51,11 @@ public class LocalInteractionIntentSource : MonoBehaviour, IInteractionIntentSou
         Vector2 aimWorld = Vector2.zero;
         bool hasAimWorld = false;
 
-        if (useMouseAim && Camera.main != null)
+        Camera camera = CameraManager.CameraForActor(this);
+        if (useMouseAim && camera != null)
         {
             Vector3 m = Input.mousePosition;
-            aimWorld = Camera.main.ScreenToWorldPoint(m);
+            aimWorld = camera.ScreenToWorldPoint(m);
             hasAimWorld = true;
         }
 

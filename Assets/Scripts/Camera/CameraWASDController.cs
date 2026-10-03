@@ -23,6 +23,11 @@ public class CameraWASDController : MonoBehaviour
 
     private void Update()
     {
+        if (_cam == null || !_cam.isActiveAndEnabled) return;
+        var owner = CameraManager.ForCamera(_cam);
+        // Managed cameras have exactly one movement writer in each context.
+        if (owner != null && (!owner.IsLocal || owner.ActiveCamera != _cam ||
+            owner.Mode != CameraManager.ViewMode.SpectatorFree)) return;
         HandleMovement();
         if (enableZoom)
             HandleZoom();

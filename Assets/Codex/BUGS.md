@@ -2,6 +2,30 @@
 
 Keep reports focused: trigger, evidence, likely effect, proposed pass, and verification. Code inspection is not a live reproduction. Resolved entries remain as history.
 
+## Follow-up: remaining inventory/build UI ownership before multiplayer
+
+- Found: camera ownership pass, 2026-10-02; source inspection, not a multiplayer reproduction.
+- Trigger: several player inventories exist on one client, or a replicated remote interaction reaches a legacy UI/cartridge entry point.
+- Evidence: `ExternalContainerOverlayUI.Awake` still selects the first PlayerInventory and caches Camera.main; `HardpointSupportHoverPreview` still obtains a global inventory/camera; legacy ModuleCartridge/WorkbenchCartridge and other UI adapters contain global player searches. Camera-pass piloting/map-table/charting entry guards are local-requester scoped, but they are not a replacement for a complete inventory/UI ownership pass.
+- Risk: wrong-player inventory/build previews, stale camera projection, or remote-origin interaction reaching shared local UI. No transport exists yet, so this is an integration requirement rather than a demonstrated current network bug.
+- Proposed contained pass: resolve UI owners from authenticated requesters/local presentation identity, bind inventory/equipment explicitly, and scope open/close/release callbacks to the session owner. Preserve today's one-local-human-per-client UI and avoid inventing split-screen.
+- Verify: two actor/inventory fixtures; remote open/close cannot change local panels or consume local items; local scene transitions and camera changes preserve the correct inventory/projection.
+
+## Follow-up: authoritative simulation LOD relevance for multiple actors
+
+- Found: camera ownership pass, 2026-10-02; source inspection.
+- Evidence: camera-position fallback and arbitrary first-player selection were removed from `SimulationLodTargetResolver`. Its single-actor default deliberately returns null when several actors exist; FishSchoolSimulationLod also caches its assigned/default target.
+- Risk: no distance updates when a multi-actor host has no explicit target, or relevance remains tied to a cached actor after another player joins. A free spectator camera must never become a simulation target.
+- Proposed contained pass: host-owned relevant-actor collection/relevance policy, coordinated with dynamic terrain/resource work. Keep simulation authority separate from whichever actor the local camera views.
+- Verify: two actors widely separated, join/despawn/reconnect, spectator roaming, and distant actor activity. Fish/terrain relevance should follow authoritative actor positions.
+
+## Follow-up: cache telescope hide-layer renderer discovery
+
+- Found: camera audit, 2026-10-02; pre-existing code, not a measured performance regression.
+- Evidence: `BoatObservationPresentationController` enumerates scene actors/renderers during render suppression for configured hidden layers. Camera ownership changes add no per-frame scene searches, but this existing render-time discovery may grow expensive as boats/NPC populations increase.
+- Proposed contained pass: cache relevant renderer membership and refresh on scene/spawn/ownership changes, retaining per-camera suppression/restoration and the current telescope fade.
+- Verify: profile telescope rendering in a large scene, then test renderer spawn/despawn, scene transitions, sorting-layer changes, and restoration after interrupted observation.
+
 ## Implemented: pinned charting/telescope instruments destabilize boat physics
 
 - Reported: 2026-10-02. User observed oscillation immediately on load, followed by the boat flipping onto land; unpinning both instruments stopped the behavior.

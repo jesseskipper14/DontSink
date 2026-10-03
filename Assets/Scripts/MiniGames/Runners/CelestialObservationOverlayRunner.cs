@@ -50,6 +50,9 @@ public sealed class CelestialObservationOverlayRunner : MonoBehaviour
     private void LateUpdate()
     {
         if (_activeCartridge == null) return;
+        var owner = CameraManager.ForActor(_activeRequester);
+        if (owner == null || !owner.CanProvideGameplayInput)
+        { InterruptInstrument(_activeInstrument, "Local charting owner changed."); return; }
         if (overlay == null || !overlay.isActiveAndEnabled || !overlay.IsOpen ||
             !ReferenceEquals(overlay.ActiveCartridge, _activeCartridge)) { ReleaseSession(); return; }
         if (!ReferenceEquals(_activeInstrument, null))
@@ -160,6 +163,8 @@ public sealed class CelestialObservationOverlayRunner : MonoBehaviour
 
     public bool TryOpenObservationFor(GameObject requester, ChartingInstrumentInteractable instrument)
     {
+        var owner = CameraManager.ForActor(requester);
+        if (owner == null || !owner.CanProvideGameplayInput) return false;
         AutoWire();
 
         if (!isActiveAndEnabled || (overlay != null && overlay.IsOpen)) return false;

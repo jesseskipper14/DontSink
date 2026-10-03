@@ -16,14 +16,18 @@ public class CameraFollow : MonoBehaviour
 
     private float currentTilt = 0f;
     private Transform camTransform;
+    private Camera ownCamera;
 
     void Awake()
     {
         camTransform = transform;
+        ownCamera = GetComponent<Camera>();
     }
 
     void LateUpdate()
     {
+        // Legacy boat preview cameras must not compete with player presentation.
+        if (CameraManager.ForCamera(ownCamera) != null) return;
         if (boat == null) return;
 
         // Keep camera Z position intact

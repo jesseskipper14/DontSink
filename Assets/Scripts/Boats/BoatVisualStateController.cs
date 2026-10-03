@@ -707,25 +707,13 @@ public sealed class BoatVisualStateController : MonoBehaviour
                 return viewed;
         }
 
-        // Single-player fallback only. With multiple players present, refusing to
-        // guess is safer than allowing an arbitrary remote player's trigger events
-        // to control this client's cutaway/camera/ocean presentation.
-        PlayerBoardingState[] players =
-            FindObjectsByType<PlayerBoardingState>(
-                FindObjectsInactive.Exclude,
-                FindObjectsSortMode.None);
-
-        return
-            players != null &&
-            players.Length == 1
-                ? players[0]
-                : null;
+        return null;
     }
 
     private void ResolveCameraIfNeeded()
     {
         if (targetCamera == null && autoFindMainCamera)
-            targetCamera = Camera.main;
+            targetCamera = CameraManager.Instance != null ? CameraManager.Instance.ActiveCamera : null;
     }
 
     private void CacheOriginalCameraMaskIfNeeded()

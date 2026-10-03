@@ -13,6 +13,7 @@ public sealed class BoatObservationPresentationController : MonoBehaviour, IInte
     private Camera sessionCamera;
     private CameraManager manager;
     private bool usesManagerCamera;
+    private int sessionBindingVersion;
     private CameraWASDController freeCamera;
     private bool freeCameraWasEnabled;
     private float priorSize, priorFov, zoom, nextClearanceCheck;
@@ -71,11 +72,12 @@ public sealed class BoatObservationPresentationController : MonoBehaviour, IInte
         if (IsActive || !isActiveAndEnabled || target == null || !target.Equipment.IsDeployed ||
             !target.IsValidUser(gameObject)) return false;
         PlayerBoardingState actor = GetComponentInParent<PlayerBoardingState>();
-        manager = CameraManager.Instance;
+        manager = CameraManager.ForActor(this);
+        if (manager == null || !manager.CanProvideGameplayInput) return false;
         if (!HasLocalAuthority(out bool hasLocalMarker)) return false;
         usesManagerCamera = viewCamera == null;
         if (usesManagerCamera && (manager == null || manager.ViewingPlayer != actor)) return false;
-        if (!usesManagerCamera && !hasLocalMarker) return false;
+        if (!usesManagerCamera && CameraManager.ForCamera(viewCamera) != manager) return false;
         Camera camera = usesManagerCamera ? manager.ActiveCamera : viewCamera;
         if (camera == null || !camera.isActiveAndEnabled) return false;
         // One transient owner per camera; distinct cameras/actors may observe independently.
@@ -100,6 +102,7 @@ public sealed class BoatObservationPresentationController : MonoBehaviour, IInte
                     if (!string.IsNullOrEmpty(layerName) && layer.name == layerName)
                         additionalHiddenSortingLayers.Add(layer.id);
         sessionCamera = camera;
+        sessionBindingVersion = manager.BindingVersion;
         priorSize = camera.orthographicSize;
         priorFov = camera.fieldOfView;
         skyOrigin = camera.transform.position;
@@ -128,6 +131,9 @@ public sealed class BoatObservationPresentationController : MonoBehaviour, IInte
         if (ReferenceEquals(sessionCamera, null)) return;
         if (sessionCamera == null || !sessionCamera.isActiveAndEnabled || sessionBoat == null)
         { FinishObservation(); return; }
+        if (manager == null || !manager.CanProvideGameplayInput ||
+            manager.BindingVersion != sessionBindingVersion)
+        { FinishObservation(); return; }
         if (isExiting)
         {
             AdvanceTransition(Time.unscaledDeltaTime);
@@ -135,7 +141,7 @@ public sealed class BoatObservationPresentationController : MonoBehaviour, IInte
         }
         if (telescope == null || sessionCamera == null || !sessionCamera.isActiveAndEnabled ||
             !telescope.Equipment.IsDeployed || !telescope.IsValidUser(gameObject) ||
-            !HasLocalAuthority(out _) ||
+            !HasLocalAuthority(out _) || manager == null || !manager.CanProvideGameplayInput ||
             GameplayInputBlocker.IsBlocked || InteractionInputBlocker.IsBlocked ||
             (usesManagerCamera && (manager == null || manager.ActiveCamera != sessionCamera ||
                 manager.ViewingPlayer != GetComponentInParent<PlayerBoardingState>())))
@@ -201,7 +207,8 @@ public sealed class BoatObservationPresentationController : MonoBehaviour, IInte
         RenderPipelineManager.endCameraRendering -= EndCamera;
         Camera.onPreCull -= BeginBuiltinCamera;
         Camera.onPostRender -= EndBuiltinCamera;
-        if (sessionCamera != null)
+        if (sessionCamera != null && manager != null && manager.IsLocal &&
+            manager.BindingVersion == sessionBindingVersion)
         {
             sessionCamera.orthographicSize = priorSize;
             sessionCamera.fieldOfView = priorFov;

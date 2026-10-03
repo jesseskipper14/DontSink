@@ -127,7 +127,7 @@ public sealed class ContextHintOverlay : MonoBehaviour
         Camera cam =
             worldCamera != null
                 ? worldCamera
-                : Camera.main;
+                : CameraManager.CameraForActor(anchor);
 
         if (cam == null || anchor == null)
             return;

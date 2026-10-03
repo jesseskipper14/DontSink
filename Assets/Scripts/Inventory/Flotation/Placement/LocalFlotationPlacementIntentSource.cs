@@ -76,7 +76,8 @@ public sealed class LocalFlotationPlacementIntentSource : MonoBehaviour, IContex
             return;
         }
 
-        if (respectGameplayInputBlocker && GameplayInputBlocker.IsBlocked)
+        if (!CameraManager.HasGameplayInput(this) ||
+            respectGameplayInputBlocker && GameplayInputBlocker.IsBlocked)
         {
             controller.CancelLocalPlacement();
             return;
@@ -85,10 +86,11 @@ public sealed class LocalFlotationPlacementIntentSource : MonoBehaviour, IContex
         Vector2 aimWorld = default;
         bool hasAimWorld = false;
 
-        if (Camera.main != null)
+        Camera camera = CameraManager.CameraForActor(this);
+        if (camera != null)
         {
             Vector3 mouse = Input.mousePosition;
-            aimWorld = Camera.main.ScreenToWorldPoint(mouse);
+            aimWorld = camera.ScreenToWorldPoint(mouse);
             hasAimWorld = true;
         }
 
@@ -139,7 +141,7 @@ public sealed class LocalFlotationPlacementIntentSource : MonoBehaviour, IContex
         text = null;
         worldAnchor = controller != null ? controller.transform : transform;
 
-        if (controller == null ||
+        if (!CameraManager.HasGameplayInput(this) || controller == null ||
             (respectGameplayInputBlocker && GameplayInputBlocker.IsBlocked))
         {
             return false;

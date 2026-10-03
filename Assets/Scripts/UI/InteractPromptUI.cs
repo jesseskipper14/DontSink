@@ -13,6 +13,7 @@ public sealed class InteractPromptUI : MonoBehaviour
     [SerializeField] private Vector2 screenOffset = new(0f, 64f);
 
     private readonly List<InteractPromptActionRowUI> _rows = new();
+    public void SetWorldCamera(Camera camera) { worldCamera = camera; }
 
     private void Awake()
     {

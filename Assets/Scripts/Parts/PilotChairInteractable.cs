@@ -75,7 +75,8 @@ public class PilotChairInteractable :
     public string PilotStationId => pilotStationId;
 
     public int EscapePriority => escapePriority;
-    public bool IsEscapeOpen => Occupant != null;
+    public bool IsEscapeOpen => Occupant != null && CameraManager.ForActor(Occupant) is CameraManager owner &&
+        owner.CanProvideGameplayInput;
 
     public string PersistenceStationId
     {
@@ -142,6 +143,8 @@ public class PilotChairInteractable :
             return pilotingSimulation;
         }
     }
+
+    public GameObject PresentationRequester => Occupant;
 
     private GameObject Occupant =>
         seatController != null
@@ -650,6 +653,7 @@ public class PilotChairInteractable :
 
     private void RegisterSeatEscape()
     {
+        if (!IsEscapeOpen) return;
         EscapeCloseRegistry registry =
             EscapeCloseRegistry.TryGetOrFind();
 
@@ -684,8 +688,10 @@ public class PilotChairInteractable :
     private void ResolvePilotingOverlayRunner()
     {
         if (pilotingOverlayRunner == null)
-            pilotingOverlayRunner =
-                FindAnyObjectByType<PilotingOverlayRunner>();
+        {
+            var runners = FindObjectsByType<PilotingOverlayRunner>(FindObjectsSortMode.None);
+            if (runners.Length == 1) pilotingOverlayRunner = runners[0];
+        }
     }
 
     private void ResolveSeatController()
@@ -730,6 +736,13 @@ public class PilotChairInteractable :
 
     private void RefreshPilotingOverlay()
     {
+        // Replicated seating/helm state must never open this client's local UI.
+        var owner = CameraManager.ForActor(Occupant);
+        if (owner == null || !owner.CanProvideGameplayInput)
+        {
+            if (_pilotingOverlayStarted) ClosePilotingOverlay("No local helm viewer");
+            return;
+        }
         bool hasConfiguredHelmLink =
             TryResolveConfiguredHelmLink(
                 out _,

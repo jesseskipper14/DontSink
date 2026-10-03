@@ -320,18 +320,7 @@ public sealed class BoatBoardingInteractable :
                 return viewed;
         }
 
-        // Single-player fallback only. With multiple players and no resolved local
-        // viewer, do not let an arbitrary remote player drive this client's fade.
-        PlayerBoardingState[] players =
-            FindObjectsByType<PlayerBoardingState>(
-                FindObjectsInactive.Exclude,
-                FindObjectsSortMode.None);
-
-        return
-            players != null &&
-            players.Length == 1
-                ? players[0]
-                : null;
+        return null;
     }
 
     private PlayerBoardingState FindBoardingState(in InteractContext context)

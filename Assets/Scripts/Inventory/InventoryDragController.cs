@@ -176,8 +176,6 @@ public sealed class InventoryDragController : MonoBehaviour
         if (inventoryInput == null)
             inventoryInput = GetComponentInParent<PlayerInventoryInput>(true);
 
-        if (worldCamera == null)
-            worldCamera = Camera.main;
 
         HideVisual();
         Log($"Awake | canvas={(canvas != null ? canvas.name : "NULL")} | dragIcon={(dragIcon != null ? dragIcon.name : "NULL")}");
@@ -1508,7 +1506,7 @@ public sealed class InventoryDragController : MonoBehaviour
     {
         _worldDropCandidates.Clear();
 
-        Camera cam = worldCamera != null ? worldCamera : Camera.main;
+        Camera cam = worldCamera != null ? worldCamera : CameraManager.CameraForActor(inventory);
         if (cam == null)
         {
             LogWarning("CollectWorldDropTargetCandidates failed because no camera was available.");

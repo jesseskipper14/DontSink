@@ -23,6 +23,7 @@ public sealed class InteractPromptDriver : MonoBehaviour
     private readonly HashSet<IPickupInteractable> _suppressedPickup = new();
 
     private ILocalPlayerAuthority _localAuth;
+    private bool _ownsPromptPresentation;
     private WorldItem _highlightedWorldItem;
 
     private void Reset()
@@ -44,7 +45,7 @@ public sealed class InteractPromptDriver : MonoBehaviour
         if (localAuthoritySource != null && _localAuth == null)
             Debug.LogError($"{name}: localAuthoritySource must implement ILocalPlayerAuthority.", this);
 
-        if (promptUI != null)
+        if (promptUI != null && HasLocalPromptAuthority())
             promptUI.Hide();
     }
 
@@ -67,8 +68,9 @@ public sealed class InteractPromptDriver : MonoBehaviour
 
         ClearWorldItemHighlight();
 
-        if (promptUI != null)
+        if (promptUI != null && _ownsPromptPresentation)
             promptUI.Hide();
+        _ownsPromptPresentation = false;
     }
 
     private void LateUpdate()
@@ -100,6 +102,8 @@ public sealed class InteractPromptDriver : MonoBehaviour
         }
 
         _promptActions.Sort((a, b) => b.Priority.CompareTo(a.Priority));
+        promptUI.SetWorldCamera(CameraManager.CameraForActor(this));
+        _ownsPromptPresentation = true;
         promptUI.Show(ResolvePromptPosition(target), _promptActions);
     }
 
@@ -120,7 +124,7 @@ public sealed class InteractPromptDriver : MonoBehaviour
 
     private bool HasLocalPromptAuthority()
     {
-        return _localAuth == null || _localAuth.IsLocal;
+        return CameraManager.HasGameplayInput(this) && (_localAuth == null || _localAuth.IsLocal);
     }
 
     private void PruneSuppressedTargets()
@@ -569,7 +573,8 @@ public sealed class InteractPromptDriver : MonoBehaviour
     private void HidePromptAndHighlight()
     {
         ClearWorldItemHighlight();
-        promptUI.Hide();
+        if (_ownsPromptPresentation) promptUI.Hide();
+        _ownsPromptPresentation = false;
     }
 
     private static string CleanObjectName(string raw)

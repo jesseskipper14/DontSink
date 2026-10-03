@@ -224,19 +224,7 @@ public sealed class DivingBellOceanPresentationBridge : MonoBehaviour
                 return viewed;
         }
 
-        // Single-player fallback only. With multiple players present, a missing local
-        // viewer is safer than letting an arbitrary remote player drive client-local
-        // ocean presentation.
-        PlayerBoardingState[] players =
-            FindObjectsByType<PlayerBoardingState>(
-                FindObjectsInactive.Exclude,
-                FindObjectsSortMode.None);
-
-        return
-            players != null &&
-            players.Length == 1
-                ? players[0]
-                : null;
+        return null;
     }
 
     private void ResolveRefs()
