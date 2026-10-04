@@ -165,15 +165,13 @@ public sealed class BoatHarborPresentation : MonoBehaviour
         return new Proxy { Root = root, Mesh = mesh, Renderer = renderer };
     }
 
-    private void OnGUI()
+    public void DrawPilotingApproach(Rect panel, BoatPilotingState viewer)
     {
-        var camera = CameraManager.Instance;
         if (!_ready || !_hasGuide || _guideAlpha <= .001f || Controller == null ||
-            camera == null || camera.ActiveCamera == null || camera.ActiveCamera.gameObject.scene != gameObject.scene) return;
-        var viewport = camera.ActiveCamera.pixelRect;
-        float size = Mathf.Min(Controller.HarborPresentation.approachPanelSize, viewport.width * .32f, viewport.height * .42f);
+            viewer == null || Controller.HarborBridge == null || Controller.HarborBridge.PilotingState != viewer) return;
+        float size = Mathf.Min(panel.width, panel.height);
         if (size < 100) return;
-        Rect panel = new Rect(viewport.xMax - size - 12, Screen.height - viewport.yMax + 12, size, size);
+        panel.width = panel.height = size;
         Color old = GUI.color;
         GUI.color = new Color(.07f, .11f, .14f, _guideAlpha * .82f);
         GUI.DrawTexture(panel, Texture2D.whiteTexture);
@@ -204,7 +202,7 @@ public sealed class BoatHarborPresentation : MonoBehaviour
         GUI.Label(new Rect(2, size * .45f, 44, 22), "Port", _label);
         GUI.Label(new Rect(size - 64, size * .45f, 62, 22), "Starboard", _label);
         bool inside = berth.Contains(_world, WorldTopologyService.Current);
-        GUI.Label(new Rect(0, size - 44, size, 20), inside ? "In berth · E to dock" : "Outline: berth · Line: approach", _label);
+        GUI.Label(new Rect(0, size - 44, size, 20), inside ? "In berth · exit piloting to dock" : "Outline: berth · Line: approach", _label);
         GUI.EndGroup(); GUI.color = old;
     }
 

@@ -17,6 +17,8 @@ public sealed class PilotingOverlayRunner : MonoBehaviour
     [Tooltip("When true, runtime systems cannot change the piloting zoom. " +
              "Keep this locked for now; later equipment/progression can provide different allowed views.")]
     [SerializeField] private bool lockZoom = true;
+    [Header("Local viewscape and compass")]
+    [SerializeField] private PilotingViewscapeSettings viewscapeSettings = new();
 
     [Header("Wave Presentation")]
     [Tooltip("Fraction of each trough-to-crest half-wave that stays completely dark before the wave gradient begins. " +
@@ -138,7 +140,8 @@ public sealed class PilotingOverlayRunner : MonoBehaviour
                 lockZoom,
                 troughFlatFraction,
                 waveTextureRefreshHz,
-                helm);
+                helm,
+                viewscapeSettings);
 
         overlay.Open(
             _activeCartridge,

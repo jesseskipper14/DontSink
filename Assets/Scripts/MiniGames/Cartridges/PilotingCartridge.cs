@@ -20,6 +20,7 @@ public sealed class PilotingCartridge :
     private readonly PilotingWaterMotionRenderer _waterMotionRenderer;
     private readonly PilotingRouteRenderer _routeRenderer;
     private readonly PilotingHudRenderer _hudRenderer;
+    private readonly PilotingCompassRenderer _compassRenderer = new();
 
     private MiniGameContext _ctx;
     private bool _requestedClose;
@@ -131,7 +132,8 @@ public sealed class PilotingCartridge :
         bool zoomLocked,
         float troughFlatFraction,
         float waveTextureRefreshHz,
-        PilotChairInteractable sourceStation = null)
+        PilotChairInteractable sourceStation = null,
+        PilotingViewscapeSettings viewscapeSettings = null)
     {
         _state =
             state;
@@ -141,6 +143,7 @@ public sealed class PilotingCartridge :
 
         _sourceStation =
             sourceStation;
+        _compassRenderer.ConfigureViewscape(viewscapeSettings);
 
         _visibleWorldHeight =
             Mathf.Max(
@@ -208,6 +211,8 @@ public sealed class PilotingCartridge :
 
         _requestedClose =
             false;
+        _compassRenderer.Reset();
+        _compassRenderer.Tick(_state, 0);
 
         _debugMenuOpen =
             false;
@@ -263,6 +268,7 @@ public sealed class PilotingCartridge :
 
         if (dt > 0f)
         {
+            _compassRenderer.Tick(_state, dt);
             _waveRenderer.Tick(
                 dt,
                 _state.NavigationPosition,
@@ -296,6 +302,7 @@ public sealed class PilotingCartridge :
 
     public void End()
     {
+        _compassRenderer.Reset();
         _ctx =
             null;
 
@@ -390,15 +397,17 @@ public sealed class PilotingCartridge :
         _waterMotionRenderer.Draw(
             view);
 
-        _routeRenderer.Draw(
-            view,
-            _simulation.RouteGuidance);
+        // Generated recovery curves are diagnostics, not player-authored navigation legs.
+        if (_debugMenuOpen)
+            _routeRenderer.Draw(view, _simulation.RouteGuidance);
 
         DrawWaterReferenceGrid(
             view);
 
         DrawBoat(
             view);
+
+        _compassRenderer.Draw(playArea, _state);
 
         _hudRenderer.Draw(
             panel,
