@@ -18,6 +18,7 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
     private bool _open;
     private BoatSceneWorldPositionBridge _bridge;
     private BoatPilotingSimulation _simulation;
+    private BoatSceneController _harborController;
     private EscapeCloseRegistry _escape;
     private float _nextResolveTime;
     private string _targetX = "0", _targetY = "0", _status = string.Empty;
@@ -75,6 +76,7 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
         }
         _simulation = _bridge != null && _bridge.PilotingState != null
             ? _bridge.PilotingState.GetComponent<BoatPilotingSimulation>() : null;
+        _harborController = FindAnyObjectByType<BoatSceneController>();
     }
 
     private void FixedUpdate()
@@ -139,6 +141,16 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
         bool ready = _bridge != null && _bridge.isActiveAndEnabled && _bridge.ProjectionReady && _bridge.PilotingState != null;
         if (ready)
         {
+            if (_harborController != null)
+            {
+                GUILayout.Label($"Harbor: {_harborController.HarborStatus}");
+                var berth = _harborController.CurrentHarborBerth;
+                if (!string.IsNullOrEmpty(_harborController.CurrentHarborNodeId))
+                {
+                    GUILayout.Label($"Berth X/Y {berth.Center.x:0.000}, {berth.Center.y:0.000}; half-size {berth.HalfLength:0.000} × {berth.HalfWidth:0.000} map units");
+                    GUILayout.Label($"Departure X/Y {berth.Departure.x:0.000}, {berth.Departure.y:0.000}; required depth {berth.RequiredDepth:0.0}");
+                }
+            }
             BoatPilotingState state = _bridge.PilotingState;
             Vector2 velocity = _bridge.ProjectNavigationVector(state.NavigationVelocity);
             GUILayout.Label($"Heading: {_bridge.GeographicHeadingDegrees:0.0}° (world north = 0°, clockwise)");
@@ -221,6 +233,16 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
             _targetY = world.y.ToString("R", CultureInfo.InvariantCulture);
         }
         GUI.enabled = previousEnabled && ready && GameplayAuthority.IsAuthoritative;
+        if (_harborController != null && GUILayout.Button("Fill destination berth coordinates"))
+        {
+            if (_harborController.TryGetDestinationBerth(out var berth, out string reason))
+            {
+                _targetX = berth.Center.x.ToString("R", CultureInfo.InvariantCulture);
+                _targetY = berth.Center.y.ToString("R", CultureInfo.InvariantCulture);
+                _status = "Destination berth coordinates filled; press Warp geography to apply.";
+            }
+            else _status = reason;
+        }
         if (topology.IsValid && hasWorld)
         {
             GUILayout.Label("Polar test presets: fill coordinates, then Warp geography");

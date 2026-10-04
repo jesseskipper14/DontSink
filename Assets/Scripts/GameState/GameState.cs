@@ -983,6 +983,11 @@ public sealed class TravelPayload
     public bool hasWorldRouteCoordinates;
     public Vector2 fromWorldPosition;
     public Vector2 toWorldPosition;
+    public bool hasDepartureAnchor;
+    public Vector2 departureWorldPosition;
+    public Vector2 departureWaterwardDirection;
+    public float departureNavigationScale;
+    public bool applyDepartureReset;
 
     public string boatInstanceId;
     public string boatPrefabGuid;

@@ -44,6 +44,23 @@ public sealed class BoatSceneWorldPositionBridge : MonoBehaviour
     public BoatPilotingState PilotingState => pilotingState;
     public int DebugWarpRevision { get; private set; }
 
+    /// <summary>The bridge may live on a scene object, separate from its boat.</summary>
+    public static bool TryGetForState(BoatPilotingState state, out BoatSceneWorldPositionBridge bridge)
+    {
+        bridge = null;
+        if (state == null) return false;
+        foreach (var candidate in FindObjectsByType<BoatSceneWorldPositionBridge>(FindObjectsSortMode.None))
+        {
+            if (!candidate.isActiveAndEnabled || candidate.gameObject.scene != state.gameObject.scene ||
+                (candidate.pilotingState != null && candidate.pilotingState != state)) continue;
+            if (bridge != null) { bridge = null; return false; }
+            bridge = candidate;
+        }
+        if (bridge == null) return false;
+        bridge.pilotingState = state;
+        return true;
+    }
+
     /// <summary>Resolve a newly spawned boat before terrain commits, without waiting for FixedUpdate.</summary>
     public bool TryRefreshProjection()
     {
@@ -57,7 +74,29 @@ public sealed class BoatSceneWorldPositionBridge : MonoBehaviour
         (_routeRight * localVector.x + _routeForward * localVector.y) * _worldUnitsPerLocalUnit;
 
     public Vector2 ProjectNavigationPosition(Vector2 localPosition) =>
-        _payload.fromWorldPosition + ProjectNavigationVector(localPosition) + _debugWorldOffset;
+        (_payload.hasDepartureAnchor ? _payload.departureWorldPosition : _payload.fromWorldPosition) + ProjectNavigationVector(localPosition) + _debugWorldOffset;
+
+    /// <summary>Departure reset or saved geographic pose, before streamed terrain commits.</summary>
+    public bool TryInitializeHarborNavigation()
+    {
+        if (!GameplayAuthority.IsAuthoritative || !TryRefreshProjection() || !_payload.hasDepartureAnchor) return false;
+        Vector2 local = Vector2.zero;
+        if (!_payload.applyDepartureReset && WorldNavigationService.TryGetTrueWorldPosition(out var saved))
+        {
+            Vector2 delta = WorldTopologyService.Delta(_payload.departureWorldPosition, saved);
+            local = new Vector2(Vector2.Dot(delta, _routeRight), Vector2.Dot(delta, _routeForward)) / _worldUnitsPerLocalUnit;
+        }
+        Vector2 waterward = _payload.departureWaterwardDirection;
+        float heading = Mathf.Atan2(Vector2.Dot(waterward, _routeRight), Vector2.Dot(waterward, _routeForward)) * Mathf.Rad2Deg;
+        if (_payload.applyDepartureReset)
+        {
+            pilotingState.ResetRuntimeState();
+            pilotingState.SetNavigationState(local, Vector2.zero, heading, 0);
+        }
+        else pilotingState.SetNavigationState(local, pilotingState.NavigationVelocity,
+            pilotingState.HeadingDegrees, pilotingState.AngularVelocityDegrees);
+        return true;
+    }
 
     public float GeographicHeadingDegrees
     {
@@ -87,7 +126,8 @@ public sealed class BoatSceneWorldPositionBridge : MonoBehaviour
         if (!IsFinite(target))
         { reason = "Coordinates must be finite numbers."; return false; }
 
-        Vector2 offset = target - (_payload.fromWorldPosition + ProjectNavigationVector(pilotingState.NavigationPosition));
+        Vector2 anchor = _payload.hasDepartureAnchor ? _payload.departureWorldPosition : _payload.fromWorldPosition;
+        Vector2 offset = target - (anchor + ProjectNavigationVector(pilotingState.NavigationPosition));
         if (!IsFinite(offset))
         { reason = "Coordinates exceed the navigation projection's numeric range."; return false; }
         if (!WorldNavigationService.TrySetAuthoritativeTrueWorldPosition(target, WorldNavigationPositionSource.Debug))
@@ -250,8 +290,8 @@ public sealed class BoatSceneWorldPositionBridge : MonoBehaviour
                 -_routeForward.x);
 
         _worldUnitsPerLocalUnit =
-            worldRouteDistance /
-            localTravelDistance;
+            _payload.hasDepartureAnchor && _payload.departureNavigationScale > 0 ? _payload.departureNavigationScale :
+            worldRouteDistance / localTravelDistance;
 
         _projectionReady = true;
 

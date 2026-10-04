@@ -9,6 +9,11 @@ public sealed class SceneTransitionController : MonoBehaviour
     [Header("Scenes")]
     [SerializeField] private string nodeSceneName = "NodeScene";
     [SerializeField] private string boatSceneName = "BoatScene";
+    [Header("Harbor transitions")]
+    [SerializeField] private HarborTravelSettings harborSettings = new();
+    public HarborTravelSettings HarborSettings => harborSettings;
+    private bool _transitionInProgress;
+    public bool TransitionInProgress => _transitionInProgress;
 
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = false;
@@ -59,6 +64,7 @@ public sealed class SceneTransitionController : MonoBehaviour
         Vector2 toWorldPosition)
     //System.Collections.Generic.List<CargoManifest.Snapshot> cargoManifest)
     {
+        if (!GameplayAuthority.IsAuthoritative || _transitionInProgress) return;
         GameState gs = GameState.I;
         if (gs == null)
         {
@@ -74,6 +80,15 @@ public sealed class SceneTransitionController : MonoBehaviour
             return;
         }
 
+        Boat departingBoat = FindCurrentBoat(gs);
+        float mapScale = routeLength / Mathf.Max(.01f, harborSettings.nominalLocalTravelDistance);
+        string harborReason = "Current harbor node is unavailable.";
+        if (!HarborTravelService.TryGetNode(fromNodeStableId, out var sourceNode) ||
+            !HarborTravelService.TryGeometry(sourceNode, departingBoat, mapScale, harborSettings, out var departure, out harborReason))
+        {
+            ReportDepartureBlocked("Embark", sourceNode == null ? "Current harbor node is unavailable." : harborReason);
+            return;
+        }
         SaveCurrentPlayerLoadout();
         CapturePlayerSceneContext(gs, "StartTravelToBoatScene");
 
@@ -97,12 +112,17 @@ public sealed class SceneTransitionController : MonoBehaviour
             boatPrefabGuid,
             fromWorldPosition,
             toWorldPosition);
+        payload.hasDepartureAnchor = true;
+        payload.departureWorldPosition = departure.Departure;
+        payload.departureWaterwardDirection = departure.Harbor.Waterward;
+        payload.departureNavigationScale = mapScale;
+        payload.applyDepartureReset = true;
         //payloadCargo);
 
         gs.BeginTravel(payload);
 
         WorldNavigationService.TrySetAuthoritativeTrueWorldPosition(
-            fromWorldPosition,
+            departure.Departure,
             WorldNavigationPositionSource.TravelStart,
             fromNodeStableId);
 
@@ -125,11 +145,14 @@ public sealed class SceneTransitionController : MonoBehaviour
         PrepareDivingBellOccupantsForSceneTransition(
             "StartTravelToBoatScene");
 
-        SceneManager.LoadScene(boatSceneName);
+        _transitionInProgress = true;
+        try { SceneManager.LoadScene(boatSceneName); }
+        finally { _transitionInProgress = false; }
     }
 
     public void CompleteTravelToDestination()
     {
+        if (!GameplayAuthority.IsAuthoritative || _transitionInProgress) return;
         GameState gs = GameState.I;
         if (gs == null)
         {
@@ -188,8 +211,37 @@ public sealed class SceneTransitionController : MonoBehaviour
         SceneManager.LoadScene(nodeSceneName);
     }
 
+    /// <summary>Explicit berth interaction may dock at any node, independent of route selection.</summary>
+    public bool TryDockAtHarbor(string nodeId, GameObject requester)
+    {
+        if (!GameplayAuthority.IsAuthoritative || _transitionInProgress || GameState.I == null || GameState.I.activeTravel == null) return false;
+        var controller = FindAnyObjectByType<BoatSceneController>();
+        if (controller == null || !controller.CanDockAtHarbor(nodeId, requester)) return false;
+        if (!CanDepartCurrentScene(out string reason))
+        { ReportDepartureBlocked("Dock", reason); return false; }
+        if (!HarborTravelService.TryGetNode(nodeId, out var node)) return false;
+        _transitionInProgress = true;
+        try
+        {
+            var gs = GameState.I; var payload = gs.activeTravel;
+            SaveCurrentPlayerLoadout();
+            CapturePlayerSceneContext(gs, "Dock at harbor");
+            SaveCurrentBoatState("Dock at harbor", payload.fromNodeStableId, nodeId, MoneyChestLossContext.Route);
+            WorldNavigationService.TrySetAuthoritativeTrueWorldPosition(node.position, WorldNavigationPositionSource.NodeArrival, nodeId);
+            gs.player.currentNodeId = nodeId;
+            if (gs.player.lockedDestinationNodeId == nodeId) gs.player.lockedDestinationNodeId = null;
+            gs.ClearTravel();
+            GameMessageService.PostInfo($"Docked at {node.displayName}.");
+            PrepareDivingBellOccupantsForSceneTransition("Dock at harbor");
+            SceneManager.LoadScene(nodeSceneName);
+            return true;
+        }
+        finally { _transitionInProgress = false; }
+    }
+
     public void AbortTravelToSource()
     {
+        if (!GameplayAuthority.IsAuthoritative || _transitionInProgress) return;
         GameState gs = GameState.I;
         if (gs == null)
         {

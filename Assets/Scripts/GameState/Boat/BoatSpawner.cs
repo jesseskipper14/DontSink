@@ -60,6 +60,16 @@ public sealed class BoatSpawner : MonoBehaviour
 
         AssignBoatIdentity(gs, boatGO);
         RestoreBoatTransform(gs, boatGO);
+        if (gs != null && gs.activeTravel != null && gs.activeTravel.hasDepartureAnchor)
+        {
+            var state = boatGO.GetComponent<BoatPilotingState>();
+            if (!BoatSceneWorldPositionBridge.TryGetForState(state, out var bridge))
+            { LogError("Harbor departure requires the spawned boat's BoatPilotingState and one matching active scene navigation bridge. Spawn stopped."); Destroy(boatGO); return; }
+            if (!bridge.TryInitializeHarborNavigation())
+            { LogError($"Harbor departure navigation could not initialize on '{bridge.name}' (authority={GameplayAuthority.IsAuthoritative}, projection={bridge.ProjectionReady}, active={bridge.isActiveAndEnabled}). Spawn stopped."); Destroy(boatGO); return; }
+            if (boatGO.TryGetComponent<Rigidbody2D>(out var departureBody))
+            { departureBody.linearVelocity = Vector2.zero; departureBody.angularVelocity = 0; }
+        }
         if (boatGO.TryGetComponent<BoatPilotingSimulation>(out var piloting))
             piloting.RebasePhysicalTravelAfterTeleport();
         BoatTerrainStreamer2D terrain = null;
@@ -71,6 +81,7 @@ public sealed class BoatSpawner : MonoBehaviour
             return;
         }
         RestoreModulesAndPower(gs, boatGO);
+        if (gs != null && gs.activeTravel != null) gs.activeTravel.applyDepartureReset = false;
         RestoreTetherState(gs, boatGO);
         RestoreCompartments(gs, boatGO);
         RestoreAccessStates(gs, boatGO);

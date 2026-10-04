@@ -88,11 +88,23 @@ public sealed class InteractPromptDriver : MonoBehaviour
 
         if (!TryResolveVisibleHoverTarget(out InteractionHoverTarget target, out InteractContext ctx))
         {
+            if (interactor.TryGetBestTarget(out var ambient, out var ambientContext) && ambient is HarborDockInteraction harbor)
+            {
+                ClearWorldItemHighlight();
+                _promptActions.Clear();
+                _promptActions.Add(new PromptAction($"[E] {harbor.GetPromptVerb(ambientContext)}"));
+                promptUI.SetWorldCamera(CameraManager.CameraForActor(this));
+                _ownsPromptPresentation = true;
+                promptUI.Show(ambientContext.InteractorTransform.position, _promptActions);
+                return;
+            }
             HidePromptAndHighlight();
             return;
         }
 
         BuildPromptActions(target, ctx);
+        if (target.Interact == null && HarborDockInteraction.TryGet(ctx, out var harborAction) && harborAction is HarborDockInteraction harborDock)
+            _promptActions.Add(new PromptAction($"[E] {harborDock.GetPromptVerb(ctx)}"));
         UpdateWorldItemHighlight(target);
 
         if (_promptActions.Count == 0)

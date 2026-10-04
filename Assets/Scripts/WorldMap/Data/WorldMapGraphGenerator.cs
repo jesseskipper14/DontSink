@@ -1689,6 +1689,8 @@ public enum EdgeKind
 [Serializable]
 public class MapNode
 {
+    // Derived from persisted topography/node coordinate; visiting boat size is not stored here.
+    [NonSerialized] public HarborDefinition harbor;
     public bool isPrimary;
     public int id;
     public int clusterId;

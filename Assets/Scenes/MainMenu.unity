@@ -1093,6 +1093,66 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 197709148}
   m_CullTransparentMesh: 1
+--- !u!1 &233366895
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 233366897}
+  - component: {fileID: 233366896}
+  m_Layer: 0
+  m_Name: SceneTransitionController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &233366896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233366895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28999da29a506414ebca86ec3cf5c015, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nodeSceneName: NodeScene
+  boatSceneName: BoatScene
+  harborSettings:
+    terrainProfile: {fileID: 11400000, guid: 1532874c5ec79824380f7ba6b5fd1454, type: 2}
+    nominalLocalTravelDistance: 2000
+    coastalDepthBand: 0.12
+    berthLengthMultiplier: 2
+    berthWidthMultiplier: 0.8
+    departureLengthMultiplier: 6
+    depthClearance: 2
+    guidanceRange: 8
+    visibilityRange: 20
+  verboseLogging: 0
+  enableDebugTravelHotkeys: 1
+  debugCompleteTravelKey: 282
+  debugAbortTravelKey: 283
+--- !u!4 &233366897
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233366895}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &270020334
 GameObject:
   m_ObjectHideFlags: 0
@@ -1213,6 +1273,7 @@ MonoBehaviour:
   defaultBoatInstanceId: boat_001
   defaultStartingNodeId: 
   clearPlayerSceneContextOnNewGame: 1
+  newGameStartHour: 10
   saveLoadController: {fileID: 277718801}
   saveLoadPanel: {fileID: 0}
   requireValidSaveForLoadButton: 1
@@ -6216,6 +6277,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sortingLayerName: NodeWater
   sortingOrder: 0
+  verboseLogging: 0
 --- !u!114 &1656505138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8061,3 +8123,4 @@ SceneRoots:
   - {fileID: 522115421}
   - {fileID: 1403699439}
   - {fileID: 1656505144}
+  - {fileID: 233366897}

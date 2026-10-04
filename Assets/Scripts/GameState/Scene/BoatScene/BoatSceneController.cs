@@ -30,6 +30,22 @@ public sealed class BoatSceneController : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = true;
+    [Header("Geographic harbor docking")]
+    [SerializeField] private bool useHarborDocking = true;
+    [SerializeField] private HarborPresentationSettings harborPresentation = new();
+    public HarborPresentationSettings HarborPresentation => harborPresentation;
+    public Boat HarborBoat => _harborBoat;
+    public BoatSceneWorldPositionBridge HarborBridge => _harborBridge;
+    private Boat _harborBoat;
+    private BoatSceneWorldPositionBridge _harborBridge;
+    private string _harborNodeId;
+    private MapNode _harborNode;
+    private HarborBerth _harborBerth;
+    private float _nextHarborQuery;
+    private bool _overlapWarning;
+    public string HarborStatus { get; private set; } = "waiting for harbor context";
+    public HarborBerth CurrentHarborBerth => _harborBerth;
+    public string CurrentHarborNodeId => _harborNodeId;
 
     public TravelPayload Payload { get; private set; }
 
@@ -87,7 +103,7 @@ public sealed class BoatSceneController : MonoBehaviour
         }
 
         EnsureContext();
-        if (ctx == null)
+        if (ctx == null && !useHarborDocking)
         {
             Debug.LogError("[BoatSceneController] Missing BoatSceneContext in BoatScene.", this);
             return;
@@ -98,6 +114,16 @@ public sealed class BoatSceneController : MonoBehaviour
             $"boatId='{Payload.boatInstanceId}' boatGuid='{Payload.boatPrefabGuid}'");
 
         LayoutDocks();
+        if (useHarborDocking)
+        {
+            if (dockingPanel != null) dockingPanel.Hide();
+            var action = GetComponent<HarborDockInteraction>();
+            if (action == null) action = gameObject.AddComponent<HarborDockInteraction>();
+            action.Controller = this;
+            var presentation = GetComponent<BoatHarborPresentation>();
+            if (presentation == null) presentation = gameObject.AddComponent<BoatHarborPresentation>();
+            presentation.Controller = this;
+        }
     }
 
     private void EnsureContext()
@@ -118,6 +144,7 @@ public sealed class BoatSceneController : MonoBehaviour
 
     private void HookDockEvents()
     {
+        if (useHarborDocking) return;
         if (ctx == null)
             return;
 
@@ -160,6 +187,12 @@ public sealed class BoatSceneController : MonoBehaviour
 
     private void LayoutDocks()
     {
+        if (useHarborDocking)
+        {
+            if (ctx != null && ctx.sourceDockAnchor != null) ctx.sourceDockAnchor.gameObject.SetActive(false);
+            if (ctx != null && ctx.targetDockAnchor != null) ctx.targetDockAnchor.gameObject.SetActive(false);
+            return;
+        }
         if (ctx.sourceDockAnchor != null)
         {
             Vector3 p = ctx.sourceDockAnchor.position;
@@ -182,6 +215,7 @@ public sealed class BoatSceneController : MonoBehaviour
 
     private void OnDockEnteredRange(DockTrigger trigger, Collider2D other)
     {
+        if (useHarborDocking) return;
         if (_completed)
             return;
 
@@ -352,5 +386,70 @@ public sealed class BoatSceneController : MonoBehaviour
             return;
 
         Debug.Log($"[BoatSceneController] {msg}", this);
+    }
+
+    private void Update()
+    {
+        if (!useHarborDocking || _completed || Time.unscaledTime < _nextHarborQuery) return;
+        _nextHarborQuery = Time.unscaledTime + .25f;
+        _harborNodeId = null; _harborNode = null; _harborBerth = default;
+        var transition = SceneTransitionController.I;
+        var gs = GameState.I;
+        if (transition == null || gs == null || gs.activeTravel == null || transition.HarborSettings.terrainProfile == null)
+        { HarborStatus = "assign SceneTransitionController Harbor Settings / Terrain Profile"; return; }
+        if (_harborBoat == null && gs.boatRegistry != null && gs.boat != null)
+            gs.boatRegistry.TryGetById(gs.boat.boatInstanceId, out _harborBoat);
+        if (_harborBoat == null) { HarborStatus = "boat unavailable"; return; }
+        BoatSceneWorldPositionBridge.TryGetForState(_harborBoat.GetComponent<BoatPilotingState>(), out _harborBridge);
+        if (_harborBridge == null || !_harborBridge.TryRefreshProjection() || !WorldNavigationService.TryGetTrueWorldPosition(out var world))
+        { HarborStatus = "navigation unavailable"; return; }
+        var graph = HarborTravelService.CurrentGraph;
+        if (graph == null) { HarborStatus = "node graph unavailable"; return; }
+        float nearest = float.PositiveInfinity; int nearby = 0;
+        var field = WorldMapRuntimeCache.I != null ? WorldMapRuntimeCache.I.Field : null;
+        float searchRange = transition.HarborSettings.guidanceRange;
+        if (field != null && field.IsValid)
+        {
+            float grid = Mathf.Min(field.WorldBounds.width / (field.Width - 1), field.WorldBounds.height / (field.Height - 1));
+            searchRange += Mathf.Min(Mathf.Min(field.WorldBounds.width, field.WorldBounds.height) * .25f, Mathf.Max(16, grid * 48));
+        }
+        HarborStatus = "no nearby harbor";
+        foreach (var node in graph.nodes)
+        {
+            if (node == null || WorldTopologyService.Distance(world, node.position) > searchRange) continue;
+            if (!HarborTravelService.TryGeometry(node, _harborBoat, _harborBridge.WorldUnitsPerLocalUnit, transition.HarborSettings, out var berth, out string reason))
+            { HarborStatus = reason; continue; }
+            float distance = WorldTopologyService.Distance(world, berth.Center);
+            if (distance > transition.HarborSettings.guidanceRange && !berth.Contains(world, WorldTopologyService.Current)) continue;
+            nearby++;
+            if (distance >= nearest) continue;
+            nearest = distance; _harborNode = node; _harborBerth = berth;
+            _harborNodeId = WorldMapStableIdUtility.BuildNodeStableId(graph.seed, node);
+        }
+        if (nearby > 1 && !_overlapWarning) Debug.LogWarning("Multiple harbor guidance ranges overlap; check node spacing/range tuning.", this);
+        _overlapWarning = nearby > 1;
+        if (_harborNode != null)
+            HarborStatus = $"{_harborNode.displayName}: berth {nearest:0.00} map units away; " +
+                (_harborBerth.Contains(world, WorldTopologyService.Current) ? "E — Dock available" : "outside berth");
+    }
+
+    public bool CanDockAtHarbor(string nodeId, GameObject requester)
+    {
+        if (!useHarborDocking || _completed || string.IsNullOrEmpty(nodeId) || requester == null || requester.scene != gameObject.scene || nodeId != _harborNodeId || _harborBoat == null ||
+            !WorldNavigationService.TryGetTrueWorldPosition(out var world) || !_harborBerth.Contains(world, WorldTopologyService.Current)) return false;
+        var boarding = requester.GetComponentInParent<PlayerBoardingState>();
+        return boarding != null && boarding.IsBoarded && boarding.CurrentBoatRoot == _harborBoat.transform;
+    }
+
+    public string HarborDockVerb => _harborNode != null ? $"Dock at {_harborNode.displayName}" : "Dock";
+
+    public bool TryGetDestinationBerth(out HarborBerth berth, out string reason)
+    {
+        berth = default; reason = "Destination harbor/boat context unavailable.";
+        var payload = GameState.I != null ? GameState.I.activeTravel : null;
+        var transition = SceneTransitionController.I;
+        if (payload == null || transition == null || _harborBoat == null || _harborBridge == null || !_harborBridge.TryRefreshProjection() ||
+            !HarborTravelService.TryGetNode(payload.toNodeStableId, out var node)) return false;
+        return HarborTravelService.TryGeometry(node, _harborBoat, _harborBridge.WorldUnitsPerLocalUnit, transition.HarborSettings, out berth, out reason);
     }
 }

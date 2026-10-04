@@ -190,7 +190,7 @@ public class Interactor2D : MonoBehaviour
         if (!TryBuildContext(out ctx, out _))
             return false;
 
-        return TryResolveBest(ctx, out best);
+        return TryResolveBest(ctx, out best) || HarborDockInteraction.TryGet(ctx, out best);
     }
 
     public bool TryGetBestPickupTarget(out IPickupInteractable best, out InteractContext ctx)
@@ -947,6 +947,7 @@ public class Interactor2D : MonoBehaviour
             TryResolveBest(
                 ctx,
                 out IInteractable interactTarget);
+        if (!hasTarget) hasTarget = HarborDockInteraction.TryGet(ctx, out interactTarget);
 
         if (!hasTarget ||
             interactTarget == null)
