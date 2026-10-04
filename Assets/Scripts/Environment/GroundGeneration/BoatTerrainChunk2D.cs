@@ -6,6 +6,8 @@ public sealed class BoatTerrainChunk2D : MonoBehaviour
     public EdgeCollider2D Edge { get; private set; }
     private Mesh _mesh;
     private Vector2[] _points;
+    private Vector3[] _vertices;
+    private Vector2[] _uv;
 
     public void Build(BoatTerrainPlan plan, long index, float originX, Material material,
         int layer, int sortingLayer, int sortingOrder)
@@ -25,6 +27,7 @@ public sealed class BoatTerrainChunk2D : MonoBehaviour
         int count = _points.Length;
         var vertices = new Vector3[count * 2];
         var uv = new Vector2[vertices.Length];
+        _vertices = vertices; _uv = uv;
         var colors = new Color[vertices.Length];
         var triangles = new int[(count - 1) * 6];
         for (int i = 0; i < count; i++)
@@ -46,6 +49,26 @@ public sealed class BoatTerrainChunk2D : MonoBehaviour
         var renderer = gameObject.AddComponent<MeshRenderer>();
         renderer.sharedMaterial = material;
         renderer.sortingLayerID = sortingLayer; renderer.sortingOrder = sortingOrder;
+    }
+
+    /// <summary>Mesh, sampler and collider always consume the same surface.</summary>
+    public void UpdateSurface(System.Func<int, float> height)
+    {
+        bool changed = false;
+        int count = _points.Length;
+        for (int i = 0; i < count; i++)
+        {
+            float y = height(i);
+            if (Mathf.Abs(y - _points[i].y) < .0001f) continue;
+            changed = true;
+            _points[i].y = y; _vertices[i].y = y; _uv[i].y = y;
+        }
+        if (!changed) return;
+        Edge.points = _points;
+        Edge.adjacentStartPoint = _points[0] * 2 - _points[1];
+        Edge.adjacentEndPoint = _points[^1] * 2 - _points[^2];
+        _mesh.vertices = _vertices; _mesh.uv = _uv;
+        _mesh.RecalculateBounds(); _mesh.RecalculateNormals();
     }
 
     public bool TrySample(float worldX, out float y, out float slope)

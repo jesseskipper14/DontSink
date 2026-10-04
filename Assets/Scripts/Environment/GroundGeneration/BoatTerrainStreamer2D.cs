@@ -13,6 +13,19 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
     [SerializeField] private string groundLayerName = "Ground";
     [SerializeField] private string sortingLayerName = "Default";
     [SerializeField] private int sortingOrder;
+    [Header("Coastal grounding prototype")]
+    [SerializeField] private bool usePhysicalCoasts = true;
+    [SerializeField, Min(1)] private float maximumLandHeight = 40;
+    [SerializeField, Range(.01f, .5f)] private float coastalDepthBand = .12f;
+    [SerializeField, Min(1)] private float coastRiseSpeed = 30;
+    [SerializeField, Min(1)] private float coastFallSpeed = 120;
+    [SerializeField, Min(.01f)] private float bodyClearance = .1f;
+    private Dictionary<long, float> _coastalHeights = new();
+    private Dictionary<long, float> _nextCoastalHeights = new();
+    private readonly Collider2D[] _coastalBodies = new Collider2D[2048];
+    private readonly List<Bounds> _coastalBounds = new();
+    public string CoastalClearanceStatus { get; private set; } = "not sampled";
+    public bool CoastalTerrainActive => usePhysicalCoasts && GeographicDepthActive;
     private static readonly Dictionary<int, BoatTerrainStreamer2D> Sources = new();
     private readonly Dictionary<long, BoatTerrainChunk2D> _loaded = new();
     private readonly HashSet<long> _committed = new();
@@ -42,7 +55,16 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
     public int LandWorldSeed => _landField != null ? _landField.Seed : 0;
     public float WaterLevelY => profile != null ? profile.waterLevelY : 0;
     public bool GeographicDepthActive => _depthField != null && _depthBridge != null && _depthBridge.isActiveAndEnabled && _depthBridge.ProjectionReady;
-    public float GeographicTargetDepth => DesiredDepth(_forecastX - _originX);
+    public float GeographicTargetDepth
+    {
+        get
+        {
+            if (!CoastalTerrainActive || _plan == null) return DesiredDepth(_forecastX - _originX);
+            return WaterLevelY - BoatCoastalSurface.Target(_depthField.Sample01World(_forecastWorld), _seaLevel,
+                WaterLevelY, _plan.Height(_forecastX - _originX), _depthCurve,
+                Mathf.Max(1, maximumLandHeight), coastalDepthBand);
+        }
+    }
     public int FeatureCount => _plan != null ? _plan.FeatureCount : 0;
     public bool IsReady => _plan != null && _loaded.Count > 0;
     public int LoadedCount => _loaded.Count;
@@ -131,7 +153,9 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
             Load(_plan.ChunkIndex(boatPosition.x - _originX));
         }
         RefreshLandEncounter();
-        return EnsureCoverage(boatPosition.x, _plan.InterestRadius);
+        bool ready = EnsureCoverage(boatPosition.x, _plan.InterestRadius);
+        if (ready) UpdateCoastalTerrain();
+        return ready;
     }
 
     private void RefreshLandEncounter()
@@ -269,6 +293,82 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
             _loaded.Remove(index); _leases.Remove(index);
             ChunkUnloaded?.Invoke(index);
         }
+        UpdateCoastalTerrain();
+    }
+
+    private void UpdateCoastalTerrain()
+    {
+        if (!CoastalTerrainActive) return;
+        RefreshDepthForecast();
+        Physics2D.SyncTransforms();
+        if (!TryGetWorldSpan(out float minX, out float maxX)) return;
+        float top = WaterLevelY + Mathf.Max(1, maximumLandHeight) + 2;
+        float bottom = _plan.BottomY - 2;
+        // Query every step so freshly dropped/spawned bodies are protected too.
+        int bodyCount = Physics2D.OverlapBox(new Vector2((minX + maxX) * .5f, (top + bottom) * .5f),
+            new Vector2(maxX - minX + (top - bottom) * 2, top - bottom), 0,
+            new ContactFilter2D().NoFilter(), _coastalBodies);
+        if (bodyCount == _coastalBodies.Length)
+        { CoastalClearanceStatus = "collider query full; terrain updates paused"; return; }
+        _coastalBounds.Clear();
+        Collider2D limitingCollider = null;
+        float boatCeiling = float.PositiveInfinity;
+        for (int i = 0; i < bodyCount; i++)
+        {
+            var collider = _coastalBodies[i];
+            if (collider != null && collider.enabled && !collider.isTrigger && collider.gameObject.scene == gameObject.scene &&
+                collider.GetComponent<BoatTerrainChunk2D>() == null &&
+                collider.attachedRigidbody != null && collider.attachedRigidbody.simulated &&
+                collider.attachedRigidbody.bodyType != RigidbodyType2D.Static &&
+                !Physics2D.GetIgnoreLayerCollision(_layer, collider.gameObject.layer))
+            {
+                Bounds bounds = collider.bounds;
+                _coastalBounds.Add(bounds);
+                float ceiling = BoatCoastalSurface.BodyCeiling(_forecastX, bounds, bodyClearance, 1.73205f);
+                if (ceiling < boatCeiling) { boatCeiling = ceiling; limitingCollider = collider; }
+            }
+        }
+        if (limitingCollider != null)
+        {
+            string owner = limitingCollider.attachedRigidbody.name;
+            float targetY = WaterLevelY - GeographicTargetDepth;
+            CoastalClearanceStatus = $"{owner}/{limitingCollider.name} ({limitingCollider.GetType().Name}); " +
+                $"bottom {limitingCollider.bounds.min.y:0.00}; ceiling at boat {boatCeiling:0.00}; " +
+                $"target Y {targetY:0.00}{(targetY > boatCeiling ? "; uplift limited" : "; target clear")}";
+        }
+        else CoastalClearanceStatus = "no body clearance limit";
+        _nextCoastalHeights.Clear();
+        foreach (var pair in _loaded)
+        {
+            long firstSample = pair.Key * _plan.Segments;
+            pair.Value.UpdateSurface(i =>
+            {
+                long key = firstSample + i;
+                // Shared global sample keys give adjacent chunks identical endpoints,
+                // regardless of dictionary iteration order or an unloading neighbour.
+                if (_nextCoastalHeights.TryGetValue(key, out float shared)) return shared;
+                double strip = key * (double)_plan.Step;
+                float x = (float)(_originX + strip);
+                float baseY = _plan.Height(strip);
+                Vector2 world = _forecastWorld + _forecastDirection * ((x - _forecastX) * _forecastScale);
+                float target = BoatCoastalSurface.Target(_depthField.Sample01World(world), _seaLevel,
+                    WaterLevelY, baseY, _depthCurve, Mathf.Max(1, maximumLandHeight), coastalDepthBand);
+                bool established = _coastalHeights.TryGetValue(key, out float prior);
+                float current = established ? prior : baseY;
+                float ceiling = float.PositiveInfinity;
+                // A 60 degree clearance envelope prevents an abrupt vertical wall
+                // forming directly beside a protected body's footprint.
+                foreach (var bounds in _coastalBounds)
+                    ceiling = Mathf.Min(ceiling, BoatCoastalSurface.BodyCeiling(x, bounds, bodyClearance, 1.73205f));
+                // New coverage starts at its coastal target immediately. Do not
+                // let the boat sail through a newly loaded beach while it grows.
+                float y = established ? BoatCoastalSurface.Advance(current, target, ceiling, Time.fixedDeltaTime,
+                    Mathf.Max(1, coastRiseSpeed), Mathf.Max(1, coastFallSpeed)) : Mathf.Min(target, Mathf.Max(baseY, ceiling));
+                _nextCoastalHeights.Add(key, y);
+                return y;
+            });
+        }
+        (_coastalHeights, _nextCoastalHeights) = (_nextCoastalHeights, _coastalHeights);
     }
 
     private void DiscoverInterests()
@@ -383,6 +483,9 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
         foreach (var items in _suspended.Values) foreach (var item in items) if (item != null) item.SetActive(true);
         _loaded.Clear(); _committed.Clear(); _leases.Clear(); _suspended.Clear();
         _plan = null;
+        _coastalHeights.Clear(); _nextCoastalHeights.Clear();
+        Array.Clear(_coastalBodies, 0, _coastalBodies.Length); _coastalBounds.Clear();
+        CoastalClearanceStatus = "not sampled";
         _landQuery = null; _landField = null; _landEncounter = default; _nextLandQuery = 0;
     }
 

@@ -68,7 +68,13 @@ MonoBehaviour:
   fillDepth: 25
   interestRadius: 256
   unloadBuffer: 128
-  enableDebugFeature: 1
+  landDetectionBaseRange: 10
+  landDetectionMaximumRange: 30
+  landDetectionSizeFactor: 0.35
+  landEncounterSwitchMargin: 1
+  enableDebugFeature: 0
   debugFeatureCenter: 1024
   debugFeatureHalfWidth: 512
   debugFeatureDepthDelta: 100
+  debugFeatureEdgeFraction: 0.15
+  debugFeatureMaximumSlopeDegrees: 75

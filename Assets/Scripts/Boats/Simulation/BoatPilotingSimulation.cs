@@ -141,6 +141,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     /// Positive = scene-forward, negative = scene-reverse.
     /// </summary>
     public float PhysicalForwardSpeed => _physicalForwardSpeed;
+    public Vector2 SceneForwardAxis => GetSceneForwardAxis();
 
     /// <summary>
     /// Signed physical distance actually traveled along the BoatScene axis
@@ -778,6 +779,13 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
             headingForward *
             physicalForwardSpeed +
             _environmentNavigationVelocity;
+
+        if (BoatGeographicObstruction2D.TryGet(gameObject.scene, out var obstruction) &&
+            obstruction.ConstrainNavigation(this, state.NavigationPosition, navigationPosition, out var allowedNavigation))
+        {
+            navigationPosition = allowedNavigation;
+            navigationVelocity *= obstruction.LastNavigationFraction;
+        }
 
         state.SetNavigationState(
             navigationPosition,

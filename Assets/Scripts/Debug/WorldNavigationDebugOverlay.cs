@@ -152,6 +152,9 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
                     GUILayout.Label($"Streamed floor: {(terrain.IsReady ? "ready" : "waiting for setup")}; loaded {terrain.LoadedCount}, committed {terrain.CommittedCount}, interests {terrain.InterestCount}");
                     GUILayout.Label($"Ground fill bottom: {terrain.LastUsedBottomY:0.0}");
                     GUILayout.Label($"Geographic depth: {(terrain.GeographicDepthActive ? "active" : "fallback")}; target {terrain.GeographicTargetDepth:0.0}");
+                    GUILayout.Label($"Physical coasts: {(terrain.CoastalTerrainActive ? "active; mesh = collision; negative target depth = land" : "off")}");
+                    if (terrain.CoastalTerrainActive)
+                        GUILayout.Label($"Coastal floor guard: {terrain.CoastalClearanceStatus}");
                     GUILayout.Label($"Terrain feature directives: {terrain.FeatureCount}");
                     BoatLandEncounter land = terrain.LandEncounter;
                     GUILayout.Label($"Geographic surface: {(land.HasGeography ? (land.IsOnLand ? "LAND" : "water") : "unavailable")}");
@@ -178,6 +181,13 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
                     if (land.HasGeography) GUILayout.Label($"Land identity sampling: {terrain.LandQuerySampleSpacing:0.00} map units (approximate coast distance)");
                     if (terrain.TrySampleGround(_simulation.transform.position.x, out float seabedY, out _))
                         GUILayout.Label($"Seabed under boat: Y {seabedY:0.0}");
+                    if (BoatGeographicObstruction2D.TryGet(_simulation.gameObject.scene, out var obstruction))
+                    {
+                        GUILayout.Label($"Geographic obstruction: {obstruction.Status}; physical barrier {(obstruction.BarrierActive ? "ON" : "off")}");
+                        if (obstruction.LastResult.HasGeography)
+                            GUILayout.Label($"Land penetration ~{obstruction.LastResult.InitialPenetration:0.000} map units; allowed probe {obstruction.LastResult.AllowedFraction:P0}");
+                        GUILayout.Label($"Last geographic travel/drift permitted: {obstruction.LastNavigationFraction:P0}");
+                    }
                 }
                 Boat boat = _simulation.Boat;
                 if (boat != null && boat.rb != null)
