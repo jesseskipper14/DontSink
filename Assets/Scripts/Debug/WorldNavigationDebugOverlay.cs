@@ -128,6 +128,14 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
             }
         }
         GUILayout.Label($"Authority: {(GameplayAuthority.IsAuthoritative ? "local authority" : "client / read only")}");
+        if (WorldBoundaryService.TryGetCurrent(out var boundary))
+        {
+            GUILayout.Label($"Polar boundary: {boundary.Band}; nearest pole {boundary.Pole}; edge distance {boundary.SignedDistanceToEdge:0.00} map units");
+            GUILayout.Label($"Polar severity {boundary.Severity:P0}; warning width {boundary.SoftWidth:0.00}; core width {boundary.HardWidth:0.00}");
+            if (boundary.Band != WorldBoundaryBand.Normal)
+                GUILayout.Label($"{(boundary.Band == WorldBoundaryBand.Hard ? "DANGEROUS POLAR CORE" : "POLAR APPROACH — TURN BACK")}: return {(boundary.Pole == WorldBoundaryPole.North ? "south" : "north")}. Effects not connected yet.");
+        }
+        else GUILayout.Label("Polar boundary: unavailable (navigation or world bounds missing)");
         bool ready = _bridge != null && _bridge.isActiveAndEnabled && _bridge.ProjectionReady && _bridge.PilotingState != null;
         if (ready)
         {
@@ -213,6 +221,18 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
             _targetY = world.y.ToString("R", CultureInfo.InvariantCulture);
         }
         GUI.enabled = previousEnabled && ready && GameplayAuthority.IsAuthoritative;
+        if (topology.IsValid && hasWorld)
+        {
+            GUILayout.Label("Polar test presets: fill coordinates, then Warp geography");
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Fill north warning")) FillPolarTarget(topology, world.x, true, false);
+            if (GUILayout.Button("Fill north core")) FillPolarTarget(topology, world.x, true, true);
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Fill south warning")) FillPolarTarget(topology, world.x, false, false);
+            if (GUILayout.Button("Fill south core")) FillPolarTarget(topology, world.x, false, true);
+            GUILayout.EndHorizontal();
+        }
         if (GUILayout.Button("Warp geography")) Warp();
         GUI.enabled = previousEnabled;
         if (!string.IsNullOrEmpty(_status)) GUILayout.Label(_status);
@@ -228,6 +248,17 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
         GUILayout.Label(label, GUILayout.Width(20f));
         text = GUILayout.TextField(text);
         GUILayout.EndHorizontal();
+    }
+
+    private void FillPolarTarget(WorldTopology topology, float x, bool north, bool hard)
+    {
+        float fraction = hard ? WorldBoundaryQuery.DefaultHardFraction * .5f :
+            (WorldBoundaryQuery.DefaultSoftFraction + WorldBoundaryQuery.DefaultHardFraction) * .5f;
+        float offset = topology.Bounds.height * fraction;
+        float y = north ? topology.Bounds.yMax - offset : topology.Bounds.yMin + offset;
+        _targetX = topology.NormalizeX(x).ToString("R", CultureInfo.InvariantCulture);
+        _targetY = y.ToString("R", CultureInfo.InvariantCulture);
+        _status = "Polar test coordinates filled; press Warp geography to apply.";
     }
 
     private void Warp()
