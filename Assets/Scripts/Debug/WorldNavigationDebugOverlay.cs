@@ -153,6 +153,29 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
                     GUILayout.Label($"Ground fill bottom: {terrain.LastUsedBottomY:0.0}");
                     GUILayout.Label($"Geographic depth: {(terrain.GeographicDepthActive ? "active" : "fallback")}; target {terrain.GeographicTargetDepth:0.0}");
                     GUILayout.Label($"Terrain feature directives: {terrain.FeatureCount}");
+                    BoatLandEncounter land = terrain.LandEncounter;
+                    GUILayout.Label($"Geographic surface: {(land.HasGeography ? (land.IsOnLand ? "LAND" : "water") : "unavailable")}");
+                    if (land.HasLandmass)
+                    {
+                        GUILayout.Label($"Dominant landmass #{land.LandmassId}: ~{land.Distance:0.00} map units away; range {land.VisibilityRange:0.00}");
+                        GUILayout.Label($"Land sample: ({land.NearestLandSample.x:0.00}, {land.NearestLandSample.y:0.00}); area ~{land.ApproximateArea:0.0}; diameter ~{land.EquivalentDiameter:0.00}");
+                        if (land.OffsetToLand.sqrMagnitude > .00000001f)
+                        {
+                            float bearing = Mathf.Repeat(Mathf.Atan2(land.OffsetToLand.x, land.OffsetToLand.y) * Mathf.Rad2Deg, 360f);
+                            string compass = (Mathf.RoundToInt(bearing / 45f) % 8) switch
+                            {
+                                0 => "N", 1 => "NE", 2 => "E", 3 => "SE",
+                                4 => "S", 5 => "SW", 6 => "W", _ => "NW"
+                            };
+                            float relative = Mathf.DeltaAngle(_bridge.GeographicHeadingDegrees, bearing);
+                            GUILayout.Label($"To nearest land sample: {compass}, bearing {bearing:0.0}° (N=0°, E=90°)");
+                            GUILayout.Label($"Relative to heading: {relative:+0.0;-0.0;0.0}° (+right / -left)");
+                        }
+                        else GUILayout.Label("Nearest land sample is here; no direction.");
+                        if (land.IsOnLand) GUILayout.Label("On land: sample direction is not an escape direction to water.");
+                    }
+                    else if (land.HasGeography) GUILayout.Label("Dominant landmass: none in range");
+                    if (land.HasGeography) GUILayout.Label($"Land identity sampling: {terrain.LandQuerySampleSpacing:0.00} map units (approximate coast distance)");
                     if (terrain.TrySampleGround(_simulation.transform.position.x, out float seabedY, out _))
                         GUILayout.Label($"Seabed under boat: Y {seabedY:0.0}");
                 }

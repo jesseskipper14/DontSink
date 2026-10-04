@@ -17,6 +17,8 @@ public sealed class BoatTerrainPlan
     private readonly Func<double, float> _desiredDepth;
     private readonly SortedList<long, float> _depthKnots = new();
     private readonly Dictionary<long, double> _knotSlopeRates = new();
+    private readonly Dictionary<long, double> _knotTangents = new();
+    private readonly HashSet<long> _featureKnots = new();
     private readonly double _detailSlopeBudget;
     private BoatTerrainFeatureDirective[] _features;
     private readonly bool UsesMacroDepth;
@@ -94,11 +96,7 @@ public sealed class BoatTerrainPlan
     {
         if (_depthKnots.ContainsKey(index)) return;
         double strip = index * (double)Width;
-        float target = _desiredDepth != null ? _desiredDepth(strip) : (float)_depth;
-        if (!WorldTopology.IsFinite(target)) target = (float)_depth;
-        double requested = target;
-        foreach (var feature in _features) requested += feature.DepthOffset(strip);
-        target = (float)Math.Max(1, Math.Min(_maximumDepth, requested));
+        float target = ForecastDepth(strip);
         double low = 1, high = _maximumDepth;
         int first = 0, last = _depthKnots.Count;
         while (first < last)
@@ -146,6 +144,23 @@ public sealed class BoatTerrainPlan
         }
         _depthKnots.Add(index, committedDepth);
         _knotSlopeRates.Add(index, requiredRate);
+        foreach (var feature in _features)
+            if (strip >= feature.Center - feature.HalfWidth - Width && strip <= feature.Center + feature.HalfWidth + Width)
+                _featureKnots.Add(index);
+        double left = _depthKnots.TryGetValue(index - 1, out float leftDepth) ? leftDepth : ForecastDepth(strip - Width);
+        double right = _depthKnots.TryGetValue(index + 1, out float rightDepth) ? rightDepth : ForecastDepth(strip + Width);
+        double incoming = (committedDepth - left) / Width, outgoing = (right - committedDepth) / Width;
+        double tangent = incoming * outgoing > 0 ? Math.Sign(incoming) * Math.Min(Math.Abs(incoming), Math.Abs(outgoing)) : 0;
+        _knotTangents.Add(index, _featureKnots.Contains(index) ? 0 : tangent);
+    }
+
+    private float ForecastDepth(double strip)
+    {
+        float target = _desiredDepth != null ? _desiredDepth(strip) : (float)_depth;
+        if (!WorldTopology.IsFinite(target)) target = (float)_depth;
+        double requested = target;
+        foreach (var feature in _features) requested += feature.DepthOffset(strip);
+        return (float)Math.Max(1, Math.Min(_maximumDepth, requested));
     }
 
     private double MacroDepth(double strip)
@@ -156,8 +171,22 @@ public sealed class BoatTerrainPlan
         if (_depthKnots.TryGetValue(index, out float a) && _depthKnots.TryGetValue(index + 1, out float b))
         {
             double t = strip / Width - index;
-            double smooth = t * t * t * (t * (t * 6 - 15) + 10);
-            return a + (b - a) * smooth;
+            if (_featureKnots.Contains(index) || _featureKnots.Contains(index + 1))
+            {
+                double smooth = t * t * t * (t * (t * 6 - 15) + 10);
+                return a + (b - a) * smooth;
+            }
+            // Monotone Hermite retains travel slope instead of stopping at every chunk.
+            // Freeze tangents with knots; future requests never reshape visited geometry.
+            double difference = b - a;
+            double Tangent(long knot)
+            {
+                double value = _knotTangents[knot] * Width;
+                return value * difference > 0 ? Math.Sign(difference) * Math.Min(Math.Abs(value), Math.Abs(difference)) : 0;
+            }
+            double m0 = Tangent(index), m1 = Tangent(index + 1);
+            return (2 * t * t * t - 3 * t * t + 1) * a + (t * t * t - 2 * t * t + t) * m0 +
+                (-2 * t * t * t + 3 * t * t) * b + (t * t * t - t * t) * m1;
         }
         // Forecast is never built as physical geometry until both knots commit.
         return _depth;

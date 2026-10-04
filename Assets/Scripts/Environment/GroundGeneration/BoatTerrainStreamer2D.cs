@@ -31,6 +31,16 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
     private float _seaLevel, _fallbackDepth, _forecastX, _forecastScale;
     private Vector2 _forecastWorld, _forecastDirection;
     private BoatSceneWorldPositionBridge _depthBridge;
+    private BoatGeographicLandQuery _landQuery;
+    private WorldMapTopographyField _landField;
+    private float _landSeaLevel, _nextLandQuery;
+    private BoatLandEncounter _landEncounter;
+    public BoatLandEncounter LandEncounter => isActiveAndEnabled && GameplayAuthority.IsAuthoritative &&
+        GameState.I != null && ReferenceEquals(_voyage, GameState.I.activeTravel) ? _landEncounter : default;
+    public float LandQuerySampleSpacing => _landQuery != null ? _landQuery.SampleSpacing : 0;
+    public int LandContextRevision { get; private set; }
+    public int LandWorldSeed => _landField != null ? _landField.Seed : 0;
+    public float WaterLevelY => profile != null ? profile.waterLevelY : 0;
     public bool GeographicDepthActive => _depthField != null && _depthBridge != null && _depthBridge.isActiveAndEnabled && _depthBridge.ProjectionReady;
     public float GeographicTargetDepth => DesiredDepth(_forecastX - _originX);
     public int FeatureCount => _plan != null ? _plan.FeatureCount : 0;
@@ -66,6 +76,8 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
         int key = gameObject.scene.handle;
         if (Sources.TryGetValue(key, out var source) && source == this) Sources.Remove(key);
         // Retain existing physical chunks during a component pause.
+        _landEncounter = default;
+        _nextLandQuery = 0;
     }
 
     public bool Prepare(Vector2 boatPosition)
@@ -118,7 +130,27 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
             // slope constraints extend history towards either preload edge.
             Load(_plan.ChunkIndex(boatPosition.x - _originX));
         }
+        RefreshLandEncounter();
         return EnsureCoverage(boatPosition.x, _plan.InterestRadius);
+    }
+
+    private void RefreshLandEncounter()
+    {
+        var cache = WorldMapRuntimeCache.I;
+        if (_plan == null || GameState.I == null || !ReferenceEquals(_voyage, GameState.I.activeTravel) ||
+            cache == null || !cache.HasTopography || !WorldNavigationService.TryGetTrueWorldPosition(out var world))
+        { _landEncounter = default; return; }
+        if (!ReferenceEquals(_landField, cache.Field) || _landSeaLevel != cache.EffectiveSeaLevel01)
+        {
+            _landEncounter = default; _landQuery = null;
+            _landField = cache.Field; _landSeaLevel = cache.EffectiveSeaLevel01;
+            LandContextRevision++;
+            try { _landQuery = new BoatGeographicLandQuery(_landField, _landSeaLevel); }
+            catch (ArgumentException error) { Debug.LogWarning(error.Message, this); }
+        }
+        _landEncounter = _landQuery != null ? _landQuery.Query(world, profile.landDetectionBaseRange,
+            profile.landDetectionMaximumRange, profile.landDetectionSizeFactor,
+            _landEncounter.LandmassId, profile.landEncounterSwitchMargin) : default;
     }
 
     public bool EnsureCoverage(float x, float radius)
@@ -202,6 +234,11 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
     private void FixedUpdate()
     {
         if (!GameplayAuthority.IsAuthoritative) return;
+        if (Time.unscaledTime >= _nextLandQuery)
+        {
+            RefreshLandEncounter();
+            _nextLandQuery = Time.unscaledTime + .25f;
+        }
         if (Time.unscaledTime >= _nextDiscovery)
         {
             DiscoverInterests();
@@ -346,6 +383,7 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
         foreach (var items in _suspended.Values) foreach (var item in items) if (item != null) item.SetActive(true);
         _loaded.Clear(); _committed.Clear(); _leases.Clear(); _suspended.Clear();
         _plan = null;
+        _landQuery = null; _landField = null; _landEncounter = default; _nextLandQuery = 0;
     }
 
     private void OnDestroy() { Clear(); }

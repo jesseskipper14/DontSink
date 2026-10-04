@@ -24,6 +24,8 @@ Shader "DontSink/NodeGroundTerrain"
         _LargeNoiseScale ("Large Noise Scale", Range(0.02, 4)) = 0.35
         _SmallNoiseScale ("Small Noise Scale", Range(0.1, 20)) = 3.0
         _NoiseStrength ("Noise Strength", Range(0, 0.5)) = 0.14
+        [Toggle] _UseObjectPattern ("Anchor Pattern To Object", Float) = 0
+        _ObjectPatternScale ("Object Pattern Reference Scale", Vector) = (1,1,0,0)
 
         [Header(Strata)]
         _StrataFrequency ("Strata Frequency", Range(0, 12)) = 2.0
@@ -75,6 +77,7 @@ Shader "DontSink/NodeGroundTerrain"
                 float2 uv : TEXCOORD0;
                 float4 color : COLOR;
                 float2 positionWS : TEXCOORD1;
+                float2 patternOS : TEXCOORD2;
             };
 
             TEXTURE2D(_MainTex);
@@ -99,6 +102,8 @@ Shader "DontSink/NodeGroundTerrain"
                 float _LargeNoiseScale;
                 float _SmallNoiseScale;
                 float _NoiseStrength;
+                float _UseObjectPattern;
+                float4 _ObjectPatternScale;
 
                 float _StrataFrequency;
                 float _StrataWarp;
@@ -171,6 +176,7 @@ Shader "DontSink/NodeGroundTerrain"
                 output.uv =
                     input.uv;
 
+                output.patternOS = input.positionOS.xy;
                 output.color =
                     input.color;
 
@@ -210,7 +216,7 @@ Shader "DontSink/NodeGroundTerrain"
 
                 float2 p =
                     floor(
-                        input.positionWS /
+                        lerp(input.positionWS, input.patternOS * _ObjectPatternScale.xy, step(0.5, _UseObjectPattern)) /
                         pixelSize) *
                     pixelSize;
 

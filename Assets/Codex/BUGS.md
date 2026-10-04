@@ -122,3 +122,16 @@ Keep reports focused: trigger, evidence, likely effect, proposed pass, and verif
 - Isolated Unity harness: 6,461 assertions passed, including ten new inventory/treasury reset checks.
 - The harness uses the extracted menu reset statements, treasury reset method, and GameState player persistence logic with adapted singleton/chest hosts (diagnostic logging context also adapted). Checks cover stale keyed inventory/context, removal of other crew records, clean local record creation, treasury snapshot/registration clearing, old chest callback detachment, context-retention preference, and absent-service fallback.
 - Actual menu transitions, starter chest registration, and loading existing slots remain play-mode checks. Test artifacts are ignored under `Temp/CodexPhase7`.
+
+## Open: world-map sandy shoreline does not visually match land/water truth
+
+- Reported: 2026-10-03 during geographic land encounter testing.
+- Observation: the F4 land/water boundary appears about halfway through the sandy shoreline band, rather than at the blue water edge on the map. Not yet independently reproduced or diagnosed.
+- Follow-up: compare topography effective sea level and bilinear sampling with world-map class/color thresholds and texture filtering. Align the visual water boundary with gameplay truth while preserving intentional beach styling.
+- Verify: sample/warp along several coastlines, including the wrapping seam; compare F4 surface classification and map coloration. Keep this separate from island presentation and collision implementation.
+
+## Open: node spacing makes voyages excessively long
+
+- Reported: 2026-10-03 during maximum-speed ocean testing. World size feels acceptable, but node separation feels extreme.
+- Follow-up: measure nearest-neighbor/route distances against actual boat speed and current map-to-physical scale; tune node density/placement separately from world bounds. Do not silently rescale the world or regenerate existing saves.
+- Verify: compare a few short, medium, and long port-to-port trips in real play time, including wrapping seam routes, before choosing new generation settings.

@@ -24,6 +24,13 @@ public sealed class BoatTerrainProfile : ScriptableObject
     [Min(1f)] public float fillDepth = 25f;
     [Min(32f)] public float interestRadius = 256f;
     [Min(8f)] public float unloadBuffer = 128f;
+    [Header("Geographic Land Detection (map units)")]
+    [Min(0f)] public float landDetectionBaseRange = 10f;
+    [Min(0f)] public float landDetectionMaximumRange = 30f;
+    [Tooltip("Visibility range adds this fraction of the island's equivalent diameter, up to the maximum range.")]
+    [Min(0f)] public float landDetectionSizeFactor = .35f;
+    [Tooltip("Keep the current island unless another is this much closer. Never retains an out-of-range island.")]
+    [Min(0f)] public float landEncounterSwitchMargin = 1f;
     [Header("Development Proof Feature (debug builds only)")]
     public bool enableDebugFeature;
     [Tooltip("Signed physical strip distance from voyage spawn; camera and geographic warps do not move it.")]

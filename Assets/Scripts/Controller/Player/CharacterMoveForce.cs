@@ -60,8 +60,14 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
 
     // Jump press latch (solves Update vs FixedUpdate pulse drop)
     private bool _jumpPressedLatched;
+    [Header("Moving Floor Grip")]
+    [Tooltip("Maximum horizontal acceleration correcting idle slip on a contacted moving floor. No air/boarding-volume carry.")]
+    [SerializeField, Min(0f)] private float movingFloorGripAcceleration = 60f;
+    private Rigidbody2D _previousSupport;
+    private float _previousSupportVelocityX;
 
-    public void SetEnabled(bool value) => enabledFlag = value;
+    public void SetEnabled(bool value) { enabledFlag = value; if (!value) _previousSupport = null; }
+    private void OnDisable() { _previousSupport = null; }
 
     void Awake()
     {
@@ -89,10 +95,11 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
 
     public void ApplyForces(IForceBody body)
     {
-        if (!enabledFlag) return;
+        if (!enabledFlag) { _previousSupport = null; return; }
 
         if (ladderClimber != null && ladderClimber.IsClimbing)
         {
+            _previousSupport = null;
             _jumpPressedLatched = false;
 
             if (intentSource is LocalCharacterIntentSource local)
@@ -108,6 +115,17 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
 
         // Grounded first (used for jump latch rules)
         motor.UpdateGrounded();
+        bool hasSupport = motor.TryGetMovingSupport(body.rb, out var support, out var supportVelocity);
+        if (hasSupport && support == _previousSupport)
+        {
+            // Preserve relative walking velocity as the contacted floor accelerates/rotates.
+            var carried = body.rb.linearVelocity;
+            carried.x += supportVelocity.x - _previousSupportVelocityX;
+            body.rb.linearVelocity = carried;
+        }
+        _previousSupport = hasSupport ? support : null;
+        _previousSupportVelocityX = supportVelocity.x;
+        bool jumpedThisStep = false;
 
         // Compute "uprightness" angle once
         float absFromUpright = Mathf.Abs(Mathf.DeltaAngle(body.rb.rotation, 0f));
@@ -248,6 +266,8 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
                     : motor.jumpImpulse;
 
                 body.AddForce(Vector2.up * ((jumpImpulse * jumpAuth) * body.Mass / dt));
+                jumpedThisStep = true;
+                _previousSupport = null;
 
                 if (debugJumpDecisions)
                 {
@@ -330,7 +350,14 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
 
         if (moveScale > 0.0001f)
         {
-            float vx = body.rb.linearVelocity.x;
+            float vx = body.rb.linearVelocity.x - (hasSupport ? supportVelocity.x : 0);
+
+            if (hasSupport && !jumpedThisStep && dt > 0)
+            {
+                float gripTarget = Mathf.Abs(targetX) <= .01f ? 0 : Mathf.Clamp(vx, -scaledMaxSpeed, scaledMaxSpeed);
+                float acceleration = Mathf.Clamp((gripTarget - vx) / dt, -movingFloorGripAcceleration, movingFloorGripAcceleration);
+                body.AddForce(Vector2.right * (acceleration * body.Mass));
+            }
 
             // Same logic, but using the scaled speed limit
             bool underSpeedLimit = Mathf.Abs(vx) < scaledMaxSpeed || Mathf.Sign(targetX) != Mathf.Sign(vx);

@@ -25,6 +25,28 @@ public class CharacterMotor2D : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool debugJumpChecks = true;
     private Collider2D[] _lastGroundHitsForDebug;
+    private readonly ContactPoint2D[] _supportContacts = new ContactPoint2D[16];
+
+    /// <summary>Actual supporting contact, not merely being inside a boat or near its floor.</summary>
+    public bool TryGetMovingSupport(Rigidbody2D playerBody, out Rigidbody2D support, out Vector2 velocity)
+    {
+        support = null; velocity = default;
+        if (!IsGrounded || LastGroundCollider == null || playerBody == null) return false;
+        var candidate = LastGroundCollider.attachedRigidbody;
+        if (candidate == null || candidate == playerBody || !candidate.simulated || candidate.bodyType == RigidbodyType2D.Static) return false;
+        int count = playerBody.GetContacts(_supportContacts);
+        for (int i = 0; i < count; i++)
+        {
+            var contact = _supportContacts[i];
+            if (contact.collider != LastGroundCollider && contact.otherCollider != LastGroundCollider) continue;
+            if (contact.normal.y < .5f) continue;
+            Vector2 pointVelocity = candidate.GetPointVelocity(contact.point);
+            // A contact manifold can survive the integration step that starts a jump.
+            if (Vector2.Dot(playerBody.GetPointVelocity(contact.point) - pointVelocity, contact.normal) > .5f) continue;
+            support = candidate; velocity = pointVelocity; return true;
+        }
+        return false;
+    }
 
     public bool IsGrounded { get; private set; }
     public float TimeSinceGrounded { get; private set; }
