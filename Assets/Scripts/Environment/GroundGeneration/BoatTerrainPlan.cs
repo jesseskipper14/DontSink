@@ -16,8 +16,14 @@ public sealed class BoatTerrainPlan
     private readonly float _largeDepthThreshold;
     private readonly Func<double, float> _desiredDepth;
     private readonly SortedList<long, float> _depthKnots = new();
+    private readonly Dictionary<long, double> _knotSlopeRates = new();
+    private readonly double _detailSlopeBudget;
+    private BoatTerrainFeatureDirective[] _features;
+    private readonly bool UsesMacroDepth;
+    public int FeatureCount => _features.Length;
 
-    public BoatTerrainPlan(BoatTerrainProfile profile, int seed, Func<double, float> desiredDepth = null)
+    public BoatTerrainPlan(BoatTerrainProfile profile, int seed, Func<double, float> desiredDepth = null,
+        IReadOnlyList<BoatTerrainFeatureDirective> features = null)
     {
         if (profile == null) throw new ArgumentException("A streamed terrain profile is required.");
         foreach (float value in new[] { profile.chunkWidth, profile.sampleSpacing, profile.waterLevelY,
@@ -27,6 +33,8 @@ public sealed class BoatTerrainPlan
             if (float.IsNaN(value) || float.IsInfinity(value)) throw new ArgumentException("Streamed terrain profile contains a non-finite value.");
         Seed = seed;
         Width = Mathf.Clamp(profile.chunkWidth, 8f, 1024f);
+        UsesMacroDepth = desiredDepth != null || features != null;
+        _features = CopyFeatures(features, Width);
         Segments = Mathf.Clamp(Mathf.CeilToInt(Width / Mathf.Max(.1f, profile.sampleSpacing)), 8, 1024);
         WaterLevel = profile.waterLevelY;
         float maximumDepth = Mathf.Clamp(profile.maximumDepth, 2f, 5000f);
@@ -35,22 +43,49 @@ public sealed class BoatTerrainPlan
         _depth = Mathf.Clamp(profile.baseDepth, 1f, maximumDepth);
         _wavelength = Mathf.Max(1f, profile.rollingWavelength);
         double slope = Math.Tan(Mathf.Clamp(profile.maximumSlopeDegrees, 1f, 45f) * Math.PI / 180);
-        // Reserve half the gradient for macro changes, half for rolling detail.
+        // Reserve half the ordinary gradient for detail; large changes can use
+        // more macro slope without taking that detail budget away.
         _macroSlope = slope * .5 / 1.875;
+        _detailSlopeBudget = slope * .5;
         double largeSlope = Math.Tan(Mathf.Clamp(Mathf.Max(profile.maximumSlopeDegrees, profile.largeDepthChangeSlopeDegrees), 1f, 45f) * Math.PI / 180);
         _largeMacroSlope = (largeSlope - slope * .5) / 1.875;
         _largeDepthThreshold = Mathf.Max(1f, profile.largeDepthChangeThreshold);
-        _amplitude = Math.Min(Math.Max(0, profile.rollingAmplitude), slope * _wavelength / (desiredDepth != null ? 7.5 : 3.75));
+        _amplitude = Math.Min(Math.Max(0, profile.rollingAmplitude), slope * _wavelength / (UsesMacroDepth ? 7.5 : 3.75));
         _amplitude = Math.Min(_amplitude, Math.Max(0, Math.Min(_depth - 1, maximumDepth - _depth)));
         BottomY = WaterLevel - maximumDepth - Mathf.Max(1, profile.fillDepth);
         InterestRadius = Mathf.Max(32f, profile.interestRadius);
         UnloadBuffer = Mathf.Max(8f, profile.unloadBuffer);
     }
 
+    private static BoatTerrainFeatureDirective[] CopyFeatures(IReadOnlyList<BoatTerrainFeatureDirective> features, float width)
+    {
+        var copy = new BoatTerrainFeatureDirective[features != null ? features.Count : 0];
+        var featureIds = new HashSet<string>(StringComparer.Ordinal);
+        for (int i = 0; i < copy.Length; i++)
+        {
+            BoatTerrainFeatureDirective feature = features[i];
+            if (string.IsNullOrWhiteSpace(feature.Id) || !featureIds.Add(feature.Id) ||
+                feature.HalfWidth < width || !WorldTopology.IsFinite(feature.HalfWidth) ||
+                !WorldTopology.IsFinite(feature.DepthDelta) || double.IsNaN(feature.Center) || double.IsInfinity(feature.Center) ||
+                !WorldTopology.IsFinite(feature.EdgeFraction) || feature.EdgeFraction <= 0 || feature.EdgeFraction > 1 ||
+                !WorldTopology.IsFinite(feature.MaximumSlopeDegrees) || feature.MaximumSlopeDegrees < 1 || feature.MaximumSlopeDegrees > 80)
+                throw new ArgumentException("Terrain directive IDs must be unique; finite half-width must be at least one chunk width.");
+            copy[i] = feature;
+        }
+        return copy;
+    }
+
+    /// <summary>Copies new forecast requests; existing committed knots are never changed.</summary>
+    public void SetForecastFeatures(IReadOnlyList<BoatTerrainFeatureDirective> features)
+    {
+        if (!UsesMacroDepth) throw new ArgumentException("Construct this plan with a feature list (empty is allowed) to enable forecast planning.");
+        _features = CopyFeatures(features, Width);
+    }
+
     public long ChunkIndex(double strip) => (long)Math.Floor(strip / Width);
     public void CommitChunk(long index)
     {
-        if (_desiredDepth == null) return;
+        if (!UsesMacroDepth) return;
         CommitKnot(index);
         CommitKnot(index + 1);
     }
@@ -58,9 +93,12 @@ public sealed class BoatTerrainPlan
     private void CommitKnot(long index)
     {
         if (_depthKnots.ContainsKey(index)) return;
-        float target = _desiredDepth(index * (double)Width);
+        double strip = index * (double)Width;
+        float target = _desiredDepth != null ? _desiredDepth(strip) : (float)_depth;
         if (!WorldTopology.IsFinite(target)) target = (float)_depth;
-        target = Mathf.Clamp(target, 1f, _maximumDepth);
+        double requested = target;
+        foreach (var feature in _features) requested += feature.DepthOffset(strip);
+        target = (float)Math.Max(1, Math.Min(_maximumDepth, requested));
         double low = 1, high = _maximumDepth;
         int first = 0, last = _depthKnots.Count;
         while (first < last)
@@ -79,6 +117,18 @@ public sealed class BoatTerrainPlan
                 if (neighbor < 0 || neighbor >= _depthKnots.Count) continue;
                 double mismatch = Math.Min(1, Math.Abs(target - _depthKnots.Values[neighbor]) / _largeDepthThreshold);
                 double rate = pass == 0 ? _macroSlope + (_largeMacroSlope - _macroSlope) * mismatch : _largeMacroSlope;
+                double featureRate = _largeMacroSlope;
+                double neighborStrip = _depthKnots.Keys[neighbor] * (double)Width;
+                foreach (var feature in _features)
+                {
+                    if (Math.Max(strip, neighborStrip) < feature.Center - feature.HalfWidth ||
+                        Math.Min(strip, neighborStrip) > feature.Center + feature.HalfWidth) continue;
+                    featureRate = Math.Max(featureRate,
+                        (Math.Tan(feature.MaximumSlopeDegrees * Math.PI / 180) - _detailSlopeBudget) / 1.875);
+                }
+                if (_knotSlopeRates.TryGetValue(_depthKnots.Keys[neighbor], out double historyRate))
+                    featureRate = Math.Max(featureRate, historyRate);
+                if (featureRate > _largeMacroSlope) rate = Math.Max(rate, featureRate);
                 double allowance = Math.Abs((double)index - _depthKnots.Keys[neighbor]) * Width * rate;
                 low = Math.Max(low, _depthKnots.Values[neighbor] - allowance);
                 high = Math.Min(high, _depthKnots.Values[neighbor] + allowance);
@@ -86,7 +136,16 @@ public sealed class BoatTerrainPlan
             if (low <= high) break;
             // Bridging existing steep history may require its larger safety cap.
         }
-        _depthKnots.Add(index, (float)Math.Max(low, Math.Min(high, target)));
+        float committedDepth = (float)Math.Max(low, Math.Min(high, target));
+        double requiredRate = _largeMacroSlope;
+        foreach (int neighbor in new[] { first - 1, first })
+        {
+            if (neighbor < 0 || neighbor >= _depthKnots.Count) continue;
+            double distance = Math.Abs((double)index - _depthKnots.Keys[neighbor]) * Width;
+            requiredRate = Math.Max(requiredRate, Math.Abs(committedDepth - _depthKnots.Values[neighbor]) / distance);
+        }
+        _depthKnots.Add(index, committedDepth);
+        _knotSlopeRates.Add(index, requiredRate);
     }
 
     private double MacroDepth(double strip)
@@ -111,7 +170,7 @@ public sealed class BoatTerrainPlan
         // Quintic interpolation gives matching height and derivative across noise cells.
         double smooth = t * t * t * (t * (t * 6 - 15) + 10);
         double noise = Noise((long)cell) * (1 - smooth) + Noise((long)cell + 1) * smooth;
-        double depth = _desiredDepth != null ? MacroDepth(strip) : _depth;
+        double depth = UsesMacroDepth ? MacroDepth(strip) : _depth;
         return (float)(WaterLevel - Math.Max(1, Math.Min(_maximumDepth, depth - noise * _amplitude)));
     }
 

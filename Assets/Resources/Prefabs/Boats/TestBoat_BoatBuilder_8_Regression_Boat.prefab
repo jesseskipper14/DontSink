@@ -223,6 +223,7 @@ MonoBehaviour:
   requireMatchingBoatBoardingContext: 1
   allowAccessWhenNotPartOfBoat: 1
   verboseLogging: 1
+  preventGroundTunneling: 1
   references:
     version: 2
     RefIds:
@@ -1215,6 +1216,7 @@ MonoBehaviour:
   requireMatchingBoatBoardingContext: 1
   allowAccessWhenNotPartOfBoat: 1
   verboseLogging: 1
+  preventGroundTunneling: 1
   references:
     version: 2
     RefIds:
@@ -1934,6 +1936,7 @@ MonoBehaviour:
   requireMatchingBoatBoardingContext: 1
   allowAccessWhenNotPartOfBoat: 1
   verboseLogging: 1
+  preventGroundTunneling: 1
   references:
     version: 2
     RefIds:
@@ -2391,6 +2394,7 @@ MonoBehaviour:
   requireMatchingBoatBoardingContext: 1
   allowAccessWhenNotPartOfBoat: 1
   verboseLogging: 1
+  preventGroundTunneling: 1
   references:
     version: 2
     RefIds:

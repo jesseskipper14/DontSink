@@ -24,4 +24,15 @@ public sealed class BoatTerrainProfile : ScriptableObject
     [Min(1f)] public float fillDepth = 25f;
     [Min(32f)] public float interestRadius = 256f;
     [Min(8f)] public float unloadBuffer = 128f;
+    [Header("Development Proof Feature (debug builds only)")]
+    public bool enableDebugFeature;
+    [Tooltip("Signed physical strip distance from voyage spawn; camera and geographic warps do not move it.")]
+    public float debugFeatureCenter = 1024f;
+    [Min(8f)] public float debugFeatureHalfWidth = 512f;
+    [Tooltip("Positive adds depth (trench); negative removes depth (rise). Final floor stays underwater and slope-limited.")]
+    public float debugFeatureDepthDelta = 100f;
+    [Tooltip("Fraction of each half-width used for the wall; the rest is a flat bottom. Smaller means sharper walls.")]
+    [Range(.05f, 1f)] public float debugFeatureEdgeFraction = .15f;
+    [Tooltip("Explicit feature wall cap; ordinary geographic depth retains its separate slope limits.")]
+    [Range(1f, 80f)] public float debugFeatureMaximumSlopeDegrees = 75f;
 }

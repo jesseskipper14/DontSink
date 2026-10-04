@@ -17,9 +17,58 @@ MonoBehaviour:
   waterLevelY: 0
   baseDepth: 120
   maximumDepth: 500
+  useGeographicDepth: 1
+  geographicDepth:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 15
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.25
+      value: 60
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.6
+      value: 220
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 500
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   rollingAmplitude: 4
   rollingWavelength: 80
   maximumSlopeDegrees: 20
+  largeDepthChangeSlopeDegrees: 40
+  largeDepthChangeThreshold: 100
   fillDepth: 25
   interestRadius: 256
   unloadBuffer: 128
+  enableDebugFeature: 1
+  debugFeatureCenter: 1024
+  debugFeatureHalfWidth: 512
+  debugFeatureDepthDelta: 100

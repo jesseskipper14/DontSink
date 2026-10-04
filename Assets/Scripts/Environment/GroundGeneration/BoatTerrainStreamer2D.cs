@@ -33,6 +33,7 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
     private BoatSceneWorldPositionBridge _depthBridge;
     public bool GeographicDepthActive => _depthField != null && _depthBridge != null && _depthBridge.isActiveAndEnabled && _depthBridge.ProjectionReady;
     public float GeographicTargetDepth => DesiredDepth(_forecastX - _originX);
+    public int FeatureCount => _plan != null ? _plan.FeatureCount : 0;
     public bool IsReady => _plan != null && _loaded.Count > 0;
     public int LoadedCount => _loaded.Count;
     public int CommittedCount => _committed.Count;
@@ -102,7 +103,15 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
             _depthCurve = profile.geographicDepth != null && profile.geographicDepth.length > 0
                 ? new AnimationCurve(profile.geographicDepth.keys) : AnimationCurve.Linear(0, 15, 1, profile.maximumDepth);
             RefreshDepthForecast();
-            try { _plan = new BoatTerrainPlan(profile, voyage.seed ^ worldSeed, _depthField != null ? DesiredDepth : null); }
+            try
+            {
+                BoatTerrainFeatureDirective[] features = Array.Empty<BoatTerrainFeatureDirective>();
+                if (Debug.isDebugBuild && profile.enableDebugFeature)
+                    features = new[] { new BoatTerrainFeatureDirective("debug-depth-proof", profile.debugFeatureCenter,
+                        Mathf.Max(profile.debugFeatureHalfWidth, Mathf.Clamp(profile.chunkWidth, 8f, 1024f)), profile.debugFeatureDepthDelta,
+                        profile.debugFeatureEdgeFraction, profile.debugFeatureMaximumSlopeDegrees) };
+                _plan = new BoatTerrainPlan(profile, voyage.seed ^ worldSeed, _depthField != null ? DesiredDepth : null, features);
+            }
             catch (ArgumentException error) { Debug.LogError(error.Message, this); return false; }
             OnBottomYChanged?.Invoke(_plan.BottomY);
             // Establish the starting floor at the boat's geographic depth before
@@ -128,6 +137,16 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
             _leases[i] = Time.unscaledTime + 2f;
         }
         return true;
+    }
+
+    /// <summary>Authoritative planning seam. Replaces future requests, never existing ground.</summary>
+    public bool TrySetForecastFeatures(IReadOnlyList<BoatTerrainFeatureDirective> features, out string reason)
+    {
+        reason = string.Empty;
+        if (!GameplayAuthority.IsAuthoritative || _plan == null)
+        { reason = "Feature planning requires an authoritative prepared terrain stream."; return false; }
+        try { _plan.SetForecastFeatures(features); return true; }
+        catch (ArgumentException error) { reason = error.Message; return false; }
     }
 
     private void RefreshDepthForecast()

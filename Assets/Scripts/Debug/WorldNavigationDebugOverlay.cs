@@ -152,6 +152,7 @@ public sealed class WorldNavigationDebugOverlay : MonoBehaviour, IEscapeClosable
                     GUILayout.Label($"Streamed floor: {(terrain.IsReady ? "ready" : "waiting for setup")}; loaded {terrain.LoadedCount}, committed {terrain.CommittedCount}, interests {terrain.InterestCount}");
                     GUILayout.Label($"Ground fill bottom: {terrain.LastUsedBottomY:0.0}");
                     GUILayout.Label($"Geographic depth: {(terrain.GeographicDepthActive ? "active" : "fallback")}; target {terrain.GeographicTargetDepth:0.0}");
+                    GUILayout.Label($"Terrain feature directives: {terrain.FeatureCount}");
                     if (terrain.TrySampleGround(_simulation.transform.position.x, out float seabedY, out _))
                         GUILayout.Label($"Seabed under boat: Y {seabedY:0.0}");
                 }
