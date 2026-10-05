@@ -30,6 +30,8 @@ public class MapNodeState
     public float minPopulation = 10f;          // settlement never fully dies (for now)
     public float maxPopulation = 500f;         // soft cap, can grow later
 
+    public NodeSettlementManifest settlement;
+
     public string NodeId => _nodeId;
 
     public IReadOnlyDictionary<NodeStatId, SimStat> Stats => _stats;

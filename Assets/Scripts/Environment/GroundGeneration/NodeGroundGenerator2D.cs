@@ -70,6 +70,8 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
 
     [Tooltip("How far beyond left/right ends to place the invisible walls.")]
     [Min(-50f)] public float boundaryPadding = 1.5f;
+    public bool overrideTownBoundaryWorldX;
+    public float townBoundaryWorldX = -140f;
 
     [Tooltip("Wall height (should exceed player jump/swim range).")]
     [Min(1f)] public float boundaryWallHeight = 40f;
@@ -108,6 +110,40 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
     private void Start()
     {
         Generate();
+        NodeSettlementScene.AttachToGround(this);
+    }
+
+    public void EnsureTownLandwardClearance(float harborX, float townLeft, float clearance)
+    {
+        if (overrideTownBoundaryWorldX)
+        {
+            var boundary = transform.Find("BoundaryWall_Left");
+            if (boundary != null)
+            {
+                var at = boundary.position; at.x = townBoundaryWorldX; boundary.position = at;
+            }
+            return;
+        }
+        float localTownLeft = islandLength - harborX + townLeft;
+        float extension = Mathf.Max(0, clearance - localTownLeft);
+        if (extension > .01f)
+        {
+            float sampleSpacing = worldWidth / Mathf.Max(1, pointCount - 1);
+            // Extend only the landward end. Preserve the shoreline's world position.
+            transform.position -= transform.right * extension * transform.lossyScale.x;
+            worldWidth += extension;
+            islandLength += extension;
+            pointCount += Mathf.CeilToInt(extension / Mathf.Max(.1f, sampleSpacing));
+            Generate();
+            localTownLeft += extension;
+        }
+        var wall = transform.Find("BoundaryWall_Left");
+        if (createBoundaryWalls && wall != null)
+        {
+            var at = wall.localPosition;
+            at.x = Mathf.Min(at.x, localTownLeft - clearance - boundaryWallThickness / 2);
+            wall.localPosition = at;
+        }
     }
 
 #if UNITY_EDITOR
@@ -266,6 +302,8 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
         _rightWall = EnsureWall(_rightWall, "BoundaryWall_Right", layer);
 
         float leftX = xStart - boundaryPadding;
+        if (overrideTownBoundaryWorldX)
+            leftX = transform.InverseTransformPoint(new Vector3(townBoundaryWorldX, transform.position.y, transform.position.z)).x;
         float rightX = xEnd + boundaryPadding;
 
         PositionWall(_leftWall, leftX);

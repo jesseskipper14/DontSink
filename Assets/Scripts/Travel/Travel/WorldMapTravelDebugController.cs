@@ -211,12 +211,6 @@ public sealed class WorldMapTravelDebugController : MonoBehaviour
 
             Debug.Log($"[TravelDebug] Instant travel ignored: destination is already current node '{to}'.", this);
 
-            WorldMapKnowledgeSource sameNodeKnowledge =
-                FindAnyObjectByType<WorldMapKnowledgeSource>(FindObjectsInactive.Include);
-
-            if (sameNodeKnowledge != null)
-                sameNodeKnowledge.RevealSurfaceAroundCurrentNode();
-
             return;
         }
 
@@ -226,16 +220,6 @@ public sealed class WorldMapTravelDebugController : MonoBehaviour
 
         if (gs.activeTravel != null)
             gs.ClearTravel();
-
-        WorldMapKnowledgeSource knowledge =
-            FindAnyObjectByType<WorldMapKnowledgeSource>(FindObjectsInactive.Include);
-
-        if (knowledge != null)
-        {
-            knowledge.RevealSurfaceAlongRouteByNodeIds(from, to);
-            knowledge.RevealSurfaceAroundCurrentNode();
-            knowledge.RevealTravelDestinationNow();
-        }
 
         Debug.Log($"[TravelDebug] Instant-completed travel: {from} -> {to} ({source})", this);
 

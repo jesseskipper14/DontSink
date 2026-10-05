@@ -254,7 +254,10 @@ public sealed class BoatSceneWorldPositionBridge : MonoBehaviour
         }
 
         Vector2 routeDelta =
-            WorldTopologyService.Delta(_payload.fromWorldPosition, _payload.toWorldPosition);
+            string.IsNullOrWhiteSpace(_payload.toNodeStableId) && _payload.hasDepartureAnchor &&
+            _payload.departureWaterwardDirection.sqrMagnitude > .0001f
+                ? _payload.departureWaterwardDirection.normalized
+                : WorldTopologyService.Delta(_payload.fromWorldPosition, _payload.toWorldPosition);
 
         float worldRouteDistance =
             routeDelta.magnitude;

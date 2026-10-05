@@ -177,13 +177,14 @@ public sealed class MainMenuController : MonoBehaviour
         if (gs.player == null)
             gs.player = new WorldMapPlayerState();
 
-        if (!string.IsNullOrWhiteSpace(defaultStartingNodeId))
-            gs.player.currentNodeId = defaultStartingNodeId;
+        // An unset override lets the rebuilt graph choose its StartDock, never yesterday's node.
+        gs.player.currentNodeId = string.IsNullOrWhiteSpace(defaultStartingNodeId) ? null : defaultStartingNodeId;
 
         gs.player.lockedDestinationNodeId = null;
         gs.player.lockedSourceNodeId = null;
 
         gs.worldMap = new WorldMapSimState();
+        gs.SetWorldMapSnapshot(null, "MainMenuController.NewGame");
         gs.SetCelestialChartState(null, "MainMenuController.NewGame");
         ResetTimeOfDayForNewGame(gs);
 

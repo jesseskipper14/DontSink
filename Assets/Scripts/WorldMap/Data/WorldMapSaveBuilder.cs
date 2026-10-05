@@ -267,6 +267,7 @@ public static class WorldMapSaveBuilder
             var ns = new WorldMapNodeRuntimeStateSaveSnapshot
             {
                 stableId = rt.StableId,
+                settlement = state.settlement?.Copy(),
                 nodeIndex = rt.NodeIndex,
                 population = state.population,
                 minPopulation = state.minPopulation,
@@ -459,6 +460,7 @@ public static class WorldMapSaveBuilder
 
         snap.fromNodeStableId = travel.fromNodeStableId;
         snap.toNodeStableId = travel.toNodeStableId;
+        snap.destinationFree = travel.hasDepartureAnchor && string.IsNullOrWhiteSpace(travel.toNodeStableId);
         snap.seed = travel.seed;
         snap.routeLength = travel.routeLength;
         snap.boatInstanceId = travel.boatInstanceId;

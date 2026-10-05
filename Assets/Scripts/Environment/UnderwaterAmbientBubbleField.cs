@@ -132,6 +132,7 @@ public sealed class UnderwaterAmbientBubbleField : MonoBehaviour
 
     private readonly List<Bubble> _pool =
         new List<Bubble>();
+    private bool _boardedPresentation;
 
     private Sprite _runtimeSprite;
     private Texture2D _runtimeTexture;
@@ -229,6 +230,14 @@ public sealed class UnderwaterAmbientBubbleField : MonoBehaviour
 
     private void Update()
     {
+        var cameraOwner = CameraManager.Instance;
+        bool boarded = cameraOwner != null && cameraOwner.OwnerPlayer != null &&
+            cameraOwner.OwnerPlayer.IsBoarded && cameraOwner.ActiveCamera == (targetCamera != null ? targetCamera : Camera.main);
+        if (_boardedPresentation != boarded)
+        {
+            _boardedPresentation = boarded;
+            ApplyAppearanceToPool();
+        }
         if (_reconfigureRequested)
         {
             _reconfigureRequested =
@@ -466,7 +475,9 @@ public sealed class UnderwaterAmbientBubbleField : MonoBehaviour
         bubble.renderer.color =
             bubbleColor;
 
-        if (!string.IsNullOrWhiteSpace(
+        if (_boardedPresentation)
+            bubble.renderer.sortingLayerName = "Default";
+        else if (!string.IsNullOrWhiteSpace(
                 sortingLayerName))
         {
             bubble.renderer.sortingLayerName =

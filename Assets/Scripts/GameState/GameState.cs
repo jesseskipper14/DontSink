@@ -171,7 +171,7 @@ public sealed class GameState : MonoBehaviour
             if (string.IsNullOrWhiteSpace(payload.fromNodeStableId))
                 LogWarning("BeginTravel payload has EMPTY fromNodeStableId.");
 
-            if (string.IsNullOrWhiteSpace(payload.toNodeStableId))
+            if (!payload.hasDepartureAnchor && string.IsNullOrWhiteSpace(payload.toNodeStableId))
                 LogWarning("BeginTravel payload has EMPTY toNodeStableId.");
 
             //if (payload.cargoManifest == null)

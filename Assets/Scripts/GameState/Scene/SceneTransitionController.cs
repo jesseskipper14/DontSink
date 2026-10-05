@@ -81,7 +81,9 @@ public sealed class SceneTransitionController : MonoBehaviour
         }
 
         Boat departingBoat = FindCurrentBoat(gs);
-        float mapScale = routeLength / Mathf.Max(.01f, harborSettings.nominalLocalTravelDistance);
+        float mapScale = string.IsNullOrWhiteSpace(toNodeStableId)
+            ? Mathf.Max(.000001f, harborSettings.departureMapUnitsPerPhysicalUnit)
+            : routeLength / Mathf.Max(.01f, harborSettings.nominalLocalTravelDistance);
         string harborReason = "Current harbor node is unavailable.";
         if (!HarborTravelService.TryGetNode(fromNodeStableId, out var sourceNode) ||
             !HarborTravelService.TryGeometry(sourceNode, departingBoat, mapScale, harborSettings, out var departure, out harborReason))
@@ -135,7 +137,9 @@ public sealed class SceneTransitionController : MonoBehaviour
                 toNodeStableId);
 
         GameMessageService.PostInfo(
-            $"Travel started: {sourceName} → {destinationName}.");
+            string.IsNullOrWhiteSpace(toNodeStableId)
+                ? $"Embarked from {sourceName}."
+                : $"Travel started: {sourceName} → {destinationName}.");
 
         Log(
             $"StartTravelToBoatScene | from={fromNodeStableId} | to={toNodeStableId} " +

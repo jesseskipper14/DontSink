@@ -276,6 +276,7 @@ public sealed class WorldMapNodeRuntimeStateSetSnapshot
 public sealed class WorldMapNodeRuntimeStateSaveSnapshot
 {
     public string stableId;
+    public NodeSettlementManifest settlement;
     public int nodeIndex;
 
     public float population;
@@ -462,6 +463,7 @@ public sealed class WorldMapActiveTravelSaveSnapshot
     public int version = 1;
 
     public bool isTraveling;
+    public bool destinationFree;
 
     public string fromNodeStableId;
     public string toNodeStableId;

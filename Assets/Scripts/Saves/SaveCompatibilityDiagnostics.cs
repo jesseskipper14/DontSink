@@ -717,7 +717,8 @@ public static class SaveCompatibilityDiagnostics
         if (activeTravel != null && activeTravel.isTraveling)
         {
             ValidateRequiredNodeReference(activeTravel.fromNodeStableId, nodeIds, $"{label}.activeTravel.fromNodeStableId", report);
-            ValidateRequiredNodeReference(activeTravel.toNodeStableId, nodeIds, $"{label}.activeTravel.toNodeStableId", report);
+            if (!activeTravel.destinationFree)
+                ValidateRequiredNodeReference(activeTravel.toNodeStableId, nodeIds, $"{label}.activeTravel.toNodeStableId", report);
 
             if (activeTravel.routeLength < 0f)
                 report.Warning($"{label}.activeTravel.routeLength is negative.");

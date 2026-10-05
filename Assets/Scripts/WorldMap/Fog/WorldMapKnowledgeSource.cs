@@ -24,12 +24,15 @@ public sealed class WorldMapKnowledgeSource : MonoBehaviour
     [Header("Startup")]
     [SerializeField] private bool initializeOnAwake = true;
     [SerializeField] private bool restoreFromGameStateOnAwake = true;
+    [Tooltip("Legacy field name retained for saves/Inspector compatibility. Grants only the starting island on a fresh knowledge grid, never the current node on later visits.")]
     [SerializeField] private bool revealCurrentNodeOnAwake = true;
 
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = true;
 
     public WorldMapKnowledgeState State { get; private set; } = new WorldMapKnowledgeState();
+
+    private bool _starterCoverageSettled;
 
     public bool HasState => State != null && State.IsValid;
     public float SurfaceReveal01 => HasState ? State.SurfaceReveal01 : 0f;
@@ -52,8 +55,7 @@ public sealed class WorldMapKnowledgeSource : MonoBehaviour
 
         EnsureInitialized();
 
-        if (revealCurrentNodeOnAwake)
-            RevealSurfaceAroundCurrentNode();
+        TryGrantStartingCoverage();
     }
 
     private void OnEnable()
@@ -75,8 +77,7 @@ public sealed class WorldMapKnowledgeSource : MonoBehaviour
         if (!HasState)
             EnsureInitialized();
 
-        if (revealCurrentNodeOnAwake)
-            RevealSurfaceAroundCurrentNode();
+        TryGrantStartingCoverage();
     }
 
     private void HandleRuntimeBuilt()
@@ -84,8 +85,22 @@ public sealed class WorldMapKnowledgeSource : MonoBehaviour
         if (!HasState)
             EnsureInitialized();
 
-        if (revealCurrentNodeOnAwake)
-            RevealSurfaceAroundCurrentNode();
+        TryGrantStartingCoverage();
+    }
+
+    private void TryGrantStartingCoverage()
+    {
+        if (_starterCoverageSettled || !revealCurrentNodeOnAwake || !GameplayAuthority.IsAuthoritative)
+            return;
+        var generator = FindAnyObjectByType<WorldMapGraphGenerator>(FindObjectsInactive.Include);
+        if (generator == null || generator.graph == null || generator.graph.nodes == null) return;
+        foreach (var node in generator.graph.nodes)
+        {
+            if (node.kind != NodeKind.StartDock) continue;
+            RevealSurfaceCircle(node.position, currentNodeSurfaceRevealRadius);
+            _starterCoverageSettled = true;
+            break;
+        }
     }
 
     public void EnsureInitialized()
@@ -277,6 +292,7 @@ public sealed class WorldMapKnowledgeSource : MonoBehaviour
             return false;
 
         State = restored;
+        _starterCoverageSettled = true; // Restored charts never gain visit-based coverage.
 
         if (verboseLogging)
         {

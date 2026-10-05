@@ -7,6 +7,11 @@ public class AgentHomeBounds : MonoBehaviour
 
     public bool HasBounds => boundsCollider != null;
 
+    public void Configure(BoxCollider2D collider)
+    {
+        boundsCollider = collider;
+    }
+
     public Bounds WorldBounds
     {
         get

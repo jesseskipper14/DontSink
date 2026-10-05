@@ -136,6 +136,7 @@ public class WorldMapRuntimeBinder : MonoBehaviour
                 }
             }
 
+            NodeSettlementPlanner.Ensure(rt);
             Registry.Add(i, stableId, rt);
             _spawned.Add(rt.gameObject);
         }

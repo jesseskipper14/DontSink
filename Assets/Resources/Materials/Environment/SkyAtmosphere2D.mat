@@ -41,7 +41,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Brightness: 0.90419436
+    - _Brightness: 0.9538768
     - _BrightnessExponent: 3
     - _EnableExternalAlpha: 0
     - _GradientPower: 1

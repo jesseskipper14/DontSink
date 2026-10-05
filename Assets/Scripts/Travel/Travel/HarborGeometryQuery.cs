@@ -5,6 +5,7 @@ using UnityEngine;
 public sealed class HarborTravelSettings
 {
     public BoatTerrainProfile terrainProfile;
+    [Min(.000001f)] public float departureMapUnitsPerPhysicalUnit = .0135f;
     [Min(.01f)] public float nominalLocalTravelDistance = 2000;
     [Range(.01f, .5f)] public float coastalDepthBand = .12f;
     [Min(1)] public float berthLengthMultiplier = 2;

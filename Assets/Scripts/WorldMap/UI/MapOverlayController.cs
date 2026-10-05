@@ -411,13 +411,10 @@ public sealed class MapOverlayController : MonoBehaviour, IEscapeClosable
 
     private bool CanTravel()
     {
-        // Must have a locked destination
-        if (string.IsNullOrEmpty(lockedStableId))
-            return false;
-
         // Must have GameState + player boat + boarding state
         var gs = GameState.I;
         if (gs == null) return false;
+        if (gs.activeTravel != null) return false;
 
         // Resolve the player boat by id
         var reg = gs.boatRegistry;

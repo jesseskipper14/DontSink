@@ -144,7 +144,6 @@ public sealed class NodeTravelController : MonoBehaviour
 
         GameState gs = GameState.I;
 
-        bool bypassAllValidation = ShouldBypassAllValidation();
         bool bypassBoarding = ShouldBypassBoardingValidation();
 
         if (!bypassBoarding && !IsPlayerBoardedToPlayerBoat())
@@ -156,6 +155,12 @@ public sealed class NodeTravelController : MonoBehaviour
         if (gs == null)
         {
             Debug.LogError("NodeTravelLauncher: GameState missing.");
+            return;
+        }
+
+        if (gs.activeTravel != null)
+        {
+            Debug.LogWarning("Embark: already underway; dock at a harbor before embarking again.", this);
             return;
         }
 
@@ -182,100 +187,18 @@ public sealed class NodeTravelController : MonoBehaviour
         }
 
         string fromId = player.currentNodeId;
-        string toId = player.lockedDestinationNodeId;
-
-        if (string.IsNullOrEmpty(fromId))
+        if (string.IsNullOrWhiteSpace(fromId) ||
+            !_nodesById.TryGetValue(fromId, out MapNodeRuntime fromRt) || fromRt == null)
         {
-            Debug.LogError("NodeTravelLauncher: player.currentNodeId is empty.");
+            Debug.LogWarning("Embark: current harbor is unavailable.", this);
             return;
         }
-
-        if (string.IsNullOrEmpty(toId))
-        {
-            Debug.LogError("NodeTravelLauncher: player.lockedDestinationNodeId is empty (lock a destination first).");
-            return;
-        }
-
-        if (!_nodesById.TryGetValue(fromId, out MapNodeRuntime fromRt) || fromRt == null)
-        {
-            Debug.LogError($"NodeTravelLauncher: fromId not found in runtime registry: '{fromId}'");
-            return;
-        }
-
-        if (!_nodesById.TryGetValue(toId, out MapNodeRuntime toRt) || toRt == null)
-        {
-            Debug.LogError($"NodeTravelLauncher: toId not found in runtime registry: '{toId}'");
-            return;
-        }
-
-        int fromIndex = fromRt.NodeIndex;
-        int toIndex = toRt.NodeIndex;
-
-        bool bypassEdge = ShouldBypassDirectEdgeValidation();
-
-        if (!bypassEdge && !generator.graph.HasEdge(fromIndex, toIndex))
-        {
-            Debug.LogWarning($"NodeTravelLauncher: no direct edge {fromIndex} <-> {toIndex}. (Phase-1 travel is edge-only.)");
-            return;
-        }
-
-        Vector2 fromWorldPosition =
-            generator.graph.nodes[fromIndex].position;
-
-        Vector2 toWorldPosition =
-            generator.graph.nodes[toIndex].position;
-
-        float routeLength = WorldTopologyService.Distance(
-            fromWorldPosition,
-            toWorldPosition);
-
-        int seed = seedOverride != 0 ? seedOverride : MakeTravelSeed(fromId, toId, generator.graph.seed);
-
-        var ctx = new WorldMapSimContext(_nodesById);
-        var req = new TravelRequest(fromId, toId, routeLength, seed);
-
-        if (!bypassAllValidation && !ShouldBypassRouteRestrictions())
-        {
-            if (!ValidateRouteRestrictions(req, ctx, player, out string restrictionReason))
-            {
-                Debug.LogWarning($"NodeTravelLauncher: Travel blocked by restrictions: {restrictionReason}");
-                return;
-            }
-        }
-
-        if (!bypassAllValidation && ShouldUseOutcomeRollBeforeLaunch())
-        {
-            TravelResult result = new SimpleTravelResolver().Resolve(req, ctx, player);
-
-            if (!result.success)
-            {
-                Debug.LogWarning(
-                    $"NodeTravelLauncher: Travel blocked by pre-launch outcome roll: {result.failureReason} " +
-                    $"(roll={result.roll}). Disable Use Outcome Roll Before Launch to treat travel launch as deterministic."
-                );
-                return;
-            }
-        }
-
-        if (logTravelDiagnostics || ShouldLogDebugTravelDecisions())
-        {
-            Debug.Log(
-                $"NodeTravelController: Travel launch allowed | {fromId} -> {toId} | " +
-                $"len={routeLength:0.00}, seed={seed}, bypassAll={bypassAllValidation}, " +
-                $"bypassRestrictions={ShouldBypassRouteRestrictions()}, bypassEdge={bypassEdge}, " +
-                $"outcomeRoll={ShouldUseOutcomeRollBeforeLaunch()}",
-                this
-            );
-        }
-
-        StartTravelSceneTransition(
-            gs,
-            fromId,
-            toId,
-            seed,
-            routeLength,
-            fromWorldPosition,
-            toWorldPosition);
+        Vector2 fromWorldPosition = generator.graph.nodes[fromRt.NodeIndex].position;
+        int seed = seedOverride != 0 ? seedOverride : MakeTravelSeed(fromId, "open-sea", generator.graph.seed);
+        // An expedition has no destination, edge restriction or pre-launch outcome roll.
+        // Departure/boarding and safe-water placement are still validated.
+        StartTravelSceneTransition(gs, fromId, null, seed, 0f,
+            fromWorldPosition, fromWorldPosition);
     }
 
     private bool ValidateRouteRestrictions(

@@ -130,6 +130,7 @@ public sealed class WaterViewEffectsController : MonoBehaviour
     [SerializeField] private bool verboseLogging;
 
     private MaterialPropertyBlock _propertyBlock;
+    private bool _depthBackdropOrderingResolved;
 
     private void Awake()
     {
@@ -197,6 +198,7 @@ public sealed class WaterViewEffectsController : MonoBehaviour
     [ContextMenu("Reapply Water View Effects")]
     public void ApplyNow()
     {
+        ResolveDepthBackdropOrdering();
         ResolveTargets();
         EnsurePropertyBlock();
 
@@ -327,6 +329,31 @@ public sealed class WaterViewEffectsController : MonoBehaviour
         waterRenderers =
             GetComponentsInChildren<WaterMeshRenderer>(
                 includeInactive: true);
+    }
+
+    private void ResolveDepthBackdropOrdering()
+    {
+        if (_depthBackdropOrderingResolved) return;
+        _depthBackdropOrderingResolved = true;
+        int backWater = SortingLayer.GetLayerValueFromName("BackWater");
+        foreach (var backdrop in FindObjectsByType<SpriteRenderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (backdrop.gameObject.scene != gameObject.scene || backdrop.sharedMaterial == null ||
+                backdrop.sharedMaterial.shader == null || backdrop.sharedMaterial.shader.name != "Custom/SeaDepthBackground2D") continue;
+            // The opaque depth-color backdrop must not cover the transparent ocean's
+            // foam, sparkles and shafts. Do not change either ocean renderer.
+            if (SortingLayer.GetLayerValueFromID(backdrop.sortingLayerID) >= backWater)
+            {
+                backdrop.sortingLayerName = "BackWater";
+                int order = 0;
+                foreach (var water in GetComponentsInChildren<WaterMeshRenderer>(true))
+                {
+                    var renderer = water.GetComponent<MeshRenderer>();
+                    if (renderer != null && renderer.sortingLayerName == "BackWater") order = Mathf.Min(order, renderer.sortingOrder);
+                }
+                backdrop.sortingOrder = order - 1;
+            }
+        }
     }
 
     private Transform ResolveViewer()

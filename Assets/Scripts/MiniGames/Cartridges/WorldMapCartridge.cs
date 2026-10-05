@@ -161,7 +161,6 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         if (_knowledgeSource != null)
         {
             _knowledgeSource.EnsureInitialized();
-            _knowledgeSource.RevealSurfaceAroundCurrentNode();
         }
 
         AutoWireCelestialOverlaySource();
@@ -435,6 +434,20 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         float w = rect.width - 20f;
 
         DrawCoordinateDebug(ref y, x, w);
+        bool canTravel = CanTravelNow(out string travelReason);
+
+        GUI.enabled = canTravel;
+        if (GUI.Button(new Rect(x, y, w, 30f), "Embark"))
+            StartTravel();
+
+        GUI.enabled = true;
+        y += 40f;
+        if (!canTravel)
+        {
+            float reasonHeight = GUI.skin.label.CalcHeight(new GUIContent(travelReason), w);
+            GUI.Label(new Rect(x, y, w, reasonHeight), travelReason);
+            y += reasonHeight + 8f;
+        }
         GUI.Label(new Rect(x, y, w, 22f), "Selected Node");
         y += 28f;
 
@@ -484,15 +497,6 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
 
         GUI.enabled = true;
         y += 38f;
-
-        bool canTravel = CanTravelNow(out string travelReason);
-
-        GUI.enabled = canTravel;
-        if (GUI.Button(new Rect(x, y, w, 30f), "Start Travel"))
-            StartTravel();
-
-        GUI.enabled = true;
-        y += 40f;
 
         string routeText = BuildRouteInfoText(lockReason, travelReason);
         float routeHeight = Mathf.Max(40f, GUI.skin.label.CalcHeight(new GUIContent(routeText), w));
@@ -920,7 +924,6 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
             if (GUI.Button(new Rect(x + halfW + 6f, y, halfW, 22f), "Finish Travel"))
             {
                 _travelDebug.DebugInstantCompleteTravel();
-                _knowledgeSource.RevealSurfaceAroundCurrentNode();
             }
             GUI.enabled = true;
 
@@ -2771,16 +2774,16 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
     {
         reason = string.Empty;
 
-        if (string.IsNullOrEmpty(_lockedStableId))
-        {
-            reason = "No locked destination.";
-            return false;
-        }
-
         var gs = GameState.I;
         if (gs == null)
         {
             reason = "GameState missing.";
+            return false;
+        }
+
+        if (gs.activeTravel != null)
+        {
+            reason = "Already underway. Dock at a harbor to embark again.";
             return false;
         }
 

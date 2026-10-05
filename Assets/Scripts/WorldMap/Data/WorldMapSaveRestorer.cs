@@ -320,6 +320,7 @@ public static class WorldMapSaveRestorer
         var state = new MapNodeState(snap.stableId)
         {
             population = snap.population,
+            settlement = snap.settlement?.Copy(),
             minPopulation = snap.minPopulation <= 0f ? 10f : snap.minPopulation,
             maxPopulation = snap.maxPopulation <= 0f ? 500f : snap.maxPopulation
         };
