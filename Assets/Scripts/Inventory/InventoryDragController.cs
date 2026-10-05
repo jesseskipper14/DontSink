@@ -93,7 +93,17 @@ public sealed class InventoryDragController : MonoBehaviour
     /// Used by persistence to associate scene-level UI with the correct player
     /// without relying on transform hierarchy or arbitrary object searches.
     /// </summary>
-    public PlayerInventory BoundInventory => inventory;
+    public PlayerInventory BoundInventory { get { ResolveDropReferences(); return inventory; } }
+
+    private void ResolveDropReferences()
+    {
+        // Scene UI need not be parented to the player. Reuse its exact binding.
+        if (inventory == null && playerInventoryUI != null)
+            inventory = playerInventoryUI.BoundInventory;
+        if (inventoryInput == null && inventory != null)
+            inventoryInput = inventory.GetComponentInParent<PlayerInventoryInput>(true)
+                ?? inventory.GetComponentInChildren<PlayerInventoryInput>(true);
+    }
 
     /// <summary>
     /// Persistence boundary seam.
@@ -1397,6 +1407,7 @@ public sealed class InventoryDragController : MonoBehaviour
 
     private bool TryDropItemToWorld(ItemInstance item)
     {
+        ResolveDropReferences();
         if (item == null || item.Definition == null)
             return false;
 
@@ -1408,7 +1419,7 @@ public sealed class InventoryDragController : MonoBehaviour
 
         Vector3 worldPos = inventoryInput != null
             ? inventoryInput.GetDropWorldPositionForUI()
-            : transform.position;
+            : inventory.transform.position + Vector3.right * .75f;
 
         bool ok = inventory.TryDropInstance(item, worldPos);
         Log($"TryDropItemToWorld | item={DescribeItem(item)} | pos={worldPos} | ok={ok}");
@@ -1504,6 +1515,7 @@ public sealed class InventoryDragController : MonoBehaviour
 
     private int CollectWorldDropTargetCandidates(ItemInstance item)
     {
+        ResolveDropReferences();
         _worldDropCandidates.Clear();
 
         Camera cam = worldCamera != null ? worldCamera : CameraManager.CameraForActor(inventory);
@@ -2028,6 +2040,7 @@ public sealed class InventoryDragController : MonoBehaviour
 
     private WorldItemDropContext BuildWorldItemDropContext()
     {
+        ResolveDropReferences();
         GameObject requester =
             inventory != null
                 ? inventory.gameObject

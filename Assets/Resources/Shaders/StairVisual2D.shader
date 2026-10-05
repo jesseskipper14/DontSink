@@ -37,6 +37,7 @@ Shader "Custom/StairVisual2D"
             #pragma fragment frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Environment/DepthLighting.hlsl"
 
             struct Attributes
             {
@@ -48,6 +49,7 @@ Shader "Custom/StairVisual2D"
             {
                 float4 positionHCS : SV_POSITION;
                 float2 uv          : TEXCOORD0;
+                float2 positionWS  : TEXCOORD1;
             };
 
             CBUFFER_START(UnityPerMaterial)
@@ -64,6 +66,7 @@ Shader "Custom/StairVisual2D"
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
+                OUT.positionWS = TransformObjectToWorld(IN.positionOS.xyz).xy;
                 OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
                 OUT.uv = IN.uv;
                 return OUT;
@@ -109,6 +112,7 @@ Shader "Custom/StairVisual2D"
 
                 half3 finalRgb = lerp(baseRgb, _LineColor.rgb, lineMask);
 
+                finalRgb *= DontSinkDepthLight(IN.positionWS);
                 return half4(finalRgb, _BaseColor.a);
             }
             ENDHLSL

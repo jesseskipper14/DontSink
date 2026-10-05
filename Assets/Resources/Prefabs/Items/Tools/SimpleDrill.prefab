@@ -81,7 +81,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1165509675
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_Sprite: {fileID: -6700999853380496098, guid: 59d3b69fe018f96449819223bf0882e4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -117,7 +117,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
@@ -188,6 +188,7 @@ MonoBehaviour:
   requireMatchingBoatBoardingContext: 1
   allowAccessWhenNotPartOfBoat: 1
   verboseLogging: 0
+  preventGroundTunneling: 1
   references:
     version: 2
     RefIds:
@@ -224,6 +225,7 @@ MonoBehaviour:
   hullLayerName: Hull
   groundLayerName: Ground
   worldLedgeLayerName: WorldLedge
+  ghostCollisionLayerName: GhostCollision
   verboseLogging: 0
 --- !u!114 &-8857575528452559673
 MonoBehaviour:
@@ -320,7 +322,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1165509675
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: -1
   m_Sprite: {fileID: -6700999853380496098, guid: 59d3b69fe018f96449819223bf0882e4, type: 3}
   m_Color: {r: 0.49381453, g: 0.59341216, b: 0.764151, a: 1}

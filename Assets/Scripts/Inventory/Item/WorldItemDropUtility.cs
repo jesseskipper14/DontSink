@@ -35,7 +35,30 @@ public static class WorldItemDropUtility
             dropped,
             actor);
 
+        InheritReleaseVelocity(dropped, actor);
+
         return true;
+    }
+
+    public static void InheritReleaseVelocity(WorldItem item, GameObject actor)
+    {
+        if (item == null || actor == null) return;
+        Rigidbody2D carrier = null;
+        var bellState = actor.GetComponentInParent<PlayerBellOccupantState>()
+            ?? actor.GetComponentInChildren<PlayerBellOccupantState>(true);
+        if (bellState != null && bellState.IsInsideBell && bellState.CurrentBell != null)
+            carrier = bellState.CurrentBell.GetComponent<Rigidbody2D>();
+        TryFindBoardedBoat(actor, out var boat);
+        if (carrier == null && boat != null) carrier = boat.rb;
+        if (carrier == null) carrier = actor.GetComponentInParent<Rigidbody2D>();
+        if (carrier == null || !carrier.simulated) return;
+        // Set once, never add: initialization/policy callbacks must not double carry.
+        foreach (var body in item.GetComponentsInChildren<Rigidbody2D>(true))
+        {
+            if (body == carrier || body.bodyType != RigidbodyType2D.Dynamic) continue;
+            body.linearVelocity = carrier.GetPointVelocity(body.worldCenterOfMass);
+            body.angularVelocity = carrier.angularVelocity;
+        }
     }
 
     public static void ApplyBoatOwnership(

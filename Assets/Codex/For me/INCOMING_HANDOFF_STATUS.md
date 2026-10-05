@@ -10,7 +10,7 @@ Renamed these previously implemented and accepted incoming handoffs with their e
 - `DONE_DontSink_CameraSafe_Multiplayer_Handoff.md`
 - `DONE_Wrapped_World_Topology_Bosun_Handoff.md`
 
-`Piloting_Navigation_Reconciliation_Bosun_Handoff.md`: circular viewscape, compass, physical visibility and harbor integration implemented; awaiting the latest live test before DONE_ naming. See PILOTING_VIEWSCAPE_CHECKPOINT.md.
+`DONE_Piloting_Navigation_Reconciliation_Bosun_Handoff.md`: circular viewscape, compass, physical visibility and harbor integration implemented, accepted in play and committed by Skip. Visibility uses the approved nautical-mile radius. The observer-height multiplier seam remains intentionally manual; automatic bridge/crow's-nest height behavior was explicitly deferred. See PILOTING_VIEWSCAPE_CHECKPOINT.md.
 
 `Harbor_Node_Transition_Bosun_Handoff.md`: core departure/docking and placeholder visuals implemented; NodeScene mirror and broader harbor continuity remain deferred. Legacy inland node coordinates are preserved with a bounded waterward connector. Do not mark fully complete blindly.
 
@@ -20,4 +20,4 @@ Renamed these previously implemented and accepted incoming handoffs with their e
 
 NodeScene harbor/mooring, map/node discovery and Phase 6C cartography remain separate upcoming work. Celestial Dynamics requires its own scope check before completion naming. DONT_SINK_MASTER_AI_HANDOFF.md remains an ongoing reference, not a single completed implementation pass.
 
-Next after the piloting playtest: a focused bug patch pass from BUGS.md. Do not start another feature handoff automatically.
+The focused ocean bug patch is now implemented and awaits its live tests. See OCEAN_BUG_PATCH_CHECKPOINT.md and BUGS.md. Do not start another feature handoff automatically.

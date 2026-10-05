@@ -30,6 +30,8 @@ public class GlobalBrightnessManager : MonoBehaviour, IBrightnessService
 
     private void Awake()
     {
+        if (GetComponent<EnvironmentDepthLighting>() == null)
+            gameObject.AddComponent<EnvironmentDepthLighting>();
         mpb = new MaterialPropertyBlock();
 
         if (globalLight == null)
@@ -122,12 +124,23 @@ public class GlobalBrightnessManager : MonoBehaviour, IBrightnessService
     private void ApplyGlobalLight()
     {
         if (!driveGlobalLight) return;
+        var camera = CameraManager.Instance?.ActiveCamera;
+        // Persistent services can outlive the scene light they originally bound.
+        // Resolve against the local viewing scene instead of silently leaving its
+        // replacement global light at the authored full-bright intensity.
+        if (globalLight == null || (camera != null && globalLight.gameObject.scene != camera.gameObject.scene))
+            globalLight = FindSceneGlobalLight(camera);
         if (globalLight == null) return;
-
-        globalLight.intensity = Mathf.Max(0f, Brightness01 * lightIntensityMultiplier);
+        float ambient = camera != null ? EnvironmentDepthLighting.AmbientAt(camera.transform.position.y) : 1f;
+        // URP's default lit sprite shader returns unlit albedo when a sorting
+        // layer has no active lights. Keep the ambient light in the lighting
+        // pass even at full darkness; this floor is below visible brightness.
+        globalLight.intensity = Mathf.Max(0.000001f, Brightness01 * lightIntensityMultiplier * ambient);
     }
 
-    private static Light2D FindSceneGlobalLight()
+    public void RefreshAmbientLight() => ApplyGlobalLight();
+
+    private static Light2D FindSceneGlobalLight(Camera camera = null)
     {
         Light2D[] lights = FindObjectsByType<Light2D>(
             FindObjectsInactive.Exclude,
@@ -136,7 +149,8 @@ public class GlobalBrightnessManager : MonoBehaviour, IBrightnessService
         for (int i = 0; i < lights.Length; i++)
         {
             Light2D candidate = lights[i];
-            if (candidate != null && candidate.lightType == Light2D.LightType.Global)
+            if (candidate != null && candidate.lightType == Light2D.LightType.Global &&
+                (camera == null || candidate.gameObject.scene == camera.gameObject.scene))
                 return candidate;
         }
 

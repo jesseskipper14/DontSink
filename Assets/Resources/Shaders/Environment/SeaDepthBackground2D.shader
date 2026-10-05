@@ -45,6 +45,7 @@ Shader "Custom/SeaDepthBackground2D"
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
+            #include "DepthLighting.hlsl"
 
             float _SeaLevelY;
 
@@ -133,6 +134,7 @@ Shader "Custom/SeaDepthBackground2D"
                 float noise = (Hash21(variationCell) - 0.5) * _VariationStrength;
                 color *= 1.0 + noise;
 
+                color *= DontSinkDepthLight(i.worldPos);
                 return fixed4(color, 1.0);
             }
             ENDCG

@@ -16,6 +16,10 @@ public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule, IModuleT
     [Tooltip("Maximum propulsion force this engine contributes at full throttle while it can run.")]
     [SerializeField, Min(0f)] private float thrust = 25f;
 
+    [Tooltip("Optional physical propeller/water intake point. Blank uses hull bottom below this engine, so deck-mounted engines remain valid.")]
+    [SerializeField] private Transform propulsionPoint;
+    private WaveManager propulsionWater;
+
     [Header("Fuel")]
     [SerializeField] private ItemDefinition fuelContainerDefinition;
     [SerializeField] private float fuelBurnRatePerSecond = 0.1f;
@@ -122,7 +126,40 @@ public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule, IModuleT
 
     public bool CanProduceThrust()
     {
-        return Thrust > 0f && isOn && CanRun();
+        return Thrust > 0f && isOn && CanRun() && HasPropulsionWater();
+    }
+
+    public bool HasPropulsionWater()
+    {
+        if (propulsionWater == null && ServiceRoot.Instance != null)
+            propulsionWater = ServiceRoot.Instance.WaveManager;
+        if (propulsionWater == null) propulsionWater = FindFirstObjectByType<WaveManager>();
+        if (propulsionWater == null) return false;
+        Boat boat = installedModule != null && installedModule.OwnerHardpoint != null
+            ? installedModule.OwnerHardpoint.GetComponentInParent<Boat>() : GetComponentInParent<Boat>();
+        if (boat == null) return false;
+        Vector2 point;
+        if (propulsionPoint != null && !propulsionPoint.IsChildOf(boat.transform)) point = propulsionPoint.position;
+        else
+        {
+            Vector2 local = boat.transform.InverseTransformPoint(propulsionPoint != null ? propulsionPoint.position : transform.position);
+            if (propulsionPoint == null)
+            {
+                local.x = Mathf.Clamp(local.x, boat.GeometryLocalCenter.x - boat.Width * .5f,
+                    boat.GeometryLocalCenter.x + boat.Width * .5f);
+                local.y = boat.GeometryLocalCenter.y - boat.Height * .5f;
+            }
+            // Forces sample the simulation pose, not the interpolated render pose.
+            point = boat.rb != null
+                ? boat.rb.position + (Vector2)(Quaternion.Euler(0, 0, boat.rb.rotation) * Vector2.Scale(local, boat.transform.lossyScale))
+                : (Vector2)boat.transform.TransformPoint(local);
+        }
+        if (point.y >= propulsionWater.SampleSurfaceY(point.x) - .02f) return false;
+        // A submerged point buried in streamed terrain is not usable water.
+        if (BoatTerrainStreamer2D.TryGet(boat.gameObject.scene, out var terrain) &&
+            terrain.TrySampleGround(point.x, out float floor, out _) && point.y <= floor + .02f)
+            return false;
+        return true;
     }
 
     public bool CanRun()

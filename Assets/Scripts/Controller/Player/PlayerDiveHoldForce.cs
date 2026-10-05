@@ -100,7 +100,10 @@ public sealed class PlayerDiveHoldForce : MonoBehaviour, IOrderedForceProvider
             downForce += rb.mass * g * sub * extraSinkBiasWhileDive;
 
         // Vertical damping to reduce bobbing. (Still applies even while SwimUpHeld; feels smoother.)
-        float dampForce = -rb.mass * rb.linearVelocity.y * verticalDamping;
+        var waterState = GetComponent<PlayerSubmersionState>();
+        var waterBody = waterState != null ? waterState.LocalWaterBody : null;
+        float waterVelocityY = waterBody != null ? waterBody.GetPointVelocity(rb.worldCenterOfMass).y : 0;
+        float dampForce = -rb.mass * (rb.linearVelocity.y - waterVelocityY) * verticalDamping;
 
         rb.AddForce(Vector2.down * downForce, ForceMode2D.Force);
         rb.AddForce(Vector2.up * dampForce, ForceMode2D.Force);

@@ -31,14 +31,15 @@ public class CharacterMotor2D : MonoBehaviour
     public bool TryGetMovingSupport(Rigidbody2D playerBody, out Rigidbody2D support, out Vector2 velocity)
     {
         support = null; velocity = default;
-        if (!IsGrounded || LastGroundCollider == null || playerBody == null) return false;
-        var candidate = LastGroundCollider.attachedRigidbody;
-        if (candidate == null || candidate == playerBody || !candidate.simulated || candidate.bodyType == RigidbodyType2D.Static) return false;
+        if (!IsGrounded || playerBody == null) return false;
         int count = playerBody.GetContacts(_supportContacts);
         for (int i = 0; i < count; i++)
         {
             var contact = _supportContacts[i];
-            if (contact.collider != LastGroundCollider && contact.otherCollider != LastGroundCollider) continue;
+            var ground = contact.collider.attachedRigidbody == playerBody ? contact.otherCollider : contact.collider;
+            if (ground == null || (groundMask.value & (1 << ground.gameObject.layer)) == 0) continue;
+            var candidate = ground.attachedRigidbody;
+            if (candidate == null || candidate == playerBody || !candidate.simulated || candidate.bodyType == RigidbodyType2D.Static) continue;
             if (contact.normal.y < .5f) continue;
             Vector2 pointVelocity = candidate.GetPointVelocity(contact.point);
             // A contact manifold can survive the integration step that starts a jump.
@@ -73,7 +74,10 @@ public class CharacterMotor2D : MonoBehaviour
 
     public void UpdateGrounded()
     {
-        LastGroundCheckWorldPosition = (Vector2)transform.position + groundCheckLocalOffset;
+        var ownBody = GetComponent<Rigidbody2D>();
+        LastGroundCheckWorldPosition = ownBody != null
+            ? ownBody.position + (Vector2)(Quaternion.Euler(0, 0, ownBody.rotation) * Vector2.Scale(groundCheckLocalOffset, transform.lossyScale))
+            : (Vector2)transform.TransformPoint(groundCheckLocalOffset);
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(
             LastGroundCheckWorldPosition,
@@ -93,6 +97,9 @@ public class CharacterMotor2D : MonoBehaviour
                     continue;
 
                 if (hit.isTrigger)
+                    continue;
+
+                if (ownBody != null && hit.attachedRigidbody == ownBody)
                     continue;
 
                 LastGroundSolidHitCount++;

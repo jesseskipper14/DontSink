@@ -219,6 +219,16 @@ public sealed class HatchRuntime : MonoBehaviour
                 Mathf.Abs(box.size.y * box.transform.lossyScale.y));
 
             float angle = box.transform.eulerAngles.z;
+            var body = box.attachedRigidbody;
+            if (body != null)
+            {
+                Vector2 local = body.transform.InverseTransformPoint(center);
+                local = Vector2.Scale(local, body.transform.lossyScale);
+                center = body.position + (Vector2)(Quaternion.Euler(0, 0, body.rotation) * local);
+                angle += Mathf.DeltaAngle(body.transform.eulerAngles.z, body.rotation);
+            }
+            // Touching adjacent structure is not occupancy of the opening.
+            size = new Vector2(Mathf.Max(.001f, size.x - .02f), Mathf.Max(.001f, size.y - .02f));
 
             return Physics2D.OverlapBoxAll(
                 center,
@@ -242,6 +252,13 @@ public sealed class HatchRuntime : MonoBehaviour
             return true;
 
         if (!triggersBlockClosing && hit.isTrigger)
+            return true;
+
+        Collider2D source = GhostCollisionProxy.SourceForCollider(hit);
+        if (ignoreOwnColliders && IsOwnCollider(source)) return true;
+        // Structural hull/deck is not loose cargo. Independently bodied items
+        // and the player still block closing.
+        if (_owningBoat != null && source.attachedRigidbody == _owningBoat.rb)
             return true;
 
         if (ignoreOwnColliders && IsOwnCollider(hit))

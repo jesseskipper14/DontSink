@@ -375,7 +375,12 @@ public sealed class BoatTerrainStreamer2D : MonoBehaviour, IStreamedGroundSource
     {
         _interests.Clear(); _loose.Clear();
         foreach (var boat in FindObjectsByType<Boat>(FindObjectsSortMode.None))
-            if (boat.gameObject.scene == gameObject.scene) _interests.Add(boat.transform);
+            if (boat.gameObject.scene == gameObject.scene)
+            {
+                _interests.Add(boat.transform);
+                if (boat.GetComponent<BoatGroundContactResistance2D>() == null)
+                    boat.gameObject.AddComponent<BoatGroundContactResistance2D>();
+            }
         foreach (var player in FindObjectsByType<CharacterPlayer>(FindObjectsSortMode.None))
         {
             if (player.gameObject.scene != gameObject.scene) continue;

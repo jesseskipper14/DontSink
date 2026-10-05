@@ -374,6 +374,7 @@ MonoBehaviour:
   requireMatchingBoatBoardingContext: 1
   allowAccessWhenNotPartOfBoat: 0
   verboseLogging: 0
+  preventGroundTunneling: 1
   references:
     version: 2
     RefIds:
@@ -434,7 +435,7 @@ MonoBehaviour:
   gameplayAuthorityMode: 0
   lineCatalog: {fileID: 11400000, guid: 4ff7d6809bf05544a88f2a7831460f4c, type: 2}
   lineSlotCount: 2
-  reelSpeedMetersPerSecond: 1.5
+  reelSpeedMetersPerSecond: 3
   ratedPullNewtons: 5000
   minimumDeployedLength: 0.2
   dockingDistance: 0.45
@@ -578,3 +579,7 @@ MonoBehaviour:
   interactionColliders:
   - {fileID: 5715798473293145287}
   promptAnchor: {fileID: 8257903097564535626}
+  resolvedInstalledModule: {fileID: 0}
+  resolvedHardpoint: {fileID: 0}
+  resolvedOwner: {fileID: 0}
+  interactionQueryBody: {fileID: 0}

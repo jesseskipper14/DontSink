@@ -47,6 +47,21 @@ public class DragForce : MonoBehaviour, IForceProvider
         }
         else
         {
+            var waterState = GetComponent<PlayerSubmersionState>();
+            var waterBody = waterState != null ? waterState.LocalWaterBody : null;
+            if (waterBody != null && physicsGlobals != null)
+            {
+                float linear = Mathf.Clamp(submergedFraction, .01f, physicsGlobals.WaterVerticalDrag);
+                float angular = Mathf.Clamp(submergedFraction, .01f, physicsGlobals.WaterAngularDrag);
+                // Rigidbody damping always uses world velocity. In bell water,
+                // apply the same implicit drag response to relative motion instead.
+                rb.linearDamping = rb.angularDamping = 0;
+                Vector2 relative = rb.linearVelocity - waterBody.GetPointVelocity(rb.worldCenterOfMass);
+                rb.AddForce(-relative * rb.mass * linear / (1 + linear * Time.fixedDeltaTime));
+                float relativeSpin = (rb.angularVelocity - waterBody.angularVelocity) * Mathf.Deg2Rad;
+                rb.AddTorque(-relativeSpin * rb.inertia * angular / (1 + angular * Time.fixedDeltaTime));
+                return;
+            }
             rb.linearDamping = Mathf.Clamp(submergedFraction, 0.01f, physicsGlobals.WaterVerticalDrag);
             rb.angularDamping = Mathf.Clamp(submergedFraction, 0.01f, physicsGlobals.WaterAngularDrag);
         }

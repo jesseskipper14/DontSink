@@ -34,6 +34,7 @@ Shader "DontSink/UnderwaterBubbleRing2D"
             #pragma fragment frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "../Environment/DepthLighting.hlsl"
 
             struct Attributes
             {
@@ -47,6 +48,7 @@ Shader "DontSink/UnderwaterBubbleRing2D"
                 float4 positionCS : SV_POSITION;
                 float4 color      : COLOR;
                 float2 uv         : TEXCOORD0;
+                float2 positionWS : TEXCOORD1;
             };
 
             CBUFFER_START(UnityPerMaterial)
@@ -62,6 +64,7 @@ Shader "DontSink/UnderwaterBubbleRing2D"
             Varyings vert(Attributes input)
             {
                 Varyings output;
+                output.positionWS = TransformObjectToWorld(input.positionOS.xyz).xy;
 
                 output.positionCS =
                     TransformObjectToHClip(
@@ -169,6 +172,8 @@ Shader "DontSink/UnderwaterBubbleRing2D"
                 color *=
                     saturate(
                         _SceneBrightness);
+
+                color *= DontSinkDepthLight(input.positionWS);
 
                 return
                     half4(

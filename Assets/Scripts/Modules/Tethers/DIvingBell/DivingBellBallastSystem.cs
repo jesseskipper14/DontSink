@@ -557,7 +557,7 @@ public sealed class DivingBellBallastSystem : MonoBehaviour
             bellBody != null)
         {
             droppedBody.linearVelocity =
-                bellBody.linearVelocity;
+                bellBody.GetPointVelocity(droppedBody.worldCenterOfMass);
 
             droppedBody.angularVelocity =
                 bellBody.angularVelocity;

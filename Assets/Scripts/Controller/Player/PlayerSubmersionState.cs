@@ -49,6 +49,15 @@ public sealed class PlayerSubmersionState : MonoBehaviour
     public Compartment LastCompartment { get; private set; }
 
     public bool UsingDivingBellWaterContext { get; private set; }
+    public Rigidbody2D LocalWaterBody
+    {
+        get
+        {
+            ResolveBellOccupancyRef();
+            return UsingDivingBellWaterContext && _bellOccupantState != null && _bellOccupantState.IsInsideBell
+                ? _bellOccupantState.CurrentBell.GetComponent<Rigidbody2D>() : null;
+        }
+    }
     public Vector2 BottomWorldPosition => GetBottomWorld();
     public Vector2 HeadWorldPosition => GetTopWorld();
 

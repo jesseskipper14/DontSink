@@ -4,6 +4,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class PlayerInventoryUI : MonoBehaviour, IEscapeClosable
 {
+    public PlayerInventory BoundInventory => inventory;
     [Header("Refs")]
     [SerializeField] private PlayerInventory inventory;
     [SerializeField] private PlayerEquipment equipment;

@@ -405,7 +405,7 @@ public sealed class DivingBellInternalWaterRenderer : MonoBehaviour
             if (_runtimeFallbackMaterial == null)
             {
                 Shader shader =
-                    Shader.Find("Sprites/Default");
+                    Shader.Find("DontSink/BellInternalWaterDepth2D");
 
                 if (shader != null)
                 {

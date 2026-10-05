@@ -153,6 +153,7 @@ MonoBehaviour:
   requireMatchingBoatBoardingContext: 1
   allowAccessWhenNotPartOfBoat: 1
   verboseLogging: 0
+  preventGroundTunneling: 1
   references:
     version: 2
     RefIds:
@@ -227,7 +228,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
@@ -297,7 +298,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1575b8eb0a23a64b84d92ec0156de58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameplayAuthorityMode: 0
   tetherAnchor: {fileID: 2233217537635557836}
+  collisionScope: {fileID: 0}
   usingTetherPayloadLayer: 0
   tetherPayloadLayerIndex: -1
   switchedColliderObjects: 0
@@ -353,6 +356,15 @@ MonoBehaviour:
   boatBodyAlwaysUsesOcean: 1
   sliceCount: 10
   lastTotalSubmersion: 0
+  lastCappedRuntimeVolume: 0
+  lastUncappedRuntimeVolume: 0
+  lastRuntimeVolumeBypass01: 0
+  lastMaxTotalBuoyantForce: 0
+  lastAppliedCappedBuoyantForce: 0
+  lastAppliedUncappedBuoyantForce: 0
+  lastAppliedTotalBuoyantForce: 0
+  lastBuoyantAcceleration: 0
+  lastSurfaceYAtBodyX: 0
   enabledFlag: 1
   priority: 50
 --- !u!114 &8400498201498564210
@@ -367,6 +379,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d25d72d0396500e4c803080c99afb5b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enforceGameplayAuthority: 0
+  gameplayAuthorityMode: 0
   verboseDiagnostics: 1
 --- !u!114 &637085697730410051
 MonoBehaviour:

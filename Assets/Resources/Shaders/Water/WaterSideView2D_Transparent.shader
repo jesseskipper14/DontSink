@@ -121,6 +121,7 @@ Shader "Custom/WaterSideView2D_Transparent"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #include "../Environment/DepthLighting.hlsl"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
@@ -1303,8 +1304,8 @@ Shader "Custom/WaterSideView2D_Transparent"
                     _SparkleColor.rgb *
                     sparkles;
 
-                color *=
-                    _Brightness;
+                color *= _DontSinkDepthLightingEnabled > .5
+                    ? DontSinkDepthLight(IN.positionWS.xy) : float3(_Brightness, _Brightness, _Brightness);
 
                 return
                     half4(

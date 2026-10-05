@@ -36,6 +36,7 @@ Shader "DontSink/TetherRopeFlowUnlit"
             #pragma fragment Frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "../Environment/DepthLighting.hlsl"
 
             struct Attributes
             {
@@ -47,6 +48,7 @@ Shader "DontSink/TetherRopeFlowUnlit"
             {
                 float4 positionHCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
+                float2 positionWS : TEXCOORD1;
             };
 
             CBUFFER_START(UnityPerMaterial)
@@ -62,6 +64,7 @@ Shader "DontSink/TetherRopeFlowUnlit"
             Varyings Vert(Attributes input)
             {
                 Varyings output;
+                output.positionWS = TransformObjectToWorld(input.positionOS.xyz).xy;
                 output.positionHCS =
                     TransformObjectToHClip(
                         input.positionOS.xyz);
@@ -115,6 +118,7 @@ Shader "DontSink/TetherRopeFlowUnlit"
                         _EdgeDarkening,
                         edge);
 
+                ropeColor.rgb *= DontSinkDepthLight(input.positionWS);
                 return ropeColor;
             }
 

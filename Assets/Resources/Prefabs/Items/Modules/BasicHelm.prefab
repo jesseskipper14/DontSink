@@ -285,7 +285,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
@@ -310,6 +310,7 @@ MonoBehaviour:
   requireMatchingBoatBoardingContext: 1
   allowAccessWhenNotPartOfBoat: 1
   verboseLogging: 0
+  preventGroundTunneling: 1
   references:
     version: 2
     RefIds:
@@ -328,7 +329,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldItem: {fileID: 4852340979861053125}
-  playerTransform: {fileID: 0}
   maxDepositDistance: 2.25
   requireMatchingBoatBoardingContext: 1
   allowAccessWhenNotPartOfBoat: 1
@@ -349,6 +349,8 @@ MonoBehaviour:
   maxDistance: 3
   interactionPriority: 5
   promptAnchor: {fileID: 8257903097564535626}
+  restrictToInteractionColliders: 0
+  interactionColliders: []
   requireMatchingBoatBoardingContext: 1
   allowAccessWhenNotPartOfBoat: 1
   autoCloseDistance: 2.25

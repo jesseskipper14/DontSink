@@ -63,6 +63,7 @@ Shader "DontSink/NodeGroundTerrain"
             #pragma fragment Frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "../Environment/DepthLighting.hlsl"
 
             struct Attributes
             {
@@ -361,6 +362,7 @@ Shader "DontSink/NodeGroundTerrain"
                     input.color.rgb *
                     _Color.rgb;
 
+                terrainColor *= DontSinkDepthLight(input.positionWS);
                 return
                     half4(
                         terrainColor,

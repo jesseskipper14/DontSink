@@ -115,6 +115,14 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
 
         // Grounded first (used for jump latch rules)
         motor.UpdateGrounded();
+        var waterState = GetComponent<PlayerSubmersionState>();
+        if (waterState != null && waterState.SubmergedEnoughToSwim)
+        {
+            _previousSupport = null;
+            _jumpPressedLatched = false;
+            motor.TickTimers(dt, false);
+            return;
+        }
         bool hasSupport = motor.TryGetMovingSupport(body.rb, out var support, out var supportVelocity);
         if (hasSupport && support == _previousSupport)
         {

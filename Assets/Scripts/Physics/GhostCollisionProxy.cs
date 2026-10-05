@@ -78,6 +78,17 @@ public sealed class GhostCollisionProxy : MonoBehaviour
     public IReadOnlyList<Collider2D> SourceColliders => _sourceColliders;
     public IReadOnlyList<Collider2D> ProxyColliders => _proxyColliders;
 
+    public static Collider2D SourceForCollider(Collider2D collider)
+    {
+        foreach (var proxy in _activeProxies)
+        {
+            if (proxy == null) continue;
+            foreach (var binding in proxy._bindings)
+                if (binding.Proxy == collider) return binding.Source != null ? binding.Source : collider;
+        }
+        return collider;
+    }
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics()
     {

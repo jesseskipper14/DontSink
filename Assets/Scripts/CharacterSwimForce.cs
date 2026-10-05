@@ -174,14 +174,17 @@ public sealed class
 
         // --- Horizontal swim ---
         float targetX = intent.MoveX;
-        float vx = body.rb.linearVelocity.x;
+        Vector2 waterVelocity = Vector2.zero;
+        var waterBody = _submersion.LocalWaterBody;
+        if (waterBody != null) waterVelocity = waterBody.GetPointVelocity(body.rb.worldCenterOfMass);
+        float vx = body.rb.linearVelocity.x - waterVelocity.x;
 
         bool underLimit = Mathf.Abs(vx) < maxSpeedX || Mathf.Sign(targetX) != Mathf.Sign(vx);
         if (Mathf.Abs(targetX) > 0.01f && underLimit)
             body.AddForce(Vector2.right * (targetX * accelX));
 
         // --- Vertical swim / dive ---
-        float vy = body.rb.linearVelocity.y;
+        float vy = body.rb.linearVelocity.y - waterVelocity.y;
 
         if (intent.SwimUpHeld && vy < maxSpeedY)
             body.AddForce(Vector2.up * (upAccel) * body.Mass);
@@ -191,7 +194,7 @@ public sealed class
 
         // Clamp vertical speed
         var v = body.rb.linearVelocity;
-        v.y = Mathf.Clamp(v.y, -maxSpeedY, maxSpeedY);
+        v.y = waterVelocity.y + Mathf.Clamp(v.y - waterVelocity.y, -maxSpeedY, maxSpeedY);
         body.rb.linearVelocity = v;
     }
 }
