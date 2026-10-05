@@ -4,7 +4,7 @@ using UnityEngine;
 
 /// <summary>Scene-owned reconstruction. No saved prefab or Inspector wiring is changed.</summary>
 [DisallowMultipleComponent]
-public sealed class NodeSettlementScene : MonoBehaviour
+public sealed partial class NodeSettlementScene : MonoBehaviour
 {
     public static NodeSettlementScene Current { get; private set; }
     public NodeSettlementManifest Layout { get; private set; }
@@ -71,6 +71,7 @@ public sealed class NodeSettlementScene : MonoBehaviour
                     Visit = NodeSettlementPlanner.Evaluate(runtime.State, Layout, GameplayAuthority.IsAuthoritative);
                     _loadedLayout = Layout;
                     _loadedVisit = Visit;
+                    ResolveNatureLatitude(runtime);
                     Build();
                     Status = $"{Layout.archetypeId}: {Layout.terraces.Count} terraces, {Layout.plots.Count} permanent plots";
                     Debug.Log($"[Settlement] {Status} | node={Layout.nodeStableId} | version={Layout.version}", this);
@@ -93,6 +94,7 @@ public sealed class NodeSettlementScene : MonoBehaviour
         _townNpcDefinition = Resources.Load<AgentDefinition>("SettlementTownNpc");
         if (_root != null) _root.gameObject.SetActive(false);
         Release(_root != null ? _root.gameObject : null);
+        ReleaseNatureSprites();
         Release(_shape); Release(_texture); Release(_material);
         _anchors.Clear(); _sockets.Clear(); _material = null;
         _texture = new Texture2D(1, 1) { name = "Settlement shape", filterMode = FilterMode.Point };
@@ -107,6 +109,7 @@ public sealed class NodeSettlementScene : MonoBehaviour
         float shoreOffset = _ground != null ? _ground.islandLength - Layout.harborArrival.x : 0;
         _root.localPosition = new Vector3(shoreOffset, _ground != null ? _ground.landY : 0, 0);
         _root.SetParent(transform, true);
+        BuildNature();
         foreach (var terrace in Layout.terraces)
         {
             var parent = Empty(terrace.id, _root, Vector2.zero);
@@ -412,6 +415,7 @@ public sealed class NodeSettlementScene : MonoBehaviour
         if (Current == this) Current = null;
         Release(_root != null ? _root.gameObject : null);
         Release(_shape);
+        ReleaseNatureSprites();
         Release(_texture);
         Release(_material);
     }
