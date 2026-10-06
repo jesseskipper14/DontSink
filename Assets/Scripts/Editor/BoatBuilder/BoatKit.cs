@@ -38,6 +38,8 @@ public class BoatKit : ScriptableObject
     [Header("Cargo / Securing")]
     public GameObject CargoZoneFloor;
     public GameObject BoatCleat;
+    [Tooltip("Authored tie marker with a MooringPoint2D component. Its origin is the rope attachment point.")]
+    public GameObject Mooring;
 
     [Header("Hardpoints")]
     public GameObject HardpointEngine;

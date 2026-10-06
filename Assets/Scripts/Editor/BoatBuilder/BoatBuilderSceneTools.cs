@@ -159,6 +159,14 @@ public static partial class BoatBuilderSceneTools
             return;
         }
 
+        if (_ctx.ActiveTool == BoatBuilderWindow.Tool.Mooring &&
+            prefab.GetComponent<MooringPoint2D>() == null)
+        {
+            DrawStatus(view, "Mooring prefab needs MooringPoint2D on its root (the rope attachment point).");
+            DestroyPreview();
+            return;
+        }
+
         HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
         var e = Event.current;
 
@@ -567,6 +575,7 @@ public static partial class BoatBuilderSceneTools
             BoatBuilderWindow.Tool.TurretControllerChair => kit.TurretControllerChair,
             BoatBuilderWindow.Tool.CargoZoneFloor => kit.CargoZoneFloor,
             BoatBuilderWindow.Tool.BoatCleat => kit.BoatCleat,
+            BoatBuilderWindow.Tool.Mooring => kit.Mooring,
             _ => null
         };
     }

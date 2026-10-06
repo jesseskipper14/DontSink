@@ -296,6 +296,9 @@ public static partial class BoatBuilderSceneTools
             BoatBuilderWindow.Tool.Deck =>
                 GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.ExteriorDeck),
 
+            BoatBuilderWindow.Tool.Mooring =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.ExteriorDeck),
+
             BoatBuilderWindow.Tool.Hatch =>
                 GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.ExteriorDeck),
 

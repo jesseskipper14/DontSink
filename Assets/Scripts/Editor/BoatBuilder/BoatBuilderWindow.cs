@@ -54,6 +54,7 @@ public class BoatBuilderWindow : EditorWindow
 
         // Generated technical volume. Append only; do not renumber existing tool ids.
         ItemContainmentZone = 22,
+        Mooring = 23,
     }
 
     private struct ActionButtonDef
@@ -506,7 +507,8 @@ public class BoatBuilderWindow : EditorWindow
         DrawToolGroup("Cargo / Securing", new[]
         {
             Tool.CargoZoneFloor,
-            Tool.BoatCleat
+            Tool.BoatCleat,
+            Tool.Mooring
         });
     }
 
@@ -591,6 +593,7 @@ public class BoatBuilderWindow : EditorWindow
             Tool.ExteriorShell => "Shell",
             Tool.CargoZoneFloor => "Cargo Floor",
             Tool.BoatCleat => "Cleat",
+            Tool.Mooring => "Mooring",
             _ => tool.ToString()
         };
     }
