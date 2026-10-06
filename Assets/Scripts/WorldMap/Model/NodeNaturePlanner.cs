@@ -44,20 +44,26 @@ public static class NodeNaturePlanner
         }
     }
 
-    public static bool PlantSiteClear(NodeSettlementManifest layout, Vector2 point)
+    public static bool PlantSiteClear(NodeSettlementManifest layout, Vector2 point, float radius = .65f)
     {
         foreach (var plot in layout.plots)
         {
-            if (plot.IsOpen && plot.role != SettlementRole.EventReserve) continue;
-            if (point.y >= plot.position.y - .1f && point.y < plot.position.y + plot.height + .5f &&
-                Mathf.Abs(point.x - plot.position.x) < plot.width / 2 + .8f) return false;
+            bool reservedFront = plot.role == SettlementRole.EventReserve || (!plot.IsOpen && plot.role != SettlementRole.Residence);
+            if (reservedFront && point.y >= plot.position.y - .1f && point.y < plot.position.y + plot.height + .5f &&
+                Mathf.Abs(point.x - plot.position.x) < plot.width / 2 + .3f + radius) return false;
+            // Ordinary facades can carry decoration, but the rendered door is at width * 0.23.
+            if (plot.role == SettlementRole.Residence && point.y >= plot.position.y - .1f && point.y < plot.position.y + 2.6f &&
+                Mathf.Abs(point.x - (plot.position.x + plot.width * .23f)) < .575f + .3f + radius) return false;
             if (layout.plots.Exists(p => p.parentPlotId == plot.id) &&
                 point.y >= plot.position.y - .1f && point.y <= plot.position.y + plot.height + .1f &&
-                Mathf.Abs(point.x - (plot.position.x + plot.width / 2 + .55f)) < 1.2f) return false;
+                Mathf.Abs(point.x - (plot.position.x + plot.width / 2 + .55f)) < 1.2f + radius) return false;
         }
         foreach (var link in layout.connections)
-            if (Mathf.Abs(point.x - link.x) < 1.2f && point.y <= layout.terraces[link.toTerrace].y + .1f)
+        {
+            float low = link.fromTerrace < 0 ? 0 : layout.terraces[link.fromTerrace].y;
+            if (Mathf.Abs(point.x - link.x) < 1.2f + radius && point.y >= low - .1f && point.y <= layout.terraces[link.toTerrace].y + .1f)
                 return false;
+        }
         return true;
     }
 
@@ -70,9 +76,11 @@ public static class NodeNaturePlanner
             {
                 string id = "plant/" + row + "/" + i;
                 var at = new Vector2(left + i * 2.5f + (Sample(layout.seed, id, 0) - .5f) * 1.2f, y);
+                int variant = (int)(Sample(layout.seed, id, 2) * 3);
+                float scale = .7f + Sample(layout.seed, id, 3) * .5f;
                 plan.plants.Add(new NodeFoliageCandidate { id = id, position = at,
-                    populated = PlantSiteClear(layout, at) && Sample(layout.seed, id, 1) < .48f,
-                    variant = (int)(Sample(layout.seed, id, 2) * 3), scale = .7f + Sample(layout.seed, id, 3) * .5f });
+                    populated = PlantSiteClear(layout, at, (variant == 2 ? .83f : .6f) * scale) && Sample(layout.seed, id, 1) < .48f,
+                    variant = variant, scale = scale });
             }
         }
         AddPlants("ground", -16, layout.harborArrival.x - 9, 0);

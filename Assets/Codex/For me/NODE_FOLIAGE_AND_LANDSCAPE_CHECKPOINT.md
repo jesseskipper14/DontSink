@@ -41,5 +41,7 @@ Ferns now grow from a common ground-level base and fan upward, correcting the in
 
 ## Thin stone road preview
 
+Latest foliage placement refinement: ordinary house fronts now accept small foliage, while doorways, ladders, key/service building fronts and event reserves stay clear. Clearance accounts for plant variant and scale. See `NODE_PLACEHOLDER_PROPS_CHECKPOINT.md` for the shared placement rule.
+
 Added a 0.24-unit-thick stone paving veneer along the ground-level town, ending before the harbor edge. Two rows use seed-varied widths and muted gray/warm stone colors with mortar gaps. This is a runtime visual under `Settlement_<id>/Stone paved road`, on GroundFront at sorting order 1. The road root uses local Y = 0.01 to prevent clipping; mortar sits slightly behind the stones in Z. Existing sand remains below it and owns all collision. No Inspector tasks are required. Production compilation and Direct3D11 rendering passed for the initial road. Re-enter the node to check the corrected placement in game.
 

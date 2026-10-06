@@ -13,3 +13,7 @@
 
 # Generated baked world-map/topography assets
 /Assets/Data/WorldMap/Topography/Baked/
+
+# Local Unity profiler captures
+/Assets/Codex/Profiler/*.data
+/Assets/Codex/Profiler/*.data.meta

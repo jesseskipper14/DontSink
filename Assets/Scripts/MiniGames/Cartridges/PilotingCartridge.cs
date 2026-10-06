@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using MiniGames;
 
 /// <summary>
@@ -27,7 +27,11 @@ public sealed class PilotingCartridge :
     private bool _debugMenuOpen;
 
     private Vector2 _cameraCenter;
-    private Vector2 _cameraCourseLookAhead;
+    private Texture2D _scopeMask;
+    private GUIStyle _dockedLabel;
+
+    // Match the helm's voyage-context distinction: no active voyage means docked.
+    private static bool IsDocked => GameState.I != null && GameState.I.activeTravel == null;
 
     private float _visibleWorldHeight;
     private bool _zoomLocked;
@@ -35,24 +39,6 @@ public sealed class PilotingCartridge :
     private const float DefaultVisibleWorldHeight = 90f;
     private const float DefaultTroughFlatFraction = 0.30f;
     private const float DefaultWaveTextureRefreshHz = 20f;
-
-    private const float DesiredBoatScreenY01 = 0.72f;
-    private const float CameraFollowSharpnessX = 0.75f;
-    private const float CameraFollowSharpnessY = 2.75f;
-
-    // Presentation-only course reveal. This is deliberately NOT shake.
-    // The camera looks toward the boat's actual unwanted lateral trajectory
-    // and anticipates strong yaw so the pilot can immediately read
-    // "that is where I am actually going."
-    private const float CameraCourseLookAheadSharpness = 3.5f;
-    private const float CameraLateralRevealDeadzoneSpeed = 0.35f;
-    private const float CameraLateralRevealFullSpeed = 6f;
-    private const float CameraMaxLateralRevealFractionOfHeight = 0.22f;
-    private const float CameraYawRevealDeadzoneDegreesPerSecond = 4f;
-    private const float CameraYawRevealFullDegreesPerSecond = 42f;
-    private const float CameraYawPredictionSeconds = 1.15f;
-    private const float CameraMaxYawRevealFractionOfHeight = 0.10f;
-    private const float CameraMaxCombinedRevealFractionOfHeight = 0.24f;
 
     private const float BoatWorldWidth = 1.5f;
     private const float BoatWorldHeight = 2.6f;
@@ -148,7 +134,7 @@ public sealed class PilotingCartridge :
         _visibleWorldHeight =
             Mathf.Max(
                 12f,
-                visibleWorldHeight);
+                visibleWorldHeight) * 4f;
 
         _zoomLocked =
             zoomLocked;
@@ -222,23 +208,7 @@ public sealed class PilotingCartridge :
                 ? _state.NavigationPosition
                 : Vector2.zero;
 
-        float boatWorldY01FromBottom =
-            1f -
-            DesiredBoatScreenY01;
-
-        float cameraYOffset =
-            (0.5f -
-             boatWorldY01FromBottom) *
-            _visibleWorldHeight;
-
-        _cameraCenter =
-            new Vector2(
-                position.x,
-                position.y +
-                cameraYOffset);
-
-        _cameraCourseLookAhead =
-            Vector2.zero;
+        _cameraCenter = position;
 
         _waveRenderer.Begin(
             _ctx.seed,
@@ -268,20 +238,21 @@ public sealed class PilotingCartridge :
 
         if (dt > 0f)
         {
+            UpdateCamera(dt);
             _compassRenderer.Tick(_state, dt);
-            _waveRenderer.Tick(
-                dt,
-                _state.NavigationPosition,
-                _cameraCenter,
-                _visibleWorldHeight);
+            if (!IsDocked)
+            {
+                _waveRenderer.Tick(
+                    dt,
+                    _state.NavigationPosition,
+                    _cameraCenter,
+                    _visibleWorldHeight);
 
-            UpdateCamera(
-                dt);
-
-            _waterMotionRenderer.Tick(
-                dt,
-                _cameraCenter,
-                _visibleWorldHeight);
+                _waterMotionRenderer.Tick(
+                    dt,
+                    _cameraCenter,
+                    _visibleWorldHeight);
+            }
         }
 
         return Running();
@@ -308,6 +279,8 @@ public sealed class PilotingCartridge :
 
         _waveRenderer.End();
         _waterMotionRenderer.End();
+        if (_scopeMask != null) Object.Destroy(_scopeMask);
+        _scopeMask = null;
     }
 
     public void DrawOverlayGUI(
@@ -381,33 +354,44 @@ public sealed class PilotingCartridge :
                 panel.width - pad * 2f,
                 panel.height - 186f);
 
-        GUI.Box(
-            playArea,
-            GUIContent.none);
-
-        PilotingViewProjection view =
-            new PilotingViewProjection(
-                playArea,
-                _cameraCenter,
-                _visibleWorldHeight);
-
-        _waveRenderer.Draw(
-            view);
-
-        _waterMotionRenderer.Draw(
-            view);
-
-        // Generated recovery curves are diagnostics, not player-authored navigation legs.
-        if (_debugMenuOpen)
-            _routeRenderer.Draw(view, _simulation.RouteGuidance);
-
-        DrawWaterReferenceGrid(
-            view);
-
-        DrawBoat(
-            view);
-
-        _compassRenderer.Draw(playArea, _state);
+        float sidebar = Mathf.Clamp(playArea.width*.19f,150,300);
+        Rect left = new Rect(playArea.x,playArea.y,sidebar,playArea.height);
+        Rect right = new Rect(playArea.xMax-sidebar,playArea.y,sidebar,playArea.height);
+        float scopeSize = Mathf.Max(1,Mathf.Min(playArea.height-24,playArea.width-sidebar*2-24));
+        Rect scope = new Rect(playArea.center.x-scopeSize*.5f,playArea.center.y-scopeSize*.5f,scopeSize,scopeSize);
+        Rect approachArea = new Rect(scope.xMax+12f,playArea.y,Mathf.Max(0f,right.x-scope.xMax-24f),playArea.height);
+        PilotingViewProjection view = new PilotingViewProjection(scope,_state.NavigationPosition,_visibleWorldHeight);
+        GUI.BeginGroup(scope);
+        var localView = new PilotingViewProjection(new Rect(0,0,scopeSize,scopeSize),_state.NavigationPosition,_visibleWorldHeight);
+        if (IsDocked)
+        {
+            Color previous = GUI.color;
+            GUI.color = new Color(.035f,.065f,.085f,1f);
+            GUI.DrawTexture(localView.PlayArea,Texture2D.whiteTexture);
+            GUI.color = previous;
+            _dockedLabel ??= new GUIStyle(GUI.skin.label)
+                { alignment = TextAnchor.MiddleCenter, fontSize = 32, fontStyle = FontStyle.Bold };
+            GUI.Label(localView.PlayArea,"DOCKED",_dockedLabel);
+        }
+        else
+        {
+            _waveRenderer.Draw(localView);
+            _waterMotionRenderer.Draw(localView);
+            _compassRenderer.DrawNearField(localView,_state);
+            if (_debugMenuOpen)
+            {
+                _routeRenderer.Draw(localView,_simulation.RouteGuidance);
+                DrawWaterReferenceGrid(localView);
+            }
+            DrawBoat(localView);
+        }
+        DrawScopeMask(localView.PlayArea);
+        GUI.EndGroup();
+        if (!IsDocked)
+            GUI.Label(new Rect(scope.x,scope.yMax+3,scope.width,20),
+                "Deep blue → light water → sand → land");
+        _compassRenderer.Draw(right, _state, approachArea);
+        _hudRenderer.DrawOrders(left,_state,_simulation,_sourceStation,_compassRenderer.GeographicHeading);
 
         _hudRenderer.Draw(
             panel,
@@ -493,176 +477,8 @@ public sealed class PilotingCartridge :
                PilotChairInteractable.PilotingHelmStatus.Offline;
     }
 
-    private void UpdateCamera(
-        float dt)
-    {
-        Vector2 position =
-            _state.NavigationPosition;
-
-        // Keep the old follow behavior as the calm baseline. Course reveal is a
-        // separate presentation offset so it can react much faster than the
-        // deliberately lazy lateral camera follow.
-        Vector2 baseCameraCenter =
-            _cameraCenter -
-            _cameraCourseLookAhead;
-
-        Vector2 desiredCourseLookAhead =
-            CalculateCourseRevealLookAhead();
-
-        float courseAlpha =
-            1f -
-            Mathf.Exp(
-                -CameraCourseLookAheadSharpness *
-                dt);
-
-        _cameraCourseLookAhead =
-            Vector2.Lerp(
-                _cameraCourseLookAhead,
-                desiredCourseLookAhead,
-                courseAlpha);
-
-        float xAlpha =
-            1f -
-            Mathf.Exp(
-                -CameraFollowSharpnessX *
-                dt);
-
-        baseCameraCenter.x =
-            Mathf.Lerp(
-                baseCameraCenter.x,
-                position.x,
-                xAlpha);
-
-        float boatWorldY01FromBottom =
-            1f -
-            DesiredBoatScreenY01;
-
-        float cameraYOffset =
-            (0.5f -
-             boatWorldY01FromBottom) *
-            _visibleWorldHeight;
-
-        float desiredCameraY =
-            position.y +
-            cameraYOffset;
-
-        float yAlpha =
-            1f -
-            Mathf.Exp(
-                -CameraFollowSharpnessY *
-                dt);
-
-        baseCameraCenter.y =
-            Mathf.Lerp(
-                baseCameraCenter.y,
-                desiredCameraY,
-                yAlpha);
-
-        _cameraCenter =
-            baseCameraCenter +
-            _cameraCourseLookAhead;
-    }
-
-    private Vector2 CalculateCourseRevealLookAhead()
-    {
-        if (_state == null)
-            return Vector2.zero;
-
-        Vector2 headingForward =
-            HeadingToForward(
-                _state.HeadingDegrees);
-
-        Vector2 navigationVelocity =
-            _state.NavigationVelocity;
-
-        // Only the sideways component relative to the bow gets the large
-        // trajectory reveal. Ordinary forward motion keeps the familiar framing.
-        float alongHeadingSpeed =
-            Vector2.Dot(
-                navigationVelocity,
-                headingForward);
-
-        Vector2 lateralCourseVelocity =
-            navigationVelocity -
-            headingForward *
-            alongHeadingSpeed;
-
-        float lateralSpeed =
-            lateralCourseVelocity.magnitude;
-
-        float lateral01 =
-            Mathf.InverseLerp(
-                CameraLateralRevealDeadzoneSpeed,
-                CameraLateralRevealFullSpeed,
-                lateralSpeed);
-
-        lateral01 =
-            Mathf.SmoothStep(
-                0f,
-                1f,
-                lateral01);
-
-        float maxLateralReveal =
-            _visibleWorldHeight *
-            CameraMaxLateralRevealFractionOfHeight;
-
-        Vector2 lateralReveal =
-            lateralSpeed > 0.0001f
-                ? lateralCourseVelocity.normalized *
-                  maxLateralReveal *
-                  lateral01
-                : Vector2.zero;
-
-        float angularVelocity =
-            _state.AngularVelocityDegrees;
-
-        float yaw01 =
-            Mathf.InverseLerp(
-                CameraYawRevealDeadzoneDegreesPerSecond,
-                CameraYawRevealFullDegreesPerSecond,
-                Mathf.Abs(
-                    angularVelocity));
-
-        yaw01 =
-            Mathf.SmoothStep(
-                0f,
-                1f,
-                yaw01);
-
-        float predictedHeading =
-            _state.HeadingDegrees +
-            angularVelocity *
-            CameraYawPredictionSeconds;
-
-        Vector2 predictedForward =
-            HeadingToForward(
-                predictedHeading);
-
-        Vector2 yawDirectionDelta =
-            predictedForward -
-            headingForward;
-
-        float maxYawReveal =
-            _visibleWorldHeight *
-            CameraMaxYawRevealFractionOfHeight;
-
-        Vector2 yawReveal =
-            yawDirectionDelta *
-            maxYawReveal *
-            yaw01;
-
-        Vector2 combined =
-            lateralReveal +
-            yawReveal;
-
-        float maxCombinedReveal =
-            _visibleWorldHeight *
-            CameraMaxCombinedRevealFractionOfHeight;
-
-        return Vector2.ClampMagnitude(
-            combined,
-            maxCombinedReveal);
-    }
+    private void UpdateCamera(float dt)
+    { _cameraCenter = _state.NavigationPosition; }
 
     private static Vector2 HeadingToForward(
         float headingDegrees)
@@ -678,6 +494,22 @@ public sealed class PilotingCartridge :
                 radians));
     }
 
+    private void DrawScopeMask(Rect scope)
+    {
+        if (_scopeMask == null)
+        {
+            const int size=256;
+            _scopeMask=new Texture2D(size,size,TextureFormat.RGBA32,false) { name="Piloting circular viewport mask",wrapMode=TextureWrapMode.Clamp };
+            var pixels=new Color[size*size];
+            for(int y=0;y<size;y++)for(int x=0;x<size;x++)
+            {
+                float radius=new Vector2((x+.5f)/size*2-1,(y+.5f)/size*2-1).magnitude;
+                pixels[y*size+x]=new Color(.055f,.065f,.08f,Mathf.SmoothStep(0,1,Mathf.InverseLerp(.987f,1,radius)));
+            }
+            _scopeMask.SetPixels(pixels);_scopeMask.Apply(false,true);
+        }
+        Color old=GUI.color;GUI.color=Color.white;GUI.DrawTexture(scope,_scopeMask);GUI.color=old;
+    }
     private void DrawWaterReferenceGrid(
         PilotingViewProjection view)
     {
@@ -970,3 +802,4 @@ public sealed class PilotingCartridge :
         };
     }
 }
+

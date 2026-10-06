@@ -13,6 +13,11 @@ public sealed class CelestialFieldSource : MonoBehaviour
     [SerializeField] private WorldMapTopographyDebugSource topographySource;
     [SerializeField] private CelestialGenerationSettings generationSettings;
 
+    [Header("Optional Fixed Decorative Sky")]
+    [Tooltip("Menu/title sky only. Uses saved generation inputs instead of the gameplay world.")]
+    [SerializeField] private CelestialFixedSkyProfile fixedSky;
+    public CelestialFixedSkyProfile FixedSky => fixedSky;
+
     [Header("Startup")]
     [SerializeField] private bool buildOnAwake = false;
 
@@ -103,6 +108,19 @@ public sealed class CelestialFieldSource : MonoBehaviour
     /// </summary>
     public bool EnsureField()
     {
+        if (fixedSky != null)
+        {
+            if (!fixedSky.IsGenerated)
+            {
+                if (verboseLogging)
+                    Debug.LogWarning("[CelestialFieldSource] Generate and save the assigned fixed sky profile outside Play Mode first. Unsupported generator versions require explicit regeneration.", this);
+                return false;
+            }
+            if (!FieldMatches(fixedSky.Seed, fixedSky.Bounds, fixedSky.ConfigHash))
+                Field = fixedSky.CreateField();
+            return HasField;
+        }
+
         AutoWire();
 
         if (generationSettings == null)
@@ -241,6 +259,7 @@ public sealed class CelestialFieldSource : MonoBehaviour
 
     private void AutoWire()
     {
+        if (fixedSky != null) return;
         if (topographySource == null)
         {
             topographySource = FindAnyObjectByType<WorldMapTopographyDebugSource>(

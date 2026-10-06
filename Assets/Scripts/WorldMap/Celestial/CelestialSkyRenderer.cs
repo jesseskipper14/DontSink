@@ -122,7 +122,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
         if (!EnsureReady())
             return;
 
-        if (!WorldNavigationService.TryGetTrueWorldPosition(out Vector2 observerWorldPosition))
+        if (!TryGetObserverPosition(out Vector2 observerWorldPosition))
         {
             if (!_warnedMissingWorldPosition && verboseLogging)
             {
@@ -399,6 +399,16 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
         renderRoot = go.transform;
     }
 
+    private bool TryGetObserverPosition(out Vector2 position)
+    {
+        if (fieldSource != null && fieldSource.FixedSky != null)
+        {
+            position = fieldSource.FixedSky.ObserverPosition;
+            return fieldSource.FixedSky.IsGenerated;
+        }
+        return WorldNavigationService.TryGetTrueWorldPosition(out position);
+    }
+
     private void AutoWire()
     {
         if (fieldSource == null)
@@ -406,6 +416,13 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
 
         if (targetCamera == null)
             targetCamera = Camera.main;
+
+        if (fieldSource != null && fieldSource.FixedSky != null)
+        {
+            UnsubscribeSkyVisibility();
+            HandleStarVisibilityChanged(1f);
+            return;
+        }
 
         if (legacyStarsRenderer == null && SceneContext.Current != null)
             legacyStarsRenderer = SceneContext.Current.starsRenderer;
@@ -422,6 +439,12 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
 
     private void SubscribeSkyVisibility()
     {
+        if (fieldSource != null && fieldSource.FixedSky != null)
+        {
+            UnsubscribeSkyVisibility();
+            HandleStarVisibilityChanged(1f);
+            return;
+        }
         if (_subscribedSkyVisualManager != skyVisualManager)
         {
             UnsubscribeSkyVisibility();
@@ -456,7 +479,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
         if (_legacyTakeoverApplied || projectionSettings == null || !projectionSettings.disableLegacyStarsRenderer)
             return;
 
-        if (legacyStarsRenderer == null && SceneContext.Current != null)
+        if (legacyStarsRenderer == null && fieldSource?.FixedSky == null && SceneContext.Current != null)
             legacyStarsRenderer = SceneContext.Current.starsRenderer;
 
         if (legacyStarsRenderer == null)
@@ -869,7 +892,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
             return;
         }
 
-        bool hasPosition = WorldNavigationService.TryGetTrueWorldPosition(out Vector2 observer);
+        bool hasPosition = TryGetObserverPosition(out Vector2 observer);
         Vector2 visibleWorld = CelestialSkyProjection.GetVisibleWorldSize(
             fieldSource.Field.WorldBounds,
             projectionSettings);

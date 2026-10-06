@@ -8,6 +8,52 @@ using UnityEngine;
 /// </summary>
 public sealed class PilotingHudRenderer
 {
+    private Vector2 _ordersScroll;
+    private static readonly string[] EngineLabels = { "Full Speed", "3/4 Speed", "1/2 Speed", "Quarter Speed", "Full Stop", "1/4 Reverse", "1/2 Reverse", "3/4 Reverse", "Full Reverse" };
+    private static readonly float[] EngineOrders = { 1f, .75f, .5f, .25f, 0f, -.25f, -.5f, -.75f, -1f };
+    private static readonly string[] RudderLabels = { "Full Rudder Left", "Half Rudder Left", "Straight Ahead", "Half Rudder Right", "Full Rudder Right" };
+    private static readonly float[] RudderOrders = { -1f, -.5f, 0f, .5f, 1f };
+
+    public void DrawOrders(Rect area, BoatPilotingState state, BoatPilotingSimulation simulation, object owner, float? heading)
+    {
+        if (state == null || simulation == null) return;
+        GUI.Box(area, GUIContent.none);
+        float width = Mathf.Max(1f, area.width - 30f);
+        _ordersScroll = GUI.BeginScrollView(new Rect(area.x + 8f, area.y + 8f, area.width - 16f, area.height - 16f), _ordersScroll,
+            new Rect(0f, 0f, width, 488f));
+        GUI.Label(new Rect(0f, 0f, width, 23f), $"Speed: {simulation.PhysicalForwardSpeed:0.00} u/s");
+        GUI.Label(new Rect(0f, 23f, width, 23f), heading.HasValue ? $"Heading: {heading.Value:000.0}Â°" : "Heading: --");
+        GUI.Label(new Rect(0f, 48f, width, 23f), "ENGINE ORDER");
+        float y = 73f;
+        bool enabled = GUI.enabled;
+        Color background = GUI.backgroundColor;
+        bool canControl = enabled && GameplayAuthority.IsAuthoritative && simulation.HasControlAuthority(owner);
+        GUI.enabled = canControl;
+        for (int i = 0; i < EngineLabels.Length; i++)
+        {
+            GUI.backgroundColor = simulation.ThrottleTarget.HasValue && Mathf.Abs(simulation.ThrottleTarget.Value - EngineOrders[i]) < .001f
+                ? new Color(.55f, .8f, .72f) : background;
+            if (GUI.Button(new Rect(0f, y, width, 23f), EngineLabels[i])) simulation.TrySetThrottleTarget(owner, EngineOrders[i]);
+            y += 26f;
+        }
+        GUI.backgroundColor = background;
+        GUI.enabled = enabled;
+        y += 5f;
+        GUI.Label(new Rect(0f, y, width, 23f), "RUDDER ORDER");
+        y += 30f;
+        GUI.enabled = canControl && simulation.MaxRudderDegrees > .001f;
+        for (int i = 0; i < RudderLabels.Length; i++)
+        {
+            GUI.backgroundColor = simulation.RudderTargetFraction.HasValue && Mathf.Abs(simulation.RudderTargetFraction.Value - RudderOrders[i]) < .001f
+                ? new Color(.55f, .8f, .72f) : background;
+            if (GUI.Button(new Rect(0f, y, width, 23f), RudderLabels[i])) simulation.TrySetRudderTarget(owner, RudderOrders[i]);
+            y += 26f;
+        }
+        GUI.backgroundColor = background;
+        GUI.enabled = enabled;
+        GUI.EndScrollView();
+    }
+
     public void Draw(
         Rect panel,
         Rect playArea,
@@ -303,7 +349,7 @@ public sealed class PilotingHudRenderer
                 labelWidth,
                 line),
             $"NAV      Pos ({state.NavigationPosition.x:0.00}, {state.NavigationPosition.y:0.00})   " +
-            $"Heading {state.HeadingDegrees:0.0}°   " +
+            $"Heading {state.HeadingDegrees:0.0}Â°   " +
             $"Nav speed {state.NavigationVelocity.magnitude:0.00}");
 
         y +=
@@ -342,7 +388,7 @@ public sealed class PilotingHudRenderer
             $"DISTURB  Severity {simulation.EnvironmentalSeverity01 * 100f:0}%   " +
             $"Wave load {simulation.EnvironmentalPhysicalWaveLoad01 * 100f:0}%   " +
             $"Beam {simulation.EnvironmentalBeamExposure01 * 100f:0}%   " +
-            $"Angle {simulation.EnvironmentalEncounterBroadsideDegrees:0}°");
+            $"Angle {simulation.EnvironmentalEncounterBroadsideDegrees:0}Â°");
 
         y +=
             line;
@@ -359,7 +405,7 @@ public sealed class PilotingHudRenderer
             $"DRIFT    Vel ({simulation.EnvironmentalNavigationVelocity.x:+0.00;-0.00;0.00}," +
             $"{simulation.EnvironmentalNavigationVelocity.y:+0.00;-0.00;0.00})   " +
             $"Lat accel {lateralAcceleration.magnitude:0.00}   " +
-            $"Yaw accel {simulation.EnvironmentalYawAngularAccelerationDegrees:+0.0;-0.0;0.0}°/s²");
+            $"Yaw accel {simulation.EnvironmentalYawAngularAccelerationDegrees:+0.0;-0.0;0.0}Â°/sÂ²");
 
         y +=
             line;
@@ -494,7 +540,7 @@ public sealed class PilotingHudRenderer
                 rect.y - 2f,
                 90f,
                 20f),
-            $"Rudder {state.RudderDegrees:0.0}°");
+            $"Rudder {state.RudderDegrees:0.0}Â°");
 
         Rect bar =
             new Rect(

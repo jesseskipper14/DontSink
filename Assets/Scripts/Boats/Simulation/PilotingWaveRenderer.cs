@@ -937,7 +937,7 @@ public sealed class PilotingWaveRenderer
                     Color.Lerp(
                         OceanBackgroundColor,
                         WaveMaxPeakColor,
-                        strongest);
+                        Mathf.Clamp01(strongest * 1.65f));
 
                 _waveFieldPixels[
                     py * width +

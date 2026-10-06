@@ -38,12 +38,12 @@ public sealed class PilotingWaterMotionRenderer
     private const float MinDriftAngularSpeed = 0.22f;
     private const float MaxDriftAngularSpeed = 0.55f;
 
-    private const float MinSizePixels = 1.2f;
-    private const float MaxSizePixels = 2.8f;
-    private const float MinStretch = 1f;
-    private const float MaxStretch = 2.8f;
-    private const float MinAlpha = 0.10f;
-    private const float MaxAlpha = 0.27f;
+    private const float MinSizePixels = 1.8f;
+    private const float MaxSizePixels = 3.6f;
+    private const float MinStretch = 1.2f;
+    private const float MaxStretch = 3.36f;
+    private const float MinAlpha = 0.28f;
+    private const float MaxAlpha = 0.60f;
 
     // Draw a little beyond the visible bounds so tiny drift never causes
     // particles to wink at the exact screen edge.
@@ -156,6 +156,10 @@ public sealed class PilotingWaterMotionRenderer
                         cellY,
                         _seed);
 
+                float lifeAlpha = SampleLife(hash, _presentationTime, out uint appearanceHash);
+                if (lifeAlpha <= 0.001f) continue;
+                hash = appearanceHash;
+
                 float jitterX =
                     Hash01(
                         hash ^
@@ -216,9 +220,8 @@ public sealed class PilotingWaterMotionRenderer
                     driftSpeed +
                     phase;
 
-                // Tiny looping wander around a stable world-space home point.
-                // Because the home point is deterministic from cell coordinates,
-                // the field exists everywhere without storing or spawning objects.
+                // Each appearance drifts around its own deterministic home.
+                // The next position changes only while the fleck is invisible.
                 Vector2 primaryDrift =
                     new Vector2(
                         Mathf.Cos(
@@ -286,6 +289,7 @@ public sealed class PilotingWaterMotionRenderer
                         Hash01(
                             hash ^
                             0x94D049BBu));
+                alpha *= lifeAlpha;
 
                 float width =
                     Mathf.Max(
@@ -296,7 +300,7 @@ public sealed class PilotingWaterMotionRenderer
                 float height =
                     Mathf.Max(
                         1f,
-                        sizePixels);
+                        sizePixels * 0.75f);
 
                 GUI.color =
                     new Color(
@@ -343,8 +347,8 @@ public sealed class PilotingWaterMotionRenderer
                                 width * 0.70f,
                             panelPosition.y -
                                 height * 0.65f,
-                            satelliteSize,
-                            satelliteSize),
+                            satelliteSize * 1.2f,
+                            Mathf.Max(1f, satelliteSize * 0.75f)),
                         Texture2D.whiteTexture);
                 }
 
@@ -360,6 +364,24 @@ public sealed class PilotingWaterMotionRenderer
     {
         _presentationTime =
             0f;
+    }
+
+    private static float SampleLife(uint cellHash, float presentationTime, out uint appearanceHash)
+    {
+        // Independent cell clocks prevent the whole field blinking together.
+        float cycleSeconds = Mathf.Lerp(8f, 16f, Hash01(cellHash ^ 0x173DBA91u));
+        float clock = Mathf.Max(0f, presentationTime) / cycleSeconds + Hash01(cellHash ^ 0xB842E73Du);
+        int cycle = Mathf.FloorToInt(clock);
+        float age = (clock - cycle) * cycleSeconds;
+        appearanceHash = cellHash ^ unchecked((uint)cycle * 0x9E3779B9u);
+        float aliveSeconds = cycleSeconds * Mathf.Lerp(.65f, .85f, Hash01(appearanceHash ^ 0x61C88647u));
+        const float fadeSeconds = 1.25f;
+        float fadeIn = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(age / fadeSeconds));
+        float fadeOut = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((aliveSeconds - age) / fadeSeconds));
+        float pulseSeconds = Mathf.Lerp(3f, 6f, Hash01(appearanceHash ^ 0xD79A513Fu));
+        float phase = Hash01(appearanceHash ^ 0x4B27F09Du) * Mathf.PI * 2f;
+        float pulse = .9f + .1f * Mathf.Sin(age / pulseSeconds * Mathf.PI * 2f + phase);
+        return fadeIn * fadeOut * pulse;
     }
 
     private static uint HashCell(

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Profiling;
 
 [Serializable]
 public sealed class PilotingViewscapeSettings
@@ -27,8 +28,10 @@ public sealed class PilotingViewscapeSettings
 /// <summary>Circular boat-up observation inset; deterministic local geometry, never a position fix.</summary>
 public sealed class PilotingViewscapeRenderer
 {
+    private static readonly ProfilerMarker BuildMarker = new("Piloting.Viewscape.Build");
     public PilotingViewscapeSettings Settings = new();
     private Texture2D _texture;
+    private readonly PilotingLandGpuRenderer _land = new();
     private Color[] _pixels;
     private float _nextBuild, _nextEnvironment, _visibility = 1;
     private bool _ready;
@@ -74,6 +77,7 @@ public sealed class PilotingViewscapeRenderer
 
     private void Build(BoatHarborPresentation harbor, float heading)
     {
+        using var buildSample = BuildMarker.Auto();
         int resolution = Mathf.Clamp(Settings.textureResolution, 64, 256);
         if (_texture == null || _texture.width != resolution)
         {
@@ -84,19 +88,7 @@ public sealed class PilotingViewscapeRenderer
         }
         float radius = _radius;
         float effective = radius * _visibility;
-        for (int y = 0; y < resolution; y++) for (int x = 0; x < resolution; x++)
-        {
-            Vector2 uv = new Vector2(x / (float)(resolution - 1) * 2 - 1, y / (float)(resolution - 1) * 2 - 1);
-            float edge = 1 - Mathf.SmoothStep(0, 1, Mathf.InverseLerp(.96f, 1, uv.magnitude));
-            if (edge <= 0) { _pixels[y * resolution + x] = Color.clear; continue; }
-            float alpha = PilotingLocalVisibility.LandAlpha(_field, _sea, _observer, heading, uv * radius, effective, Settings.fadeStartFraction);
-            Color color = Color.Lerp(Settings.waterColor, Settings.landColor, alpha);
-            // Restrained ambient water marks, not a geographical grid or radar sweep.
-            float wave = Mathf.Sin(uv.y * 41 + Mathf.Sin(uv.x * 17) + Time.time * .35f);
-            float sparkle = Mathf.Pow(Mathf.Max(0, wave), 24) * Settings.waveMarks * (1 - alpha);
-            color.r += sparkle * .07f; color.g += sparkle * .10f; color.b += sparkle * .10f;
-            color.a *= edge; _pixels[y * resolution + x] = color;
-        }
+        System.Array.Clear(_pixels,0,_pixels.Length);
         HarborVisualObservation.Collect(_observer, effective, _harbors);
         foreach (var observation in _harbors)
         {
@@ -123,6 +115,9 @@ public sealed class PilotingViewscapeRenderer
             for (int x = -half; x <= half; x++) Paint(center + x, center + row, new Color(1, .85f, .4f, 1), resolution);
         }
         _texture.SetPixels(_pixels); _texture.Apply(false, false);
+        Vector2 axisX = PilotingLocalVisibility.WorldOffset(new Vector2(radius*2,0),heading);
+        Vector2 axisY = PilotingLocalVisibility.WorldOffset(new Vector2(0,radius*2),heading);
+        _land.Render(_field,_observer-(axisX+axisY)*.5f,axisX,axisY,_sea,_visibility,resolution,resolution,Settings,_texture);
     }
 
     private static Vector2 Pixel(Vector2 relative, float radius, int resolution) =>
@@ -143,16 +138,11 @@ public sealed class PilotingViewscapeRenderer
     private void Paint(int x, int y, Color color, int resolution)
     {
         if (x < 0 || y < 0 || x >= resolution || y >= resolution || color.a <= 0) return;
-        float edge = _pixels[y * resolution + x].a;
-        if (edge <= 0) return;
-        float opacity = color.a;
-        color.a = 1;
-        Color blended = Color.Lerp(_pixels[y * resolution + x], color, Mathf.Clamp01(opacity));
-        blended.a = edge; _pixels[y * resolution + x] = blended;
+        _pixels[y * resolution + x] = color;
     }
     public void Draw(Rect rect)
-    { if (_ready && _texture != null) GUI.DrawTexture(rect, _texture); }
+    { if (_ready && _land.Texture != null) GUI.DrawTexture(rect, _land.Texture); }
     public void Reset() { _ready = false; _nextBuild = _nextEnvironment = 0; _harbors.Clear(); Release(); }
     private void Release()
-    { if (_texture != null) { if (Application.isPlaying) UnityEngine.Object.Destroy(_texture); else UnityEngine.Object.DestroyImmediate(_texture); } _texture = null; _pixels = null; }
+    { _land.Reset(); if (_texture != null) { if (Application.isPlaying) UnityEngine.Object.Destroy(_texture); else UnityEngine.Object.DestroyImmediate(_texture); } _texture = null; _pixels = null; }
 }

@@ -114,11 +114,7 @@ public sealed partial class NodeSettlementScene : MonoBehaviour
         {
             var parent = Empty(terrace.id, _root, Vector2.zero);
             Platform("Permanent street", parent, new Vector2((terrace.left + terrace.right) / 2, terrace.y), terrace.right - terrace.left, new Color(.39f,.32f,.25f));
-            // Lightweight trestle supports explain the raised terrace datum without replacing shore collision.
-            int terraceIndex = Layout.terraces.IndexOf(terrace);
-            float bottom = 0;
-            if (terrace.y > 0)
-                Shape("Terrace support", parent, new Vector2(terrace.left + .5f, (terrace.y + bottom) / 2), new Vector2(.2f, terrace.y - bottom), new Color(.25f,.22f,.19f), 0);
+            if (terrace.y > 0) BuildTerraceStructure(terrace, parent);
         }
         foreach (var connection in Layout.connections)
         {
@@ -127,9 +123,16 @@ public sealed partial class NodeSettlementScene : MonoBehaviour
             Ladder(connection.id, _root, connection.x, low, high);
         }
         for (int i = 0; i < Layout.plots.Count; i++) BuildPlot(Layout.plots[i], Visit.plots[i]);
+        BuildTownProps();
         var harbor = Empty("HarborArrival", _root, Layout.harborArrival);
         AddAnchor(SettlementRole.Harbor, harbor);
         BuildLandwardGate();
+        foreach (var sprite in _root.GetComponentsInChildren<SpriteRenderer>(true))
+        {
+            // Preserve NPC identification/skin colors; do not tint the shared source prefabs.
+            if (sprite.GetComponentInParent<AgentController>() != null) continue;
+            sprite.color = NodeTownPresentationRules.Tint(sprite.color,Layout.archetypeId);
+        }
     }
 
     private void BuildPlot(SettlementPlot plot, SettlementPlotVisit visit)
@@ -279,10 +282,12 @@ public sealed partial class NodeSettlementScene : MonoBehaviour
         // Match existing docks: WorldLedge + one-way platform + HatchLedge drop-through behavior.
         var go = Empty(name, parent, at).gameObject;
         int layer = LayerMask.NameToLayer("WorldLedge"); if (layer >= 0) go.layer = layer;
-        var box = go.AddComponent<BoxCollider2D>(); box.size = new Vector2(width, .18f); box.offset = new Vector2(0, -.09f); box.usedByEffector = true;
+        const float thickness = .4f;
+        var box = go.AddComponent<BoxCollider2D>(); box.size = new Vector2(width, thickness); box.offset = new Vector2(0, -thickness / 2); box.usedByEffector = true;
         var effector = go.AddComponent<PlatformEffector2D>(); effector.useOneWay = true; effector.useOneWayGrouping = true; effector.surfaceArc = 160;
         go.AddComponent<HatchLedge>();
-        Shape("Walkway", go.transform, new Vector2(0,-.09f), new Vector2(width,.18f), color, 0, "WorldDock");
+        Shape("Walkway", go.transform, new Vector2(0,-thickness / 2), new Vector2(width,thickness), color, 0, "WorldDock");
+        Shape("Walkway top trim", go.transform, new Vector2(0,-.04f), new Vector2(width,.08f), Color.Lerp(color, Color.white,.18f), 1, "WorldDock");
     }
 
     private void Ladder(string id, Transform parent, float x, float bottom, float top)

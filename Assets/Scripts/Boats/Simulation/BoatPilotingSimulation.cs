@@ -92,6 +92,10 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     private float environmentalAngularVelocityCeilingDegrees = 72f;
 
     private object _controlOwner;
+    // Runtime lever targets; keyboard adjustment takes over the corresponding axis.
+    private float? _throttleTarget, _rudderTargetFraction;
+    public float? ThrottleTarget => _throttleTarget;
+    public float? RudderTargetFraction => _rudderTargetFraction;
     private BoatControlIntent _currentIntent;
 
     private int _installedPropulsionSources;
@@ -250,6 +254,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
             return false;
 
         _controlOwner = owner;
+        _throttleTarget = _rudderTargetFraction = null;
         _currentIntent = BoatControlIntent.Neutral;
         return true;
     }
@@ -260,6 +265,8 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
             return false;
 
         _currentIntent = intent;
+        if (Mathf.Abs(intent.ThrottleAdjust) > .001f || intent.ThrottleStopPressed) _throttleTarget = null;
+        if (Mathf.Abs(intent.RudderAdjust) > .001f) _rudderTargetFraction = null;
         return true;
     }
 
@@ -273,11 +280,30 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
 
         _currentIntent = BoatControlIntent.Neutral;
         _controlOwner = null;
+        _throttleTarget = _rudderTargetFraction = null;
     }
 
     public bool HasControlAuthority(object owner)
     {
         return owner != null && ReferenceEquals(_controlOwner, owner);
+    }
+
+    public bool TrySetThrottleTarget(object owner, float target)
+    {
+        if (!GameplayAuthority.IsAuthoritative || !HasControlAuthority(owner) || !WorldTopology.IsFinite(target))
+            return false;
+        _throttleTarget = Mathf.Clamp(target, -1f, 1f);
+        return true;
+    }
+
+    public bool TrySetRudderTarget(object owner, float fraction)
+    {
+        if (!GameplayAuthority.IsAuthoritative || !HasControlAuthority(owner) || !WorldTopology.IsFinite(fraction))
+            return false;
+        RefreshHandlingProfile();
+        if (!_handlingProfile.HasSteering) return false;
+        _rudderTargetFraction = Mathf.Clamp(fraction, -1f, 1f);
+        return true;
     }
 
     /// <summary>
@@ -337,6 +363,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
                 throttle,
                 -1f,
                 1f);
+        _throttleTarget = null;
 
         state.SetControlPositions(
             appliedThrottle,
@@ -381,6 +408,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
             appliedRudderDegrees = 0f;
             return false;
         }
+        _rudderTargetFraction = null;
 
         appliedRudderDegrees =
             Mathf.Clamp(
@@ -607,6 +635,8 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
                 throttle,
                 -1f,
                 1f);
+        if (_throttleTarget.HasValue)
+            throttle = Mathf.MoveTowards(state.Throttle, _throttleTarget.Value, throttleTravelPerSecond * dt);
 
         float rudder =
             state.RudderDegrees +
@@ -616,6 +646,8 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
 
         float maxRudderDegrees =
             _handlingProfile.MaxTurnAngle;
+        if (_rudderTargetFraction.HasValue)
+            rudder = Mathf.MoveTowards(state.RudderDegrees, _rudderTargetFraction.Value * maxRudderDegrees, rudderTravelDegreesPerSecond * dt);
 
         // No functional steering contributor means there is physically no
         // rudder position to command. Clear any stale saved/previous angle.

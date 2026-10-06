@@ -36,6 +36,7 @@ public sealed class BoatIslandVisual2D : MonoBehaviour
     private object _voyage;
     private int _meshId, _warpRevision, _contextRevision;
     private float _nextResolve;
+    private int _visualSortingLayer, _visualSortingOrder;
     private bool _warned;
     private static readonly int ColorId = Shader.PropertyToID("_Color");
     public BoatIslandPhase Phase => _projection.Phase;
@@ -86,7 +87,7 @@ public sealed class BoatIslandVisual2D : MonoBehaviour
             _patternScale = new Vector2(_projection.Width, _projection.Height);
         }
         _renderer.sharedMaterial = islandMaterial;
-        _renderer.sortingLayerID = SortingLayer.NameToID(sortingLayerName); _renderer.sortingOrder = sortingOrder;
+        _renderer.sortingLayerID = _visualSortingLayer; _renderer.sortingOrder = _visualSortingOrder;
         _visual.transform.position = new Vector3(active.Boat.transform.position.x + _projection.OffsetX, _terrain.WaterLevelY, 0);
         _visual.transform.rotation = Quaternion.identity;
         _visual.transform.localScale = new Vector3(_projection.Width, _projection.Height, 1);
@@ -101,6 +102,7 @@ public sealed class BoatIslandVisual2D : MonoBehaviour
 
     private void Resolve()
     {
+        ResolveWaterOrdering();
         BoatTerrainStreamer2D.TryGet(gameObject.scene, out _terrain);
         _activeSimulation = null;
         if (simulation != null && simulation.gameObject.scene == gameObject.scene && simulation.isActiveAndEnabled)
@@ -111,6 +113,27 @@ public sealed class BoatIslandVisual2D : MonoBehaviour
             if (_activeSimulation != null) { _activeSimulation = null; return; } // Ambiguous local boat context: hide.
             _activeSimulation = candidate;
         }
+    }
+
+    private void ResolveWaterOrdering()
+    {
+        _visualSortingLayer = SortingLayer.NameToID(sortingLayerName);
+        _visualSortingOrder = sortingOrder;
+        int backWater = SortingLayer.NameToID("BackWater");
+        // A background silhouette must precede both ocean layers. Existing scenes
+        // authored WorldBackdrop after BackWater; keep their serialized values intact.
+        if (backWater == 0 || SortingLayer.GetLayerValueFromID(_visualSortingLayer) <
+            SortingLayer.GetLayerValueFromID(backWater)) return;
+        _visualSortingLayer = backWater;
+        int firstWaterOrder = 0;
+        foreach (var water in FindObjectsByType<WaterMeshRenderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (water.gameObject.scene != gameObject.scene) continue;
+            var renderer = water.GetComponent<MeshRenderer>();
+            if (renderer != null && renderer.sortingLayerID == backWater)
+                firstWaterOrder = Mathf.Min(firstWaterOrder, renderer.sortingOrder);
+        }
+        _visualSortingOrder = Mathf.Min(sortingOrder, firstWaterOrder - 1);
     }
 
     private void CreateVisual()
@@ -137,8 +160,10 @@ public sealed class BoatIslandVisual2D : MonoBehaviour
             float t = i / (float)(count - 1), x = t - .5f;
             float envelope = Mathf.Pow(Mathf.Max(0, Mathf.Sin(t * Mathf.PI)), .65f);
             float crest = envelope * (.55f + .22f * Mathf.Sin(t * 7 + phase) + .12f * Mathf.Sin(t * 19 + phase * 2));
-            vertices[i] = new Vector3(x, Mathf.Max(-.15f, crest - .15f), 0);
-            vertices[count + i] = new Vector3(x, -.5f, 0);
+            // This is distant above-water scenery, not the physical coast. An
+            // extruded underwater slab remains visible through transparent water.
+            vertices[i] = new Vector3(x, Mathf.Max(0, crest - .15f), 0);
+            vertices[count + i] = new Vector3(x, 0, 0);
             uv[i] = new Vector2(t, 1); uv[count + i] = new Vector2(t, 0);
             colors[i] = colors[count + i] = Color.white;
             if (i == count - 1) continue;

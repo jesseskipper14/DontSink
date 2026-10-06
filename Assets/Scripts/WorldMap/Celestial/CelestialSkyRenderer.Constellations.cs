@@ -35,7 +35,7 @@ public sealed partial class CelestialSkyRenderer
     }
 
     private bool CanRenderConstellationLook() => _ready && isActiveAndEnabled &&
-        fieldSource != null && fieldSource.HasField && targetCamera != null &&
+        fieldSource != null && fieldSource.FixedSky == null && fieldSource.HasField && targetCamera != null &&
         projectionSettings != null && projectionSettings.showLandmarkStars &&
         _starVisibility01 > 0.001f;
 
