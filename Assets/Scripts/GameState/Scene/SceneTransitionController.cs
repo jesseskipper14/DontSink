@@ -149,6 +149,7 @@ public sealed class SceneTransitionController : MonoBehaviour
         PrepareDivingBellOccupantsForSceneTransition(
             "StartTravelToBoatScene");
 
+        NodeSceneMooring.ReleaseForEmbark(SceneManager.GetActiveScene());
         _transitionInProgress = true;
         try { SceneManager.LoadScene(boatSceneName); }
         finally { _transitionInProgress = false; }

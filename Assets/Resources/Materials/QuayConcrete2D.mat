@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SunCoronaMaterial2D
-  m_Shader: {fileID: 4800000, guid: 8bd63e49843bfca4bbc2baa98d129542, type: 3}
+  m_Name: QuayConcrete2D
+  m_Shader: {fileID: 4800000, guid: ecdbdb18f90c4aae84781b8778c9dd97, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -23,32 +23,18 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _AlphaTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NormalMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _EnableExternalAlpha: 0
-    - _Radius: 0.55
-    - _Softness: 0.7
-    - _ZWrite: 0
+    - _GrainScale: 18.8
+    - _GrainStrength: 0.119
+    - _MottleScale: 3.86
+    - _MottleStrength: 0.134
+    - _PoreAmount: 0.0207
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _InnerColor: {r: 1, g: 0.9757214, b: 0.9009434, a: 1}
-    - _OuterColor: {r: 1, g: 0.8438155, b: 0.2971698, a: 0}
-    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.52, g: 0.54, b: 0.52, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

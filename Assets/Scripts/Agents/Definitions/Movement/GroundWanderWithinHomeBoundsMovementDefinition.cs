@@ -33,6 +33,7 @@ public sealed class GroundWanderWithinHomeBoundsMovementDefinition : AgentMoveme
         private readonly bool faceMoveDirection;
 
         private Rigidbody2D rb;
+        private AgentGroundSnapper groundSnapper;
         private float direction;
         private float nextDecisionTime;
         private bool paused;
@@ -54,6 +55,7 @@ public sealed class GroundWanderWithinHomeBoundsMovementDefinition : AgentMoveme
         public void Initialize(AgentController agent)
         {
             rb = agent.GetComponent<Rigidbody2D>();
+            groundSnapper = agent.GetComponent<AgentGroundSnapper>();
             PickDecision();
         }
 
@@ -65,6 +67,7 @@ public sealed class GroundWanderWithinHomeBoundsMovementDefinition : AgentMoveme
             if (paused || speed <= 0f)
             {
                 StopHorizontalVelocity();
+                Move(agent, agent.transform.position);
                 return;
             }
 
@@ -114,6 +117,17 @@ public sealed class GroundWanderWithinHomeBoundsMovementDefinition : AgentMoveme
 
         private void Move(AgentController agent, Vector3 next)
         {
+            if (groundSnapper != null)
+            {
+                if (!groundSnapper.TryGetGroundedPosition(next, out var grounded))
+                {
+                    StopHorizontalVelocity();
+                    direction = -direction;
+                    ScheduleNextDecision();
+                    return;
+                }
+                next = grounded;
+            }
             if (rb != null)
             {
                 rb.MovePosition(next);

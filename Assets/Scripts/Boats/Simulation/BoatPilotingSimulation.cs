@@ -264,6 +264,8 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
         if (owner == null || !ReferenceEquals(_controlOwner, owner))
             return false;
 
+        if (NodeSceneMooring.IsLocked(boat) && Mathf.Abs(intent.ThrottleAdjust) > .001f)
+        { NodeSceneMooring.ReportBlocked(boat); intent.ThrottleAdjust = 0f; }
         _currentIntent = intent;
         if (Mathf.Abs(intent.ThrottleAdjust) > .001f || intent.ThrottleStopPressed) _throttleTarget = null;
         if (Mathf.Abs(intent.RudderAdjust) > .001f) _rudderTargetFraction = null;
@@ -292,6 +294,8 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
     {
         if (!GameplayAuthority.IsAuthoritative || !HasControlAuthority(owner) || !WorldTopology.IsFinite(target))
             return false;
+        if (NodeSceneMooring.IsLocked(boat) && Mathf.Abs(target) > .001f)
+        { NodeSceneMooring.ReportBlocked(boat); return false; }
         _throttleTarget = Mathf.Clamp(target, -1f, 1f);
         return true;
     }
@@ -358,6 +362,8 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
             return false;
         }
 
+        if (NodeSceneMooring.IsLocked(boat) && Mathf.Abs(throttle) > .001f)
+        { NodeSceneMooring.ReportBlocked(boat); return false; }
         appliedThrottle =
             Mathf.Clamp(
                 throttle,
@@ -624,6 +630,12 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
 
     private void AdvancePhysicalControls(float dt)
     {
+        if (NodeSceneMooring.IsLocked(boat))
+        {
+            _throttleTarget = null;
+            _currentIntent.ThrottleAdjust = 0f;
+            state.SetControlPositions(0f, state.RudderDegrees);
+        }
         float throttle =
             state.Throttle +
             _currentIntent.ThrottleAdjust *

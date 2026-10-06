@@ -23,6 +23,19 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
     [Tooltip("Total vertical drop over the slope section.")]
     [Min(0f)] public float slopeDrop = 10f;
 
+    [Header("Optional quay-side seabed")]
+    [Tooltip("Adds a rounded steep drop before the existing gentle underwater slope. Does not move the land or create a quay.")]
+    public bool useQuaySeabed;
+    [Min(.1f)] public float quayDropLength = 12f;
+    [Min(0f)] public float quayDropDepth = 25f;
+    [Range(8, 128)] public int quayCurveSamples = 48;
+    [Tooltip("Normalized distance/depth of the steep drop. Keep endpoints (0,0) and (1,1), with flat end tangents, for smooth joins.")]
+    public AnimationCurve quayDepthCurve = new(
+        new Keyframe(0f, 0f, 0f, 0f),
+        new Keyframe(.15f, .65f, 2f, 2f),
+        new Keyframe(.45f, .93f, .25f, .25f),
+        new Keyframe(1f, 1f, 0f, 0f));
+
     [Header("Slope Shape")]
     [Tooltip("How much vertical deformation to add on the slope section.")]
     [Min(0f)] public float slopeDeformationAmplitude = 0.6f;
@@ -201,8 +214,6 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
         float noiseOffset = (float)rng.NextDouble() * 10000f;
         float landOffset = (float)rng.NextDouble() * 10000f;
 
-        Vector2[] pts = new Vector2[pointCount];
-
         float xStart = 0f;
         float xEnd = worldWidth;
         float dx = (xEnd - xStart) / (pointCount - 1);
@@ -211,18 +222,50 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
         float actualSlopeDrop = slopeDrop + Random.Range(-slopeRandomizationRange, slopeRandomizationRange);
 
         float slopeStartX = Mathf.Clamp(islandLength, xStart, xEnd);
+        bool quay = useQuaySeabed && WorldTopology.IsFinite(quayDropLength) && quayDropLength > 0f &&
+            WorldTopology.IsFinite(quayDropDepth) && quayDropDepth >= 0f;
+        float quayStartX = slopeStartX;
+        float drop = quay ? quayDropDepth : 0f;
+        if (quay) slopeStartX = Mathf.Min(xEnd, quayStartX + quayDropLength);
         float slopeEndX = Mathf.Clamp(islandLength + actualSlopeLength, xStart, xEnd);
+        if (quay) slopeEndX = Mathf.Min(xEnd, slopeStartX + Mathf.Max(.1f, actualSlopeLength));
 
-        for (int i = 0; i < pointCount; i++)
+        var sampleX = new System.Collections.Generic.List<float>(pointCount + 130);
+        for (int i = 0; i < pointCount; i++) sampleX.Add(xStart + dx * i);
+        if (quay)
         {
-            float x = xStart + dx * i;
+            int detail = Mathf.Clamp(quayCurveSamples, 8, 128);
+            for (int i = 0; i <= detail; i++)
+                sampleX.Add(Mathf.Lerp(quayStartX, slopeStartX, i / (float)detail));
+            sampleX.Add(slopeEndX);
+            sampleX.Sort();
+            for (int i = sampleX.Count - 1; i > 0; i--)
+                if (sampleX[i] - sampleX[i - 1] < .0001f) sampleX.RemoveAt(i);
+        }
+        Vector2[] pts = new Vector2[sampleX.Count];
+
+        for (int i = 0; i < pts.Length; i++)
+        {
+            float x = sampleX[i];
             float y = landY;
 
-            if (x <= slopeStartX)
+            if (quay && x > quayStartX && x <= slopeStartX)
+            {
+                float t = Mathf.InverseLerp(quayStartX, slopeStartX, x);
+                float depthFraction = quayDepthCurve != null && quayDepthCurve.length >= 2
+                    ? quayDepthCurve.Evaluate(t) : t * t * (3f - 2f * t);
+                y = landY - drop * Mathf.Clamp01(depthFraction);
+                float fade = 4f * t * (1f - t);
+                y += FractalPerlin1D(x, slopeDeformationScale, slopeDeformationOctaves,
+                    octavePersistence, octaveLacunarity, noiseOffset + 1337.7f) *
+                    slopeDeformationAmplitude * fade * fade;
+            }
+            else if (x <= (quay ? quayStartX : slopeStartX))
             {
                 if (landWobbleAmplitude > 0f)
                 {
                     float wobble = (Mathf.PerlinNoise((x * landWobbleScale) + landOffset, 0.123f) - 0.5f) * 2f;
+                    if (quay) wobble *= Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((quayStartX - x) / .5f));
                     y += wobble * landWobbleAmplitude;
                 }
             }
@@ -231,7 +274,7 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
                 float t = Mathf.InverseLerp(slopeStartX, slopeEndX, x);
                 t = t * t * (3f - 2f * t);
 
-                y = landY - (actualSlopeDrop * t);
+                y = landY - drop - (actualSlopeDrop * t);
 
                 if (slopeDeformationAmplitude > 0f)
                 {
@@ -257,7 +300,7 @@ public sealed class NodeGroundGenerator2D : MonoBehaviour, IGroundGeneratedNotif
             }
             else
             {
-                y = landY - actualSlopeDrop;
+                y = landY - drop - actualSlopeDrop;
 
                 float rampT = Mathf.Clamp01((x - slopeEndX) / deformationRampDistance);
 

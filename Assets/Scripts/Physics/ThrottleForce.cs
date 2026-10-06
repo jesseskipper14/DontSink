@@ -43,6 +43,12 @@ public class ThrottleForce : MonoBehaviour, IOrderedForceProvider, IThrottleRece
 
     public void SetThrottle(float value)
     {
+        if (boat == null) ResolveBoat();
+        if (NodeSceneMooring.IsLocked(boat))
+        {
+            if (Mathf.Abs(value) > .001f) NodeSceneMooring.ReportBlocked(boat);
+            throttle01 = 0f; return;
+        }
         throttle01 = Mathf.Clamp(value, -1f, 1f);
     }
 
@@ -109,6 +115,12 @@ public class ThrottleForce : MonoBehaviour, IOrderedForceProvider, IThrottleRece
 
         RefreshEngines();
 
+        if (NodeSceneMooring.IsLocked(boat))
+        {
+            throttle01 = 0f;
+            foreach (var engine in engines) if (engine != null) engine.SetThrottleLoad(0f);
+            return;
+        }
         float absThrottle =
             Mathf.Abs(throttle01);
 
