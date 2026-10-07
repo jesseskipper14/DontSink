@@ -17,7 +17,7 @@ using UnityEngine;
 [RequireComponent(typeof(TetherConstraint2D))]
 [RequireComponent(typeof(LineRenderer))]
 [RequireComponent(typeof(HandheldSoundingLineHUD))]
-public sealed class HandheldSoundingLineController :
+public sealed partial class HandheldSoundingLineController :
     MonoBehaviour
 {
     public enum RuntimeStatus
@@ -671,6 +671,7 @@ public sealed class HandheldSoundingLineController :
 
         bottomLatched =
             false;
+        ClearSoundingEvidence();
 
         deployedLengthMeters =
             initialLength;
@@ -731,6 +732,7 @@ public sealed class HandheldSoundingLineController :
         // Releasing after a partial retrieval starts a fresh sounding run.
         bottomLatched =
             false;
+        ClearSoundingEvidence();
 
         bottomRopeOutMeters =
             0f;
@@ -764,6 +766,8 @@ public sealed class HandheldSoundingLineController :
 
             status =
                 RuntimeStatus.Bottom;
+
+            CaptureSoundingEvidence();
 
             return;
         }
@@ -822,6 +826,7 @@ public sealed class HandheldSoundingLineController :
 
         bottomLatched =
             false;
+        ClearSoundingEvidence();
 
         bottomRopeOutMeters =
             0f;
@@ -923,6 +928,7 @@ public sealed class HandheldSoundingLineController :
 
         bottomLatched =
             false;
+        ClearSoundingEvidence();
 
         deployedLengthMeters =
             0f;

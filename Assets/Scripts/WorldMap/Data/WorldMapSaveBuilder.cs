@@ -83,6 +83,8 @@ public static class WorldMapSaveBuilder
         snapshot.activeTravel = CaptureActiveTravel(gs);
         snapshot.simulation = CaptureSimulation();
         snapshot.knowledge = CaptureKnowledge(knowledgeSource);
+        // Accepted jobs survive scene captures independently of later map coverage changes.
+        snapshot.surfaceSurveys = gs?.worldMapSnapshot?.surfaceSurveys?.Copy() ?? new SurfaceSurveyBook();
         snapshot.diagnostics = BuildDiagnostics(snapshot);
 
         return snapshot;

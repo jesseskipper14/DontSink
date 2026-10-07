@@ -30,11 +30,21 @@ public sealed class HandheldSoundingLineHUD :
 
     [Header("Layout")]
     [SerializeField, Min(180f)] private float width = 300f;
-    [SerializeField, Min(120f)] private float height = 132f;
+    [SerializeField, Min(120f)] private float height = 192f;
 
     private GUIStyle _titleStyle;
     private GUIStyle _readoutStyle;
     private GUIStyle _statusStyle;
+
+    public bool IsReadoutVisible
+    {
+        get
+        {
+            ResolveRefs();
+            return isActiveAndEnabled && controller != null && CameraManager.HasGameplayInput(controller) &&
+                controller.ShouldShowReadout && (worldCamera != null || CameraManager.CameraForActor(controller) != null);
+        }
+    }
 
     private void Reset()
     {
@@ -50,8 +60,7 @@ public sealed class HandheldSoundingLineHUD :
     {
         ResolveRefs();
 
-        if (controller == null || !CameraManager.HasGameplayInput(controller) ||
-            !controller.ShouldShowReadout)
+        if (!IsReadoutVisible)
         {
             return;
         }
@@ -85,6 +94,7 @@ public sealed class HandheldSoundingLineHUD :
 
         // IMGUI Y runs down from the top, while WorldToScreenPoint Y runs up
         // from the bottom.
+        float panelHeight = Mathf.Max(height, 192f);
         float panelX =
             screenPoint.x -
             width * 0.5f;
@@ -92,7 +102,7 @@ public sealed class HandheldSoundingLineHUD :
         float panelY =
             Screen.height -
             screenPoint.y -
-            height * 0.5f;
+            panelHeight * 0.5f;
 
         if (clampToScreen)
         {
@@ -113,7 +123,7 @@ public sealed class HandheldSoundingLineHUD :
                     Mathf.Max(
                         screenEdgePadding,
                         Screen.height -
-                        height -
+                        panelHeight -
                         screenEdgePadding));
         }
 
@@ -122,8 +132,9 @@ public sealed class HandheldSoundingLineHUD :
                 panelX,
                 panelY,
                 width,
-                height);
+                panelHeight);
 
+        panel.height = Mathf.Max(panel.height, 192f);
         GUI.Box(
             panel,
             GUIContent.none);
@@ -156,9 +167,27 @@ public sealed class HandheldSoundingLineHUD :
                 panel.x + 10f,
                 panel.y + 54f,
                 panel.width - 20f,
-                panel.height - 64f),
-            controller.StatusText,
+                panel.height - 126f),
+            controller.StatusText + "\n" + ResolveControlHint(),
             _statusStyle);
+        DrawChartAction(panel);
+    }
+
+    private void DrawChartAction(Rect panel)
+    {
+        bool prior = GUI.enabled;
+        GUI.enabled = prior && controller.CanRecordSounding;
+        if (GUI.Button(new Rect(panel.x + 10, panel.yMax - 62, panel.width - 20, 25), "Record sounding — 1 Charting Paper"))
+            controller.TryRecordSounding(out _);
+        GUI.enabled = prior;
+        GUI.Label(new Rect(panel.x + 10, panel.yMax - 35, panel.width - 20, 32), controller.SoundingChartNote ?? "Process recorded charts at a Surveyor.");
+    }
+
+    private string ResolveControlHint()
+    {
+        var source = controller.GetComponent<LocalHandheldSoundingLineIntentSource>();
+        string key = source != null && source.UseKey != KeyCode.None ? source.UseKey.ToString().ToUpperInvariant() : "G";
+        return controller.ControlHintText.Replace("PRESS G", "PRESS " + key);
     }
 
     private void EnsureStyles()

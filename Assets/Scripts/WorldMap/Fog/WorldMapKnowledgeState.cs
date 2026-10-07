@@ -8,7 +8,7 @@ public enum WorldMapKnowledgeLayer
 }
 
 [Serializable]
-public sealed class WorldMapKnowledgeState
+public sealed partial class WorldMapKnowledgeState
 {
     [SerializeField] private int width;
     [SerializeField] private int height;
@@ -17,11 +17,14 @@ public sealed class WorldMapKnowledgeState
     [SerializeField] private bool[] surfaceRevealed;
     [SerializeField] private bool[] underwaterSurveyed;
 
+    public int Revision { get; private set; }
     public int Width => width;
     public int Height => height;
     public Rect WorldBounds => worldBounds;
 
     public bool IsValid =>
+        new WorldTopology(worldBounds).IsValid &&
+        (long)width * height <= 1048576 &&
         width > 0 &&
         height > 0 &&
         surfaceRevealed != null &&
@@ -34,10 +37,14 @@ public sealed class WorldMapKnowledgeState
 
     public void Initialize(int gridWidth, int gridHeight, Rect bounds)
     {
+        if (gridWidth <= 0 || gridHeight <= 0 || (long)gridWidth * gridHeight > 1048576 || !new WorldTopology(bounds).IsValid)
+            throw new ArgumentException("Invalid cartographic grid dimensions or world bounds.");
         width = Mathf.Max(1, gridWidth);
         height = Mathf.Max(1, gridHeight);
         worldBounds = bounds;
 
+        Revision++;
+        ResetIntegratedRecords();
         int count = width * height;
         surfaceRevealed = new bool[count];
         underwaterSurveyed = new bool[count];
@@ -49,6 +56,7 @@ public sealed class WorldMapKnowledgeState
         if (bits == null)
             return;
 
+        Revision++;
         for (int i = 0; i < bits.Length; i++)
             bits[i] = true;
     }
@@ -59,6 +67,7 @@ public sealed class WorldMapKnowledgeState
         if (bits == null)
             return;
 
+        Revision++;
         for (int i = 0; i < bits.Length; i++)
             bits[i] = false;
     }
@@ -67,11 +76,13 @@ public sealed class WorldMapKnowledgeState
     {
         ClearLayer(WorldMapKnowledgeLayer.Surface);
         ClearLayer(WorldMapKnowledgeLayer.UnderwaterSurvey);
+        ResetIntegratedRecords();
     }
 
-    public void RevealCircleWorld(WorldMapKnowledgeLayer layer, Vector2 worldCenter, float radiusWorld, bool surfaceRevealImplied = true)
+    public void RevealCircleWorld(WorldMapKnowledgeLayer layer, Vector2 worldCenter, float radiusWorld, bool surfaceRevealImplied = false)
     {
-        if (!IsValid)
+        if (!IsValid || !WorldTopology.IsFinite(worldCenter.x) || !WorldTopology.IsFinite(worldCenter.y) ||
+            !WorldTopology.IsFinite(radiusWorld) || radiusWorld <= 0f)
             return;
 
         radiusWorld = Mathf.Max(0.01f, radiusWorld);
@@ -87,6 +98,7 @@ public sealed class WorldMapKnowledgeState
         if (worldCenter.x - radiusWorld < worldBounds.xMin || worldCenter.x + radiusWorld >= worldBounds.xMax)
         { minX = 0; maxX = width - 1; }
 
+        Revision++;
         float radiusSqr = radiusWorld * radiusWorld;
 
         bool[] bits = GetBits(layer);
@@ -167,6 +179,7 @@ public sealed class WorldMapKnowledgeState
         snapshot.underwaterEncoding = WorldMapKnowledgeBitCodec.BitBase64Encoding;
         snapshot.underwaterBitsBase64 = WorldMapKnowledgeBitCodec.Encode(underwaterSurveyed);
         snapshot.underwaterSurveyedCount = WorldMapKnowledgeBitCodec.CountRevealed(underwaterSurveyed);
+        CopyIntegratedRecords(snapshot);
     }
 
     public bool TryRestoreFromSnapshot(WorldMapKnowledgeSaveSnapshot snapshot)
@@ -177,7 +190,7 @@ public sealed class WorldMapKnowledgeState
         int w = Mathf.Max(0, snapshot.gridWidth);
         int h = Mathf.Max(0, snapshot.gridHeight);
 
-        if (w <= 0 || h <= 0)
+        if (w <= 0 || h <= 0 || (long)w * h > 1048576)
             return false;
 
         Rect bounds = new Rect(
@@ -187,7 +200,7 @@ public sealed class WorldMapKnowledgeState
             snapshot.worldBoundsHeight
         );
 
-        if (bounds.width <= 0f || bounds.height <= 0f)
+        if (!new WorldTopology(bounds).IsValid)
             return false;
 
         Initialize(w, h, bounds);
@@ -197,6 +210,7 @@ public sealed class WorldMapKnowledgeState
         surfaceRevealed = WorldMapKnowledgeBitCodec.Decode(snapshot.surfaceBitsBase64, count);
         underwaterSurveyed = WorldMapKnowledgeBitCodec.Decode(snapshot.underwaterBitsBase64, count);
 
+        RestoreIntegratedRecords(snapshot);
         return IsValid;
     }
 
@@ -205,7 +219,7 @@ public sealed class WorldMapKnowledgeState
         x = -1;
         y = -1;
 
-        if (!IsValid)
+        if (!IsValid || !WorldTopology.IsFinite(worldPosition.x) || !WorldTopology.IsFinite(worldPosition.y))
             return false;
 
         worldPosition = new WorldTopology(worldBounds).Normalize(worldPosition);

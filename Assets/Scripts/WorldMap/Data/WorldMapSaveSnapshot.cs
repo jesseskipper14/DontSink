@@ -29,6 +29,7 @@ public sealed class WorldMapSaveSnapshot
     public WorldMapActiveTravelSaveSnapshot activeTravel;
     public WorldMapSimulationSaveSnapshot simulation;
     public WorldMapKnowledgeSaveSnapshot knowledge;
+    public SurfaceSurveyBook surfaceSurveys;
     public WorldMapSaveDiagnosticsSnapshot diagnostics;
 
     public bool HasPersistedWorld =>
@@ -47,6 +48,7 @@ public sealed class WorldMapSaveSnapshot
         activeTravel ??= new WorldMapActiveTravelSaveSnapshot();
         simulation ??= new WorldMapSimulationSaveSnapshot();
         knowledge ??= new WorldMapKnowledgeSaveSnapshot();
+        surfaceSurveys ??= new SurfaceSurveyBook();
         diagnostics ??= new WorldMapSaveDiagnosticsSnapshot();
 
         graph.EnsureDefaults();
@@ -54,6 +56,7 @@ public sealed class WorldMapSaveSnapshot
         pois.EnsureDefaults();
         effects.EnsureDefaults();
         knowledge.EnsureDefaults();
+        surfaceSurveys.EnsureDefaults();
     }
 }
 
@@ -515,6 +518,9 @@ public sealed class WorldMapKnowledgeSaveSnapshot
 
     [Header("Legacy / Semantic Knowledge")]
     public List<string> knownNodeStableIds = new();
+    public List<string> integratedSurfacePoiIds = new();
+    public List<string> integratedUnderwaterPoiIds = new();
+    public List<string> integratedCartographicSourceIds = new();
     public List<string> discoveredNodeStableIds = new();
     public List<string> knownRouteStableIds = new();
     public List<string> partialRouteStableIds = new();
@@ -533,6 +539,9 @@ public sealed class WorldMapKnowledgeSaveSnapshot
     public void EnsureDefaults()
     {
         knownNodeStableIds ??= new List<string>();
+        integratedSurfacePoiIds ??= new List<string>();
+        integratedUnderwaterPoiIds ??= new List<string>();
+        integratedCartographicSourceIds ??= new List<string>();
         discoveredNodeStableIds ??= new List<string>();
         knownRouteStableIds ??= new List<string>();
         partialRouteStableIds ??= new List<string>();

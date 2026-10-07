@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 /// <summary>Actor-local transient session. Renderer suppression exists only inside its camera render.</summary>
 [DisallowMultipleComponent]
 [DefaultExecutionOrder(1000)]
-public sealed class BoatObservationPresentationController : MonoBehaviour, IInteractionTargetFilter, IEscapeClosable
+public sealed partial class BoatObservationPresentationController : MonoBehaviour, IInteractionTargetFilter, IEscapeClosable
 {
     [Tooltip("Optional explicit local camera for a future multi-view bootstrap. Otherwise uses this actor's CameraManager camera.")]
     [SerializeField] private Camera viewCamera;
@@ -183,6 +183,7 @@ public sealed class BoatObservationPresentationController : MonoBehaviour, IInte
     public void ExitObservation()
     {
         if (!IsActive || isExiting) return;
+        CancelSurfaceSurvey();
         isExiting = true;
         if (escapeRegistry != null) escapeRegistry.Unregister(this);
         escapeRegistry = null;
@@ -199,6 +200,7 @@ public sealed class BoatObservationPresentationController : MonoBehaviour, IInte
 
     private void FinishObservation()
     {
+        CancelSurfaceSurvey();
         skySessions.Remove(this);
         RestoreRenderers();
         if (escapeRegistry != null) escapeRegistry.Unregister(this);

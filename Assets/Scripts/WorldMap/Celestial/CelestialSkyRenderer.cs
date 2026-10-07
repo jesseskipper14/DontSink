@@ -68,6 +68,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
     public bool IsReady => _ready;
     public int QueriedObjectCount => _queriedObjects.Count;
     public float StarVisibility01 => _starVisibility01;
+    public CelestialSkyProjectionSettings ProjectionSettings => projectionSettings;
 
     private void Reset()
     {

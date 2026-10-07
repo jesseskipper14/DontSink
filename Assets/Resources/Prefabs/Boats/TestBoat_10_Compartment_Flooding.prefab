@@ -956,6 +956,53 @@ MonoBehaviour:
             surveySequence: 0
             patternObjectStableIds: []
             objects: []
+        cartographicChart:
+          version: 1
+          kind: 0
+          title: 
+          referenceText: 
+          referenceSpriteResourcePath: 
+          worldSeed: 0
+          topographyVersion: 0
+          worldBounds:
+            serializedVersion: 2
+            x: 0
+            y: 0
+            width: 0
+            height: 0
+          payload:
+            sourceId: 
+            surface:
+              width: 0
+              height: 0
+              worldBounds:
+                serializedVersion: 2
+                x: 0
+                y: 0
+                width: 0
+                height: 0
+              cells: 
+            bathymetry:
+              width: 0
+              height: 0
+              worldBounds:
+                serializedVersion: 2
+                x: 0
+                y: 0
+                width: 0
+                height: 0
+              cells: 
+            nodeIds: []
+            surfacePoiIds: []
+            underwaterPoiIds: []
+          sounding:
+            version: 1
+            position: {x: 0, y: 0}
+            measuredDepthMeters: 0
+          hasSounding: 1
+          hasPayload: 1
+          hasSurfaceMask: 1
+          hasBathymetryMask: 1
         retainedWaterVolume: 0
     - rid: 9210759048355119172
       type: {class: ItemContainerState, ns: , asm: Assembly-CSharp}

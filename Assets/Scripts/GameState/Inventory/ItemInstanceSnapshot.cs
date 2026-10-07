@@ -12,6 +12,8 @@ public sealed class ItemInstanceSnapshot
     public int currentCharges;
     // Additive v1 field; old items have no checkpoint. Travels with the exact item identity.
     public ChartingInstrumentState chartingInstrument;
+    // Additive v1 field. Old items have no chart; survives all item persistence paths.
+    public CartographicChartState cartographicChart;
 
     // Additive schema-v1 field. Old saves deserialize this as 0.
     public float retainedWaterVolume;

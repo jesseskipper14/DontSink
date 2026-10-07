@@ -5,7 +5,7 @@ using MiniGames;
 using UnityEngine;
 using WorldMap.Player.StarMap;
 
-public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
+public sealed partial class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
 {
     #region Dependencies and State
     private readonly WorldMapGraphGenerator _generator;
@@ -30,6 +30,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
 
     private WorldMapPOISource _poiSource;
     private WorldMapKnowledgeSource _knowledgeSource;
+    private readonly WorldMapBathymetryConcealment _bathymetryConcealment = new();
     private CelestialMapOverlaySource _celestialOverlaySource;
 
     private readonly MapTableViewportState _sharedViewport;
@@ -48,6 +49,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
     private bool _showPOIs = true;
     private bool _showSurfaceShroud = true;
     private bool _showUnderwaterSurveyShroud = true;
+    private bool _showSeaFloor = true;
     private bool _hideUnsurveyedPOIs = true;
 
     private bool _heatmapPickerOpen;
@@ -223,6 +225,9 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
     {
         _ctx = null;
         _dragging = false;
+        _bathymetryConcealment.Clear();
+        _priorBathymetry.Clear();
+        _revealBefore = null;
     }
 
     public void SuspendEmbeddedInteraction()
@@ -386,9 +391,9 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         DrawUnderwaterSurveyShroud(localRect);
         DrawRoutes(localRect);
         DrawActiveTravelRoute(localRect);
+        DrawSurfaceShroud(localRect);
         DrawPOIs(localRect);
         DrawNodes(localRect);
-        DrawSurfaceShroud(localRect);
 
         if (_sharedViewport != null)
             DrawSharedReferenceReticle(localRect);
@@ -873,21 +878,23 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         _showSurfaceShroud = GUI.Toggle(
             new Rect(x, y, w, 22f),
             _showSurfaceShroud,
-            "Show Surface Shroud"
+            "Show Mythic Shroud"
         );
         y += 20f;
 
+        _showSeaFloor = GUI.Toggle(new Rect(x, y, w, 22f), _showSeaFloor, "Sea Floor");
+        y += 20f;
         _showUnderwaterSurveyShroud = GUI.Toggle(
             new Rect(x, y, w, 22f),
             _showUnderwaterSurveyShroud,
-            "Show Survey Shroud"
+            "DEBUG: Mask Uncharted Depths"
         );
         y += 20f;
 
         _hideUnsurveyedPOIs = GUI.Toggle(
             new Rect(x, y, w, 22f),
             _hideUnsurveyedPOIs,
-            "Hide Unsurveyed POIs"
+            "Hide Unintegrated POIs"
         );
         y += 20f;
 
@@ -898,6 +905,10 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
                 $"Surface: {_knowledgeSource.SurfaceReveal01:P0}\nUnderwater: {_knowledgeSource.UnderwaterSurvey01:P0}"
             );
             y += 40f;
+
+            if (GUI.Button(new Rect(x, y, w, 22f), "DEBUG: Add Current Node Marker"))
+                _knowledgeSource.DebugIntegrateCurrentNodeMarker();
+            y += 26f;
 
             float halfW = (w - 6f) * 0.5f;
 
@@ -2026,7 +2037,9 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
 
             AutoWireKnowledgeSource();
 
-            if (_knowledgeSource != null && _hideUnsurveyedPOIs && !_knowledgeSource.IsPOIVisible(poi))
+            WorldMapPOIDef def = _poiSource.GetDefinition(poi);
+            if (!_showSeaFloor && (def == null || def.mustBeUnderwater)) continue;
+            if (_hideUnsurveyedPOIs && (_knowledgeSource == null || !_knowledgeSource.IsPOIVisible(poi, def == null || def.mustBeUnderwater)))
                 continue;
 
             Vector2 p = GraphToLocal(poi.position, localRect);
@@ -2034,13 +2047,13 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
             if (!padded.Contains(p))
                 continue;
 
-            WorldMapPOIDef def = _poiSource != null ? _poiSource.GetDefinition(poi) : null;
             Color c = GetPOIColor(def);
+            if (_hideUnsurveyedPOIs && RevealBefore != null && !RevealBefore.CanDisplayPoi(poi.stableId, poi.position, def == null || def.mustBeUnderwater))
+                c.a *= CartographicReveal01;
 
             DrawPOIDiamond(p, 6f, c, 2f);
 
-            if (poi.discovered)
-                DrawNodeRing(p, 9f, new Color(1f, 1f, 1f, 0.65f), 1f);
+
         }
     }
 
@@ -2068,7 +2081,12 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         AutoWireKnowledgeSource();
 
         if (_knowledgeSource == null || !_knowledgeSource.HasState)
+        {
+            Color previous = GUI.color; GUI.color = Color.white;
+            GUI.DrawTexture(localRect, WorldMapMythicShroud.Texture);
+            GUI.color = previous;
             return;
+        }
 
         DrawKnowledgeShroudLayer(
             localRect,
@@ -2080,20 +2098,23 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
 
     private void DrawUnderwaterSurveyShroud(Rect localRect)
     {
-        if (!_showUnderwaterSurveyShroud)
-            return;
-
+        if (!_showUnderwaterSurveyShroud) return; // Explicit debug bypass.
         AutoWireKnowledgeSource();
-
-        if (_knowledgeSource == null || !_knowledgeSource.HasState)
-            return;
-
-        DrawKnowledgeShroudLayer(
-            localRect,
-            WorldMapKnowledgeLayer.UnderwaterSurvey,
-            new Color(0.02f, 0.12f, 0.24f, 0.16f),
-            onlyWhereSurfaceRevealed: true
-        );
+        if (_topographyDebugSource == null || _knowledgeSource == null) return;
+        var field = _topographyDebugSource.Field;
+        var texture = _bathymetryConcealment.Get(field, _topographyDebugSource.EffectiveSeaLevel01, _knowledgeSource.State, _showSeaFloor);
+        if (texture == null) return;
+        Vector2 tl = GraphToLocal(new Vector2(field.WorldBounds.xMin, field.WorldBounds.yMax), localRect);
+        Vector2 br = GraphToLocal(new Vector2(field.WorldBounds.xMax, field.WorldBounds.yMin), localRect);
+        Color old = GUI.color; GUI.color = Color.white;
+        GUI.DrawTexture(Rect.MinMaxRect(tl.x, tl.y, br.x, br.y), texture);
+        if (RevealBefore != null)
+        {
+            var prior = _priorBathymetry.Get(field, _topographyDebugSource.EffectiveSeaLevel01, RevealBefore, _showSeaFloor);
+            GUI.color = new Color(1f, 1f, 1f, 1f - CartographicReveal01);
+            if (prior != null) GUI.DrawTexture(Rect.MinMaxRect(tl.x, tl.y, br.x, br.y), prior);
+        }
+        GUI.color = old;
     }
 
     private void DrawKnowledgeShroudLayer(
@@ -2139,7 +2160,9 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
                     continue;
 
                 bool revealed = state.IsCellRevealed(layer, x, y);
-                if (revealed)
+                bool fading = layer == WorldMapKnowledgeLayer.Surface && RevealBefore != null &&
+                    !RevealBefore.IsCellRevealed(layer, x, y);
+                if (revealed && !fading)
                     continue;
 
                 Rect worldCell = state.CellWorldRect(x, y);
@@ -2161,7 +2184,14 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
                     Mathf.Max(topLeft.y, bottomRight.y) + 1f
                 );
 
-                GUI.DrawTexture(r, _whiteTex);
+                if (layer == WorldMapKnowledgeLayer.Surface)
+                {
+                    GUI.color = new Color(1f, 1f, 1f, revealed ? 1f - CartographicReveal01 : 1f);
+                    Rect uv = new Rect((worldCell.xMin - bounds.xMin) / bounds.width, (worldCell.yMin - bounds.yMin) / bounds.height,
+                        worldCell.width / bounds.width, worldCell.height / bounds.height);
+                    GUI.DrawTextureWithTexCoords(r, WorldMapMythicShroud.Texture, uv);
+                }
+                else GUI.DrawTexture(r, _whiteTex);
             }
         }
 
@@ -2199,15 +2229,18 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         for (int i = 0; i < g.nodes.Count; i++)
         {
             var n = g.nodes[i];
+            if (!IsNodeCartographicallyVisible(i)) continue;
             Vector2 p = GraphToLocal(n.position, localRect);
 
             float r = n.isPrimary ? NodeRadiusPx * 1.35f : NodeRadiusPx;
 
             bool isSelected = i == _selectedNodeIndex;
             bool isLocked = i == _lockedNodeIndex;
-            bool isCurrent = IsCurrentNodeIndex(i);
+            bool isCurrent = !_showSurfaceShroud && IsCurrentNodeIndex(i);
 
             Color c = GetNodeColor(n, isSelected, isLocked, isCurrent);
+            if (_showSurfaceShroud && RevealBefore != null && !RevealBefore.HasNodeMarker(WorldMapStableIdUtility.BuildNodeStableId(g.seed, n)))
+                c.a *= CartographicReveal01;
 
             DrawNodeDot(p, r, c);
 
@@ -2420,6 +2453,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
 
         for (int i = 0; i < g.nodes.Count; i++)
         {
+            if (!IsNodeCartographicallyVisible(i)) continue;
             Vector2 p = GraphToLocal(g.nodes[i].position, localRect);
             float d = (p - localMouse).sqrMagnitude;
 
@@ -2643,9 +2677,9 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         DrawUnderwaterSurveyShroud(localRect);
         DrawRoutes(localRect);
         DrawActiveTravelRoute(localRect);
+        DrawSurfaceShroud(localRect);
         DrawPOIs(localRect);
         DrawNodes(localRect);
-        DrawSurfaceShroud(localRect);
 
         GUI.EndGroup();
         GUI.color = old;
@@ -2881,6 +2915,15 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         _statusLine = "Travel requested.";
     }
 
+    private bool IsNodeCartographicallyVisible(int index)
+    {
+        if (!_showSurfaceShroud) return true; // Explicit debug answer-key toggle.
+        AutoWireKnowledgeSource();
+        var graph = _generator != null ? _generator.graph : null;
+        return graph != null && graph.nodes != null && index >= 0 && index < graph.nodes.Count &&
+            _knowledgeSource != null && _knowledgeSource.IsNodeMarkerKnown(WorldMapStableIdUtility.BuildNodeStableId(graph.seed, graph.nodes[index]));
+    }
+
     private bool TryGetSelectedRuntime(out MapNodeRuntime rt)
     {
         rt = null;
@@ -2888,7 +2931,7 @@ public sealed class WorldMapCartridge : IMiniGameCartridge, IOverlayRenderable
         if (_runtimeBinder == null || !_runtimeBinder.IsBuilt)
             return false;
 
-        if (_selectedNodeIndex < 0)
+        if (_selectedNodeIndex < 0 || !IsNodeCartographicallyVisible(_selectedNodeIndex))
             return false;
 
         return _runtimeBinder.Registry.TryGetByIndex(_selectedNodeIndex, out rt) && rt != null;

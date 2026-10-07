@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class WorldMapKnowledgeSource : MonoBehaviour
+public sealed partial class WorldMapKnowledgeSource : MonoBehaviour
 {
     [Header("Refs")]
     [SerializeField] private WorldMapTopographyDebugSource topographySource;
@@ -78,6 +78,7 @@ public sealed class WorldMapKnowledgeSource : MonoBehaviour
             EnsureInitialized();
 
         TryGrantStartingCoverage();
+        StartCoroutine(WaitForStarterChartWorld());
     }
 
     private void HandleRuntimeBuilt()
@@ -97,8 +98,12 @@ public sealed class WorldMapKnowledgeSource : MonoBehaviour
         foreach (var node in generator.graph.nodes)
         {
             if (node.kind != NodeKind.StartDock) continue;
-            RevealSurfaceCircle(node.position, currentNodeSurfaceRevealRadius);
-            _starterCoverageSettled = true;
+            EnsureInitialized();
+            string nodeId = WorldMapStableIdUtility.BuildNodeStableId(generator.graph.seed, node);
+            if (!TryBuildLocalIslandChart(nodeId, out var chart, out _, out _)) return; // Wait for registered topography.
+            chart.payload.sourceId = "starter:" + nodeId;
+            _starterCoverageSettled = State.HasIntegratedSource(chart.payload.sourceId) ||
+                TryCommitCartographicSource(chart.payload, out _);
             break;
         }
     }
@@ -140,15 +145,17 @@ public sealed class WorldMapKnowledgeSource : MonoBehaviour
         return HasState && State.IsRevealed(WorldMapKnowledgeLayer.UnderwaterSurvey, worldPosition);
     }
 
-    public bool IsPOIVisible(WorldMapPOIInstance poi)
+    public bool IsPOIVisible(WorldMapPOIInstance poi, bool underwater = true)
+        => poi != null && HasState && State.CanDisplayPoi(poi.stableId, poi.position, underwater);
+
+    public bool IsNodeMarkerKnown(string stableId) => HasState && State.HasNodeMarker(stableId);
+
+    [ContextMenu("DEBUG: Integrate Current Node Marker Only")]
+    public void DebugIntegrateCurrentNodeMarker()
     {
-        if (poi == null)
-            return false;
-
-        if (poi.discovered || poi.surveyed)
-            return IsSurfaceRevealed(poi.position);
-
-        return IsSurfaceRevealed(poi.position) && IsUnderwaterSurveyed(poi.position);
+        string nodeId = playerRef != null && playerRef.State != null ? playerRef.State.currentNodeId : GameState.I != null && GameState.I.player != null ? GameState.I.player.currentNodeId : null;
+        if (string.IsNullOrWhiteSpace(nodeId)) return;
+        TryCommitCartographicSource(new WorldMapCartographicPayload { sourceId = "debug:node:" + nodeId, nodeIds = new[] { nodeId } }, out _);
     }
 
     [ContextMenu("Reveal Surface Around Current Node")]
@@ -194,6 +201,7 @@ public sealed class WorldMapKnowledgeSource : MonoBehaviour
 
     public void RevealSurfaceAlongRoute(Vector2 from, Vector2 to, float radius, int steps)
     {
+        if (!GameplayAuthority.IsAuthoritative) return;
         EnsureInitialized();
 
         radius = Mathf.Max(0.1f, radius);
@@ -218,6 +226,7 @@ public sealed class WorldMapKnowledgeSource : MonoBehaviour
 
     public void RevealSurfaceCircle(Vector2 worldPos, float radius)
     {
+        if (!GameplayAuthority.IsAuthoritative) return;
         EnsureInitialized();
         State.RevealCircleWorld(WorldMapKnowledgeLayer.Surface, worldPos, radius);
 
@@ -227,8 +236,9 @@ public sealed class WorldMapKnowledgeSource : MonoBehaviour
 
     public void SurveyUnderwaterCircle(Vector2 worldPos, float radius)
     {
+        if (!GameplayAuthority.IsAuthoritative) return;
         EnsureInitialized();
-        State.RevealCircleWorld(WorldMapKnowledgeLayer.UnderwaterSurvey, worldPos, radius, surfaceRevealImplied: true);
+        State.RevealCircleWorld(WorldMapKnowledgeLayer.UnderwaterSurvey, worldPos, radius, surfaceRevealImplied: false);
 
         if (verboseLogging)
             Debug.Log($"[WorldMapKnowledgeSource] Underwater survey {worldPos} r={radius:0.0} now={UnderwaterSurvey01:P1}", this);
@@ -237,6 +247,7 @@ public sealed class WorldMapKnowledgeSource : MonoBehaviour
     [ContextMenu("Reveal All Surface")]
     public void RevealAllSurface()
     {
+        if (!GameplayAuthority.IsAuthoritative) return;
         EnsureInitialized();
         State.RevealAll(WorldMapKnowledgeLayer.Surface);
     }
@@ -244,14 +255,15 @@ public sealed class WorldMapKnowledgeSource : MonoBehaviour
     [ContextMenu("Reveal All Underwater")]
     public void RevealAllUnderwater()
     {
+        if (!GameplayAuthority.IsAuthoritative) return;
         EnsureInitialized();
         State.RevealAll(WorldMapKnowledgeLayer.UnderwaterSurvey);
-        State.RevealAll(WorldMapKnowledgeLayer.Surface);
     }
 
     [ContextMenu("Clear Surface")]
     public void ClearSurface()
     {
+        if (!GameplayAuthority.IsAuthoritative) return;
         EnsureInitialized();
         State.ClearLayer(WorldMapKnowledgeLayer.Surface);
     }
@@ -259,6 +271,7 @@ public sealed class WorldMapKnowledgeSource : MonoBehaviour
     [ContextMenu("Clear Underwater")]
     public void ClearUnderwater()
     {
+        if (!GameplayAuthority.IsAuthoritative) return;
         EnsureInitialized();
         State.ClearLayer(WorldMapKnowledgeLayer.UnderwaterSurvey);
     }
@@ -266,6 +279,7 @@ public sealed class WorldMapKnowledgeSource : MonoBehaviour
     [ContextMenu("Clear All Knowledge")]
     public void ClearAll()
     {
+        if (!GameplayAuthority.IsAuthoritative) return;
         EnsureInitialized();
         State.ClearAll();
     }

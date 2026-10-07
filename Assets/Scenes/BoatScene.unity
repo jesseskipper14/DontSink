@@ -4378,7 +4378,7 @@ MonoBehaviour:
   jumpExertionImpulse01: 0.1
   jumpAuthorityAtLowEnergy: 0.65
   jumpAuthorityAtZeroEnergy: 0
-  movingFloorGripAcceleration: 60
+  movingFloorGripAcceleration: 20
 --- !u!114 &270512354
 MonoBehaviour:
   m_ObjectHideFlags: 0

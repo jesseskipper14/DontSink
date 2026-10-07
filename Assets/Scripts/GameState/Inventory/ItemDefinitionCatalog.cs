@@ -38,6 +38,9 @@ public sealed class ItemDefinitionCatalog : ScriptableObject, IItemDefinitionRes
             return null;
 
         byId.TryGetValue(itemId, out ItemDefinition def);
+        // Built-in chart carrier is additive; existing serialized catalog lists remain untouched.
+        if (def == null && itemId == "item_cartographic_chart")
+            def = Resources.Load<ItemDefinition>("Cartography/item_cartographic_chart");
         return def;
     }
 }

@@ -14,7 +14,8 @@ public enum AgentServiceKind
     MarketTrade = 10,
     ItemVendor = 20,
     BoatVendorPlaceholder = 30,
-    DialogueOnly = 40
+    DialogueOnly = 40,
+    Surveyor = 50
 }
 
 [Serializable]

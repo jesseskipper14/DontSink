@@ -11,6 +11,17 @@ public sealed class ItemInstance
     [SerializeField] private int currentCharges;
     [SerializeField] private ChartingInstrumentState chartingInstrument;
     public ChartingInstrumentState ChartingInstrument => chartingInstrument;
+    [SerializeField] private CartographicChartState cartographicChart;
+    public bool HasCartographicChart => cartographicChart?.HasState == true;
+    public bool HasSoundingEvidence => HasCartographicChart && cartographicChart.kind == CartographicChartKind.SoundingEvidence;
+    public CartographicChartState CartographicChart => HasCartographicChart ? cartographicChart.Copy() : null;
+    public void SetCartographicChart(CartographicChartState state)
+    {
+        if (state != null && (Quantity != 1 || IsContainer))
+            throw new InvalidOperationException("Charts require one non-container item.");
+        cartographicChart = state?.Copy();
+        NotifyChanged();
+    }
 
     public void SetChartingInstrumentState(ChartingInstrumentState state)
     {
@@ -65,7 +76,7 @@ public sealed class ItemInstance
 
     public bool IsContainer => definition != null && definition.IsContainer;
     public int MaxStack => definition != null ? Mathf.Max(1, definition.MaxStack) : 1;
-    public bool IsStackable => definition != null && !IsContainer && MaxStack > 1;
+    public bool IsStackable => definition != null && !IsContainer && !HasCartographicChart && MaxStack > 1;
     public bool CanSplit => IsStackable && quantity > 1;
 
     public bool HasCharges => definition != null && definition.HasCharges;
@@ -197,17 +208,24 @@ public sealed class ItemInstance
 
     public int RemoveQuantity(int amount)
     {
+        int removed = RemoveQuantityForTransaction(amount);
+        if (removed > 0) NotifyChanged();
+        return removed;
+    }
+
+    // Host inventory transactions publish notifications after all corresponding writes are complete.
+    internal int RemoveQuantityForTransaction(int amount)
+    {
         if (amount <= 0)
             return 0;
 
         int removed = Mathf.Min(quantity, amount);
         quantity -= removed;
 
-        if (removed > 0)
-            NotifyChanged();
-
         return removed;
     }
+
+    internal void PublishTransactionChange() => NotifyChanged();
 
     public ItemInstance SplitOff(int amount)
     {
@@ -319,6 +337,7 @@ public sealed class ItemInstance
             currentCharges = HasCharges ? CurrentCharges : 0,
             retainedWaterVolume = RetainedWaterVolume,
             chartingInstrument = chartingInstrument != null ? chartingInstrument.Copy() : null,
+            cartographicChart = CartographicChart,
             container = containerState != null ? containerState.ToSnapshot() : null
         };
     }
@@ -337,6 +356,7 @@ public sealed class ItemInstance
 
         ItemInstance instance = new ItemInstance();
         instance.InitializeRuntime(def, snapshot.quantity);
+        instance.cartographicChart = snapshot.cartographicChart?.HasState == true ? snapshot.cartographicChart.Copy() : null;
         instance.chartingInstrument = snapshot.chartingInstrument?.HasState == true ? snapshot.chartingInstrument.Copy() : null;
         instance.instanceId = string.IsNullOrWhiteSpace(snapshot.instanceId)
             ? Guid.NewGuid().ToString("N")

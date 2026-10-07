@@ -48,6 +48,7 @@ public sealed class LocalHandheldSoundingLineIntentSource :
     }
 
     public int ContextHintPriority => contextHintPriority;
+    public KeyCode UseKey => useKey;
 
     public bool TryGetContextHint(
         out string text,
@@ -57,6 +58,10 @@ public sealed class LocalHandheldSoundingLineIntentSource :
 
         text = null;
         worldAnchor = controller != null ? controller.transform : transform;
+
+        // The expanded sounding HUD includes this instruction; keep a floating fallback when it is disabled.
+        var hud = controller != null ? controller.GetComponent<HandheldSoundingLineHUD>() : null;
+        if (hud != null && hud.IsReadoutVisible) return false;
 
         if (!CameraManager.HasGameplayInput(this) || controller == null ||
             !controller.ShouldShowReadout ||

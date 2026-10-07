@@ -63,6 +63,8 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
     [Header("Moving Floor Grip")]
     [Tooltip("Maximum horizontal acceleration correcting idle slip on a contacted moving floor. No air/boarding-volume carry.")]
     [SerializeField, Min(0f)] private float movingFloorGripAcceleration = 60f;
+    [Tooltip("Maximum stopping acceleration on contacted static ground, including quay and dock colliders.")]
+    [SerializeField, Min(0f)] private float staticFloorGripAcceleration = 20f;
     private Rigidbody2D _previousSupport;
     private float _previousSupportVelocityX;
 
@@ -123,15 +125,16 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
             motor.TickTimers(dt, false);
             return;
         }
-        bool hasSupport = motor.TryGetMovingSupport(body.rb, out var support, out var supportVelocity);
-        if (hasSupport && support == _previousSupport)
+        bool hasSupport = motor.TryGetGroundSupport(body.rb, out var support, out var supportVelocity);
+        bool movingSupport = hasSupport && support != null && support.bodyType != RigidbodyType2D.Static;
+        if (movingSupport && support == _previousSupport)
         {
             // Preserve relative walking velocity as the contacted floor accelerates/rotates.
             var carried = body.rb.linearVelocity;
             carried.x += supportVelocity.x - _previousSupportVelocityX;
             body.rb.linearVelocity = carried;
         }
-        _previousSupport = hasSupport ? support : null;
+        _previousSupport = movingSupport ? support : null;
         _previousSupportVelocityX = supportVelocity.x;
         bool jumpedThisStep = false;
 
@@ -363,7 +366,8 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
             if (hasSupport && !jumpedThisStep && dt > 0)
             {
                 float gripTarget = Mathf.Abs(targetX) <= .01f ? 0 : Mathf.Clamp(vx, -scaledMaxSpeed, scaledMaxSpeed);
-                float acceleration = Mathf.Clamp((gripTarget - vx) / dt, -movingFloorGripAcceleration, movingFloorGripAcceleration);
+                float gripAcceleration = movingSupport ? movingFloorGripAcceleration : staticFloorGripAcceleration;
+                float acceleration = Mathf.Clamp((gripTarget - vx) / dt, -gripAcceleration, gripAcceleration);
                 body.AddForce(Vector2.right * (acceleration * body.Mass));
             }
 

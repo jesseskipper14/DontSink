@@ -39,6 +39,8 @@ public sealed class WorldMapOverlayRunner : MonoBehaviour
     [SerializeField] private CelestialFieldSource celestialFieldSource;
 
     [Header("Map Table Presentation")]
+    [SerializeField, Range(1f, 3f)] private float cartographicRevealSeconds = 2f;
+    public float CartographicRevealSeconds => Mathf.Clamp(cartographicRevealSeconds, 1f, 3f);
     [Tooltip("Physical table border thickness in shared world/map units. The table is anchored to the full world-map canvas, not the graph-node extents.")]
     [SerializeField, Min(0f)] private float tableBorderWorldUnits = 18f;
 
@@ -85,6 +87,9 @@ public sealed class WorldMapOverlayRunner : MonoBehaviour
         overlay != null &&
         overlay.IsOpen &&
         overlay.ActiveCartridge is MapTableCartridge;
+
+    public bool IsCurrentTable(MapTableCartridge table) =>
+        IsMapTableOpen && ReferenceEquals(overlay.ActiveCartridge, table);
 
     // Compatibility: callers that only care about the old world-map page still work.
     public bool IsWorldMapOpen
@@ -290,7 +295,8 @@ public sealed class WorldMapOverlayRunner : MonoBehaviour
             starChart,
             viewport,
             initialPage,
-            tableBorderWorldUnits);
+            tableBorderWorldUnits,
+            this);
 
         var ctx = new MiniGameContext
         {

@@ -29,6 +29,11 @@ public class CharacterMotor2D : MonoBehaviour
 
     /// <summary>Actual supporting contact, not merely being inside a boat or near its floor.</summary>
     public bool TryGetMovingSupport(Rigidbody2D playerBody, out Rigidbody2D support, out Vector2 velocity)
+        => TryGetGroundSupport(playerBody, out support, out velocity) &&
+           support != null && support.bodyType != RigidbodyType2D.Static;
+
+    /// <summary>Contacted ground, including collider-only quay/dock surfaces with zero velocity.</summary>
+    public bool TryGetGroundSupport(Rigidbody2D playerBody, out Rigidbody2D support, out Vector2 velocity)
     {
         support = null; velocity = default;
         if (!IsGrounded || playerBody == null) return false;
@@ -39,9 +44,9 @@ public class CharacterMotor2D : MonoBehaviour
             var ground = contact.collider.attachedRigidbody == playerBody ? contact.otherCollider : contact.collider;
             if (ground == null || (groundMask.value & (1 << ground.gameObject.layer)) == 0) continue;
             var candidate = ground.attachedRigidbody;
-            if (candidate == null || candidate == playerBody || !candidate.simulated || candidate.bodyType == RigidbodyType2D.Static) continue;
+            if (candidate == playerBody || (candidate != null && !candidate.simulated)) continue;
             if (contact.normal.y < .5f) continue;
-            Vector2 pointVelocity = candidate.GetPointVelocity(contact.point);
+            Vector2 pointVelocity = candidate != null ? candidate.GetPointVelocity(contact.point) : Vector2.zero;
             // A contact manifold can survive the integration step that starts a jump.
             if (Vector2.Dot(playerBody.GetPointVelocity(contact.point) - pointVelocity, contact.normal) > .5f) continue;
             support = candidate; velocity = pointVelocity; return true;

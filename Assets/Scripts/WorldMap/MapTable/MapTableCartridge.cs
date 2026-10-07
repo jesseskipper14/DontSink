@@ -4,7 +4,8 @@ using UnityEngine;
 public enum MapTablePage
 {
     WorldMap = 0,
-    StarChart = 1
+    StarChart = 1,
+    Charts = 2
 }
 
 /// <summary>
@@ -34,6 +35,12 @@ public sealed class MapTableCartridge : IMiniGameCartridge, IOverlayRenderable
     public MapTablePage ActivePage => _activePage;
     public MapTableViewportState Viewport => _viewport;
     public GameObject Requester => _requester;
+    public WorldMapOverlayRunner Runner { get; }
+    private readonly CartographicChartFolio _chartFolio = new();
+    public bool TryGetCartographicContext(out WorldMapKnowledgeSource source, out WorldMapTopographyField field) =>
+        _worldMap.TryGetCartographicContext(out source, out field);
+    public void BeginCartographicReveal(WorldMapKnowledgeSaveSnapshot previous) =>
+        _worldMap.BeginCartographicReveal(previous, Runner != null ? Runner.CartographicRevealSeconds : 2f);
 
     public void SetActivePage(MapTablePage page)
     {
@@ -46,9 +53,11 @@ public sealed class MapTableCartridge : IMiniGameCartridge, IOverlayRenderable
         CelestialChartTableCartridge starChart,
         MapTableViewportState viewport,
         MapTablePage initialPage = MapTablePage.WorldMap,
-        float tableBorderWorldUnits = 18f)
+        float tableBorderWorldUnits = 18f,
+        WorldMapOverlayRunner runner = null)
     {
         _requester = requester;
+        Runner = runner;
         _worldMap = worldMap;
         _starChart = starChart;
         _viewport = viewport ?? new MapTableViewportState();
@@ -161,9 +170,7 @@ public sealed class MapTableCartridge : IMiniGameCartridge, IOverlayRenderable
             MapTablePage.StarChart,
             "STAR CHART");
 
-        GUI.Label(
-            new Rect(tabsX + (tabW + gap) * 2f + 12f, top.y + 7f, 360f, 22f),
-            "Same center + scale on both pages");
+        DrawTab(new Rect(tabsX + (tabW + gap) * 2f, top.y + 4f, tabW, 28f), MapTablePage.Charts, "CHARTS");
 
         if (GUI.Button(new Rect(top.xMax - 32f, top.y + 3f, 30f, 28f), "X"))
             _requestedClose = true;
@@ -175,6 +182,11 @@ public sealed class MapTableCartridge : IMiniGameCartridge, IOverlayRenderable
             panel.height - topH - 12f);
 
         MapTablePageLayout layout = MapTablePageLayout.Compute(pageRect);
+        if (_activePage == MapTablePage.Charts)
+        {
+            _chartFolio.Draw(pageRect, this);
+            return;
+        }
         HandlePhysicalPieceInput(layout.Viewport);
 
         IOverlayRenderable renderable = GetActiveCartridge() as IOverlayRenderable;
@@ -418,6 +430,7 @@ public sealed class MapTableCartridge : IMiniGameCartridge, IOverlayRenderable
 
     private IMiniGameCartridge GetActiveCartridge()
     {
+        if (_activePage == MapTablePage.Charts) return null;
         return _activePage == MapTablePage.StarChart
             ? _starChart
             : _worldMap;
@@ -427,6 +440,12 @@ public sealed class MapTableCartridge : IMiniGameCartridge, IOverlayRenderable
     {
         if (_activePage == page)
             return;
+
+        if (_pieceEditHandle.IsValid)
+        {
+            MapTablePhysicalPieceAuthority.CancelEdit(_requester, _pieceEditHandle);
+            _pieceEditHandle = default;
+        }
 
         if (_activePage == MapTablePage.StarChart)
             _starChart?.SuspendInteractions();

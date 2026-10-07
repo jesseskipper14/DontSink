@@ -179,6 +179,29 @@ public static class MapTablePhysicalPieceAuthority
         return $"table_block_{color.ToString().ToLowerInvariant()}_{zeroBasedIndex + 1:00}";
     }
 
+    /// <summary>Explicit trusted position-fix seam. Never called by sailing/docking or passive observation.
+    /// Invalidates outstanding marker drags so a stale edit cannot undo the fix.</summary>
+    public static bool TryApplyPositionFix(GameObject requester, Vector2 canonicalPosition, out string reason)
+    {
+        reason = null;
+        var topology = WorldTopologyService.Current;
+        if (!WorldTopology.IsFinite(canonicalPosition.x) || !WorldTopology.IsFinite(canonicalPosition.y) ||
+            !topology.IsValid || !topology.ContainsY(canonicalPosition.y))
+        { reason = "The position fix is outside registered world bounds."; return false; }
+        if (!TryResolveMutableState(requester, out var gameState, out var state, out var requesterKey, out reason)) return false;
+        canonicalPosition = topology.Normalize(canonicalPosition);
+        if (!EnsurePlayerBoatPiece(requester, canonicalPosition, out var piece, out reason)) return false;
+        LocksByPiece.Remove(piece.pieceId);
+        piece.boardWorldPosition = canonicalPosition;
+        // Keep the navigator's manually authored rotation/pin state.
+        piece.layerOrder = state.GetNextTablePieceLayerOrder();
+        piece.lastEditedByPlayerKey = requesterKey;
+        piece.revision++; state.tablePieceRevision++;
+        gameState.EnsureCelestialChartDefaults();
+        reason = "Believed-position marker corrected to this node.";
+        return true;
+    }
+
     public static bool TryBeginEdit(
         GameObject requester,
         string pieceId,
