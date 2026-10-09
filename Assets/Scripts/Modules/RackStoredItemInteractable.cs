@@ -5,6 +5,7 @@ public sealed class RackStoredItemInteractable :
     MonoBehaviour,
     IPickupInteractable,
     IPickupPromptProvider,
+    IInteractPromptProvider,
     IInteractionLabelProvider,
     IInteractionPromptDisplayPolicyProvider
 {
@@ -199,6 +200,8 @@ public sealed class RackStoredItemInteractable :
     {
         return promptAnchor != null ? promptAnchor : transform;
     }
+
+    public string GetPromptVerb(in InteractContext context) => GetPickupPromptVerb(context);
 
     private void CacheVisualRefs()
     {

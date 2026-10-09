@@ -16,15 +16,6 @@ using UnityEngine;
 [RequireComponent(typeof(CelestialFieldSource))]
 public sealed partial class CelestialSkyRenderer : MonoBehaviour
 {
-    private sealed class RenderSlot
-    {
-        public GameObject gameObject;
-        public Transform transform;
-        public SpriteRenderer renderer;
-        public CelestialObject celestialObject;
-        public Color baseColor;
-        public MaterialPropertyBlock propertyBlock;
-    }
 
     [Header("References")]
     [SerializeField] private CelestialFieldSource fieldSource;
@@ -41,7 +32,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
     [SerializeField] private bool warnWhenViewCrossesFieldBounds = true;
 
     private readonly List<CelestialObject> _queriedObjects = new();
-    private readonly List<RenderSlot> _slots = new();
+
 
     private CelestialSkySpriteLibrary _spriteLibrary;
     private Material _starMaterial;
@@ -51,6 +42,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
     private bool _hasQueryPosition;
     private bool _forceRefresh = true;
     private bool _ready;
+    private bool _runtimeRootInitialized;
     private bool _legacyWasEnabled;
     private bool _legacyTakeoverApplied;
     private bool _warnedMissingSettings;
@@ -94,7 +86,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
     {
         UnsubscribeSkyVisibility();
         RestoreLegacyRenderer();
-        SetAllSlotsActive(false);
+        SetBatchesVisible(false);
         HideConstellationLook();
         _ready = false;
     }
@@ -110,6 +102,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
             _spriteLibrary = null;
         }
 
+        DisposeBatches();
         DestroyRuntimeMaterial(ref _starMaterial);
         DestroyRuntimeMaterial(ref _deepSkyMaterial);
         DestroyRuntimeMaterial(ref _constellationLineMaterial);
@@ -133,13 +126,13 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
                     this);
             }
 
-            SetAllSlotsActive(false);
+            SetBatchesVisible(false);
             return;
         }
 
         _warnedMissingWorldPosition = false;
 
-        if (ShouldRefreshQuery(observerWorldPosition))
+        if (_batchPixelWidth != targetCamera.pixelWidth || _batchPixelHeight != targetCamera.pixelHeight || ShouldRefreshQuery(observerWorldPosition))
             RefreshQuery(observerWorldPosition);
 
         ProjectAndRender(observerWorldPosition);
@@ -185,6 +178,9 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
             return false;
 
         EnsureRenderRoot();
+        // Runtime-only resources are not serialized across Editor domain reloads.
+        if (_spriteLibrary == null) _spriteLibrary = new CelestialSkySpriteLibrary();
+        BuildRuntimeMaterials();
         ApplyLegacyTakeoverIfNeeded();
 
         _ready = true;
@@ -206,29 +202,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
         CelestialFieldGenerator.AppendVoidAmbientStars(field, queryRect,
             projectionSettings.voidAmbientFadeDistanceWorld, _queriedObjects);
 
-        EnsureSlotCount(_queriedObjects.Count);
-
-        for (int i = 0; i < _slots.Count; i++)
-        {
-            RenderSlot slot = _slots[i];
-
-            if (i >= _queriedObjects.Count)
-            {
-                slot.celestialObject = null;
-                slot.gameObject.SetActive(false);
-                continue;
-            }
-
-            CelestialObject obj = _queriedObjects[i];
-            slot.celestialObject = obj;
-            slot.renderer.sprite = _spriteLibrary.Resolve(obj);
-            slot.renderer.sortingOrder = ResolveSortingOrder(obj.Kind);
-            slot.renderer.sharedMaterial = ResolveMaterial(obj.Kind);
-            slot.baseColor = ResolveBaseColor(obj);
-            slot.renderer.color = slot.baseColor;
-            ConfigureVisualMaterial(slot, obj);
-            slot.gameObject.name = $"Celestial_{obj.Kind}_{obj.StableId}";
-        }
+        RebuildBatches();
 
         _lastQueryObserverPosition = observerWorldPosition;
         _hasQueryPosition = true;
@@ -263,93 +237,6 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
         }
     }
 
-    private void ProjectAndRender(Vector2 observerWorldPosition)
-    {
-        CelestialField field = fieldSource.Field;
-        if (field == null || targetCamera == null)
-            return;
-
-        bool skyVisible = _starVisibility01 > 0.001f;
-        if (renderRoot != null && renderRoot.gameObject.activeSelf != skyVisible)
-            renderRoot.gameObject.SetActive(skyVisible);
-
-        if (!skyVisible)
-            return;
-
-        _visibleAmbient = 0;
-        _visibleLandmarks = 0;
-        _visibleNebulae = 0;
-        _visibleDeepSky = 0;
-
-        GetWorldUnitsPerPixel(out float worldPerPixelX, out float worldPerPixelY);
-
-        for (int i = 0; i < _slots.Count; i++)
-        {
-            RenderSlot slot = _slots[i];
-            CelestialObject obj = slot.celestialObject;
-
-            if (obj == null || !ShouldShowKind(obj.Kind))
-            {
-                slot.gameObject.SetActive(false);
-                continue;
-            }
-
-            if (!CelestialSkyProjection.TryProjectToSceneViewport(
-                    field.WorldBounds,
-                    observerWorldPosition,
-                    obj.WorldPosition,
-                    projectionSettings,
-                    ResolveProjectionViewportAspect(),
-                    out Vector2 viewport,
-                    out _))
-            {
-                slot.gameObject.SetActive(false);
-                continue;
-            }
-
-            Rect skyEnvelope = CelestialSkyProjection.GetSceneViewportRect(projectionSettings);
-            float xMin = skyEnvelope.xMin;
-            float xMax = skyEnvelope.xMax;
-            float yMin = skyEnvelope.yMin;
-            float yMax = skyEnvelope.yMax;
-
-            if (viewport.x < xMin || viewport.x > xMax || viewport.y < yMin || viewport.y > yMax)
-            {
-                slot.gameObject.SetActive(false);
-                continue;
-            }
-
-            if (!slot.gameObject.activeSelf)
-                slot.gameObject.SetActive(true);
-
-            Vector3 projected = SkyViewportToWorld(viewport);
-
-            projected.z = ResolveRenderWorldZ();
-            slot.transform.position = projected;
-
-            ResolvePixelSize(obj, out float widthPixels, out float heightPixels);
-
-            Sprite sprite = slot.renderer.sprite;
-            Vector2 spriteSize = sprite != null ? sprite.bounds.size : Vector2.one;
-
-            float widthWorld = Mathf.Max(0.0001f, widthPixels * worldPerPixelX);
-            float heightWorld = Mathf.Max(0.0001f, heightPixels * worldPerPixelY);
-
-            slot.transform.localScale = new Vector3(
-                widthWorld / Mathf.Max(0.0001f, spriteSize.x),
-                heightWorld / Mathf.Max(0.0001f, spriteSize.y),
-                1f);
-
-            slot.transform.rotation = Quaternion.Euler(0f, 0f, ResolveRotation(obj));
-
-            Color color = slot.baseColor;
-            color.a = ResolveObjectAlpha(obj) * _starVisibility01;
-            slot.renderer.color = color;
-
-            IncrementVisibleCount(obj.Kind);
-        }
-    }
-
     private bool ShouldRefreshQuery(Vector2 observerWorldPosition)
     {
         if (_forceRefresh || !_hasQueryPosition)
@@ -370,34 +257,34 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
         return Time.unscaledTime - _lastQueryTime >= projectionSettings.maximumQueryRefreshSeconds;
     }
 
-    private void EnsureSlotCount(int count)
-    {
-        while (_slots.Count < count)
-        {
-            var go = new GameObject($"CelestialSkySlot_{_slots.Count:000}");
-            go.transform.SetParent(renderRoot, worldPositionStays: true);
-
-            var renderer = go.AddComponent<SpriteRenderer>();
-            CopySortingFromLegacy(renderer);
-
-            _slots.Add(new RenderSlot
-            {
-                gameObject = go,
-                transform = go.transform,
-                renderer = renderer,
-                propertyBlock = new MaterialPropertyBlock()
-            });
-        }
-    }
-
     private void EnsureRenderRoot()
     {
-        if (renderRoot != null)
-            return;
-
-        var go = new GameObject("__CelestialSkyRuntime");
-        go.transform.SetParent(transform, false);
-        renderRoot = go.transform;
+        if (renderRoot == null)
+        {
+            var go = new GameObject("__CelestialSkyRuntime");
+            go.transform.SetParent(transform, false);
+            renderRoot = go.transform;
+        }
+        if (_runtimeRootInitialized) return;
+        // Hot reload may retain runtime children but lose the nonserialized pool.
+        // Retire only this renderer's star objects; constellation look uses its
+        // own children and is independent of the celestial sprite batches.
+        for (int i = renderRoot.childCount - 1; i >= 0; i--)
+        {
+            GameObject child = renderRoot.GetChild(i).gameObject;
+            if (!child.name.StartsWith("Celestial_") && !child.name.StartsWith("CelestialSkySlot_") &&
+                !child.name.StartsWith("CelestialBatch_")) continue;
+            child.SetActive(false);
+            if (child.name.StartsWith("CelestialBatch_"))
+            {
+                MeshFilter filter = child.GetComponent<MeshFilter>();
+                MeshRenderer renderer = child.GetComponent<MeshRenderer>();
+                if (filter != null) Destroy(filter.sharedMesh);
+                if (renderer != null) Destroy(renderer.sharedMaterial);
+            }
+            Destroy(child);
+        }
+        _runtimeRootInitialized = true;
     }
 
     private bool TryGetObserverPosition(out Vector2 position)
@@ -490,8 +377,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
         legacyStarsRenderer.enabled = false;
         _legacyTakeoverApplied = true;
 
-        for (int i = 0; i < _slots.Count; i++)
-            CopySortingFromLegacy(_slots[i].renderer);
+
     }
 
     private void RestoreLegacyRenderer()
@@ -509,7 +395,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
     {
         if (_starMaterial == null)
         {
-            Shader shader = Shader.Find("Custom/CelestialStarUnlitAdditive2D");
+            Shader shader = Shader.Find("Custom/CelestialStarBatch2D");
             if (shader != null)
             {
                 _starMaterial = new Material(shader)
@@ -521,15 +407,15 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
             else
             {
                 Debug.LogWarning(
-                    "[CelestialSkyRenderer] Custom/CelestialStarUnlitAdditive2D shader was not found. " +
-                    "Stars will fall back to the SpriteRenderer default material and may be affected by 2D lighting.",
+                    "[CelestialSkyRenderer] Custom/CelestialStarBatch2D shader was not found. " +
+                    "Star batches cannot render until this shader is available.",
                     this);
             }
         }
 
         if (_deepSkyMaterial == null)
         {
-            Shader shader = Shader.Find("Custom/CelestialUnlitAlpha2D");
+            Shader shader = Shader.Find("Custom/CelestialAlphaBatch2D");
             if (shader != null)
             {
                 _deepSkyMaterial = new Material(shader)
@@ -541,8 +427,8 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
             else
             {
                 Debug.LogWarning(
-                    "[CelestialSkyRenderer] Custom/CelestialUnlitAlpha2D shader was not found. " +
-                    "Nebula/deep-sky objects will fall back to the SpriteRenderer default material.",
+                    "[CelestialSkyRenderer] Custom/CelestialAlphaBatch2D shader was not found. " +
+                    "Nebula/deep-sky batches cannot render until this shader is available.",
                     this);
             }
         }
@@ -565,56 +451,6 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
         }
     }
 
-    private void ConfigureVisualMaterial(RenderSlot slot, CelestialObject obj)
-    {
-        if (slot == null || slot.renderer == null || obj == null)
-            return;
-
-        if (slot.propertyBlock == null)
-            slot.propertyBlock = new MaterialPropertyBlock();
-
-        slot.renderer.GetPropertyBlock(slot.propertyBlock);
-
-        bool isAmbient = obj.Kind == CelestialObjectKind.AmbientStar;
-        bool isLandmark = obj.Kind == CelestialObjectKind.LandmarkStar;
-
-        if (isAmbient || isLandmark)
-        {
-            float random01 = VisualHash01(obj.WorldPosition, obj.VisualVariant);
-            float phase = random01 * Mathf.PI * 2f;
-            float speed = Mathf.Lerp(
-                projectionSettings.twinkleSpeedMin,
-                projectionSettings.twinkleSpeedMax,
-                VisualHash01(obj.WorldPosition * 1.731f, obj.VisualVariant + 17));
-
-            float twinkle = isLandmark
-                ? projectionSettings.landmarkTwinkleStrength
-                : projectionSettings.ambientTwinkleStrength;
-
-            float glow = isLandmark
-                ? projectionSettings.landmarkGlowStrength
-                : projectionSettings.ambientGlowStrength;
-
-            // Brighter/prominent stars get a touch more presence, while the tuning
-            // remains presentation-only and does not alter celestial truth.
-            glow *= Mathf.Lerp(0.9f, 1.15f, Mathf.Clamp01(obj.Brightness01));
-
-            slot.propertyBlock.SetFloat("_TwinklePhase", phase);
-            slot.propertyBlock.SetFloat("_TwinkleSpeed", speed);
-            slot.propertyBlock.SetFloat("_TwinkleStrength", twinkle);
-            slot.propertyBlock.SetFloat("_GlowStrength", glow);
-        }
-        else
-        {
-            slot.propertyBlock.SetFloat("_TwinklePhase", 0f);
-            slot.propertyBlock.SetFloat("_TwinkleSpeed", 0f);
-            slot.propertyBlock.SetFloat("_TwinkleStrength", 0f);
-            slot.propertyBlock.SetFloat("_GlowStrength", 1f);
-        }
-
-        slot.renderer.SetPropertyBlock(slot.propertyBlock);
-    }
-
     private static float VisualHash01(Vector2 position, int variant)
     {
         float n = Mathf.Sin(
@@ -630,25 +466,6 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
         if (material != null)
             Destroy(material);
         material = null;
-    }
-
-    private void CopySortingFromLegacy(SpriteRenderer renderer)
-    {
-        if (renderer == null)
-            return;
-
-        if (legacyStarsRenderer != null)
-        {
-            renderer.sortingLayerID = legacyStarsRenderer.sortingLayerID;
-            renderer.sortingOrder = legacyStarsRenderer.sortingOrder;
-            return;
-        }
-
-        if (projectionSettings != null)
-        {
-            renderer.sortingLayerName = projectionSettings.fallbackSortingLayerName;
-            renderer.sortingOrder = projectionSettings.fallbackSortingOrder;
-        }
     }
 
     private int ResolveSortingOrder(CelestialObjectKind kind)
@@ -869,15 +686,6 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
         }
     }
 
-    private void SetAllSlotsActive(bool active)
-    {
-        for (int i = 0; i < _slots.Count; i++)
-        {
-            if (_slots[i].gameObject != null)
-                _slots[i].gameObject.SetActive(active && _slots[i].celestialObject != null);
-        }
-    }
-
     [ContextMenu("Force Refresh Celestial Sky")]
     public void ForceRefresh()
     {
@@ -894,6 +702,7 @@ public sealed partial class CelestialSkyRenderer : MonoBehaviour
         }
 
         bool hasPosition = TryGetObserverPosition(out Vector2 observer);
+        if (hasPosition) UpdateVisibleCounts(observer);
         Vector2 visibleWorld = CelestialSkyProjection.GetVisibleWorldSize(
             fieldSource.Field.WorldBounds,
             projectionSettings);

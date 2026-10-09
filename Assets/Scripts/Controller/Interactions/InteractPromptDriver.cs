@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
+[DefaultExecutionOrder(200)]
 public sealed class InteractPromptDriver : MonoBehaviour
 {
     [Header("Refs")]
@@ -336,7 +337,7 @@ public sealed class InteractPromptDriver : MonoBehaviour
         }
 
         if (target.SourceCollider != null)
-            return target.SourceCollider.bounds.center;
+            return PhysicsFrame2D.ToRender(target.SourceCollider.attachedRigidbody, target.SourceCollider.bounds.center);
 
         if (target.Owner != null)
             return target.Owner.transform.position;

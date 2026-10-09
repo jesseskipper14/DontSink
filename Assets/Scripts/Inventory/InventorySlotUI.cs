@@ -140,7 +140,7 @@ public sealed class InventorySlotUI : MonoBehaviour,
 
             icon.sprite =
                 hasItem
-                    ? instance.Definition.Icon
+                    ? instance.VisualIcon
                     : null;
         }
 

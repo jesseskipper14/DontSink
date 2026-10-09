@@ -89,6 +89,8 @@ public sealed class SeatController2D : MonoBehaviour
 
     private Boat _cachedBoat;
     private float _underwaterTimer;
+    private Rigidbody2D _occupantBody;
+    private bool _occupantWasSimulated;
 
     private bool EffectivePinOccupantToSeat =>
         _hasRuntimePinFallback ? _runtimePinOccupantToSeat : pinOccupantToSeat;
@@ -135,6 +137,13 @@ public sealed class SeatController2D : MonoBehaviour
 
         Occupant = newOccupant;
         _underwaterTimer = 0f;
+        _occupantBody = newOccupant.GetComponent<Rigidbody2D>();
+        if (EffectivePinOccupantToSeat && _occupantBody != null)
+        {
+            _occupantWasSimulated = _occupantBody.simulated;
+            // A seated actor is constrained by the seat, not by competing floor contacts.
+            _occupantBody.simulated = false;
+        }
 
         PinOccupantIfNeeded();
         return true;
@@ -173,6 +182,18 @@ public sealed class SeatController2D : MonoBehaviour
             return;
 
         GameObject oldOccupant = Occupant;
+        if (EffectivePinOccupantToSeat && _occupantBody != null)
+        {
+            Vector2 position = PhysicsFrame2D.Point(SeatPoint);
+            Rigidbody2D carrier = SeatPoint.GetComponentInParent<Rigidbody2D>();
+            Vector2 velocity = carrier != null ? carrier.GetPointVelocity(position) : Vector2.zero;
+            _occupantBody.simulated = _occupantWasSimulated;
+            // Enabling simulation recreates the physics pose from the Transform.
+            oldOccupant.transform.position = new Vector3(position.x, position.y, oldOccupant.transform.position.z);
+            _occupantBody.position = position;
+            _occupantBody.linearVelocity = velocity;
+        }
+        _occupantBody = null;
         Occupant = null;
         _underwaterTimer = 0f;
 
@@ -202,6 +223,11 @@ public sealed class SeatController2D : MonoBehaviour
         Rigidbody2D rb = Occupant.GetComponent<Rigidbody2D>();
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
+    }
+
+    private void OnDisable()
+    {
+        Eject(SeatEjectReason.AccessInvalid);
     }
 
     private bool IsSeatProbeUnderwater()

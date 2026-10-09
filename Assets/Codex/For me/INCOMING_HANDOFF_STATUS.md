@@ -1,6 +1,6 @@
 # Incoming handoff status
 
-Updated 2026-10-06 — Bosun 🍌. Reviewed against the current incoming folder, implementation checkpoints, source inventory and Skip's accepted tests. DONE_ means the implemented, approved pass scope is complete; it does not include separate roadmap features or guarantee there will be no later bugs.
+Updated 2026-10-08 — Bosun 🍌. Reviewed against the current incoming folder, implementation checkpoints, source inventory and Skip's accepted tests. DONE_ means the implemented, approved pass scope is complete; it does not include separate roadmap features or guarantee there will be no later bugs.
 
 ## Completed handoffs
 
@@ -12,6 +12,7 @@ Updated 2026-10-06 — Bosun 🍌. Reviewed against the current incoming folder,
 - DONE_DontSink_Dynamic_BoatScene_Seafloor_Land_Handoff_Bosun.md
 - DONE_Piloting_Navigation_Reconciliation_Bosun_Handoff.md
 - DONE_Harbor_Node_Transition_Bosun_Handoff.md
+- DONE_DontSink_Multiplayer_Throwable_Cargo_Playtest_Handoff_Bosun.md
 
 New DONE_ renames in this review: camera hardening and dynamic BoatScene terrain. Existing .meta files moved with their documents, preserving Unity GUIDs. The previous status listed an inaccurate DONE camera filename; the list above reflects the actual folder.
 
@@ -19,18 +20,31 @@ Terrain is complete under the approved revised scope: streaming/voyage strip, ge
 
 Piloting is complete with the approved nautical-mile viewscape radius. Automatic observer-height/bridge/crow's-nest integration remains deferred; its multiplier seam exists.
 
-## Pending incoming implementation handoffs — eight, plus settlement follow-through
+## Closed recent passes — 2026-10-07
+
+- DONE_NodeScene_Harbor_Mooring_MiniPass_Bosun_Handoff.md
+- DONE_Surveyor_NPC_MiniPass_Bosun_Handoff.md
+- DONE_Map_Node_Discovery_Bosun_Handoff.md
+
+Quay/mooring closes under Skip's revised authored quay and single visual rope scope. Surveyor and Map/Node Discovery close after the functional local-chart, position-fix, surface-survey, cleanup and sounding-evidence/chart loop, reveal-size/HUD refinements and authored paper-state artwork. Charts for Sale remains the requested service seam; sale inventory/economy, physical POI star clues with held viewing, deterministic building-relative NPC placement, authored Surveyor building and UI polish remain follow-ups. Host/requester guards and isolated tests do not imply completed multiplayer transport.
+
+Recent movement, interaction, facing and sky fixes are implemented. Skip confirms movement fixes, improved jumping, corrected background and relative facing; keep rare high-jump recurrence, ladder prompt and paper display contexts as regression checks rather than missing feature implementations.
+
+The three documents and their .meta files were renamed together; original design text and Unity GUIDs are preserved. The full settlement handoff stays open for generated service/content binding. New incoming documents present since the earlier inventory (world-generation pipeline/geography, preview/accept, cartography LOD and town leader) remain unprefixed and are separate passes. Throwable cargo was closed on 2026-10-08 as recorded below.
+
+## WorldGen V2 — on hold until the weekend
+
+2026-10-08: Reviewed WorldGen_V2_Foundation_Contracts_Audit_Reconciliation_Bosun_Handoff.md as the controlling reconciliation layer for the four world-generation handoffs. No implementation started. Begin with FOUNDATION.1 (identity/isolation/baseline) only when Skip resumes the pass, then stop for review/playtest. Retain compact canonical gameplay truth; close-zoom cartographic detail is visual only, with truthful bathymetry and unchanged topology. Preview sessions remain isolated until acceptance; accepted gameplay interpretation and semantic world artifacts freeze. The new contract supersedes unresolved architecture choices in the 2026-10-07 audit. No scheduled automation was created.
+
+## Remaining incoming implementation handoffs
 
 | Current filename | Status | Remaining work |
 | --- | --- | --- |
-| NodeScene_Harbor_Mooring_MiniPass_Bosun_Handoff.md | Completed under the user-revised scope; filename still unprefixed | Authored quay/markers, curved seabed, concrete material, builder placement under _Deck and one visual rope with moored throttle rejection/Embark release are accepted. Automatic harbor construction, two physical mooring lines and boat-scaled dredging were superseded by direct instructions. See AUTHORED_QUAY_MOORING_SETUP.md. |
 | Node_Settlement_Generation_Bosun_Handoff.md | Foundation and visual refinement accepted; full service/content follow-through remains | Persisted town layouts/history, larger organic spacing/stacking, existing market/ladder/NpcBase reuse, passive wandering, foliage/background, paving, thicker platforms/rails/braces, safe props, prosperity clutter and archetype palettes are implemented/accepted. Functional Surveyor and further service/content binding remain separate follow-through. No blanket morning-playtest blocker remains. |
-| Map_Node_Discovery_Bosun_Handoff.md | DISC.1–5 accepted; DISC.6 seafloor charts implemented, awaits final playtest | Replace geographic knowledge-state/passive discovery with source-driven surface/seafloor/POI coverage; mythic shroud; physical consumable charts; Surveyor local chart and explicit position fix; independent believed-position marker; telescope surface-survey contracts; sounding evidence processing; shared persistence/authority. Existing shroud/chart/sounding foundations are not this completed redesign. |
 | Phase6C_Cartography_Workbench_Bosun_Handoff.md | Pending | Physical shared tabletop workspace, pencil/eraser/freehand marks, pins and route strings, physical measurement/manual navigation records, persistence/authority and freeze behavior. The completed charting instrument does not implement this workbench. Piloting already completed separately; its old future TODO is not an additional unfinished piloting pass. |
 | Celestial_Dynamics_Foundation_Bosun_Handoff.md | Pending | Definition-driven moving celestial bodies, closed ground tracks and authoritative-time evaluation; local altitude/zenith/horizon queries; sky/chart evidence integration; modifiers/conditions and stable IDs/versioning/persistence. Existing static stars and day/night sun/moon animation are not this implementation. |
 | Dont_Sink_Multiplayer_Architecture_Handoff.md | Audit delivered; implementation pending | Modules/boat-power authority first; participant identity and dynamic player bootstrap; transport/authenticated two-instance traffic; atomic shared transactions/claims; shared physics/AI relevance; disconnect/reconnect, crew scenes/death/wipe and host saves/client mirrors. See MULTIPLAYER_INFRASTRUCTURE_AUDIT.md. No real transport/session implementation has been completed. |
 | Legacy_Navigation_Cartography_Cleanup_Bosun_Handoff.md | Audit + destination-free Embark + passive reveal removal implemented; remaining cleanup on hold | Audit KEEP/MIGRATE/REMOVE/DEFER; remove obsolete player route/cluster/range gates, auto-arrival and route UI; reconcile discovery/piloting/celestial movement permissions; migrate old saves; retain graph links required by economy/events/worldgen. Some free-sailing and harbor changes already landed, but the full cleanup audit/migration has not. |
-| Surveyor_NPC_MiniPass_Bosun_Handoff.md | Surveyor NPC accepted; surface survey work implemented, awaits playtest | One functional Surveyor/station per node; local chart issuance/reissue, position fixes, survey-work and chart-sale service/quest seams. Depends on shared discovery/chart contracts rather than a separate Surveyor-only implementation. |
 | Underwater_Background_Visuals_Bosun_Handoff.md | Pending | Three background layers, geographic forms/landmarks, regional flora/fauna and ominous silhouettes, depth/light integration and persistence/transition hardening. |
 | Lighting_Visibility_Darkness_Power_Bosun_Handoff.md | Pending; earlier depth/lamp POC accepted | Full celestial/global illumination, powered fixtures, compartment/portal light, underwater/searchlight/node lighting, occlusion/shadows and performance/save/MP hardening. |
 
@@ -86,3 +100,7 @@ Discovery/Surveyor implementation started 2026-10-06: DISC.1 independent coverag
 
 2026-10-07: User authorized DISC.6 after DISC.5. Sounding line records physical paper-backed evidence; Surveyor processing transforms it into a physical bathymetry-only chart; existing Mapping Table integration consumes/reveals it. Added Sea Floor toggle and known-surface/missing-depth quest eligibility seam. See DISCOVERY_6_SEAFLOOR_CHART_CHECKPOINT.md for playtest, evidence footprint and multiplayer/quest limits. No scene/Inspector edits or commit. Stop for final discovery testing.
 
+
+2026-10-07 throwable cargo prototype: implemented tap-Q ordinary release, hold-Q charged local ballistic preview, canonical host-validated held release, inherited carrier motion, mass-independent launch speed, scoped player collision, swept detection and thrower-only overlap grace. Settled cargo restores ordinary collision settings, including while moving with the boat. See THROWABLE_CARGO_CHECKPOINT.md. No scene/prefab/Inspector changes; multiplayer transport remains separate.
+
+2026-10-08: Skip authorized closing the throwable pass. Renamed its handoff to DONE_DontSink_Multiplayer_Throwable_Cargo_Playtest_Handoff_Bosun.md together with its unchanged .meta file, preserving content and Unity GUID. Closure covers the implemented throwable/cargo-bowling prototype and settling restoration; it does not claim completed multiplayer transport or two-client replication.

@@ -161,6 +161,12 @@ public sealed class BoatBoardingInteractable :
         if (boarding == null)
             return true;
 
+        Vector2 target = PhysicsFrame2D.Point(boarding.IsBoarded ? unboardPoint : boardPoint);
+        Rigidbody2D body = boarding.GetComponent<Rigidbody2D>();
+        Vector2 start = body != null ? body.position : (Vector2)boarding.transform.position;
+        if (boatRoot != null && BoatRailTraversalBlocker.IsCrossingBlocked(boatRoot, start, target,
+            BoatRailTraversalBlocker.ActorHalfSize(boarding, boatRoot))) return false;
+
         if (boarding.IsBoarded)
             return boarding.CurrentBoatRoot == boatRoot;
 

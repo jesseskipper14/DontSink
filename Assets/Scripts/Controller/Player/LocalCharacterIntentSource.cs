@@ -39,9 +39,9 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
             : jumpKey.ToString();
 
     public string ClimbUpBindingLabel =>
-        climbUpKey == KeyCode.None
-            ? "Up"
-            : climbUpKey.ToString();
+        climbUpKey == KeyCode.None || climbUpKey == KeyCode.UpArrow
+            ? "Up Arrow"
+            : $"{climbUpKey} / Up Arrow";
 
     public string ClimbDownBindingLabel =>
         climbDownKey == KeyCode.None
@@ -87,7 +87,7 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
             DiveHeld = Input.GetKey(diveKey),
             SprintHeld = Input.GetKey(sprintKey),
 
-            ClimbUpHeld = Input.GetKey(climbUpKey),
+            ClimbUpHeld = Input.GetKey(climbUpKey) || Input.GetKey(KeyCode.UpArrow),
             ClimbDownHeld = Input.GetKey(climbDownKey),
 
             FocusHeld = focusHeld,
@@ -102,6 +102,9 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
     public void ConsumeJumpPressed()
     {
         _jumpPressedLatched = false;
+        var intent = Current;
+        intent.JumpPressed = false;
+        Current = intent;
     }
 
     private void OnDisable()

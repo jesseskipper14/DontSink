@@ -12,6 +12,7 @@ using UnityEngine;
 /// - Optional legacy fallback can still resolve by raycast/nearby overlap when mouseOnlyTargeting is disabled.
 /// </summary>
 [DisallowMultipleComponent]
+[DefaultExecutionOrder(100)]
 public class Interactor2D : MonoBehaviour
 {
     [Header("Targeting")]
@@ -116,7 +117,7 @@ public class Interactor2D : MonoBehaviour
         RefreshInteractionTargetFilters();
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if (!TryBuildContext(out InteractContext ctx, out InteractionIntent intent))
             return;
@@ -274,7 +275,7 @@ public class Interactor2D : MonoBehaviour
     {
         if (target.SourceCollider != null)
         {
-            Vector2 closest = target.SourceCollider.ClosestPoint(ctx.Origin);
+            Vector2 closest = PhysicsFrame2D.ClosestRenderedPoint(target.SourceCollider, ctx.Origin);
             return Vector2.Distance(ctx.Origin, closest);
         }
 
@@ -469,6 +470,10 @@ public class Interactor2D : MonoBehaviour
                 continue;
 
             if (!TryBuildMouseHoverTarget(col, out InteractionHoverTarget candidate))
+                continue;
+
+            // The mouse sees interpolated graphics; overlap queries see physics poses.
+            if (Vector2.Distance(ctx.AimWorld, PhysicsFrame2D.ClosestRenderedPoint(col, ctx.AimWorld)) > Mathf.Max(.001f, mouseHoverRadius))
                 continue;
 
             // A collider can be physically under the mouse but still belong to an
@@ -687,6 +692,18 @@ public class Interactor2D : MonoBehaviour
         Vector2 mouseWorld,
         in InteractContext ctx)
     {
+        var boarding = GetComponent<PlayerBoardingState>();
+        Rigidbody2D boatBody = boarding != null && boarding.CurrentBoatRoot != null
+            ? boarding.CurrentBoatRoot.GetComponentInParent<Rigidbody2D>() : null;
+        if (boatBody != null)
+        {
+            Vector2 physicsMouse = PhysicsFrame2D.ToPhysics(boatBody, mouseWorld);
+            var movingHits = Physics2D.OverlapCircleAll(physicsMouse, Mathf.Max(.001f, mouseHoverRadius), interactableMask);
+            var stationaryHits = Physics2D.OverlapCircleAll(mouseWorld, Mathf.Max(.001f, mouseHoverRadius), interactableMask);
+            var combined = new List<Collider2D>(movingHits);
+            foreach (var hit in stationaryHits) if (!combined.Contains(hit)) combined.Add(hit);
+            return combined.ToArray();
+        }
         Collider2D[] pointHits = Physics2D.OverlapPointAll(mouseWorld, interactableMask);
         if (ContainsMouseUsefulTarget(pointHits, ctx))
             return pointHits;
@@ -731,7 +748,7 @@ public class Interactor2D : MonoBehaviour
 
     private static float ScoreMouseHoverCandidate(in InteractionHoverTarget target, Collider2D col, Vector2 mouseWorld)
     {
-        float distToMouse = Vector2.Distance(mouseWorld, col.ClosestPoint(mouseWorld));
+        float distToMouse = Vector2.Distance(mouseWorld, PhysicsFrame2D.ClosestRenderedPoint(col, mouseWorld));
         float distToCenter = Vector2.Distance(mouseWorld, col.bounds.center);
         float area = Mathf.Max(0.0001f, col.bounds.size.x * col.bounds.size.y);
         int sortingOrder = GetBestSortingOrder(col);

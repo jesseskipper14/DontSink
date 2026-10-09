@@ -4,7 +4,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
-public sealed class DeckBoardZone :
+public sealed partial class DeckBoardZone :
     MonoBehaviour,
     IInteractable,
     IInteractPromptProvider,
@@ -21,18 +21,13 @@ public sealed class DeckBoardZone :
     [Header("Interaction")]
     [SerializeField] private int priority = 60;
 
-    [Tooltip("How long the player must hold the BOARD intent while inside the zone.")]
+    [Tooltip("How long the player must hold Up (W / Up Arrow by default) while inside the zone to board.")]
     [SerializeField, Min(0f)] private float holdSeconds = 0.35f;
 
     [Tooltip(
         "How long Down must be held before a NEW Jump press confirms intentional unboarding. " +
         "Down alone never unboards.")]
     [SerializeField, Min(0f)] private float unboardArmSeconds = 0.18f;
-
-    [Tooltip(
-        "If true, ClimbUpHeld may also board the player. " +
-        "The primary board action always uses InteractionIntent.InteractHeld.")]
-    [SerializeField] private bool allowSecondaryHoldKey = false;
 
     [Header("Board Target")]
     [Tooltip("Optional explicit boat root. If unset, resolves from parent Boat.")]
@@ -567,7 +562,7 @@ public sealed class DeckBoardZone :
             return false;
         }
 
-        return true;
+        return !IsRailCrossingBlocked(boarding, false);
     }
 
     private bool CanUnboard(
@@ -584,7 +579,7 @@ public sealed class DeckBoardZone :
 
         return
             boatRoot != null &&
-            boarding.CurrentBoatRoot == boatRoot;
+            boarding.CurrentBoatRoot == boatRoot && !IsRailCrossingBlocked(boarding, true);
     }
 
     private bool TryPlaceAtSafeDeckDestination(
@@ -644,7 +639,7 @@ public sealed class DeckBoardZone :
         // Interior boarded state.
         SetPlayerPosition(
             boarding,
-            boardPoint.position);
+            ResolveDeckDestination(boarding));
 
         Physics2D.SyncTransforms();
 
@@ -704,7 +699,7 @@ public sealed class DeckBoardZone :
                 boarding);
 
         Vector2 target =
-            boardPoint.position;
+            ResolveDeckDestination(boarding);
 
         Vector2 delta =
             target - start;
@@ -977,7 +972,7 @@ public sealed class DeckBoardZone :
         }
 
         Vector2 target =
-            boardPoint.position;
+            ResolveDeckDestination(boarding);
 
         Rigidbody2D rb =
             boarding.GetComponent<Rigidbody2D>();
@@ -1052,18 +1047,6 @@ public sealed class DeckBoardZone :
         PlayerBoardingState boarding)
     {
         if (boarding == null)
-            return false;
-
-        IInteractionIntentSource interaction =
-            ResolveInteractionIntentSource(boarding);
-
-        if (interaction != null &&
-            interaction.Current.InteractHeld)
-        {
-            return true;
-        }
-
-        if (!allowSecondaryHoldKey)
             return false;
 
         ICharacterIntentSource character =
@@ -1142,38 +1125,6 @@ public sealed class DeckBoardZone :
         _previousJumpHeld[boarding] =
             character != null &&
             character.Current.JumpHeld;
-    }
-
-    private IInteractionIntentSource ResolveInteractionIntentSource(
-        PlayerBoardingState boarding)
-    {
-        if (boarding == null)
-            return null;
-
-        MonoBehaviour[] direct =
-            boarding.GetComponents<MonoBehaviour>();
-
-        for (int i = 0;
-             direct != null && i < direct.Length;
-             i++)
-        {
-            if (direct[i] is IInteractionIntentSource source)
-                return source;
-        }
-
-        MonoBehaviour[] children =
-            boarding.GetComponentsInChildren<MonoBehaviour>(
-                true);
-
-        for (int i = 0;
-             children != null && i < children.Length;
-             i++)
-        {
-            if (children[i] is IInteractionIntentSource source)
-                return source;
-        }
-
-        return null;
     }
 
     private ICharacterIntentSource ResolveCharacterIntentSource(
@@ -1264,29 +1215,13 @@ public sealed class DeckBoardZone :
             return "Down, then Jump";
         }
 
-        IInteractionIntentSource interaction =
-            ResolveInteractionIntentSource(
-                boarding);
-
-        string primary =
-            interaction is LocalInteractionIntentSource localInteraction
-                ? localInteraction.InteractBindingLabel
-                : "Interact";
-
-        if (!allowSecondaryHoldKey)
-            return primary;
-
-        ICharacterIntentSource secondary =
+        ICharacterIntentSource boardSource =
             ResolveCharacterIntentSource(
                 boarding);
-
-        string secondaryText =
-            secondary is LocalCharacterIntentSource localCharacterSource
+        return
+            boardSource is LocalCharacterIntentSource localCharacterSource
                 ? localCharacterSource.ClimbUpBindingLabel
                 : "Up";
-
-        return
-            $"{primary}/{secondaryText}";
     }
 
     private PlayerBoardingState FindBoardingState(

@@ -1046,7 +1046,7 @@ public sealed class InventoryDragController : MonoBehaviour
         if (dragIcon != null)
         {
             dragIcon.enabled = hasItem;
-            dragIcon.sprite = hasItem ? item.Definition.Icon : null;
+            dragIcon.sprite = hasItem ? item.VisualIcon : null;
         }
 
         if (dragCount != null)

@@ -653,6 +653,7 @@ MonoBehaviour:
   resizeSprite: 1
   resizeCollider: 1
   forceTiledSprite: 1
+  spriteTileScale: 1
   snapResizeInEditor: 1
   resizeSnapIncrement: 1
 --- !u!1 &6797266721846428526
@@ -801,6 +802,7 @@ MonoBehaviour:
   resizeSprite: 1
   resizeCollider: 1
   forceTiledSprite: 1
+  spriteTileScale: 1
   snapResizeInEditor: 1
   resizeSnapIncrement: 1
 --- !u!1 &7355640988721766544

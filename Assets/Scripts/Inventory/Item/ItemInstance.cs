@@ -15,6 +15,7 @@ public sealed class ItemInstance
     public bool HasCartographicChart => cartographicChart?.HasState == true;
     public bool HasSoundingEvidence => HasCartographicChart && cartographicChart.kind == CartographicChartKind.SoundingEvidence;
     public CartographicChartState CartographicChart => HasCartographicChart ? cartographicChart.Copy() : null;
+    public Sprite VisualIcon => definition != null ? definition.ResolveVisualIcon(cartographicChart) : null;
     public void SetCartographicChart(CartographicChartState state)
     {
         if (state != null && (Quantity != 1 || IsContainer))

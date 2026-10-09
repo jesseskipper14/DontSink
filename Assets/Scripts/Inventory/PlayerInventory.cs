@@ -191,11 +191,25 @@ public sealed class PlayerInventory : MonoBehaviour
     }
 
     public bool TryDropSelected(Vector3 worldPosition)
+        => TryDropSelected(worldPosition, out _);
+
+    private bool _releaseBusy;
+    public bool TryDropSelected(Vector3 worldPosition, out WorldItem dropped)
     {
+        dropped = null;
+        if (_releaseBusy) return false;
+        _releaseBusy = true;
+        try { return TryDropSelectedCore(worldPosition, out dropped); }
+        finally { _releaseBusy = false; }
+    }
+
+    private bool TryDropSelectedCore(Vector3 worldPosition, out WorldItem dropped)
+    {
+        dropped = null;
         if (selectedSlot >= BottomBarSlotType.Hotbar0 && selectedSlot <= BottomBarSlotType.Hotbar7)
         {
             int hotbarIndex = SlotTypeToHotbarIndex(selectedSlot);
-            return TryDropHotbarSlot(hotbarIndex, 1, worldPosition);
+            return TryDropHotbarSlot(hotbarIndex, 1, worldPosition, out dropped);
         }
 
         if (equipment == null)
@@ -224,13 +238,13 @@ public sealed class PlayerInventory : MonoBehaviour
                 return
                     sounder.TryReleaseDeployedSounderToWorld(
                         equipped,
-                        out _);
+                        out dropped);
             }
         }
 
         equipment.Remove(selectedSlot);
 
-        if (!WorldItemDropUtility.TryDrop(equipped, worldPosition, DropActor, out _))
+        if (!WorldItemDropUtility.TryDrop(equipped, worldPosition, DropActor, out dropped))
         {
             // Rollback if drop failed after removing from equipment.
             equipment.TryPlace(selectedSlot, equipped, out _);
@@ -238,6 +252,49 @@ public sealed class PlayerInventory : MonoBehaviour
         }
 
         return true;
+    }
+
+    // Trusted host entry point. A future transport must authenticate the sender
+    // before selecting this exact requester's inventory; there is no client-side release.
+    public bool TryThrowHeld(string expectedItemId, Vector2 direction, float charge,
+        out WorldItem thrown, out string reason)
+    {
+        thrown = null;
+        reason = "Throw unavailable.";
+        if (!GameplayAuthority.IsAuthoritative || _releaseBusy) return false;
+        var death = GetComponentInParent<Survival.Death.PlayerDeathSystem>();
+        if (death != null && death.IsDead) return false;
+        var held = equipment != null ? equipment.Get(BottomBarSlotType.Hands) : null;
+        if (selectedSlot != BottomBarSlotType.Hands || held == null ||
+            held.InstanceId != expectedItemId || !CanThrowHeld(held)) return false;
+        if (!WorldTopology.IsFinite(direction.x) || !WorldTopology.IsFinite(direction.y) ||
+            !WorldTopology.IsFinite(direction.sqrMagnitude) || !WorldTopology.IsFinite(charge) ||
+            direction.sqrMagnitude < .0001f) return false;
+        var input = GetComponentInChildren<PlayerInventoryInput>(true)
+            ?? GetComponentInParent<PlayerInventoryInput>();
+        if (input == null) return false;
+        var origin = input.GetThrowWorldPosition();
+        if (!WorldTopology.IsFinite(origin.x) || !WorldTopology.IsFinite(origin.y)) return false;
+        float speed = input.GetThrowSpeed(Mathf.Clamp01(charge));
+        if (!WorldTopology.IsFinite(speed) || speed <= 0f) return false;
+        if (!TryDropSelected(origin, out thrown) || thrown == null) return false;
+        ThrownCargoPhysics.Launch(thrown, DropActor, direction.normalized * speed,
+            input.ThrowerGraceSeconds);
+        reason = "";
+        return true;
+    }
+
+    public bool CanThrowHeld(ItemInstance held)
+    {
+        if (held?.Definition == null || !held.Definition.Droppable ||
+            held.Definition.WorldPrefab == null || equipment == null ||
+            !ReferenceEquals(equipment.Get(BottomBarSlotType.Hands), held)) return false;
+        var sounder = FindSoundingLineController();
+        if (sounder != null && sounder.IsActiveDeployedSounder(held)) return false;
+        var bodies = held.Definition.WorldPrefab.GetComponentsInChildren<Rigidbody2D>(true);
+        foreach (var body in bodies)
+            if (body.bodyType == RigidbodyType2D.Dynamic && body.simulated) return true;
+        return false;
     }
 
     private HandheldSoundingLineController FindSoundingLineController()
@@ -263,7 +320,11 @@ public sealed class PlayerInventory : MonoBehaviour
     }
 
     public bool TryDropHotbarSlot(int index, int quantity, Vector3 worldPosition)
+        => TryDropHotbarSlot(index, quantity, worldPosition, out _);
+
+    public bool TryDropHotbarSlot(int index, int quantity, Vector3 worldPosition, out WorldItem dropped)
     {
+        dropped = null;
         EnsureSlotCount();
 
         InventorySlot slot = GetSlot(index);
@@ -289,7 +350,7 @@ public sealed class PlayerInventory : MonoBehaviour
             slot.Clear();
         }
 
-        if (!WorldItemDropUtility.TryDrop(droppedInstance, worldPosition, DropActor, out _))
+        if (!WorldItemDropUtility.TryDrop(droppedInstance, worldPosition, DropActor, out dropped))
         {
             // Rollback if drop failed after modifying the slot.
             if (ReferenceEquals(droppedInstance, instance))

@@ -1095,7 +1095,7 @@ public sealed class WinchCartridge :
         }
 
         Sprite sprite =
-            item.Definition.Icon;
+            item.VisualIcon;
 
         if (sprite == null ||
             sprite.texture == null)

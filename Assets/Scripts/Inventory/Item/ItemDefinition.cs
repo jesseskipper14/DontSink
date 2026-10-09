@@ -44,6 +44,9 @@ public sealed class ItemDefinition : ScriptableObject
     [SerializeField] private string itemId;
     [SerializeField] private string displayName;
     [SerializeField] private Sprite icon;
+    [Header("Chart State Artwork")]
+    [SerializeField] private Sprite unprocessedSoundingIcon;
+    [SerializeField] private Sprite processedSoundingIcon;
 
     [Header("Classification")]
     [SerializeField] private ItemCategoryFlags itemCategories = ItemCategoryFlags.General;
@@ -222,6 +225,15 @@ public sealed class ItemDefinition : ScriptableObject
     public string ItemId => itemId;
     public string DisplayName => string.IsNullOrWhiteSpace(displayName) ? name : displayName;
     public Sprite Icon => icon;
+    public Sprite ResolveVisualIcon(CartographicChartState chart)
+    {
+        if (chart?.HasState != true) return icon;
+        if (chart.kind == CartographicChartKind.SoundingEvidence)
+            return unprocessedSoundingIcon != null ? unprocessedSoundingIcon : icon;
+        if (chart.kind == CartographicChartKind.Georeferenced && chart.payload?.bathymetry != null)
+            return processedSoundingIcon != null ? processedSoundingIcon : icon;
+        return icon;
+    }
     public ItemCategoryFlags ItemCategories => itemCategories;
     public bool IsSacred => (itemCategories & ItemCategoryFlags.Sacred) != 0;
     public float UnitMass => Mathf.Max(0f, unitMass);

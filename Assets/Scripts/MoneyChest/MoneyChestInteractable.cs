@@ -161,7 +161,9 @@ public sealed class MoneyChestInteractable :
             return false;
 
         Vector2 origin = context.Origin;
-        Vector2 target = promptAnchor != null ? promptAnchor.position : transform.position;
+        Collider2D collider = GetComponent<Collider2D>() ?? GetComponentInChildren<Collider2D>();
+        Vector2 target = collider != null ? PhysicsFrame2D.ClosestRenderedPoint(collider, origin)
+            : (Vector2)(promptAnchor != null ? promptAnchor.position : transform.position);
 
         return Vector2.Distance(origin, target) <= actionRange;
     }

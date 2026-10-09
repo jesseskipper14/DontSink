@@ -254,7 +254,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
             return false;
 
         _controlOwner = owner;
-        _throttleTarget = _rudderTargetFraction = null;
+        // Accepted preset orders continue independently of helm occupancy.
         _currentIntent = BoatControlIntent.Neutral;
         return true;
     }
@@ -282,7 +282,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
 
         _currentIntent = BoatControlIntent.Neutral;
         _controlOwner = null;
-        _throttleTarget = _rudderTargetFraction = null;
+        // Accepted preset orders continue independently of helm occupancy.
     }
 
     public bool HasControlAuthority(object owner)

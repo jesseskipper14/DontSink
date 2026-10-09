@@ -72,6 +72,7 @@ public sealed class WorldItem :
         }
 
         SetHighlighted(false);
+        RefreshChartArtwork();
     }
 
     public void Initialize(ItemInstance instance)
@@ -87,6 +88,8 @@ public sealed class WorldItem :
         }
 
         RefreshPhysicalMass();
+
+        RefreshChartArtwork();
 
         CargoWorldLabel cargoLabel = GetComponentInChildren<CargoWorldLabel>(true);
         if (cargoLabel != null)
@@ -510,6 +513,18 @@ public sealed class WorldItem :
     private void HandleItemMassChanged()
     {
         RefreshPhysicalMass();
+        RefreshChartArtwork();
+    }
+
+    private void RefreshChartArtwork()
+    {
+        if (itemInstance?.HasCartographicChart != true) return;
+        Sprite sprite = itemInstance.VisualIcon;
+        if (sprite == null) return;
+        SpriteRenderer renderer = GetComponent<SpriteRenderer>() ?? GetComponentInChildren<SpriteRenderer>(true);
+        if (renderer != null) renderer.sprite = sprite;
+        if (highlightObject != null)
+            foreach (var highlight in highlightObject.GetComponentsInChildren<SpriteRenderer>(true)) highlight.sprite = sprite;
     }
 
     private void CacheBoat()

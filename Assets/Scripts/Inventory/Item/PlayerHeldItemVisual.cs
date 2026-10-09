@@ -76,6 +76,8 @@ public sealed class PlayerHeldItemVisual : MonoBehaviour
     {
         if (equipment != null)
             equipment.EquipmentChanged -= Refresh;
+        if (_shownItem != null) _shownItem.Changed -= Refresh;
+        _shownItem = null;
     }
 
     private void LateUpdate()
@@ -95,7 +97,12 @@ public sealed class PlayerHeldItemVisual : MonoBehaviour
             ? equipment.Get(BottomBarSlotType.Hands)
             : null;
 
-        _shownItem = handsItem;
+        if (!ReferenceEquals(_shownItem, handsItem))
+        {
+            if (_shownItem != null) _shownItem.Changed -= Refresh;
+            _shownItem = handsItem;
+            if (_shownItem != null) _shownItem.Changed += Refresh;
+        }
 
         if (handsItem == null || handsItem.Definition == null)
         {
@@ -104,7 +111,7 @@ public sealed class PlayerHeldItemVisual : MonoBehaviour
             return;
         }
 
-        Sprite sprite = ResolveSprite(handsItem.Definition);
+        Sprite sprite = handsItem.HasCartographicChart ? handsItem.VisualIcon : ResolveSprite(handsItem.Definition);
         if (sprite == null)
         {
             SetVisible(false);

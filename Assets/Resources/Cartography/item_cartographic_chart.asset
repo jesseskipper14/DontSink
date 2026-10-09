@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: item_cartographic_chart
   displayName: Cartographic Chart
-  icon: {fileID: -183937436912451018, guid: e7c755d583cb4fe41b3ac9457a3fa7ba, type: 3}
+  icon: {fileID: -5708066066166203740, guid: e98351cc975951946a294cdf739141a7, type: 3}
+  unprocessedSoundingIcon: {fileID: 4814698600331271194, guid: ebe9626b7deae6c478daab1b53be28c9, type: 3}
+  processedSoundingIcon: {fileID: -8728273820697733520, guid: 76a37e674daad2a478b81b2dab16785f, type: 3}
   itemCategories: 32
   toolCapabilities: []
   consumesContainedChargesWhileUsed: 0

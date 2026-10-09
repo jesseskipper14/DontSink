@@ -284,6 +284,16 @@ public static partial class BoatBuilderSceneTools
 
             if (placed != null && boatRoot != null)
             {
+                if (_ctx.ActiveTool == BoatBuilderWindow.Tool.RailGate)
+                {
+                    DoorAuthoring gate = placed.GetComponent<DoorAuthoring>();
+                    if (gate != null)
+                    {
+                        Undo.RecordObject(gate, "Assign Rail Gate ID");
+                        gate.DoorId = System.Guid.NewGuid().ToString("N");
+                        EditorUtility.SetDirty(gate);
+                    }
+                }
                 ApplyBuilderSurfaceSnapIfPresent(placed, boatRoot);
             }
 
@@ -576,6 +586,9 @@ public static partial class BoatBuilderSceneTools
             BoatBuilderWindow.Tool.CargoZoneFloor => kit.CargoZoneFloor,
             BoatBuilderWindow.Tool.BoatCleat => kit.BoatCleat,
             BoatBuilderWindow.Tool.Mooring => kit.Mooring,
+            BoatBuilderWindow.Tool.SideRail => kit.SideRail,
+            BoatBuilderWindow.Tool.EndRail => kit.EndRail,
+            BoatBuilderWindow.Tool.RailGate => kit.RailGate,
             _ => null
         };
     }

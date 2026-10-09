@@ -8,6 +8,7 @@ using UnityEngine;
 /// Adds: movement scaling based on body rotation.
 /// </summary>
 [RequireComponent(typeof(CharacterMotor2D))]
+[DisallowMultipleComponent]
 public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
 {
     public bool Enabled => enabledFlag;
@@ -60,6 +61,7 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
 
     // Jump press latch (solves Update vs FixedUpdate pulse drop)
     private bool _jumpPressedLatched;
+    private bool _jumpPressConsumed;
     [Header("Moving Floor Grip")]
     [Tooltip("Maximum horizontal acceleration correcting idle slip on a contacted moving floor. No air/boarding-volume carry.")]
     [SerializeField, Min(0f)] private float movingFloorGripAcceleration = 60f;
@@ -67,9 +69,27 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
     [SerializeField, Min(0f)] private float staticFloorGripAcceleration = 20f;
     private Rigidbody2D _previousSupport;
     private float _previousSupportVelocityX;
+    private Rigidbody2D _airborneSupport;
+    private float _airborneSupportVelocityX;
 
-    public void SetEnabled(bool value) { enabledFlag = value; if (!value) _previousSupport = null; }
-    private void OnDisable() { _previousSupport = null; }
+    /// <summary>Read-only presentation access to the same contacted/jump frame used by air control.</summary>
+    public float GetHorizontalReferenceVelocity(Rigidbody2D body)
+    {
+        if (!isActiveAndEnabled || !enabledFlag || body == null || !body.simulated) return 0f;
+        if (motor != null && motor.TryGetGroundSupport(body, out _, out var velocity))
+            return velocity.x;
+        return _airborneSupport != null && _airborneSupport.simulated &&
+            _airborneSupport.gameObject.activeInHierarchy
+            ? _airborneSupport.GetPointVelocity(body.position).x : 0f;
+    }
+
+    public void SetEnabled(bool value) { enabledFlag = value; if (!value) ClearMovementFrame(); }
+    private void OnDisable() { ClearMovementFrame(); }
+    private void ClearMovementFrame()
+    {
+        _previousSupport = _airborneSupport = null;
+        _jumpPressedLatched = false;
+    }
 
     void Awake()
     {
@@ -97,12 +117,11 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
 
     public void ApplyForces(IForceBody body)
     {
-        if (!enabledFlag) { _previousSupport = null; return; }
+        if (!enabledFlag || !body.rb.simulated) { ClearMovementFrame(); return; }
 
         if (ladderClimber != null && ladderClimber.IsClimbing)
         {
-            _previousSupport = null;
-            _jumpPressedLatched = false;
+            ClearMovementFrame();
 
             if (intentSource is LocalCharacterIntentSource local)
                 local.ConsumeJumpPressed();
@@ -114,14 +133,16 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
 
         float dt = Time.fixedDeltaTime;
         var intent = intentSource.Current;
+        if (!intent.JumpPressed) _jumpPressConsumed = false;
+        bool jumpRequested = intent.JumpPressed && !_jumpPressConsumed;
+        if (intent.JumpPressed) _jumpPressConsumed = true;
 
         // Grounded first (used for jump latch rules)
         motor.UpdateGrounded();
         var waterState = GetComponent<PlayerSubmersionState>();
         if (waterState != null && waterState.SubmergedEnoughToSwim)
         {
-            _previousSupport = null;
-            _jumpPressedLatched = false;
+            ClearMovementFrame();
             motor.TickTimers(dt, false);
             return;
         }
@@ -136,13 +157,33 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
         }
         _previousSupport = movingSupport ? support : null;
         _previousSupportVelocityX = supportVelocity.x;
+        if (movingSupport)
+        {
+            _airborneSupport = support;
+            _airborneSupportVelocityX = support.GetPointVelocity(body.rb.position).x;
+        }
+        else if (hasSupport || (_airborneSupport != null &&
+            (!_airborneSupport.simulated || !_airborneSupport.gameObject.activeInHierarchy)))
+        {
+            _airborneSupport = null;
+        }
+        else if (_airborneSupport != null)
+        {
+            float frameVelocity = _airborneSupport.GetPointVelocity(body.rb.position).x;
+            var velocity = body.rb.linearVelocity;
+            velocity.x += frameVelocity - _airborneSupportVelocityX;
+            body.rb.linearVelocity = velocity;
+            _airborneSupportVelocityX = frameVelocity;
+        }
+        float movementFrameVelocityX = hasSupport ? supportVelocity.x :
+            _airborneSupport != null ? _airborneSupportVelocityX : 0f;
         bool jumpedThisStep = false;
 
         // Compute "uprightness" angle once
         float absFromUpright = Mathf.Abs(Mathf.DeltaAngle(body.rb.rotation, 0f));
         bool jumpAngleOk = absFromUpright <= maxJumpAngleDeg;
 
-        if (intent.JumpPressed && debugJumpDecisions)
+        if (jumpRequested && debugJumpDecisions)
         {
             motor.DebugLogJumpCheck(
                 "CharacterMoveForce.BeforeLatch",
@@ -170,7 +211,7 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
         // Only latch jump when:
         // - grounded (no in-air queueing)
         // - within allowed jump angle
-        if (intent.JumpPressed && motor.IsGrounded && jumpAngleOk)
+        if (jumpRequested && motor.IsGrounded && jumpAngleOk)
         {
             _jumpPressedLatched = true;
 
@@ -184,7 +225,7 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
         }
 
         // If jump was pressed but not eligible, consume it so it can't linger (local input)
-        if (intent.JumpPressed && (!motor.IsGrounded || !jumpAngleOk))
+        if (jumpRequested && (!motor.IsGrounded || !jumpAngleOk))
         {
             if (debugJumpDecisions)
             {
@@ -361,7 +402,7 @@ public class CharacterMoveForce : MonoBehaviour, IOrderedForceProvider
 
         if (moveScale > 0.0001f)
         {
-            float vx = body.rb.linearVelocity.x - (hasSupport ? supportVelocity.x : 0);
+            float vx = body.rb.linearVelocity.x - movementFrameVelocityX;
 
             if (hasSupport && !jumpedThisStep && dt > 0)
             {

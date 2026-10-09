@@ -2,8 +2,10 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
-public sealed class LadderZone : MonoBehaviour, IInteractable, IInteractionPointProvider
+public sealed class LadderZone : MonoBehaviour, IInteractable, IInteractionPointProvider, IInteractPromptProvider
 {
+    public string GetPromptVerb(in InteractContext context) => "Climb";
+    public Transform GetPromptAnchor() => ClimbCenter;
     public enum BoatAccessMode
     {
         // If the ladder belongs to a boat, classify it from the BoatBoardedVolume:
@@ -74,7 +76,7 @@ public sealed class LadderZone : MonoBehaviour, IInteractable, IInteractionPoint
         if (_collider == null)
             return transform.position;
 
-        return _collider.ClosestPoint(fromWorldPoint);
+        return PhysicsFrame2D.ClosestRenderedPoint(_collider, fromWorldPoint);
     }
 
     public bool CanInteract(in InteractContext context)

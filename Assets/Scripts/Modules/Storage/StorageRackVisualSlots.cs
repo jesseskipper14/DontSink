@@ -238,9 +238,9 @@ public sealed class StorageRackVisualSlots : MonoBehaviour, IInstalledModuleLife
         if (item == null || item.Definition == null || anchor == null)
             return null;
 
-        Sprite sprite = TryGetWorldSprite(item.Definition);
+        Sprite sprite = item.HasCartographicChart ? item.VisualIcon : TryGetWorldSprite(item.Definition);
         if (sprite == null)
-            sprite = item.Definition.Icon;
+            sprite = item.VisualIcon;
 
         if (sprite == null)
         {

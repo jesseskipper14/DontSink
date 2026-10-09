@@ -569,7 +569,8 @@ public sealed class MoneyChestSecureSlot :
             return false;
 
         Vector2 origin = context.Origin;
-        Vector2 target = SpawnPosition;
+        Vector2 target = interactionCollider != null
+            ? PhysicsFrame2D.ClosestRenderedPoint(interactionCollider, origin) : SpawnPosition;
 
         return Vector2.Distance(origin, target) <= actionRange;
     }

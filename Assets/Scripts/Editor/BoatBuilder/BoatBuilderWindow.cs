@@ -55,6 +55,9 @@ public class BoatBuilderWindow : EditorWindow
         // Generated technical volume. Append only; do not renumber existing tool ids.
         ItemContainmentZone = 22,
         Mooring = 23,
+        SideRail = 24,
+        EndRail = 25,
+        RailGate = 26,
     }
 
     private struct ActionButtonDef
@@ -488,7 +491,10 @@ public class BoatBuilderWindow : EditorWindow
             Tool.Ladder,
             Tool.Stairs,
             Tool.BoatBoardObject,
-            Tool.DeckBoardZone
+            Tool.DeckBoardZone,
+            Tool.SideRail,
+            Tool.EndRail,
+            Tool.RailGate
         });
 
         DrawToolGroup("Gameplay", new[]
@@ -594,6 +600,9 @@ public class BoatBuilderWindow : EditorWindow
             Tool.CargoZoneFloor => "Cargo Floor",
             Tool.BoatCleat => "Cleat",
             Tool.Mooring => "Mooring",
+            Tool.SideRail => "Side Rail",
+            Tool.EndRail => "Bow / Stern Rail",
+            Tool.RailGate => "Rail Gate",
             _ => tool.ToString()
         };
     }

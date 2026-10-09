@@ -32,6 +32,10 @@ public sealed class ResizableSegment2D : MonoBehaviour
     [SerializeField] private bool resizeCollider = true;
     [SerializeField] private bool forceTiledSprite = true;
 
+    [Tooltip("Scale of each tile in a sliced/tiled sprite. Resizing still uses world-unit dimensions in the segment's local frame.")]
+    [Min(0.01f)]
+    [SerializeField] private float spriteTileScale = 1f;
+
     [Header("Editor Resize Snapping")]
     [SerializeField] private bool snapResizeInEditor = true;
 
@@ -123,18 +127,20 @@ public sealed class ResizableSegment2D : MonoBehaviour
             if (spriteRenderer.drawMode != SpriteDrawMode.Simple)
             {
                 Vector2 size = spriteRenderer.size;
+                float tileScale = Mathf.Max(0.01f, spriteTileScale);
 
                 if (resizeAxis == ResizeAxis.Horizontal || resizeAxis == ResizeAxis.Both)
-                    size.x = width;
+                    size.x = width / tileScale;
 
                 if (resizeAxis == ResizeAxis.Vertical || resizeAxis == ResizeAxis.Both)
-                    size.y = height;
+                    size.y = height / tileScale;
 
                 if ((spriteRenderer.size - size).sqrMagnitude > 0.000001f)
                     spriteRenderer.size = size;
 
-                if (spriteRenderer.transform.localScale != Vector3.one)
-                    spriteRenderer.transform.localScale = Vector3.one;
+                Vector3 visualScale = new Vector3(tileScale, tileScale, 1f);
+                if (spriteRenderer.transform.localScale != visualScale)
+                    spriteRenderer.transform.localScale = visualScale;
             }
             else if (spriteRenderer.sprite != null)
             {
@@ -179,6 +185,7 @@ public sealed class ResizableSegment2D : MonoBehaviour
         width = Mathf.Max(0.01f, width);
         height = Mathf.Max(0.01f, height);
         resizeSnapIncrement = Mathf.Max(0.01f, resizeSnapIncrement);
+        spriteTileScale = Mathf.Max(0.01f, spriteTileScale);
 
         if (!Application.isPlaying)
         {

@@ -113,6 +113,10 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
         if (!snapOnBuilderPlace)
             return false;
 
+        // Placement/resize can have just moved these transforms, before the
+        // editor physics update. Anchor and candidate bounds must use that pose.
+        Physics2D.SyncTransforms();
+
         if (!TryResolveAnchorBounds(out Bounds objectBounds))
         {
             Log("No usable object bounds found.");
@@ -158,6 +162,7 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
             p.y += delta;
 
         transform.position = p;
+        Physics2D.SyncTransforms();
 
         EditorUtility.SetDirty(transform);
 
@@ -311,6 +316,11 @@ public sealed class BoatBuilderSurfaceSnapAuthoring : MonoBehaviour
                 continue;
 
             if (c.isTrigger && !includeTriggerSurfaces)
+                continue;
+
+            // End rails are solid for lateral movement, but they are not deck
+            // surfaces. Otherwise nearby pieces can snap on top of a rail.
+            if (c.GetComponentInParent<BoatRailTraversalBlocker>() != null)
                 continue;
 
             if (!LayerAllowed(c.gameObject.layer))

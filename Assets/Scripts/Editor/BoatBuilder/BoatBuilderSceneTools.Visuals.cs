@@ -298,6 +298,8 @@ public static partial class BoatBuilderSceneTools
 
             BoatBuilderWindow.Tool.Mooring =>
                 GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.ExteriorDeck),
+            BoatBuilderWindow.Tool.SideRail or BoatBuilderWindow.Tool.EndRail or BoatBuilderWindow.Tool.RailGate =>
+                GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.ExteriorDeck),
 
             BoatBuilderWindow.Tool.Hatch =>
                 GetOrCreateBoatCategoryRoot(boatRoot, BoatVisualCategory.ExteriorDeck),

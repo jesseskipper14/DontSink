@@ -19,6 +19,8 @@ public sealed class MoneyChestSlotSecuredItem : MonoBehaviour
     private Boat _boat;
     private MoneyChestSecureSlot _slot;
     private Rigidbody2D _rb;
+    private RigidbodyInterpolation2D _originalInterpolation;
+    private bool _hasOriginalInterpolation;
 
     public bool IsSecured => isSecured;
     public string SlotStableId => slotStableId;
@@ -36,7 +38,33 @@ public sealed class MoneyChestSlotSecuredItem : MonoBehaviour
         if (!isSecured)
             return;
 
-        ApplySecuredTransform();
+        if (!lockPhysics || _rb == null)
+            ApplySecuredTransform();
+    }
+
+    private void FixedUpdate()
+    {
+        if (!isSecured || !lockPhysics || _rb == null) return;
+        ApplySecuredBodyPose();
+    }
+
+    private void ApplySecuredBodyPose()
+    {
+        Transform anchor = _slot != null ? _slot.ChestAnchorOrSelf : null;
+        Rigidbody2D carrier = _boat != null ? _boat.rb : null;
+        if (anchor != null)
+        {
+            _rb.position = PhysicsFrame2D.Point(anchor);
+            _rb.rotation = anchor.eulerAngles.z + (carrier != null ? Mathf.DeltaAngle(carrier.transform.eulerAngles.z, carrier.rotation) : 0);
+        }
+        else if (_boat != null)
+        {
+            _rb.position = PhysicsFrame2D.TransformPoint(_boat.transform, securedLocalPosition);
+            _rb.rotation = (carrier != null ? carrier.rotation : _boat.transform.eulerAngles.z) + securedLocalRotationZ;
+        }
+        else return;
+        _rb.linearVelocity = carrier != null ? carrier.GetPointVelocity(_rb.position) : Vector2.zero;
+        _rb.angularVelocity = carrier != null ? carrier.angularVelocity : 0;
     }
 
     public void SecureToSlot(
@@ -146,10 +174,18 @@ public sealed class MoneyChestSlotSecuredItem : MonoBehaviour
         if (_rb == null)
             return;
 
+        if (!_hasOriginalInterpolation)
+        {
+            _originalInterpolation = _rb.interpolation;
+            _hasOriginalInterpolation = true;
+        }
+        if (_boat != null && _boat.rb != null) _rb.interpolation = _boat.rb.interpolation;
+
         _rb.linearVelocity = Vector2.zero;
         _rb.angularVelocity = 0f;
         _rb.bodyType = RigidbodyType2D.Kinematic;
         _rb.simulated = true;
+        ApplySecuredBodyPose();
     }
 
     private void UnlockPhysics()
@@ -164,6 +200,8 @@ public sealed class MoneyChestSlotSecuredItem : MonoBehaviour
 
         _rb.bodyType = RigidbodyType2D.Dynamic;
         _rb.simulated = true;
+        if (_hasOriginalInterpolation) _rb.interpolation = _originalInterpolation;
+        _hasOriginalInterpolation = false;
         _rb.WakeUp();
     }
 }

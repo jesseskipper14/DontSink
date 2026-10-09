@@ -43,14 +43,7 @@ public static class WorldItemDropUtility
     public static void InheritReleaseVelocity(WorldItem item, GameObject actor)
     {
         if (item == null || actor == null) return;
-        Rigidbody2D carrier = null;
-        var bellState = actor.GetComponentInParent<PlayerBellOccupantState>()
-            ?? actor.GetComponentInChildren<PlayerBellOccupantState>(true);
-        if (bellState != null && bellState.IsInsideBell && bellState.CurrentBell != null)
-            carrier = bellState.CurrentBell.GetComponent<Rigidbody2D>();
-        TryFindBoardedBoat(actor, out var boat);
-        if (carrier == null && boat != null) carrier = boat.rb;
-        if (carrier == null) carrier = actor.GetComponentInParent<Rigidbody2D>();
+        var carrier = ResolveReleaseCarrier(actor);
         if (carrier == null || !carrier.simulated) return;
         // Set once, never add: initialization/policy callbacks must not double carry.
         foreach (var body in item.GetComponentsInChildren<Rigidbody2D>(true))
@@ -59,6 +52,29 @@ public static class WorldItemDropUtility
             body.linearVelocity = carrier.GetPointVelocity(body.worldCenterOfMass);
             body.angularVelocity = carrier.angularVelocity;
         }
+    }
+
+    public static Vector2 GetReleaseVelocity(GameObject actor, Vector2 position, out float angular)
+    {
+        angular = 0f;
+        if (actor == null) return Vector2.zero;
+        var carrier = ResolveReleaseCarrier(actor);
+        if (carrier == null || !carrier.simulated) return Vector2.zero;
+        angular = carrier.angularVelocity;
+        return carrier.GetPointVelocity(position);
+    }
+
+    private static Rigidbody2D ResolveReleaseCarrier(GameObject actor)
+    {
+        Rigidbody2D carrier = null;
+        var bellState = actor.GetComponentInParent<PlayerBellOccupantState>()
+            ?? actor.GetComponentInChildren<PlayerBellOccupantState>(true);
+        if (bellState != null && bellState.IsInsideBell && bellState.CurrentBell != null)
+            carrier = bellState.CurrentBell.GetComponent<Rigidbody2D>();
+        TryFindBoardedBoat(actor, out var boat);
+        if (carrier == null && boat != null) carrier = boat.rb;
+        if (carrier == null) carrier = actor.GetComponentInParent<Rigidbody2D>();
+        return carrier;
     }
 
     public static void ApplyBoatOwnership(

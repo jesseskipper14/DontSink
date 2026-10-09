@@ -8,6 +8,8 @@ public sealed class SpriteFacingController : MonoBehaviour
     [SerializeField] private MonoBehaviour intentSourceComponent; // assign LocalCharacterIntentSource
 
     private ICharacterIntentSource _intentSource;
+    private CharacterMoveForce _movement;
+    private PlayerLadderClimber _ladder;
 
     [Tooltip("Minimum horizontal speed before flipping when NOT focusing.")]
     public float flipThreshold = 0.1f;
@@ -16,6 +18,11 @@ public sealed class SpriteFacingController : MonoBehaviour
     {
         if (!rb) rb = GetComponentInParent<Rigidbody2D>();
         if (!visualRoot) visualRoot = transform;
+        if (rb)
+        {
+            _movement = rb.GetComponent<CharacterMoveForce>();
+            _ladder = rb.GetComponent<PlayerLadderClimber>();
+        }
 
         _intentSource = intentSourceComponent as ICharacterIntentSource;
 
@@ -44,7 +51,10 @@ public sealed class SpriteFacingController : MonoBehaviour
         }
         else
         {
-            float vx = rb.linearVelocity.x;
+            // Ladder facing belongs to the climber; pinned seats have no walking velocity.
+            if (!rb.simulated || (_ladder != null && _ladder.IsClimbing)) return;
+            float vx = rb.linearVelocity.x -
+                (_movement != null ? _movement.GetHorizontalReferenceVelocity(rb) : 0f);
 
             if (Mathf.Abs(vx) > flipThreshold)
                 facingX = vx;

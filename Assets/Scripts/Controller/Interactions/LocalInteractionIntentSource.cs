@@ -3,6 +3,7 @@ using UnityEngine;
 /// <summary>
 /// Local input adapter for interaction. In MP, only owning client runs this.
 /// </summary>
+[DefaultExecutionOrder(-50)]
 public class LocalInteractionIntentSource : MonoBehaviour, IInteractionIntentSource
 {
     [Header("Bindings (legacy input manager)")]
@@ -24,7 +25,23 @@ public class LocalInteractionIntentSource : MonoBehaviour, IInteractionIntentSou
     [Header("Gameplay Input Blocking")]
     [SerializeField] private bool respectGameplayInputBlocker = true;
 
-    public InteractionIntent Current { get; private set; }
+    private InteractionIntent _current;
+    public InteractionIntent Current
+    {
+        get
+        {
+            var intent = _current;
+            // Prompts query in LateUpdate, after camera follow. Reproject the mouse
+            // with that camera pose without sampling button pulses a second time.
+            if (intent.HasAimWorld && useMouseAim)
+            {
+                Camera camera = CameraManager.CameraForActor(this);
+                if (camera != null) intent.AimWorld = camera.ScreenToWorldPoint(Input.mousePosition);
+            }
+            return intent;
+        }
+        private set => _current = value;
+    }
 
     /// <summary>
     /// Presentation-only binding label for local UI. Gameplay should consume

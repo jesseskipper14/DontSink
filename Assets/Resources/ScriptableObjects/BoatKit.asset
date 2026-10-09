@@ -34,6 +34,9 @@ MonoBehaviour:
   CargoZoneFloor: {fileID: 5848625884918575200, guid: 8c3c53a9936827d4997a5e4f9155b576, type: 3}
   BoatCleat: {fileID: 5848625884918575200, guid: 2522abb216ef4e2419f0643ee9b9d7c0, type: 3}
   Mooring: {fileID: 4422686620459616180, guid: b3287ab7681fbec4ca4616d9fcacc5c1, type: 3}
+  SideRail: {fileID: 1402038499785206007, guid: a61728d906fecc3439fa123745664451, type: 3}
+  EndRail: {fileID: 6081200349788839286, guid: bf4db4e25fd5b094d850950632efbce0, type: 3}
+  RailGate: {fileID: 2437062553135852526, guid: 0b6bf6d452d542d40b2a28b805110d67, type: 3}
   HardpointEngine: {fileID: 3363453043375993549, guid: 028a492fde13236459f21a4838e45c2b, type: 3}
   HardpointPump: {fileID: 3363453043375993549, guid: 47bfdd4caca8f1245872766899a7c11e, type: 3}
   HardpointUtility: {fileID: 3363453043375993549, guid: f032db6fb40743c4a92fadcdf3de128c, type: 3}

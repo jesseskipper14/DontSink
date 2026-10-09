@@ -162,6 +162,7 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
     // Position tracked in ladder-local space while climbing.
     private Vector3 _ladderLocalClimbPosition;
+    private Vector2 _lastRelativeClimbVelocity;
 
     public bool IsClimbing => _activeLadder != null;
     public LadderZone ActiveLadder => _activeLadder;
@@ -291,8 +292,9 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         }
 
         Vector2 currentWorld = _rb.position;
-        Vector2 proposedWorld = ladderFrame.TransformPoint(proposedLocalPos);
-        Vector2 delta = proposedWorld - currentWorld;
+        Vector2 proposedWorld = PhysicsFrame2D.TransformPoint(ladderFrame, proposedLocalPos);
+        // Cast the climb motion relative to the ladder, not the boat's travel.
+        Vector2 delta = proposedWorld - PhysicsFrame2D.TransformPoint(ladderFrame, _ladderLocalClimbPosition);
 
         if (blockClimbIntoSolid && delta.sqrMagnitude > 0.000001f && WouldClimbHitSolid(delta))
         {
@@ -305,19 +307,25 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             }
 
             proposedLocalPos = _ladderLocalClimbPosition;
-            proposedWorld = ladderFrame.TransformPoint(proposedLocalPos);
+            proposedWorld = PhysicsFrame2D.TransformPoint(ladderFrame, proposedLocalPos);
         }
 
+        _lastRelativeClimbVelocity = (proposedWorld - PhysicsFrame2D.TransformPoint(ladderFrame, _ladderLocalClimbPosition)) / Time.fixedDeltaTime;
         _ladderLocalClimbPosition = proposedLocalPos;
 
-        _rb.MovePosition(proposedWorld);
+        // Exit before issuing movement. A pending MovePosition could overwrite
+        // the exit's placement/velocity during the next physics simulation.
+        HandleAutoExit(alongLadder, acrossLadder);
+        if (!IsClimbing) return;
+
+        Rigidbody2D carrier = ladderFrame.GetComponentInParent<Rigidbody2D>();
+        if (carrier != null)
+            proposedWorld += carrier.GetPointVelocity(proposedWorld) * Time.fixedDeltaTime;
+        _rb.linearVelocity = (proposedWorld - _rb.position) / Time.fixedDeltaTime;
 
         if (alignRotationToLadderWhileClimbing)
             AlignRotationToLadder(ladderFrame);
 
-        _rb.linearVelocity = Vector2.zero;
-
-        HandleAutoExit(alongLadder, acrossLadder);
     }
 
     public bool CanBeginClimb(LadderZone ladder)
@@ -331,8 +339,9 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         if (!CanAccessLadderByBoatContext(ladder))
             return false;
 
-        LadderZone bestNearby = FindBestNearbyLadder();
-        return ReferenceEquals(bestNearby, ladder);
+        // Validate the hovered ladder directly; a second nearest-target contest
+        // can disagree with the hover resolver on moving or overlapping ladders.
+        return Vector2.Distance(transform.position, ladder.GetClosestInteractionPoint(transform.position)) <= ladderSearchRadius;
     }
 
     public bool TryBeginClimb(LadderZone ladder)
@@ -341,6 +350,7 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             return false;
 
         _activeLadder = ladder;
+        _lastRelativeClimbVelocity = Vector2.zero;
         BeginIgnoringHatchLedgeLayer();
         BeginIgnoringExternalBoatCollisionsIfNeeded();
 
@@ -362,7 +372,7 @@ public sealed class PlayerLadderClimber : MonoBehaviour
         }
 
         Transform ladderFrame = ladder.transform;
-        _ladderLocalClimbPosition = ladderFrame.InverseTransformPoint(_rb.position);
+        _ladderLocalClimbPosition = PhysicsFrame2D.InverseTransformPoint(ladderFrame, _rb.position);
 
         float centerLocalX = GetClimbCenterLocalX(ladderFrame);
 
@@ -378,7 +388,7 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             _ladderLocalClimbPosition.x = centerLocalX + offset;
         }
 
-        Vector2 startWorld = ladderFrame.TransformPoint(_ladderLocalClimbPosition);
+        Vector2 startWorld = PhysicsFrame2D.TransformPoint(ladderFrame, _ladderLocalClimbPosition);
         _rb.position = startWorld;
 
         Log($"Begin climb on ladder={ladder.name}, localPos={_ladderLocalClimbPosition}");
@@ -393,14 +403,16 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
         Log($"End climb on ladder={_activeLadder.name}, keepVelocity={keepVelocity}");
 
+        Rigidbody2D ladderBody = _activeLadder.GetComponentInParent<Rigidbody2D>();
+        Vector2 inheritedVelocity = ladderBody != null ? ladderBody.GetPointVelocity(_rb.position) : Vector2.zero;
         _activeLadder = null;
         ScheduleRestoreExternalBoatCollisions();
 
         if (disableGravityWhileClimbing)
             _rb.gravityScale = _originalGravityScale;
 
-        if (!keepVelocity)
-            _rb.linearVelocity = Vector2.zero;
+        _rb.linearVelocity = inheritedVelocity + (keepVelocity ? _lastRelativeClimbVelocity : Vector2.zero);
+        _lastRelativeClimbVelocity = Vector2.zero;
 
         ScheduleRestoreHatchLedgeLayer();
     }
@@ -491,14 +503,14 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
         EndClimb(keepVelocity: false);
 
-        _rb.linearVelocity = sideDir * sideDetachVelocity;
+        _rb.linearVelocity += sideDir * sideDetachVelocity;
 
         Log($"Detached sideways. dir={dir}, velocity={_rb.linearVelocity}");
     }
 
     private LadderZone FindBestNearbyLadder()
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, ladderSearchRadius, ladderMask);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(_rb.position, ladderSearchRadius, ladderMask);
 
         LadderZone best = null;
         float bestScore = float.PositiveInfinity;
@@ -630,7 +642,7 @@ public sealed class PlayerLadderClimber : MonoBehaviour
 
         bool inside =
             boardedVolume.ContainsWorldPoint(
-                ladder.ClimbCenter.position);
+                PhysicsFrame2D.ToPhysics(boardedVolume.GetComponentInParent<Rigidbody2D>(), ladder.ClimbCenter.position));
 
         return inside
             ? LadderZone.BoatAccessMode.InteriorOnly
@@ -669,7 +681,7 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             alongLadder > 0.01f)
         {
             if (_activeLadder.TopExitPoint != null)
-                _rb.position = _activeLadder.TopExitPoint.position;
+                _rb.position = PhysicsFrame2D.Point(_activeLadder.TopExitPoint);
 
             EndClimb(keepVelocity: false);
             return;
@@ -680,7 +692,7 @@ public sealed class PlayerLadderClimber : MonoBehaviour
             alongLadder < -0.01f)
         {
             if (_activeLadder.BottomExitPoint != null)
-                _rb.position = _activeLadder.BottomExitPoint.position;
+                _rb.position = PhysicsFrame2D.Point(_activeLadder.BottomExitPoint);
 
             EndClimb(keepVelocity: false);
             return;
