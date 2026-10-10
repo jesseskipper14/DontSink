@@ -24,6 +24,20 @@ public class AgentSpawnPoint : MonoBehaviour
     public string StableId => stableId;
     public AgentController SpawnedAgent => spawnedAgent;
 
+    /// <summary>Buildings supply persistent semantic identity and authored placement before spawning.</summary>
+    public void Configure(AgentDefinition agentDefinition, string persistentId, string assignedNode,
+        Transform parent, AgentHomeBounds bounds, bool groundSnap = true)
+    {
+        if (spawnedAgent != null) return;
+        definition = agentDefinition;
+        stableId = persistentId;
+        nodeId = assignedNode;
+        spawnParent = parent;
+        homeBounds = bounds;
+        snapToGroundAfterSpawn = groundSnap;
+        spawnOnStart = false;
+    }
+
     private void Start()
     {
         if (spawnOnStart)
@@ -63,6 +77,7 @@ public class AgentSpawnPoint : MonoBehaviour
         }
 
         spawnedAgent.Initialize(definition, stableId, nodeId, homeBounds);
+        AgentRegistry.Register(spawnedAgent);
 
         if (snapToGroundAfterSpawn)
         {

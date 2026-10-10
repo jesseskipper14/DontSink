@@ -270,6 +270,7 @@ public static class WorldMapSaveBuilder
             {
                 stableId = rt.StableId,
                 settlement = state.settlement?.Copy(),
+                civic = state.civic?.Copy(),
                 nodeIndex = rt.NodeIndex,
                 population = state.population,
                 minPopulation = state.minPopulation,

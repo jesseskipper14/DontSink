@@ -13,6 +13,7 @@ public sealed class ItemInstance
     public ChartingInstrumentState ChartingInstrument => chartingInstrument;
     [SerializeField] private CartographicChartState cartographicChart;
     public bool HasCartographicChart => cartographicChart?.HasState == true;
+    public bool HasStarReference => HasCartographicChart && StarReferenceItems.HasStars(cartographicChart.starReference);
     public bool HasSoundingEvidence => HasCartographicChart && cartographicChart.kind == CartographicChartKind.SoundingEvidence;
     public CartographicChartState CartographicChart => HasCartographicChart ? cartographicChart.Copy() : null;
     public Sprite VisualIcon => definition != null ? definition.ResolveVisualIcon(cartographicChart) : null;

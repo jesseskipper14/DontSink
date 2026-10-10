@@ -39,6 +39,8 @@ public sealed class CelestialObservationOverlayRunner : MonoBehaviour
 
     public CelestialObservation LastObservation => lastObservation;
     public CelestialChartFragmentSnapshot LastFragment => lastFragment;
+    public ItemDefinition ChartingPaperDefinition => chartingPaperDefinition;
+    public CelestialChartFragmentVisualSettings FragmentVisualSettings => fragmentVisualSettings;
 
     private bool _warnedMissingSkyVisualManager;
     private GameObject _activeRequester;

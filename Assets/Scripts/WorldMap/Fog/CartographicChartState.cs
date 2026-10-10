@@ -12,6 +12,9 @@ public sealed class CartographicChartState : ISerializationCallbackReceiver
     public string title;
     [TextArea] public string referenceText;
     public string referenceSpriteResourcePath;
+    // Optional immutable, carried star-bearing evidence. Empty legacy payloads
+    // remain ordinary charts and are never eligible telescope references.
+    public CelestialChartFragmentSnapshot starReference;
     public int worldSeed;
     public int topographyVersion;
     public Rect worldBounds;
@@ -28,6 +31,7 @@ public sealed class CartographicChartState : ISerializationCallbackReceiver
     public CartographicChartState Copy() => new CartographicChartState {
         version = version, kind = kind, title = title, referenceText = referenceText,
         referenceSpriteResourcePath = referenceSpriteResourcePath,
+        starReference = StarReferenceItems.CopyFragment(starReference),
         worldSeed = worldSeed, topographyVersion = topographyVersion, worldBounds = worldBounds,
         sounding = sounding?.Copy(),
         payload = payload == null ? null : new WorldMapCartographicPayload {

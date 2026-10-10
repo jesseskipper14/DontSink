@@ -56,6 +56,7 @@ public class CelestialBodyManager : MonoBehaviour, ICelestialBodyService
     // =====================================================
 
     private ITimeOfDayService time;
+    private GlobalBrightnessManager daylight;
 
     /// <summary>
     /// Called on scene load to reconnect scene-owned transforms/lights.
@@ -82,12 +83,15 @@ public class CelestialBodyManager : MonoBehaviour, ICelestialBodyService
             OnTimeChanged(time.CurrentTime);
     }
 
-    public void Initialize(ITimeOfDayService timeService)
+    public void Initialize(ITimeOfDayService timeService) => Initialize(timeService, null);
+
+    public void Initialize(ITimeOfDayService timeService, GlobalBrightnessManager brightness)
     {
         if (time != null)
             time.OnTimeChanged -= OnTimeChanged;
 
         time = timeService;
+        daylight = brightness;
 
         if (time != null)
             time.OnTimeChanged += OnTimeChanged;
@@ -123,7 +127,7 @@ public class CelestialBodyManager : MonoBehaviour, ICelestialBodyService
 
         sunTransform.localPosition = new Vector3(x, y, sunTransform.localPosition.z);
 
-        float intensity01 = sunBrightnessCurve.Evaluate(t);
+        float intensity01 = daylight != null ? daylight.EvaluateDaylight01(hour) : Mathf.Clamp01(sunBrightnessCurve.Evaluate(t));
         sunLight.intensity = intensity01 * sunMaxIntensity;
 
         if (sunCorona && coronaMaterial)

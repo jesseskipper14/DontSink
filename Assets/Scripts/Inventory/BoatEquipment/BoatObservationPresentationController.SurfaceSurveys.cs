@@ -20,6 +20,7 @@ public sealed partial class BoatObservationPresentationController
     private void OnGUI()
     {
         if (!IsEscapeOpen || telescope == null || sessionCamera == null || !HasLocalAuthority(out _)) return;
+        DrawReferenceComparisonGUI();
         var book = SurfaceSurveyAuthority.Book;
         if (book == null) return;
         var jobs = book.contracts.FindAll(c => c != null && !c.rewardIssued);

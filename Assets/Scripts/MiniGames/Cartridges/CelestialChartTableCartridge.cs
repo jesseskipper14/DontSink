@@ -1119,6 +1119,16 @@ public sealed partial class CelestialChartTableCartridge : IMiniGameCartridge, I
             return y + 64f;
         }
 
+        bool previousEnabled = GUI.enabled;
+        GUI.enabled = previousEnabled && GameplayAuthority.IsAuthoritative && _context != null;
+        if (GUI.Button(new Rect(x, y, w, 32f), "Make carried reference · 1 Charting Paper"))
+        {
+            var observation = UnityEngine.Object.FindFirstObjectByType<CelestialObservationOverlayRunner>();
+            StarReferenceItems.TryCopyRecordedFragment(_requester, fragment.fragmentId,
+                observation != null ? observation.ChartingPaperDefinition : null, out _statusLine);
+        }
+        GUI.enabled = previousEnabled;
+        y += 38f;
         state.TryGetPlacement(fragment.fragmentId, out CelestialChartBoardPlacementSnapshot placement);
 
         GUI.Label(

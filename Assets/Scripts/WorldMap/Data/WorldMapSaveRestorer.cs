@@ -321,9 +321,11 @@ public static class WorldMapSaveRestorer
         {
             population = snap.population,
             settlement = snap.settlement?.Copy(),
+            civic = snap.civic?.Copy() ?? new NodeCivicState(),
             minPopulation = snap.minPopulation <= 0f ? 10f : snap.minPopulation,
             maxPopulation = snap.maxPopulation <= 0f ? 500f : snap.maxPopulation
         };
+        state.civic.EnsureDefaults();
 
         if (snap.stats != null)
         {

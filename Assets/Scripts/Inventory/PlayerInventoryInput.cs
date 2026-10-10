@@ -171,6 +171,7 @@ public sealed class PlayerInventoryInput : MonoBehaviour
     private void HandleSelection()
     {
         float scroll = Input.mouseScrollDelta.y;
+        if (GetComponentInParent<BoatObservationPresentationController>()?.IsEscapeOpen == true) scroll = 0f;
         if (scroll > 0.01f) inventory.CycleSelection(-1);
         else if (scroll < -0.01f) inventory.CycleSelection(1);
         if (Input.GetKeyDown(KeyCode.Alpha1)) SelectHotbar(0);

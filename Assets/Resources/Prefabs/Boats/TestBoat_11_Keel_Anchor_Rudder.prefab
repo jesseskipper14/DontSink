@@ -2613,6 +2613,32 @@ MonoBehaviour:
           title: 
           referenceText: 
           referenceSpriteResourcePath: 
+          starReference:
+            version: 1
+            isStarterPatch: 0
+            fragmentId: 
+            observationId: 
+            createdByPlayerKey: 
+            worldSeed: 0
+            celestialGeneratorVersion: 0
+            celestialConfigHash: 
+            surveyRegionKey: 
+            surveySequence: 0
+            observationDatumWorldPosition: {x: 0, y: 0}
+            observationDatumInstrumentPosition01: {x: 0, y: 0}
+            capturedHour: 0
+            capturedYear: 0
+            capturedMonth: 0
+            capturedDay: 0
+            starVisibility01: 0
+            quality01: 0
+            visualSeed: 0
+            visualGenerationVersion: 1
+            recordedInstrumentRotationDegrees: 0
+            recordedInstrumentZoom: 0
+            recordedInstrumentCenter01: {x: 0, y: 0}
+            patternObjectStableIds: []
+            marks: []
           worldSeed: 0
           topographyVersion: 0
           worldBounds:

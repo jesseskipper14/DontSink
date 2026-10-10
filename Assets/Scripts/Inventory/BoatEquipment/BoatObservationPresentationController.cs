@@ -159,7 +159,8 @@ public sealed partial class BoatObservationPresentationController : MonoBehaviou
                 return;
             }
         }
-        zoom = Mathf.Clamp(zoom + Input.mouseScrollDelta.y * telescope.ZoomSpeed,
+        TickReferenceComparison();
+        zoom = Mathf.Clamp(zoom + (ReferenceConsumesScroll ? 0f : Input.mouseScrollDelta.y) * telescope.ZoomSpeed,
             telescope.MinimumZoom, telescope.MaximumZoom);
         ApplyZoom();
         AdvanceTransition(Time.unscaledDeltaTime);
@@ -182,6 +183,7 @@ public sealed partial class BoatObservationPresentationController : MonoBehaviou
 
     public void ExitObservation()
     {
+        CloseReferenceComparison();
         if (!IsActive || isExiting) return;
         CancelSurfaceSurvey();
         isExiting = true;
@@ -194,12 +196,14 @@ public sealed partial class BoatObservationPresentationController : MonoBehaviou
     public bool CloseFromEscape()
     {
         if (!IsEscapeOpen) return false;
+        if (referenceVisual != null || referenceChooser) { CloseReferenceComparison(); return true; }
         ExitObservation();
         return true;
     }
 
     private void FinishObservation()
     {
+        CloseReferenceComparison();
         CancelSurfaceSurvey();
         skySessions.Remove(this);
         RestoreRenderers();

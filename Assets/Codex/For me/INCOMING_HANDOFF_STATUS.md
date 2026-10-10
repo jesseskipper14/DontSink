@@ -1,8 +1,10 @@
 # Incoming handoff status
 
-Updated 2026-10-08 — Bosun 🍌. Reviewed against the current incoming folder, implementation checkpoints, source inventory and Skip's accepted tests. DONE_ means the implemented, approved pass scope is complete; it does not include separate roadmap features or guarantee there will be no later bugs.
+Updated 2026-10-09 — Bosun 🍌. Reviewed against the current incoming folder, implementation checkpoints, source inventory and Skip's accepted tests. DONE_ means the implemented, approved pass scope is complete; it does not include separate roadmap features or guarantee there will be no later bugs.
 
 ## Completed handoffs
+
+- DONE_Telescope_Chart_Reference_Comparison_Bosun_Handoff.md — TELREF.1 accepted 2026-10-09; visual-consistency and boat-relative sky-center follow-ups remain separate TODOs.
 
 - DONE_Phase7_Celestial_Naming_Constellations_Codex_Handoff.md
 - DONE_Observation_Telescope_Bosun_Handoff.md
@@ -13,6 +15,7 @@ Updated 2026-10-08 — Bosun 🍌. Reviewed against the current incoming folder,
 - DONE_Piloting_Navigation_Reconciliation_Bosun_Handoff.md
 - DONE_Harbor_Node_Transition_Bosun_Handoff.md
 - DONE_DontSink_Multiplayer_Throwable_Cargo_Playtest_Handoff_Bosun.md
+- DONE_DontSink_Boat_Railings_Boarding_MiniPass_Bosun.md
 
 New DONE_ renames in this review: camera hardening and dynamic BoatScene terrain. Existing .meta files moved with their documents, preserving Unity GUIDs. The previous status listed an inaccurate DONE camera filename; the list above reflects the actual folder.
 
@@ -45,6 +48,7 @@ The three documents and their .meta files were renamed together; original design
 | Celestial_Dynamics_Foundation_Bosun_Handoff.md | Pending | Definition-driven moving celestial bodies, closed ground tracks and authoritative-time evaluation; local altitude/zenith/horizon queries; sky/chart evidence integration; modifiers/conditions and stable IDs/versioning/persistence. Existing static stars and day/night sun/moon animation are not this implementation. |
 | Dont_Sink_Multiplayer_Architecture_Handoff.md | Audit delivered; implementation pending | Modules/boat-power authority first; participant identity and dynamic player bootstrap; transport/authenticated two-instance traffic; atomic shared transactions/claims; shared physics/AI relevance; disconnect/reconnect, crew scenes/death/wipe and host saves/client mirrors. See MULTIPLAYER_INFRASTRUCTURE_AUDIT.md. No real transport/session implementation has been completed. |
 | Legacy_Navigation_Cartography_Cleanup_Bosun_Handoff.md | Audit + destination-free Embark + passive reveal removal implemented; remaining cleanup on hold | Audit KEEP/MIGRATE/REMOVE/DEFER; remove obsolete player route/cluster/range gates, auto-arrival and route UI; reconcile discovery/piloting/celestial movement permissions; migrate old saves; retain graph links required by economy/events/worldgen. Some free-sailing and harbor changes already landed, but the full cleanup audit/migration has not. |
+| DONE_Town_Center_Node_Leader_MiniPass_Bosun_Handoff.md | DONE — TOWN.1–7 and final playtest accepted 2026-10-09 | Semantic civic building, persistent leader, exterior status board, current local-node information, civic-work provider seam, timestamped adjacent-node intelligence cache and future trade refresh seam. Reuse settlement/NPC architecture; no full quest or trade simulator. |
 | Underwater_Background_Visuals_Bosun_Handoff.md | Pending | Three background layers, geographic forms/landmarks, regional flora/fauna and ominous silhouettes, depth/light integration and persistence/transition hardening. |
 | Lighting_Visibility_Darkness_Power_Bosun_Handoff.md | Pending; earlier depth/lamp POC accepted | Full celestial/global illumination, powered fixtures, compartment/portal light, underwater/searchlight/node lighting, occlusion/shadows and performance/save/MP hardening. |
 
@@ -104,3 +108,14 @@ Discovery/Surveyor implementation started 2026-10-06: DISC.1 independent coverag
 2026-10-07 throwable cargo prototype: implemented tap-Q ordinary release, hold-Q charged local ballistic preview, canonical host-validated held release, inherited carrier motion, mass-independent launch speed, scoped player collision, swept detection and thrower-only overlap grace. Settled cargo restores ordinary collision settings, including while moving with the boat. See THROWABLE_CARGO_CHECKPOINT.md. No scene/prefab/Inspector changes; multiplayer transport remains separate.
 
 2026-10-08: Skip authorized closing the throwable pass. Renamed its handoff to DONE_DontSink_Multiplayer_Throwable_Cargo_Playtest_Handoff_Bosun.md together with its unchanged .meta file, preserving content and Unity GUID. Closure covers the implemented throwable/cargo-bowling prototype and settling restoration; it does not claim completed multiplayer transport or two-client replication.
+
+## Queue review — 2026-10-09
+
+Closed DONE_DontSink_Boat_Railings_Boarding_MiniPass_Bosun.md under Skip's revised scope: side/gate trigger colliders, solid end rails, live resized traversal geometry, existing DoorRuntime gate state/persistence, builder _Deck organization, current-import sprite/collider alignment and snap corrections, W / Up Arrow deck boarding separated from E gate interaction. The original handoff's all-rails-solid requirement is superseded. See BOAT_RAILINGS_BOARDING_CHECKPOINT.md. Renamed the document and unchanged .meta together; no commit. Closure does not imply completed multiplayer transport or two-client validation.
+
+No other full unprefixed handoff is complete. Settlement's accepted visual foundation does not close its remaining service/content binding. WorldGen V2 remains on hold until explicitly resumed; legacy cleanup remains on hold. The telescope mini-pass is accepted. Town Center / Node Leader is complete across all seven checkpoints; final playtest/freeze accepted 2026-10-09. TELREF.1 and TOWN.1 were accepted 2026-10-09; TOWN.2 is accepted; TOWN.3 is accepted; TOWN.4 is accepted; TOWN.5–6 are accepted; TOWN.7 and final playtest/freeze are accepted; the handoff is marked DONE_.
+
+
+
+
+

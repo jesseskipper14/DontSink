@@ -280,6 +280,7 @@ public sealed class WorldMapNodeRuntimeStateSaveSnapshot
 {
     public string stableId;
     public NodeSettlementManifest settlement;
+    public NodeCivicState civic;
     public int nodeIndex;
 
     public float population;

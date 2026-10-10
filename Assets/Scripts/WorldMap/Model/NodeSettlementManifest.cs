@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum SettlementRole { Residence, Market, Surveyor, Warehouse, Industry, Defense, WorkYard, Garden, TownSquare, EventReserve, Harbormaster, Tavern, Harbor }
+public enum SettlementRole { Residence, Market, Surveyor, Warehouse, Industry, Defense, WorkYard, Garden, TownSquare, EventReserve, Harbormaster, Tavern, Harbor, TownCenter }
 public enum SettlementDamage { None, Condemned, Ruined, Destroyed }
 public enum SettlementSocketKind { Civilian, Merchant, Worker, Guard, Merchandise, Food, Garden, Decoration, Quest }
 
@@ -10,7 +10,7 @@ public enum SettlementSocketKind { Civilian, Merchant, Worker, Guard, Merchandis
 [Serializable]
 public sealed class NodeSettlementManifest
 {
-    public int version = 3;
+    public int version = 4;
     public string nodeStableId, archetypeId;
     public int seed;
     public float visualPopulationCapacity;
@@ -50,7 +50,7 @@ public sealed class SettlementPlot
     public List<SettlementSocket> sockets = new();
     public bool IsOpen => role == SettlementRole.WorkYard || role == SettlementRole.Garden ||
         role == SettlementRole.TownSquare || role == SettlementRole.EventReserve;
-    public bool IsRequired => role == SettlementRole.Surveyor || role == SettlementRole.Market;
+    public bool IsRequired => role == SettlementRole.Surveyor || role == SettlementRole.Market || role == SettlementRole.TownCenter;
 }
 
 [Serializable]

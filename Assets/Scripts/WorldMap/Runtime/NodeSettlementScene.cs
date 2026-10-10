@@ -173,7 +173,9 @@ public sealed partial class NodeSettlementScene : MonoBehaviour
         else
         {
             float height = visit.damage == SettlementDamage.Ruined ? plot.height * .5f : plot.height;
-            if (plot.IsRequired && visit.damage == SettlementDamage.None && _marketPrefab != null)
+            if (plot.role == SettlementRole.TownCenter && visit.damage == SettlementDamage.None)
+                BuildTownCenter(parent, plot);
+            else if (plot.IsRequired && visit.damage == SettlementDamage.None && _marketPrefab != null)
                 MarketFacade(parent, faded);
             else
             {
@@ -225,6 +227,9 @@ public sealed partial class NodeSettlementScene : MonoBehaviour
             // Inactive sockets still expose stable anchors to later service/quest consumers.
             var anchor = Empty(socket.id, parent, socket.offset);
             _sockets[socket.id] = anchor;
+            // The civic prefab owns its service/board sockets; ambient socket fillers
+            // must not stand in front of the leader, board or entrance.
+            if (plot.role == SettlementRole.TownCenter) continue;
             if (!sockets.Contains(socket.id)) continue;
             bool person = socket.kind == SettlementSocketKind.Civilian || socket.kind == SettlementSocketKind.Merchant || socket.kind == SettlementSocketKind.Worker || socket.kind == SettlementSocketKind.Guard;
             if (person)
@@ -342,6 +347,28 @@ public sealed partial class NodeSettlementScene : MonoBehaviour
             sprite.sortingOrder = source.sortingOrder; sprite.drawMode = source.drawMode;
             sprite.size = source.size; sprite.tileMode = source.tileMode;
             sprite.flipX = source.flipX; sprite.flipY = source.flipY;
+        }
+    }
+
+    private void BuildTownCenter(Transform parent, SettlementPlot plot)
+    {
+        var prefab = Resources.Load<GameObject>("Prefabs/Node/TownCenter");
+        if (prefab == null) { Debug.LogError("[Town Center] Missing TownCenter prefab.", this); return; }
+        var building = Instantiate(prefab, parent);
+        building.name = "Town Center";
+        building.transform.localPosition = Vector3.zero;
+        // Placeholder art uses Unity's default sprite material. Match the town's
+        // existing lit presentation while preserving future authored shaders.
+        foreach (var sprite in building.GetComponentsInChildren<SpriteRenderer>(true))
+            if (_material != null && sprite.sharedMaterial != null && sprite.sharedMaterial.shader.name == "Sprites/Default")
+                sprite.sharedMaterial = _material;
+        var civic = building.GetComponent<TownCenterBuilding>();
+        if (civic == null) { Debug.LogError("[Town Center] Prefab needs TownCenterBuilding.", building); return; }
+        civic.Bind(Layout.nodeStableId, plot.id);
+        if (civic.HasValidSockets)
+        {
+            _sockets[plot.id + "/leader"] = civic.LeaderSocket;
+            _sockets[plot.id + "/status_board"] = civic.StatusBoardSocket;
         }
     }
 

@@ -31,6 +31,7 @@ public class MapNodeState
     public float maxPopulation = 500f;         // soft cap, can grow later
 
     public NodeSettlementManifest settlement;
+    public NodeCivicState civic = new NodeCivicState();
 
     public string NodeId => _nodeId;
 

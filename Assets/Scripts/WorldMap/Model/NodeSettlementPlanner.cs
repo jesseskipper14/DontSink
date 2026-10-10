@@ -47,6 +47,7 @@ public static class NodeSettlementPlanner
             }
         }
         Reflow(layout);
+        if (!EnsureTownCenter(layout, out string civicReason)) throw new InvalidOperationException(civicReason);
         Validate(layout, out string reason);
         if (reason != null) throw new InvalidOperationException(reason);
         return layout;
@@ -86,7 +87,7 @@ public static class NodeSettlementPlanner
     public static bool Validate(NodeSettlementManifest layout, out string reason)
     {
         reason = null;
-        if (layout == null || (layout.version != 1 && layout.version != 2 && layout.version != 3) || layout.terraces == null || layout.plots == null || layout.connections == null || layout.terraces.Count == 0)
+        if (layout == null || (layout.version != 1 && layout.version != 2 && layout.version != 3 && layout.version != 4) || layout.terraces == null || layout.plots == null || layout.connections == null || layout.terraces.Count == 0)
         { reason = $"Missing or unsupported settlement manifest (version {layout?.version}, node '{layout?.nodeStableId}', terraces {layout?.terraces?.Count}, plots {layout?.plots?.Count}). Existing layouts were not regenerated."; return false; }
         var reachable = new HashSet<int> { -1 };
         bool progress;
@@ -105,7 +106,7 @@ public static class NodeSettlementPlanner
         if (reachable.Count != layout.terraces.Count + 1) { reason = "Settlement has an unreachable terrace."; return false; }
         var ids = new HashSet<string>();
         var byId = new Dictionary<string, SettlementPlot>();
-        int surveyors = 0, markets = 0;
+        int surveyors = 0, markets = 0, civicCenters = 0;
         foreach (var p in layout.plots)
         {
             if (p == null || string.IsNullOrEmpty(p.id) || !ids.Add(p.id) || p.terrace < 0 || p.terrace >= layout.terraces.Count)
@@ -118,11 +119,20 @@ public static class NodeSettlementPlanner
             byId.Add(p.id, p);
             if (p.role == SettlementRole.Surveyor) surveyors++;
             if (p.role == SettlementRole.Market) markets++;
+            if (p.role == SettlementRole.TownCenter)
+            {
+                civicCenters++;
+                if (p.level != 0 || Mathf.Abs(p.position.y) > .01f || Mathf.Abs(terrace.y) > .01f ||
+                    layout.plots.Exists(other => other.parentPlotId == p.id))
+                { reason = "Town Center requires an unstacked ground-level civic plot."; return false; }
+            }
             foreach (var socket in p.sockets)
                 if (socket == null || string.IsNullOrEmpty(socket.id) || !ids.Add(socket.id))
                 { reason = $"Duplicate/missing socket on {p.id}."; return false; }
         }
         if (surveyors != 1 || markets != 1) { reason = "Settlement requires exactly one Surveyor station and market."; return false; }
+        if ((layout.version >= 4 && civicCenters != 1) || civicCenters > 1)
+        { reason = "Settlement requires exactly one Town Center."; return false; }
         return true;
     }
 
@@ -192,7 +202,28 @@ public static class NodeSettlementPlanner
             Reflow(runtime.State.settlement);
         else if (runtime.State.settlement?.version == 2 && GameplayAuthority.IsAuthoritative && Validate(runtime.State.settlement, out _))
             NormalizeHouseStacks(runtime.State.settlement);
+        if (runtime.State.settlement?.version == 3 && GameplayAuthority.IsAuthoritative && Validate(runtime.State.settlement, out _) &&
+            !EnsureTownCenter(runtime.State.settlement, out string reason)) Debug.LogError("[Settlement] " + reason);
         return runtime.State.settlement;
+    }
+
+    /// <summary>Additive civic migration: reuse the permanent event reserve; never reflow existing buildings.</summary>
+    public static bool EnsureTownCenter(NodeSettlementManifest layout, out string reason)
+    {
+        reason = null;
+        if (layout == null || layout.plots == null || layout.terraces == null) { reason = "Missing civic layout."; return false; }
+        var existing = layout.plots.FindAll(p => p != null && p.role == SettlementRole.TownCenter);
+        if (existing.Count > 1) { reason = "Duplicate Town Centers; existing layout was retained."; return false; }
+        if (existing.Count == 1) { layout.version = 4; return true; }
+        var reserve = layout.plots.Find(p => p != null && p.role == SettlementRole.EventReserve && p.level == 0 &&
+            Mathf.Abs(p.position.y) < .01f && !layout.plots.Exists(child => child.parentPlotId == p.id));
+        if (reserve == null || reserve.width < 7.2f)
+        { reason = "No safe permanent ground-level civic reserve. Existing layout was not regenerated."; return false; }
+        reserve.role = SettlementRole.TownCenter;
+        reserve.familyId = "town_center_0";
+        // Preserve plot/socket IDs, position, size and history. Required-service evaluation develops it.
+        layout.version = 4;
+        return true;
     }
 
     // Prototype geometry migration: retain permanent IDs, family choices and all history.
@@ -276,7 +307,7 @@ public static class NodeSettlementPlanner
     // Older saves may therefore contain an empty shell rather than a missing manifest.
     // A manifest with any identity/layout data must remain intact, even if invalid.
     public static bool IsUninitialized(NodeSettlementManifest layout) => layout == null ||
-        (layout.version == 0 || layout.version == 1 || layout.version == 2 || layout.version == 3) &&
+        (layout.version == 0 || layout.version == 1 || layout.version == 2 || layout.version == 3 || layout.version == 4) &&
         string.IsNullOrEmpty(layout.nodeStableId) && string.IsNullOrEmpty(layout.archetypeId) &&
         layout.seed == 0 && layout.visualPopulationCapacity == 0 && layout.harborArrival == Vector2.zero &&
         (layout.terraces == null || layout.terraces.Count == 0) &&

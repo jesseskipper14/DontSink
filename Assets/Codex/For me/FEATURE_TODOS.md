@@ -16,3 +16,11 @@ Requested 2026-10-06. Keep this separate from the current Surveyor/local-island 
 4. Let the exact player hold the chart up and view it outside the Mapping Table, using the existing Hands/item-view interaction patterns.
 
 The chart stays non-integrating: viewing/holding/acquiring it must not reveal geography, grant a POI marker, snap believed position or display a hidden true-coordinate answer. Host-issued item data is shared/persistent; held viewing is local presentation. Verify repeatable generation, correct celestial registration, carried/dropped/restored chart identity, image readability and multiplayer requester ownership.
+
+## TODO — Telescope paper/sky star visual consistency
+
+Requested 2026-10-09 after TELREF.1 playtest. Make star shapes, colors, prominence and landmark markings on reference paper more closely resemble their live-sky counterparts while retaining an opaque paper/ink style. Preserve captured evidence identity; no automatic alignment or matching.
+
+## TODO — Boat-relative sky-center reference
+
+Requested 2026-10-09. Add a rough visual indicator of the sky center relative to the observing boat, so players have an orientation reference while manually comparing paper with the sky. Presentation only; no hidden target-position answer or auto-solving.

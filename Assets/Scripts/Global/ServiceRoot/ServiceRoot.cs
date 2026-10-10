@@ -112,7 +112,7 @@ public class ServiceRoot : MonoBehaviour
             cloudManager.Initialize(Brightness, SunriseSunset, Weather);
 
         if (celestialManager != null)
-            celestialManager.Initialize(Time);
+            celestialManager.Initialize(Time, globalBrightnessManager);
 
         if (fogManager != null)
             fogManager.Initialize(Weather);
