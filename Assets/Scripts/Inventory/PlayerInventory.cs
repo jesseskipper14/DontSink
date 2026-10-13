@@ -47,6 +47,12 @@ public sealed class PlayerInventory : MonoBehaviour
     {
         InventoryChanged?.Invoke();
     }
+    internal void PublishTransactionChange()
+    {
+        if (InventoryChanged == null) return;
+        foreach (Action callback in InventoryChanged.GetInvocationList())
+            try { callback(); } catch (Exception exception) { Debug.LogException(exception); }
+    }
 
     public void SetSelectedSlot(BottomBarSlotType slot)
     {

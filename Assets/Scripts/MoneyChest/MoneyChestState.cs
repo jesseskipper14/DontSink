@@ -138,6 +138,20 @@ public sealed class MoneyChestState : MonoBehaviour
         RaiseChanged();
     }
 
+    internal void SetBalanceForTransaction(int value) => balance = value;
+
+    internal void PublishTradeBalanceChange()
+    {
+        // A presentation listener cannot turn an already committed trade into a failure,
+        // or prevent other listeners (including treasury snapshot sync) from receiving it.
+        if (BalanceChanged != null)
+            foreach (Action<MoneyChestState, int> listener in BalanceChanged.GetInvocationList())
+                try { listener(this, balance); } catch (Exception ex) { Debug.LogException(ex); }
+        if (Changed != null)
+            foreach (Action<MoneyChestState> listener in Changed.GetInvocationList())
+                try { listener(this); } catch (Exception ex) { Debug.LogException(ex); }
+    }
+
     public void AddMoney(int amount)
     {
         if (amount <= 0)

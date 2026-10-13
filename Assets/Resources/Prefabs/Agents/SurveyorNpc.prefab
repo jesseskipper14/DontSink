@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &100100000
+--- !u!1001 &748293610245879302
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -47,7 +47,7 @@ PrefabInstance:
 --- !u!1 &10000001 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3377680571654660244, guid: 4339c0ff6f2bc094aa8b51b0d257b80a, type: 3}
-  m_PrefabInstance: {fileID: 100100000}
+  m_PrefabInstance: {fileID: 748293610245879302}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &11400001
 MonoBehaviour:

@@ -46,6 +46,8 @@ public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule, IModuleT
 
     public bool IsOn => isOn;
     public float Thrust => Mathf.Max(0f, thrust);
+    // Explicit scene/test water binding avoids another scene's ambient service.
+    public void BindPropulsionWater(WaveManager water) => propulsionWater = water;
     public ItemInstance FuelContainerItem => fuelContainerItem;
     public float FuelBurnRatePerSecond => Mathf.Max(0f, fuelBurnRatePerSecond);
     public float MaxThrottleBurnMultiplier => Mathf.Max(1f, maxThrottleBurnMultiplier);
@@ -61,6 +63,12 @@ public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule, IModuleT
         Mathf.Lerp(1f, Mathf.Max(1f, maxThrottlePowerDemandMultiplier), ThrottleLoad01);
 
     public void InitializeFuel()
+    {
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return;
+        EnsureFuelContainer();
+    }
+
+    private void EnsureFuelContainer()
     {
         if (fuelContainerItem != null)
             return;
@@ -95,6 +103,9 @@ public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule, IModuleT
         }
 
         currentRunMode = ResolveRunMode();
+
+        // Keep the presentation run mode current without consuming or shutting down replicas.
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return;
 
         if (currentRunMode == EngineRunMode.None)
         {
@@ -168,6 +179,12 @@ public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule, IModuleT
     }
 
     public bool SetOn(bool value)
+    {
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return false;
+        return ApplyOnState(value);
+    }
+
+    private bool ApplyOnState(bool value)
     {
         if (value && !CanRun())
         {
@@ -299,6 +316,7 @@ public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule, IModuleT
 
     public bool TryConsumeFuelCharges(int amount)
     {
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return false;
         if (amount <= 0)
             return false;
 
@@ -377,12 +395,19 @@ public sealed class EngineModule : MonoBehaviour, IPowerConsumerModule, IModuleT
         fuelContainerItem = ItemInstance.FromSnapshot(fuelSnapshot, resolver);
 
         if (fuelContainerItem == null)
-            InitializeFuel();
+            EnsureFuelContainer();
 
         fuelBurnAccumulator = 0f;
         throttleLoad01 = 0f;
 
         ResolvePowerState();
-        SetOn(restoredIsOn);
+        // Explicit snapshot application is permitted on replicas; live commands are not.
+        if (GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative))
+            ApplyOnState(restoredIsOn);
+        else
+        {
+            isOn = restoredIsOn;
+            currentRunMode = isOn ? ResolveRunMode() : EngineRunMode.None;
+        }
     }
 }

@@ -218,6 +218,13 @@ public class WorldMapGraphGenerator : MonoBehaviour
 
     private void Awake()
     {
+        if (DontSinkNetworkSession.Instance?.GameplayScene?.IsActive == true && !GameplayAuthority.IsAuthoritative)
+        {
+            seed = GameState.I.worldMapSnapshot.graph.seed;
+            if (!WorldMapSaveRestorer.TryRestoreGraphToGenerator(this))
+                throw new System.InvalidOperationException("Connected scene requires the prepared host graph before Awake.");
+            return;
+        }
         if (topographySource == null)
             topographySource = FindAnyObjectByType<WorldMapTopographyDebugSource>(FindObjectsInactive.Include);
 

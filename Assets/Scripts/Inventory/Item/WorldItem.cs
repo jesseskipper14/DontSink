@@ -101,6 +101,7 @@ public sealed class WorldItem :
 
     public bool CanPickup(in InteractContext context)
     {
+        if (DontSinkNetworkSession.IsSessionActive && DontSinkNetworkSession.Instance?.GameplayScene?.Replication?.IsReplicatedSecured(this) == true) return false;
         if (itemInstance == null)
         {
             Log("CanPickup FAIL: itemInstance is null");
@@ -172,6 +173,7 @@ public sealed class WorldItem :
 
     public void Pickup(in InteractContext context)
     {
+        if (!GameplayAuthority.IsAuthoritative) return;
         if (itemInstance == null || itemInstance.Definition == null || itemInstance.Quantity <= 0)
             return;
 

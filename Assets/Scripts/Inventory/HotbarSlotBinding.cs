@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public sealed class HotbarSlotBinding : IInventorySlotBinding
+public sealed class HotbarSlotBinding : IInventorySlotBinding, INetworkInventorySlotBinding
 {
     private readonly PlayerInventory inventory;
     private readonly int hotbarIndex;
@@ -13,6 +13,7 @@ public sealed class HotbarSlotBinding : IInventorySlotBinding
 
     public BottomBarSlotType SlotType => PlayerInventory.HotbarIndexToSlotType(hotbarIndex);
     public bool SupportsSelection => true;
+    public NetworkInventoryAddress NetworkAddress => new(NetworkInventoryKind.Hotbar, hotbarIndex);
 
     public ItemInstance GetItem()
     {

@@ -175,6 +175,7 @@ public sealed class BoatBoardingInteractable :
 
     public void Interact(in InteractContext context)
     {
+        if (!GameplayAuthority.IsAuthoritative) return;
         GameObject go = context.InteractorGO;
         Transform t = context.InteractorTransform;
 
@@ -227,7 +228,9 @@ public sealed class BoatBoardingInteractable :
     {
         SnapTo(t, boardPoint);
 
-        if (parentPlayerToBoat && boatRoot != null)
+        // Network actors keep their persistent network root. Their movement and
+        // boarding presentation already use the boat reference frame.
+        if (parentPlayerToBoat && boatRoot != null && go.GetComponent<NetworkPlayerActor>()?.IsSpawned != true)
             t.SetParent(boatRoot, worldPositionStays: true);
 
         ZeroVelocity(go);
@@ -305,6 +308,12 @@ public sealed class BoatBoardingInteractable :
     private void SnapTo(Transform player, Transform point)
     {
         Vector3 p = point != null ? point.position : transform.position;
+        if (player.GetComponent<NetworkPlayerActor>()?.IsSpawned == true && player.TryGetComponent<Rigidbody2D>(out var body))
+        {
+            body.position = (point != null ? PhysicsFrame2D.Point(point) : (Vector2)p) + postSnapNudge;
+            Physics2D.SyncTransforms();
+            return;
+        }
         player.position = p + (Vector3)postSnapNudge;
     }
 

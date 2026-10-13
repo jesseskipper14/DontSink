@@ -18,12 +18,14 @@ public sealed class BoatPowerState : MonoBehaviour
 
     public void AddPower(float amount)
     {
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return;
         if (amount <= 0f) return;
         currentPower = Mathf.Clamp(currentPower + amount, 0f, MaxPower);
     }
 
     public bool TryConsume(float amount)
     {
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return false;
         if (amount <= 0f) return true;
         if (currentPower < amount) return false;
 
@@ -31,6 +33,8 @@ public sealed class BoatPowerState : MonoBehaviour
         return true;
     }
 
+    // Explicit snapshot/configuration setters remain available on replicas.
+    // Live production and consumption must use AddPower/TryConsume above.
     public void SetMaxPower(float value, bool clampCurrent = true)
     {
         maxPower = Mathf.Max(0f, value);

@@ -17,8 +17,13 @@ public sealed class ModuleOverlayRunner : MonoBehaviour
             overlay = FindAnyObjectByType<MiniGameOverlayHost>();
     }
 
-    public bool OpenForHardpoint(Hardpoint hardpoint)
+    public bool OpenForHardpoint(Hardpoint hardpoint, GameObject requester)
     {
+        if (requester == null)
+        {
+            Debug.LogWarning("[ModuleOverlayRunner] Missing requester.", this);
+            return false;
+        }
         if (hardpoint == null)
         {
             Debug.LogWarning("[ModuleOverlayRunner] OpenForHardpoint called with null hardpoint.");
@@ -49,7 +54,7 @@ public sealed class ModuleOverlayRunner : MonoBehaviour
             seed = 0
         };
 
-        var cart = new ModuleCartridge(hardpoint);
+        var cart = new ModuleCartridge(hardpoint, requester);
         overlay.Open(cart, ctx);
         return true;
     }

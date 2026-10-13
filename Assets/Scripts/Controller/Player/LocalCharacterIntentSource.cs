@@ -27,7 +27,11 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
     [SerializeField] private int primaryUseMouseButton = 0; // left mouse
     [SerializeField] private KeyCode cancelKey = KeyCode.Escape;
 
-    public CharacterIntent Current { get; private set; }
+    private CharacterIntent localIntent;
+    private ICharacterIntentSource simulationSource;
+    public CharacterIntent Current => simulationSource != null ? simulationSource.Current : localIntent;
+    public CharacterIntent LocalIntent => localIntent;
+    public void BindSimulationSource(ICharacterIntentSource source) => simulationSource = source;
 
     /// <summary>
     /// Presentation-only binding labels for local UI. Gameplay should consume
@@ -54,7 +58,7 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
     {
         if (!CameraManager.HasGameplayInput(this) || GameplayInputBlocker.IsBlocked)
         {
-            Current = default;
+            localIntent = default;
             _jumpPressedLatched = false;
             return;
         }
@@ -77,7 +81,7 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
         bool primaryUseHeld = Input.GetMouseButton(primaryUseMouseButton);
         bool cancelHeld = Input.GetKey(cancelKey);
 
-        Current = new CharacterIntent
+        localIntent = new CharacterIntent
         {
             MoveX = Mathf.Clamp(x, -1f, 1f),
             JumpPressed = _jumpPressedLatched,
@@ -101,21 +105,27 @@ public class LocalCharacterIntentSource : MonoBehaviour, ICharacterIntentSource
 
     public void ConsumeJumpPressed()
     {
+        ClearLocalJumpPressed();
+        if (simulationSource is IJumpPressConsumer consumer) consumer.ConsumeJumpPressed();
+    }
+
+    public void ClearLocalJumpPressed()
+    {
         _jumpPressedLatched = false;
-        var intent = Current;
+        var intent = localIntent;
         intent.JumpPressed = false;
-        Current = intent;
+        localIntent = intent;
     }
 
     private void OnDisable()
     {
         _jumpPressedLatched = false;
-        Current = default;
+        localIntent = default;
     }
 
     private void OnEnable()
     {
         _jumpPressedLatched = false;
-        Current = default;
+        localIntent = default;
     }
 }

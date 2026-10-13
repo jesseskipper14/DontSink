@@ -1,4 +1,4 @@
-public sealed class ExternalInventorySlotBinding : IInventorySlotBinding
+public sealed class ExternalInventorySlotBinding : IInventorySlotBinding, INetworkInventorySlotBinding
 {
     private readonly ItemInstance containerItem;
     private readonly int slotIndex;
@@ -11,10 +11,11 @@ public sealed class ExternalInventorySlotBinding : IInventorySlotBinding
 
     public BottomBarSlotType SlotType => BottomBarSlotType.None;
     public bool SupportsSelection => false;
+    public NetworkInventoryAddress NetworkAddress => new(NetworkInventoryKind.Container, slotIndex, containerItem?.InstanceId);
 
     public ItemInstance GetItem()
     {
-        return containerItem?.ContainerState?.GetSlot(slotIndex)?.Instance;
+        return (DontSinkNetworkSession.IsSessionActive ? NetworkInventoryModel.ResolveLocalItem(containerItem?.InstanceId) : containerItem)?.ContainerState?.GetSlot(slotIndex)?.Instance;
     }
 
     public ItemInstance RemoveItem()

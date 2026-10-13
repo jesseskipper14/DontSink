@@ -412,6 +412,16 @@ public sealed class Hardpoint : MonoBehaviour
         return InstallWithoutCompatibilityCheck(moduleDefinition, out spawnedModule);
     }
 
+    // Only the replicated host manifest uses this seam. Passive client boats
+    // cannot repeat the authoritative support raycasts against Physics2D.
+    internal bool TryInstallReplica(ModuleDefinition moduleDefinition, out InstalledModule spawnedModule)
+    {
+        spawnedModule = null;
+        if (!DontSinkNetworkSession.IsSessionActive || GameplayAuthority.IsAuthoritative ||
+            !CanInstall(moduleDefinition, out _)) return false;
+        return InstallWithoutCompatibilityCheck(moduleDefinition, out spawnedModule);
+    }
+
     private bool InstallWithoutCompatibilityCheck(ModuleDefinition moduleDefinition, out InstalledModule spawnedModule)
     {
         spawnedModule = null;
@@ -458,11 +468,22 @@ public sealed class Hardpoint : MonoBehaviour
     public bool TryRemove(out ModuleDefinition removedDefinition)
     {
         removedDefinition = null;
+        if (!GameplayAuthority.IsAuthoritative) return false;
+        return RemoveInstalledModule(false, out removedDefinition);
+    }
+    internal bool TryRemoveReplica()
+    {
+        if (!DontSinkNetworkSession.IsSessionActive || GameplayAuthority.IsAuthoritative) return false;
+        return RemoveInstalledModule(true, out _);
+    }
+    private bool RemoveInstalledModule(bool replica, out ModuleDefinition removedDefinition)
+    {
+        removedDefinition = null;
 
         if (!HasInstalledModule)
             return false;
 
-        if (!CanRemoveInstalledModule(out string removalBlockReason))
+        if (!replica && !CanRemoveInstalledModule(out string removalBlockReason))
         {
             Debug.LogWarning(
                 $"[Hardpoint] Cannot remove module from '{HardpointId}': {removalBlockReason}",
@@ -482,6 +503,7 @@ public sealed class Hardpoint : MonoBehaviour
                     lifecycle.OnRemoved();
             }
 
+            installedModule.gameObject.SetActive(false);
             Destroy(installedModule.gameObject);
         }
 
@@ -642,6 +664,8 @@ public sealed class Hardpoint : MonoBehaviour
         return true;
     }
 
+#endif
+
     private void AlignInstalledModuleToAnchor(GameObject installedObject)
     {
         if (installedObject == null)
@@ -673,5 +697,4 @@ public sealed class Hardpoint : MonoBehaviour
         Vector3 delta = hardpointAnchor.position - moduleAnchorTransform.position;
         installedObject.transform.position += delta;
     }
-#endif
 }

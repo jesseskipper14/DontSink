@@ -265,4 +265,27 @@ public sealed class PlayerEquipment : MonoBehaviour
     {
         EquipmentChanged?.Invoke();
     }
+    internal void SetForTransaction(BottomBarSlotType slot, ItemInstance item) => SetDirect(slot, item);
+    internal bool ValidateTransactionLayout(EquipmentSnapshot snapshot, IItemDefinitionResolver resolver)
+    {
+        var occupied = new HashSet<BottomBarSlotType>();
+        foreach (var slot in EnumerateEquipmentSlots(includeHands: true))
+        {
+            var item = NetworkInventoryModel.EquipmentItem(snapshot, slot);
+            if (item == null) continue;
+            var definition = resolver.Resolve(item.itemId);
+            if (definition == null || !occupied.Add(slot) ||
+                slot != BottomBarSlotType.Hands && (!definition.IsEquippable || definition.EquipSlot != slot)) return false;
+            if (slot == BottomBarSlotType.Hands) continue;
+            foreach (var extra in definition.OccupiedEquipSlots ?? Array.Empty<BottomBarSlotType>())
+                if (extra != BottomBarSlotType.None && extra != slot && (!IsEquipmentSlot(extra) || !occupied.Add(extra))) return false;
+        }
+        return true;
+    }
+    internal void PublishTransactionChange()
+    {
+        if (EquipmentChanged == null) return;
+        foreach (Action callback in EquipmentChanged.GetInvocationList())
+            try { callback(); } catch (Exception exception) { Debug.LogException(exception); }
+    }
 }

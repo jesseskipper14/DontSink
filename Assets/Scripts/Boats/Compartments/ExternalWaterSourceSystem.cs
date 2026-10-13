@@ -113,6 +113,7 @@ public class ExternalWaterSourceSystem : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return;
         float dt = Time.fixedDeltaTime;
 
         foreach (var boat in boats)

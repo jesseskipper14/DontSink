@@ -1,4 +1,4 @@
-public sealed class EquipmentSlotBinding : IInventorySlotBinding
+public sealed class EquipmentSlotBinding : IInventorySlotBinding, INetworkInventorySlotBinding
 {
     private readonly PlayerEquipment equipment;
     private readonly BottomBarSlotType slotType;
@@ -11,6 +11,7 @@ public sealed class EquipmentSlotBinding : IInventorySlotBinding
 
     public BottomBarSlotType SlotType => slotType;
     public bool SupportsSelection => true;
+    public NetworkInventoryAddress NetworkAddress => new(NetworkInventoryKind.Equipment, (int)slotType);
 
     public ItemInstance GetItem()
     {

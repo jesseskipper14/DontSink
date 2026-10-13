@@ -22,3 +22,8 @@ public interface ICharacterIntentSource
 {
     CharacterIntent Current { get; }
 }
+
+public interface IJumpPressConsumer
+{
+    void ConsumeJumpPressed();
+}

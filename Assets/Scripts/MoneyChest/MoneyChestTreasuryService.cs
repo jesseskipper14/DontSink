@@ -344,6 +344,74 @@ public sealed class MoneyChestTreasuryService : MonoBehaviour
         return HasActiveChest && ActiveBalance >= amount;
     }
 
+    internal bool TryPrepareTradeBalance(int delta, out PreparedTradeBalance prepared, out string failNote)
+    {
+        prepared = null;
+        failNote = "No active money chest.";
+        var snapshot = GetActiveSnapshot();
+        if (snapshot == null || !snapshot.IsActive) return false;
+        var live = ActiveChest;
+        if (live != null && !live.IsActive) return false;
+        int balance = live != null ? live.Balance : snapshot.balance;
+        long next = (long)balance + delta;
+        if (next < 0 || next > int.MaxValue)
+        {
+            failNote = next < 0 ? "Not enough money in active chest." : "Trade would overflow the money chest balance.";
+            return false;
+        }
+        prepared = new PreparedTradeBalance(this, snapshot, live, balance, (int)next);
+        failNote = null;
+        return true;
+    }
+
+    internal sealed class PreparedTradeBalance : System.IDisposable
+    {
+        private readonly MoneyChestTreasuryService owner;
+        private readonly MoneyChestSnapshot snapshot;
+        private readonly MoneyChestState live;
+        private readonly bool hadLive;
+        private readonly int before, snapshotBefore, after;
+        private bool applied, completed;
+
+        internal PreparedTradeBalance(MoneyChestTreasuryService owner, MoneyChestSnapshot snapshot,
+            MoneyChestState live, int before, int after)
+        {
+            this.owner = owner; this.snapshot = snapshot; this.live = live;
+            hadLive = live != null;
+            this.before = before; this.after = after; snapshotBefore = snapshot.balance;
+        }
+
+        internal bool Validate(out string failNote)
+        {
+            failNote = "Active money chest changed while preparing trade.";
+            if (owner == null || Instance != owner || owner.GetActiveSnapshot() != snapshot ||
+                !snapshot.IsActive || snapshot.balance != snapshotBefore || owner.ActiveChest != live ||
+                (hadLive && (live == null || !live.IsActive || live.Balance != before))) return false;
+            failNote = null;
+            return true;
+        }
+
+        internal void Apply()
+        {
+            applied = true;
+            if (live != null) live.SetBalanceForTransaction(after);
+            snapshot.balance = after;
+        }
+
+        internal void Complete() => completed = true;
+        internal void Publish()
+        {
+            if (after != before && live != null) live.PublishTradeBalanceChange();
+        }
+
+        public void Dispose()
+        {
+            if (!applied || completed) return;
+            if (live != null) live.SetBalanceForTransaction(before);
+            snapshot.balance = snapshotBefore;
+        }
+    }
+
     public bool TrySpend(int amount)
     {
         if (amount <= 0)

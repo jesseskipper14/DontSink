@@ -7,6 +7,9 @@ public sealed class StorageModuleWorldDropTarget : MonoBehaviour, IWorldItemDrop
     [SerializeField] private StorageModule storageModule;
     [SerializeField] private InstalledModule installedModule;
 
+    [Header("Access")]
+    [SerializeField, Min(0f)] private float maxDepositDistance = 2.25f;
+
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = false;
 
@@ -31,7 +34,7 @@ public sealed class StorageModuleWorldDropTarget : MonoBehaviour, IWorldItemDrop
 
         CacheRefs();
 
-        if (storageModule == null)
+        if (storageModule == null || !CanAccess(context))
             return false;
 
         storageModule.EnsureContainer();
@@ -45,6 +48,9 @@ public sealed class StorageModuleWorldDropTarget : MonoBehaviour, IWorldItemDrop
         out ItemInstance remainder)
     {
         remainder = item;
+
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative))
+            return false;
 
         if (!CanAcceptWorldDrop(
                 in context,
@@ -63,6 +69,23 @@ public sealed class StorageModuleWorldDropTarget : MonoBehaviour, IWorldItemDrop
         }
 
         return false;
+    }
+
+    private bool CanAccess(in WorldItemDropContext context)
+    {
+        if (!context.HasRequester ||
+            Vector2.Distance(context.Requester.transform.position, transform.position) > maxDepositDistance)
+            return false;
+
+        // Check the live actor position, not a caller-supplied origin.
+        if (_cachedBoat == null) return true;
+        var boarding = context.Requester.GetComponentInParent<PlayerBoardingState>()
+            ?? context.Requester.GetComponentInChildren<PlayerBoardingState>(true);
+        if (boarding == null || !boarding.IsBoarded || boarding.CurrentBoatRoot == null)
+            return false;
+        var boardedBoat = boarding.CurrentBoatRoot.GetComponent<Boat>()
+            ?? boarding.CurrentBoatRoot.GetComponentInParent<Boat>();
+        return boardedBoat == _cachedBoat;
     }
 
     private void CacheRefs()

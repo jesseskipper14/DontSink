@@ -417,10 +417,12 @@ public sealed class PilotingCartridge :
             return true;
 
         PilotChairInteractable.PilotingHelmStatus status =
-            _sourceStation.CurrentPilotingHelmStatus;
+            DontSinkNetworkSession.IsSessionActive ? DontSinkNetworkSession.Instance?.GameplayScene?.Replication?.HelmStatus(_sourceStation)
+                ?? PilotChairInteractable.PilotingHelmStatus.Unlinked : _sourceStation.CurrentPilotingHelmStatus;
 
         bool hasControl =
-            _sourceStation.HasPilotControlAuthority;
+            DontSinkNetworkSession.IsSessionActive ? DontSinkNetworkSession.Instance?.GameplayScene?.Replication?.HasLocalHelmControl(_sourceStation) == true :
+                _sourceStation.HasPilotControlAuthority;
 
         string text;
         Color previous =
@@ -462,6 +464,12 @@ public sealed class PilotingCartridge :
                 break;
         }
 
+        var network = DontSinkNetworkSession.Instance?.GameplayScene?.Replication;
+        if (DontSinkNetworkSession.IsSessionActive && network != null)
+        {
+            if (network.HelmRequestPending) text += " — Awaiting host";
+            else if (network.StationFeedback != "Done.") text += " — " + network.StationFeedback;
+        }
         GUI.Label(
             new Rect(
                 panel.x + pad,

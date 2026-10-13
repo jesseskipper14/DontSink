@@ -138,6 +138,15 @@ public sealed class MainMenuController : MonoBehaviour
 
     public void StartNewGame()
     {
+        if (DontSinkNetworkSession.IsSessionActive)
+        {
+            var session = DontSinkNetworkSession.Instance;
+            if (!session.CanStartHostedGame(nodeSceneName, out string reason))
+            { Debug.LogWarning(reason, this); return; }
+            EnsureCoreSingletons(); ResetGameStateForNewGame();
+            session.StartHostedGame(nodeSceneName);
+            return;
+        }
         Log("StartNewGame");
 
         EnsureCoreSingletons();
@@ -186,6 +195,7 @@ public sealed class MainMenuController : MonoBehaviour
         gs.worldMap = new WorldMapSimState();
         gs.SetWorldMapSnapshot(null, "MainMenuController.NewGame");
         gs.SetCelestialChartState(null, "MainMenuController.NewGame");
+        gs.itemVendorStock = new ItemVendorStockState();
         ResetTimeOfDayForNewGame(gs);
 
         gs.playerLoadout = null;
@@ -198,7 +208,8 @@ public sealed class MainMenuController : MonoBehaviour
                 : defaultBoatInstanceId,
 
             looseItems = new BoatLooseItemManifest(),
-            moduleStates = new BoatModuleStateManifest(),
+            moduleStates = null,
+            useAuthoredStartingModules = true,
             compartmentStates = new BoatCompartmentStateManifest(),
             accessStates = new BoatAccessStateManifest(),
             transformState = null,
@@ -243,6 +254,11 @@ public sealed class MainMenuController : MonoBehaviour
 
     public void LoadGameStub()
     {
+        if (DontSinkNetworkSession.IsSessionActive)
+        {
+            Debug.LogWarning("Leave the MP.1 connection test before loading a single-player save.", this);
+            return;
+        }
         ResolveRefs();
 
         if (saveLoadPanel == null)

@@ -97,3 +97,121 @@ Each pass should end with a short report, explicit Inspector tasks, appropriate 
 This audit used runtime source searches, targeted reads, package manifest inspection, and read-only scene component evidence. No MP behavior was simulated, no two-client session was run, and no transport/security claims were verified. The wrapping compile and isolated Unity results are documented separately in `WRAPPED_WORLD_CHECKPOINT.md`; they do not validate this future architecture.
 
 There are no Inspector tasks for the audit itself. Findings are deliberately left for separately authorized implementation passes.
+
+## 2026-10-10 implementation-start reconciliation
+
+This addendum reconciles the historical audit with the current source after the accepted atomic-trade, vendor-stock, requester-ownership and shared-module authority passes. Earlier findings remain historical evidence, not a claim those specific defects are still unfixed. No networking package, scene or prefab was changed for this review.
+
+### Work now available for reuse
+
+- TradeEffectApplier coordinates reversible item and treasury mutations. Reuse this transaction boundary for host-dispatched trades.
+- GameState.itemVendorStock owns finite item-vendor stock. ItemVendorPurchaseService validates/reserves canonical node/vendor/item stock and compensates failed delivery.
+- ModuleOverlayRunner and ModuleCartridge carry the interacting actor; vendor delivery no longer chooses another actor's global acquisition resolver.
+- StorageModuleWorldDropTarget checks live requester distance and matching boat context. Loadout restore binds identity before use and rejects ambiguous/duplicate keys.
+- EngineModule, GeneratorModule, PumpModule, TurretModule and BoatPowerState guard live shared resource mutation. Explicit restore paths remain usable on replicas.
+- Boat force providers and Boat.AddForce/AddTorque require authority. Boat water equalization and ExternalWaterSourceSystem ticks are gated. Generic non-boat ForceSystem policy remains opt-in.
+- Existing CameraManager local ownership, actor intent interfaces, keyed persistence records, winch/tether authority, chart revision locks, physical cargo, module snapshots and treasury are integration foundations.
+
+These are local runtime seams. They do not authenticate network senders, transmit requests, replicate state, implement remote movement, or produce a playable two-instance session.
+
+### Current prerequisites still open
+
+1. Packages/manifest.json contains Multiplayer Center, but no gameplay networking/transport package. Select transport using current official documentation, Unity 6 compatibility, listen-server support, solo-developer maintenance and a practical Steam identity/transport path. No package is selected by this addendum.
+2. Players are still scene-authored. Audit and detach their camera/UI, inventory, restoration, boarding and input references before authoring a dynamic player prefab. Instantiate inactive, assign participant/persistence/character/entity identity and local ownership, then activate and restore.
+3. PlayerLadderClimber still references LocalCharacterIntentSource directly. Host-authoritative remote movement needs an intent adapter; do not bind the remote avatar to host keyboard input.
+4. BoatPilotingSimulation.FixedUpdate still advances helm commands/environment/navigation paths. Existing authoritative command checks and VoyageStrip observer flags are not a complete host/replica tick split.
+5. CargoSecuringMiniGameRunner retains a global PlayerInventory fallback. The recent requester pass was scoped; it was not an exhaustive migration of every interaction.
+6. ModuleCartridge still invokes module operations locally. Role gates reject a client mutation; an authenticated network request dispatcher must replace those client mutation calls for connected play.
+7. Save/transition entry points remain built around the current local participant. Full crew capture, host-ordered transition, restoration provenance, reserved disconnected participants, locker/body lifecycle and passive full-save client mirrors remain to implement.
+8. Shared Rigidbody replica mode and snapshot interpolation remain unimplemented. Force gating does not prevent Unity's ordinary gravity/collision integration by itself.
+9. AI, world events, harvesting, exclusive station claims, inventory access policies, damage/death and other audit categories still require host execution and replication integration.
+
+### Recommended checkpoints
+
+- **MP.0 — Current-source reconciliation:** this addendum plus the original infrastructure audit. Freeze the first playable milestone around one shared boat and two independently controlled participants. Keep the full handoff's lifecycle/save requirements as subsequent acceptance criteria.
+- **MP.1 — Transport choice and session identity:** research/select the networking stack, implement listen-host/client lifecycle and sender-to-participant mapping. Keep connection, persistence, character and spawned-entity identities separate. Initialize gameplay role before spawning gameplay objects. Preserve an explicit single-player path.
+- **MP.2 — Dynamic actor bootstrap and movement vertical slice:** provide reviewed player-prefab/Inspector tasks, spawn two distinct actors, bind local input/camera/UI, route remote input to host movement, apply replicated poses and shared-boat replica policy. Test editor plus standalone or two builds.
+- **MP.3 — Real shared interaction vertical slice:** authenticated module commands and state snapshots, one exclusive station and one physical pickup/drop conflict. Validate range, access, incarnation/revision and duplicate requests. Prove one fuel/power/item outcome across host/client and late join.
+- **MP.4 — Expand shared gameplay coverage:** inventory/container/market/harvest transactions, securing, helm, hatches, ladders, AI, damage and world simulation. Reuse existing authority/domain operations; avoid networking ambient stars or cosmetic effects.
+- **MP.5 — Lifecycle, transitions and durable saves:** BoatScene disconnected bodies, NodeScene lockers, sacred held-item release, reconnect/death/spectating/wipe, crew departure consequences, host scene protocol, autosave provenance and complete passive client mirrors.
+- **MP.6 — Two-instance abuse/regression and closure:** repeat disconnect/reconnect, conflicting claims, inventory transfers, moving-boat interactions, scene changes and host save/reload. Target four participants without fixed four-slot collections. Mark the multiplayer handoff complete only when its full success criteria pass.
+
+Select transport before building package-dependent player/session components; the original audit's identity design can precede selection, but package-independent scaffolding alone should not become another long hardening detour. End each coherent checkpoint with concrete playtest steps before broadening coverage.
+
+### Updated incoming queue
+
+Recent additions include Node_Power_Generator_Foundation_Bosun_Handoff.md, Boat_Surface_Wallpaper_Shader_System_Bosun_Handoff.md and Boat_Structural_Materials_Physical_Attributes_Bosun_Handoff.md. They remain separate feature passes. The WorldGen V2 handoffs remain deferred under the user's earlier direction; multiplayer integration should not silently rewrite world generation.
+
+### Verification limits
+
+Reviewed current source and package manifest and reconciled the recent compile/headless-check results. No transport was installed, no dynamic player prefab authored, no actual host/client connection launched, and no live multiplayer correctness was established by this review.
+
+## 2026-10-10 — Networking checkpoint follow-up
+
+The reconciliation above records the pre-implementation audit. MP.1 now uses NGO 2.7.0 / Unity Transport 2.6.0 and was validated by the user in the actual game build with two participants. See MULTIPLAYER_1_SESSION_FOUNDATION_CHECKPOINT.md.
+
+MP.2 uses the user's CharacterPlayer prefab for a development movement fixture. Host-assigned identities, explicit local camera/input binding, sender-to-actor validation, existing host locomotion and non-simulated client pose replicas are implemented. See MULTIPLAYER_2_DYNAMIC_PLAYER_MOVEMENT_CHECKPOINT.md for verification and acceptance steps. Authored BoatScene/NodeScene player replacement, personal scene HUD binding, real shared-boat/world replication and coordinated scene loading remain open; the static movement fixture is not proof of those behaviors. The full handoff remains pending.
+
+MP.2, including buffered pose smoothing, was subsequently validated by the user. MP.3 adds a server-owned shared-interaction fixture using existing generator/power, seat and cargo acquisition/drop implementations. Sender identity, range, per-target incarnation/revision, request replay/rate limits and exclusive claims are enforced on the host; typed state replicates resources, held cargo identities and occupancy to late joiners. Three-process runtime checks pass, including conflicting requests and disconnect cleanup. See MULTIPLAYER_3_SHARED_INTERACTION_CHECKPOINT.md for scope and manual acceptance. This establishes a contained interaction path; connected BoatScene/NodeScene loading and real sailing-boat/world replication are still open and should be the next integration checkpoint before expanding gameplay coverage broadly.
+
+## 2026-10-11 — MP.3 acceptance and MP.4 integration ordering
+
+The user validated MP.3 and authorized MP.4. MP.4 begins with the shared sailing-boat integration gap identified above: the authored boat, host-only physical/navigation simulation, passive pose/fluid/door replicas and authenticated helm orders. See MULTIPLAYER_4_SHARED_BOAT_CHECKPOINT.md. This is MP.4A; the full MP.4 coverage list and original handoff remain pending. Normal BoatScene/NodeScene/world bootstrap and the subsequent domain adapters must not be marked complete from the reversible MainMenu sailing test alone.
+
+
+## 2026-10-11 — MP.4A acceptance and MP.4B item foundation
+
+The user accepted the sailing-boat slice. Normal scene bootstrap inspection still finds local single-player boat/player restoration and the MainMenu session guard. Before enabling those paths, MP.4B replaces fixture-only item reconstruction with bounded complete item/loadout snapshots and authenticated generator-to-requester fuel transfers. See MULTIPLAYER_4_SHARED_ITEMS_CHECKPOINT.md for native tests, protocol limits, and manual acceptance. Normal connected scenes/world/HUD, the wider domain adapters and MP.5 lifecycle/save protocol remain pending; neither MP.4 nor the original handoff is DONE.
+
+## 2026-10-11 — MP.4B acceptance and host world preparation
+
+The user accepted MP.4B. NetworkWorldBootstrap now transfers a detached authoritative WorldMapSaveSnapshot with portable terrain, version/session/scene/epoch checks, chunk/checksum bounds, connected-participant readiness, late join and teardown. Native three-process staging and inventory/movement regressions pass. See MULTIPLAYER_4_WORLD_PREPARATION_CHECKPOINT.md. This is preparation only: actual scene loading, GameState application, authored actor/boat replacement, owner HUD binding and the MP.5 transition/save protocol remain open. Multiplayer New/Load remains gated; MP.4 and the handoff remain in progress.
+
+## 2026-10-11 — Authored NodeScene entry connected
+
+MP.4C2 now connects fresh host New Game to the normal NodeScene: host generation/capture, prepared-world client application before Awake, no client terrain/graph generation, catalog-validated passive boat spawning, shared boat adoption/replicas, dynamic participant actors after scene readiness, owner camera/inventory display, late join and Leave to MainMenu. Actual NodeScene standalone host/client/observer checks pass. See MULTIPLAYER_4_NODE_SCENE_ENTRY_CHECKPOINT.md for scope and manual acceptance. Ordinary scene interactions/boarding, live agents/world stats, other HUD/tool state, crew travel and durable saves remain pending. Travel and live-session save/load are gated; full MP.4 and the handoff remain in progress.
+
+## 2026-10-11 — MP.4C2 acceptance and MP.4C3 boarding/stations
+
+The user validated hosted New Game entering the normal NodeScene and authorized continuation. MP.4C3 extends the authenticated actor input stream with deck boarding gestures and adopts existing authored pilot chairs into host-owned occupancy/control. Client boarding presentation, station state and ownership replicate, including late join; actor despawn/disconnect releases station claims. Existing boat context, range, hull/interior/rail and installed helm capacity/health rules remain domain-owned. See MULTIPLAYER_4_BOARDING_STATIONS_CHECKPOINT.md for scope, isolated native verification, the test-only missing deck-point setup and manual acceptance.
+
+The temporary network helm panel uses existing ramped simulation target APIs; the ordinary piloting cartridge still needs its adapter. Normal inventory/general interactions, hatches/ladders and the remaining MP.4 domains stay open, followed by MP.5 lifecycle/travel/save work. Schema now requires matching `DontSink/node-boarding/4` builds. No production authored scene/boat asset was changed for this slice. Full MP.4 and the original handoff remain pending.
+
+## 2026-10-11 — Normal boat-entry follow-up
+
+The user flagged the practical entry gap: ordinary interactables were still disabled, preventing boarding to test the station slice. The boat-entry adapter now restores owner targeting/prompts, host-authenticated boarding-door holds and door/gate/hatch actions, mouse-targeted pilot-chair claims, and host-side ladder intent. Non-simulated replicas use rendered box/circle shapes for hover picking. See MULTIPLAYER_4_BOAT_ENTRY_INTERACTIONS_CHECKPOINT.md for the actual authored-door three-process test, remaining scope and manual checks. Matching protocol is now DontSink/node-interactions/4; broader item/vendor/world commands and full MP.4/MP.5 coverage remain pending.
+
+
+## 2026-10-12 — Boarding acceptance and normal modules
+
+The user confirmed boarding works and authorized continued normal interaction coverage. MP.4C4 registers installed engine/generator/pump hardpoints, opens the existing owner module window, routes on/off and exact hotbar/fuel transfers to the host and replicates complete fuel/module state. Fresh New Game now explicitly preserves authored starting modules/power until the first capture; saved empty manifests remain authoritative. See MULTIPLAYER_4_NORMAL_MODULES_CHECKPOINT.md for bounds, native verification, save compatibility and manual checks. Protocol is now DontSink/node-modules/4. Storage, wider inventory/cargo, NPC/vendor, regular piloting UI and the remaining gameplay/lifecycle coverage remain pending.
+
+
+## 2026-10-12 — Client visibility, debug spawning and drop-through blockers
+
+The client now resolves boat interior visibility against rendered zones instead of passive Physics2D contacts. The host enables the existing hatch/ledge dropper for both actors using authenticated down input. Each owner's authored inventory debug UI now routes bounded catalog-item requests to the host; engine/generator/pump debug items install at a nearby compatible empty authored hardpoint with an additive client/late-join manifest. Other items use requester-owned acquisition; no unreplicated loose-world drop is permitted. See the usability correction section of MULTIPLAYER_4_NORMAL_MODULES_CHECKPOINT.md. Matching protocol is DontSink/node-debug-modules/5. Broader MP.4 gameplay and MP.5 lifecycle scope remain pending; user acceptance is still required.
+
+## 2026-10-12 — MP.4C5 normal piloting and required prediction follow-up
+
+The user accepted the visibility/debug/drop-through fixes and reported owner movement latency. Owner prediction/reconciliation is now required follow-up in the MP.2 checkpoint, preserving host shared-state authority and observer interpolation. MP.4C5 reconnects the original piloting runner/cartridge/HUD to replicated seat ownership, validated preset orders, bounded keyboard intent with expiry, host target/readout/status snapshots, and normal close-to-stand behavior. Temporary helm buttons are removed; F6 auto-install remains a testing bridge. See MULTIPLAYER_4_NORMAL_PILOTING_CHECKPOINT.md. Matching protocol is DontSink/node-piloting/6. Full multiplayer parity and the handoff remain pending.
+
+## 2026-10-12 — F6 helm/rudder installation support
+
+The user could not test normal piloting because debug auto-install excluded helms. F6 now supports HelmModule and RudderModule in addition to the existing engine/generator/pump whitelist, preserving host install rules and late-join replication. Native three-process testing starts with empty pre-wired helm/rudder hardpoints and passes installation followed by normal console controls and cleanup. No production boat wiring/prefab was changed. Matching protocol is DontSink/node-piloting/7; see the normal piloting checkpoint follow-up.
+
+
+## 2026-10-12 sequential MP.4 inventory/storage/installation checkpoints
+
+Three additional contained adapters are implemented; user acceptance is pending. See MULTIPLAYER_4_NORMAL_INVENTORY_CHECKPOINT.md, MULTIPLAYER_4_SHARED_STORAGE_CHECKPOINT.md and MULTIPLAYER_4_NORMAL_INSTALLATION_CHECKPOINT.md. They connect the normal personal inventory, installed plain storage, and install/held-remove controls to host-owned models. MP.4 is still in progress: physical cargo actions, NPC/vendor interactions, broader world actions and live module families remain. MP.5 travel/save/reconnect remains pending. The user paused full piloting acceptance until BoatScene execution is available; owner movement prediction remains a required follow-up.
+
+
+The sequential checkpoints have now passed final protocol-11 host/client/late-join native suites plus the existing module/fuel/debug/drop-through regression. Editor/player compilation is clean and all 985 C# sources match the isolated native build. Protocol 11 changes transfer fingerprints to exclude live charge/water measurements while preserving the latest authoritative values. User presentation acceptance remains pending; no commits were made. Durable originating module-item persistence and general link commands remain follow-up scope.
+
+
+## 2026-10-12 second three-checkpoint continuation
+
+The user authorized three more checkpoints and a test list for all six. Normal helm/station L linking, ordinary loose-world-item F pickup/Q drop, and charged Hands cargo Q throwing are implemented. They reuse existing link, acquisition, release and throw domain behavior with authenticated per-owner commands. World-item replicas are passive/interpolated; only the host simulates collisions. Selections/holds have generation, identity, access, expiry and replay guards. Final protocol is DontSink/node-loose-items-throw/14; both peers must rebuild.
+
+See MULTIPLAYER_4_HELM_LINKING_CHECKPOINT.md, MULTIPLAYER_4_WORLD_ITEMS_CHECKPOINT.md, MULTIPLAYER_4_CHARGED_THROWING_CHECKPOINT.md and MULTIPLAYER_4_SIX_PASS_ACCEPTANCE.md. Five native suites (new combined checkpoints, inventory, installed storage, install/remove, existing module controls) all pass on host/client/late observer with zero runtime errors. Editor/player compilation and all 988 source-copy comparisons pass. Validation players exited; production scene/prefab authoring was unchanged by this continuation. Changes remain uncommitted and user presentation acceptance is pending.
+
+MP.4 remains in progress: general world containers, treasury/securing, NPC/vendor actions and live module/tether/bell families still need adapters. MP.5 travel/save/reconnect, durable originating module/link persistence and owner movement prediction/reconciliation remain pending. Full BoatScene/piloting manual acceptance is still on hold at the user's request. No seventh checkpoint was started.

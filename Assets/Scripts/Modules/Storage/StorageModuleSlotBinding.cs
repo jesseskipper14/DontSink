@@ -1,4 +1,4 @@
-public sealed class StorageModuleSlotBinding : IInventorySlotBinding
+public sealed class StorageModuleSlotBinding : IInventorySlotBinding, INetworkInventorySlotBinding
 {
     private readonly StorageModule storageModule;
     private readonly int slotIndex;
@@ -12,6 +12,7 @@ public sealed class StorageModuleSlotBinding : IInventorySlotBinding
     public StorageModule StorageModule => storageModule;
     public int SlotIndex => slotIndex;
 
+    public NetworkInventoryAddress NetworkAddress => DontSinkNetworkSession.Instance?.GameplayScene?.Replication?.StorageAddress(storageModule, slotIndex) ?? default;
     public BottomBarSlotType SlotType => BottomBarSlotType.None;
     public bool SupportsSelection => false;
 

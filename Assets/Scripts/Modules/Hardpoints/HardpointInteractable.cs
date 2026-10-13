@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 [DisallowMultipleComponent]
@@ -117,7 +117,9 @@ public sealed class HardpointInteractable :
 
         if (!hardpoint.HasInstalledModule)
         {
-            TryInstallFromPlayerInventory(context);
+            if (DontSinkNetworkSession.IsSessionActive)
+                DontSinkNetworkSession.Instance?.GameplayScene?.Replication?.RequestHardpointInstall(this, context);
+            else TryInstallFromPlayerInventory(context);
             return;
         }
 
@@ -143,6 +145,8 @@ public sealed class HardpointInteractable :
 
     public void Pickup(in InteractContext context)
     {
+        if (DontSinkNetworkSession.IsSessionActive) return; // NetworkSceneBoat validates the held pickup stream.
+
         if (hardpoint == null || !hardpoint.HasInstalledModule || !IsInRange(context))
             return;
 
@@ -593,7 +597,7 @@ public sealed class HardpointInteractable :
             return;
         }
 
-        runner.OpenForHardpoint(hardpoint);
+        runner.OpenForHardpoint(hardpoint, context.InteractorGO);
     }
 
     private bool IsInRange(
@@ -926,7 +930,7 @@ public sealed class HardpointInteractable :
         }
     }
 
-    private bool TryFindCompatiblePlayerModule(
+    internal bool TryFindCompatiblePlayerModule(
         in InteractContext context,
         out PlayerInventory inventory,
         out ItemInstance sourceItem,
@@ -1060,7 +1064,7 @@ public sealed class HardpointInteractable :
         return false;
     }
 
-    private bool InstalledModuleHasContents()
+    internal bool InstalledModuleHasContents()
     {
         if (hardpoint == null || !hardpoint.HasInstalledModule || hardpoint.InstalledModule == null)
             return false;

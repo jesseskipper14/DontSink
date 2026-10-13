@@ -159,6 +159,16 @@ public sealed class StorageModule : MonoBehaviour, IInstalledModuleLifecycle
             containerState.NotifyChanged();
     }
 
+    internal void SetContainerForTransaction(ItemContainerState state)
+    { UnbindContainerChanged(); containerState = state; BindContainerChanged(); }
+    internal void PublishTransactionChange()
+    {
+        // Both sides have committed before mass and visual listeners run.
+        try { containerState.NotifyChanged(); }
+        catch (System.Exception error) { Debug.LogException(error, this); }
+        RefreshInstalledModuleMass();
+    }
+
     public bool IsItemSlotOccupied(int slotIndex)
     {
         EnsureContainer();

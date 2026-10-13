@@ -44,6 +44,8 @@ public static class SaveGameService
         BoatCatalog boatCatalog = null,
         bool blockOnCompatibilityErrors = true)
     {
+        if (DontSinkNetworkSession.IsSessionActive)
+            return new SaveGameResult(false, "Shared-session saves are not enabled in this checkpoint.");
         GameState gs = GameState.I;
         if (gs == null)
             return new SaveGameResult(false, "GameState.I is null.");
@@ -210,6 +212,8 @@ public static class SaveGameService
         BoatCatalog boatCatalog = null,
         bool blockOnCompatibilityErrors = true)
     {
+        if (DontSinkNetworkSession.IsSessionActive)
+            return new SaveGameResult(false, "Leave the shared session before loading a single-player save.");
         string path = GetSlotPath(slotId, profileId);
 
         if (!File.Exists(path))
@@ -284,6 +288,8 @@ public static class SaveGameService
 
     public static bool CanSaveInCurrentScene(string nodeSceneName, out string reason)
     {
+        if (DontSinkNetworkSession.IsSessionActive)
+        { reason = "Shared-session saves are not enabled in this checkpoint."; return false; }
         string currentScene = SceneManager.GetActiveScene().name;
 
         if (currentScene != nodeSceneName)
@@ -470,7 +476,8 @@ public static class SaveGameService
             playerSceneContext = gs.playerSceneContext,
             playerPersistenceStates = gs.playerPersistenceStates,
             boat = gs.boat,
-            moneyChestTreasury = gs.moneyChestTreasuryState
+            moneyChestTreasury = gs.moneyChestTreasuryState,
+            itemVendorStock = gs.itemVendorStock
         };
     }
 
@@ -553,6 +560,7 @@ public static class SaveGameService
         gs.SetWorldMapSnapshot(payload.worldMapSnapshot, "SaveGameService.LoadSlot");
         gs.SetTimeOfDaySnapshot(payload.timeOfDay, "SaveGameService.LoadSlot");
         gs.SetCelestialChartState(payload.celestialCharts, "SaveGameService.LoadSlot");
+        gs.itemVendorStock = payload.itemVendorStock ?? new ItemVendorStockState();
 
         if (ServiceRoot.Instance != null)
             ServiceRoot.Instance.ApplyPersistedTimeState(gs.timeOfDay, "SaveGameService.LoadSlot");

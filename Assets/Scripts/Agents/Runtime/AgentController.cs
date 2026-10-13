@@ -123,6 +123,7 @@ public class AgentController : MonoBehaviour, ISimulationLodTarget
 
     private void Update()
     {
+        if (!GameplayAuthority.IsAuthoritative) return;
         // Still allow pre-placed agents or delayed runtime assignment to initialize
         // once a definition becomes available.
         if (!initialized && definition != null)

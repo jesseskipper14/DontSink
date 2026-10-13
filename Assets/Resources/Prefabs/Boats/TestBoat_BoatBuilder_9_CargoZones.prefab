@@ -321,6 +321,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storageModule: {fileID: 0}
   installedModule: {fileID: 0}
+  maxDepositDistance: 2.25
   verboseLogging: 0
 --- !u!61 &8524091957698087408
 BoxCollider2D:
@@ -2350,6 +2351,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storageModule: {fileID: 0}
   installedModule: {fileID: 0}
+  maxDepositDistance: 2.25
   verboseLogging: 0
 --- !u!61 &5197215039573129842
 BoxCollider2D:

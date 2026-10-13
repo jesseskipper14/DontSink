@@ -94,6 +94,11 @@ public sealed class InventoryDragController : MonoBehaviour
     /// without relying on transform hierarchy or arbitrary object searches.
     /// </summary>
     public PlayerInventory BoundInventory { get { ResolveDropReferences(); return inventory; } }
+    private ulong networkReservedFingerprint;
+    public void BindParticipant(PlayerInventory ownerInventory)
+    {
+        CancelDrag(); inventory = ownerInventory; inventoryInput = null; ResolveDropReferences();
+    }
 
     private void ResolveDropReferences()
     {
@@ -258,6 +263,7 @@ public sealed class InventoryDragController : MonoBehaviour
                 return;
             }
 
+            if (DontSinkNetworkSession.IsSessionActive) return;
             // Right-click over a world drop target means "deposit one into that
             // target" first. Raw world spawning is only allowed when there is no
             // world-drop target under/near the pointer at all.
@@ -300,7 +306,9 @@ public sealed class InventoryDragController : MonoBehaviour
             return;
         }
 
-        if (TryBeginDeployedSounderDrag(
+        if (DontSinkNetworkSession.IsSessionActive &&
+            (DontSinkNetworkSession.Instance?.GameplayScene?.Replication?.InventoryRequestPending != false || !slot.TryGetNetworkAddress(out _))) return;
+        if (!DontSinkNetworkSession.IsSessionActive && TryBeginDeployedSounderDrag(
                 slot))
         {
             return;
@@ -345,6 +353,7 @@ public sealed class InventoryDragController : MonoBehaviour
 
         _reservedSourceInstanceId =
             sourceItem.InstanceId;
+        if (DontSinkNetworkSession.IsSessionActive) networkReservedFingerprint = NetworkInventoryModel.Fingerprint(sourceItem);
 
         _reservedQuantity =
             quantity;
@@ -691,6 +700,11 @@ public sealed class InventoryDragController : MonoBehaviour
         ItemInstance item,
         InventorySlotUI slot)
     {
+        if (DontSinkNetworkSession.IsSessionActive)
+        {
+            if (slot != null && item != null && slot.GetBoundItem()?.InstanceId == item.InstanceId) BeginDrag(slot);
+            return;
+        }
         // Compatibility overload. The normal InventorySlotUI path no longer uses
         // detached ItemInstances. If the supplied item is still the authoritative
         // source object, convert it to a reservation. Otherwise preserve it as a
@@ -750,6 +764,14 @@ public sealed class InventoryDragController : MonoBehaviour
             return;
         }
 
+        if (DontSinkNetworkSession.IsSessionActive)
+        {
+            var networkTarget = FindTargetSlotUnderMouse();
+            if (networkTarget != null && networkTarget != sourceSlot)
+                DontSinkNetworkSession.Instance?.GameplayScene?.Replication?.RequestUiInventoryMove(sourceSlot, networkTarget, _reservedQuantity, networkReservedFingerprint);
+            else if (networkTarget == null) GameMessageService.PostWarning("World dropping is not connected yet. Item stays in its source slot.");
+            Cleanup(); return;
+        }
         if (IsLikelyLifecycleInterruptedEndDrag())
         {
             ResolveInterruptedDragWithoutWorldDrop(
@@ -1162,6 +1184,12 @@ public sealed class InventoryDragController : MonoBehaviour
     public bool TryDepositSingleInto(
         InventorySlotUI target)
     {
+        if (DontSinkNetworkSession.IsSessionActive)
+        {
+            bool submitted = isDragging && target != null && target != sourceSlot &&
+                DontSinkNetworkSession.Instance?.GameplayScene?.Replication?.RequestUiInventoryMove(sourceSlot, target, 1, networkReservedFingerprint) == true;
+            if (submitted) Cleanup(); return submitted;
+        }
         if (!isDragging ||
             draggedItem == null ||
             target == null)

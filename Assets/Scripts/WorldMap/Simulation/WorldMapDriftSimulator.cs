@@ -101,6 +101,7 @@ public class WorldMapDriftSimulator : MonoBehaviour
 
     private void Update()
     {
+        if (!GameplayAuthority.IsAuthoritative) return;
         if (_timeOfDay == null) return;
         if (runtimeBinder == null || !runtimeBinder.IsBuilt) return;
 

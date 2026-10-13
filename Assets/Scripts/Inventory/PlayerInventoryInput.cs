@@ -21,6 +21,10 @@ public sealed class PlayerInventoryInput : MonoBehaviour
     private ItemInstance pendingItem;
     private BottomBarSlotType pendingSlot;
     private float pressedAt;
+    private ulong pendingFingerprint;
+    private double nextThrowPulse;
+    public float ThrowHoldThreshold => Mathf.Max(.05f, throwHoldThreshold);
+    public float FullChargeDuration => Mathf.Max(.05f, fullChargeDuration);
     private bool releaseRequested;
     private bool throwCandidate;
     private LineRenderer preview;
@@ -41,14 +45,21 @@ public sealed class PlayerInventoryInput : MonoBehaviour
         if (!CanUseInput()) { CancelThrow(); return; }
         HandleSelection();
         if (pendingItem != null && (inventory.SelectedSlot != pendingSlot ||
-            !ReferenceEquals(GetSelectedItem(), pendingItem))) CancelThrow();
-        if (Input.GetKeyDown(KeyCode.Q))
+            !PendingMatches())) CancelThrow();
+        if (Input.GetKeyDown(KeyCode.Q) && (!DontSinkNetworkSession.IsSessionActive ||
+            DontSinkNetworkSession.Instance.GameplayScene.Replication?.WorldItemRequestPending != true))
         {
             pendingItem = GetSelectedItem();
             pendingSlot = inventory.SelectedSlot;
             pressedAt = Time.unscaledTime;
             releaseRequested = false;
             throwCandidate = pendingSlot == BottomBarSlotType.Hands && inventory.CanThrowHeld(pendingItem);
+            if (DontSinkNetworkSession.IsSessionActive && pendingItem != null)
+            {
+                pendingFingerprint = NetworkInventoryModel.Fingerprint(pendingItem);
+                if (throwCandidate) DontSinkNetworkSession.Instance.GameplayScene.Replication.RequestWorldThrow(NetworkThrowPhase.Begin, pendingFingerprint);
+                nextThrowPulse = Time.realtimeSinceStartupAsDouble + .12;
+            }
         }
         if (pendingItem != null && Input.GetKeyUp(KeyCode.Q)) releaseRequested = true;
     }
@@ -58,8 +69,13 @@ public sealed class PlayerInventoryInput : MonoBehaviour
     {
         if (pendingItem == null) return;
         if (!CanUseInput() || inventory.SelectedSlot != pendingSlot ||
-            !ReferenceEquals(GetSelectedItem(), pendingItem) ||
-            (throwCandidate && !inventory.CanThrowHeld(pendingItem))) { CancelThrow(); return; }
+            !PendingMatches() ||
+            (throwCandidate && !inventory.CanThrowHeld(GetSelectedItem()))) { CancelThrow(); return; }
+        if (DontSinkNetworkSession.IsSessionActive && throwCandidate && !releaseRequested && Time.realtimeSinceStartupAsDouble >= nextThrowPulse)
+        {
+            DontSinkNetworkSession.Instance.GameplayScene.Replication.RequestWorldThrow(NetworkThrowPhase.Pulse, pendingFingerprint);
+            nextThrowPulse = Time.realtimeSinceStartupAsDouble + .12;
+        }
         float heldTime = Time.unscaledTime - pressedAt;
         bool throwing = throwCandidate && heldTime >= Mathf.Max(.05f, throwHoldThreshold);
         float charge = Mathf.Clamp01((heldTime - Mathf.Max(.05f, throwHoldThreshold)) /
@@ -74,6 +90,19 @@ public sealed class PlayerInventoryInput : MonoBehaviour
         direction.Normalize();
         if (releaseRequested)
         {
+            if (DontSinkNetworkSession.IsSessionActive)
+            {
+                var replication = DontSinkNetworkSession.Instance.GameplayScene.Replication;
+                if (throwing) replication.RequestWorldThrow(NetworkThrowPhase.Release, pendingFingerprint, direction);
+                else
+                {
+                    if (throwCandidate) replication.RequestWorldThrow(NetworkThrowPhase.Cancel, pendingFingerprint);
+                    int index = PlayerInventory.SlotTypeToHotbarIndex(pendingSlot);
+                    replication.RequestWorldDrop(new NetworkInventoryAddress(index >= 0 ? NetworkInventoryKind.Hotbar : NetworkInventoryKind.Equipment,
+                        index >= 0 ? index : (int)pendingSlot), pendingFingerprint);
+                }
+                ClearThrowPreview(); return;
+            }
             string itemId = pendingItem.InstanceId;
             CancelThrow();
             if (throwing)
@@ -152,7 +181,16 @@ public sealed class PlayerInventoryInput : MonoBehaviour
         preview.enabled = true;
     }
 
+    private bool PendingMatches() => DontSinkNetworkSession.IsSessionActive
+        ? pendingItem?.InstanceId == GetSelectedItem()?.InstanceId && GetSelectedItem() != null && pendingFingerprint == NetworkInventoryModel.Fingerprint(GetSelectedItem())
+        : ReferenceEquals(GetSelectedItem(), pendingItem);
     private void CancelThrow()
+    {
+        if (DontSinkNetworkSession.IsSessionActive && pendingItem != null && throwCandidate)
+            DontSinkNetworkSession.Instance?.GameplayScene?.Replication?.RequestWorldThrow(NetworkThrowPhase.Cancel, pendingFingerprint);
+        ClearThrowPreview();
+    }
+    private void ClearThrowPreview()
     {
         pendingItem = null;
         releaseRequested = false;
@@ -170,6 +208,7 @@ public sealed class PlayerInventoryInput : MonoBehaviour
 
     private void HandleSelection()
     {
+        var original = inventory.SelectedSlot;
         float scroll = Input.mouseScrollDelta.y;
         if (GetComponentInParent<BoatObservationPresentationController>()?.IsEscapeOpen == true) scroll = 0f;
         if (scroll > 0.01f) inventory.CycleSelection(-1);
@@ -182,6 +221,8 @@ public sealed class PlayerInventoryInput : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha6)) SelectHotbar(5);
         if (Input.GetKeyDown(KeyCode.Alpha7)) SelectHotbar(6);
         if (Input.GetKeyDown(KeyCode.Alpha8)) SelectHotbar(7);
+        if (DontSinkNetworkSession.IsSessionActive && original != inventory.SelectedSlot)
+            DontSinkNetworkSession.Instance?.GameplayScene?.Replication?.RequestInventorySelection(inventory.SelectedSlot);
     }
     private void SelectHotbar(int index)
     {

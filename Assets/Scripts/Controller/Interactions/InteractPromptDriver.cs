@@ -27,6 +27,8 @@ public sealed class InteractPromptDriver : MonoBehaviour
     private bool _ownsPromptPresentation;
     private WorldItem _highlightedWorldItem;
 
+    public void BindPromptUI(InteractPromptUI ui) => promptUI = ui;
+
     private void Reset()
     {
         interactor = GetComponent<Interactor2D>();

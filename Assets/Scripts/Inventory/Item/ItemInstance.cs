@@ -227,7 +227,17 @@ public sealed class ItemInstance
         return removed;
     }
 
-    internal void PublishTransactionChange() => NotifyChanged();
+    internal void RestoreQuantityForTransaction(int value) => quantity = value;
+
+    internal void PublishTransactionChange()
+    {
+        if (Changed == null) return;
+        foreach (Action listener in Changed.GetInvocationList())
+        {
+            try { listener(); }
+            catch (Exception ex) { Debug.LogException(ex); }
+        }
+    }
 
     public ItemInstance SplitOff(int amount)
     {

@@ -108,6 +108,9 @@ public sealed class BoatVisualStateController : MonoBehaviour
                 resolved,
                 _lastResolvedLocalViewer))
         {
+            // Passive network replicas have no trigger enter/exit callbacks.
+            if (DontSinkNetworkSession.IsSessionActive && GameplayAuthority.IsMultiplayerClientOnly && resolved != null)
+                RefreshPresentationForLocalViewer();
             return;
         }
 
@@ -213,7 +216,11 @@ public sealed class BoatVisualStateController : MonoBehaviour
                 if (playerCollider == null || !playerCollider.enabled)
                     continue;
 
-                if (zoneCollider.IsTouching(playerCollider))
+                bool passiveReplica = zoneCollider.attachedRigidbody != null && !zoneCollider.attachedRigidbody.simulated;
+                Vector2 renderedCenter = playerCollider.transform.TransformPoint(playerCollider.offset);
+                if (passiveReplica
+                    ? (NetworkSceneBoat.ClosestInteractionPoint(zoneCollider, renderedCenter) - renderedCenter).sqrMagnitude < .000001f
+                    : zoneCollider.IsTouching(playerCollider))
                 {
                     activeZones ??= new List<BoatVisibilityZone>();
 
@@ -301,7 +308,7 @@ public sealed class BoatVisualStateController : MonoBehaviour
             // This is per-player physical collision context, NOT client-local
             // presentation. Remote players still need correct host-side collision
             // handling while they occupy an interior zone.
-            ApplyExteriorModulePlayerCollisionPolicy(
+            if (GameplayAuthority.IsAuthoritative) ApplyExteriorModulePlayerCollisionPolicy(
                 player,
                 onThisBoat
                     ? mode
@@ -310,10 +317,8 @@ public sealed class BoatVisualStateController : MonoBehaviour
 
         if (IsLocalViewingPlayer(player))
         {
-            ApplyMode(
-                onThisBoat
-                    ? mode
-                    : unboardedMode);
+            BoatVisibilityMode desired = onThisBoat ? mode : unboardedMode;
+            if (_currentMode != desired) ApplyMode(desired);
         }
     }
 

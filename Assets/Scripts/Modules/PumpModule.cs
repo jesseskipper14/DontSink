@@ -58,6 +58,7 @@ public sealed class PumpModule : MonoBehaviour, IPowerConsumerModule, IModuleTog
 
     private void Update()
     {
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return;
         if (!isOn)
             return;
 
@@ -92,6 +93,12 @@ public sealed class PumpModule : MonoBehaviour, IPowerConsumerModule, IModuleTog
     }
 
     public bool SetOn(bool value)
+    {
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return false;
+        return ApplyOnState(value);
+    }
+
+    private bool ApplyOnState(bool value)
     {
         if (value && !CanRun())
         {
@@ -254,6 +261,9 @@ public sealed class PumpModule : MonoBehaviour, IPowerConsumerModule, IModuleTog
     public void RestorePersistentState(bool restoredIsOn)
     {
         ResolveTargetCompartment();
-        SetOn(restoredIsOn);
+        if (GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative))
+            ApplyOnState(restoredIsOn);
+        else
+            isOn = restoredIsOn;
     }
 }

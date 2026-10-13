@@ -20,6 +20,13 @@ public sealed class ContainerSubviewUI : MonoBehaviour
     [System.NonSerialized] private ItemContainerState subscribedState;
 
     public InventorySlotUI SourceSlot => sourceSlot;
+    private void Update()
+    {
+        if (!DontSinkNetworkSession.IsSessionActive || boundContainerItem == null) return;
+        var current = sourceSlot != null ? sourceSlot.GetBoundItem() : null;
+        if (current?.InstanceId != boundContainerItem.InstanceId) { gameObject.SetActive(false); return; }
+        if (!ReferenceEquals(current, boundContainerItem)) Bind(current, sourceSlot, owner, dragController);
+    }
 
     private void Awake()
     {

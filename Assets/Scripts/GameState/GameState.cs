@@ -75,6 +75,9 @@ public sealed class GameState : MonoBehaviour
     public MoneyChestTreasurySnapshot moneyChestTreasuryState = new MoneyChestTreasurySnapshot();
     public MoneyChestTreasuryService moneyChestTreasury;
 
+    [Header("Item Vendor Stock")]
+    public ItemVendorStockState itemVendorStock = new ItemVendorStockState();
+
     public BoatSaveState boat = new BoatSaveState
     {
         boatPrefabGuid = "",
@@ -424,7 +427,7 @@ public sealed class GameState : MonoBehaviour
         if (boat.tetherState == null)
             boat.tetherState = new BoatTetherStateManifest();
 
-        if (boat.moduleStates == null)
+        if (boat.moduleStates == null && !boat.useAuthoredStartingModules)
             boat.moduleStates = new BoatModuleStateManifest();
 
         if (boat.compartmentStates == null)
@@ -538,6 +541,7 @@ public sealed class GameState : MonoBehaviour
         }
 
         boat.moduleStates = manifest ?? new BoatModuleStateManifest();
+        boat.useAuthoredStartingModules = false;
 
         LogState($"SetBoatModuleStates reason='{reason}'");
     }
@@ -1075,6 +1079,9 @@ public sealed class BoatSaveState
     public BoatTetherStateManifest tetherState;
 
     public BoatModuleStateManifest moduleStates;
+    // Fresh New Game has no captured manifest yet. Saved empty manifests remain
+    // authoritative; this defaults false for existing saves.
+    public bool useAuthoredStartingModules;
     public BoatPowerSnapshot power;
 
     public BoatCompartmentStateManifest compartmentStates;

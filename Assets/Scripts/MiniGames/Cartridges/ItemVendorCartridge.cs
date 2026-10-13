@@ -33,7 +33,6 @@ namespace MiniGames
 
             public bool hideUnsellableSellItems;
 
-            public readonly Dictionary<int, int> runtimeStockByOfferIndex = new();
         }
 
         private static readonly Dictionary<string, ItemVendorUiState> UiStateByKey =
@@ -86,7 +85,6 @@ namespace MiniGames
         {
             _ctx = context ?? new MiniGameContext();
             _uiState = GetOrCreateUiState();
-            EnsureRuntimeStock();
             _requestedClose = false;
         }
 
@@ -145,8 +143,6 @@ namespace MiniGames
         {
             if (_uiState == null)
                 _uiState = GetOrCreateUiState();
-
-            EnsureRuntimeStock();
 
             float pad = 14f;
 
@@ -479,11 +475,7 @@ namespace MiniGames
             bool canBuy = false;
             string reason = null;
 
-            if (stock == 0)
-            {
-                reason = "Out of stock.";
-            }
-            else if (_purchaseService == null)
+            if (_purchaseService == null)
             {
                 reason = "Missing purchase service.";
             }
@@ -690,14 +682,8 @@ namespace MiniGames
 
         public int GetRuntimeStock(int offerIndex)
         {
-            if (_uiState == null)
-                _uiState = GetOrCreateUiState();
-
-            EnsureRuntimeStock();
-
-            return _uiState.runtimeStockByOfferIndex.TryGetValue(offerIndex, out int stock)
-                ? stock
-                : 0;
+            return _purchaseService != null && offerIndex >= 0 && offerIndex < _offers.Count
+                ? _purchaseService.GetRuntimeStock(_vendor, _offers[offerIndex], _agentContext) : 0;
         }
 
         public void NotifyPurchaseApplied(int offerIndex, bool success, string message)
@@ -706,15 +692,6 @@ namespace MiniGames
                 _uiState = GetOrCreateUiState();
 
             _uiState.lastUiNote = message;
-
-            if (!success)
-                return;
-
-            int stock = GetRuntimeStock(offerIndex);
-            if (stock < 0)
-                return;
-
-            _uiState.runtimeStockByOfferIndex[offerIndex] = Mathf.Max(0, stock - 1);
         }
 
         public void NotifySellApplied(bool success, string message)
@@ -835,30 +812,5 @@ namespace MiniGames
             return state;
         }
 
-        private void EnsureRuntimeStock()
-        {
-            if (_uiState == null)
-                _uiState = GetOrCreateUiState();
-
-            if (_offers == null)
-                return;
-
-            for (int i = 0; i < _offers.Count; i++)
-            {
-                if (_uiState.runtimeStockByOfferIndex.ContainsKey(i))
-                    continue;
-
-                ItemVendorSellOffer offer = _offers[i];
-                _uiState.runtimeStockByOfferIndex[i] = offer != null ? offer.stock : 0;
-            }
-
-            List<int> keys = new List<int>(_uiState.runtimeStockByOfferIndex.Keys);
-            for (int i = 0; i < keys.Count; i++)
-            {
-                int key = keys[i];
-                if (key < 0 || key >= _offers.Count)
-                    _uiState.runtimeStockByOfferIndex.Remove(key);
-            }
-        }
     }
 }

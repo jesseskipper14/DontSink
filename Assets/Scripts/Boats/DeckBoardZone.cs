@@ -136,6 +136,7 @@ public sealed partial class DeckBoardZone :
 
     private void Update()
     {
+        if (!GameplayAuthority.IsAuthoritative) return;
         if (_overlapCounts.Count == 0)
             return;
 
@@ -155,6 +156,9 @@ public sealed partial class DeckBoardZone :
 
             if (boarding == null)
                 continue;
+            var actor = boarding.GetComponent<NetworkPlayerActor>();
+            if (actor != null && actor.IsSpawned && DontSinkNetworkSession.Instance?.GameplayScene?.Replication?.SeatFor(actor) != null)
+            { ResetHold(boarding); continue; }
 
             ZoneAction action = GetAvailableAction(boarding);
 

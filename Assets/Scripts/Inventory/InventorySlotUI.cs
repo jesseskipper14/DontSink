@@ -62,6 +62,12 @@ public sealed class InventorySlotUI : MonoBehaviour,
         binding != null && binding.SupportsSelection;
 
     public string DebugSlotName => gameObject.name;
+    public bool TryGetNetworkAddress(out NetworkInventoryAddress address)
+    {
+        address = default;
+        if (binding is not INetworkInventorySlotBinding networkBinding) return false;
+        address = networkBinding.NetworkAddress; return true;
+    }
 
     public void SetOwner(PlayerInventoryUI ownerUI)
     {
@@ -433,6 +439,8 @@ public sealed class InventorySlotUI : MonoBehaviour,
 
     private bool TryQuickTransfer()
     {
+        if (DontSinkNetworkSession.IsSessionActive)
+            return DontSinkNetworkSession.Instance?.GameplayScene?.Replication?.RequestQuickInventoryTransfer(this) == true;
         if (dragController != null && dragController.IsDragging)
             return false;
 

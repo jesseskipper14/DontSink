@@ -9,6 +9,7 @@ public static class WorldItemDropUtility
         out WorldItem dropped)
     {
         dropped = null;
+        if (!GameplayAuthority.IsAuthoritative) return false;
 
         if (instance == null ||
             instance.Definition == null)
@@ -38,6 +39,13 @@ public static class WorldItemDropUtility
         InheritReleaseVelocity(dropped, actor);
 
         return true;
+    }
+
+    internal static void ApplyReplicaBoatOwnership(WorldItem item, Boat boat)
+    {
+        if (!DontSinkNetworkSession.IsSessionActive || GameplayAuthority.IsAuthoritative) return;
+        EnsureOrdinaryItemPolicies(item, out var owned, out _, out _);
+        if (boat != null) owned.AssignToBoat(boat); else owned.ClearOwnership();
     }
 
     public static void InheritReleaseVelocity(WorldItem item, GameObject actor)

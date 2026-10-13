@@ -17,23 +17,31 @@ public sealed class PilotingHudRenderer
     public void DrawOrders(Rect area, BoatPilotingState state, BoatPilotingSimulation simulation, object owner, float? heading)
     {
         if (state == null || simulation == null) return;
+        bool multiplayer = DontSinkNetworkSession.IsSessionActive;
+        var network = DontSinkNetworkSession.Instance?.GameplayScene?.Replication;
+        var chair = owner as PilotChairInteractable;
+        float speed = multiplayer ? network?.HelmForwardSpeed ?? 0 : simulation.PhysicalForwardSpeed;
+        float? throttleOrder = multiplayer ? network?.ThrottleOrder : simulation.ThrottleTarget;
+        float? rudderOrder = multiplayer ? network?.RudderOrder : simulation.RudderTargetFraction;
         GUI.Box(area, GUIContent.none);
         float width = Mathf.Max(1f, area.width - 30f);
         _ordersScroll = GUI.BeginScrollView(new Rect(area.x + 8f, area.y + 8f, area.width - 16f, area.height - 16f), _ordersScroll,
             new Rect(0f, 0f, width, 488f));
-        GUI.Label(new Rect(0f, 0f, width, 23f), $"Speed: {simulation.PhysicalForwardSpeed:0.00} u/s");
+        GUI.Label(new Rect(0f, 0f, width, 23f), $"Speed: {speed:0.00} u/s");
         GUI.Label(new Rect(0f, 23f, width, 23f), heading.HasValue ? $"Heading: {heading.Value:000.0}°" : "Heading: --");
         GUI.Label(new Rect(0f, 48f, width, 23f), "ENGINE ORDER");
         float y = 73f;
         bool enabled = GUI.enabled;
         Color background = GUI.backgroundColor;
-        bool canControl = enabled && GameplayAuthority.IsAuthoritative && simulation.HasControlAuthority(owner);
+        bool canControl = enabled && (multiplayer ? network != null && network.HasLocalHelmControl(chair) && !network.HelmRequestPending :
+            GameplayAuthority.IsAuthoritative && simulation.HasControlAuthority(owner));
         GUI.enabled = canControl;
         for (int i = 0; i < EngineLabels.Length; i++)
         {
-            GUI.backgroundColor = simulation.ThrottleTarget.HasValue && Mathf.Abs(simulation.ThrottleTarget.Value - EngineOrders[i]) < .001f
+            GUI.backgroundColor = throttleOrder.HasValue && Mathf.Abs(throttleOrder.Value - EngineOrders[i]) < .001f
                 ? new Color(.55f, .8f, .72f) : background;
-            if (GUI.Button(new Rect(0f, y, width, 23f), EngineLabels[i])) simulation.TrySetThrottleTarget(owner, EngineOrders[i]);
+            if (GUI.Button(new Rect(0f, y, width, 23f), EngineLabels[i]))
+            { if (multiplayer) network.RequestHelmOrder(chair, false, EngineOrders[i]); else simulation.TrySetThrottleTarget(owner, EngineOrders[i]); }
             y += 26f;
         }
         GUI.backgroundColor = background;
@@ -41,12 +49,13 @@ public sealed class PilotingHudRenderer
         y += 5f;
         GUI.Label(new Rect(0f, y, width, 23f), "RUDDER ORDER");
         y += 30f;
-        GUI.enabled = canControl && simulation.MaxRudderDegrees > .001f;
+        GUI.enabled = canControl && (multiplayer ? network?.HelmMaxRudder ?? 0 : simulation.MaxRudderDegrees) > .001f;
         for (int i = 0; i < RudderLabels.Length; i++)
         {
-            GUI.backgroundColor = simulation.RudderTargetFraction.HasValue && Mathf.Abs(simulation.RudderTargetFraction.Value - RudderOrders[i]) < .001f
+            GUI.backgroundColor = rudderOrder.HasValue && Mathf.Abs(rudderOrder.Value - RudderOrders[i]) < .001f
                 ? new Color(.55f, .8f, .72f) : background;
-            if (GUI.Button(new Rect(0f, y, width, 23f), RudderLabels[i])) simulation.TrySetRudderTarget(owner, RudderOrders[i]);
+            if (GUI.Button(new Rect(0f, y, width, 23f), RudderLabels[i]))
+            { if (multiplayer) network.RequestHelmOrder(chair, true, RudderOrders[i]); else simulation.TrySetRudderTarget(owner, RudderOrders[i]); }
             y += 26f;
         }
         GUI.backgroundColor = background;
@@ -313,7 +322,7 @@ public sealed class PilotingHudRenderer
                 GUI.enabled;
 
             GUI.enabled =
-                route.NavigationCertainty01 <
+                !DontSinkNetworkSession.IsSessionActive && route.NavigationCertainty01 <
                 0.9999f;
 
             if (GUI.Button(

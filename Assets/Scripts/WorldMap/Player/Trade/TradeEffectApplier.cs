@@ -6,6 +6,7 @@ using WorldMap.Player.Trade;
 
 public static class TradeEffectApplier
 {
+    private static bool applyingTrade;
     public static bool TryApply(
         MiniGameEffect effect,
         WorldMapPlayerState player,
@@ -21,232 +22,178 @@ public static class TradeEffectApplier
     {
         receipt = null;
         failNote = null;
-
-        if (effect.kind != MiniGameEffectKind.Transaction)
+        if (applyingTrade)
         {
-            failNote = $"Wrong effect kind: {effect.kind}";
+            failNote = "Another trade is being applied.";
             return false;
         }
-
-        if (!string.Equals(effect.system, "Trade", StringComparison.Ordinal))
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative))
         {
-            failNote = $"Wrong effect system: {effect.system}";
+            failNote = "Trade requires gameplay authority.";
             return false;
         }
-
-        if (itemStore == null)
-        {
-            failNote = "Missing item store.";
-            return false;
-        }
-
-        if (activeOffers == null)
-        {
-            failNote = "Missing active offers.";
-            return false;
-        }
-
-        TradeTransactionDraft draft;
-
+        applyingTrade = true;
         try
         {
-            draft = JsonUtility.FromJson<TradeTransactionDraft>(effect.payloadJson);
+            if (effect.kind != MiniGameEffectKind.Transaction || effect.system != "Trade")
+            {
+                failNote = "Invalid trade effect.";
+                return false;
+            }
+            if (!(itemStore is ITransactionalTradeItemStore transactionalStore) || activeOffers == null)
+            {
+                failNote = "Trade requires an atomic item store and active offers.";
+                return false;
+            }
+            var draft = JsonUtility.FromJson<TradeTransactionDraft>(effect.payloadJson);
+            if (draft?.lines == null || draft.lines.Count == 0)
+            {
+                failNote = "Trade payload has no lines.";
+                return false;
+            }
+
+            var validatedLines = new List<TradeLine>(draft.lines.Count);
+            var originalStock = new Dictionary<NodeMarketOffer, int>();
+            var remainingStock = new Dictionary<NodeMarketOffer, int>();
+            int tradeBalance = 0;
+            foreach (var line in draft.lines)
+            {
+                if (line == null || line.quantity <= 0) continue;
+                var offer = FindOffer(activeOffers, line.offerId);
+                if (offer == null || offer.quantityRemaining <= 0)
+                {
+                    failNote = $"Offer is missing or sold out: '{line.offerId}'.";
+                    return false;
+                }
+                var direction = offer.kind == MarketOfferKind.SellToPlayer
+                    ? TradeDirection.BuyFromNode : TradeDirection.SellToNode;
+                if (!string.Equals(line.itemId, offer.itemId, StringComparison.Ordinal) || line.direction != direction)
+                {
+                    failNote = $"Item or direction mismatch for offer '{line.offerId}'.";
+                    return false;
+                }
+                if (!remainingStock.TryGetValue(offer, out int available))
+                {
+                    available = offer.quantityRemaining;
+                    originalStock.Add(offer, available);
+                }
+                // Preserve clamping, but share one allowance across duplicate lines.
+                int quantity = Mathf.Min(line.quantity, available);
+                if (quantity == 0) continue;
+                remainingStock[offer] = available - quantity;
+                int unitPrice = Mathf.Max(0, offer.unitPrice);
+                int total = checked(unitPrice * quantity);
+                tradeBalance = checked(tradeBalance + (direction == TradeDirection.BuyFromNode ? -total : total));
+                validatedLines.Add(new TradeLine
+                {
+                    offerId = offer.offerId, itemId = offer.itemId,
+                    quantity = quantity, unitPrice = unitPrice, direction = direction
+                });
+            }
+            if (validatedLines.Count == 0)
+            {
+                failNote = "No valid trade lines.";
+                return false;
+            }
+            int fee = ComputeFeeTotal(feePolicy, nodeState, validatedLines, timeBucket);
+            int finalDelta = checked(tradeBalance - fee);
+
+            var treasury = MoneyChestTreasuryService.Instance;
+            if (treasury == null)
+            {
+                failNote = "No active money chest.";
+                return false;
+            }
+            if (!treasury.TryPrepareTradeBalance(finalDelta, out var money, out failNote)) return false;
+            using (money)
+            {
+                if (!transactionalStore.TryPrepareTrade(validatedLines, out var items, out failNote)) return false;
+                if (items == null)
+                {
+                    failNote = "Item store did not prepare the trade.";
+                    return false;
+                }
+                using (items)
+                {
+                    var market = nodeState?.MarketMutable;
+                    var oldSellEmbargo = market?.embargoSellToPlayerUntil;
+                    var oldBuyEmbargo = market?.embargoBuyFromPlayerUntil;
+                    var plannedMarket = market == null ? null : new NodeMarketState
+                    {
+                        embargoSellToPlayerUntil = oldSellEmbargo == null ? null :
+                            new Dictionary<string, int>(oldSellEmbargo, oldSellEmbargo.Comparer),
+                        embargoBuyFromPlayerUntil = oldBuyEmbargo == null ? null :
+                            new Dictionary<string, int>(oldBuyEmbargo, oldBuyEmbargo.Comparer)
+                    };
+                    foreach (var line in validatedLines)
+                        ApplyEmbargo(plannedMarket, FindOffer(activeOffers, line.offerId), line, timeBucket,
+                            cooldownSellToPlayerBuckets, cooldownBuyFromPlayerBuckets);
+                    var preparedReceipt = BuildReceipt(draft.nodeId, validatedLines, tradeBalance, fee, finalDelta);
+
+                    foreach (var entry in originalStock)
+                    {
+                        if (FindOffer(activeOffers, entry.Key.offerId) != entry.Key ||
+                            entry.Key.quantityRemaining != entry.Value)
+                        {
+                            failNote = "Market offers changed while preparing trade.";
+                            return false;
+                        }
+                    }
+                    foreach (var line in validatedLines)
+                    {
+                        var offer = FindOffer(activeOffers, line.offerId);
+                        if (offer.itemId != line.itemId || Mathf.Max(0, offer.unitPrice) != line.unitPrice ||
+                            (offer.kind == MarketOfferKind.SellToPlayer) != (line.direction == TradeDirection.BuyFromNode))
+                        {
+                            failNote = "Market prices or items changed while preparing trade.";
+                            return false;
+                        }
+                    }
+                    if (!items.Validate(out failNote) || !money.Validate(out failNote)) return false;
+
+                    // No callbacks, object destruction, or money notifications until all writes succeed.
+                    // Disposing an incomplete preparation restores exact items/quantities and chest state.
+                    try
+                    {
+                        items.Apply();
+                        money.Apply();
+                        foreach (var entry in remainingStock) entry.Key.quantityRemaining = entry.Value;
+                        if (market != null)
+                        {
+                            market.embargoSellToPlayerUntil = plannedMarket.embargoSellToPlayerUntil;
+                            market.embargoBuyFromPlayerUntil = plannedMarket.embargoBuyFromPlayerUntil;
+                        }
+                    }
+                    catch
+                    {
+                        foreach (var entry in originalStock) entry.Key.quantityRemaining = entry.Value;
+                        if (market != null)
+                        {
+                            market.embargoSellToPlayerUntil = oldSellEmbargo;
+                            market.embargoBuyFromPlayerUntil = oldBuyEmbargo;
+                        }
+                        throw;
+                    }
+                    items.Complete();
+                    money.Complete();
+                    receipt = preparedReceipt;
+                    // Observer failures cannot undo the committed transaction or report it as failed.
+                    try { items.Publish(); } catch (Exception ex) { Debug.LogException(ex); }
+                    try { money.Publish(); } catch (Exception ex) { Debug.LogException(ex); }
+                    try { GameMessageTradeReporter.Report(receipt, null); } catch (Exception ex) { Debug.LogException(ex); }
+                    return true;
+                }
+            }
         }
         catch (Exception ex)
         {
-            failNote = $"Could not parse trade payload: {ex.Message}";
+            failNote = ex is OverflowException ? "Trade amounts exceed supported limits." : $"Could not apply trade: {ex.Message}";
             return false;
         }
-
-        if (draft == null || draft.lines == null || draft.lines.Count == 0)
+        finally
         {
-            failNote = "Trade payload has no lines.";
-            return false;
+            applyingTrade = false;
         }
-
-        if (!HasActiveMoneyChest())
-        {
-            failNote = "No active money chest.";
-            return false;
-        }
-
-        List<TradeLine> validatedLines = new List<TradeLine>(draft.lines.Count);
-
-        int tradeBalance = 0;
-
-        for (int i = 0; i < draft.lines.Count; i++)
-        {
-            TradeLine line = draft.lines[i];
-
-            if (line == null)
-                continue;
-
-            if (line.quantity <= 0)
-                continue;
-
-            NodeMarketOffer offer = FindOffer(activeOffers, line.offerId);
-            if (offer == null)
-            {
-                failNote = $"Offer no longer exists: '{line.offerId}'.";
-                return false;
-            }
-
-            if (offer.quantityRemaining <= 0)
-            {
-                failNote = $"Offer is sold out: '{line.offerId}'.";
-                return false;
-            }
-
-            int qty = Mathf.Min(line.quantity, offer.quantityRemaining);
-            if (qty <= 0)
-                continue;
-
-            if (!string.Equals(line.itemId, offer.itemId, StringComparison.Ordinal))
-            {
-                failNote = $"Line item mismatch. line='{line.itemId}', offer='{offer.itemId}'.";
-                return false;
-            }
-
-            TradeDirection expectedDirection =
-                offer.kind == MarketOfferKind.SellToPlayer
-                    ? TradeDirection.BuyFromNode
-                    : TradeDirection.SellToNode;
-
-            if (line.direction != expectedDirection)
-            {
-                failNote =
-                    $"Line direction mismatch for offer '{offer.offerId}'. " +
-                    $"Expected {expectedDirection}, got {line.direction}.";
-                return false;
-            }
-
-            if (line.direction == TradeDirection.SellToNode)
-            {
-                int have = itemStore.GetCount(line.itemId);
-                if (have < qty)
-                {
-                    failNote = $"Not enough '{line.itemId}' to sell. Have {have}, need {qty}.";
-                    return false;
-                }
-            }
-
-            int unitPrice = Mathf.Max(0, offer.unitPrice);
-            int lineTotal = unitPrice * qty;
-
-            if (line.direction == TradeDirection.BuyFromNode)
-                tradeBalance -= lineTotal;
-            else if (line.direction == TradeDirection.SellToNode)
-                tradeBalance += lineTotal;
-
-            validatedLines.Add(new TradeLine
-            {
-                offerId = offer.offerId,
-                itemId = offer.itemId,
-                quantity = qty,
-                unitPrice = unitPrice,
-                direction = line.direction
-            });
-        }
-
-        if (validatedLines.Count == 0)
-        {
-            failNote = "No valid trade lines.";
-            return false;
-        }
-
-        int fee = ComputeFeeTotal(
-            feePolicy,
-            nodeState,
-            validatedLines,
-            timeBucket);
-
-        int finalDelta = tradeBalance - fee;
-
-        if (finalDelta < 0)
-        {
-            int cost = -finalDelta;
-
-            if (!MoneyService.CanSpend(cost))
-            {
-                failNote = $"Not enough money in active chest. Need {cost}, have {MoneyService.Balance}.";
-                return false;
-            }
-        }
-
-        // All validation is done. Now mutate.
-        // If this still breaks, congratulations, we have invented transactional cargo banking.
-        for (int i = 0; i < validatedLines.Count; i++)
-        {
-            TradeLine line = validatedLines[i];
-            NodeMarketOffer offer = FindOffer(activeOffers, line.offerId);
-
-            if (offer == null)
-            {
-                failNote = $"Offer disappeared during apply: '{line.offerId}'.";
-                return false;
-            }
-
-            if (line.direction == TradeDirection.BuyFromNode)
-            {
-                itemStore.Add(line.itemId, line.quantity);
-            }
-            else if (line.direction == TradeDirection.SellToNode)
-            {
-                bool removed = itemStore.Remove(line.itemId, line.quantity);
-                if (!removed)
-                {
-                    failNote = $"Failed to remove '{line.itemId}' x{line.quantity} during apply.";
-                    return false;
-                }
-            }
-
-            offer.quantityRemaining = Mathf.Max(0, offer.quantityRemaining - line.quantity);
-
-            ApplyEmbargo(
-                nodeState,
-                offer,
-                line,
-                timeBucket,
-                cooldownSellToPlayerBuckets,
-                cooldownBuyFromPlayerBuckets);
-        }
-
-        bool moneyApplied = true;
-
-        if (finalDelta < 0)
-            moneyApplied = MoneyService.TrySpend(-finalDelta);
-        else if (finalDelta > 0)
-            moneyApplied = MoneyService.AddMoney(finalDelta);
-
-        if (!moneyApplied)
-        {
-            failNote =
-                $"Trade items/offers were applied, but MoneyService failed finalDelta={finalDelta}. " +
-                "This should be rare because validation already checked money. Annoying.";
-            return false;
-        }
-
-        receipt = BuildReceipt(
-            draft.nodeId,
-            validatedLines,
-            tradeBalance,
-            fee,
-            finalDelta);
-
-        // Central authoritative success point for all normal market trades.
-        // Keeping this here means NodeScene and BoatScene runners do not each
-        // need their own duplicate message-feed wiring.
-        GameMessageTradeReporter.Report(
-            receipt,
-            null);
-
-        return true;
-    }
-
-    private static bool HasActiveMoneyChest()
-    {
-        MoneyChestTreasuryService treasury = MoneyChestTreasuryService.Instance;
-        return treasury != null && treasury.HasActiveChest;
     }
 
     private static NodeMarketOffer FindOffer(
@@ -270,14 +217,14 @@ public static class TradeEffectApplier
     }
 
     private static void ApplyEmbargo(
-        MapNodeState nodeState,
+        NodeMarketState market,
         NodeMarketOffer offer,
         TradeLine line,
         int timeBucket,
         int cooldownSellToPlayerBuckets,
         int cooldownBuyFromPlayerBuckets)
     {
-        if (nodeState == null || nodeState.MarketMutable == null)
+        if (market == null)
             return;
 
         if (offer == null || line == null)
@@ -294,10 +241,10 @@ public static class TradeEffectApplier
         if (cooldown <= 0)
             return;
 
-        nodeState.MarketMutable.SetEmbargo(
+        market.SetEmbargo(
             offer.kind,
             line.itemId,
-            timeBucket + cooldown);
+            checked(timeBucket + cooldown));
     }
 
     private static TradeService.TradeReceipt BuildReceipt(
@@ -343,7 +290,7 @@ public static class TradeEffectApplier
 
             int quantity = Mathf.Max(0, line.quantity);
             int unitPrice = Mathf.Max(0, line.unitPrice);
-            int lineTotal = unitPrice * quantity;
+            int lineTotal = checked(unitPrice * quantity);
 
             if (lineTotal <= 0)
                 continue;
@@ -354,7 +301,7 @@ public static class TradeEffectApplier
                 lineTotal,
                 timeBucket);
 
-            total += Mathf.Max(0, fee);
+            total = checked(total + Mathf.Max(0, fee));
         }
 
         return Mathf.Max(0, total);

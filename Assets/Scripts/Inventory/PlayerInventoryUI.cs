@@ -5,6 +5,14 @@ using UnityEngine;
 public sealed class PlayerInventoryUI : MonoBehaviour, IEscapeClosable
 {
     public PlayerInventory BoundInventory => inventory;
+    public void BindParticipant(PlayerInventory ownerInventory, PlayerEquipment ownerEquipment)
+    {
+        bool subscribed = isActiveAndEnabled;
+        if (subscribed) OnDisable();
+        inventory = ownerInventory; equipment = ownerEquipment;
+        RebuildBottomBar();
+        if (subscribed) OnEnable();
+    }
     [Header("Refs")]
     [SerializeField] private PlayerInventory inventory;
     [SerializeField] private PlayerEquipment equipment;
@@ -132,7 +140,10 @@ public sealed class PlayerInventoryUI : MonoBehaviour, IEscapeClosable
         Log($"HandleSlotClicked | slot={slotUI.name} | slotType={slotUI.SlotType} | isEquip={slotUI.IsEquipmentSlot} | hotbarIndex={slotUI.HotbarIndex}");
 
         if (slotUI.SupportsSelection)
+        {
             inventory.SetSelectedSlot(slotUI.SlotType);
+            if (DontSinkNetworkSession.IsSessionActive) DontSinkNetworkSession.Instance?.GameplayScene?.Replication?.RequestInventorySelection(slotUI.SlotType);
+        }
 
         bool openAllActive = loadoutOverlay != null && loadoutOverlay.IsOpen;
         if (!openAllActive)
@@ -305,7 +316,7 @@ public sealed class PlayerInventoryUI : MonoBehaviour, IEscapeClosable
         };
     }
 
-    private ItemInstance GetCurrentItemForSlotType(BottomBarSlotType slotType)
+    internal ItemInstance GetCurrentItemForSlotType(BottomBarSlotType slotType)
     {
         if (slotType >= BottomBarSlotType.Hotbar0 && slotType <= BottomBarSlotType.Hotbar7)
         {

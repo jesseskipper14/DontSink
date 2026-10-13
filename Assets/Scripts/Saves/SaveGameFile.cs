@@ -50,6 +50,9 @@ public sealed class SaveGamePayload
     public BoatSaveState boat;
 
     public MoneyChestTreasurySnapshot moneyChestTreasury;
+
+    // Additive in schema v1. Old saves initialize vendor stock from authored allowances.
+    public ItemVendorStockState itemVendorStock;
 }
 
 public readonly struct SaveGameResult

@@ -61,6 +61,8 @@ public sealed class InventoryDebugSpawner : MonoBehaviour
     private GUIStyle _hintStyle;
 
     private Rect _hudRect;
+    private string networkFeedback;
+    public void SetNetworkFeedback(string message) => networkFeedback = message;
     private const int InventoryDebugHudWindowId = 918240;
 
     private void Awake()
@@ -208,6 +210,8 @@ public sealed class InventoryDebugSpawner : MonoBehaviour
             _titleStyle);
 
         string traits = BuildTraitText(selected);
+        if (DontSinkNetworkSession.IsSessionActive)
+            traits = "MP debug: modules install at the nearest compatible empty hardpoint. " + networkFeedback;
 
         GUI.Label(
             new Rect(box.x + 12f, box.y + 34f, box.width - 24f, 22f),
@@ -281,6 +285,18 @@ public sealed class InventoryDebugSpawner : MonoBehaviour
         }
 
         int qty = Mathf.Clamp(spawnQuantity, 1, def.MaxStack);
+        if (DontSinkNetworkSession.IsSessionActive)
+        {
+            var actor = GetComponentInParent<NetworkPlayerActor>();
+            var replication = DontSinkNetworkSession.Instance?.GameplayScene?.Replication;
+            if (actor != null && actor.IsOwner && replication != null)
+            {
+                replication.RequestDebugSpawn(def.ItemId, qty, overrideSpawnCharges ? spawnCharges : -1, Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
+                networkFeedback = "Request sent; see the debug result in the Console.";
+            }
+            else networkFeedback = "Wait for your player and boat to finish loading.";
+            return;
+        }
         ItemInstance instance = ItemInstance.Create(def, qty);
 
         if (overrideSpawnCharges && instance.HasCharges)

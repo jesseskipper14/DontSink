@@ -35,9 +35,19 @@ public sealed class PlayerLoadoutRestoreOnSceneStart : MonoBehaviour
             yield break;
         }
 
-        if (restoreOnlyIfGameStateHasLoadout && gs.playerLoadout == null)
+        PlayerLoadoutPersistence persistence = GetComponentInParent<PlayerLoadoutPersistence>()
+            ?? GetComponentInChildren<PlayerLoadoutPersistence>(true);
+        if (persistence != null)
         {
-            Log("Skipped restore: GameState.playerLoadout is null.");
+            if (!persistence.TryBindPersistenceIdentity(out string key))
+            {
+                LogWarning("Skipped restore: requester identity is missing or duplicated.");
+                yield break;
+            }
+            if (restoreOnlyIfGameStateHasLoadout && gs.GetPlayerLoadout(key) == null)
+                yield break;
+            persistence.RestoreFromGameState();
+            _restored = true;
             yield break;
         }
 
@@ -49,20 +59,7 @@ public sealed class PlayerLoadoutRestoreOnSceneStart : MonoBehaviour
             yield break;
         }
 
-        PlayerLoadoutPersistence persistence = GetComponent<PlayerLoadoutPersistence>();
-        if (persistence == null)
-            persistence = Object.FindAnyObjectByType<PlayerLoadoutPersistence>();
-
-        if (persistence == null)
-        {
-            LogWarning("Skipped restore: no PlayerLoadoutPersistence found.");
-            yield break;
-        }
-
-        persistence.RestoreFromGameState();
-        _restored = true;
-
-        Log("Restored player loadout from GameState.");
+        LogWarning("Skipped restore: no owner or scene transition controller found.");
     }
 
     private void Log(string msg)

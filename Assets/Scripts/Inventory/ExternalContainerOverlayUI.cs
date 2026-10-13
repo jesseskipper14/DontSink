@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using TMPro;
 
 [DisallowMultipleComponent]
@@ -42,6 +42,8 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour, IEscapeClosable
 
     public ItemInstance CurrentContainer => _containerItem;
     public StorageModule CurrentStorageModule => _storageModule;
+
+    public void BindParticipant(Transform player) { Close(); playerTransform = player; }
 
     private void Awake()
     {
@@ -107,6 +109,22 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour, IEscapeClosable
             }
         }
 
+        if (DontSinkNetworkSession.IsSessionActive)
+        {
+            var session = DontSinkNetworkSession.Instance;
+            if (_storageModule != null)
+            {
+                if (!session.TryGetParticipantActor(Unity.Netcode.NetworkManager.Singleton.LocalClientId, out var actor) ||
+                    !session.GameplayScene.Replication.CanAccessStorage(actor, _storageModule)) { Close(); return; }
+                if (!ReferenceEquals(_state, _storageModule.ContainerState)) OpenStorage(titleText?.text, _storageModule, _sourceTransform, _autoCloseDistance);
+            }
+            else if (_containerItem != null)
+            {
+                var current = NetworkInventoryModel.ResolveLocalItem(_containerItem.InstanceId);
+                if (current == null) { Close(); return; }
+                if (!ReferenceEquals(current, _containerItem)) Open(titleText?.text, current, _sourceTransform, _autoCloseDistance);
+            }
+        }
         UpdatePosition();
     }
 
@@ -181,7 +199,7 @@ public sealed class ExternalContainerOverlayUI : MonoBehaviour, IEscapeClosable
 
         bool sourceChanged =
             _storageModule != storageModule ||
-            _containerItem != null;
+            _containerItem != null || !ReferenceEquals(_state, state);
 
         if (sourceChanged)
         {

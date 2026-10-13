@@ -6,7 +6,8 @@ public class ForceSystem : MonoBehaviour
 {
     [Header("Gameplay Authority")]
     [Tooltip(
-        "OPT-IN. When enabled, this ForceSystem applies providers only on peers allowed " +
+        "Boats always require gameplay authority. For other bodies this gate is OPT-IN. " +
+        "When enabled, this ForceSystem applies providers only on peers allowed " +
         "by GameplayAuthority. Leave OFF for actor-local/player physics unless that actor " +
         "is intentionally host-authoritative.")]
     [SerializeField] private bool enforceGameplayAuthority = false;
@@ -23,8 +24,9 @@ public class ForceSystem : MonoBehaviour
     private readonly List<IForceProvider> allProviders = new();
     private readonly List<IForceProvider> orderedProviders = new();
 
-    public bool EnforcesGameplayAuthority => enforceGameplayAuthority;
-    public GameplayAuthorityMode GameplayAuthorityPolicy => gameplayAuthorityMode;
+    public bool EnforcesGameplayAuthority => body is Boat || enforceGameplayAuthority;
+    public GameplayAuthorityMode GameplayAuthorityPolicy => body is Boat
+        ? GameplayAuthorityMode.SinglePlayerOrAuthoritative : gameplayAuthorityMode;
 
     public void ConfigureGameplayAuthorityGate(
         bool enforce,
@@ -91,8 +93,8 @@ public class ForceSystem : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (enforceGameplayAuthority &&
-            !GameplayAuthority.CanRun(gameplayAuthorityMode))
+        if (EnforcesGameplayAuthority &&
+            !GameplayAuthority.CanRun(GameplayAuthorityPolicy))
         {
             return;
         }

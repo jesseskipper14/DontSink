@@ -126,6 +126,8 @@ public class PilotChairInteractable :
     public PilotingHelmStatus CurrentPilotingHelmStatus =>
         ResolvePilotingHelmStatus();
 
+    public bool IsHelmControlAvailable => CanReceiveHelmControl();
+
     public Boat OwningBoat
     {
         get
@@ -144,7 +146,9 @@ public class PilotChairInteractable :
         }
     }
 
-    public GameObject PresentationRequester => Occupant;
+    private GameObject networkPresentationRequester;
+    public GameObject PresentationRequester => DontSinkNetworkSession.IsSessionActive ? networkPresentationRequester : Occupant;
+    internal void SetNetworkPresentationRequester(GameObject requester) => networkPresentationRequester = requester;
 
     private GameObject Occupant =>
         seatController != null

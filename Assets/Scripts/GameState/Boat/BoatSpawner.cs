@@ -53,7 +53,18 @@ public sealed class BoatSpawner : MonoBehaviour
 
         Log($"Spawning prefab='{prefab.name}' from prefabSource='{prefabSource}' at pos={pos}");
 
-        GameObject boatGO = Instantiate(prefab, pos, Quaternion.identity);
+        bool replica = DontSinkNetworkSession.Instance?.GameplayScene?.IsActive == true && !GameplayAuthority.IsAuthoritative;
+        if (replica && (string.IsNullOrWhiteSpace(boatGuid) || prefab.GetComponent<BoatIdentity>()?.BoatGuid != boatGuid))
+        { DontSinkNetworkSession.Instance.ReportSessionFailure("The host-selected boat is missing from this scene's BoatCatalog."); return; }
+        GameObject boatGO;
+        if (replica)
+        {
+            var staging = new GameObject("_BoatReplicaStaging"); staging.SetActive(false);
+            boatGO = Instantiate(prefab, pos, Quaternion.identity, staging.transform);
+            NetworkSceneBoat.ConfigureReplica(boatGO);
+            boatGO.transform.SetParent(null, true); Destroy(staging);
+        }
+        else boatGO = Instantiate(prefab, pos, Quaternion.identity);
         boatGO.name = "PlayerBoat(Clone)";
 
         Log($"Instantiated boatGO='{boatGO.name}' prefabSource='{prefabSource}'");
@@ -82,13 +93,15 @@ public sealed class BoatSpawner : MonoBehaviour
         }
         RestoreModulesAndPower(gs, boatGO);
         if (gs != null && gs.activeTravel != null) gs.activeTravel.applyDepartureReset = false;
-        RestoreTetherState(gs, boatGO);
+        if (!replica) RestoreTetherState(gs, boatGO);
         RestoreCompartments(gs, boatGO);
         RestoreAccessStates(gs, boatGO);
         //RestoreCargo(gs, boatGO);
-        RestoreLooseItems(gs, boatGO);
+        if (!replica) RestoreLooseItems(gs, boatGO);
         if (terrain != null) terrain.CorrectRestoredExternalItems();
         RefreshAutoRegistration(boatGO);
+        if (replica) NetworkSceneBoat.ConfigureReplica(boatGO);
+        DontSinkNetworkSession.Instance?.GameplayScene?.BindBoat(boatGO.GetComponent<Boat>());
 
         if (gs != null)
             gs.LogState("BoatSpawner.Start END");
@@ -435,6 +448,10 @@ public sealed class BoatSpawner : MonoBehaviour
 
         BoatModuleStateManifest moduleManifest = gs.boat != null ? gs.boat.moduleStates : null;
         BoatPowerSnapshot powerSnapshot = gs.boat != null ? gs.boat.power : null;
+        // Unity inline serialization can recreate null DTOs as empty objects.
+        // A fresh game explicitly preserves the authored prefab until capture.
+        if (gs.boat?.useAuthoredStartingModules == true)
+        { moduleManifest = null; powerSnapshot = null; }
 
         int moduleCount = moduleManifest?.modules != null ? moduleManifest.modules.Count : -1;
 

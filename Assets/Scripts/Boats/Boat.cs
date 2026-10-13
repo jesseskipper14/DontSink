@@ -203,7 +203,8 @@ public class Boat : MonoBehaviour, IForceBody
 
         BeginMysteryOscillationTick();
 
-        EqualizeAllCompartments(dt);
+        if (GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative))
+            EqualizeAllCompartments(dt);
 
         //foreach (var c in Compartments)
         //{
@@ -228,6 +229,7 @@ public class Boat : MonoBehaviour, IForceBody
 
     public void AddForce(Vector2 force)
     {
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return;
         if (mysteryOscillationLog)
             LogMysteryOscillationForce(force);
 
@@ -237,6 +239,7 @@ public class Boat : MonoBehaviour, IForceBody
     // Add a torque
     public void AddTorque(float torque)
     {
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return;
         if (mysteryOscillationLog)
             LogMysteryOscillationTorque(torque);
 
@@ -938,6 +941,7 @@ public class Boat : MonoBehaviour, IForceBody
 
     private void DrawConnectionGizmo()
     {
+#if UNITY_EDITOR
         if (Connections == null)
             return;
 
@@ -946,6 +950,7 @@ public class Boat : MonoBehaviour, IForceBody
             if (conn != null)
                 conn.DrawGizmos();
         }
+#endif
     }
 
     public Vector2 LocalToWorld(Vector2 local)

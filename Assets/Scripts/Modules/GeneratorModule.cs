@@ -20,6 +20,7 @@ public sealed class GeneratorModule : MonoBehaviour, IModuleToggleable, IInstall
     private Hardpoint ownerHardpoint;
     private Boat ownerBoat;
     private BoatPowerState powerState;
+    private BoatPowerState explicitPowerSource;
 
     public bool IsOn => isOn;
     public float PowerGeneratedPerSecond => Mathf.Max(0f, powerGeneratedPerSecond);
@@ -27,9 +28,23 @@ public sealed class GeneratorModule : MonoBehaviour, IModuleToggleable, IInstall
     public ItemInstance FuelContainerItem => fuelContainerItem;
     public BoatPowerState PowerState => powerState;
 
+    // Standalone dock/workbench generators can use the same simulation without
+    // constructing a fake Boat. Ordinary installed generators still resolve their boat.
+    public void BindPowerSource(BoatPowerState source)
+    {
+        explicitPowerSource = source;
+        ResolveOwnership();
+    }
+
     public bool HasUsableFuel => TryGetActiveFuelItem(out _);
 
     public void InitializeFuel()
+    {
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return;
+        EnsureFuelContainer();
+    }
+
+    private void EnsureFuelContainer()
     {
         if (fuelContainerItem != null)
             return;
@@ -56,6 +71,7 @@ public sealed class GeneratorModule : MonoBehaviour, IModuleToggleable, IInstall
 
     private void Update()
     {
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return;
         if (!isOn)
         {
             fuelBurnAccumulator = 0f;
@@ -88,6 +104,12 @@ public sealed class GeneratorModule : MonoBehaviour, IModuleToggleable, IInstall
 
     public bool SetOn(bool value)
     {
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return false;
+        return ApplyOnState(value);
+    }
+
+    private bool ApplyOnState(bool value)
+    {
         if (value && !CanRun())
         {
             isOn = false;
@@ -116,6 +138,11 @@ public sealed class GeneratorModule : MonoBehaviour, IModuleToggleable, IInstall
 
     public void ResolveOwnership()
     {
+        if (explicitPowerSource != null)
+        {
+            powerState = explicitPowerSource;
+            return;
+        }
         if (installedModule == null)
             installedModule = GetComponent<InstalledModule>();
 
@@ -167,6 +194,7 @@ public sealed class GeneratorModule : MonoBehaviour, IModuleToggleable, IInstall
 
     public bool TryConsumeFuelCharges(int amount)
     {
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return false;
         if (amount <= 0)
             return false;
 
@@ -222,10 +250,14 @@ public sealed class GeneratorModule : MonoBehaviour, IModuleToggleable, IInstall
         fuelContainerItem = ItemInstance.FromSnapshot(fuelSnapshot, resolver);
 
         if (fuelContainerItem == null)
-            InitializeFuel();
+            EnsureFuelContainer();
 
         fuelBurnAccumulator = 0f;
         ResolveOwnership();
-        SetOn(restoredIsOn);
+        // Snapshot application must not be rejected as a client command.
+        if (GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative))
+            ApplyOnState(restoredIsOn);
+        else
+            isOn = restoredIsOn;
     }
 }

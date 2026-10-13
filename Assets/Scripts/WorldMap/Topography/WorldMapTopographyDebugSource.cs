@@ -99,6 +99,12 @@ public sealed class WorldMapTopographyDebugSource : MonoBehaviour
 
     private void Awake()
     {
+        if (DontSinkNetworkSession.Instance?.GameplayScene?.IsActive == true && !GameplayAuthority.IsAuthoritative)
+        {
+            if (!WorldMapSaveRestorer.TryRestoreTopographyToSource(this))
+                throw new System.InvalidOperationException("Connected scene requires the prepared host topography before Awake.");
+            return;
+        }
         if (graphGenerator == null)
             graphGenerator = FindAnyObjectByType<WorldMapGraphGenerator>();
 

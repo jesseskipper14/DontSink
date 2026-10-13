@@ -4,7 +4,7 @@ using UnityEngine;
 using WorldMap.Player.Trade;
 
 [DisallowMultipleComponent]
-public sealed class PhysicalCargoItemStore : MonoBehaviour, IItemStore
+public sealed class PhysicalCargoItemStore : MonoBehaviour, ITransactionalTradeItemStore
 {
     [Header("Refs")]
     [SerializeField] private CargoItemCatalog cargoItemCatalog;
@@ -187,11 +187,155 @@ public sealed class PhysicalCargoItemStore : MonoBehaviour, IItemStore
         return remaining <= 0;
     }
 
+    public bool TryPrepareTrade(IReadOnlyList<TradeLine> lines, out IPreparedTradeItems prepared, out string failNote)
+    {
+        prepared = null;
+        failNote = null;
+        var plan = new PreparedTrade(this);
+        try
+        {
+            CollectCargoWorldItemsInSellZone(_scratchItems);
+            foreach (var line in lines)
+            {
+                if (line.direction != TradeDirection.SellToNode) continue;
+                int remaining = line.quantity;
+                foreach (var worldItem in _scratchItems)
+                {
+                    var instance = worldItem.Instance;
+                    if (!TryGetTradeItemId(instance, out string id) ||
+                        !string.Equals(id, line.itemId, StringComparison.OrdinalIgnoreCase)) continue;
+                    plan.sales.TryGetValue(worldItem, out var sale);
+                    if (sale == null)
+                        sale = new ReservedSale(worldItem, instance);
+                    int take = Mathf.Min(remaining, sale.quantityBefore - sale.amount);
+                    if (take <= 0) continue;
+                    sale.amount += take;
+                    plan.sales[worldItem] = sale;
+                    remaining -= take;
+                    if (remaining == 0) break;
+                }
+                if (remaining != 0)
+                {
+                    failNote = $"Not enough '{line.itemId}' in the sell zone.";
+                    plan.Dispose();
+                    return false;
+                }
+            }
+
+            int spawnIndex = 0;
+            foreach (var line in lines)
+            {
+                if (line.direction != TradeDirection.BuyFromNode) continue;
+                var definition = cargoItemCatalog != null ? cargoItemCatalog.ResolveCargoItem(line.itemId) : null;
+                if (spawnPoint == null || definition == null || definition.WorldPrefab == null)
+                {
+                    failNote = $"Cannot deliver '{line.itemId}': missing cargo mapping, prefab or spawn point.";
+                    plan.Dispose();
+                    return false;
+                }
+                if (plan.staging == null)
+                {
+                    plan.staging = new GameObject("_PreparedMarketCargo");
+                    plan.staging.SetActive(false);
+                }
+                for (int i = 0; i < line.quantity; i++, spawnIndex++)
+                {
+                    Vector3 position = spawnPoint.transform.position +
+                        new Vector3(spawnIndex * spawnHorizontalStep, spawnIndex * spawnVerticalStep, 0f);
+                    // The inactive parent prevents Awake/OnEnable from observing a half-applied trade.
+                    var cargo = Instantiate(definition.WorldPrefab, position, Quaternion.identity, plan.staging.transform);
+                    plan.purchases.Add(cargo);
+                    cargo.Initialize(ItemInstance.Create(definition, 1));
+                    var owned = cargo.GetComponent<BoatOwnedItem>();
+                    if (owned != null) owned.ClearOwnership();
+                }
+            }
+            prepared = plan;
+            return true;
+        }
+        catch
+        {
+            plan.Dispose();
+            throw;
+        }
+    }
+
+    private sealed class ReservedSale
+    {
+        public readonly WorldItem cargo;
+        public readonly ItemInstance instance;
+        public readonly int quantityBefore;
+        public int amount;
+
+        public ReservedSale(WorldItem cargo, ItemInstance instance)
+        {
+            this.cargo = cargo; this.instance = instance; quantityBefore = instance.Quantity;
+        }
+    }
+
+    private sealed class PreparedTrade : IPreparedTradeItems
+    {
+        private readonly PhysicalCargoItemStore owner;
+        internal readonly Dictionary<WorldItem, ReservedSale> sales = new();
+        internal readonly List<WorldItem> purchases = new();
+        internal GameObject staging;
+        private bool applied, completed;
+
+        public PreparedTrade(PhysicalCargoItemStore owner) => this.owner = owner;
+
+        public bool Validate(out string failNote)
+        {
+            failNote = "Cargo changed while preparing trade.";
+            if (owner == null) return false;
+            owner.CollectCargoWorldItemsInSellZone(owner._scratchItems);
+            foreach (var sale in sales.Values)
+                if (sale.cargo == null || sale.cargo.Instance != sale.instance || sale.instance.IsDepleted() ||
+                    sale.instance.Quantity != sale.quantityBefore || !owner._scratchItems.Contains(sale.cargo)) return false;
+            foreach (var cargo in purchases)
+                if (cargo == null || cargo.Instance == null || cargo.Instance.IsDepleted()) return false;
+            failNote = null;
+            return true;
+        }
+
+        public void Apply()
+        {
+            applied = true;
+            foreach (var sale in sales.Values) sale.instance.RemoveQuantityForTransaction(sale.amount);
+        }
+
+        public void Complete() => completed = true;
+
+        public void Publish()
+        {
+            foreach (var sale in sales.Values)
+            {
+                if (sale.instance.IsDepleted())
+                {
+                    sale.cargo.gameObject.SetActive(false);
+                    Destroy(sale.cargo.gameObject);
+                }
+                else sale.instance.PublishTransactionChange();
+            }
+            foreach (var cargo in purchases)
+            {
+                cargo.transform.SetParent(null, true);
+                cargo.gameObject.SetActive(true);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (applied && !completed)
+                foreach (var sale in sales.Values) sale.instance.RestoreQuantityForTransaction(sale.quantityBefore);
+            if (staging != null) Destroy(staging);
+        }
+    }
+
     private bool TryGetTradeItemId(ItemInstance instance, out string tradeItemId)
     {
         tradeItemId = null;
 
-        if (instance == null || instance.Definition == null)
+        if (instance == null || instance.Definition == null || instance.IsDepleted())
             return false;
 
         if (cargoItemCatalog == null)
@@ -239,7 +383,7 @@ public sealed class PhysicalCargoItemStore : MonoBehaviour, IItemStore
                 continue;
 
             ItemInstance inst = worldItem.Instance;
-            if (inst == null || inst.Definition == null)
+            if (inst == null || inst.Definition == null || inst.IsDepleted())
                 continue;
 
             if (!cargoItemCatalog.IsKnownCargoItem(inst.Definition))

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -121,6 +121,12 @@ public class Interactor2D : MonoBehaviour
     {
         if (!TryBuildContext(out InteractContext ctx, out InteractionIntent intent))
             return;
+
+        if (DontSinkNetworkSession.IsSessionActive)
+        {
+            DontSinkNetworkSession.Instance?.GameplayScene?.Replication?.ProcessInteraction(this, ctx, intent);
+            return;
+        }
 
         HandleInteractIntent(
             intent,
@@ -275,7 +281,9 @@ public class Interactor2D : MonoBehaviour
     {
         if (target.SourceCollider != null)
         {
-            Vector2 closest = PhysicsFrame2D.ClosestRenderedPoint(target.SourceCollider, ctx.Origin);
+            Vector2 closest = DontSinkNetworkSession.IsSessionActive ?
+                NetworkSceneBoat.ClosestInteractionPoint(target.SourceCollider, ctx.Origin) :
+                PhysicsFrame2D.ClosestRenderedPoint(target.SourceCollider, ctx.Origin);
             return Vector2.Distance(ctx.Origin, closest);
         }
 
@@ -452,6 +460,11 @@ public class Interactor2D : MonoBehaviour
 
     private bool TryResolveMouseHoverTarget(in InteractContext ctx, out InteractionHoverTarget best)
     {
+        if (DontSinkNetworkSession.IsSessionActive)
+        {
+            best = default;
+            return DontSinkNetworkSession.Instance?.GameplayScene?.Replication?.TryResolveInteractionHover(ctx, out best) == true;
+        }
         best = default;
 
         if (!ctx.HasAimWorld)
@@ -495,7 +508,7 @@ public class Interactor2D : MonoBehaviour
         return best.IsValid;
     }
 
-    private bool PassesHoverSelectionPolicy(
+    public bool PassesHoverSelectionPolicy(
         in InteractionHoverTarget target,
         in InteractContext ctx)
     {
@@ -1090,9 +1103,20 @@ public class Interactor2D : MonoBehaviour
             false;
     }
 
+    public void PresentNetworkHold(IInteractable target, float elapsed, float duration, bool fired)
+    {
+        _activeHoldInteractTarget = target;
+        _activeHoldInteractElapsed = elapsed;
+        _activeHoldInteractDuration = duration;
+        _holdInteractTriggered = fired;
+    }
+
     // ---------------------------------------------------------------------
     // Pickup hold execution
     // ---------------------------------------------------------------------
+
+    public void PresentNetworkPickup(IPickupInteractable target, float elapsed)
+    { _activeHoldPickupTarget = target; _activeHoldPickupElapsed = elapsed; _holdPickupTriggered = false; }
 
     private void HandlePickupIntent(InteractionIntent intent, in InteractContext ctx)
     {

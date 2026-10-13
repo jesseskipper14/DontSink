@@ -232,13 +232,14 @@ public sealed class ItemVendorOverlayRunner : MonoBehaviour
             return;
         }
 
-        if (activeCartridge != null && activeCartridge.GetRuntimeStock(draft.offerIndex) == 0)
+        ItemVendorSellOffer offer = activeSellOffers[draft.offerIndex];
+        var definition = offer?.ResolveDefinition(itemCatalog);
+        if (draft.vendorId != activeVendor.ServiceId || definition == null ||
+            draft.itemId != definition.ItemId || draft.quantity != 1 || draft.unitPrice != offer.ResolvePrice(definition))
         {
-            activeCartridge.NotifyPurchaseApplied(draft.offerIndex, false, "Out of stock.");
+            activeCartridge?.NotifyPurchaseApplied(draft.offerIndex, false, "Vendor offer changed. Try again.");
             return;
         }
-
-        ItemVendorSellOffer offer = activeSellOffers[draft.offerIndex];
 
         bool ok = purchaseService.TryBuy(
             activeVendor,

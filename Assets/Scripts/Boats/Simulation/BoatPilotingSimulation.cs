@@ -242,7 +242,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
 
     public bool CanClaimControl(object owner)
     {
-        if (owner == null)
+        if (!GameplayAuthority.IsAuthoritative || owner == null)
             return false;
 
         return _controlOwner == null || ReferenceEquals(_controlOwner, owner);
@@ -261,7 +261,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
 
     public bool SubmitIntent(object owner, BoatControlIntent intent)
     {
-        if (owner == null || !ReferenceEquals(_controlOwner, owner))
+        if (!GameplayAuthority.IsAuthoritative || owner == null || !ReferenceEquals(_controlOwner, owner))
             return false;
 
         if (NodeSceneMooring.IsLocked(boat) && Mathf.Abs(intent.ThrottleAdjust) > .001f)
@@ -287,7 +287,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
 
     public bool HasControlAuthority(object owner)
     {
-        return owner != null && ReferenceEquals(_controlOwner, owner);
+        return GameplayAuthority.IsAuthoritative && owner != null && ReferenceEquals(_controlOwner, owner);
     }
 
     public bool TrySetThrottleTarget(object owner, float target)
@@ -517,6 +517,7 @@ public sealed class BoatPilotingSimulation : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!GameplayAuthority.IsAuthoritative) return;
         ResolveRefs();
 
         if (state == null)

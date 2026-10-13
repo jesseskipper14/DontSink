@@ -61,7 +61,7 @@ Material:
     - _SparkleFalloffSharpness: 0.5
     - _SparkleIntensity: 1.5
     - _SparkleSpeed: 2
-    - _StarAlpha: 0
+    - _StarAlpha: 1
     - _StarDensity: 300
     - _StarSeed: 195
     - _StarSize: 0.0258

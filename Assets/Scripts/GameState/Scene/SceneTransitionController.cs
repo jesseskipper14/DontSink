@@ -34,6 +34,8 @@ public sealed class SceneTransitionController : MonoBehaviour
 
     public bool CanDepartCurrentScene(out string reason)
     {
+        if (DontSinkNetworkSession.Instance?.GameplayScene?.IsActive == true)
+        { reason = "Shared crew travel transitions are not enabled in this checkpoint."; return false; }
         GameState gs = GameState.I;
         if (gs == null)
         {

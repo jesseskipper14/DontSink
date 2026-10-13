@@ -35,6 +35,12 @@ public sealed class ItemVendorPurchaseService : MonoBehaviour
         price = 0;
         reason = null;
 
+        if (context.Actor == null)
+        {
+            reason = "Missing purchase requester.";
+            return false;
+        }
+
         if (vendor == null)
         {
             reason = "Missing vendor.";
@@ -56,9 +62,18 @@ public sealed class ItemVendorPurchaseService : MonoBehaviour
 
         price = offer.ResolvePrice(itemDef);
 
-        if (offer.stock == 0)
+        if (!TryResolveStock(vendor, offer, context, out var stockState, out string vendorKey, out string stockItemId, out reason))
+            return false;
+
+        if (stockState.GetRemaining(vendorKey, stockItemId, offer.stock) == 0)
         {
             reason = "Out of stock.";
+            return false;
+        }
+
+        if (stockState.IsPurchasePending(vendorKey, stockItemId))
+        {
+            reason = "Purchase already in progress.";
             return false;
         }
 
@@ -101,42 +116,83 @@ public sealed class ItemVendorPurchaseService : MonoBehaviour
         out string message)
     {
         message = null;
-
-        if (!CanBuy(vendor, offer, context, out ItemDefinition itemDef, out int price, out string reason))
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative))
         {
-            message = reason;
+            message = "Purchase requires gameplay authority.";
             return false;
         }
-
-        ItemInstance purchased = ItemInstance.Create(itemDef, 1);
-        if (purchased == null)
+        if (!CanBuy(vendor, offer, context, out ItemDefinition itemDef, out int price, out message))
+            return false;
+        if (!TryResolveStock(vendor, offer, context, out var state, out string vendorKey, out string itemId, out message))
+            return false;
+        if (!state.TryReserve(vendorKey, itemId, offer.stock, out var stock))
         {
-            message = "Failed to create item.";
+            message = "Out of stock or purchase already in progress.";
             return false;
         }
-
-        if (!MoneyService.TrySpend(price))
+        using (stock)
         {
-            message = $"Could not spend ${price}.";
+            var purchased = ItemInstance.Create(itemDef, 1);
+            if (purchased == null)
+            {
+                message = "Failed to create item.";
+                return false;
+            }
+            var treasury = MoneyChestTreasuryService.Instance;
+            if (treasury == null)
+            {
+                message = "No active money chest.";
+                return false;
+            }
+            if (!treasury.TryPrepareTradeBalance(-price, out var money, out message)) return false;
+            using (money)
+            {
+                if (!money.Validate(out message)) return false;
+                // Reuse the silent/reversible chest writes: delivery failure restores the
+                // exact chest and reserved stock without a separate, fallible refund.
+                money.Apply();
+                if (!TryDeliver(purchased, context, out string deliveryMessage))
+                {
+                    message = "Could not deliver item. Payment and stock were restored.";
+                    return false;
+                }
+                stock.Complete();
+                money.Complete();
+                message = $"Bought {itemDef.DisplayName} for ${price}. {deliveryMessage}";
+                try { money.Publish(); } catch (System.Exception ex) { Debug.LogException(ex); }
+                Log(message);
+                try { GameMessageService.PostInfo($"Purchased {itemDef.DisplayName} for ${price:n0}."); }
+                catch (System.Exception ex) { Debug.LogException(ex); }
+                return true;
+            }
+        }
+    }
+
+    public int GetRuntimeStock(ItemVendorServiceDefinition vendor, ItemVendorSellOffer offer, AgentServiceContext context)
+    {
+        return TryResolveStock(vendor, offer, context, out var state, out string vendorKey, out string itemId, out _)
+            ? state.GetRemaining(vendorKey, itemId, offer.stock) : 0;
+    }
+
+    private bool TryResolveStock(ItemVendorServiceDefinition vendor, ItemVendorSellOffer offer,
+        AgentServiceContext context, out ItemVendorStockState state, out string vendorKey,
+        out string itemId, out string reason)
+    {
+        state = GameState.I != null ? GameState.I.itemVendorStock : null;
+        vendorKey = null;
+        itemId = offer?.ResolveDefinition(itemCatalog)?.ItemId;
+        reason = null;
+        string agentId = context.Agent != null ? context.Agent.StableId : null;
+        if (state == null || vendor == null || string.IsNullOrWhiteSpace(vendor.ServiceId) ||
+            string.IsNullOrWhiteSpace(agentId) || string.IsNullOrWhiteSpace(itemId))
+        {
+            reason = "Missing vendor stock state or stable vendor/item identity.";
             return false;
         }
-
-        if (TryDeliver(purchased, context, out string deliveryMessage))
-        {
-            message = $"Bought {itemDef.DisplayName} for ${price}. {deliveryMessage}";
-            Log(message);
-
-            GameMessageService.PostInfo(
-                $"Purchased {itemDef.DisplayName} for ${price:n0}.");
-
-            return true;
-        }
-
-        MoneyService.AddMoney(price);
-
-        message = $"Purchase failed after payment, so ${price} was refunded.";
-        Debug.LogWarning($"[ItemVendorPurchaseService] {message}", this);
-        return false;
+        string nodeId = !string.IsNullOrWhiteSpace(context.Agent.NodeId)
+            ? context.Agent.NodeId : GameState.I.player?.currentNodeId;
+        vendorKey = ItemVendorStockState.BuildVendorKey(nodeId, agentId, vendor.ServiceId);
+        return true;
     }
 
     private bool CanDeliver(ItemInstance instance, AgentServiceContext context)
@@ -193,21 +249,18 @@ public sealed class ItemVendorPurchaseService : MonoBehaviour
     {
         dropped = null;
 
-        if (!CanDrop(instance))
+        if (context.Actor == null || !CanDrop(instance))
             return false;
 
         Vector3 pos = ResolveDropPosition(context);
-        GameObject actor = context.Actor != null ? context.Actor : gameObject;
+        GameObject actor = context.Actor;
 
         return WorldItemDropUtility.TryDrop(instance, pos, actor, out dropped);
     }
 
     private Vector3 ResolveDropPosition(AgentServiceContext context)
     {
-        if (context.InteractContext.InteractorTransform != null)
-            return context.InteractContext.InteractorTransform.position + fallbackDropOffset;
-
-        return transform.position + fallbackDropOffset;
+        return context.Actor.transform.position + fallbackDropOffset;
     }
 
     private ItemAcquisitionResolver FindAcquisitionResolver(AgentServiceContext context)
@@ -229,7 +282,7 @@ public sealed class ItemVendorPurchaseService : MonoBehaviour
                 return fromChildren;
         }
 
-        return FindFirstObjectByType<ItemAcquisitionResolver>();
+        return null;
     }
 
     private void Log(string message)

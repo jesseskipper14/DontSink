@@ -58,7 +58,7 @@ public sealed class TurretModule : MonoBehaviour, IModuleToggleable, IInstalledM
         if (cooldownRemaining > 0f)
             cooldownRemaining -= dt;
 
-        if (isOn)
+        if (isOn && GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative))
             TickIdlePower(dt);
 
         TickPitch(dt);
@@ -88,6 +88,12 @@ public sealed class TurretModule : MonoBehaviour, IModuleToggleable, IInstalledM
     }
 
     public bool SetOn(bool value)
+    {
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return false;
+        return ApplyOnState(value);
+    }
+
+    private bool ApplyOnState(bool value)
     {
         if (value && !CanRun())
         {
@@ -147,6 +153,7 @@ public sealed class TurretModule : MonoBehaviour, IModuleToggleable, IInstalledM
 
     public bool TryFire()
     {
+        if (!GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative)) return false;
         if (!CanFire())
             return false;
 
@@ -226,6 +233,9 @@ public sealed class TurretModule : MonoBehaviour, IModuleToggleable, IInstalledM
 
     public void RestorePersistentState(bool restoredIsOn)
     {
-        SetOn(restoredIsOn);
+        if (GameplayAuthority.CanRun(GameplayAuthorityMode.SinglePlayerOrAuthoritative))
+            ApplyOnState(restoredIsOn);
+        else
+            isOn = restoredIsOn;
     }
 }

@@ -44,6 +44,13 @@ public sealed class ContainerInventoryPanelUI : MonoBehaviour
     private ContainerSection activeSection = ContainerSection.None;
 
     public bool IsOpen => isOpen;
+    private void Update()
+    {
+        if (!DontSinkNetworkSession.IsSessionActive || !isOpen || boundContainerItem == null) return;
+        var current = owner?.GetCurrentItemForSlotType(boundSourceSlotType);
+        if (current?.InstanceId != boundContainerItem.InstanceId) { Hide(); return; }
+        if (!ReferenceEquals(current, boundContainerItem)) Show(current, boundSourceSlotType);
+    }
     public BottomBarSlotType BoundSourceSlotType => boundSourceSlotType;
     public ItemInstance BoundContainerItem => boundContainerItem;
 

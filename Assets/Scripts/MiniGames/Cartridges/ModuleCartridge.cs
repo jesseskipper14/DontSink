@@ -5,6 +5,7 @@ using MiniGames;
 public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
 {
     private readonly Hardpoint _hardpoint;
+    private readonly GameObject _requester;
 
     private MiniGameContext _ctx;
     private bool _requestedClose;
@@ -24,9 +25,10 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         BottomBarSlotType.Body
     };
 
-    public ModuleCartridge(Hardpoint hardpoint)
+    public ModuleCartridge(Hardpoint hardpoint, GameObject requester)
     {
         _hardpoint = hardpoint;
+        _requester = requester;
     }
 
     public void Begin(MiniGameContext context)
@@ -35,8 +37,10 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
         _requestedClose = false;
         _uiNote = null;
 
-        _playerInventory = Object.FindFirstObjectByType<PlayerInventory>();
-        _playerEquipment = Object.FindFirstObjectByType<PlayerEquipment>(FindObjectsInactive.Include);
+        _playerInventory = _requester != null
+            ? _requester.GetComponentInParent<PlayerInventory>() ?? _requester.GetComponentInChildren<PlayerInventory>(true) : null;
+        _playerEquipment = _requester != null
+            ? _requester.GetComponentInParent<PlayerEquipment>() ?? _requester.GetComponentInChildren<PlayerEquipment>(true) : null;
     }
 
     public MiniGameResult Tick(float dt, MiniGameInput input)
@@ -52,7 +56,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
             };
         }
 
-        if (_hardpoint == null || !_hardpoint.HasInstalledModule || _hardpoint.InstalledModule == null)
+        if (_requester == null || _hardpoint == null || !_hardpoint.HasInstalledModule || _hardpoint.InstalledModule == null)
         {
             return new MiniGameResult
             {
@@ -101,6 +105,12 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
 
     public void DrawOverlayGUI(Rect panel)
     {
+        if (DontSinkNetworkSession.IsSessionActive && !NetworkSceneBoat.IsPlainStorage(_hardpoint?.InstalledModule?.GetComponent<StorageModule>()))
+        {
+            if (GUI.Button(new Rect(panel.xMax - 40f, panel.y + 8f, 28f, 24f), "X")) _requestedClose = true;
+            DontSinkNetworkSession.Instance?.GameplayScene?.Replication?.DrawModulePanel(panel, _hardpoint, _requester);
+            return;
+        }
         float pad = 14f;
 
         InstalledModule installed = _hardpoint != null ? _hardpoint.InstalledModule : null;
@@ -120,7 +130,7 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
             return;
         }
 
-        if (_hardpoint == null || installed == null)
+        if (_requester == null || _hardpoint == null || installed == null)
         {
             GUI.Label(new Rect(panel.x + pad, panel.y + 40f, panel.width - pad * 2f, 22f), "No installed module.");
             return;
@@ -521,6 +531,12 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
                 _uiNote = TryRemoveItemFromStorage(storage, out string removeNote) ? removeNote : removeNote;
 
             y += 36f;
+            if (DontSinkNetworkSession.IsSessionActive)
+            {
+                if (GUI.Button(new Rect(x, y, 160f, 28f), "Open slots"))
+                    UnityEngine.Object.FindAnyObjectByType<ExternalContainerOverlayUI>()?.OpenStorage("Storage", storage, storage.transform);
+                y += 36f;
+            }
 
             GUI.Label(new Rect(x, y, w, 44f),
                 storage.IsContainerRack
@@ -1150,6 +1166,12 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
 
     private bool TryAddItemToStorage(StorageModule storage, out string note)
     {
+        if (DontSinkNetworkSession.IsSessionActive)
+        {
+            bool submitted = DontSinkNetworkSession.Instance.GameplayScene.Replication.RequestStorageTransfer(storage, true);
+            note = submitted ? "Transfer requested." : "No compatible space/item, out of range, or transfer pending.";
+            return submitted;
+        }
         note = "Add item failed.";
 
         if (storage == null)
@@ -1225,6 +1247,12 @@ public sealed class ModuleCartridge : IMiniGameCartridge, IOverlayRenderable
 
     private bool TryRemoveItemFromStorage(StorageModule storage, out string note)
     {
+        if (DontSinkNetworkSession.IsSessionActive)
+        {
+            bool submitted = DontSinkNetworkSession.Instance.GameplayScene.Replication.RequestStorageTransfer(storage, false);
+            note = submitted ? "Transfer requested." : "No compatible space/item, out of range, or transfer pending.";
+            return submitted;
+        }
         note = "Remove item failed.";
 
         if (_playerInventory == null)

@@ -7,12 +7,12 @@ public sealed class PlayerLoadoutPersistence : MonoBehaviour
     [SerializeField] private PlayerInventory inventory;
     [SerializeField] private PlayerEquipment equipment;
     [SerializeField] private ItemDefinitionCatalog itemCatalog;
+    public ItemDefinitionCatalog ItemCatalog => itemCatalog;
 
     [Header("Player Persistence")]
     [Tooltip(
-        "Optional explicit persistence key for this player. Blank means use " +
-        "GameState.LocalPlayerPersistenceKey, which preserves current single-player behavior. " +
-        "Future multiplayer bootstrap should assign each player a stable authenticated key.")]
+        "Optional explicit persistence key. A sole active player binds the local key before use. " +
+        "Multiple players require distinct keys assigned before restore; duplicate keys are rejected.")]
     [SerializeField] private string playerPersistenceKey = "";
 
     [Header("Debug")]
@@ -20,26 +20,45 @@ public sealed class PlayerLoadoutPersistence : MonoBehaviour
 
     public string PersistenceKey
     {
-        get
-        {
-            if (!string.IsNullOrWhiteSpace(
-                    playerPersistenceKey))
-            {
-                return
-                    GameState.NormalizePlayerPersistenceKey(
-                        playerPersistenceKey);
-            }
+        get => TryBindPersistenceIdentity(out string key) ? key : null;
+    }
 
-            return
-                GameState.I != null
-                    ? GameState.I.LocalPlayerPersistenceKey
-                    : GameState.DefaultPlayerPersistenceKey;
+    // The local-key compatibility path belongs here, before any capture/restore.
+    // Multiple actors must be assigned explicit, distinct keys by their bootstrap.
+    public bool TryBindPersistenceIdentity(out string key)
+    {
+        key = null;
+        var players = Object.FindObjectsByType<PlayerLoadoutPersistence>(
+            FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        if (string.IsNullOrWhiteSpace(playerPersistenceKey))
+        {
+            if (GameState.I == null || players.Length != 1 || players[0] != this)
+                return false;
+            playerPersistenceKey = GameState.I.LocalPlayerPersistenceKey;
         }
+
+        string candidateKey = GameState.NormalizePlayerPersistenceKey(playerPersistenceKey);
+        foreach (var player in players)
+        {
+            if (player == this) continue;
+            // An unbound actor must not implicitly share this actor's local key.
+            string otherKey = string.IsNullOrWhiteSpace(player.playerPersistenceKey)
+                ? GameState.I?.LocalPlayerPersistenceKey
+                : GameState.NormalizePlayerPersistenceKey(player.playerPersistenceKey);
+            if (candidateKey == otherKey) return false;
+        }
+        key = candidateKey;
+        return true;
     }
 
     public void SetPersistenceKey(
         string playerKey)
     {
+        if (string.IsNullOrWhiteSpace(playerKey))
+        {
+            LogWarning("Cannot bind a blank player persistence key.");
+            return;
+        }
         playerPersistenceKey =
             GameState.NormalizePlayerPersistenceKey(
                 playerKey);
@@ -83,9 +102,6 @@ public sealed class PlayerLoadoutPersistence : MonoBehaviour
         int exactActiveMatchCount =
             0;
 
-        InventoryDragController uniqueActiveDrag =
-            null;
-
         int activeDragCount =
             0;
 
@@ -107,11 +123,6 @@ public sealed class PlayerLoadoutPersistence : MonoBehaviour
                 continue;
 
             activeDragCount++;
-
-            if (activeDragCount == 1)
-                uniqueActiveDrag = dragController;
-            else
-                uniqueActiveDrag = null;
 
             if (inventory != null &&
                 dragController.BoundInventory == inventory)
@@ -152,25 +163,7 @@ public sealed class PlayerLoadoutPersistence : MonoBehaviour
                 "bound to the same PlayerInventory. Refusing ambiguous persistence reconciliation.");
             return;
         }
-        else if (activeDragCount == 1 &&
-                 uniqueActiveDrag != null)
-        {
-            // Current game is single-player and has one local UI drag controller.
-            // If scene wiring/reference identity prevents an exact match, one and
-            // only one active drag is still unambiguous. This fallback is expressly
-            // NOT used when multiple active drags exist.
-            chosen =
-                uniqueActiveDrag;
-
-            resolutionReason =
-                "unique active-drag fallback";
-
-            LogWarning(
-                "PrepareTransientInventoryStateForCapture found no exact PlayerInventory match, " +
-                $"but exactly one active drag exists ('{chosen.name}'). Using the unique active-drag " +
-                "fallback for the current single-player persistence boundary.");
-        }
-        else if (activeDragCount > 1)
+        else if (activeDragCount > 0)
         {
             LogError(
                 $"PrepareTransientInventoryStateForCapture found {activeDragCount} active drag controllers " +
@@ -223,6 +216,11 @@ public sealed class PlayerLoadoutPersistence : MonoBehaviour
 
     public void RestoreSnapshot(PlayerLoadoutSnapshot snapshot)
     {
+        if (!TryBindPersistenceIdentity(out _))
+        {
+            LogWarning("Skipped restore: bind a distinct player persistence key first.");
+            return;
+        }
         Log(
             $"RestoreSnapshot BEGIN | snapshot={(snapshot != null ? "OK" : "NULL")} " +
             $"| inventoryRef={(inventory != null ? "OK" : "NULL")} " +
@@ -265,8 +263,11 @@ public sealed class PlayerLoadoutPersistence : MonoBehaviour
             return;
         }
 
-        string key =
-            PersistenceKey;
+        if (!TryBindPersistenceIdentity(out string key))
+        {
+            LogWarning("Skipped loadout operation: bind a distinct player persistence key first.");
+            return;
+        }
 
         PlayerLoadoutSnapshot snapshot =
             CaptureSnapshot();
@@ -290,8 +291,11 @@ public sealed class PlayerLoadoutPersistence : MonoBehaviour
             return;
         }
 
-        string key =
-            PersistenceKey;
+        if (!TryBindPersistenceIdentity(out string key))
+        {
+            LogWarning("Skipped loadout operation: bind a distinct player persistence key first.");
+            return;
+        }
 
         PlayerLoadoutSnapshot snapshot =
             GameState.I.GetPlayerLoadout(
